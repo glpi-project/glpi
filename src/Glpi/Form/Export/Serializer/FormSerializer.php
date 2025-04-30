@@ -204,7 +204,7 @@ final class FormSerializer extends AbstractFormSerializer
             // When exporting multiple forms, we compute an additionnal checksum
             // to make sure two different exports with the same number of forms
             // have a different file name.
-            $ids = array_map(fn (Form $form) => $form->getID(), $forms);
+            $ids = array_map(fn(Form $form) => $form->getID(), $forms);
             $checksum = crc32(json_encode($ids));
 
             $nb = count($forms);

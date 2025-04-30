@@ -59,35 +59,35 @@ class InstallCommand extends AbstractConfigureCommand implements ConfigurationCo
      *
      * @var integer
      */
-    const ERROR_DB_CREATION_FAILED = 5;
+    public const ERROR_DB_CREATION_FAILED = 5;
 
     /**
      * Error code returned when trying to install and having a DB already containing glpi_* tables.
      *
      * @var integer
      */
-    const ERROR_DB_ALREADY_CONTAINS_TABLES = 6;
+    public const ERROR_DB_ALREADY_CONTAINS_TABLES = 6;
 
     /**
      * Error code returned when failing to create database schema.
      *
      * @var integer
      */
-    const ERROR_SCHEMA_CREATION_FAILED = 7;
+    public const ERROR_SCHEMA_CREATION_FAILED = 7;
 
     /**
      * Error code returned when failing to create encryption key file.
      *
      * @var integer
      */
-    const ERROR_CANNOT_CREATE_ENCRYPTION_KEY_FILE = 8;
+    public const ERROR_CANNOT_CREATE_ENCRYPTION_KEY_FILE = 8;
 
     /**
      * Error code returned if DB configuration is not compatible with large indexes.
      *
      * @var integer
      */
-    const ERROR_INCOMPATIBLE_DB_CONFIG = 9;
+    public const ERROR_INCOMPATIBLE_DB_CONFIG = 9;
 
     protected function configure()
     {
@@ -162,8 +162,8 @@ class InstallCommand extends AbstractConfigureCommand implements ConfigurationCo
             && $this->isInputContainingConfigValues($input, $output)
             && !$input->getOption('reconfigure')
         ) {
-           // Prevent overriding of existing DB when input contains configuration values and
-           // --reconfigure option is not used.
+            // Prevent overriding of existing DB when input contains configuration values and
+            // --reconfigure option is not used.
             $output->writeln(
                 '<error>' . __('Database configuration already exists. Use --reconfigure option to override existing configuration.') . '</error>'
             );
@@ -185,20 +185,20 @@ class InstallCommand extends AbstractConfigureCommand implements ConfigurationCo
             $db_user     = $input->getOption('db-user');
             $db_pass     = $input->getOption('db-password');
         } else {
-           // Ask to confirm installation based on existing configuration.
+            // Ask to confirm installation based on existing configuration.
             /** @var \DBmysql $DB */
             global $DB;
 
-           // $DB->dbhost can be array when using round robin feature
+            // $DB->dbhost can be array when using round robin feature
             $db_hostport = is_array($DB->dbhost) ? $DB->dbhost[0] : $DB->dbhost;
 
             $hostport = explode(':', $db_hostport);
             $db_host = $hostport[0];
             if (count($hostport) < 2) {
-               // Host only case
+                // Host only case
                 $db_port = null;
             } else {
-               // Host:port case or :Socket case
+                // Host:port case or :Socket case
                 $db_port = $hostport[1];
             }
 
@@ -217,7 +217,7 @@ class InstallCommand extends AbstractConfigureCommand implements ConfigurationCo
             $this->db = $DB;
         }
 
-       // Create security key
+        // Create security key
         $glpikey = new GLPIKey();
         if (!$glpikey->generate(update_db: false)) {
             $message = __('Security key cannot be generated!');
@@ -238,10 +238,10 @@ class InstallCommand extends AbstractConfigureCommand implements ConfigurationCo
             );
         }
         if (intval($db_port) > 0) {
-           // Network port
+            // Network port
             @$mysqli->real_connect($db_host, $db_user, $db_pass, null, $db_port);
         } else {
-           // Unix Domain Socket
+            // Unix Domain Socket
             @$mysqli->real_connect($db_host, $db_user, $db_pass, null, 0, $db_port);
         }
 
@@ -255,11 +255,11 @@ class InstallCommand extends AbstractConfigureCommand implements ConfigurationCo
             return self::ERROR_DB_CONNECTION_FAILED;
         }
 
-       // Check for compatibility with utf8mb4 usage.
+        // Check for compatibility with utf8mb4 usage.
         $db = new class ($mysqli) extends DBmysql {
             public function __construct($dbh)
             {
-                  $this->dbh = $dbh;
+                $this->dbh = $dbh;
             }
         };
         $config_requirement = new DbConfiguration($db);
@@ -273,7 +273,7 @@ class InstallCommand extends AbstractConfigureCommand implements ConfigurationCo
 
         DBConnection::setConnectionCharset($mysqli, true);
 
-       // Create database or select existing one
+        // Create database or select existing one
         $output->writeln(
             '<comment>' . __('Creating the database...') . '</comment>',
             OutputInterface::VERBOSITY_VERBOSE
@@ -291,7 +291,7 @@ class InstallCommand extends AbstractConfigureCommand implements ConfigurationCo
             return self::ERROR_DB_CREATION_FAILED;
         }
 
-       // Prevent overriding of existing DB
+        // Prevent overriding of existing DB
         $tables_result = $mysqli->query(
             "SELECT COUNT(table_name)
           FROM information_schema.tables

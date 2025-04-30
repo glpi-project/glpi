@@ -211,7 +211,7 @@ final class RequestTypeFieldTest extends AbstractDestinationFieldTest
             ],
             'field_config' => new RequestTypeFieldConfig(
                 strategy: RequestTypeFieldStrategy::FROM_TEMPLATE
-            )
+            ),
         ];
 
         yield 'Specific type' => [
@@ -223,22 +223,22 @@ final class RequestTypeFieldTest extends AbstractDestinationFieldTest
             'field_config' => new RequestTypeFieldConfig(
                 strategy: RequestTypeFieldStrategy::SPECIFIC_VALUE,
                 specific_request_type: 4 // High urgency
-            )
+            ),
         ];
 
         yield 'Equals to the answer to the question' => [
             'field_key'     => RequestTypeField::getKey(),
             'fields_to_set' => [
                 'type_rule'     => 2, // PluginFormcreatorAbstractItilTarget::REQUESTTYPE_ANSWER
-                'type_question' => 80
+                'type_question' => 80,
             ],
-            'field_config' => fn ($migration, $form) => new RequestTypeFieldConfig(
+            'field_config' => fn($migration, $form) => new RequestTypeFieldConfig(
                 strategy: RequestTypeFieldStrategy::SPECIFIC_ANSWER,
                 specific_question_id: $migration->getMappedItemTarget(
                     'PluginFormcreatorQuestion',
                     80
                 )['items_id'] ?? throw new \Exception("Question not found")
-            )
+            ),
         ];
     }
 

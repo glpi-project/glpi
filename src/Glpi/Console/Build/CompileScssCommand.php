@@ -50,7 +50,7 @@ class CompileScssCommand extends Command
      *
      * @var integer
      */
-    const ERROR_UNABLE_TO_WRITE_COMPILED_FILE = 1;
+    public const ERROR_UNABLE_TO_WRITE_COMPILED_FILE = 1;
 
     protected function configure()
     {
@@ -112,9 +112,9 @@ class CompileScssCommand extends Command
                     continue;
                 }
 
-                 $files[] = str_replace($root_path . '/', '', dirname($file->getRealPath()))
-                 . '/'
-                 . preg_replace('/^_?(.*)\.scss$/', '$1', $file->getBasename());
+                $files[] = str_replace($root_path . '/', '', dirname($file->getRealPath()))
+                . '/'
+                . preg_replace('/^_?(.*)\.scss$/', '$1', $file->getBasename());
             }
         }
 
@@ -138,7 +138,7 @@ class CompileScssCommand extends Command
                     '<info>' . $message . '</info>',
                     OutputInterface::VERBOSITY_NORMAL
                 );
-            } else if (strlen($css) === @file_put_contents($compiled_path, $css)) {
+            } elseif (strlen($css) === @file_put_contents($compiled_path, $css)) {
                 $message = sprintf('"%s" compiled successfully in "%s".', $file, $compiled_path);
                 $output->writeln(
                     '<info>' . $message . '</info>',

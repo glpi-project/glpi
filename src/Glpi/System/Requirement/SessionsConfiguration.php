@@ -49,14 +49,14 @@ class SessionsConfiguration extends AbstractRequirement
 
     protected function check()
     {
-       // Check session extension
+        // Check session extension
         if (!$this->isExtensionLoaded()) {
             $this->validated = false;
             $this->validation_messages[] = __('session extension is not installed.');
             return;
         }
 
-       // Check configuration values
+        // Check configuration values
         $is_autostart_on   = $this->isAutostartOn();
 
         if ($is_autostart_on) {

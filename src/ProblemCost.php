@@ -40,7 +40,7 @@
  **/
 class ProblemCost extends CommonITILCost
 {
-   // From CommonDBChild
+    // From CommonDBChild
     public static $itemtype  = 'Problem';
     public static $items_id  = 'problems_id';
 

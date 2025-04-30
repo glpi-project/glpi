@@ -39,7 +39,7 @@ Session::checkCentralAccess();
 
 if (isset($_POST["sub_type"])) {
     $sub_type = $_POST["sub_type"];
-} else if (isset($_GET["sub_type"])) {
+} elseif (isset($_GET["sub_type"])) {
     $sub_type = $_GET["sub_type"];
 } else {
     $sub_type = 0;
@@ -47,7 +47,7 @@ if (isset($_POST["sub_type"])) {
 
 if (isset($_POST["condition"])) {
     $condition = $_POST["condition"];
-} else if (isset($_GET["condition"])) {
+} elseif (isset($_GET["condition"])) {
     $condition = $_GET["condition"];
 } else {
     $condition = 0;
@@ -68,7 +68,7 @@ Html::popHeader(__('Setup'));
 $rulecollection->showRulesEnginePreviewCriteriasForm($_POST, $condition);
 
 if (isset($_POST["test_all_rules"])) {
-   //Unset values that must not be processed by the rule
+    //Unset values that must not be processed by the rule
     unset($_POST["sub_type"], $_POST["test_all_rules"]);
 
     echo "<br>";

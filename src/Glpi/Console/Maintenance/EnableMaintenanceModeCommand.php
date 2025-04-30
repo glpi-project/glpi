@@ -67,7 +67,7 @@ class EnableMaintenanceModeCommand extends AbstractCommand
         global $CFG_GLPI;
 
         $values = [
-            'maintenance_mode' => '1'
+            'maintenance_mode' => '1',
         ];
         if ($input->hasOption('text') && $input->getOption('text') !== null) {
             $values['maintenance_text'] = $input->getOption('text');

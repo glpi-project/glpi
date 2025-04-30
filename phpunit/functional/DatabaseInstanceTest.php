@@ -89,7 +89,7 @@ class DatabaseInstanceTest extends DbTestCase
         $instid = $instance->add([
             'name' => 'To be removed',
             'port' => 3306,
-            'size' => 52000
+            'size' => 52000,
         ]);
 
         //check DB is created, and load it
@@ -103,17 +103,17 @@ class DatabaseInstanceTest extends DbTestCase
                 0,
                 $database->add([
                     'name'                   => 'Database ' . $i,
-                    'databaseinstances_id'   => $instid
+                    'databaseinstances_id'   => $instid,
                 ])
             );
         }
         $this->assertSame(5, countElementsInTable(\Database::getTable()));
 
-       //test removal
+        //test removal
         $this->assertTrue($instance->delete(['id' => $instid], 1));
         $this->assertFalse($instance->getFromDB($instid));
 
-       //ensure databases has been dropped aswell
+        //ensure databases has been dropped aswell
         $this->assertSame(0, countElementsInTable(\Database::getTable()));
     }
 

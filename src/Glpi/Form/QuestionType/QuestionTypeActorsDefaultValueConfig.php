@@ -49,8 +49,7 @@ final class QuestionTypeActorsDefaultValueConfig implements JsonFieldInterface
         private array $users_ids = [],
         private array $groups_ids = [],
         private array $suppliers_ids = [],
-    ) {
-    }
+    ) {}
 
     #[Override]
     public static function jsonDeserialize(array $data): self

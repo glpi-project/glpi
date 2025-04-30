@@ -50,13 +50,13 @@ if (isset($_POST["action"])) {
     $rulecollection->checkGlobal(UPDATE);
     $rulecollection->changeRuleOrder($_POST["id"], $_POST["action"], $_POST['condition']);
     Html::back();
-} else if (isset($_POST["reinit"]) || isset($_GET['reinit'])) {
-   //reinitialize current rules
+} elseif (isset($_POST["reinit"]) || isset($_GET['reinit'])) {
+    //reinitialize current rules
     $ruleclass = $rulecollection->getRuleClass();
     if ($ruleclass->initRules()) {
         Session::addMessageAfterRedirect(
             htmlescape(sprintf(
-            //TRANS: first parameter is the rule type name
+                //TRANS: first parameter is the rule type name
                 __('%1$s has been reset.'),
                 $rulecollection->getTitle()
             ))
@@ -73,7 +73,7 @@ if (isset($_POST["action"])) {
         );
     }
     Html::back();
-} else if (isset($_POST["replay_rule"]) || isset($_GET["replay_rule"])) {
+} elseif (isset($_POST["replay_rule"]) || isset($_GET["replay_rule"])) {
     $rulecollection->checkGlobal(UPDATE);
 
     // Current time
@@ -102,13 +102,13 @@ if (isset($_POST["action"])) {
 
     if (array_key_exists('offset', $_GET)) {
         // $_GET['offset'] will exists only when page is reloaded to update the progress bar
-        $manufacturer   = (int)($_GET['manufacturer']);
-        $current_offset = (int)$_GET['offset'];
-        $total_items    = (int)$_GET['total'];
+        $manufacturer   = (int) ($_GET['manufacturer']);
+        $current_offset = (int) $_GET['offset'];
+        $total_items    = (int) $_GET['total'];
 
         $start = $_GET['start']; // global start for stat
     } else {
-        $manufacturer   = (int)($_POST['manufacturer'] ?? 0);
+        $manufacturer   = (int) ($_POST['manufacturer'] ?? 0);
         $current_offset = 0;
         $total_items    = $rulecollection->countTotalItemsForRulesReplay(['manufacturer' => $manufacturer]);
     }

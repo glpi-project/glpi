@@ -55,8 +55,7 @@ final readonly class PluginsRouterListener implements EventSubscriberInterface
 
     public function __construct(
         private PluginContainer $plugin_container,
-    ) {
-    }
+    ) {}
 
     public static function getSubscribedEvents(): array
     {

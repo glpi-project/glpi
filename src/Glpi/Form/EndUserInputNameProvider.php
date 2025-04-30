@@ -60,7 +60,7 @@ final class EndUserInputNameProvider
         $files = [
             'filename' => [],
             'prefix'   => [],
-            'tag'      => []
+            'tag'      => [],
         ];
 
         foreach (array_keys($answers) as $answer_id) {

@@ -52,7 +52,7 @@ function update92xto930()
 
     $migration->setVersion('9.3');
 
-   //Create solutions table
+    //Create solutions table
     if (!$DB->tableExists('glpi_itilsolutions')) {
         $query = "CREATE TABLE `glpi_itilsolutions` (
          `id` int NOT NULL AUTO_INCREMENT,
@@ -85,7 +85,7 @@ function update92xto930()
         $DB->doQuery($query);
     }
 
-   //add unicity key required for migration only
+    //add unicity key required for migration only
     $migration->addKey(
         'glpi_itilsolutions',
         ['itemtype', 'items_id', 'date_creation'],
@@ -95,8 +95,8 @@ function update92xto930()
     $migration->migrationOneTable('glpi_itilsolutions');
 
     if ($DB->fieldExists('glpi_tickets', 'solution')) {
-       //migrate solution history for tickets
-       // TODO can be done when DB::insertOrUpdate() supports SELECT
+        //migrate solution history for tickets
+        // TODO can be done when DB::insertOrUpdate() supports SELECT
         $query = "REPLACE INTO `glpi_itilsolutions` (itemtype, items_id, date_creation, users_id, user_name, solutiontypes_id, content, status, date_approval)
                SELECT
                   'Ticket' AS itemtype,
@@ -130,8 +130,8 @@ function update92xto930()
     }
 
     if ($DB->fieldExists('glpi_problems', 'solution')) {
-       // Problem soution history
-       // TODO can be done when DB::insertOrUpdate() supports SELECT
+        // Problem soution history
+        // TODO can be done when DB::insertOrUpdate() supports SELECT
         $query = "REPLACE INTO `glpi_itilsolutions` (itemtype, items_id, date_creation, users_id, user_name, solutiontypes_id, content, status, date_approval)
                SELECT
                   'Problem' AS itemtype,
@@ -166,8 +166,8 @@ function update92xto930()
     }
 
     if ($DB->fieldExists('glpi_changes', 'solution')) {
-       // Change solution history
-       // TODO can be done when DB::insertOrUpdate() supports SELECT
+        // Change solution history
+        // TODO can be done when DB::insertOrUpdate() supports SELECT
         $query = "REPLACE INTO `glpi_itilsolutions` (itemtype, items_id, date_creation, users_id, user_name, solutiontypes_id, content, status, date_approval)
                SELECT
                   'Change' AS itemtype,
@@ -201,7 +201,7 @@ function update92xto930()
         $migration->dropField('glpi_changes', 'solutiontypes_id');
     }
 
-   //drop migration unicity key
+    //drop migration unicity key
     $migration->dropKey('glpi_itilsolutions', 'migration_unicity');
     $migration->migrationOneTable('glpi_itilsolutions');
 
@@ -358,40 +358,40 @@ function update92xto930()
         CREATE | READ | UPDATE | DELETE  | PURGE | READNOTE | UPDATENOTE | UNLOCK
     );
 
-   //devices models enhancement for datacenters
+    //devices models enhancement for datacenters
     $models = [
         'computer',
         'monitor',
         'networkequipment',
-        'peripheral'
+        'peripheral',
     ];
 
     $models_fields = [
         [
             'name'   => 'weight',
-            'type'   => "int NOT NULL DEFAULT '0'"
+            'type'   => "int NOT NULL DEFAULT '0'",
         ], [
             'name'   => 'required_units',
-            'type'   => "int NOT NULL DEFAULT '1'"
+            'type'   => "int NOT NULL DEFAULT '1'",
         ], [
             'name'   => 'depth',
-            'type'   => "float NOT NULL DEFAULT 1"
+            'type'   => "float NOT NULL DEFAULT 1",
         ], [
             'name'   => 'power_connections',
-            'type'   => "int NOT NULL DEFAULT '0'"
+            'type'   => "int NOT NULL DEFAULT '0'",
         ], [
             'name'   => 'power_consumption',
-            'type'   => "int NOT NULL DEFAULT '0'"
+            'type'   => "int NOT NULL DEFAULT '0'",
         ], [
             'name'   => 'is_half_rack',
-            'type'   => "tinyint NOT NULL DEFAULT '0'"
+            'type'   => "tinyint NOT NULL DEFAULT '0'",
         ], [
             'name'   => 'picture_front',
-            'type'   => "text"
+            'type'   => "text",
         ], [
             'name'   => 'picture_rear',
-            'type'   => "text"
-        ]
+            'type'   => "text",
+        ],
     ];
 
     foreach ($models as $model) {
@@ -633,7 +633,7 @@ function update92xto930()
     }
 
     $migration->addField('glpi_states', 'is_visible_rack', 'bool', ['value' => 1,
-        'after' => 'is_visible_certificate'
+        'after' => 'is_visible_certificate',
     ]);
     $migration->addKey('glpi_states', 'is_visible_rack');
 
@@ -738,17 +738,17 @@ function update92xto930()
     foreach ($itemDeviceTypes as $itemDeviceType) {
         $optToAdd = [];
 
-       // Serial number
+        // Serial number
         $itemDeviceSpecificities = $itemDeviceType::getSpecificities();
         if (array_key_exists('serial', $itemDeviceSpecificities)) {
             $optToAdd[] = $itemDeviceSpecificities['serial']['id'];
         }
 
-       // Parent device.
+        // Parent device.
         $optToAdd[] = 4;
-       // Associated item.
+        // Associated item.
         $optToAdd[] = 5;
-       // Associated itemtype.
+        // Associated itemtype.
         $optToAdd[] = 6;
 
         $ADDTODISPLAYPREF[$itemDeviceType] = $optToAdd;
@@ -759,7 +759,7 @@ function update92xto930()
         $rank = 1;
         foreach ($tab as $newval) {
             $DB->updateOrInsert("glpi_displaypreferences", [
-                'rank'      => $rank++
+                'rank'      => $rank++,
             ], [
                 'users_id'  => "0",
                 'itemtype'  => $type,
@@ -768,7 +768,7 @@ function update92xto930()
         }
     }
 
-   // upgrade for users multi-domains
+    // upgrade for users multi-domains
     if (!isIndex('glpi_users', 'unicityloginauth')) {
         $migration->dropKey("glpi_users", "unicity");
         $migration->addKey(
@@ -787,7 +787,7 @@ function update92xto930()
         )
     );
 
-   //Permit same license several times on same computer
+    //Permit same license several times on same computer
     $migration->dropKey('glpi_computers_softwarelicenses', 'unicity');
 
     /** Logs purge */
@@ -814,7 +814,7 @@ function update92xto930()
         'purge_datemod',
         'purge_all',
         'purge_user_auth_changes',
-        'purge_plugins'
+        'purge_plugins',
     ];
 
     $purge_plugin_values = [];
@@ -827,7 +827,7 @@ function update92xto930()
     $configs_toadd = [];
     foreach ($purge_params as $purge_param) {
         if (!isset($current_config[$purge_param])) {
-            $value = isset($purge_plugin_values[$purge_param]) ? $purge_plugin_values[$purge_param] : 0;
+            $value = $purge_plugin_values[$purge_param] ?? 0;
             $configs_toadd[$purge_param] = $value;
         }
     }
@@ -855,20 +855,20 @@ function update92xto930()
     foreach ($iterator as $row) {
         $exists = $DB->request([
             'FROM'   => getTableForItemType($row['itemtype']),
-            'WHERE'  => ['id' => $row['items_id']]
+            'WHERE'  => ['id' => $row['items_id']],
         ]);
         if (!count($exists)) {
             $DB->delete(
                 Item_Rack::getTable(),
                 [
-                    'id' => $row['id']
+                    'id' => $row['id'],
                 ]
             );
         }
     }
     /** /Clean item rack relation on deleted items */
 
-   // ************ Keep it at the end **************
+    // ************ Keep it at the end **************
     $migration->executeMigration();
 
     return $updateresult;

@@ -43,8 +43,7 @@ final class ItemConditionHandler implements ConditionHandlerInterface
 
     public function __construct(
         private string $itemtype,
-    ) {
-    }
+    ) {}
 
     #[Override]
     public function getSupportedValueOperators(): array

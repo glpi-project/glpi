@@ -65,7 +65,7 @@ class Item_DeviceBattery extends Item_Devices
                 'id'         => 21,
                 'datatype'   => 'progressbar',
                 'max'       => 'capacity',    // Field used to represent 100% capacity value
-            ]
+            ],
         ];
     }
 

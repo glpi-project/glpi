@@ -125,7 +125,7 @@ abstract class Asset extends CommonDBTM
             'field'         => 'id',
             'name'          => __('ID'),
             'massiveaction' => false,
-            'datatype'      => 'number'
+            'datatype'      => 'number',
         ];
 
         $search_options[] = [
@@ -180,7 +180,7 @@ abstract class Asset extends CommonDBTM
             'table'              => $this->getTable(),
             'field'              => 'comment',
             'name'               => __('Comments'),
-            'datatype'           => 'text'
+            'datatype'           => 'text',
         ];
 
         $search_options[] = [
@@ -205,7 +205,7 @@ abstract class Asset extends CommonDBTM
             'field'              => 'name',
             'name'               => User::getTypeName(1),
             'datatype'           => 'dropdown',
-            'right'              => 'all'
+            'right'              => 'all',
         ];
 
         $search_options[] = [
@@ -219,11 +219,11 @@ abstract class Asset extends CommonDBTM
                     'table'              => 'glpi_groups_items',
                     'joinparams'         => [
                         'jointype'           => 'itemtype_item',
-                        'condition'          => ['NEWTABLE.type' => Group_Item::GROUP_TYPE_NORMAL]
-                    ]
-                ]
+                        'condition'          => ['NEWTABLE.type' => Group_Item::GROUP_TYPE_NORMAL],
+                    ],
+                ],
             ],
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $search_options[] = [
@@ -232,7 +232,7 @@ abstract class Asset extends CommonDBTM
             'field'              => 'date_mod',
             'name'               => __('Last update'),
             'datatype'           => 'datetime',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $search_options[] = [
@@ -241,7 +241,7 @@ abstract class Asset extends CommonDBTM
             'field'              => 'date_creation',
             'name'               => __('Creation date'),
             'datatype'           => 'datetime',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
 
@@ -250,7 +250,7 @@ abstract class Asset extends CommonDBTM
             'table'              => Manufacturer::getTable(),
             'field'              => 'name',
             'name'               => Manufacturer::getTypeName(1),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $search_options[] = [
@@ -260,7 +260,7 @@ abstract class Asset extends CommonDBTM
             'linkfield'          => 'users_id_tech',
             'name'               => __('Technician in charge of the hardware'),
             'datatype'           => 'dropdown',
-            'right'              => 'own_ticket'
+            'right'              => 'own_ticket',
         ];
 
         $search_options[] = [
@@ -275,11 +275,11 @@ abstract class Asset extends CommonDBTM
                     'table'              => 'glpi_groups_items',
                     'joinparams'         => [
                         'jointype'           => 'itemtype_item',
-                        'condition'          => ['NEWTABLE.type' => Group_Item::GROUP_TYPE_NORMAL]
-                    ]
-                ]
+                        'condition'          => ['NEWTABLE.type' => Group_Item::GROUP_TYPE_NORMAL],
+                    ],
+                ],
             ],
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         // TODO 65 for template
@@ -289,7 +289,7 @@ abstract class Asset extends CommonDBTM
             'table'              => Entity::getTable(),
             'field'              => 'completename',
             'name'               => Entity::getTypeName(1),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $search_options[] = [
@@ -310,7 +310,7 @@ abstract class Asset extends CommonDBTM
 
         $search_options[] = [
             'id' => 'customfields',
-            'name' => _n('Custom field', 'Custom fields', \Session::getPluralNumber())
+            'name' => _n('Custom field', 'Custom fields', \Session::getPluralNumber()),
         ];
         $custom_fields = static::getDefinition()->getCustomFieldDefinitions();
         foreach ($custom_fields as $custom_field) {
@@ -336,19 +336,19 @@ abstract class Asset extends CommonDBTM
         $all_fields = array_keys(static::getDefinition()->getAllFields());
         $fields_display = static::getDefinition()->getDecodedFieldsField();
         $shown_fields = array_column($fields_display, 'key');
-        return array_filter($shown_fields, static fn ($f) => in_array($f, $all_fields, true));
+        return array_filter($shown_fields, static fn($f) => in_array($f, $all_fields, true));
     }
 
     public function showForm($ID, array $options = [])
     {
         $this->initForm($ID, $options);
         $custom_fields = static::getDefinition()->getCustomFieldDefinitions();
-        $custom_fields = array_combine(array_map(static fn ($f) => 'custom_' . $f->fields['system_name'], $custom_fields), $custom_fields);
+        $custom_fields = array_combine(array_map(static fn($f) => 'custom_' . $f->fields['system_name'], $custom_fields), $custom_fields);
         $fields_display = static::getDefinition()->getDecodedFieldsField();
         $core_field_options = [];
 
         // Remove fields that are hidden for the current profile
-        $custom_fields = array_filter($custom_fields, static fn ($f) => !$f->getFieldType()->getOptionValues()['hidden']);
+        $custom_fields = array_filter($custom_fields, static fn($f) => !$f->getFieldType()->getOptionValues()['hidden']);
 
         $core_fields = static::getDefinition()->getAllFields();
         foreach ($fields_display as $field) {
@@ -361,7 +361,7 @@ abstract class Asset extends CommonDBTM
         }
 
         $field_order = $this->getFormFields();
-        $field_order = array_filter($field_order, static fn ($f) => $core_field_options[$f]['hidden'] !== true);
+        $field_order = array_filter($field_order, static fn($f) => $core_field_options[$f]['hidden'] !== true);
 
         TemplateRenderer::getInstance()->display(
             'pages/assets/asset.html.twig',
@@ -537,7 +537,7 @@ abstract class Asset extends CommonDBTM
     public function getNonLoggedFields(): array
     {
         $ignored_fields = array_map(
-            static fn (CustomFieldDefinition $field) => 'custom_' . $field->fields['system_name'],
+            static fn(CustomFieldDefinition $field) => 'custom_' . $field->fields['system_name'],
             static::getDefinition()->getCustomFieldDefinitions()
         );
         $ignored_fields[] = 'custom_fields';

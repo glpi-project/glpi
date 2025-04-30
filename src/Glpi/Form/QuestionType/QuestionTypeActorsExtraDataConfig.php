@@ -45,8 +45,7 @@ final class QuestionTypeActorsExtraDataConfig implements JsonFieldInterface
 
     public function __construct(
         private bool $is_multiple_actors = false,
-    ) {
-    }
+    ) {}
 
     #[Override]
     public static function jsonDeserialize(array $data): self

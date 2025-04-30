@@ -155,7 +155,7 @@ class PluginExtension extends AbstractExtension
                         'path' => "plugins/{$plugin}/{$file}",
                         'options' => [
                             'version' => $plugin_version,
-                        ]
+                        ],
                     ];
                 }
             }
@@ -191,7 +191,7 @@ class PluginExtension extends AbstractExtension
                         'path' => "plugins/{$plugin}/{$file}",
                         'options' => [
                             'version' => $plugin_version,
-                        ]
+                        ],
                     ];
                 }
             }
@@ -227,7 +227,7 @@ class PluginExtension extends AbstractExtension
                         'path' => "plugins/{$plugin}/{$file}",
                         'options' => [
                             'version' => $plugin_version,
-                        ]
+                        ],
                     ];
                 }
             }

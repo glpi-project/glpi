@@ -42,7 +42,7 @@ final class ObserverFieldConfig extends ITILActorFieldConfig
     public static function jsonDeserialize(array $data): self
     {
         $strategies = array_map(
-            fn (string $strategy) => ITILActorFieldStrategy::tryFrom($strategy),
+            fn(string $strategy) => ITILActorFieldStrategy::tryFrom($strategy),
             $data[self::STRATEGIES] ?? []
         );
         if (empty($strategies)) {

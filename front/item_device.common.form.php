@@ -62,7 +62,7 @@ if (!$item_device->canView()) {
 
 if (isset($_POST["id"])) {
     $_GET["id"] = $_POST["id"];
-} else if (!isset($_GET["id"])) {
+} elseif (!isset($_GET["id"])) {
     $_GET["id"] = "";
 }
 
@@ -82,7 +82,7 @@ if (isset($_POST["add"])) {
         }
     }
     Html::back();
-} else if (isset($_POST["purge"])) {
+} elseif (isset($_POST["purge"])) {
     $item_device->check($_POST["id"], PURGE);
     $item_device->delete($_POST, 1);
 
@@ -97,7 +97,7 @@ if (isset($_POST["add"])) {
 
     $device = $item_device->getOnePeer(1);
     Html::redirect($device->getLinkURL());
-} else if (isset($_POST["update"])) {
+} elseif (isset($_POST["update"])) {
     $item_device->check($_POST["id"], UPDATE);
     $item_device->update($_POST);
 

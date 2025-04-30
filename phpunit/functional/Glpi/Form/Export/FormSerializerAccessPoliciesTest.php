@@ -130,26 +130,26 @@ final class FormSerializerAccessPoliciesTest extends \DbTestCase
             'user_ids' => [
                 getItemByTypeName(User::class, "glpi", true),
                 getItemByTypeName(User::class, "tech", true),
-            ]
+            ],
         ];
         yield 'With groups' => [
             'group_ids' => [
                 getItemByTypeName(Group::class, "_test_group_1", true),
                 getItemByTypeName(Group::class, "_test_group_2", true),
-            ]
+            ],
         ];
         yield 'With profiles' => [
             'profile_ids' => [
                 getItemByTypeName(Profile::class, "Super-Admin", true),
                 getItemByTypeName(Profile::class, "Read-Only", true),
-            ]
+            ],
         ];
         yield 'With users and special value' => [
             'user_ids' => [
                 AbstractRightsDropdown::ALL_USERS,
                 getItemByTypeName(User::class, "glpi", true),
                 getItemByTypeName(User::class, "tech", true),
-            ]
+            ],
         ];
         yield 'With everything' => [
             'user_ids' => [

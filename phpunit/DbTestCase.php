@@ -124,7 +124,7 @@ class DbTestCase extends \GLPITestCase
      */
     protected function checkInput(CommonDBTM $object, $id = 0, $input = [])
     {
-        $this->assertGreaterThan($object instanceof Entity ? -1 : 0, (int)$id);
+        $this->assertGreaterThan($object instanceof Entity ? -1 : 0, (int) $id);
         $this->assertTrue($object->getFromDB($id));
         $this->assertEquals($id, $object->getID());
 
@@ -177,8 +177,8 @@ class DbTestCase extends \GLPITestCase
             $is_excluded = false;
             foreach ($excludes as $exclude) {
                 if ($classname === $exclude || @preg_match($exclude, $classname) === 1) {
-                     $is_excluded = true;
-                     break;
+                    $is_excluded = true;
+                    break;
                 }
             }
             if ($is_excluded) {
@@ -379,7 +379,7 @@ class DbTestCase extends \GLPITestCase
             'match'        => $builder->getOperator(),
             'condition'    => $builder->getCondition(),
             'is_recursive' => $builder->isRecursive(),
-            'entities_id'  => $builder->getEntity()
+            'entities_id'  => $builder->getEntity(),
         ];
         if ($ranking = $builder->getRanking()) {
             $input['ranking'] = $ranking;
@@ -443,7 +443,7 @@ class DbTestCase extends \GLPITestCase
         }
 
         $capacity_input = array_map(
-            fn (Capacity $capacity) => $capacity->jsonSerialize(),
+            fn(Capacity $capacity) => $capacity->jsonSerialize(),
             $capacities
         );
 
@@ -545,7 +545,7 @@ class DbTestCase extends \GLPITestCase
         // Add new capacity
         $existing_capacities = $this->callPrivateMethod($definition, 'getDecodedCapacitiesField');
 
-        $capacity_input = array_map(fn (Capacity $capacity) => $capacity->jsonSerialize(), $existing_capacities);
+        $capacity_input = array_map(fn(Capacity $capacity) => $capacity->jsonSerialize(), $existing_capacities);
         $capacity_input[] = ['name' => $capacity_classname];
 
         $this->updateItem(

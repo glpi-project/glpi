@@ -39,7 +39,7 @@ class Calendar_Holiday extends CommonDBRelation
 {
     public $auto_message_on_action = false;
 
-   // From CommonDBRelation
+    // From CommonDBRelation
     public static $itemtype_1 = 'Calendar';
     public static $items_id_1 = 'calendars_id';
     public static $itemtype_2 = 'Holiday';
@@ -81,7 +81,7 @@ class Calendar_Holiday extends CommonDBRelation
         $iterator = $DB->request([
             'SELECT' => [
                 'glpi_calendars_holidays.id AS linkid',
-                'glpi_holidays.*'
+                'glpi_holidays.*',
             ],
             'DISTINCT'        => true,
             'FROM'            => 'glpi_calendars_holidays',
@@ -89,14 +89,14 @@ class Calendar_Holiday extends CommonDBRelation
                 'glpi_holidays'   => [
                     'ON' => [
                         'glpi_calendars_holidays'  => 'holidays_id',
-                        'glpi_holidays'            => 'id'
-                    ]
-                ]
+                        'glpi_holidays'            => 'id',
+                    ],
+                ],
             ],
             'WHERE'           => [
-                'glpi_calendars_holidays.calendars_id' => $ID
+                'glpi_calendars_holidays.calendars_id' => $ID,
             ],
-            'ORDERBY'         => 'glpi_holidays.name'
+            'ORDERBY'         => 'glpi_holidays.name',
         ]);
 
         $holidays = [];
@@ -113,7 +113,7 @@ class Calendar_Holiday extends CommonDBRelation
                 'used' => $used,
                 'params' => [
                     'canedit' => true,
-                ]
+                ],
             ]);
         }
 
@@ -153,7 +153,7 @@ class Calendar_Holiday extends CommonDBRelation
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => min($_SESSION['glpilist_limit'], count($entries)),
-                'container'     => 'mass' . __CLASS__ . $rand
+                'container'     => 'mass' . __CLASS__ . $rand,
             ],
         ]);
     }

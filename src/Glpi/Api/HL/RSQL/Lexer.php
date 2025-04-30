@@ -70,9 +70,7 @@ final class Lexer
     public const CHAR_ESCAPE = '\\';
     public const CHARS_PROPERTY = '/[a-zA-Z0-9_.]/';
 
-    private function __construct()
-    {
-    }
+    private function __construct() {}
 
     /**
      * Tokenize an RSQL query string into an array of tokens.
@@ -113,13 +111,13 @@ final class Lexer
 
             if (!$in_value && $char === self::CHAR_GROUP_OPEN && $prev_char !== self::CHAR_ESCAPE) {
                 $tokens[] = [self::T_GROUP_OPEN, $char];
-            } else if (!$in_value && $char === self::CHAR_GROUP_CLOSE && $prev_char !== self::CHAR_ESCAPE) {
+            } elseif (!$in_value && $char === self::CHAR_GROUP_CLOSE && $prev_char !== self::CHAR_ESCAPE) {
                 $tokens[] = [self::T_GROUP_CLOSE, $char];
-            } else if (!$in_filter && $char === self::CHAR_AND) {
+            } elseif (!$in_filter && $char === self::CHAR_AND) {
                 $tokens[] = [self::T_AND, $char];
-            } else if (!$in_filter && $char === self::CHAR_OR) {
+            } elseif (!$in_filter && $char === self::CHAR_OR) {
                 $tokens[] = [self::T_OR, $char];
-            } else if (!$in_filter && preg_match(self::CHARS_PROPERTY, $char)) {
+            } elseif (!$in_filter && preg_match(self::CHARS_PROPERTY, $char)) {
                 $in_filter = true;
                 $buffer .= $char;
                 // Property should continue until a '=' is found.
@@ -166,7 +164,7 @@ final class Lexer
                     if ($char === self::CHAR_ESCAPE) {
                         // If the current char is an escape character, then the next character is part of the value.
                         $buffer .= $query[++$pos];
-                    } else if ($expected_ending_char !== null && $char === $expected_ending_char) {
+                    } elseif ($expected_ending_char !== null && $char === $expected_ending_char) {
                         // If the current char is the expected ending char, then the value is complete.
                         $buffer .= $char;
                         $tokens[] = [self::T_VALUE, $buffer];
@@ -174,7 +172,7 @@ final class Lexer
                         $in_filter = false;
                         $in_value = false;
                         break;
-                    } else if ($expected_ending_char === null && in_array($char, [self::CHAR_AND, self::CHAR_OR, self::CHAR_GROUP_CLOSE])) {
+                    } elseif ($expected_ending_char === null && in_array($char, [self::CHAR_AND, self::CHAR_OR, self::CHAR_GROUP_CLOSE])) {
                         // If the current char is a comma, semicolon, or close parenthesis, then the value is complete.
                         $tokens[] = [self::T_VALUE, $buffer];
                         $buffer = '';
@@ -189,7 +187,7 @@ final class Lexer
                 if ($buffer !== '') {
                     $tokens[] = [self::T_VALUE, $buffer];
                     $buffer = '';
-                } else if ($tokens[count($tokens) - 1][0] === self::T_OPERATOR) {
+                } elseif ($tokens[count($tokens) - 1][0] === self::T_OPERATOR) {
                     throw new RSQLException('', sprintf(__('RSQL query is missing a value in filter for property "%1$s"'), $tokens[count($tokens) - 2][1]));
                 }
             }
@@ -201,7 +199,7 @@ final class Lexer
         foreach ($tokens as $token) {
             if ($token[0] === self::T_GROUP_OPEN) {
                 $group_open_count++;
-            } else if ($token[0] === self::T_GROUP_CLOSE) {
+            } elseif ($token[0] === self::T_GROUP_CLOSE) {
                 $group_close_count++;
             }
         }

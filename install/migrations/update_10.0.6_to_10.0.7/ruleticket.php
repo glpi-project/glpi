@@ -40,9 +40,9 @@
 $DB->update(
     'glpi_rulecriterias',
     [
-        'criteria' => 'itilcategories_id'
+        'criteria' => 'itilcategories_id',
     ],
     [
-        'criteria' => 'itilcategories_id_cn'
+        'criteria' => 'itilcategories_id_cn',
     ]
 );

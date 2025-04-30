@@ -142,7 +142,7 @@ class PrinterLog extends CommonDBChild
 
         $filters = [
             ['date' => ['>=', $start_date->format('Y-m-d')]],
-            ['date' => ['<=', $end_date->format('Y-m-d')]]
+            ['date' => ['<=', $end_date->format('Y-m-d')]],
         ];
         $filters = array_merge($filters, $user_filters);
 
@@ -165,7 +165,7 @@ class PrinterLog extends CommonDBChild
                 'FROM'   => self::getTable(),
                 'WHERE'  => [
                     'itemtype' => $printer::class,
-                    'items_id'  => $printer->fields['id']
+                    'items_id'  => $printer->fields['id'],
                 ] + $filters,
                 'ORDER'  => 'date ASC',
             ]);
@@ -181,7 +181,7 @@ class PrinterLog extends CommonDBChild
                     $modulo = round($count / $max_size);
                     $series = array_filter(
                         $series,
-                        fn ($k) => (($count - ($k + 1)) % $modulo) == 0,
+                        fn($k) => (($count - ($k + 1)) % $modulo) == 0,
                         ARRAY_FILTER_USE_KEY
                     );
                 }
@@ -222,11 +222,11 @@ class PrinterLog extends CommonDBChild
     public function showMetrics(Printer|\Glpi\Asset\Asset $printer)
     {
         $printers = array_map(
-            fn ($id) => Printer::getById($id),
+            fn($id) => Printer::getById($id),
             array_reduce(array_merge(
                 explode(',', $_GET['compare_printers'] ?? ''),
                 [$printer->getID()]
-            ), fn ($acc, $id) => !empty($id) && !in_array($id, $acc, false) ? array_merge($acc, [$id]) : $acc, [])
+            ), fn($acc, $id) => !empty($id) && !in_array($id, $acc, false) ? array_merge($acc, [$id]) : $acc, [])
         );
         $compare_printer_stat = $_GET['compare_printer_stat'] ?? 'total_pages';
         $is_comparison = count($printers) > 1;
@@ -344,7 +344,7 @@ class PrinterLog extends CommonDBChild
         }
         $bar_conf = [
             'data'  => [
-                'labels' => array_map(fn ($date) => $fmt->format(new DateTime($date)), $labels), // Format the labels array
+                'labels' => array_map(fn($date) => $fmt->format(new DateTime($date)), $labels), // Format the labels array
                 'series' => array_values($series),
             ],
             'label' => $params['label'],
@@ -362,14 +362,14 @@ class PrinterLog extends CommonDBChild
             'interval'   => $_GET['date_interval'] ?? 'P1Y',
             'format'     => $format,
             'export_url' => '/front/printerlogcsv.php?' . Toolbox::append_params([
-                'id' => array_map(fn ($printer) => $printer->getID(), $printers),
+                'id' => array_map(fn($printer) => $printer->getID(), $printers),
                 'start' => $_GET['date_start'] ?? '',
                 'end'   => $_GET['date_end'] ?? '',
                 'interval'   => $_GET['date_interval'] ?? 'P1Y',
                 'format'     => $format,
                 'statistic' => $compare_printer_stat,
             ]),
-            'compare_printers' => array_map(fn ($printer) => $printer->getID(), $printers),
+            'compare_printers' => array_map(fn($printer) => $printer->getID(), $printers),
             'compare_printer_stat' => $compare_printer_stat,
         ]);
 

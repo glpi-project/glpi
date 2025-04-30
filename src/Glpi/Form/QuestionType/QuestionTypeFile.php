@@ -82,7 +82,7 @@ TWIG;
 
         $twig = TemplateRenderer::getInstance();
         return $twig->renderFromStringTemplate($template, [
-            'question'       => $question
+            'question'       => $question,
         ]);
     }
 
@@ -113,7 +113,7 @@ TWIG;
 
         $twig = TemplateRenderer::getInstance();
         return $twig->renderFromStringTemplate($template, [
-            'question' => $question
+            'question' => $question,
         ]);
     }
 

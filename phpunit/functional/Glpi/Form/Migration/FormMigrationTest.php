@@ -77,7 +77,6 @@ use Glpi\Form\QuestionType\QuestionTypeRequester;
 use Glpi\Form\QuestionType\QuestionTypeRequestType;
 use Glpi\Form\QuestionType\QuestionTypeSelectableExtraDataConfig;
 use Glpi\Form\QuestionType\QuestionTypeShortText;
-use Glpi\Form\QuestionType\QuestionTypesManager;
 use Glpi\Form\QuestionType\QuestionTypeUrgency;
 use Glpi\Form\Section;
 use Glpi\Migration\PluginMigrationResult;
@@ -137,7 +136,7 @@ final class FormMigrationTest extends DbTestCase
                 'description'         => '',
                 'illustration'        => '',
                 'forms_categories_id' => 0,
-            ]
+            ],
         ];
 
         yield 'My test form category' => [
@@ -145,8 +144,8 @@ final class FormMigrationTest extends DbTestCase
                 'name'                => 'My test form category',
                 'description'         => '',
                 'illustration'        => '',
-                'forms_categories_id' => fn () => getItemByTypeName(Category::class, 'Root form category', true),
-            ]
+                'forms_categories_id' => fn() => getItemByTypeName(Category::class, 'Root form category', true),
+            ],
         ];
     }
 
@@ -186,7 +185,7 @@ final class FormMigrationTest extends DbTestCase
                 'illustration'        => '',
                 'description'         => '',
                 'forms_categories_id' => 0,
-            ]
+            ],
         ];
 
         yield 'Basic properties with form category' => [
@@ -200,8 +199,8 @@ final class FormMigrationTest extends DbTestCase
                 'header'              => '',
                 'illustration'        => '',
                 'description'         => '',
-                'forms_categories_id' => fn () => getItemByTypeName(Category::class, 'My test form category', true),
-            ]
+                'forms_categories_id' => fn() => getItemByTypeName(Category::class, 'My test form category', true),
+            ],
         ];
     }
 
@@ -232,19 +231,19 @@ final class FormMigrationTest extends DbTestCase
         yield 'First section' => [
             [
                 'name'           => 'First section',
-                'forms_forms_id' => fn () => getItemByTypeName(Form::class, 'Test form migration for sections', true),
+                'forms_forms_id' => fn() => getItemByTypeName(Form::class, 'Test form migration for sections', true),
                 'description'    => '',
                 'rank'           => 0,
-            ]
+            ],
         ];
 
         yield 'Second section' => [
             [
                 'name'           => 'Second section',
-                'forms_forms_id' => fn () => getItemByTypeName(Form::class, 'Test form migration for sections', true),
+                'forms_forms_id' => fn() => getItemByTypeName(Form::class, 'Test form migration for sections', true),
                 'description'    => '',
                 'rank'           => 1,
-            ]
+            ],
         ];
     }
 
@@ -277,7 +276,7 @@ final class FormMigrationTest extends DbTestCase
 
     public static function provideFormMigrationQuestions(): iterable
     {
-        $section_id = fn () => self::getSectionIDFromFormName('Test form migration for questions', 'Section');
+        $section_id = fn() => self::getSectionIDFromFormName('Test form migration for questions', 'Section');
 
         $default_value = new QuestionTypeActorsDefaultValueConfig([2]);
         $extra_data = new QuestionTypeActorsExtraDataConfig(true);
@@ -291,11 +290,11 @@ final class FormMigrationTest extends DbTestCase
                 'horizontal_rank'             => 1,
                 'description'                 => null,
                 'default_value'               => json_encode($default_value),
-                'extra_data'                  => json_encode($extra_data)
-            ]
+                'extra_data'                  => json_encode($extra_data),
+            ],
         ];
 
-        $extra_data = new QuestionTypeSelectableExtraDataConfig(array_map(fn ($i) => "Option $i", range(1, 7)));
+        $extra_data = new QuestionTypeSelectableExtraDataConfig(array_map(fn($i) => "Option $i", range(1, 7)));
         yield 'Checkboxes question type' => [
             [
                 Section::getForeignKeyField() => $section_id,
@@ -306,8 +305,8 @@ final class FormMigrationTest extends DbTestCase
                 'horizontal_rank'             => 0,
                 'description'                 => null,
                 'default_value'               => '1,4',
-                'extra_data'                  => json_encode($extra_data)
-            ]
+                'extra_data'                  => json_encode($extra_data),
+            ],
         ];
 
         $extra_data = new QuestionTypeDateTimeExtraDataConfig(
@@ -325,8 +324,8 @@ final class FormMigrationTest extends DbTestCase
                 'horizontal_rank'             => 1,
                 'description'                 => null,
                 'default_value'               => '2025-01-29',
-                'extra_data'                  => json_encode($extra_data)
-            ]
+                'extra_data'                  => json_encode($extra_data),
+            ],
         ];
 
         $extra_data = new QuestionTypeDateTimeExtraDataConfig(
@@ -344,8 +343,8 @@ final class FormMigrationTest extends DbTestCase
                 'horizontal_rank'             => 2,
                 'description'                 => null,
                 'default_value'               => '2025-01-29 12:00:00',
-                'extra_data'                  => json_encode($extra_data)
-            ]
+                'extra_data'                  => json_encode($extra_data),
+            ],
         ];
 
         $default_value = new QuestionTypeItemDefaultValueConfig(1);
@@ -360,8 +359,8 @@ final class FormMigrationTest extends DbTestCase
                 'horizontal_rank'             => null,
                 'description'                 => null,
                 'default_value'               => json_encode($default_value),
-                'extra_data'                  => json_encode($extra_data)
-            ]
+                'extra_data'                  => json_encode($extra_data),
+            ],
         ];
 
         yield 'Email question type' => [
@@ -374,8 +373,8 @@ final class FormMigrationTest extends DbTestCase
                 'horizontal_rank'             => null,
                 'description'                 => null,
                 'default_value'               => 'test@test.fr',
-                'extra_data'                  => null
-            ]
+                'extra_data'                  => null,
+            ],
         ];
 
         yield 'Float question type' => [
@@ -388,8 +387,8 @@ final class FormMigrationTest extends DbTestCase
                 'horizontal_rank'             => null,
                 'description'                 => null,
                 'default_value'               => '8,45',
-                'extra_data'                  => null
-            ]
+                'extra_data'                  => null,
+            ],
         ];
 
         $default_value = new QuestionTypeItemDefaultValueConfig(1);
@@ -404,8 +403,8 @@ final class FormMigrationTest extends DbTestCase
                 'horizontal_rank'             => null,
                 'description'                 => null,
                 'default_value'               => json_encode($default_value),
-                'extra_data'                  => json_encode($extra_data)
-            ]
+                'extra_data'                  => json_encode($extra_data),
+            ],
         ];
 
         yield 'Integer question type' => [
@@ -418,11 +417,11 @@ final class FormMigrationTest extends DbTestCase
                 'horizontal_rank'             => null,
                 'description'                 => null,
                 'default_value'               => '78',
-                'extra_data'                  => null
-            ]
+                'extra_data'                  => null,
+            ],
         ];
 
-        $extra_data = new QuestionTypeDropdownExtraDataConfig(array_map(fn ($i) => "Option $i", range(1, 5)), true);
+        $extra_data = new QuestionTypeDropdownExtraDataConfig(array_map(fn($i) => "Option $i", range(1, 5)), true);
         yield 'Dropdown multiple question type' => [
             [
                 Section::getForeignKeyField() => $section_id,
@@ -433,11 +432,11 @@ final class FormMigrationTest extends DbTestCase
                 'horizontal_rank'             => null,
                 'description'                 => null,
                 'default_value'               => '2,3',
-                'extra_data'                  => json_encode($extra_data)
-            ]
+                'extra_data'                  => json_encode($extra_data),
+            ],
         ];
 
-        $extra_data = new QuestionTypeSelectableExtraDataConfig(array_map(fn ($i) => "Option $i", range(1, 4)));
+        $extra_data = new QuestionTypeSelectableExtraDataConfig(array_map(fn($i) => "Option $i", range(1, 4)));
         yield 'Radios question type' => [
             [
                 Section::getForeignKeyField() => $section_id,
@@ -448,8 +447,8 @@ final class FormMigrationTest extends DbTestCase
                 'horizontal_rank'             => null,
                 'description'                 => null,
                 'default_value'               => '1',
-                'extra_data'                  => json_encode($extra_data)
-            ]
+                'extra_data'                  => json_encode($extra_data),
+            ],
         ];
 
         yield 'Request type question type' => [
@@ -462,8 +461,8 @@ final class FormMigrationTest extends DbTestCase
                 'horizontal_rank'             => null,
                 'description'                 => null,
                 'default_value'               => '2',
-                'extra_data'                  => null
-            ]
+                'extra_data'                  => null,
+            ],
         ];
 
         $extra_data = new QuestionTypeDropdownExtraDataConfig(['Option 1', 'Option 2'], false);
@@ -477,8 +476,8 @@ final class FormMigrationTest extends DbTestCase
                 'horizontal_rank'             => null,
                 'description'                 => null,
                 'default_value'               => '0',
-                'extra_data'                  => json_encode($extra_data)
-            ]
+                'extra_data'                  => json_encode($extra_data),
+            ],
         ];
 
         yield 'Text question type' => [
@@ -491,8 +490,8 @@ final class FormMigrationTest extends DbTestCase
                 'horizontal_rank'             => null,
                 'description'                 => null,
                 'default_value'               => 'Test default text value',
-                'extra_data'                  => null
-            ]
+                'extra_data'                  => null,
+            ],
         ];
 
         yield 'Textarea question type' => [
@@ -505,8 +504,8 @@ final class FormMigrationTest extends DbTestCase
                 'horizontal_rank'             => null,
                 'description'                 => null,
                 'default_value'               => '<p>Test <span style="color: #2dc26b; background-color: #843fa1;">default value</span> text <strong>area</strong></p>',
-                'extra_data'                  => null
-            ]
+                'extra_data'                  => null,
+            ],
         ];
 
         $extra_data = new QuestionTypeDateTimeExtraDataConfig(
@@ -524,8 +523,8 @@ final class FormMigrationTest extends DbTestCase
                 'horizontal_rank'             => null,
                 'description'                 => null,
                 'default_value'               => '12:00:00',
-                'extra_data'                  => json_encode($extra_data)
-            ]
+                'extra_data'                  => json_encode($extra_data),
+            ],
         ];
 
         yield 'Urgency question type' => [
@@ -538,8 +537,8 @@ final class FormMigrationTest extends DbTestCase
                 'horizontal_rank'             => null,
                 'description'                 => null,
                 'default_value'               => '2',
-                'extra_data'                  => null
-            ]
+                'extra_data'                  => null,
+            ],
         ];
     }
 
@@ -635,15 +634,15 @@ final class FormMigrationTest extends DbTestCase
         yield 'Test form migration for access types with public access' => [
             'form_name' => 'Test form migration for access types with public access',
             'active_access_control_data' => [
-                Form::getForeignKeyField() => fn () => getItemByTypeName(
+                Form::getForeignKeyField() => fn() => getItemByTypeName(
                     Form::class,
                     'Test form migration for access types with public access',
                     true
                 ),
-                'strategy'                 => DirectAccess::class ,
+                'strategy'                 => DirectAccess::class,
                 'config'                   => json_encode($access_config->jsonSerialize()),
-                'is_active'                => 1
-            ]
+                'is_active'                => 1,
+            ],
         ];
 
         $access_config = new DirectAccessConfig(
@@ -652,15 +651,15 @@ final class FormMigrationTest extends DbTestCase
         yield 'Test form migration for access types with private access' => [
             'form_name' => 'Test form migration for access types with private access',
             'active_access_control_data' => [
-                Form::getForeignKeyField() => fn () => getItemByTypeName(
+                Form::getForeignKeyField() => fn() => getItemByTypeName(
                     Form::class,
                     'Test form migration for access types with private access',
                     true
                 ),
-                'strategy'                 => DirectAccess::class ,
+                'strategy'                 => DirectAccess::class,
                 'config'                   => json_encode($access_config->jsonSerialize()),
-                'is_active'                => 1
-            ]
+                'is_active'                => 1,
+            ],
         ];
 
         $access_config = new AllowListConfig(
@@ -671,15 +670,15 @@ final class FormMigrationTest extends DbTestCase
         yield 'Test form migration for access types with restricted access' => [
             'form_name' => 'Test form migration for access types with restricted access',
             'active_access_control_data' => [
-                Form::getForeignKeyField() => fn () => getItemByTypeName(
+                Form::getForeignKeyField() => fn() => getItemByTypeName(
                     Form::class,
                     'Test form migration for access types with restricted access',
                     true
                 ),
-                'strategy'                 => AllowList::class ,
+                'strategy'                 => AllowList::class,
                 'config'                   => json_encode($access_config->jsonSerialize()),
-                'is_active'                => 1
-            ]
+                'is_active'                => 1,
+            ],
         ];
     }
 
@@ -746,15 +745,15 @@ final class FormMigrationTest extends DbTestCase
                 /** @var Form $form */
                 $form = getItemByTypeName(Form::class, 'Test form migration for translations');
                 $sections = array_combine(
-                    array_map(fn ($section) => $section->getName(), $form->getSections()),
+                    array_map(fn($section) => $section->getName(), $form->getSections()),
                     array_values($form->getSections())
                 );
                 $questions = array_combine(
-                    array_map(fn ($question) => $question->getName(), $form->getQuestions()),
+                    array_map(fn($question) => $question->getName(), $form->getQuestions()),
                     array_values($form->getQuestions())
                 );
                 $comments = array_combine(
-                    array_map(fn ($comment) => $comment->getName(), $form->getFormComments()),
+                    array_map(fn($comment) => $comment->getName(), $form->getFormComments()),
                     array_values($form->getFormComments())
                 );
 
@@ -763,76 +762,76 @@ final class FormMigrationTest extends DbTestCase
                         'items_id' => $form->getID(),
                         'itemtype' => Form::class,
                         'key'      => Form::TRANSLATION_KEY_NAME,
-                        'translations' => ['one' => 'Tester la migration des formulaires pour les traductions']
+                        'translations' => ['one' => 'Tester la migration des formulaires pour les traductions'],
                     ],
                     [
                         'items_id' => $form->getID(),
                         'itemtype' => Form::class,
                         'key'      => Form::TRANSLATION_KEY_HEADER,
-                        'translations' => ['one' => 'Voici une description pour tester la traduction']
+                        'translations' => ['one' => 'Voici une description pour tester la traduction'],
                     ],
                     [
                         'items_id' => $sections['First section']->getID(),
                         'itemtype' => Section::class,
                         'key'      => Section::TRANSLATION_KEY_NAME,
-                        'translations' => ['one' => 'Première section']
+                        'translations' => ['one' => 'Première section'],
                     ],
                     [
                         'items_id' => $questions['First question']->getID(),
                         'itemtype' => Question::class,
                         'key'      => Question::TRANSLATION_KEY_NAME,
-                        'translations' => ['one' => 'Première question']
+                        'translations' => ['one' => 'Première question'],
                     ],
                     [
                         'items_id' => $questions['First question']->getID(),
                         'itemtype' => Question::class,
                         'key'      => Question::TRANSLATION_KEY_DESCRIPTION,
-                        'translations' => ['one' => '<p><strong>Test de description</strong> pour la première <span style="color: #b96ad9;"><strong>question</strong></span></p>']
+                        'translations' => ['one' => '<p><strong>Test de description</strong> pour la première <span style="color: #b96ad9;"><strong>question</strong></span></p>'],
                     ],
                     [
                         'items_id' => $sections['Second section']->getID(),
                         'itemtype' => Section::class,
                         'key'      => Section::TRANSLATION_KEY_NAME,
-                        'translations' => ['one' => 'Deuxième section']
+                        'translations' => ['one' => 'Deuxième section'],
                     ],
                     [
                         'items_id' => $questions['Second question']->getID(),
                         'itemtype' => Question::class,
                         'key'      => Question::TRANSLATION_KEY_NAME,
-                        'translations' => ['one' => 'Deuxième question']
+                        'translations' => ['one' => 'Deuxième question'],
                     ],
                     [
                         'items_id' => $questions['Second question']->getID(),
                         'itemtype' => Question::class,
                         'key'      => AbstractQuestionTypeSelectable::TRANSLATION_KEY_OPTION . '-0',
-                        'translations' => ['one' => 'Première option']
+                        'translations' => ['one' => 'Première option'],
                     ],
                     [
                         'items_id' => $questions['Second question']->getID(),
                         'itemtype' => Question::class,
                         'key'      => AbstractQuestionTypeSelectable::TRANSLATION_KEY_OPTION . '-1',
-                        'translations' => ['one' => 'Deuxième option']
+                        'translations' => ['one' => 'Deuxième option'],
                     ],
                     [
                         'items_id' => $questions['Second question']->getID(),
                         'itemtype' => Question::class,
                         'key'      => AbstractQuestionTypeSelectable::TRANSLATION_KEY_OPTION . '-2',
-                        'translations' => ['one' => 'Troisième option']
+                        'translations' => ['one' => 'Troisième option'],
                     ],
                     [
                         'items_id' => $comments['Description question']->getID(),
                         'itemtype' => Comment::class,
                         'key'      => Comment::TRANSLATION_KEY_NAME,
-                        'translations' => ['one' => 'Description question']
+                        'translations' => ['one' => 'Description question'],
                     ],
                     [
                         'items_id' => $comments['Description question']->getID(),
                         'itemtype' => Comment::class,
                         'key'      => Comment::TRANSLATION_KEY_DESCRIPTION,
-                        'translations' => ['one' => '<p><span style="background-color: #e03e2d; color: #ffffff;">Contenu</span> de la description</p>']
-                    ]
+                        'translations' => ['one' => '<p><span style="background-color: #e03e2d; color: #ffffff;">Contenu</span> de la description</p>'],
+                    ],
                 ];
-            }
+            },
         ];
     }
 
@@ -972,7 +971,7 @@ final class FormMigrationTest extends DbTestCase
             'glpi_plugin_formcreator_sections',
             [
                 'name'                        => 'Test form migration for update horizontal ranks - Section',
-                'plugin_formcreator_forms_id' => $DB->insertId()
+                'plugin_formcreator_forms_id' => $DB->insertId(),
             ]
         ));
 
@@ -1093,7 +1092,7 @@ final class FormMigrationTest extends DbTestCase
             'glpi_plugin_formcreator_sections',
             [
                 'name'                        => 'Section for tag tests',
-                'plugin_formcreator_forms_id' => $form_id
+                'plugin_formcreator_forms_id' => $form_id,
             ]
         ));
         $section_id = $DB->insertId();
@@ -1176,7 +1175,7 @@ final class FormMigrationTest extends DbTestCase
             'glpi_plugin_formcreator_sections',
             [
                 'name'                        => 'Test form migration for radio question - Section',
-                'plugin_formcreator_forms_id' => $DB->insertId()
+                'plugin_formcreator_forms_id' => $DB->insertId(),
             ]
         ));
 
@@ -1222,7 +1221,7 @@ final class FormMigrationTest extends DbTestCase
                     'uuid'    => 2,
                     'value'   => '3',
                     'checked' => false,
-                ]
+                ],
             ],
             $question_type->getValues($question)
         );
@@ -1234,7 +1233,7 @@ final class FormMigrationTest extends DbTestCase
             'text',
             1,
             [],
-            VisibilityStrategy::ALWAYS_VISIBLE
+            VisibilityStrategy::ALWAYS_VISIBLE,
         ];
 
         yield 'QuestionTypeShortText - Hidden if condition' => [
@@ -1244,17 +1243,17 @@ final class FormMigrationTest extends DbTestCase
                 [
                     'show_condition' => 1,
                     'show_value'     => 'Test',
-                    'show_logic'     => 1
-                ]
+                    'show_logic'     => 1,
+                ],
             ],
             VisibilityStrategy::HIDDEN_IF,
             [
                 [
                     'value_operator' => ValueOperator::EQUALS,
                     'value'          => 'Test',
-                    'logic_operator' => LogicOperator::AND
-                ]
-            ]
+                    'logic_operator' => LogicOperator::AND,
+                ],
+            ],
         ];
 
         yield 'QuestionTypeShortText - Visible if condition' => [
@@ -1264,17 +1263,17 @@ final class FormMigrationTest extends DbTestCase
                 [
                     'show_condition' => 1,
                     'show_value'     => 'Test',
-                    'show_logic'     => 1
-                ]
+                    'show_logic'     => 1,
+                ],
             ],
             VisibilityStrategy::VISIBLE_IF,
             [
                 [
                     'value_operator' => ValueOperator::EQUALS,
                     'value'          => 'Test',
-                    'logic_operator' => LogicOperator::AND
-                ]
-            ]
+                    'logic_operator' => LogicOperator::AND,
+                ],
+            ],
         ];
 
         $value_operators = [
@@ -1296,17 +1295,17 @@ final class FormMigrationTest extends DbTestCase
                     [
                         'show_condition' => $key,
                         'show_value'     => 'Test',
-                        'show_logic'     => 1
-                    ]
+                        'show_logic'     => 1,
+                    ],
                 ],
                 VisibilityStrategy::VISIBLE_IF,
                 [
                     [
                         'value_operator' => $value_operator,
                         'value'          => 'Test',
-                        'logic_operator' => LogicOperator::AND
-                    ]
-                ]
+                        'logic_operator' => LogicOperator::AND,
+                    ],
+                ],
             ];
         }
 
@@ -1317,27 +1316,27 @@ final class FormMigrationTest extends DbTestCase
                 [
                     'show_condition' => 1,
                     'show_value'     => 'Test',
-                    'show_logic'     => 1
+                    'show_logic'     => 1,
                 ],
                 [
                     'show_condition' => 2,
                     'show_value'     => 'Test2',
-                    'show_logic'     => 2
-                ]
+                    'show_logic'     => 2,
+                ],
             ],
             VisibilityStrategy::VISIBLE_IF,
             [
                 [
                     'value_operator' => ValueOperator::EQUALS,
                     'value'          => 'Test',
-                    'logic_operator' => LogicOperator::AND
+                    'logic_operator' => LogicOperator::AND,
                 ],
                 [
                     'value_operator' => ValueOperator::NOT_EQUALS,
                     'value'          => 'Test2',
-                    'logic_operator' => LogicOperator::OR
-                ]
-            ]
+                    'logic_operator' => LogicOperator::OR,
+                ],
+            ],
         ];
 
         yield 'QuestionTypeRadio - Visible if' => [
@@ -1347,18 +1346,18 @@ final class FormMigrationTest extends DbTestCase
                 [
                     'show_condition' => 1,
                     'show_value'     => 'Second option',
-                    'show_logic'     => 1
-                ]
+                    'show_logic'     => 1,
+                ],
             ],
             'expected_visibility_strategy' => VisibilityStrategy::VISIBLE_IF,
             'expected_conditions'          => [
                 [
                     'value_operator' => ValueOperator::EQUALS,
                     'value'          => 1,
-                    'logic_operator' => LogicOperator::AND
-                ]
+                    'logic_operator' => LogicOperator::AND,
+                ],
             ],
-            'values' => '["First option","Second option"]'
+            'values' => '["First option","Second option"]',
         ];
 
         yield 'QuestionTypeCheckbox - Visible if' => [
@@ -1368,28 +1367,28 @@ final class FormMigrationTest extends DbTestCase
                 [
                     'show_condition' => 1,
                     'show_value'     => 'Second option',
-                    'show_logic'     => 1
+                    'show_logic'     => 1,
                 ],
                 [
                     'show_condition' => 1,
                     'show_value'     => 'Third option',
-                    'show_logic'     => 2
-                ]
+                    'show_logic'     => 2,
+                ],
             ],
             'expected_visibility_strategy' => VisibilityStrategy::VISIBLE_IF,
             'expected_conditions'          => [
                 [
                     'value_operator' => ValueOperator::EQUALS,
                     'value'          => 1,
-                    'logic_operator' => LogicOperator::AND
+                    'logic_operator' => LogicOperator::AND,
                 ],
                 [
                     'value_operator' => ValueOperator::EQUALS,
                     'value'          => 2,
-                    'logic_operator' => LogicOperator::OR
-                ]
+                    'logic_operator' => LogicOperator::OR,
+                ],
             ],
-            'values' => '["First option","Second option","Third option"]'
+            'values' => '["First option","Second option","Third option"]',
         ];
 
         yield 'QuestionTypeDropdown - Visible if' => [
@@ -1399,28 +1398,28 @@ final class FormMigrationTest extends DbTestCase
                 [
                     'show_condition' => 1,
                     'show_value'     => 'Second option',
-                    'show_logic'     => 1
+                    'show_logic'     => 1,
                 ],
                 [
                     'show_condition' => 1,
                     'show_value'     => 'Third option',
-                    'show_logic'     => 2
-                ]
+                    'show_logic'     => 2,
+                ],
             ],
             'expected_visibility_strategy' => VisibilityStrategy::VISIBLE_IF,
             'expected_conditions'          => [
                 [
                     'value_operator' => ValueOperator::EQUALS,
                     'value'          => 1,
-                    'logic_operator' => LogicOperator::AND
+                    'logic_operator' => LogicOperator::AND,
                 ],
                 [
                     'value_operator' => ValueOperator::EQUALS,
                     'value'          => 2,
-                    'logic_operator' => LogicOperator::OR
-                ]
+                    'logic_operator' => LogicOperator::OR,
+                ],
             ],
-            'values' => '["First option","Second option","Third option"]'
+            'values' => '["First option","Second option","Third option"]',
         ];
     }
 
@@ -1451,7 +1450,7 @@ final class FormMigrationTest extends DbTestCase
         $this->assertTrue($DB->insert(
             'glpi_plugin_formcreator_sections',
             [
-                'plugin_formcreator_forms_id' => $form_id
+                'plugin_formcreator_forms_id' => $form_id,
             ]
         ));
 
@@ -1519,7 +1518,7 @@ final class FormMigrationTest extends DbTestCase
         $this->assertEquals(
             $expected_conditions,
             array_map(
-                fn (ConditionData $condition) => [
+                fn(ConditionData $condition) => [
                     'value_operator' => $condition->getValueOperator(),
                     'value'          => $condition->getValue(),
                     'logic_operator' => $condition->getLogicOperator(),
@@ -1550,7 +1549,7 @@ final class FormMigrationTest extends DbTestCase
             'glpi_plugin_formcreator_sections',
             [
                 'name'                        => 'Test form migration condition for sections - Target section',
-                'plugin_formcreator_forms_id' => $form_id
+                'plugin_formcreator_forms_id' => $form_id,
             ]
         ));
         $target_section_id = $DB->insertId();
@@ -1609,10 +1608,10 @@ final class FormMigrationTest extends DbTestCase
                     'value_operator' => ValueOperator::EQUALS,
                     'value'          => 'Test',
                     'logic_operator' => LogicOperator::AND,
-                ]
+                ],
             ],
             array_map(
-                fn (ConditionData $condition) => [
+                fn(ConditionData $condition) => [
                     'value_operator' => $condition->getValueOperator(),
                     'value'          => $condition->getValue(),
                     'logic_operator' => $condition->getLogicOperator(),
@@ -1642,7 +1641,7 @@ final class FormMigrationTest extends DbTestCase
         $this->assertTrue($DB->insert(
             'glpi_plugin_formcreator_sections',
             [
-                'plugin_formcreator_forms_id' => $form_id
+                'plugin_formcreator_forms_id' => $form_id,
             ]
         ));
         $section_id = $DB->insertId();
@@ -1704,10 +1703,10 @@ final class FormMigrationTest extends DbTestCase
                     'value_operator' => ValueOperator::EQUALS,
                     'value'          => 'Test',
                     'logic_operator' => LogicOperator::AND,
-                ]
+                ],
             ],
             array_map(
-                fn (ConditionData $condition) => [
+                fn(ConditionData $condition) => [
                     'value_operator' => $condition->getValueOperator(),
                     'value'          => $condition->getValue(),
                     'logic_operator' => $condition->getLogicOperator(),
@@ -1741,7 +1740,7 @@ final class FormMigrationTest extends DbTestCase
                             'value_operator' => ValueOperator::EQUALS,
                             'value'          => 'Test',
                             'logic_operator' => LogicOperator::AND,
-                        ]
+                        ],
                     ];
                 }
 
@@ -1750,7 +1749,7 @@ final class FormMigrationTest extends DbTestCase
                     'legacy_table'               => $table,
                     'legacy_strategy'            => $key,
                     'expected_creation_strategy' => $strategy,
-                    'expected_conditions'        => $expected_conditions
+                    'expected_conditions'        => $expected_conditions,
                 ];
             }
         }
@@ -1782,7 +1781,7 @@ final class FormMigrationTest extends DbTestCase
         $this->assertTrue($DB->insert(
             'glpi_plugin_formcreator_sections',
             [
-                'plugin_formcreator_forms_id' => $form_id
+                'plugin_formcreator_forms_id' => $form_id,
             ]
         ));
 
@@ -1805,7 +1804,7 @@ final class FormMigrationTest extends DbTestCase
                 'name'                        => 'Test form migration condition for destinations',
                 'content'                     => 'Test',
                 'plugin_formcreator_forms_id' => $form_id,
-                'show_rule'                   => $legacy_strategy
+                'show_rule'                   => $legacy_strategy,
             ]
         ));
         $destination_id = $DB->insertId();
@@ -1842,7 +1841,7 @@ final class FormMigrationTest extends DbTestCase
         $this->assertEquals(
             $expected_conditions,
             array_map(
-                fn (ConditionData $condition) => [
+                fn(ConditionData $condition) => [
                     'value_operator' => $condition->getValueOperator(),
                     'value'          => $condition->getValue(),
                     'logic_operator' => $condition->getLogicOperator(),

@@ -51,13 +51,13 @@ if (isset($_POST['update'], $_POST['itemtype'])) {
         $url = $item_plug::getFormURLWithID($_POST['id']);
     }
     Html::redirect($url);
-} else if (isset($_POST['add'], $_POST['itemtype'])) {
+} elseif (isset($_POST['add'], $_POST['itemtype'])) {
     $item_plug->check(-1, CREATE, $_POST);
     $item_plug->add($_POST);
     $item = new $_POST['itemtype']();
     $url = $item::getFormURLWithID($_POST['items_id']);
     Html::redirect($url);
-} else if (isset($_POST['purge'], $_POST['itemtype'])) {
+} elseif (isset($_POST['purge'], $_POST['itemtype'])) {
     $item_plug->check($_POST['id'], PURGE);
     $item_plug->delete($_POST, 1);
     $item = new $_POST['itemtype']();
@@ -77,7 +77,7 @@ if (isset($_GET['id'])) {
         'itemtype'     => $_GET['itemtype'],
         'items_id'      => $_GET['items_id'],
         'plugs_id'     => $_GET['plugs_id'],
-        'number_plug'  => $_GET['number_plug']
+        'number_plug'  => $_GET['number_plug'],
     ];
 }
 

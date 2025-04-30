@@ -64,7 +64,7 @@ if (!$DB->fieldExists("glpi_entities", "approval_reminder_repeat_interval")) {
             'after'     => "agent_base_url",
             'value'     => -2,               // Inherit as default value
             'update'    => '0',              // Disabled for root entity
-            'condition' => 'WHERE `id` = 0'
+            'condition' => 'WHERE `id` = 0',
         ]
     );
 }

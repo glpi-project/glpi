@@ -49,11 +49,11 @@ class Peripheral extends CommonDBTM
         prepareInputForAdd as prepareInputForAddAssignableItem;
     }
 
-   // From CommonDBTM
+    // From CommonDBTM
     public $dohistory                   = true;
 
     protected static $forward_entity_to = ['Infocom', 'NetworkPort', 'ReservationItem',
-        'Item_OperatingSystem', 'Item_SoftwareVersion'
+        'Item_OperatingSystem', 'Item_SoftwareVersion',
     ];
 
     public static $rightname                   = 'peripheral';
@@ -173,13 +173,13 @@ class Peripheral extends CommonDBTM
         $iterator = $DB->request([
             'SELECT' => [
                 'itemtype_asset',
-                'items_id_asset'
+                'items_id_asset',
             ],
             'FROM'   => Asset_PeripheralAsset::getTable(),
             'WHERE'  => [
                 'itemtype_peripheral' => $this->getType(),
-                'items_id_peripheral' => $this->fields['id']
-            ]
+                'items_id_peripheral' => $this->fields['id'],
+            ],
         ]);
         $tab = [];
         foreach ($iterator as $data) {
@@ -197,7 +197,7 @@ class Peripheral extends CommonDBTM
             $actions += [
                 'Item_SoftwareLicense' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add'
                => "<i class='ma-icon fas fa-key'></i>" .
-                  _sx('button', 'Add a license')
+                  _sx('button', 'Add a license'),
             ];
             KnowbaseItem_Item::getMassiveActionsForItemtype($actions, __CLASS__, 0, $checkitem);
         }
@@ -216,7 +216,7 @@ class Peripheral extends CommonDBTM
             'field'              => 'id',
             'name'               => __('ID'),
             'massiveaction'      => false,
-            'datatype'           => 'number'
+            'datatype'           => 'number',
         ];
 
         $tab = array_merge($tab, Location::rawSearchOptionsToAdd());
@@ -226,7 +226,7 @@ class Peripheral extends CommonDBTM
             'table'              => 'glpi_peripheraltypes',
             'field'              => 'name',
             'name'               => _n('Type', 'Types', 1),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -234,7 +234,7 @@ class Peripheral extends CommonDBTM
             'table'              => 'glpi_peripheralmodels',
             'field'              => 'name',
             'name'               => _n('Model', 'Models', 1),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -243,7 +243,7 @@ class Peripheral extends CommonDBTM
             'field'              => 'completename',
             'name'               => __('Status'),
             'datatype'           => 'dropdown',
-            'condition'          => $this->getStateVisibilityCriteria()
+            'condition'          => $this->getStateVisibilityCriteria(),
         ];
 
         $tab[] = [
@@ -284,7 +284,7 @@ class Peripheral extends CommonDBTM
             'field'              => 'name',
             'name'               => User::getTypeName(1),
             'datatype'           => 'dropdown',
-            'right'              => 'all'
+            'right'              => 'all',
         ];
 
         $tab[] = [
@@ -298,13 +298,13 @@ class Peripheral extends CommonDBTM
                     'table'              => 'glpi_groups_items',
                     'joinparams'         => [
                         'jointype'           => 'itemtype_item',
-                        'condition'          => ['NEWTABLE.type' => Group_Item::GROUP_TYPE_NORMAL]
-                    ]
-                ]
+                        'condition'          => ['NEWTABLE.type' => Group_Item::GROUP_TYPE_NORMAL],
+                    ],
+                ],
             ],
             'forcegroupby'       => true,
             'massiveaction'      => false,
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -313,7 +313,7 @@ class Peripheral extends CommonDBTM
             'field'              => 'date_mod',
             'name'               => __('Last update'),
             'datatype'           => 'datetime',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -322,7 +322,7 @@ class Peripheral extends CommonDBTM
             'field'              => 'date_creation',
             'name'               => __('Creation date'),
             'datatype'           => 'datetime',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -330,7 +330,7 @@ class Peripheral extends CommonDBTM
             'table'              => $this->getTable(),
             'field'              => 'comment',
             'name'               => __('Comments'),
-            'datatype'           => 'text'
+            'datatype'           => 'text',
         ];
 
         $tab[] = [
@@ -346,7 +346,7 @@ class Peripheral extends CommonDBTM
             'table'              => 'glpi_manufacturers',
             'field'              => 'name',
             'name'               => Manufacturer::getTypeName(1),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -356,7 +356,7 @@ class Peripheral extends CommonDBTM
             'linkfield'          => 'users_id_tech',
             'name'               => __('Technician in charge'),
             'datatype'           => 'dropdown',
-            'right'              => 'own_ticket'
+            'right'              => 'own_ticket',
         ];
 
         $tab[] = [
@@ -371,13 +371,13 @@ class Peripheral extends CommonDBTM
                     'table'              => 'glpi_groups_items',
                     'joinparams'         => [
                         'jointype'           => 'itemtype_item',
-                        'condition'          => ['NEWTABLE.type' => Group_Item::GROUP_TYPE_TECH]
-                    ]
-                ]
+                        'condition'          => ['NEWTABLE.type' => Group_Item::GROUP_TYPE_TECH],
+                    ],
+                ],
             ],
             'forcegroupby'       => true,
             'massiveaction'      => false,
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -397,7 +397,7 @@ class Peripheral extends CommonDBTM
             'field'              => 'completename',
             'name'               => Entity::getTypeName(1),
             'massiveaction'      => false,
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -406,7 +406,7 @@ class Peripheral extends CommonDBTM
             'field'              => 'is_global',
             'name'               => __('Global management'),
             'datatype'           => 'bool',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab = array_merge($tab, Notepad::rawSearchOptionsToAdd());
@@ -422,18 +422,18 @@ class Peripheral extends CommonDBTM
         return $tab;
     }
 
-   /**
-    * @param $itemtype
-    *
-    * @return array
-    */
+    /**
+     * @param $itemtype
+     *
+     * @return array
+     */
     public static function rawSearchOptionsToAdd($itemtype = null)
     {
         $tab = [];
 
         $tab[] = [
             'id'                 => 'peripheral',
-            'name'               => self::getTypeName(Session::getPluralNumber())
+            'name'               => self::getTypeName(Session::getPluralNumber()),
         ];
 
         $tab[] = [
@@ -449,8 +449,8 @@ class Peripheral extends CommonDBTM
                 'jointype'                  => 'itemtype_item',
                 'specific_items_id_column'  => 'items_id_asset',
                 'specific_itemtype_column'  => 'itemtype_asset',
-                'condition'                 => ['NEWTABLE.' . 'itemtype_peripheral' => 'Peripheral']
-            ]
+                'condition'                 => ['NEWTABLE.' . 'itemtype_peripheral' => 'Peripheral'],
+            ],
         ];
 
         return $tab;

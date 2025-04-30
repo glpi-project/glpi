@@ -57,7 +57,7 @@ $fields = [
     'is_contact_autoclean',
     'is_user_autoclean',
     'is_group_autoclean',
-    'is_location_autoclean'
+    'is_location_autoclean',
 ];
 $config = \Config::getConfigurationValues('core');
 foreach ($fields as $field) {
@@ -79,7 +79,7 @@ foreach ($fields as $field) {
 
 $fields = [
     'state_autoupdate_mode',
-    'state_autoclean_mode'
+    'state_autoclean_mode',
 ];
 $config = \Config::getConfigurationValues('core');
 foreach ($fields as $field) {

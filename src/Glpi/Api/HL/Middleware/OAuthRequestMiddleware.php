@@ -35,13 +35,9 @@
 
 namespace Glpi\Api\HL\Middleware;
 
-use CommonDBTM;
 use Glpi\Api\HL\Controller\AbstractController;
 use Glpi\Api\HL\Doc\Route;
-use Glpi\Api\HL\RoutePath;
 use Glpi\Api\HL\Router;
-use Glpi\Http\Request;
-use Glpi\Http\Response;
 
 /**
  * Handles OAuth scopes
@@ -61,12 +57,12 @@ class OAuthRequestMiddleware extends AbstractMiddleware implements RequestMiddle
 
         if (strcasecmp($route_path, '/Administration/User/Me/Email/Default') === 0) {
             $scopes_required = ['OR' => ['email', 'user']];
-        } else if (
+        } elseif (
             strcasecmp($route_path, '/Administration/User/Me') === 0
             || str_starts_with(strtolower($route_path), '/administration/user/me/')
         ) {
             $scopes_required = ['OR' => ['user']];
-        } else if (str_starts_with(strtolower($route_path), '/status')) {
+        } elseif (str_starts_with(strtolower($route_path), '/status')) {
             $scopes_required = ['OR' => ['status']];
         } else {
             $scopes_required = ['OR' => ['api']];
@@ -76,7 +72,7 @@ class OAuthRequestMiddleware extends AbstractMiddleware implements RequestMiddle
         if ($client === null) {
             $input->response = AbstractController::getAccessDeniedErrorResponse();
             return;
-        } else if ($client['client_id'] === 'internal') {
+        } elseif ($client['client_id'] === 'internal') {
             // No scope restrictions for internal clients
             $next($input);
             return;

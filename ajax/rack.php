@@ -49,7 +49,7 @@ if (!isset($_REQUEST['action'])) {
 $answer = [];
 if (($_GET['action'] ?? null) === 'show_pdu_form') {
     PDU_Rack::showFirstForm((int) $_GET['racks_id']);
-} else if (isset($_POST['action'])) {
+} elseif (isset($_POST['action'])) {
     header("Content-Type: application/json; charset=UTF-8", true);
     switch ($_POST['action']) {
         case 'move_item':
@@ -67,7 +67,7 @@ if (($_GET['action'] ?? null) === 'show_pdu_form') {
             $pdu_rack->getFromDB((int) $_POST['id']);
             $answer['status'] = $pdu_rack->update([
                 'id'       => (int) $_POST['id'],
-                'position' => (int) $_POST['position']
+                'position' => (int) $_POST['position'],
             ]);
             break;
 

@@ -45,7 +45,7 @@ class ProfileRightTest extends DbTestCase
 
         // Update the last_rights_update field to null
         $this->updateItem('Profile', $profile->getID(), [
-            'last_rights_update' => null
+            'last_rights_update' => null,
         ]);
         $this->assertTrue($profile->getFromDB($profile->getID()));
 
@@ -56,7 +56,7 @@ class ProfileRightTest extends DbTestCase
         $profileRight = $this->createItem('ProfileRight', [
             'profiles_id' => $profile->getID(),
             'name'    => 'testUpdateProfileLastRightsUpdate',
-            'rights'  => READ
+            'rights'  => READ,
         ]);
         $this->assertTrue($profile->getFromDB($profile->getID()));
 
@@ -65,7 +65,7 @@ class ProfileRightTest extends DbTestCase
 
         // Update the last_rights_update field to null
         $this->updateItem('Profile', $profile->getID(), [
-            'last_rights_update' => null
+            'last_rights_update' => null,
         ]);
         $this->assertTrue($profile->getFromDB($profile->getID()));
 
@@ -74,7 +74,7 @@ class ProfileRightTest extends DbTestCase
 
         // Update the profile right
         $this->updateItem('ProfileRight', $profileRight->getID(), [
-            'rights' => READ | UPDATE
+            'rights' => READ | UPDATE,
         ]);
         $this->assertTrue($profile->getFromDB($profile->getID()));
 

@@ -66,7 +66,7 @@ if (isset($_POST["add"])) {
         );
     }
     Html::back();
-} else if (isset($_POST["delete"])) {
+} elseif (isset($_POST["delete"])) {
     $ri->check($_POST["id"], DELETE);
     $ri->delete($_POST);
 
@@ -79,7 +79,7 @@ if (isset($_POST["add"])) {
         sprintf(__('%s deletes an item'), $_SESSION["glpiname"])
     );
     Html::back();
-} else if (isset($_POST["purge"])) {
+} elseif (isset($_POST["purge"])) {
     $ri->check($_POST["id"], PURGE);
     $ri->delete($_POST, 1);
 
@@ -92,7 +92,7 @@ if (isset($_POST["add"])) {
         sprintf(__('%s purges an item'), $_SESSION["glpiname"])
     );
     Html::back();
-} else if (isset($_POST["update"])) {
+} elseif (isset($_POST["update"])) {
     $ri->check($_POST["id"], UPDATE);
     $ri->update($_POST);
     Event::log(

@@ -61,7 +61,7 @@ class ITILValidationTemplate extends AbstractITILChildTemplate
                 'name'  => 'approver',
                 'label' => __('Approver'),
                 'type'  => '',
-                'list'  => true
+                'list'  => true,
             ],
             [
                 'name'           => 'content',
@@ -73,7 +73,7 @@ class ITILValidationTemplate extends AbstractITILChildTemplate
                 // As fixing it is really complex (requires lot of refactoring in images handling, both on JS and PHP side),
                 // it is preferable to disable usage of images in templates.
                 'disable_images' => true,
-            ]
+            ],
         ];
     }
 
@@ -125,7 +125,7 @@ class ITILValidationTemplate extends AbstractITILChildTemplate
             'field'              => 'content',
             'table'              => $this->getTable(),
             'datatype'           => 'text',
-            'htmltext'           => true
+            'htmltext'           => true,
         ];
 
         return $tab;

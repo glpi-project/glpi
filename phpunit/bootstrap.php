@@ -73,11 +73,11 @@ if (Update::isUpdateMandatory()) {
 
 //init cache
 if (file_exists(GLPI_CONFIG_DIR . DIRECTORY_SEPARATOR . CacheManager::CONFIG_FILENAME)) {
-   // Use configured cache for cache tests
+    // Use configured cache for cache tests
     $cache_manager = new CacheManager();
     $GLPI_CACHE = $cache_manager->getCoreCacheInstance();
 } else {
-   // Use "in-memory" cache for other tests
+    // Use "in-memory" cache for other tests
     $GLPI_CACHE = new SimpleCache(new ArrayAdapter());
 }
 

@@ -54,36 +54,36 @@ if (isset($_POST["add"])) {
         Html::redirect($domain->getLinkURL());
     }
     Html::back();
-} else if (isset($_POST["delete"])) {
+} elseif (isset($_POST["delete"])) {
     $domain->check($_POST['id'], DELETE);
     $domain->delete($_POST);
     $domain->redirectToList();
-} else if (isset($_POST["restore"])) {
+} elseif (isset($_POST["restore"])) {
     $domain->check($_POST['id'], PURGE);
     $domain->restore($_POST);
     $domain->redirectToList();
-} else if (isset($_POST["purge"])) {
+} elseif (isset($_POST["purge"])) {
     $domain->check($_POST['id'], PURGE);
     $domain->delete($_POST, 1);
     $domain->redirectToList();
-} else if (isset($_POST["update"])) {
+} elseif (isset($_POST["update"])) {
     $domain->check($_POST['id'], UPDATE);
     $domain->update($_POST);
     Html::back();
-} else if (isset($_POST["additem"])) {
+} elseif (isset($_POST["additem"])) {
     if (!empty($_POST['itemtype']) && $_POST['items_id'] > 0) {
         $ditem->check(-1, UPDATE, $_POST);
         $ditem->addItem($_POST);
     }
     Html::back();
-} else if (isset($_POST["addrecord"])) {
+} elseif (isset($_POST["addrecord"])) {
     $record = new \DomainRecord();
     $_POST['id'] = $_POST['domainrecords_id'];
     unset($_POST['domainrecords_id']);
     $record->check(-1, UPDATE, $_POST);
     $record->update($_POST);
     Html::redirect($domain->getFormURLWithID($_POST['domains_id']));
-} else if (isset($_POST["deleteitem"])) {
+} elseif (isset($_POST["deleteitem"])) {
     foreach ($_POST["item"] as $key => $val) {
         $input = ['id' => $key];
         if ($val == 1) {
@@ -92,7 +92,7 @@ if (isset($_POST["add"])) {
         }
     }
     Html::back();
-} else if (isset($_POST["deletedomains"])) {
+} elseif (isset($_POST["deletedomains"])) {
     $input = ['id' => $_POST["id"]];
     $ditem->check($_POST["id"], UPDATE);
     $ditem->delete($input);
@@ -101,6 +101,6 @@ if (isset($_POST["add"])) {
     $menus = ["management", "domain"];
     Domain::displayFullPageForItem($_GET["id"], $menus, [
         'withtemplate' => $_GET["withtemplate"],
-        'formoptions'  => "data-track-changes=true"
+        'formoptions'  => "data-track-changes=true",
     ]);
 }

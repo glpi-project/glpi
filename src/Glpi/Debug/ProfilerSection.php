@@ -62,14 +62,14 @@ final class ProfilerSection
         $this->parent_id = $parent_id;
         $this->category = $category;
         $this->name = $name;
-        $this->start = (int)$start;
+        $this->start = (int) $start;
     }
 
     public function end($time): void
     {
         // Force resume to complete the last pause.
         $this->resume();
-        $this->end = (int)$time;
+        $this->end = (int) $time;
     }
 
     public function getID(): string
@@ -104,7 +104,7 @@ final class ProfilerSection
 
     public function getDuration(): int
     {
-        $end = $this->end ?? (int)(microtime(true) * 1000);
+        $end = $this->end ?? (int) (microtime(true) * 1000);
         $duration = $end - $this->start;
 
         // Remove paused time from the total runtime.

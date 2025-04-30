@@ -39,9 +39,9 @@
 $DB->update(
     'glpi_rulecriterias',
     [
-        'criteria' => '_locations_id_of_item'
+        'criteria' => '_locations_id_of_item',
     ],
     [
-        'criteria' => 'items_locations'
+        'criteria' => 'items_locations',
     ]
 );

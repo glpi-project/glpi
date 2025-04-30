@@ -52,12 +52,12 @@ class Server extends DAV\Server
     {
         $this->on('exception', [$this, 'logException']);
 
-       // Backends
+        // Backends
         $authBackend = new Auth();
         $principalBackend = new Principal();
         $calendarBackend = new Calendar();
 
-       // Directory tree
+        // Directory tree
         $tree = [
             new DAV\SimpleCollection(
                 Principal::PRINCIPALS_ROOT,
@@ -81,7 +81,7 @@ class Server extends DAV\Server
         $this->addPlugin(new Acl());
         $this->addPlugin(new CalDAV());
 
-       // Support for html frontend (only in debug mode)
+        // Support for html frontend (only in debug mode)
         $this->addPlugin(new Browser(false));
     }
 
@@ -92,7 +92,7 @@ class Server extends DAV\Server
     public function logException(\Throwable $exception)
     {
         if ($exception instanceof \Sabre\DAV\Exception && $exception->getHTTPCode() < 500) {
-           // Ignore server exceptions that does not corresponds to a server error
+            // Ignore server exceptions that does not corresponds to a server error
             return;
         }
 

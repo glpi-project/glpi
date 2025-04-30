@@ -47,8 +47,7 @@ final class RequestSourceFieldConfig implements JsonFieldInterface, ConfigFieldW
     public function __construct(
         private RequestSourceFieldStrategy $strategy,
         private ?int $specific_request_source = null,
-    ) {
-    }
+    ) {}
 
     #[Override]
     public static function jsonDeserialize(array $data): self

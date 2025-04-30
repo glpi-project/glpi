@@ -47,7 +47,7 @@ class OlaLevel extends LevelAgreementLevel
     protected $ruleactionclass    = 'OlaLevelAction';
     protected static $parentclass = 'OLA';
     protected static $fkparent    = 'olas_id';
-   // No criteria
+    // No criteria
     protected $rulecriteriaclass = 'OlaLevelCriteria';
 
 
@@ -106,10 +106,10 @@ class OlaLevel extends LevelAgreementLevel
             'FROM'   => 'glpi_olalevels',
             'WHERE'  => [
                 'olas_id'   => $olas_id,
-                'is_active' => 1
+                'is_active' => 1,
             ],
             'ORDER'  => 'execution_time ASC',
-            'LIMIT'  => 1
+            'LIMIT'  => 1,
         ]);
 
         if (count($iterator)) {
@@ -135,7 +135,7 @@ class OlaLevel extends LevelAgreementLevel
         $iterator = $DB->request([
             'SELECT' => 'execution_time',
             'FROM'   => 'glpi_olalevels',
-            'WHERE'  => ['id' => $olalevels_id]
+            'WHERE'  => ['id' => $olalevels_id],
         ]);
 
         if (count($iterator)) {
@@ -149,15 +149,15 @@ class OlaLevel extends LevelAgreementLevel
                     'olas_id'         => $olas_id,
                     'id'              => ['<>', $olalevels_id],
                     'execution_time'  => ['>', $execution_time],
-                    'is_active'       => 1
+                    'is_active'       => 1,
                 ],
                 'ORDER'  => 'execution_time ASC',
-                'LIMIT'  => 1
+                'LIMIT'  => 1,
             ]);
 
             if (count($iterator)) {
-                 $result = $iterator->current();
-                 return $result['id'];
+                $result = $iterator->current();
+                return $result['id'];
             }
         }
         return 0;

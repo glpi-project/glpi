@@ -51,9 +51,9 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 {
     use \Glpi\Features\Clonable;
 
-   // Specific ones
+    // Specific ones
 
-   /// Helpdesk fields of helpdesk profiles
+    /// Helpdesk fields of helpdesk profiles
     public static $helpdesk_rights = [
         'create_ticket_on_login',
         'changetemplates_id',
@@ -78,7 +78,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
     ];
 
 
-   /// Common fields used for all profiles type
+    /// Common fields used for all profiles type
     public static $common_fields  = ['id', 'interface', 'is_default', 'name'];
 
     public $dohistory             = true;
@@ -243,15 +243,15 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             $DB->update(
                 static::getTable(),
                 [
-                    'is_default' => 0
+                    'is_default' => 0,
                 ],
                 [
-                    'id' => ['<>', $this->input['id']]
+                    'id' => ['<>', $this->input['id']],
                 ]
             );
         }
 
-       // To avoid log out and login when rights change (very useful in debug mode)
+        // To avoid log out and login when rights change (very useful in debug mode)
         if (
             isset($_SESSION['glpiactiveprofile']['id'])
             && $_SESSION['glpiactiveprofile']['id'] === $this->input['id']
@@ -264,7 +264,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
                 $_SESSION['glpiactiveprofile']['managed_domainrecordtypes'] = importArrayFromDB($this->input['managed_domainrecordtypes']);
             }
 
-           ///TODO other needed fields
+            ///TODO other needed fields
         }
     }
 
@@ -280,10 +280,10 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             $DB->update(
                 static::getTable(),
                 [
-                    'is_default' => 0
+                    'is_default' => 0,
                 ],
                 [
-                    'id' => ['<>', $this->fields['id']]
+                    'id' => ['<>', $this->fields['id']],
                 ]
             );
         }
@@ -310,7 +310,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
     public function getCloneRelations(): array
     {
         return [
-            ProfileRight::class
+            ProfileRight::class,
         ];
     }
 
@@ -327,7 +327,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         if (isset($input["managed_domainrecordtypes"])) {
             if (is_array($input["managed_domainrecordtypes"]) && in_array(-1, $input['managed_domainrecordtypes'])) {
-               //when all selected, keep only all
+                //when all selected, keep only all
                 $input['managed_domainrecordtypes'] = [-1];
             }
             $input["managed_domainrecordtypes"] = exportArrayToDB(
@@ -394,7 +394,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             $input["change_status"] = exportArrayToDB($cycle);
         }
 
-       // keep only unnecessary rights when switching from standard to self-service interface
+        // keep only unnecessary rights when switching from standard to self-service interface
         if (!isset($input["_ticket"]) && isset($input['interface']) && $input['interface'] == "helpdesk") {
             $ticket = new Ticket();
             $ss_rights = $ticket->getRights("helpdesk");
@@ -467,7 +467,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
                         $newvalue += $value;
                     }
                 }
-               // Update rights only if changed
+                // Update rights only if changed
                 if (!isset($this->fields[$right]) || ($this->fields[$right] !== $newvalue)) {
                     $this->profileRight[$right] = $newvalue;
                 }
@@ -516,7 +516,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         if (isset($input["managed_domainrecordtypes"])) {
             if (is_array($input["managed_domainrecordtypes"]) && in_array(-1, $input['managed_domainrecordtypes'])) {
-               //when all selected, keep only all
+                //when all selected, keep only all
                 $input['managed_domainrecordtypes'] = [-1];
             }
             $input["managed_domainrecordtypes"] = exportArrayToDB(
@@ -532,7 +532,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             }
         }
 
-       // Set default values, only needed for helpdesk
+        // Set default values, only needed for helpdesk
         $interface = $input['interface'] ?? "";
         if ($interface === "helpdesk" && !isset($input["_cycle_ticket"])) {
             $tab   = array_keys(Ticket::getAllStatusArray());
@@ -616,12 +616,12 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             $this->fields["managed_domainrecordtypes"] = [];
         }
 
-       // Decode status array
+        // Decode status array
         $fields_to_decode = ['ticket_status', 'problem_status', 'change_status'];
         foreach ($fields_to_decode as $val) {
             if (isset($this->fields[$val]) && !is_array($this->fields[$val])) {
                 $this->fields[$val] = importArrayFromDB($this->fields[$val]);
-               // Need to be an array not a null value
+                // Need to be an array not a null value
                 if (is_null($this->fields[$val])) {
                     $this->fields[$val] = [];
                 }
@@ -666,8 +666,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
                 $right_subqueries[] = [
                     'glpi_profilerights.name'     => $key,
                     'RAW'                         => [
-                        '(' . $DB::quoteName('glpi_profilerights.rights') . ' | ' . $DB::quoteValue($val) . ')' => $val
-                    ]
+                        '(' . $DB::quoteName('glpi_profilerights.rights') . ' | ' . $DB::quoteValue($val) . ')' => $val,
+                    ],
                 ];
             }
         }
@@ -677,8 +677,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'COUNT'  => 'cpt',
             'WHERE'  => [
                 'glpi_profilerights.profiles_id' => new QueryExpression($DB::quoteName('glpi_profiles.id')),
-                'OR'                             => $right_subqueries
-            ]
+                'OR'                             => $right_subqueries,
+            ],
         ]);
         $criteria[] = new QueryExpression(count($right_subqueries) . " = " . $sub_query->getQuery());
 
@@ -686,8 +686,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             return [
                 'OR'  => [
                     'glpi_profiles.interface' => 'helpdesk',
-                    $criteria
-                ]
+                    $criteria,
+                ],
             ];
         }
 
@@ -710,7 +710,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             return true;
         }
         if (count($IDs) === 0) {
-           // Check all profiles (means more right than all possible profiles)
+            // Check all profiles (means more right than all possible profiles)
             return (countElementsInTable('glpi_profiles')
                      === countElementsInTable(
                          'glpi_profiles',
@@ -722,7 +722,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
         $iterator = $DB->request([
             'SELECT' => ['id'],
             'FROM'   => self::getTable(),
-            'WHERE'  => self::getUnderActiveProfileRestrictCriteria()
+            'WHERE'  => self::getUnderActiveProfileRestrictCriteria(),
         ]);
 
         foreach ($iterator as $data) {
@@ -778,7 +778,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             $rowspan++;
             $this->check($ID, READ);
         } else {
-           // Create item
+            // Create item
             $this->check(-1, CREATE);
             $onfocus = "onfocus=\"if (this.value==" . htmlescape(json_encode($this->fields["name"])) . ") this.value='';\"";
             $new     = true;
@@ -797,7 +797,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         echo "<tr class='tab_bg_1'><td>" . __s('Default profile') . "</td><td>";
         Html::showCheckbox(['name'    => 'is_default',
-            'checked' => $this->fields['is_default']
+            'checked' => $this->fields['is_default'],
         ]);
         echo "</td></tr>";
 
@@ -808,20 +808,20 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             self::getInterfaces(),
             [
                 'value' => $this->fields["interface"],
-                'readonly' => $this->isLastSuperAdminProfile() && $this->fields['interface'] == 'central'
+                'readonly' => $this->isLastSuperAdminProfile() && $this->fields['interface'] == 'central',
             ]
         );
         echo "</td></tr>";
 
         echo "<tr class='tab_bg_1'><td>" . __s('Update own password') . "</td><td>";
         Html::showCheckbox(['name'    => '_password_update',
-            'checked' => $this->fields['password_update']
+            'checked' => $this->fields['password_update'],
         ]);
         echo "</td></tr>";
 
         echo "<tr class='tab_bg_1'><td>" . __s('Ticket creation form on login') . "</td><td>";
         Html::showCheckbox(['name'    => 'create_ticket_on_login',
-            'checked' => $this->fields['create_ticket_on_login']
+            'checked' => $this->fields['create_ticket_on_login'],
         ]);
         echo "</td></tr>";
 
@@ -858,14 +858,14 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
                 'field' => null,
                 'label' => null,
                 'rights' => null,
-                'scope' => 'entity'
+                'scope' => 'entity',
             ], $options);
 
             return [
                 'rights' => $options['rights'] ?? Profile::getRightsFor($itemtype, $interface),
                 'label'  => $options['label'] ?? $itemtype::getTypeName(Session::getPluralNumber()),
                 'field'  => $options['field'] ?? $itemtype::$rightname,
-                'scope' => $options['scope']
+                'scope' => $options['scope'],
             ];
         };
 
@@ -880,7 +880,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
                     'tracking' => [
                         'itilobjects' => [
                             $fn_get_rights(TicketTemplate::class, 'central', [
-                                'label' => _n('Template', 'Templates', Session::getPluralNumber())
+                                'label' => _n('Template', 'Templates', Session::getPluralNumber()),
                             ]),
                             $fn_get_rights(PendingReason::class, 'central'),
                         ],
@@ -915,13 +915,13 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
                     'tools' => [
                         'general' => [
                             $fn_get_rights(Reminder::class, 'central', [
-                                'label' => _n('Public reminder', 'Public reminders', Session::getPluralNumber())
+                                'label' => _n('Public reminder', 'Public reminders', Session::getPluralNumber()),
                             ]),
                             $fn_get_rights(RSSFeed::class, 'central', [
-                                'label' => _n('Public RSS feed', 'Public RSS feeds', Session::getPluralNumber())
+                                'label' => _n('Public RSS feed', 'Public RSS feeds', Session::getPluralNumber()),
                             ]),
                             $fn_get_rights(SavedSearch::class, 'central', [
-                                'label' => _n('Public saved search', 'Public saved searches', Session::getPluralNumber())
+                                'label' => _n('Public saved search', 'Public saved searches', Session::getPluralNumber()),
                             ]),
                             $fn_get_rights(Report::class, 'central'),
                             $fn_get_rights(KnowbaseItem::class, 'central'),
@@ -930,7 +930,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
                         'projects' => [
                             $fn_get_rights(Project::class, 'central'),
                             $fn_get_rights(ProjectTask::class, 'central'),
-                        ]
+                        ],
                     ],
                     'assets' => [
                         'general' => [
@@ -944,11 +944,11 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
                             $fn_get_rights(Phone::class, 'central'),
                             $fn_get_rights(Peripheral::class, 'central'),
                             $fn_get_rights(NetworkName::class, 'central', [
-                                'label' => __('Internet')
+                                'label' => __('Internet'),
                             ]),
                             $fn_get_rights(DeviceSimcard::class, 'central', [
                                 'label' => __('Simcard PIN/PUK'),
-                                'field' => 'devicesimcard_pinpuk'
+                                'field' => 'devicesimcard_pinpuk',
                             ]),
                         ],
                     ],
@@ -957,7 +957,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
                             $fn_get_rights(SoftwareLicense::class, 'central'),
                             $fn_get_rights(Contact::class, 'central', [
                                 'label' => _n('Contact', 'Contacts', Session::getPluralNumber()) . " / " .
-                                    _n('Supplier', 'Suppliers', Session::getPluralNumber())
+                                    _n('Supplier', 'Suppliers', Session::getPluralNumber()),
                             ]),
                             $fn_get_rights(Document::class, 'central'),
                             $fn_get_rights(Contract::class, 'central'),
@@ -983,7 +983,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
                             $fn_get_rights(Log::class, 'central', ['scope' => 'global']),
                             $fn_get_rights(Event::class, 'central', [
                                 'scope' => 'global',
-                                'label' => __('System logs')
+                                'label' => __('System logs'),
                             ]),
                             $fn_get_rights(Form::class, 'central'),
                         ],
@@ -991,14 +991,14 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
                             $fn_get_rights(\Glpi\Inventory\Conf::class, 'central', [
                                 'label' => __('Inventory'),
                                 'field' => 'inventory',
-                                'scope' => 'global'
+                                'scope' => 'global',
                             ]),
                             $fn_get_rights(Lockedfield::class, 'central', [
                                 'rights' => [
                                     CREATE => __('Create'), // For READ / CREATE
                                     UPDATE => __('Update'), //for CREATE / PURGE global lock
                                 ],
-                                'scope' => 'global'
+                                'scope' => 'global',
                             ]),
                             $fn_get_rights(SNMPCredential::class, 'central', ['scope' => 'global']),
                             $fn_get_rights(RefusedEquipment::class, 'central', [
@@ -1007,10 +1007,10 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
                                     UPDATE  => __('Update'),
                                     PURGE   => [
                                         'short' => __('Purge'),
-                                        'long'  => _x('button', 'Delete permanently')
-                                    ]
+                                        'long'  => _x('button', 'Delete permanently'),
+                                    ],
                                 ],
-                                'scope' => 'global'
+                                'scope' => 'global',
                             ]),
                             $fn_get_rights(Unmanaged::class, 'central', [
                                 'rights' => [
@@ -1018,14 +1018,14 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
                                     UPDATE  => __('Update'),
                                     DELETE => [
                                         'short' => __('Delete'),
-                                        'long'  => _x('button', 'Put in trashbin')
+                                        'long'  => _x('button', 'Put in trashbin'),
                                     ],
                                     PURGE   => [
                                         'short' => __('Purge'),
-                                        'long'  => _x('button', 'Delete permanently')
-                                    ]
+                                        'long'  => _x('button', 'Delete permanently'),
+                                    ],
                                 ],
-                                'scope' => 'global'
+                                'scope' => 'global',
                             ]),
                             $fn_get_rights(Agent::class, 'central', [
                                 'rights' => [
@@ -1033,32 +1033,32 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
                                     UPDATE  => __('Update'),
                                     PURGE   => [
                                         'short' => __('Purge'),
-                                        'long'  => _x('button', 'Delete permanently')
-                                    ]
+                                        'long'  => _x('button', 'Delete permanently'),
+                                    ],
                                 ],
-                                'scope' => 'global'
+                                'scope' => 'global',
                             ]),
                         ],
                         'rules' => [
                             $fn_get_rights(RuleRight::class, 'central', [
                                 'label'     => __('Authorizations assignment rules'),
-                                'scope'     => 'global'
+                                'scope'     => 'global',
                             ]),
                             $fn_get_rights(RuleImportAsset::class, 'central', [
                                 'label'     => __('Rules for assigning a computer to an entity'),
-                                'scope'     => 'global'
+                                'scope'     => 'global',
                             ]),
                             $fn_get_rights(RuleLocation::class, 'central', [
                                 'label'     => __('Rules for assigning a computer to a location'),
-                                'scope'     => 'global'
+                                'scope'     => 'global',
                             ]),
                             $fn_get_rights(RuleMailCollector::class, 'central', [
                                 'label'     => __('Rules for assigning a ticket created through a mails receiver'),
-                                'scope'     => 'global'
+                                'scope'     => 'global',
                             ]),
                             $fn_get_rights(RuleSoftwareCategory::class, 'central', [
                                 'label'     => __('Rules for assigning a category to a software'),
-                                'scope'     => 'global'
+                                'scope'     => 'global',
                             ]),
                             $fn_get_rights(RuleTicket::class, 'central', [
                                 'label'     => __('Business rules for tickets (entity)'),
@@ -1074,23 +1074,23 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
                             ]),
                             $fn_get_rights(Transfer::class, 'central', [
                                 'label'     => __('Transfer'),
-                                'scope'     => 'global'
+                                'scope'     => 'global',
                             ]),
                         ],
                         'dictionaries' => [
                             $fn_get_rights(RuleDictionnaryDropdown::class, 'central', [
                                 'label'     => __('Dropdowns dictionary'),
-                                'scope'     => 'global'
+                                'scope'     => 'global',
                             ]),
                             $fn_get_rights(RuleDictionnarySoftware::class, 'central', [
                                 'label'     => __('Software dictionary'),
-                                'scope'     => 'global'
+                                'scope'     => 'global',
                             ]),
                             $fn_get_rights(RuleDictionnaryPrinter::class, 'central', [
                                 'label'     => __('Printers dictionary'),
-                                'scope'     => 'global'
+                                'scope'     => 'global',
                             ]),
-                        ]
+                        ],
                     ],
                     'setup' => [
                         'general' => [
@@ -1098,16 +1098,16 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
                             $fn_get_rights(null, 'central', [
                                 'rights'  => [
                                     READ    => __('Read'),
-                                    UPDATE  => __('Update')
+                                    UPDATE  => __('Update'),
                                 ],
                                 'label'  => __('Personalization'),
                                 'field'  => 'personalization',
-                                'scope'     => 'entity'
+                                'scope'     => 'entity',
                             ]),
                             $fn_get_rights(\Glpi\Dashboard\Grid::class, 'central', [
                                 'label'     => __('All dashboards'),
                                 'field'     => 'dashboard',
-                                'scope'     => 'entity'
+                                'scope'     => 'entity',
                             ]),
                             $fn_get_rights(DisplayPreference::class, 'central', ['scope' => 'entity']),
                             $fn_get_rights(Item_Devices::class, 'central', [
@@ -1118,7 +1118,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
                                 'rights'    => $dropdown_rights,
                                 'label'     => _n('Global dropdown', 'Global dropdowns', Session::getPluralNumber()),
                                 'field'     => 'dropdown',
-                                'scope'     => 'global'
+                                'scope'     => 'global',
                             ]),
                             $fn_get_rights(Location::class, 'central'),
                             $fn_get_rights(ITILCategory::class, 'central'),
@@ -1138,7 +1138,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
                             $fn_get_rights(OAuthClient::class, 'central'),
                             $fn_get_rights(DefaultFilter::class, 'central'),
                         ],
-                    ]
+                    ],
                 ],
                 'helpdesk' => [
                     'tracking' => [
@@ -1162,14 +1162,14 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
                             $fn_get_rights(null, 'helpdesk', [
                                 'rights'  => [
                                     READ    => __('Read'),
-                                    UPDATE  => __('Update')
+                                    UPDATE  => __('Update'),
                                 ],
                                 'label'  => __('Personalization'),
                                 'field'  => 'personalization',
                             ]),
                         ],
-                    ]
-                ]
+                    ],
+                ],
             ];
 
             // Add rights for custom assets
@@ -1209,7 +1209,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
         }
 
         $matrix_options = ['canedit'       => $canedit,
-            'default_class' => 'tab_bg_2'
+            'default_class' => 'tab_bg_2',
         ];
 
         $matrix_options['title'] = __('Assistance');
@@ -1226,7 +1226,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
         echo "<td>";
         Html::showCheckbox([
             'name'    => '_show_group_hardware',
-            'checked' => $this->fields['show_group_hardware']
+            'checked' => $this->fields['show_group_hardware'],
         ]);
         echo "</td>";
         echo "</tr>";
@@ -1237,7 +1237,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
         self::getLinearRightChoice(
             self::getHelpdeskHardwareTypes(true),
             ['field' => 'helpdesk_hardware',
-                'value' => $this->fields['helpdesk_hardware']
+                'value' => $this->fields['helpdesk_hardware'],
             ]
         );
         echo "</td>";
@@ -1254,14 +1254,14 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
         echo "<tr>";
         echo "<td>" . __s('Default ticket template') . "</td>";
         echo "<td>";
-       // Only root entity ones and recursive
+        // Only root entity ones and recursive
         $options = ['value'     => $this->fields["tickettemplates_id"],
-            'entity'    => 0
+            'entity'    => 0,
         ];
         if (Session::isMultiEntitiesMode()) {
             $options['condition'] = ['is_recursive' => 1];
         }
-       // Only add profile if on root entity
+        // Only add profile if on root entity
         if (!isset($_SESSION['glpiactiveentities'][0])) {
             $options['addicon'] = false;
         }
@@ -1272,14 +1272,14 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
         echo "<tr>";
         echo "<td>" . __s('Default change template') . "</td>";
         echo "<td>";
-       // Only root entity ones and recursive
+        // Only root entity ones and recursive
         $options = ['value'     => $this->fields["changetemplates_id"],
-            'entity'    => 0
+            'entity'    => 0,
         ];
         if (Session::isMultiEntitiesMode()) {
             $options['condition'] = ['is_recursive' => 1];
         }
-       // Only add profile if on root entity
+        // Only add profile if on root entity
         if (!isset($_SESSION['glpiactiveentities'][0])) {
             $options['addicon'] = false;
         }
@@ -1290,14 +1290,14 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
         echo "<tr>";
         echo "<td>" . __s('Default problem template') . "</td>";
         echo "<td>";
-       // Only root entity ones and recursive
+        // Only root entity ones and recursive
         $options = ['value'     => $this->fields["problemtemplates_id"],
-            'entity'    => 0
+            'entity'    => 0,
         ];
         if (Session::isMultiEntitiesMode()) {
             $options['condition'] = ['is_recursive' => 1];
         }
-       // Only add profile if on root entity
+        // Only add profile if on root entity
         if (!isset($_SESSION['glpiactiveentities'][0])) {
             $options['addicon'] = false;
         }
@@ -1312,7 +1312,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             echo Html::submit(_x('button', 'Save'), [
                 'class' => 'btn btn-primary mt-2',
                 'icon'  => 'ti ti-device-floppy',
-                'name'  => 'update'
+                'name'  => 'update',
             ]);
             echo "</td></tr>";
             echo "</table>";
@@ -1341,7 +1341,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
         }
 
         $matrix_options = ['canedit'       => $canedit,
-            'default_class' => 'tab_bg_2'
+            'default_class' => 'tab_bg_2',
         ];
 
         $matrix_options['title'] = __('Tools');
@@ -1353,7 +1353,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             echo Html::submit(_x('button', 'Save'), [
                 'class' => 'btn btn-primary mt-2',
                 'icon'  => 'ti ti-device-floppy',
-                'name'  => 'update'
+                'name'  => 'update',
             ]);
             echo "</div>";
             Html::closeForm();
@@ -1387,7 +1387,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
         $this->displayRightsChoiceMatrix(self::getRightsForForm('central', 'assets', 'general'), [
             'canedit'       => $canedit,
             'default_class' => 'tab_bg_2',
-            'title'         => _n('Asset', 'Assets', Session::getPluralNumber())
+            'title'         => _n('Asset', 'Assets', Session::getPluralNumber()),
         ]);
 
         $custom_asset_rights = self::getRightsForForm('central', 'assets', 'custom_assets');
@@ -1395,7 +1395,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             $this->displayRightsChoiceMatrix($custom_asset_rights, [
                 'canedit' => $canedit,
                 'default_class' => 'tab_bg_2',
-                'title' => _n('Custom asset', 'Custom assets', Session::getPluralNumber())
+                'title' => _n('Custom asset', 'Custom assets', Session::getPluralNumber()),
             ]);
         }
 
@@ -1408,7 +1408,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             echo Html::submit(_x('button', 'Save'), [
                 'class' => 'btn btn-primary mt-2',
                 'icon'  => 'ti ti-device-floppy',
-                'name'  => 'update'
+                'name'  => 'update',
             ]);
             echo "</div>";
             Html::closeForm();
@@ -1441,7 +1441,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
         }
 
         $matrix_options = ['canedit'       => $canedit,
-            'default_class' => 'tab_bg_2'
+            'default_class' => 'tab_bg_2',
         ];
 
         $matrix_options['title'] = __('Management');
@@ -1460,7 +1460,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
                 'multiple'  => true,
                 'size'      => 3,
                 'rand'      => $rand,
-                'values'    => $this->fields['managed_domainrecordtypes']
+                'values'    => $this->fields['managed_domainrecordtypes'],
             ]
         );
         echo "</div>";
@@ -1474,7 +1474,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             echo Html::submit(_x('button', 'Save'), [
                 'class' => 'btn btn-primary mt-2',
                 'icon'  => 'ti ti-device-floppy',
-                'name'  => 'update'
+                'name'  => 'update',
             ]);
             echo "</div>";
             Html::closeForm();
@@ -1506,7 +1506,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
         }
 
         $matrix_options = ['canedit'       => $canedit,
-            'default_class' => 'tab_bg_2'
+            'default_class' => 'tab_bg_2',
         ];
 
         $matrix_options['title'] = __('Tools');
@@ -1524,7 +1524,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             echo Html::submit(_x('button', 'Save'), [
                 'class' => 'btn btn-primary mt-2',
                 'icon'  => 'ti ti-device-floppy',
-                'name'  => 'update'
+                'name'  => 'update',
             ]);
             echo "</div>";
             Html::closeForm();
@@ -1558,7 +1558,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         echo "<div class='mt-n2 mx-n2 mb-4'>";
         echo "<table class='table table-hover card-table'>";
-       // Assistance / Tracking-helpdesk
+        // Assistance / Tracking-helpdesk
         echo "<thead>";
         echo "<tr><th colspan='2'><h4>" . __s('ITIL Templates') . "<h4></th></tr>";
         echo "</thead>";
@@ -1568,15 +1568,15 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             $object = new $itiltype();
             echo "<tr>";
             echo "<td>" . sprintf(__s('Default %1$s template'), $object->getTypeName()) . "</td><td>";
-           // Only root entity ones and recursive
+            // Only root entity ones and recursive
             $options = [
                 'value'     => $this->fields[strtolower($itiltype) . "templates_id"],
-                'condition' => ['entities_id' => 0]
+                'condition' => ['entities_id' => 0],
             ];
             if (Session::isMultiEntitiesMode()) {
                 $options['condition']['is_recursive'] = 1;
             }
-           // Only add profile if on root entity
+            // Only add profile if on root entity
             if (!isset($_SESSION['glpiactiveentities'][0])) {
                 $options['addicon'] = false;
             }
@@ -1591,7 +1591,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
         echo "</div>";
 
         $matrix_options = ['canedit'       => $canedit,
-            'default_class' => 'tab_bg_2'
+            'default_class' => 'tab_bg_2',
         ];
 
         $matrix_options['title'] = _n('ITIL object', 'ITIL objects', Session::getPluralNumber());
@@ -1640,7 +1640,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             [
                 'value' => $this->fields['use_mentions'],
                 'display' => false,
-                'disabled' => $disabled
+                'disabled' => $disabled,
             ]
         );
 
@@ -1671,7 +1671,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
         echo "<td>" . __s('See hardware of my groups') . "</td>";
         echo "<td>";
         Html::showCheckbox(['name'    => '_show_group_hardware',
-            'checked' => $this->fields['show_group_hardware']
+            'checked' => $this->fields['show_group_hardware'],
         ]);
         echo "</td></tr>";
 
@@ -1681,7 +1681,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
         self::getLinearRightChoice(
             self::getHelpdeskHardwareTypes(true),
             ['field' => 'helpdesk_hardware',
-                'value' => $this->fields['helpdesk_hardware']
+                'value' => $this->fields['helpdesk_hardware'],
             ]
         );
         echo "</td></tr>";
@@ -1716,7 +1716,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             echo Html::submit(_x('button', 'Save'), [
                 'class' => 'btn btn-primary mt-2',
                 'icon'  => 'ti ti-device-floppy',
-                'name'  => 'update'
+                'name'  => 'update',
             ]);
             echo "</div>";
             Html::closeForm();
@@ -1746,7 +1746,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             $columns[$index_1] = $status_1;
             $row               = [
                 'label'      => $status_1,
-                'columns'    => []
+                'columns'    => [],
             ];
 
             foreach ($statuses as $index_2 => $status_2) {
@@ -1768,7 +1768,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
                 'title'         => $title,
                 'row_check_all' => true,
                 'col_check_all' => true,
-                'first_cell'    => '<b>' . __s("From \ To") . '</b>'
+                'first_cell'    => '<b>' . __s("From \ To") . '</b>',
             ]
         );
     }
@@ -1827,7 +1827,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             echo Html::submit(_x('button', 'Save'), [
                 'class' => 'btn btn-primary mt-2',
                 'icon'  => 'ti ti-device-floppy',
-                'name'  => 'update'
+                'name'  => 'update',
             ]);
             echo "</div>";
             Html::closeForm();
@@ -1859,20 +1859,20 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
         $alwaysok     = [
             Ticket::INCOMING => [],
             Ticket::SOLVED   => [Ticket::INCOMING],
-            Ticket::CLOSED   => []
+            Ticket::CLOSED   => [],
         ];
 
         $allowactions = [
             Ticket::INCOMING => [],
             Ticket::SOLVED   => [Ticket::CLOSED],
-            Ticket::CLOSED   => [Ticket::INCOMING]
+            Ticket::CLOSED   => [Ticket::INCOMING],
         ];
 
         foreach ($statuses as $index_1 => $status_1) {
             $columns[$index_1] = $status_1;
             $row               = [
                 'label'      => $status_1,
-                'columns'    => []
+                'columns'    => [],
             ];
 
             foreach ($statuses as $index_2 => $status_2) {
@@ -1900,7 +1900,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             $columns,
             $rows,
             ['title'         => $title,
-                'first_cell'    => '<b>' . __s("From \ To") . '</b>'
+                'first_cell'    => '<b>' . __s("From \ To") . '</b>',
             ]
         );
     }
@@ -1944,7 +1944,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             echo Html::submit(_x('button', 'Save'), [
                 'class' => 'btn btn-primary mt-2',
                 'icon'  => 'ti ti-device-floppy',
-                'name'  => 'update'
+                'name'  => 'update',
             ]);
             echo "</div>";
             Html::closeForm();
@@ -1998,7 +1998,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             echo Html::submit(_x('button', 'Save'), [
                 'class' => 'btn btn-primary mt-2',
                 'icon'  => 'ti ti-device-floppy',
-                'name'  => 'update'
+                'name'  => 'update',
             ]);
             echo "</div>";
             Html::closeForm();
@@ -2030,7 +2030,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $this->displayRightsChoiceMatrix(self::getRightsForForm('central', 'setup', 'general'), [
             'canedit'       => $canedit,
-            'title'         => __('Setup')
+            'title'         => __('Setup'),
         ]);
 
         if (
@@ -2042,7 +2042,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             echo Html::submit(_x('button', 'Save'), [
                 'class' => 'btn btn-primary mt-2',
                 'icon'  => 'ti ti-device-floppy',
-                'name'  => 'update'
+                'name'  => 'update',
             ]);
             echo "</div>";
             Html::closeForm();
@@ -2079,7 +2079,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $this->displayRightsChoiceMatrix(self::getRightsForForm('helpdesk', 'setup', 'general'), [
             'canedit'       => $canedit,
-            'title'         => __('Setup')
+            'title'         => __('Setup'),
         ]);
 
         if (
@@ -2091,7 +2091,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             echo Html::submit(_x('button', 'Save'), [
                 'class' => 'btn btn-primary mt-2',
                 'icon'  => 'ti ti-device-floppy',
-                'name'  => 'update'
+                'name'  => 'update',
             ]);
             echo "</div>";
             Html::closeForm();
@@ -2113,7 +2113,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
         TemplateRenderer::getInstance()->display('pages/2fa/2fa_config.html.twig', [
             'canedit' => $canedit,
             'item'   => $this,
-            'action' => Toolbox::getItemTypeFormURL(__CLASS__)
+            'action' => Toolbox::getItemTypeFormURL(__CLASS__),
         ]);
     }
 
@@ -2123,7 +2123,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => 'common',
-            'name'               => __('Characteristics')
+            'name'               => __('Characteristics'),
         ];
 
         $tab[] = [
@@ -2132,7 +2132,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'field'              => 'name',
             'name'               => __('Name'),
             'datatype'           => 'itemlink',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -2141,7 +2141,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'field'              => 'id',
             'name'               => __('ID'),
             'massiveaction'      => false,
-            'datatype'           => 'number'
+            'datatype'           => 'number',
         ];
 
         $tab[] = [
@@ -2150,7 +2150,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'field'              => 'date_mod',
             'name'               => __('Last update'),
             'datatype'           => 'datetime',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -2159,7 +2159,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'field'              => 'date_creation',
             'name'               => __('Creation date'),
             'datatype'           => 'datetime',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -2169,7 +2169,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'name'               => __("Profile's interface"),
             'massiveaction'      => false,
             'datatype'           => 'specific',
-            'searchtype'         => ['equals', 'notequals']
+            'searchtype'         => ['equals', 'notequals'],
         ];
 
         $tab[] = [
@@ -2178,7 +2178,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'field'              => 'is_default',
             'name'               => __('Default profile'),
             'datatype'           => 'bool',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -2186,7 +2186,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'table'              => static::getTable(),
             'field'              => 'create_ticket_on_login',
             'name'               => __('Ticket creation form on login'),
-            'datatype'           => 'bool'
+            'datatype'           => 'bool',
         ];
 
         $tab[] = [
@@ -2194,15 +2194,15 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'table'              => static::getTable(),
             'field'              => 'comment',
             'name'               => __('Comments'),
-            'datatype'           => 'text'
+            'datatype'           => 'text',
         ];
 
-       // add objectlock search options
+        // add objectlock search options
         $tab = array_merge($tab, ObjectLock::rawSearchOptionsToAdd(get_class($this)));
 
         $tab[] = [
             'id'                 => 'inventory',
-            'name'               => _n('Asset', 'Assets', Session::getPluralNumber())
+            'name'               => _n('Asset', 'Assets', Session::getPluralNumber()),
         ];
 
         $tab[] = [
@@ -2215,8 +2215,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'rightname'          => 'computer',
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => 'computer']
-            ]
+                'condition'          => ['NEWTABLE.name' => 'computer'],
+            ],
         ];
 
         $tab[] = [
@@ -2229,8 +2229,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'rightname'          => 'monitor',
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => 'monitor']
-            ]
+                'condition'          => ['NEWTABLE.name' => 'monitor'],
+            ],
         ];
 
         $tab[] = [
@@ -2243,8 +2243,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'rightname'          => 'software',
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => 'software']
-            ]
+                'condition'          => ['NEWTABLE.name' => 'software'],
+            ],
         ];
 
         $tab[] = [
@@ -2257,8 +2257,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'rightname'          => 'networking',
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => 'networking']
-            ]
+                'condition'          => ['NEWTABLE.name' => 'networking'],
+            ],
         ];
 
         $tab[] = [
@@ -2271,8 +2271,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'rightname'          => 'printer',
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => 'printer']
-            ]
+                'condition'          => ['NEWTABLE.name' => 'printer'],
+            ],
         ];
 
         $tab[] = [
@@ -2285,8 +2285,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'rightname'          => 'peripheral',
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => 'peripheral']
-            ]
+                'condition'          => ['NEWTABLE.name' => 'peripheral'],
+            ],
         ];
 
         $tab[] = [
@@ -2299,8 +2299,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'rightname'          => 'cartridge',
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => 'cartridge']
-            ]
+                'condition'          => ['NEWTABLE.name' => 'cartridge'],
+            ],
         ];
 
         $tab[] = [
@@ -2313,8 +2313,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'rightname'          => 'consumable',
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => 'consumable']
-            ]
+                'condition'          => ['NEWTABLE.name' => 'consumable'],
+            ],
         ];
 
         $tab[] = [
@@ -2327,8 +2327,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'rightname'          => 'phone',
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => 'phone']
-            ]
+                'condition'          => ['NEWTABLE.name' => 'phone'],
+            ],
         ];
 
         $tab[] = [
@@ -2341,8 +2341,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'rightname'          => 'internet',
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => 'internet']
-            ]
+                'condition'          => ['NEWTABLE.name' => 'internet'],
+            ],
         ];
 
         $tab[] = [
@@ -2355,13 +2355,13 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'rightname'          => 'devicesimcard_pinpuk',
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => 'devicesimcard_pinpuk']
-            ]
+                'condition'          => ['NEWTABLE.name' => 'devicesimcard_pinpuk'],
+            ],
         ];
 
         $tab[] = [
             'id'                 => 'management',
-            'name'               => __('Management')
+            'name'               => __('Management'),
         ];
 
         $tab[] = [
@@ -2374,8 +2374,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'rightname'          => 'contact_entreprise',
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => 'contact_enterprise']
-            ]
+                'condition'          => ['NEWTABLE.name' => 'contact_enterprise'],
+            ],
         ];
 
         $tab[] = [
@@ -2388,8 +2388,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'rightname'          => 'document',
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => 'document']
-            ]
+                'condition'          => ['NEWTABLE.name' => 'document'],
+            ],
         ];
 
         $tab[] = [
@@ -2402,8 +2402,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'rightname'          => 'contract',
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => 'contract']
-            ]
+                'condition'          => ['NEWTABLE.name' => 'contract'],
+            ],
         ];
 
         $tab[] = [
@@ -2416,8 +2416,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'rightname'          => 'infocom',
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => 'infocom']
-            ]
+                'condition'          => ['NEWTABLE.name' => 'infocom'],
+            ],
         ];
 
         $tab[] = [
@@ -2430,8 +2430,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'rightname'          => 'budget',
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => 'budget']
-            ]
+                'condition'          => ['NEWTABLE.name' => 'budget'],
+            ],
         ];
 
         $tab[] = [
@@ -2444,8 +2444,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'rightname'          => SoftwareLicense::$rightname,
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => SoftwareLicense::$rightname]
-            ]
+                'condition'          => ['NEWTABLE.name' => SoftwareLicense::$rightname],
+            ],
         ];
 
         $tab[] = [
@@ -2459,8 +2459,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'rightname'          => 'contact_enterprise',
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => 'contact_enterprise']
-            ]
+                'condition'          => ['NEWTABLE.name' => 'contact_enterprise'],
+            ],
         ];
 
         $tab[] = [
@@ -2473,8 +2473,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'rightname'          => Line::$rightname,
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => Line::$rightname]
-            ]
+                'condition'          => ['NEWTABLE.name' => Line::$rightname],
+            ],
         ];
 
         $tab[] = [
@@ -2487,8 +2487,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'rightname'          => Certificate::$rightname,
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => Certificate::$rightname]
-            ]
+                'condition'          => ['NEWTABLE.name' => Certificate::$rightname],
+            ],
         ];
 
         $tab[] = [
@@ -2501,8 +2501,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'rightname'          => Datacenter::$rightname,
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => Datacenter::$rightname]
-            ]
+                'condition'          => ['NEWTABLE.name' => Datacenter::$rightname],
+            ],
         ];
 
         $tab[] = [
@@ -2515,8 +2515,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'rightname'          => Cluster::$rightname,
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => Cluster::$rightname]
-            ]
+                'condition'          => ['NEWTABLE.name' => Cluster::$rightname],
+            ],
         ];
 
         $tab[] = [
@@ -2529,8 +2529,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'rightname'          => Domain::$rightname,
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => Domain::$rightname]
-            ]
+                'condition'          => ['NEWTABLE.name' => Domain::$rightname],
+            ],
         ];
 
         $tab[] = [
@@ -2543,8 +2543,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'rightname'          => Appliance::$rightname,
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => Appliance::$rightname]
-            ]
+                'condition'          => ['NEWTABLE.name' => Appliance::$rightname],
+            ],
         ];
 
         $tab[] = [
@@ -2557,8 +2557,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'rightname'          => DatabaseInstance::$rightname,
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => DatabaseInstance::$rightname]
-            ]
+                'condition'          => ['NEWTABLE.name' => DatabaseInstance::$rightname],
+            ],
         ];
 
         $tab[] = [
@@ -2571,13 +2571,13 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'rightname'          => Cable::$rightname,
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => Cable::$rightname]
-            ]
+                'condition'          => ['NEWTABLE.name' => Cable::$rightname],
+            ],
         ];
 
         $tab[] = [
             'id'                 => 'tools',
-            'name'               => __('Tools')
+            'name'               => __('Tools'),
         ];
 
         $tab[] = [
@@ -2590,8 +2590,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'rightname'          => 'knowbase',
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => 'knowbase']
-            ]
+                'condition'          => ['NEWTABLE.name' => 'knowbase'],
+            ],
         ];
 
         $tab[] = [
@@ -2604,8 +2604,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'rightname'          => 'reservation',
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => 'reservation']
-            ]
+                'condition'          => ['NEWTABLE.name' => 'reservation'],
+            ],
         ];
 
         $tab[] = [
@@ -2619,8 +2619,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'nowrite'            => true,
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => 'reports']
-            ]
+                'condition'          => ['NEWTABLE.name' => 'reports'],
+            ],
         ];
 
         $tab[] = [
@@ -2633,8 +2633,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'rightname'          => Project::$rightname,
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => Project::$rightname]
-            ]
+                'condition'          => ['NEWTABLE.name' => Project::$rightname],
+            ],
         ];
 
         $tab[] = [
@@ -2647,13 +2647,13 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'rightname'          => ProjectTask::$rightname,
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => ProjectTask::$rightname]
-            ]
+                'condition'          => ['NEWTABLE.name' => ProjectTask::$rightname],
+            ],
         ];
 
         $tab[] = [
             'id'                 => 'config',
-            'name'               => __('Setup')
+            'name'               => __('Setup'),
         ];
 
         $tab[] = [
@@ -2666,8 +2666,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'rightname'          => 'dropdown',
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => 'dropdown']
-            ]
+                'condition'          => ['NEWTABLE.name' => 'dropdown'],
+            ],
         ];
 
         $tab[] = [
@@ -2681,8 +2681,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'noread'             => true,
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => 'device']
-            ]
+                'condition'          => ['NEWTABLE.name' => 'device'],
+            ],
         ];
 
         $tab[] = [
@@ -2695,8 +2695,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'rightname'          => 'notification',
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => 'notification']
-            ]
+                'condition'          => ['NEWTABLE.name' => 'notification'],
+            ],
         ];
 
         $tab[] = [
@@ -2709,8 +2709,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'rightname'          => 'typedoc',
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => 'typedoc']
-            ]
+                'condition'          => ['NEWTABLE.name' => 'typedoc'],
+            ],
         ];
 
         $tab[] = [
@@ -2723,8 +2723,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'rightname'          => 'link',
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => 'link']
-            ]
+                'condition'          => ['NEWTABLE.name' => 'link'],
+            ],
         ];
 
         $tab[] = [
@@ -2738,8 +2738,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'noread'             => true,
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => 'config']
-            ]
+                'condition'          => ['NEWTABLE.name' => 'config'],
+            ],
         ];
 
         $tab[] = [
@@ -2753,8 +2753,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'noread'             => true,
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => 'personalization']
-            ]
+                'condition'          => ['NEWTABLE.name' => 'personalization'],
+            ],
         ];
 
         $tab[] = [
@@ -2768,8 +2768,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'noread'             => true,
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => 'search_config']
-            ]
+                'condition'          => ['NEWTABLE.name' => 'search_config'],
+            ],
         ];
 
         $tab[] = [
@@ -2782,8 +2782,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'rightname'          => 'calendar',
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => 'calendar']
-            ]
+                'condition'          => ['NEWTABLE.name' => 'calendar'],
+            ],
         ];
 
         $tab[] = [
@@ -2796,8 +2796,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'rightname'          => 'dashboard',
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => 'dashboard']
-            ]
+                'condition'          => ['NEWTABLE.name' => 'dashboard'],
+            ],
         ];
 
         $tab[] = [
@@ -2810,8 +2810,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'rightname'          => Location::$rightname,
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => Location::$rightname]
-            ]
+                'condition'          => ['NEWTABLE.name' => Location::$rightname],
+            ],
         ];
 
         $tab[] = [
@@ -2824,8 +2824,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'rightname'          => ITILCategory::$rightname,
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => ITILCategory::$rightname]
-            ]
+                'condition'          => ['NEWTABLE.name' => ITILCategory::$rightname],
+            ],
         ];
 
         $tab[] = [
@@ -2838,8 +2838,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'rightname'          => KnowbaseItemCategory::$rightname,
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => KnowbaseItemCategory::$rightname]
-            ]
+                'condition'          => ['NEWTABLE.name' => KnowbaseItemCategory::$rightname],
+            ],
         ];
 
         $tab[] = [
@@ -2852,8 +2852,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'rightname'          => TaskCategory::$rightname,
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => TaskCategory::$rightname]
-            ]
+                'condition'          => ['NEWTABLE.name' => TaskCategory::$rightname],
+            ],
         ];
 
         $tab[] = [
@@ -2866,8 +2866,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'rightname'          => State::$rightname,
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => State::$rightname]
-            ]
+                'condition'          => ['NEWTABLE.name' => State::$rightname],
+            ],
         ];
 
         $tab[] = [
@@ -2880,8 +2880,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'rightname'          => ITILFollowupTemplate::$rightname,
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => ITILFollowupTemplate::$rightname]
-            ]
+                'condition'          => ['NEWTABLE.name' => ITILFollowupTemplate::$rightname],
+            ],
         ];
 
         $tab[] = [
@@ -2894,8 +2894,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'rightname'          => SolutionTemplate::$rightname,
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => SolutionTemplate::$rightname]
-            ]
+                'condition'          => ['NEWTABLE.name' => SolutionTemplate::$rightname],
+            ],
         ];
 
         $tab[] = [
@@ -2908,8 +2908,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'rightname'          => ITILValidationTemplate::$rightname,
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => ITILValidationTemplate::$rightname]
-            ]
+                'condition'          => ['NEWTABLE.name' => ITILValidationTemplate::$rightname],
+            ],
         ];
 
         $tab[] = [
@@ -2922,8 +2922,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'rightname'          => 'slm',
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => 'slm']
-            ]
+                'condition'          => ['NEWTABLE.name' => 'slm'],
+            ],
         ];
 
         $tab[] = [
@@ -2936,8 +2936,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'rightname'          => LineOperator::$rightname,
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => LineOperator::$rightname]
-            ]
+                'condition'          => ['NEWTABLE.name' => LineOperator::$rightname],
+            ],
         ];
 
         $tab[] = [
@@ -2950,8 +2950,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'rightname'          => OAuthClient::$rightname,
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => OAuthClient::$rightname]
-            ]
+                'condition'          => ['NEWTABLE.name' => OAuthClient::$rightname],
+            ],
         ];
 
         $tab[] = [
@@ -2964,8 +2964,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'rightname'          => DefaultFilter::$rightname,
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => DefaultFilter::$rightname]
-            ]
+                'condition'          => ['NEWTABLE.name' => DefaultFilter::$rightname],
+            ],
         ];
 
         $tab[] = [
@@ -2978,13 +2978,13 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'rightname'          => TaskTemplate::$rightname,
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => TaskTemplate::$rightname]
-            ]
+                'condition'          => ['NEWTABLE.name' => TaskTemplate::$rightname],
+            ],
         ];
 
         $tab[] = [
             'id'                 => 'admin',
-            'name'               => __('Administration')
+            'name'               => __('Administration'),
         ];
 
         $tab[] = [
@@ -2998,8 +2998,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'nowrite'            => true,
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => 'rule_ticket']
-            ]
+                'condition'          => ['NEWTABLE.name' => 'rule_ticket'],
+            ],
         ];
 
         $tab[] = [
@@ -3013,8 +3013,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'nowrite'            => true,
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => 'rule_change']
-            ]
+                'condition'          => ['NEWTABLE.name' => 'rule_change'],
+            ],
         ];
 
         $tab[] = [
@@ -3028,8 +3028,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'nowrite'            => true,
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => 'rule_problem']
-            ]
+                'condition'          => ['NEWTABLE.name' => 'rule_problem'],
+            ],
         ];
 
         $tab[] = [
@@ -3042,8 +3042,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'rightname'          => 'rule_mailcollector',
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => 'rule_mailcollector']
-            ]
+                'condition'          => ['NEWTABLE.name' => 'rule_mailcollector'],
+            ],
         ];
 
         $tab[] = [
@@ -3056,8 +3056,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'rightname'          => 'rule_import',
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => 'rule_import']
-            ]
+                'condition'          => ['NEWTABLE.name' => 'rule_import'],
+            ],
         ];
 
         $tab[] = [
@@ -3070,8 +3070,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'rightname'          => 'rule_ldap',
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => 'rule_ldap']
-            ]
+                'condition'          => ['NEWTABLE.name' => 'rule_ldap'],
+            ],
         ];
 
         $tab[] = [
@@ -3084,8 +3084,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'rightname'          => 'rule_softwarecategories',
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => 'rule_softwarecategories']
-            ]
+                'condition'          => ['NEWTABLE.name' => 'rule_softwarecategories'],
+            ],
         ];
 
         $tab[] = [
@@ -3098,8 +3098,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'rightname'          => RuleLocation::$rightname,
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => RuleLocation::$rightname]
-            ]
+                'condition'          => ['NEWTABLE.name' => RuleLocation::$rightname],
+            ],
         ];
 
         $tab[] = [
@@ -3112,8 +3112,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'rightname'          => RuleAsset::$rightname,
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => RuleAsset::$rightname]
-            ]
+                'condition'          => ['NEWTABLE.name' => RuleAsset::$rightname],
+            ],
         ];
 
         $tab[] = [
@@ -3126,8 +3126,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'rightname'          => 'rule_dictionnary_software',
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => 'rule_dictionnary_software']
-            ]
+                'condition'          => ['NEWTABLE.name' => 'rule_dictionnary_software'],
+            ],
         ];
 
         $tab[] = [
@@ -3140,8 +3140,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'rightname'          => 'rule_dictionnary_dropdown',
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => 'rule_dictionnary_dropdown']
-            ]
+                'condition'          => ['NEWTABLE.name' => 'rule_dictionnary_dropdown'],
+            ],
         ];
 
         $tab[] = [
@@ -3154,8 +3154,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'rightname'          => RuleDictionnaryPrinter::$rightname,
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => RuleDictionnaryPrinter::$rightname]
-            ]
+                'condition'          => ['NEWTABLE.name' => RuleDictionnaryPrinter::$rightname],
+            ],
         ];
 
         $tab[] = [
@@ -3168,8 +3168,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'rightname'          => 'profile',
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => 'profile']
-            ]
+                'condition'          => ['NEWTABLE.name' => 'profile'],
+            ],
         ];
 
         $tab[] = [
@@ -3182,8 +3182,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'rightname'          => 'user',
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => 'user']
-            ]
+                'condition'          => ['NEWTABLE.name' => 'user'],
+            ],
         ];
 
         $tab[] = [
@@ -3196,8 +3196,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'rightname'          => 'group',
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => 'group']
-            ]
+                'condition'          => ['NEWTABLE.name' => 'group'],
+            ],
         ];
 
         $tab[] = [
@@ -3210,8 +3210,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'rightname'          => 'entity',
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => 'entity']
-            ]
+                'condition'          => ['NEWTABLE.name' => 'entity'],
+            ],
         ];
 
         $tab[] = [
@@ -3224,8 +3224,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'rightname'          => 'transfer',
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => 'transfer']
-            ]
+                'condition'          => ['NEWTABLE.name' => 'transfer'],
+            ],
         ];
 
         $tab[] = [
@@ -3239,8 +3239,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'nowrite'            => true,
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => Log::$rightname]
-            ]
+                'condition'          => ['NEWTABLE.name' => Log::$rightname],
+            ],
         ];
 
         $tab[] = [
@@ -3254,8 +3254,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'nowrite'            => true,
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => Event::$rightname]
-            ]
+                'condition'          => ['NEWTABLE.name' => Event::$rightname],
+            ],
         ];
 
         $tab[] = [
@@ -3268,8 +3268,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'rightname'          => QueuedNotification::$rightname,
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => QueuedNotification::$rightname]
-            ]
+                'condition'          => ['NEWTABLE.name' => QueuedNotification::$rightname],
+            ],
         ];
 
         $tab[] = [
@@ -3282,8 +3282,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'rightname'          => \Glpi\Inventory\Conf::$rightname,
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => \Glpi\Inventory\Conf::$rightname]
-            ]
+                'condition'          => ['NEWTABLE.name' => \Glpi\Inventory\Conf::$rightname],
+            ],
         ];
 
         $tab[] = [
@@ -3296,8 +3296,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'rightname'          => Lockedfield::$rightname,
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => Lockedfield::$rightname]
-            ]
+                'condition'          => ['NEWTABLE.name' => Lockedfield::$rightname],
+            ],
         ];
 
         $tab[] = [
@@ -3310,8 +3310,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'rightname'          => SNMPCredential::$rightname,
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => SNMPCredential::$rightname]
-            ]
+                'condition'          => ['NEWTABLE.name' => SNMPCredential::$rightname],
+            ],
         ];
 
         $tab[] = [
@@ -3324,8 +3324,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'rightname'          => RefusedEquipment::$rightname,
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => RefusedEquipment::$rightname]
-            ]
+                'condition'          => ['NEWTABLE.name' => RefusedEquipment::$rightname],
+            ],
         ];
 
         $tab[] = [
@@ -3338,8 +3338,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'rightname'          => Unmanaged::$rightname,
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => Unmanaged::$rightname]
-            ]
+                'condition'          => ['NEWTABLE.name' => Unmanaged::$rightname],
+            ],
         ];
 
         $tab[] = [
@@ -3352,13 +3352,13 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'rightname'          => Agent::$rightname,
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => Agent::$rightname]
-            ]
+                'condition'          => ['NEWTABLE.name' => Agent::$rightname],
+            ],
         ];
 
         $tab[] = [
             'id'                 => 'ticket',
-            'name'               => __('Assistance')
+            'name'               => __('Assistance'),
         ];
 
         $tab[] = [
@@ -3371,8 +3371,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'rightname'          => 'ticket',
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => 'ticket']
-            ]
+                'condition'          => ['NEWTABLE.name' => 'ticket'],
+            ],
         ];
 
         $newtab = [
@@ -3399,8 +3399,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'rightname'          => 'tickettemplate',
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => 'tickettemplate']
-            ]
+                'condition'          => ['NEWTABLE.name' => 'tickettemplate'],
+            ],
         ];
 
         $tab[] = [
@@ -3413,8 +3413,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'rightname'          => 'planning',
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => 'planning']
-            ]
+                'condition'          => ['NEWTABLE.name' => 'planning'],
+            ],
         ];
 
         $tab[] = [
@@ -3427,8 +3427,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'rightname'          => 'statistic',
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => 'statistic']
-            ]
+                'condition'          => ['NEWTABLE.name' => 'statistic'],
+            ],
         ];
 
         $tab[] = [
@@ -3441,8 +3441,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'rightname'          => 'ticketcost',
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => 'ticketcost']
-            ]
+                'condition'          => ['NEWTABLE.name' => 'ticketcost'],
+            ],
         ];
 
         $tab[] = [
@@ -3451,7 +3451,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'field'              => 'helpdesk_hardware',
             'name'               => __('Link with items for the creation of tickets'),
             'massiveaction'      => false,
-            'datatype'           => 'specific'
+            'datatype'           => 'specific',
         ];
 
         $tab[] = [
@@ -3460,7 +3460,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'field'              => 'helpdesk_item_type',
             'name'               => __('Associable items to tickets, changes and problems'),
             'massiveaction'      => false,
-            'datatype'           => 'specific'
+            'datatype'           => 'specific',
         ];
 
         $tab[] = [
@@ -3469,7 +3469,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'field'              => 'managed_domainrecordtypes',
             'name'               => __('Managed domain records types'),
             'massiveaction'      => false,
-            'datatype'           => 'specific'
+            'datatype'           => 'specific',
         ];
 
         $tab[] = [
@@ -3480,8 +3480,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'datatype'           => 'bool',
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => 'show_group_hardware']
-            ]
+                'condition'          => ['NEWTABLE.name' => 'show_group_hardware'],
+            ],
         ];
 
         $tab[] = [
@@ -3491,7 +3491,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'name'               => __('Life cycle of tickets'),
             'nosearch'           => true,
             'datatype'           => 'text',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -3501,7 +3501,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'name'               => __('Life cycle of problems'),
             'nosearch'           => true,
             'datatype'           => 'text',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -3514,8 +3514,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'rightname'          => 'problem',
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => 'problem']
-            ]
+                'condition'          => ['NEWTABLE.name' => 'problem'],
+            ],
         ];
 
         $tab[] = [
@@ -3525,7 +3525,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'name'               => __('Life cycle of changes'),
             'nosearch'           => true,
             'datatype'           => 'text',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -3538,8 +3538,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'rightname'          => 'change',
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => 'change']
-            ]
+                'condition'          => ['NEWTABLE.name' => 'change'],
+            ],
         ];
 
         $tab[] = [
@@ -3552,8 +3552,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'rightname'          => ITILFollowup::$rightname,
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => ITILFollowup::$rightname]
-            ]
+                'condition'          => ['NEWTABLE.name' => ITILFollowup::$rightname],
+            ],
         ];
 
         $tab[] = [
@@ -3566,8 +3566,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'rightname'          => TicketTask::$rightname,
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => TicketTask::$rightname]
-            ]
+                'condition'          => ['NEWTABLE.name' => TicketTask::$rightname],
+            ],
         ];
 
         $tab[] = [
@@ -3580,8 +3580,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'rightname'          => TicketValidation::$rightname,
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => TicketValidation::$rightname]
-            ]
+                'condition'          => ['NEWTABLE.name' => TicketValidation::$rightname],
+            ],
         ];
 
         $tab[] = [
@@ -3594,8 +3594,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'rightname'          => 'itiltemplate',
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => 'itiltemplate']
-            ]
+                'condition'          => ['NEWTABLE.name' => 'itiltemplate'],
+            ],
         ];
 
         $tab[] = [
@@ -3608,8 +3608,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'rightname'          => PendingReason::$rightname,
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => PendingReason::$rightname]
-            ]
+                'condition'          => ['NEWTABLE.name' => PendingReason::$rightname],
+            ],
         ];
 
         $tab[] = [
@@ -3622,8 +3622,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'rightname'          => TicketRecurrent::$rightname,
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => TicketRecurrent::$rightname]
-            ]
+                'condition'          => ['NEWTABLE.name' => TicketRecurrent::$rightname],
+            ],
         ];
 
         $tab[] = [
@@ -3636,8 +3636,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'rightname'          => PlanningExternalEvent::$rightname,
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => PlanningExternalEvent::$rightname]
-            ]
+                'condition'          => ['NEWTABLE.name' => PlanningExternalEvent::$rightname],
+            ],
         ];
 
         $tab[] = [
@@ -3650,8 +3650,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'rightname'          => ChangeValidation::$rightname,
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => ChangeValidation::$rightname]
-            ]
+                'condition'          => ['NEWTABLE.name' => ChangeValidation::$rightname],
+            ],
         ];
 
         $tab[] = [
@@ -3664,13 +3664,13 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'rightname'          => RecurrentChange::$rightname,
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => RecurrentChange::$rightname]
-            ]
+                'condition'          => ['NEWTABLE.name' => RecurrentChange::$rightname],
+            ],
         ];
 
         $tab[] = [
             'id'                 => 'other',
-            'name'               => __('Other')
+            'name'               => __('Other'),
         ];
 
         $tab[] = [
@@ -3681,8 +3681,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'datatype'           => 'bool',
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => 'password_update']
-            ]
+                'condition'          => ['NEWTABLE.name' => 'password_update'],
+            ],
         ];
 
         $tab[] = [
@@ -3695,8 +3695,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'rightname'          => 'reminder_public',
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => 'reminder_public']
-            ]
+                'condition'          => ['NEWTABLE.name' => 'reminder_public'],
+            ],
         ];
 
         $tab[] = [
@@ -3709,8 +3709,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'rightname'          => 'bookmark_public',
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => 'bookmark_public']
-            ]
+                'condition'          => ['NEWTABLE.name' => 'bookmark_public'],
+            ],
         ];
 
         $tab[] = [
@@ -3723,8 +3723,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'rightname'          => 'rssfeed_public',
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => 'rssfeed_public']
-            ]
+                'condition'          => ['NEWTABLE.name' => 'rssfeed_public'],
+            ],
         ];
 
         $tab[] = [
@@ -3737,8 +3737,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'rightname'          => Form::$rightname,
             'joinparams'         => [
                 'jointype'           => 'child',
-                'condition'          => ['NEWTABLE.name' => Form::$rightname]
-            ]
+                'condition'          => ['NEWTABLE.name' => Form::$rightname],
+            ],
         ];
 
         return $tab;
@@ -3883,7 +3883,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             $values,
             ['value'   => $param['value'],
                 'rand'    => $param['rand'],
-                'display' => $param['display']
+                'display' => $param['display'],
             ]
         );
     }
@@ -3915,7 +3915,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             'SELECT' => ['id', 'name'],
             'FROM'   => self::getTable(),
             'WHERE'  => self::getUnderActiveProfileRestrictCriteria(),
-            'ORDER'  => 'name'
+            'ORDER'  => 'name',
         ]);
 
         // New rule -> get the next free ranking
@@ -3929,7 +3929,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             [
                 'value'               => $p['value'],
                 'rand'                => $p['rand'],
-                'display_emptychoice' => true
+                'display_emptychoice' => true,
             ]
         );
     }
@@ -3961,7 +3961,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
     {
         return [
             'central'  => __('Standard interface'),
-            'helpdesk' => __('Simplified interface')
+            'helpdesk' => __('Simplified interface'),
         ];
     }
 
@@ -3984,7 +3984,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
         if ($rights) {
             return [
                 2 ** Ticket::HELPDESK_MY_HARDWARE => __('My devices'),
-                2 ** Ticket::HELPDESK_ALL_HARDWARE => __('All items')
+                2 ** Ticket::HELPDESK_ALL_HARDWARE => __('All items'),
             ];
         }
 
@@ -3992,7 +3992,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             0                                        => Dropdown::EMPTY_VALUE,
             2 ** Ticket::HELPDESK_MY_HARDWARE => __('My devices'),
             2 ** Ticket::HELPDESK_ALL_HARDWARE => __('All items'),
-            (2 ** Ticket::HELPDESK_MY_HARDWARE) + (2 ** Ticket::HELPDESK_ALL_HARDWARE) => __('My devices and all items')
+            (2 ** Ticket::HELPDESK_MY_HARDWARE) + (2 ** Ticket::HELPDESK_ALL_HARDWARE) => __('My devices and all items'),
         ];
     }
 
@@ -4119,7 +4119,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
                         'FKEY' => [
                             'glpi_profilerights' => 'profiles_id',
                             'glpi_profiles'      => 'id',
-                        ]
+                        ],
                     ],
                     'glpi_profiles_users' => [
                         'FKEY' => [
@@ -4128,7 +4128,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
                             [
                                 'AND' => ['glpi_profiles_users.users_id' => $user_id],
                             ],
-                        ]
+                        ],
                     ],
                 ],
                 'WHERE'      => [
@@ -4195,7 +4195,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             }
         }
 
-       // To be completed before display to avoid non available rights in DB
+        // To be completed before display to avoid non available rights in DB
         $availablerights = ProfileRight::getAllPossibleRights();
 
         $column_labels = [];
@@ -4213,17 +4213,17 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
                 && (!empty($info['label']))
                 && (!empty($info['field']))
             ) {
-               // Add right if it does not exists : security for update
+                // Add right if it does not exists : security for update
                 if (!isset($availablerights[$info['field']])) {
                     ProfileRight::addProfileRights([$info['field']]);
                 }
 
                 $row = ['label'   => $info['label'],
-                    'columns' => []
+                    'columns' => [],
                 ];
                 if (!empty($info['row_class'])) {
                     $row['class'] = $info['row_class'];
-                } else if (isset($info['scope'])) {
+                } elseif (isset($info['scope'])) {
                     $default_scope_class = !empty($param['default_class']) ? $param['default_class'] : 'tab_bg_2';
                     $row['class'] = $info['scope'] === 'global' ? 'tab_bg_4' : $default_scope_class;
                 } else {
@@ -4286,7 +4286,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
             // For extra right sort by type
             if ($a[1] > $b[1]) {
-                 return 1;
+                return 1;
             }
             if ($a[1] < $b[1]) {
                 return -1;
@@ -4299,7 +4299,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             $rows,
             ['title'                => $param['title'],
                 'row_check_all'        => count($columns) > 1,
-                'col_check_all'        => count($rows) > 1
+                'col_check_all'        => count($rows) > 1,
             ]
         );
     }
@@ -4335,7 +4335,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
         $param['rand']          = mt_rand();
         $param['zero_on_empty'] = true;
         $param['display']       = true;
-        $param['check_method']  = static fn ($element, $field) => (($field & $element) === $element);
+        $param['check_method']  = static fn($element, $field) => (($field & $element) === $element);
 
         if (is_array($options) && count($options)) {
             foreach ($options as $key => $val) {
@@ -4393,7 +4393,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
         if ($param['check_all']) {
             $cb_options = [
                 'criterion' => ['tag_for_massive' => $massive_tag],
-                'id'        => Html::cleanId('checkbox_linear_' . $param['rand'])
+                'id'        => Html::cleanId('checkbox_linear_' . $param['rand']),
             ];
             if ($nb_checked > (count($elements) / 2)) {
                 $cb_options['checked'] = true;
@@ -4428,7 +4428,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
                 'WHERE'  => [
                     'name'   => static::$rightname,
                     'rights' => ["&", UPDATE],
-                ]
+                ],
             ]),
             'interface' => 'central',
         ]);

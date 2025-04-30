@@ -86,7 +86,7 @@ LOG,
                         'filepath' => 'test.log',
                         'datemod'  => '2022-09-20 00:00:00',
                         'size'     => 229,
-                    ]
+                    ],
                 ]
             );
     }

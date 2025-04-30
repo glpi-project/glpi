@@ -212,8 +212,8 @@ class HasDomainsCapacityTest extends DbTestCase
                 [
                     'itemtype'      => Domain::class,
                     'itemtype_link' => $classname_1,
-                ]
-            ]
+                ],
+            ],
         ];
         $item_2_logs_criteria = [
             'OR' => [
@@ -224,8 +224,8 @@ class HasDomainsCapacityTest extends DbTestCase
                 [
                     'itemtype'      => Domain::class,
                     'itemtype_link' => $classname_2,
-                ]
-            ]
+                ],
+            ],
         ];
 
         // Ensure relation, display preferences and logs exists, and class is registered to global config
@@ -255,7 +255,7 @@ class HasDomainsCapacityTest extends DbTestCase
     {
         yield [
             'target_classname' => Domain::class,
-            'relation_classname' => Domain_Item::class
+            'relation_classname' => Domain_Item::class,
         ];
     }
 
@@ -264,7 +264,7 @@ class HasDomainsCapacityTest extends DbTestCase
         yield [
             'target_classname' => Domain::class,
             'relation_classname' => Domain_Item::class,
-            'expected' => '%d domains attached to %d assets'
+            'expected' => '%d domains attached to %d assets',
         ];
     }
 }

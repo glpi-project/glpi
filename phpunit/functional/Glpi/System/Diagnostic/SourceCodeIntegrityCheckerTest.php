@@ -55,7 +55,7 @@ class SourceCodeIntegrityCheckerTest extends \GLPITestCase
             'dependency_injection' => [],
             'front' => [],
             'files' => [
-                '_tmp' => []
+                '_tmp' => [],
             ],
             'inc' => [],
             'install' => [],
@@ -78,7 +78,7 @@ EOL,
             'templates' => [],
             'vendor' => [],
             'version' => [
-                $version => ''
+                $version => '',
             ],
         ]);
     }
@@ -97,7 +97,7 @@ EOL,
                     'public/index.php' => '8461e565',
                     'src/test.php' => '53fe1f55',
                     'src/test2.php' => '2803299a',
-                ]
+                ],
             ],
             $checker->generateManifest('CRC32c')
         );
@@ -159,7 +159,9 @@ EOL,
         $this->assertTrue(rename(GLPI_TMP_DIR . '/glpi-' . $version_full . '.tar.gz', GLPI_TMP_DIR . '/glpi-' . $version_full . '.tgz'));
 
         unlink(vfsStream::url('check_root_dir/src/test.php'));
-        file_put_contents(vfsStream::url('check_root_dir/src/test2.php'), <<<EOL
+        file_put_contents(
+            vfsStream::url('check_root_dir/src/test2.php'),
+            <<<EOL
 line1
 lineb
 line3

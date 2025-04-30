@@ -42,7 +42,7 @@ abstract class StatDataAlwaysDisplay extends StatData
 {
     public function isEmpty(): bool
     {
-       // Force display even if no data
+        // Force display even if no data
         return false;
     }
 }

@@ -59,7 +59,7 @@ class Ticket_Contract extends CommonDBRelation
                     $nb = count(self::getListForItem($item));
                 }
                 return self::createTabEntry(Contract::getTypeName(Session::getPluralNumber()), $nb, $item::class);
-            } else if ($item::class === Contract::class) {
+            } elseif ($item::class === Contract::class) {
                 if ($_SESSION['glpishow_count_on_tabs']) {
                     $nb = count(self::getListForItem($item));
                 }
@@ -85,7 +85,7 @@ class Ticket_Contract extends CommonDBRelation
         if ($item instanceof Ticket) {
             $item_a_fkey = self::$items_id_1;
             $linked_itemtype = self::$itemtype_2;
-        } else if ($item instanceof Contract) {
+        } elseif ($item instanceof Contract) {
             $item_a_fkey = self::$items_id_2;
             $linked_itemtype = self::$itemtype_1;
         } else {
@@ -204,8 +204,8 @@ TWIG, $twig_params);
                 'specific_actions' => [
                     'purge' => _x('button', 'Delete permanently'),
                 ],
-                'extraparams'      => [$item_a_fkey => $item->getID()]
-            ]
+                'extraparams'      => [$item_a_fkey => $item->getID()],
+            ],
         ]);
 
         return true;

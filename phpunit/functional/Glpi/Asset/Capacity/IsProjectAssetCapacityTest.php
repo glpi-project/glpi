@@ -282,7 +282,7 @@ class IsProjectAssetCapacityTest extends DbTestCase
         yield [
             'target_classname'   => Project::class,
             'relation_classname' => Item_Project::class,
-            'expected' => '%d assets used in %d projects'
+            'expected' => '%d assets used in %d projects',
         ];
     }
 }

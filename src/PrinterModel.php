@@ -54,7 +54,7 @@ class PrinterModel extends CommonDropdown
     public function cleanDBonPurge()
     {
 
-       // Temporary solution to clean wrong updated items
+        // Temporary solution to clean wrong updated items
         $this->deleteChildrenAndRelationsFromDb(
             [
                 CartridgeItem_PrinterModel::class,

@@ -40,7 +40,6 @@ use Domain_Item;
 use DropdownTranslation;
 use FieldUnicity;
 use Glpi\Asset\AssetDefinition;
-use Glpi\Asset\Capacity;
 use Glpi\Asset\Capacity\AllowedInGlobalSearchCapacity;
 use Glpi\Asset\Capacity\HasContractsCapacity;
 use Glpi\Asset\Capacity\HasDevicesCapacity;
@@ -547,7 +546,7 @@ class GenericobjectPluginMigrationTest extends DbTestCase
                     'date_creation' => '2025-03-06 10:06:47',
                     'date_mod'      => '2025-03-06 10:06:47',
                     'entities_id'   => 0,
-                    'is_recursive'  => false
+                    'is_recursive'  => false,
                 ],
                 [
                     'name'          => 'Bar 2',

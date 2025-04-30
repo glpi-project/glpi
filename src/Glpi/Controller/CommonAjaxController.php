@@ -123,7 +123,7 @@ class CommonAjaxController
     final protected function errorReponse(int $code, string $message): Response
     {
         $body = [
-            'messages' => ['error' => [$message]]
+            'messages' => ['error' => [$message]],
         ];
         $body = $this->insertSessionMessages($body);
         return $this->jsonResponse($code, $body);

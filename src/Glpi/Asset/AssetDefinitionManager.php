@@ -193,7 +193,7 @@ final class AssetDefinitionManager extends AbstractDefinitionManager
             'location_types',
             'state_types',
             'ticket_types',
-            'unicity_types'
+            'unicity_types',
         ];
         foreach ($config_keys as $config_key) {
             if (!in_array($asset_class_name, $CFG_GLPI[$config_key], true)) {

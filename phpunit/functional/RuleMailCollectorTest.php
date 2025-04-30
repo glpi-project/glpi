@@ -147,18 +147,18 @@ class RuleMailCollectorTest extends DbTestCase
 
         $this->login();
 
-       // Delete all existing rule
+        // Delete all existing rule
         $rule     = new Rule();
         $rule->deleteByCriteria(['sub_type' => 'RuleMailCollector']);
 
-       // Create new group
+        // Create new group
         $group = new Group();
         $group_id = $group->add($group_input = [
             'name' => 'group1',
         ]);
         $this->checkInput($group, $group_id, $group_input);
 
-       // Create rule
+        // Create rule
         $rule     = new \RuleMailCollector();
         $rule_id = $rule->add($rule_input = [
             'name'         => 'test assign ExternalID based on subject',
@@ -168,7 +168,7 @@ class RuleMailCollectorTest extends DbTestCase
         ]);
         $this->checkInput($rule, $rule_id, $rule_input);
 
-       // Create criteria to check if requester group matches a specific group
+        // Create criteria to check if requester group matches a specific group
         $criteria = new RuleCriteria();
         $criteria_id = $criteria->add($criteria_input = [
             'rules_id'  => $rule_id,

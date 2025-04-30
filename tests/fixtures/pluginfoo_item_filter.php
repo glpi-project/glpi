@@ -34,6 +34,4 @@
 
 namespace GlpiPlugin\Foo;
 
-class Item_Filter extends \CommonDBTM
-{
-}
+class Item_Filter extends \CommonDBTM {}

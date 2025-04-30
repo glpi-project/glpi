@@ -38,7 +38,6 @@ use DbTestCase;
 use Glpi\Form\AnswersSet;
 use Glpi\Form\Form;
 use Glpi\Form\Tag\CommentTitleTagProvider;
-use Glpi\Form\Tag\SectionTagProvider;
 use Glpi\Form\Tag\Tag;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;

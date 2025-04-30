@@ -57,7 +57,7 @@ class TaskTemplateTest extends AbstractITILChildTemplate
             [
                 'name'         => 'Test Current User Template',
                 'content'      => 'Test content',
-                'users_id_tech' => -1
+                'users_id_tech' => -1,
             ]
         )->getID();
 
@@ -71,21 +71,21 @@ class TaskTemplateTest extends AbstractITILChildTemplate
             'TaskTemplate',
             $template_id,
             [
-                'users_id_tech' => $specific_user_id
+                'users_id_tech' => $specific_user_id,
             ]
         );
 
         $this->assertTrue($template->getFromDB($template_id));
 
         $this->assertEquals(0, $template->fields['use_current_user']);
-        $this->assertEquals($specific_user_id, (int)$template->fields['users_id_tech']);
+        $this->assertEquals($specific_user_id, (int) $template->fields['users_id_tech']);
 
         // Test updating back to current user
         $this->updateItem(
             'TaskTemplate',
             $template_id,
             [
-                'users_id_tech' => -1
+                'users_id_tech' => -1,
             ]
         );
 
@@ -98,14 +98,14 @@ class TaskTemplateTest extends AbstractITILChildTemplate
             'TaskTemplate',
             $template_id,
             [
-                'users_id_tech' => 0
+                'users_id_tech' => 0,
             ]
         );
 
         $this->assertTrue($template->getFromDB($template_id));
 
         $this->assertEquals(0, $template->fields['use_current_user']);
-        $this->assertEquals(0, (int)$template->fields['users_id_tech']);
+        $this->assertEquals(0, (int) $template->fields['users_id_tech']);
     }
 
     public function testSpecificValueToDisplay()
@@ -114,7 +114,7 @@ class TaskTemplateTest extends AbstractITILChildTemplate
 
         $values = [
             'users_id_tech' => -1,
-            'use_current_user' => 1
+            'use_current_user' => 1,
         ];
         $result = \TaskTemplate::getSpecificValueToDisplay('users_id_tech', $values);
         $this->assertEquals(__('Current logged-in user'), $result);
@@ -122,7 +122,7 @@ class TaskTemplateTest extends AbstractITILChildTemplate
         $specific_user_id = getItemByTypeName('User', 'tech', true);
         $values = [
             'users_id_tech' => $specific_user_id,
-            'use_current_user' => 0
+            'use_current_user' => 0,
         ];
         $result = \TaskTemplate::getSpecificValueToDisplay('users_id_tech', $values);
         $this->assertStringContainsString('tech', $result);
@@ -137,7 +137,7 @@ class TaskTemplateTest extends AbstractITILChildTemplate
             [
                 'name'         => 'Search Template Current User',
                 'content'      => 'Content 1',
-                'users_id_tech' => -1
+                'users_id_tech' => -1,
             ]
         )->getID();
 
@@ -147,7 +147,7 @@ class TaskTemplateTest extends AbstractITILChildTemplate
             [
                 'name'         => 'Search Template Specific User',
                 'content'      => 'Content 2',
-                'users_id_tech' => $specific_user_id
+                'users_id_tech' => $specific_user_id,
             ]
         )->getID();
 
@@ -156,7 +156,7 @@ class TaskTemplateTest extends AbstractITILChildTemplate
             [
                 'name'         => 'Search Template No User',
                 'content'      => 'Content 3',
-                'users_id_tech' => 0
+                'users_id_tech' => 0,
             ]
         )->getID();
 

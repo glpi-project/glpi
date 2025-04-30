@@ -84,12 +84,12 @@ trait CommonDeprecatedTrait
     {
         $soptions = array_map(function ($soption) {
             if (isset($soption['uid'])) {
-                  $new_uid = str_replace(
-                      $this->getType(),
-                      $this->getDeprecatedClass(),
-                      $soption['uid']
-                  );
-                 $soption['uid'] = $new_uid;
+                $new_uid = str_replace(
+                    $this->getType(),
+                    $this->getDeprecatedClass(),
+                    $soption['uid']
+                );
+                $soption['uid'] = $new_uid;
             }
 
             return $soption;
@@ -108,12 +108,12 @@ trait CommonDeprecatedTrait
     {
         $soptions = array_map(function ($soption) {
             if (isset($soption['table'])) {
-                  $new_table = str_replace(
-                      getTableForItemType($this->getType()),
-                      getTableForItemType($this->getDeprecatedClass()),
-                      $soption['table']
-                  );
-                 $soption['table'] = $new_table;
+                $new_table = str_replace(
+                    getTableForItemType($this->getType()),
+                    getTableForItemType($this->getDeprecatedClass()),
+                    $soption['table']
+                );
+                $soption['table'] = $new_table;
             }
 
             return $soption;
@@ -136,7 +136,7 @@ trait CommonDeprecatedTrait
             if (!isset($fields->$name)) {
                 $fields->$name = $value;
             }
-        } else if (is_array($fields)) {
+        } elseif (is_array($fields)) {
             if (!isset($fields[$name])) {
                 $fields[$name] = $value;
             }
@@ -160,7 +160,7 @@ trait CommonDeprecatedTrait
                 $fields->$new = $fields->$old;
                 unset($fields->$old);
             }
-        } else if (is_array($fields)) {
+        } elseif (is_array($fields)) {
             if (isset($fields[$old])) {
                 $fields[$new] = $fields[$old];
                 unset($fields[$old]);
@@ -183,7 +183,7 @@ trait CommonDeprecatedTrait
             if (isset($fields->$name)) {
                 unset($fields->$name);
             }
-        } else if (is_array($fields)) {
+        } elseif (is_array($fields)) {
             if (isset($fields[$name])) {
                 unset($fields[$name]);
             }

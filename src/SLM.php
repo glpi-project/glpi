@@ -41,7 +41,7 @@ use Glpi\Application\View\TemplateRenderer;
  **/
 class SLM extends CommonDBTM
 {
-   // From CommonDBTM
+    // From CommonDBTM
     public $dohistory                   = true;
 
     protected static $forward_entity_to = ['SLA', 'OLA'];
@@ -129,8 +129,8 @@ class SLM extends CommonDBTM
                         'SELECT' => 'id',
                         'FROM'   => $child_class::getTable(),
                         'WHERE'  => [
-                            static::getForeignKeyField() => $this->getID()
-                        ]
+                            static::getForeignKeyField() => $this->getID(),
+                        ],
                     ]
                 );
                 foreach ($child_iterator as $child_data) {
@@ -194,7 +194,7 @@ TWIG, $twig_params);
 
         $tab[] = [
             'id'                 => 'common',
-            'name'               => __('Characteristics')
+            'name'               => __('Characteristics'),
         ];
 
         $tab[] = [
@@ -212,7 +212,7 @@ TWIG, $twig_params);
             'field'              => 'id',
             'name'               => __('ID'),
             'massiveaction'      => false,
-            'datatype'           => 'number'
+            'datatype'           => 'number',
         ];
 
         $tab[] = [
@@ -220,7 +220,7 @@ TWIG, $twig_params);
             'table'              => 'glpi_calendars',
             'field'              => 'name',
             'name'               => _n('Calendar', 'Calendars', 1),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -228,7 +228,7 @@ TWIG, $twig_params);
             'table'              => static::getTable(),
             'field'              => 'comment',
             'name'               => __('Comments'),
-            'datatype'           => 'text'
+            'datatype'           => 'text',
         ];
 
         return $tab;

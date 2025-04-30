@@ -62,7 +62,7 @@ class SchemaTest extends GLPITestCase
                     'format' => Doc\Schema::FORMAT_STRING_STRING,
                     'enum' => ['a', 'b', 'c'],
                 ],
-            ]
+            ],
         ];
     }
 

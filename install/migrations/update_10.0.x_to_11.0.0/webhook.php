@@ -86,7 +86,7 @@ if (!$DB->tableExists('glpi_webhooks')) {
 if (!$DB->fieldExists('glpi_webhooks', 'webhookcategories_id')) {
     // Dev migration
     $migration->addField('glpi_webhooks', 'webhookcategories_id', 'fkey', [
-        'after' => 'comment'
+        'after' => 'comment',
     ]);
     $migration->addKey('glpi_webhooks', 'webhookcategories_id', 'webhookcategories_id');
 }

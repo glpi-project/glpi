@@ -64,7 +64,7 @@ if (isset($_POST["add"])) {
         }
     }
     Html::back();
-} else if (isset($_POST["delete"])) {
+} elseif (isset($_POST["delete"])) {
     $cred->check($_POST["id"], DELETE);
     if ($cred->delete($_POST)) {
         Event::log(
@@ -77,7 +77,7 @@ if (isset($_POST["add"])) {
         );
     }
     $cred->redirectToList();
-} else if (isset($_POST["restore"])) {
+} elseif (isset($_POST["restore"])) {
     $cred->check($_POST["id"], DELETE);
     if ($cred->restore($_POST)) {
         Event::log(
@@ -90,7 +90,7 @@ if (isset($_POST["add"])) {
         );
     }
     $cred->redirectToList();
-} else if (isset($_POST["purge"])) {
+} elseif (isset($_POST["purge"])) {
     $cred->check($_POST["id"], PURGE);
     if ($cred->delete($_POST, 1)) {
         Event::log(
@@ -103,7 +103,7 @@ if (isset($_POST["add"])) {
         );
     }
     $cred->redirectToList();
-} else if (isset($_POST["update"])) {
+} elseif (isset($_POST["update"])) {
     $cred->check($_POST["id"], UPDATE);
     $cred->update($_POST);
     Event::log(
@@ -119,6 +119,6 @@ if (isset($_POST["add"])) {
     $menus = ["admin", "glpi\inventory\inventory", "SNMPCredential"];
     SNMPCredential::displayFullPageForItem($_GET["id"], $menus, [
         'withtemplate' => $_GET["withtemplate"],
-        'formoptions'  => "data-track-changes=true"
+        'formoptions'  => "data-track-changes=true",
     ]);
 }

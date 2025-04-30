@@ -483,7 +483,7 @@ class HasSoftwaresCapacityTest extends DbTestCase
                         'softwareversions_id' => $software1_version2->getID(),
                         'itemtype' => $asset->getType(),
                         'items_id' => $asset->getID(),
-                    ]
+                    ],
                 ]
             );
             $assets_count++;
@@ -545,7 +545,7 @@ class HasSoftwaresCapacityTest extends DbTestCase
                         'softwarelicenses_id' => $software3_license2->getID(),
                         'itemtype' => $asset->getType(),
                         'items_id' => $asset->getID(),
-                    ]
+                    ],
                 ]
             );
             $assets_count++;

@@ -159,7 +159,7 @@ class HasLinksCapacityTest extends DbTestCase
                 'name'     => 'manual link',
                 'itemtype' => $item_1::class,
                 'items_id' => $item_1->getID(),
-                'url'      => 'https://glpi-project.org'
+                'url'      => 'https://glpi-project.org',
             ]
         );
         $manual_link_2 = $this->createItem(
@@ -168,23 +168,23 @@ class HasLinksCapacityTest extends DbTestCase
                 'name'     => 'manual link',
                 'itemtype' => $item_2::class,
                 'items_id' => $item_2->getID(),
-                'url'      => 'https://glpi-project.org'
+                'url'      => 'https://glpi-project.org',
             ]
         );
         $external_link = $this->createItem(
             \Link::class,
             [
                 'name' => 'external link',
-                'link' => 'https://glpi-project.org'
+                'link' => 'https://glpi-project.org',
             ]
         );
         $link_itemtype = $this->createItem(\Link_Itemtype::class, [
             'links_id' => $external_link->getID(),
-            'itemtype' => $item_1::class
+            'itemtype' => $item_1::class,
         ]);
         $link_itemtype_2 = $this->createItem(\Link_Itemtype::class, [
             'links_id' => $external_link->getID(),
-            'itemtype' => $item_2::class
+            'itemtype' => $item_2::class,
         ]);
         $displaypref_1   = $this->createItem(
             DisplayPreference::class,
@@ -240,13 +240,13 @@ class HasLinksCapacityTest extends DbTestCase
         yield [
             'target_classname' => ManualLink::class,
             'target_fields' => [
-                'url'      => 'https://glpi-project.org'
-            ]
+                'url'      => 'https://glpi-project.org',
+            ],
         ];
 
         yield [
             'target_classname' => Link::class,
-            'relation_classname' => Link_Itemtype::class
+            'relation_classname' => Link_Itemtype::class,
         ];
     }
 
@@ -255,15 +255,15 @@ class HasLinksCapacityTest extends DbTestCase
         yield [
             'target_classname' => ManualLink::class,
             'target_fields' => [
-                'url'      => 'https://glpi-project.org'
+                'url'      => 'https://glpi-project.org',
             ],
-            'expected' => '%d links attached to %d assets'
+            'expected' => '%d links attached to %d assets',
         ];
 
         yield [
             'target_classname' => Link::class,
             'relation_classname' => Link_Itemtype::class,
-            'expected' => '%d links attached to %d assets'
+            'expected' => '%d links attached to %d assets',
         ];
     }
 }

@@ -403,7 +403,7 @@ HTML;
                             'h'   => $imgsize[1],
                             'thumbnail_w' => $width,
                             'thumbnail_h' => $height,
-                        ]
+                        ],
                     ]);
                     $content = str_replace($img_tag, $gallery, $content);
                 }
@@ -434,7 +434,7 @@ HTML;
                 'zoom'         => true,
             ],
             'rand'               => mt_rand(),
-            'gallery_item_class' => ''
+            'gallery_item_class' => '',
         ];
 
         if (is_array($options) && count($options)) {

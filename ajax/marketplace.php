@@ -77,7 +77,7 @@ if (isset($_POST['key']) && isset($_POST["action"])) {
     }
 
     echo MarketplaceView::getButtons($_POST['key']);
-} else if (($_GET["action"] ?? null) == "refresh_plugin_list") {
+} elseif (($_GET["action"] ?? null) == "refresh_plugin_list") {
     switch ($_GET['tab']) {
         default:
         case 'discover':
@@ -94,7 +94,7 @@ if (isset($_POST['key']) && isset($_POST["action"])) {
             MarketplaceView::installed(true, true, $_GET['filter'] ?? "");
             break;
     }
-} else if (($_GET["action"] ?? null) == "getPagination") {
+} elseif (($_GET["action"] ?? null) == "getPagination") {
     echo MarketplaceView::getPaginationHtml(
         (int) $_GET['page'],
         (int) $_GET['total'],

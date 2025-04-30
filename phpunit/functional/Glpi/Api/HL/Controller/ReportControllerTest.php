@@ -54,21 +54,21 @@ class ReportControllerTest extends \HLAPITestCase
                         if (in_array($report['report_type'], ['Global', 'Asset'], true) && in_array($report['assistance_type'], ['Ticket', 'Change', 'Problem'], true)) {
                             $this->assertEmpty($report['report_group_fields']);
                             $tested++;
-                        } else if ($report['report_type'] === 'Characteristics' && in_array($report['assistance_type'], ['Ticket', 'Change', 'Problem'], true)) {
+                        } elseif ($report['report_type'] === 'Characteristics' && in_array($report['assistance_type'], ['Ticket', 'Change', 'Problem'], true)) {
                             $this->assertCount(17, array_intersect(array_keys($report['report_group_fields']), [
                                 'user', 'users_id_recipient', 'group', 'group_tree', 'usertitles_id',
                                 'usercategories_id', 'itilcategories_id', 'itilcategories_tree', 'urgency', 'impact',
                                 'priority', 'solutiontypes_id', 'technician', 'technician_followup', 'groups_id_assign',
-                                'groups_tree_assign', 'suppliers_id_assign'
+                                'groups_tree_assign', 'suppliers_id_assign',
                             ]));
                             $tested++;
-                        } else if ($report['report_type'] === 'AssetCharacteristics' && in_array($report['assistance_type'], ['Ticket', 'Change', 'Problem'], true)) {
+                        } elseif ($report['report_type'] === 'AssetCharacteristics' && in_array($report['assistance_type'], ['Ticket', 'Change', 'Problem'], true)) {
                             $this->assertCount(22, array_intersect(array_keys($report['report_group_fields']), [
                                 'ComputerType', 'ComputerModel', 'OperatingSystem', 'Location', 'DeviceBattery',
                                 'DeviceCamera', 'DeviceCase', 'DeviceControl', 'DeviceDrive', 'DeviceFirmware',
                                 'DeviceGeneric', 'DeviceGraphicCard', 'DeviceHardDrive', 'DeviceMemory', 'DeviceNetworkCard',
                                 'DevicePci', 'DevicePowerSupply', 'DeviceProcessor', 'DeviceSensor', 'DeviceSimcard',
-                                'DeviceSoundCard', 'DeviceMotherboard'
+                                'DeviceSoundCard', 'DeviceMotherboard',
                             ]));
                             $tested++;
                         }
@@ -100,8 +100,8 @@ class ReportControllerTest extends \HLAPITestCase
             $this->api->call(new Request('GET', "/Assistance/Stat/$itil_type/Characteristics"), function ($call) {
                 /** @var \HLAPICallAsserter $call */
                 $call->response
-                    ->status(fn ($status) => $status === 400)
-                    ->jsonContent(fn ($content) => $this->assertEquals([
+                    ->status(fn($status) => $status === 400)
+                    ->jsonContent(fn($content) => $this->assertEquals([
                         'status' => 'ERROR_INVALID_PARAMETER',
                         'title' => 'One or more parameters are invalid',
                         'detail' => null,
@@ -109,8 +109,8 @@ class ReportControllerTest extends \HLAPITestCase
                             [
                                 'priority' => 'error',
                                 'message' => 'Missing parameter: field',
-                            ]
-                        ]
+                            ],
+                        ],
                     ], $content));
             });
             $request = new Request('GET', "/Assistance/Stat/$itil_type/Characteristics");
@@ -146,8 +146,8 @@ class ReportControllerTest extends \HLAPITestCase
             $this->api->call(new Request('GET', "/Assistance/Stat/$itil_type/AssetCharacteristics"), function ($call) {
                 /** @var \HLAPICallAsserter $call */
                 $call->response
-                    ->status(fn ($status) => $status === 400)
-                    ->jsonContent(fn ($content) => $this->assertEquals([
+                    ->status(fn($status) => $status === 400)
+                    ->jsonContent(fn($content) => $this->assertEquals([
                         'status' => 'ERROR_INVALID_PARAMETER',
                         'title' => 'One or more parameters are invalid',
                         'detail' => null,
@@ -155,8 +155,8 @@ class ReportControllerTest extends \HLAPITestCase
                             [
                                 'priority' => 'error',
                                 'message' => 'Missing parameter: field',
-                            ]
-                        ]
+                            ],
+                        ],
                     ], $content));
             });
             $request = new Request('GET', "/Assistance/Stat/$itil_type/AssetCharacteristics");

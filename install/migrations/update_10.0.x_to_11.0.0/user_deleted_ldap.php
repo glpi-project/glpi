@@ -48,35 +48,35 @@ if ($user_deleted_ldap !== null) {
             $user_deleted_ldap_authorizations = AuthLDAP::DELETED_USER_ACTION_AUTHORIZATIONS_DO_NOTHING;
             break;
 
-        // AuthLDAP::DELETED_USER_DELETE (put user in trashbin)
+            // AuthLDAP::DELETED_USER_DELETE (put user in trashbin)
         case 1:
             $user_deleted_ldap_user = AuthLDAP::DELETED_USER_ACTION_USER_MOVE_TO_TRASHBIN;
             $user_deleted_ldap_groups = AuthLDAP::DELETED_USER_ACTION_GROUPS_DO_NOTHING;
             $user_deleted_ldap_authorizations = AuthLDAP::DELETED_USER_ACTION_AUTHORIZATIONS_DO_NOTHING;
             break;
 
-        // AuthLDAP::DELETED_USER_WITHDRAWDYNINFO (withdraw dynamic authorizations and groups)
+            // AuthLDAP::DELETED_USER_WITHDRAWDYNINFO (withdraw dynamic authorizations and groups)
         case 2:
             $user_deleted_ldap_user = AuthLDAP::DELETED_USER_ACTION_USER_DO_NOTHING;
             $user_deleted_ldap_groups =  AuthLDAP::DELETED_USER_ACTION_GROUPS_DELETE_DYNAMIC;
             $user_deleted_ldap_authorizations = AuthLDAP::DELETED_USER_ACTION_AUTHORIZATIONS_DELETE_DYNAMIC;
             break;
 
-        // AuthLDAP::DELETED_USER_DISABLE (disable user)
+            // AuthLDAP::DELETED_USER_DISABLE (disable user)
         case 3:
             $user_deleted_ldap_user = AuthLDAP::DELETED_USER_ACTION_USER_DISABLE;
             $user_deleted_ldap_groups = AuthLDAP::DELETED_USER_ACTION_GROUPS_DO_NOTHING;
             $user_deleted_ldap_authorizations = AuthLDAP::DELETED_USER_ACTION_AUTHORIZATIONS_DO_NOTHING;
             break;
 
-        // AuthLDAP::DELETED_USER_DISABLEANDWITHDRAWDYNINFO (disable user and withdraw dynamic authorizations/groups)
+            // AuthLDAP::DELETED_USER_DISABLEANDWITHDRAWDYNINFO (disable user and withdraw dynamic authorizations/groups)
         case 4:
             $user_deleted_ldap_user = AuthLDAP::DELETED_USER_ACTION_USER_DISABLE;
             $user_deleted_ldap_groups = AuthLDAP::DELETED_USER_ACTION_GROUPS_DELETE_DYNAMIC;
             $user_deleted_ldap_authorizations = AuthLDAP::DELETED_USER_ACTION_AUTHORIZATIONS_DELETE_DYNAMIC;
             break;
 
-        // AuthLDAP::DELETED_USER_DISABLEANDDELETEGROUPS (disable user and withdraw groups)
+            // AuthLDAP::DELETED_USER_DISABLEANDDELETEGROUPS (disable user and withdraw groups)
         case 5:
             $user_deleted_ldap_user = AuthLDAP::DELETED_USER_ACTION_USER_DISABLE;
             $user_deleted_ldap_groups = AuthLDAP::DELETED_USER_ACTION_GROUPS_DELETE_ALL;

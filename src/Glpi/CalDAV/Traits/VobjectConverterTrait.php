@@ -78,15 +78,15 @@ trait VobjectConverterTrait
             'itemtype' => $item->getType(),
         ];
 
-       // Restore previously saved VCalendar if available
+        // Restore previously saved VCalendar if available
         $vcalendar = null;
         $vcomp     = null;
         if ($vobject->getFromDBByCrit($vobject_crit) && !empty($vobject->fields['data'])) {
             $vcalendar = Reader::read($vobject->fields['data']);
             $vcomp = $vcalendar->getBaseComponent();
             if (VCalendar::$componentMap[$component_type] !== get_class($vcomp)) {
-               // Remove existing base component if it has changed.
-               // For instance component can change when depending on state of a PlanningExternalEvent.
+                // Remove existing base component if it has changed.
+                // For instance component can change when depending on state of a PlanningExternalEvent.
                 $vcalendar->remove($vcomp);
                 $vcomp = null;
             }
@@ -107,7 +107,7 @@ trait VobjectConverterTrait
 
         if (array_key_exists('date_creation', $fields)) {
             $vcomp->CREATED = (new \DateTime($fields['date_creation']))->setTimeZone($utc_tz);
-        } else if (array_key_exists('date', $fields)) {
+        } elseif (array_key_exists('date', $fields)) {
             $vcomp->CREATED = (new \DateTime($fields['date']))->setTimeZone($utc_tz);
         }
 
@@ -123,11 +123,11 @@ trait VobjectConverterTrait
         $description = null;
         if (array_key_exists('content', $fields)) {
             $description = $fields['content'];
-        } else if (array_key_exists('text', $fields)) {
+        } elseif (array_key_exists('text', $fields)) {
             $description = $fields['text'];
         }
         if ($description !== null) {
-           // Transform HTML text to plain text
+            // Transform HTML text to plain text
             $vcomp->DESCRIPTION = RichText::getTextFromHtml($description, true);
         }
 
@@ -172,7 +172,7 @@ trait VobjectConverterTrait
         if ('VTODO' === $component_type && array_key_exists('state', $fields)) {
             if (\Planning::TODO == $fields['state']) {
                 $vcomp->STATUS = 'NEEDS-ACTION';
-            } else if (\Planning::DONE == $fields['state']) {
+            } elseif (\Planning::DONE == $fields['state']) {
                 $vcomp->STATUS = 'COMPLETED';
             }
         }
@@ -193,22 +193,22 @@ trait VobjectConverterTrait
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-       // Use VTODO for tasks if available.
+        // Use VTODO for tasks if available.
         if ($is_task && in_array('VTODO', $CFG_GLPI['caldav_supported_components'])) {
             return 'VTODO';
         }
 
-       // Use VEVENT for planned items if available (it includes tasks if VTODO is not available).
+        // Use VEVENT for planned items if available (it includes tasks if VTODO is not available).
         if ($is_planned && in_array('VEVENT', $CFG_GLPI['caldav_supported_components'])) {
             return 'VEVENT';
         }
 
-       // Use VJOURNAL for unplanned items if available (it includes tasks if VTODO is not available).
+        // Use VJOURNAL for unplanned items if available (it includes tasks if VTODO is not available).
         if (!$is_planned && in_array('VJOURNAL', $CFG_GLPI['caldav_supported_components'])) {
             return 'VJOURNAL';
         }
 
-       // No component fits item properties
+        // No component fits item properties
         return null;
     }
 
@@ -235,7 +235,7 @@ trait VobjectConverterTrait
         $input = [];
 
         if ($vcomponent->CREATED instanceof DateTime) {
-           /* @var \DateTime|\DateTimeImmutable|null $created_datetime */
+            /* @var \DateTime|\DateTimeImmutable|null $created_datetime */
             $user_tz = new \DateTimeZone(date_default_timezone_get());
             $created_datetime = $vcomponent->CREATED->getDateTime();
             $created_datetime = $created_datetime->setTimeZone($user_tz);
@@ -261,7 +261,7 @@ trait VobjectConverterTrait
         $state = $this->getStateInputFromVComponent($vcomponent);
         if ($state !== null) {
             $input['state'] = $state;
-        } else if ($is_new_item) {
+        } elseif ($is_new_item) {
             $input['state'] = GLPI_CALDAV_IMPORT_STATE;
         }
 
@@ -322,8 +322,8 @@ trait VobjectConverterTrait
             return null;
         }
 
-       /* @var \DateTime|\DateTimeImmutable|null $begin_datetime */
-       /* @var \DateTime|\DateTimeImmutable|null $end_datetime */
+        /* @var \DateTime|\DateTimeImmutable|null $begin_datetime */
+        /* @var \DateTime|\DateTimeImmutable|null $end_datetime */
         $user_tz        = new \DateTimeZone(date_default_timezone_get());
 
         $begin_datetime = $vcomponent->DTSTART->getDateTime();
@@ -342,7 +342,7 @@ trait VobjectConverterTrait
             }
         }
         if (!($end_datetime instanceof \DateTimeInterface)) {
-           // Event/Task objects does not accept empty end date, so set it to "+1 hour" by default.
+            // Event/Task objects does not accept empty end date, so set it to "+1 hour" by default.
             $end_datetime = clone $begin_datetime;
             $end_datetime = $end_datetime->add(new \DateInterval('PT1H'));
         }
@@ -366,11 +366,11 @@ trait VobjectConverterTrait
             return null;
         }
 
-       // Get first array element which actually correspond to rrule specs
+        // Get first array element which actually correspond to rrule specs
         $rrule = current($vcomponent->RRULE->getJsonValue());
 
         if (array_key_exists('byday', $rrule) && !is_array($rrule['byday'])) {
-           // When only one day is set, sabre/vobject return a string instead of an array
+            // When only one day is set, sabre/vobject return a string instead of an array
             $rrule['byday'] = [$rrule['byday']];
         }
 

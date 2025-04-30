@@ -169,7 +169,7 @@ final class AssetDefinition extends AbstractDefinition
         $capacities = AssetDefinitionManager::getInstance()->getAvailableCapacities();
         usort(
             $capacities,
-            static fn (CapacityInterface $a, CapacityInterface $b) => strnatcasecmp($a->getLabel(), $b->getLabel())
+            static fn(CapacityInterface $a, CapacityInterface $b) => strnatcasecmp($a->getLabel(), $b->getLabel())
         );
 
         TemplateRenderer::getInstance()->display(
@@ -206,7 +206,7 @@ final class AssetDefinition extends AbstractDefinition
                     'subitem_container_id' => 'customfield_form_container',
                     'as_modal' => true,
                     'ajax_form_submit' => true,
-                ]
+                ],
             ]
         );
     }
@@ -221,7 +221,7 @@ final class AssetDefinition extends AbstractDefinition
     {
         $all_fields = $this->getAllFields();
         $field_display = $this->getDecodedFieldsField();
-        $field_match = array_filter($field_display, static fn ($field) => $field['key'] === $field_key);
+        $field_match = array_filter($field_display, static fn($field) => $field['key'] === $field_key);
         $field_options = [];
         if (!empty($field_match)) {
             $field_options = reset($field_match)['field_options'] ?? [];
@@ -240,7 +240,7 @@ final class AssetDefinition extends AbstractDefinition
         $options_allowlist = ['required', 'readonly', 'full_width', 'hidden'];
 
         $twig_params = [
-            'options' => array_filter($custom_field->getFieldType()->getOptions(), static fn ($option) => in_array($option->getKey(), $options_allowlist, true)),
+            'options' => array_filter($custom_field->getFieldType()->getOptions(), static fn($option) => in_array($option->getKey(), $options_allowlist, true)),
             'key' => $field_key,
         ];
 
@@ -309,7 +309,7 @@ TWIG, $twig_params);
             } else {
                 // Add the config key if not present in the input.
                 $capacities = \array_map(
-                    fn (array $capacity_specs) => new Capacity(
+                    fn(array $capacity_specs) => new Capacity(
                         $capacity_specs['name'],
                         new CapacityConfig($capacity_specs['config'] ?? [])
                     ),
@@ -460,7 +460,7 @@ TWIG, $twig_params);
 
         $search_options[] = [
             'id'   => 'capacities',
-            'name' => __('Capacities')
+            'name' => __('Capacities'),
         ];
         foreach (AssetDefinitionManager::getInstance()->getAvailableCapacities() as $capacity) {
             // capacity is stored in a JSON array, so entry is surrounded by double quotes
@@ -481,7 +481,7 @@ TWIG, $twig_params);
                     true_expression: new QueryExpression('1'),
                     false_expression: new QueryExpression('0')
                 ),
-                'datatype'      => 'bool'
+                'datatype'      => 'bool',
             ];
         }
 
@@ -682,71 +682,71 @@ TWIG, $twig_params);
         $fields = [
             'name'             => [
                 'text' => __('Name'),
-                'type' => StringType::class
+                'type' => StringType::class,
             ],
             'states_id'        => [
                 'text' => __('Status'),
-                'type' => DropdownType::class
+                'type' => DropdownType::class,
             ],
             'locations_id'     => [
                 'text' => Location::getTypeName(1),
-                'type' => DropdownType::class
+                'type' => DropdownType::class,
             ],
             $type_class::getForeignKeyField() => [
                 'text' => $type_class::getTypeName(1),
-                'type' => DropdownType::class
+                'type' => DropdownType::class,
             ],
             'users_id_tech'    => [
                 'text' => __('Technician in charge'),
-                'type' => DropdownType::class
+                'type' => DropdownType::class,
             ],
             'manufacturers_id' => [
                 'text' => Manufacturer::getTypeName(1),
-                'type' => DropdownType::class
+                'type' => DropdownType::class,
             ],
             'groups_id_tech'   => [
                 'text' => __('Group in charge'),
-                'type' => DropdownType::class
+                'type' => DropdownType::class,
             ],
             $model_class::getForeignKeyField() => [
                 'text' => $model_class::getTypeName(1),
-                'type' => DropdownType::class
+                'type' => DropdownType::class,
             ],
             'contact_num'      => [
                 'text' => __('Alternate username number'),
-                'type' => StringType::class
+                'type' => StringType::class,
             ],
             'serial'           => [
                 'text' => __('Serial'),
-                'type' => StringType::class
+                'type' => StringType::class,
             ],
             'contact'          => [
                 'text' => __('Alternate username'),
-                'type' => StringType::class
+                'type' => StringType::class,
             ],
             'otherserial'      => [
                 'text' => __('Inventory number'),
-                'type' => StringType::class
+                'type' => StringType::class,
             ],
             'users_id'         => [
                 'text' => User::getTypeName(1),
-                'type' => DropdownType::class
+                'type' => DropdownType::class,
             ],
             'groups_id'        => [
                 'text' => Group::getTypeName(1),
-                'type' => DropdownType::class
+                'type' => DropdownType::class,
             ],
             'uuid'            => [
                 'text' => __('UUID'),
-                'type' => StringType::class
+                'type' => StringType::class,
             ],
             'comment'          => [
                 'text' => _n('Comment', 'Comments', Session::getPluralNumber()),
-                'type' => TextType::class
+                'type' => TextType::class,
             ],
             'autoupdatesystems_id' => [
                 'text' => \AutoUpdateSystem::getTypeName(1),
-                'type' => DropdownType::class
+                'type' => DropdownType::class,
             ],
         ];
 
@@ -799,7 +799,7 @@ TWIG, $twig_params);
         $fields_display = $this->getDecodedFieldsField();
         usort(
             $fields_display,
-            static fn ($a, $b) => $a['order'] <=> $b['order']
+            static fn($a, $b) => $a['order'] <=> $b['order']
         );
         return array_column($fields_display, 'key');
     }
@@ -820,7 +820,7 @@ TWIG, $twig_params);
         $is_valid = true;
 
         $available_capacities = array_map(
-            fn ($capacity) => $capacity::class,
+            fn($capacity) => $capacity::class,
             AssetDefinitionManager::getInstance()->getAvailableCapacities()
         );
         foreach ($capacities as $capacity_specs) {
@@ -946,7 +946,7 @@ TWIG, $twig_params);
             $current_allowed = in_array($profile_id, $helpdesk_item_type, false);
             if ($current_allowed && !in_array($this->getCustomObjectClassName(), $itemtype_allowed, true)) {
                 $changes['helpdesk_item_type'] = [...$itemtype_allowed, $this->getCustomObjectClassName()];
-            } else if (!$current_allowed && in_array($this->getCustomObjectClassName(), $itemtype_allowed, true)) {
+            } elseif (!$current_allowed && in_array($this->getCustomObjectClassName(), $itemtype_allowed, true)) {
                 $changes['helpdesk_item_type'] = array_diff($itemtype_allowed, [$this->getCustomObjectClassName()]);
             }
             if (count($changes) > 0) {

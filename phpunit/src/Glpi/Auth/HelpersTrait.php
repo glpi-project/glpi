@@ -66,7 +66,7 @@ trait HelpersTrait
                     'comment' => 'This is a comment',
                     'is_active' => 1,
                     'is_default' => 0,
-                ]
+                ],
             ]
         );
     }
@@ -86,7 +86,7 @@ trait HelpersTrait
                     'basedn' => 'ou=people,dc=mycompany',
                     'login_field' => 'uid',
                     'phone_field' => '01.02.03.04.05',
-                    'email1_field' => 'email@email.com'
+                    'email1_field' => 'email@email.com',
                 ],
                 [
                     'name' => 'LDAP3',
@@ -94,7 +94,7 @@ trait HelpersTrait
                     'is_default' => 0,
                     'basedn' => 'ou=people,dc=mycompany',
                     'login_field' => 'uid',
-                    'phone_field' => '01.02.03.04.05'
+                    'phone_field' => '01.02.03.04.05',
                 ],
             ]
         );

@@ -46,10 +46,10 @@ Html::header_nocache();
 $tasktemplates_id = $_POST['tasktemplates_id'] ?? null;
 if ($tasktemplates_id === null) {
     throw new BadRequestHttpException("Missing or invalid parameter: 'tasktemplates_id'");
-} else if ($tasktemplates_id == 0) {
-   // Reset form
+} elseif ($tasktemplates_id == 0) {
+    // Reset form
     echo json_encode([
-        'content' => ""
+        'content' => "",
     ]);
     return;
 }

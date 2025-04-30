@@ -51,7 +51,7 @@ class Computer_SoftwareVersion implements DeprecatedInterface
         return [
             "id", "computers_id", "softwareversions_id", "is_deleted_computer",
             "is_template_computer", "entities_id", "is_deleted", "is_dynamic",
-            "date_install", "links"
+            "date_install", "links",
         ];
     }
 

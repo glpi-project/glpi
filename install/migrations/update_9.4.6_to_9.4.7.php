@@ -51,7 +51,7 @@ function update946to947()
 
     $DB->update('glpi_events', ['type'   => 'dcrooms'], ['type' => 'serverroms']);
 
-   // ************ Keep it at the end **************
+    // ************ Keep it at the end **************
     $migration->executeMigration();
 
     return $updateresult;

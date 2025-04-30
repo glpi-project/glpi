@@ -102,7 +102,7 @@ class HasSocketCapacity extends AbstractCapacity
         $socket = new Socket();
         $socket->deleteByCriteria(
             [
-                'itemtype' => $classname
+                'itemtype' => $classname,
             ],
             force: true,
             history: false

@@ -39,11 +39,11 @@ use Glpi\Search\SearchOption;
 
 class DisplayPreference extends CommonDBTM
 {
-   // From CommonGLPI
+    // From CommonGLPI
     public $taborientation          = 'horizontal';
     public $get_item_to_display_tab = false;
 
-   // From CommonDBTM
+    // From CommonDBTM
     public $auto_message_on_action  = false;
 
     protected $displaylist          = false;
@@ -51,8 +51,8 @@ class DisplayPreference extends CommonDBTM
 
     public static $rightname = 'search_config';
 
-    const PERSONAL = 1024;
-    const GENERAL  = 2048;
+    public const PERSONAL = 1024;
+    public const GENERAL  = 2048;
 
     public static function getTypeName($nb = 0)
     {
@@ -69,8 +69,8 @@ class DisplayPreference extends CommonDBTM
             'FROM'   => $this->getTable(),
             'WHERE'  => [
                 'itemtype'  => $input['itemtype'],
-                'users_id'  => $input['users_id']
-            ]
+                'users_id'  => $input['users_id'],
+            ],
         ])->current();
         $input['rank'] = $result['maxrank'] + 1;
         return $input;
@@ -105,10 +105,10 @@ class DisplayPreference extends CommonDBTM
                         if ($input['users_id'] == Session::getLoginUserID()) {
                             if (
                                 $item->deleteByCriteria(['users_id' => $input['users_id'],
-                                    'itemtype' => $id
+                                    'itemtype' => $id,
                                 ])
                             ) {
-                                 $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                                $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                             } else {
                                 $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
                                 $ma->addMessage($user->getErrorMessage(ERROR_ON_ACTION));
@@ -160,10 +160,10 @@ class DisplayPreference extends CommonDBTM
                 'interface' => $interface,
                 'OR'        => [
                     ['users_id' => $user_id],
-                    ['users_id' => 0]
-                ]
+                    ['users_id' => 0],
+                ],
             ],
-            'ORDER'  => ['users_id', 'rank']
+            'ORDER'  => ['users_id', 'rank'],
         ]);
 
         $default_prefs = [];
@@ -198,8 +198,8 @@ class DisplayPreference extends CommonDBTM
             'FROM'   => self::getTable(),
             'WHERE'  => [
                 'itemtype'  => $input['itemtype'],
-                'users_id'  => 0
-            ]
+                'users_id'  => 0,
+            ],
         ]);
 
         if (count($iterator)) {
@@ -210,7 +210,7 @@ class DisplayPreference extends CommonDBTM
                 $this->addToDB();
             }
         } else {
-           // No items in the global config
+            // No items in the global config
             $searchopt = SearchOption::getOptionsForItemtype($input["itemtype"]);
             if (count($searchopt) > 1) {
                 $done = false;
@@ -255,8 +255,8 @@ class DisplayPreference extends CommonDBTM
                 'users_id' => $users_id,
                 'interface' => $interface,
                 'NOT'      => [
-                    'num' => $official_order
-                ]
+                    'num' => $official_order,
+                ],
             ]
         );
 
@@ -291,13 +291,13 @@ class DisplayPreference extends CommonDBTM
         /** @var \DBmysql $DB */
         global $DB;
 
-       // Get current item
+        // Get current item
         $criteria = [];
         if (isset($input['num'])) {
             $criteria = [
                 'itemtype'  => $input['itemtype'],
                 'users_id'  => $input['users_id'],
-                'num'       => $input['num']
+                'num'       => $input['num'],
             ];
         } else {
             $criteria['id'] = $input['id'];
@@ -305,7 +305,7 @@ class DisplayPreference extends CommonDBTM
         $result = $DB->request([
             'SELECT' => ['id', 'rank'],
             'FROM'   => $this->getTable(),
-            'WHERE'  => $criteria
+            'WHERE'  => $criteria,
         ])->current();
         if (!$result) {
             return false;
@@ -313,7 +313,7 @@ class DisplayPreference extends CommonDBTM
         $rank1  = $result['rank'];
         $input['id'] = $result['id'];
 
-       // Get previous or next item
+        // Get previous or next item
         $where = [];
         $order = 'rank ';
         switch ($action) {
@@ -336,16 +336,16 @@ class DisplayPreference extends CommonDBTM
             'FROM'   => $this->getTable(),
             'WHERE'  => [
                 'itemtype'  => $input['itemtype'],
-                'users_id'  => $input["users_id"]
+                'users_id'  => $input["users_id"],
             ] + $where,
             'ORDER'  => $order,
-            'LIMIT'  => 1
+            'LIMIT'  => 1,
         ])->current();
 
         $rank2  = $result['rank'];
         $ID2    = $result['id'];
 
-       // Update items
+        // Update items
         $DB->update(
             $this->getTable(),
             ['rank' => $rank2],
@@ -432,9 +432,9 @@ class DisplayPreference extends CommonDBTM
                 'FROM' => $this->getTable(),
                 'WHERE' => [
                     'itemtype' => $itemtype,
-                    'users_id' => $IDuser
+                    'users_id' => $IDuser,
                 ],
-                'ORDER' => 'rank'
+                'ORDER' => 'rank',
             ]);
             $has_personal = $iterator->current()['cpt'] > 0;
         }
@@ -465,7 +465,7 @@ class DisplayPreference extends CommonDBTM
                 'id'   => $val,
                 'name' => $searchopt[$val]['name'],
                 'group' => $this->nameOfGroupForItemInSearchopt($searchopt, $val),
-                'fixed' => true
+                'fixed' => true,
             ];
         }
         foreach ($already_added as $val) {
@@ -475,7 +475,7 @@ class DisplayPreference extends CommonDBTM
             $entries[] = [
                 'id'   => $val,
                 'name' => $searchopt[$val]['name'],
-                'group' => $this->nameOfGroupForItemInSearchopt($searchopt, $val)
+                'group' => $this->nameOfGroupForItemInSearchopt($searchopt, $val),
             ];
         }
 
@@ -565,9 +565,9 @@ class DisplayPreference extends CommonDBTM
             'COUNT'   => 'nb',
             'FROM'    => self::getTable(),
             'WHERE'   => [
-                'users_id'  => $users_id
+                'users_id'  => $users_id,
             ],
-            'GROUPBY' => 'itemtype'
+            'GROUPBY' => 'itemtype',
         ]);
 
         $specific_actions = [];
@@ -582,14 +582,14 @@ class DisplayPreference extends CommonDBTM
             'height'           => 200,
             'container'        => 'mass' . __CLASS__ . $rand,
             'specific_actions' => $specific_actions,
-            'extraparams'      => ['massive_action_fields' => ['users_id']]
+            'extraparams'      => ['massive_action_fields' => ['users_id']],
         ];
 
         TemplateRenderer::getInstance()->display('components/search/displaypreference_list.html.twig', [
             'massiveactionparams' => $massiveactionparams,
             'users_id' => $users_id,
             'preferences' => $iterator,
-            'rand' => $rand
+            'rand' => $rand,
         ]);
     }
 
@@ -689,13 +689,13 @@ class DisplayPreference extends CommonDBTM
 
     public function getRights($interface = 'central')
     {
-       //TRANS: short for : Search result user display
+        //TRANS: short for : Search result user display
         $values[self::PERSONAL]  = ['short' => __('User display'),
-            'long'  => __('Search result user display')
+            'long'  => __('Search result user display'),
         ];
-       //TRANS: short for : Search result default display
+        //TRANS: short for : Search result default display
         $values[self::GENERAL]  =  ['short' => __('Default display'),
-            'long'  => __('Search result default display')
+            'long'  => __('Search result default display'),
         ];
 
         return $values;
@@ -720,7 +720,7 @@ class DisplayPreference extends CommonDBTM
             // plugin type or not supported
             $plugin_opts = Plugin::doHookFunction(Hooks::DEFAULT_DISPLAY_PREFS, [
                 'itemtype' => $itemtype,
-                'prefs'    => []
+                'prefs'    => [],
             ]);
             if (count($plugin_opts['prefs'])) {
                 $prefs = $plugin_opts['prefs'];
@@ -736,8 +736,8 @@ class DisplayPreference extends CommonDBTM
                 'itemtype' => $itemtype,
                 'users_id' => 0,
                 'NOT'      => [
-                    'num' => $existing_opts
-                ]
+                    'num' => $existing_opts,
+                ],
             ]
         );
         foreach ($prefs as $pref) {

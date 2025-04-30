@@ -89,7 +89,7 @@ final class RequestSourceFieldTest extends AbstractDestinationFieldTest
             ],
             'field_config' => new RequestSourceFieldConfig(
                 strategy: RequestSourceFieldStrategy::FROM_TEMPLATE,
-            )
+            ),
         ];
 
         yield 'Formcreator' => [
@@ -99,7 +99,7 @@ final class RequestSourceFieldTest extends AbstractDestinationFieldTest
             ],
             'field_config' => new RequestSourceFieldConfig(
                 strategy: RequestSourceFieldStrategy::FROM_TEMPLATE,
-            )
+            ),
         ];
     }
 

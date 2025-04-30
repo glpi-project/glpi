@@ -62,38 +62,38 @@ class Controller extends CommonGLPI
      * Prompt to replace the classic plugins page with the Marketplace
      * @var int
      */
-    const MP_REPLACE_ASK   = 1;
+    public const MP_REPLACE_ASK   = 1;
     /**
      * Replace the classic plugins page with the Marketplace
      * @var int
      */
-    const MP_REPLACE_YES   = 2;
+    public const MP_REPLACE_YES   = 2;
     /**
      * Do not replace the classic plugins page with the Marketplace
      * @var int
      */
-    const MP_REPLACE_NEVER = 3;
+    public const MP_REPLACE_NEVER = 3;
 
     /**
      * Disable all access to the Marketplace.
      * @var int
      */
-    const MP_MODE_DISABLED = 0;
+    public const MP_MODE_DISABLED = 0;
     /**
      * Allow access to the Marketplace via the CLI only.
      * @var int
      */
-    const MP_MODE_CLI_ONLY = 1;
+    public const MP_MODE_CLI_ONLY = 1;
     /**
      * Allow access to the Marketplace via the web interface only.
      * @var int
      */
-    const MP_MODE_WEB_ONLY = 2;
+    public const MP_MODE_WEB_ONLY = 2;
     /**
      * Allow access to the Marketplace via both the CLI and the web interface.
      * @var int
      */
-    const MP_MODE_FULL     = 3;
+    public const MP_MODE_FULL     = 3;
 
     public function __construct(string $plugin_key = "")
     {
@@ -210,7 +210,7 @@ class Controller extends CommonGLPI
 
         // Some plugins archives may be huge, as they may embed some binaries.
         // Upgrade memory limit to 512M, which should be enough.
-        $memory_limit = (int)Toolbox::getMemoryLimit();
+        $memory_limit = (int) Toolbox::getMemoryLimit();
         if ($memory_limit > 0 && $memory_limit < (512 * 1024 * 1024)) {
             ini_set('memory_limit', '512M');
         }
@@ -248,7 +248,7 @@ class Controller extends CommonGLPI
             // to prevent message like 'Plugin "xxx" version changed. It has been deactivated as its update process has to be launched.'.
             $plugin_inst->update([
                 'id'    => $plugin_inst->fields['id'],
-                'state' => Plugin::NOTUPDATED
+                'state' => Plugin::NOTUPDATED,
             ]);
         }
 
@@ -330,7 +330,7 @@ class Controller extends CommonGLPI
                 // Plugin has been found outside marketplace and marketplace priority is lower than its parent directory
                 // -> disallow plugin update from marketplace as it cannot be loaded from there.
                 return false;
-            } else if ($found_in_marketplace_dir) {
+            } elseif ($found_in_marketplace_dir) {
                 // Plugin has been found on marketplace and marketplace priority is higher than other location
                 // -> allow plugin update from marketplace as it is already loaded from there.
                 return is_writable(GLPI_MARKETPLACE_DIR . '/' . $this->plugin_key) && !self::hasVcsDirectory($this->plugin_key);
@@ -434,7 +434,7 @@ class Controller extends CommonGLPI
             }
 
             NotificationEvent::raiseEvent('checkpluginsupdate', new self(), [
-                'plugins' => $updates
+                'plugins' => $updates,
             ]);
         }
 
@@ -660,7 +660,7 @@ class Controller extends CommonGLPI
         $plugin->checkPluginState($this->plugin_key);
         $plugin->getFromDBbyDir($this->plugin_key);
 
-       // reload plugins
+        // reload plugins
         $plugin->init(true);
 
         ob_end_clean();

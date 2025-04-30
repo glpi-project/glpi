@@ -230,7 +230,7 @@ class Stencil extends CommonDBChild implements ZonableModelPicture
         // Remove zones with id > $nbZones
         $zones = array_filter(
             json_decode($this->fields['zones'] ?? '{}', true),
-            fn ($id) => $id <= $nbZones,
+            fn($id) => $id <= $nbZones,
             ARRAY_FILTER_USE_KEY
         );
 

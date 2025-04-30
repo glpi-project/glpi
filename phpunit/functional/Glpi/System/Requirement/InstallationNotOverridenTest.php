@@ -144,7 +144,7 @@ class InstallationNotOverridenTest extends \GLPITestCase
                             'context' => 'core',
                             'name'    => 'version',
                             'value'   => $previous_version,
-                        ]
+                        ],
                     ]
                 );
             }

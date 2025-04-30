@@ -232,10 +232,10 @@ JAVASCRIPT;
                 $cat_join::getTable() => [
                     'ON'  => [
                         $cat_join::getTable() => $itemtype::getForeignKeyField(),
-                        $itemtype::getTable() => 'id'
+                        $itemtype::getTable() => 'id',
                     ],
                     $cat_criteria,
-                ]
+                ],
             ];
         } else {
             $join = [];
@@ -251,8 +251,8 @@ JAVASCRIPT;
                     $cat_join::getTableField($cat_fk) => new QueryExpression(
                         $DB->quoteName($cat_itemtype::getTableField('id'))
                     ),
-                    $id_criteria
-                ]
+                    $id_criteria,
+                ],
             ],
             'items_count'
         );
@@ -274,7 +274,7 @@ JAVASCRIPT;
         $cat_iterator = $DB->request([
             'SELECT' => $select,
             'FROM' => $cat_table,
-            'ORDER' => $order
+            'ORDER' => $order,
         ]);
 
         $inst = new $cat_itemtype();
@@ -300,8 +300,8 @@ JAVASCRIPT;
         $join[$cat_table] = [
             'ON' => [
                 $cat_join::getTable() => $cat_itemtype::getForeignKeyField(),
-                $cat_table => 'id'
-            ]
+                $cat_table => 'id',
+            ],
         ];
         $no_cat_count = $DB->request(
             [
@@ -311,7 +311,7 @@ JAVASCRIPT;
                 'WHERE'  => [
                     $cat_itemtype::getTableField('id') => null,
                     $id_criteria,
-                ]
+                ],
             ]
         )->current();
         $categories[] = [
@@ -330,7 +330,7 @@ JAVASCRIPT;
                 'title'  => $category['name'],
                 'parent' => $category[$cat_fk] ?? 0,
                 'a_attr' => [
-                    'data-id' => $cat_id
+                    'data-id' => $cat_id,
                 ],
             ];
 

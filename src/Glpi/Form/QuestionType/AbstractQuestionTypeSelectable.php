@@ -49,9 +49,7 @@ abstract class AbstractQuestionTypeSelectable extends AbstractQuestionType imple
     public const TRANSLATION_KEY_OPTION = 'option';
 
     #[Override]
-    public function __construct()
-    {
-    }
+    public function __construct() {}
 
     #[Override]
     public function getFormEditorJsOptions(): string
@@ -400,7 +398,7 @@ TWIG;
                 'remove_option'     => __('Remove option'),
                 'selectable_option' => __('Selectable option'),
                 'enter_option'      => __('Enter an option'),
-            ]
+            ],
         ]);
     }
 
@@ -448,7 +446,7 @@ TWIG;
         // Replace uuids by labels
         $options = $this->getOptions($question);
         $answer = array_map(
-            fn ($uuid) => $options[$uuid] ?? '',
+            fn($uuid) => $options[$uuid] ?? '',
             $answer
         );
 

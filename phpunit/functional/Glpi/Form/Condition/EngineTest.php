@@ -71,7 +71,7 @@ final class EngineTest extends DbTestCase
                     'item_type'      => Type::QUESTION,
                     'value_operator' => ValueOperator::EQUALS,
                     'value'          => "correct value",
-                ]
+                ],
             ]
         );
         $form->setQuestionVisibility(
@@ -84,7 +84,7 @@ final class EngineTest extends DbTestCase
                     'item_type'      => Type::QUESTION,
                     'value_operator' => ValueOperator::EQUALS,
                     'value'          => "glpi",
-                ]
+                ],
             ]
         );
 
@@ -183,7 +183,7 @@ final class EngineTest extends DbTestCase
                     'item_type'      => Type::QUESTION,
                     'value_operator' => ValueOperator::EQUALS,
                     'value'          => "glpi is incredible",
-                ]
+                ],
             ]
         );
         $form->setCommentVisibility(
@@ -196,7 +196,7 @@ final class EngineTest extends DbTestCase
                     'item_type'      => Type::QUESTION,
                     'value_operator' => ValueOperator::EQUALS,
                     'value'          => "of course",
-                ]
+                ],
             ]
         );
 
@@ -281,7 +281,7 @@ final class EngineTest extends DbTestCase
                     'item_type'      => Type::QUESTION,
                     'value_operator' => ValueOperator::EQUALS,
                     'value'          => "answer for question 1",
-                ]
+                ],
             ]
         );
         $form->setSectionVisibility(
@@ -294,7 +294,7 @@ final class EngineTest extends DbTestCase
                     'item_type'      => Type::QUESTION,
                     'value_operator' => ValueOperator::EQUALS,
                     'value'          => "answer for question 2",
-                ]
+                ],
             ]
         );
 
@@ -377,7 +377,7 @@ final class EngineTest extends DbTestCase
                     'item_type'      => Type::QUESTION,
                     'value_operator' => ValueOperator::EQUALS,
                     'value'          => "expected answer",
-                ]
+                ],
             ]
         );
         $form->setSectionVisibility(
@@ -390,7 +390,7 @@ final class EngineTest extends DbTestCase
                     'item_type'      => Type::QUESTION,
                     'value_operator' => ValueOperator::EQUALS,
                     'value'          => "expected answer",
-                ]
+                ],
             ]
         );
 
@@ -431,7 +431,7 @@ final class EngineTest extends DbTestCase
                     'item_type'      => Type::QUESTION,
                     'value_operator' => ValueOperator::EQUALS,
                     'value'          => "correct value",
-                ]
+                ],
             ]
         );
 
@@ -523,7 +523,7 @@ final class EngineTest extends DbTestCase
                 'Ticket created if answer 2' => false,
                 'Ticket created unless answer 1' => false,
                 'Ticket created unless answer 2' => true,
-            ]
+            ],
         ];
 
         yield 'answer 2' => [
@@ -534,7 +534,7 @@ final class EngineTest extends DbTestCase
                 'Ticket created if answer 2' => true,
                 'Ticket created unless answer 1' => true,
                 'Ticket created unless answer 2' => false,
-            ]
+            ],
         ];
 
         yield 'another answer' => [
@@ -545,7 +545,7 @@ final class EngineTest extends DbTestCase
                 'Ticket created if answer 2' => false,
                 'Ticket created unless answer 1' => true,
                 'Ticket created unless answer 2' => true,
-            ]
+            ],
         ];
     }
 
@@ -666,7 +666,7 @@ final class EngineTest extends DbTestCase
                     'item_type'      => Type::QUESTION,
                     'value_operator' => ValueOperator::VISIBLE,
                     'value'          => "",
-                ]
+                ],
             ]
         );
         $form1->setQuestionVisibility(
@@ -679,7 +679,7 @@ final class EngineTest extends DbTestCase
                     'item_type'      => Type::QUESTION,
                     'value_operator' => ValueOperator::VISIBLE,
                     'value'          => "",
-                ]
+                ],
             ]
         );
 
@@ -708,7 +708,7 @@ final class EngineTest extends DbTestCase
                     'item_type'      => Type::QUESTION,
                     'value_operator' => ValueOperator::VISIBLE,
                     'value'          => "",
-                ]
+                ],
             ]
         );
         $form2->setQuestionVisibility(
@@ -721,7 +721,7 @@ final class EngineTest extends DbTestCase
                     'item_type'      => Type::QUESTION,
                     'value_operator' => ValueOperator::VISIBLE,
                     'value'          => "",
-                ]
+                ],
             ]
         );
         $form2->setQuestionVisibility(
@@ -734,7 +734,7 @@ final class EngineTest extends DbTestCase
                     'item_type'      => Type::QUESTION,
                     'value_operator' => ValueOperator::VISIBLE,
                     'value'          => "",
-                ]
+                ],
             ]
         );
 
@@ -764,7 +764,7 @@ final class EngineTest extends DbTestCase
                     'item_type'      => Type::COMMENT,
                     'value_operator' => ValueOperator::VISIBLE,
                     'value'          => "",
-                ]
+                ],
             ]
         );
         $form3->setCommentVisibility(
@@ -777,7 +777,7 @@ final class EngineTest extends DbTestCase
                     'item_type'      => Type::SECTION,
                     'value_operator' => ValueOperator::VISIBLE,
                     'value'          => "",
-                ]
+                ],
             ]
         );
         $form3->setSectionVisibility(
@@ -790,7 +790,7 @@ final class EngineTest extends DbTestCase
                     'item_type'      => Type::QUESTION,
                     'value_operator' => ValueOperator::VISIBLE,
                     'value'          => "",
-                ]
+                ],
             ]
         );
 

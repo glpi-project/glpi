@@ -50,16 +50,16 @@ class DevicePowerSupply extends CommonDevice
             parent::getAdditionalFields(),
             [['name'  => 'is_atx',
                 'label' => __('ATX'),
-                'type'  => 'bool'
+                'type'  => 'bool',
             ],
                 ['name'  => 'power',
                     'label' => __('Power'),
-                    'type'  => 'text'
+                    'type'  => 'text',
                 ],
                 ['name'  => 'devicepowersupplymodels_id',
                     'label' => _n('Model', 'Models', 1),
-                    'type'  => 'dropdownValue'
-                ]
+                    'type'  => 'dropdownValue',
+                ],
             ]
         );
     }
@@ -73,7 +73,7 @@ class DevicePowerSupply extends CommonDevice
             'table'              => static::getTable(),
             'field'              => 'is_atx',
             'name'               => __('ATX'),
-            'datatype'           => 'bool'
+            'datatype'           => 'bool',
         ];
 
         $tab[] = [
@@ -89,7 +89,7 @@ class DevicePowerSupply extends CommonDevice
             'table'              => 'glpi_devicepowersupplymodels',
             'field'              => 'name',
             'name'               => _n('Model', 'Models', 1),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         return $tab;
@@ -154,9 +154,9 @@ class DevicePowerSupply extends CommonDevice
             'joinparams'         => [
                 'beforejoin'         => [
                     'table'              => 'glpi_items_devicepowersupplies',
-                    'joinparams'         => $main_joinparams
-                ]
-            ]
+                    'joinparams'         => $main_joinparams,
+                ],
+            ],
         ];
 
         $tab[] = [

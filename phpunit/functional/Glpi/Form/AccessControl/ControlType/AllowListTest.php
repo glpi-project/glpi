@@ -134,7 +134,7 @@ class AllowListTest extends \DbTestCase
                 'profiles_id-7',
                 'profiles_id-8',
                 'profiles_id-9',
-            ]
+            ],
         ]);
         $this->assertInstanceOf(AllowListConfig::class, $config);
         $this->assertEquals([1, 2, 3], $config->getUserIds());

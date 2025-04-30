@@ -44,8 +44,7 @@ abstract class AbstractOption implements OptionInterface
         protected string $name,
         protected bool $apply_to_default = true,
         protected mixed $default_value = null
-    ) {
-    }
+    ) {}
 
     public function getName(): string
     {

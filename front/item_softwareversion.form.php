@@ -51,7 +51,7 @@ if (isset($_POST['add'])) {
             $inst->add([
                 'itemtype'        => $_POST['itemtype'],
                 'items_id'        => $_POST['items_id'],
-                'softwareversions_id' => $_POST['softwareversions_id']
+                'softwareversions_id' => $_POST['softwareversions_id'],
             ])
         ) {
             Event::log(
@@ -67,7 +67,7 @@ if (isset($_POST['add'])) {
         $message = null;
         if (!isset($_POST['softwares_id']) || !$_POST['softwares_id']) {
             $message = __s('Please select a software!');
-        } else if (!isset($_POST['softwareversions_id']) || !$_POST['softwareversions_id']) {
+        } elseif (!isset($_POST['softwareversions_id']) || !$_POST['softwareversions_id']) {
             $message = __s('Please select a version!');
         }
 

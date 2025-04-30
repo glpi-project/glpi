@@ -43,7 +43,6 @@ use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Toolbox;
 
 abstract class AbstractPluginToCoreCommand extends AbstractCommand
 {
@@ -52,14 +51,14 @@ abstract class AbstractPluginToCoreCommand extends AbstractCommand
      *
      * @var integer
      */
-    const ERROR_PLUGIN_VERSION_OR_DATA_INVALID = 1;
+    public const ERROR_PLUGIN_VERSION_OR_DATA_INVALID = 1;
 
     /**
      * Error code returned when import failed.
      *
      * @var integer
      */
-    const ERROR_PLUGIN_IMPORT_FAILED = 2;
+    public const ERROR_PLUGIN_IMPORT_FAILED = 2;
 
     /**
      * Target items mapping.
@@ -103,7 +102,7 @@ abstract class AbstractPluginToCoreCommand extends AbstractCommand
             $output->writeln(
                 [
                     sprintf(__('You are about to launch migration of "%s" plugin data into GLPI core tables.'), $this->getPluginKey()),
-                    __('It is better to make a backup of your existing data before continuing.')
+                    __('It is better to make a backup of your existing data before continuing.'),
                 ],
                 OutputInterface::VERBOSITY_QUIET
             );
@@ -164,7 +163,7 @@ abstract class AbstractPluginToCoreCommand extends AbstractCommand
                 continue;
             }
 
-            list($tablename, $fieldname) = explode('.', $field);
+            [$tablename, $fieldname] = explode('.', $field);
             if (!$this->db->tableExists($tablename) || !$this->db->fieldExists($tablename, $fieldname)) {
                 $this->output->writeln(
                     '<error>' . sprintf(__('Plugin database field "%s" is missing.'), $field) . '</error>',
@@ -385,7 +384,7 @@ abstract class AbstractPluginToCoreCommand extends AbstractCommand
         );
         if ($exists) {
             $infocom_input += [
-                'id' => $infocom->fields['id']
+                'id' => $infocom->fields['id'],
             ];
             $success = $infocom->update($infocom_input);
         } else {

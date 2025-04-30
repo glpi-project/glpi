@@ -49,14 +49,14 @@ class Item_DeviceFirmware extends Item_Devices
             'serial' => parent::getSpecificities('serial'),
             'otherserial' => parent::getSpecificities('otherserial'),
             'locations_id' => parent::getSpecificities('locations_id'),
-            'states_id' => parent::getSpecificities('states_id')
+            'states_id' => parent::getSpecificities('states_id'),
         ];
     }
 
     public function getImportCriteria(): array
     {
         return [
-            'serial' => 'equal'
+            'serial' => 'equal',
         ];
     }
 }

@@ -74,7 +74,7 @@ final class GlpiPageTile extends CommonDBTM implements TileInterface
             self::PAGE_SERVICE_CATALOG => __("Service catalog"),
             self::PAGE_FAQ             => __("FAQ"),
             self::PAGE_RESERVATION     => _n("Reservation", "Reservations", 1),
-            self::PAGE_APPROVAL        => _n('Approval', 'Approvals', 1)
+            self::PAGE_APPROVAL        => _n('Approval', 'Approvals', 1),
         ];
     }
 

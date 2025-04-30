@@ -139,7 +139,7 @@ final class FormDestinationManagerTest extends DbTestCase
         $destinations = $form->getDestinations();
         foreach ($destinations as $destination) {
             $this->updateItem($destination::class, $destination->getId(), [
-                'creation_strategy' => CreationStrategy::CREATED_IF->value
+                'creation_strategy' => CreationStrategy::CREATED_IF->value,
             ]);
         }
 

@@ -80,7 +80,7 @@ class LogTest extends DbTestCase
         unset($log_data['date_mod']);
 
         $log = new \Log();
-        $this->assertGreaterThan(0, (int)$log->add($log_data));
+        $this->assertGreaterThan(0, (int) $log->add($log_data));
 
         return $log;
     }
@@ -200,7 +200,7 @@ class LogTest extends DbTestCase
                 ],
                 [
                     $device_related_key => $device_related_value,
-                ]
+                ],
             ],
             [
                 [
@@ -209,7 +209,7 @@ class LogTest extends DbTestCase
                 ],
                 [
                     'linked_action::' . \Log::HISTORY_UPDATE_DEVICE . ';itemtype_link::Item_DeviceHardDrive#capacity;' => 'DeviceHardDrive (Capacity)',
-                ]
+                ],
             ],
             [
                 [
@@ -218,7 +218,7 @@ class LogTest extends DbTestCase
                 ],
                 [
                     $device_related_key => $device_related_value,
-                ]
+                ],
             ],
             [
                 [
@@ -226,7 +226,7 @@ class LogTest extends DbTestCase
                 ],
                 [
                     $software_related_key => $software_related_value,
-                ]
+                ],
             ],
             [
                 [
@@ -234,7 +234,7 @@ class LogTest extends DbTestCase
                 ],
                 [
                     $software_related_key => $software_related_value,
-                ]
+                ],
             ],
             [
                 [
@@ -243,7 +243,7 @@ class LogTest extends DbTestCase
                 ],
                 [
                     $device_related_key => $device_related_value,
-                ]
+                ],
             ],
             [
                 [
@@ -252,7 +252,7 @@ class LogTest extends DbTestCase
                 ],
                 [
                     $device_related_key => $device_related_value,
-                ]
+                ],
             ],
             [
                 [
@@ -261,7 +261,7 @@ class LogTest extends DbTestCase
                 ],
                 [
                     $device_related_key => $device_related_value,
-                ]
+                ],
             ],
             [
                 [
@@ -270,7 +270,7 @@ class LogTest extends DbTestCase
                 ],
                 [
                     $device_related_key => $device_related_value,
-                ]
+                ],
             ],
             [
                 [
@@ -278,7 +278,7 @@ class LogTest extends DbTestCase
                 ],
                 [
                     $others_key => $others_value,
-                ]
+                ],
             ],
             [
                 [
@@ -286,7 +286,7 @@ class LogTest extends DbTestCase
                 ],
                 [
                     $others_key => $others_value,
-                ]
+                ],
             ],
             [
                 [
@@ -294,7 +294,7 @@ class LogTest extends DbTestCase
                 ],
                 [
                     $others_key => $others_value,
-                ]
+                ],
             ],
             [
                 [
@@ -303,7 +303,7 @@ class LogTest extends DbTestCase
                 ],
                 [
                     $relation_related_key => $relation_related_value,
-                ]
+                ],
             ],
             [
                 [
@@ -312,7 +312,7 @@ class LogTest extends DbTestCase
                 ],
                 [
                     $relation_related_key => $relation_related_value,
-                ]
+                ],
             ],
             [
                 [
@@ -321,7 +321,7 @@ class LogTest extends DbTestCase
                 ],
                 [
                     $sub_item_related_key => $sub_item_related_value,
-                ]
+                ],
             ],
             [
                 [
@@ -330,7 +330,7 @@ class LogTest extends DbTestCase
                 ],
                 [
                     $sub_item_related_key => $sub_item_related_value,
-                ]
+                ],
             ],
             [
                 [
@@ -339,7 +339,7 @@ class LogTest extends DbTestCase
                 ],
                 [
                     $sub_item_related_key => $sub_item_related_value,
-                ]
+                ],
             ],
             [
                 [
@@ -347,7 +347,7 @@ class LogTest extends DbTestCase
                 ],
                 [
                     $others_key => $others_value,
-                ]
+                ],
             ],
             [
                 [
@@ -356,7 +356,7 @@ class LogTest extends DbTestCase
                 ],
                 [
                     $relation_related_key => $relation_related_value,
-                ]
+                ],
             ],
             [
                 [
@@ -365,7 +365,7 @@ class LogTest extends DbTestCase
                 ],
                 [
                     $relation_related_key => $relation_related_value,
-                ]
+                ],
             ],
             [
                 [
@@ -374,7 +374,7 @@ class LogTest extends DbTestCase
                 ],
                 [
                     $sub_item_related_key => $sub_item_related_value,
-                ]
+                ],
             ],
             [
                 [
@@ -382,8 +382,8 @@ class LogTest extends DbTestCase
                     'itemtype_link' => $relation_related_type_link,
                 ],
                 [
-                    $relation_related_key => $relation_related_value
-                ]
+                    $relation_related_key => $relation_related_value,
+                ],
             ],
             [
                 [
@@ -392,7 +392,7 @@ class LogTest extends DbTestCase
                 ],
                 [
                     $sub_item_related_key => $sub_item_related_value,
-                ]
+                ],
             ],
             [
                 [
@@ -400,7 +400,7 @@ class LogTest extends DbTestCase
                 ],
                 [
                     $others_key => $others_value,
-                ]
+                ],
             ],
             [
                 [
@@ -408,7 +408,7 @@ class LogTest extends DbTestCase
                 ],
                 [
                     $others_key => $others_value,
-                ]
+                ],
             ],
             [
                 [
@@ -416,7 +416,7 @@ class LogTest extends DbTestCase
                 ],
                 [
                     $others_key => $others_value,
-                ]
+                ],
             ],
             [
                 [
@@ -424,7 +424,7 @@ class LogTest extends DbTestCase
                 ],
                 [
                     $others_key => $others_value,
-                ]
+                ],
             ],
         ];
     }
@@ -510,7 +510,7 @@ class LogTest extends DbTestCase
         if (0 === $linked_action) {
             //Special case for field update
             $expected_value = __('Update a field');
-        } else if (null === $expected_value) {
+        } elseif (null === $expected_value) {
             //Null values fallbacks to 'Others'.
             $expected_key = 'other';
             $expected_value = __('Others');
@@ -554,10 +554,10 @@ class LogTest extends DbTestCase
                         'OR' => [
                             [
                                 'linked_action' => [35],
-                            ]
-                        ]
-                    ]
-                ]
+                            ],
+                        ],
+                    ],
+                ],
             ],
             [
                 [
@@ -569,11 +569,11 @@ class LogTest extends DbTestCase
                             [
                                 'NOT' => [
                                     'id_search_option' => [0],
-                                ]
-                            ]
-                        ]
-                    ]
-                ]
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
             ],
             [
                 [
@@ -585,10 +585,10 @@ class LogTest extends DbTestCase
                             [
                                 'linked_action' => [1, 5, 42],
                                 'itemtype_link' => ['SomeItem'],
-                            ]
-                        ]
-                    ]
-                ]
+                            ],
+                        ],
+                    ],
+                ],
             ],
             [
                 [
@@ -605,10 +605,10 @@ class LogTest extends DbTestCase
                                     'linked_action' => [35],
                                 ],
                                 'itemtype_link' => ['SomeItem'],
-                            ]
-                        ]
-                    ]
-                ]
+                            ],
+                        ],
+                    ],
+                ],
             ],
             [
                 [
@@ -618,8 +618,8 @@ class LogTest extends DbTestCase
                     [
                         ['date_mod' => ['>=', '2018-04-22 00:00:00']],
                         ['date_mod' => ['<=', '2018-04-22 23:59:59']],
-                    ]
-                ]
+                    ],
+                ],
             ],
             [
                 [
@@ -632,8 +632,8 @@ class LogTest extends DbTestCase
                                 'linked_action' => 3,
                             ],
                         ],
-                    ]
-                ]
+                    ],
+                ],
             ],
             [
                 [
@@ -650,10 +650,10 @@ class LogTest extends DbTestCase
                             ],
                             [
                                 'linked_action' => 47,
-                            ]
+                            ],
                         ],
-                    ]
-                ]
+                    ],
+                ],
             ],
             [
                 [
@@ -667,26 +667,26 @@ class LogTest extends DbTestCase
                             ],
                             [
                                 'linked_action' => ['>=', \Log::HISTORY_PLUGIN],
-                            ]
+                            ],
                         ],
-                    ]
-                ]
+                    ],
+                ],
             ],
             [
                 [
-                    'users_names' => ['user1']
+                    'users_names' => ['user1'],
                 ],
                 [
-                    'user_name' => ['user1']
-                ]
+                    'user_name' => ['user1'],
+                ],
             ],
             [
                 [
-                    'users_names' => ['user1', 'glpi', 'noone']
+                    'users_names' => ['user1', 'glpi', 'noone'],
                 ],
                 [
-                    'user_name' => ['user1', 'glpi', 'noone']
-                ]
+                    'user_name' => ['user1', 'glpi', 'noone'],
+                ],
             ],
             [
                 [
@@ -706,8 +706,8 @@ class LogTest extends DbTestCase
                                     'linked_action' => [1, 3, 4],
                                 ],
                                 'itemtype_link' => ['SomeItem'],
-                            ]
-                        ]
+                            ],
+                        ],
                     ],
                     [
                         ['date_mod' => ['>=', '2018-04-22 00:00:00']],
@@ -726,11 +726,11 @@ class LogTest extends DbTestCase
                             ],
                             [
                                 'linked_action' => ['>=', \Log::HISTORY_PLUGIN],
-                            ]
+                            ],
                         ],
                     ],
                     'user_name' => ['user1'],
-                ]
+                ],
             ],
         ];
     }
@@ -746,7 +746,7 @@ class LogTest extends DbTestCase
     {
         return [
             [TU_USER, TU_PASS, TU_USER],
-            ['jsmith123', TU_PASS, 'Smith John']
+            ['jsmith123', TU_PASS, 'Smith John'],
         ];
     }
 
@@ -767,7 +767,7 @@ class LogTest extends DbTestCase
                     'items_id'  => $rand,
                 ],
                 'ORDER'  => 'id DESC',
-                'LIMIT'  => 1
+                'LIMIT'  => 1,
             ]);
             $this->assertSame(1, count($iterator));
             return $iterator->current();
@@ -809,7 +809,7 @@ class LogTest extends DbTestCase
             0,
             $computers_id = $computer->add([
                 'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
-                'name' => __FUNCTION__
+                'name' => __FUNCTION__,
             ])
         );
         $this->assertTrue($computer->getFromDB($computers_id));
@@ -890,7 +890,7 @@ class LogTest extends DbTestCase
             'Computer',
             [
                 'name'        => 'Test computer',
-                'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true)
+                'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
             ]
         )->getID();
 
@@ -898,14 +898,14 @@ class LogTest extends DbTestCase
         $manufacturer_id = $this->createItem(
             'Manufacturer',
             [
-                'name' => 'Test manufacturer'
+                'name' => 'Test manufacturer',
             ]
         )->getID();
 
         $new_manufacturer_id = $this->createItem(
             'Manufacturer',
             [
-                'name' => 'New manufacturer'
+                'name' => 'New manufacturer',
             ]
         )->getID();
 
@@ -914,7 +914,7 @@ class LogTest extends DbTestCase
             'Computer',
             $computers_id,
             [
-                'manufacturers_id' => $manufacturer_id
+                'manufacturers_id' => $manufacturer_id,
             ]
         );
 
@@ -926,7 +926,7 @@ class LogTest extends DbTestCase
                 'itemtype' => 'Computer',
             ],
             'ORDER' => 'id DESC',
-            'LIMIT' => 1
+            'LIMIT' => 1,
         ];
 
         $log_iterator = $DB->request($log_criteria);
@@ -944,7 +944,7 @@ class LogTest extends DbTestCase
             'Computer',
             $computers_id,
             [
-                'manufacturers_id' => $new_manufacturer_id
+                'manufacturers_id' => $new_manufacturer_id,
             ]
         );
 
@@ -964,7 +964,7 @@ class LogTest extends DbTestCase
             'Computer',
             $computers_id,
             [
-                'manufacturers_id' => 0
+                'manufacturers_id' => 0,
             ]
         );
 

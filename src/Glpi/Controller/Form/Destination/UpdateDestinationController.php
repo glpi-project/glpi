@@ -54,7 +54,7 @@ final class UpdateDestinationController extends AbstractController
             $request->request->all(),
             [
                 'id'                       => $destination_id,
-                Form::getForeignKeyField() => $form_id
+                Form::getForeignKeyField() => $form_id,
             ]
         );
 

@@ -43,7 +43,7 @@ class LogsWriteAccessTest extends \GLPITestCase
 {
     public function testCheckOnExistingWritableDir()
     {
-        vfsStream::setup('root', 0777, []);
+        vfsStream::setup('root', 0o777, []);
 
         $logger = new Logger('test_log');
         $logger->pushHandler(new StreamHandler(vfsStream::url('root/test.log')));
@@ -58,7 +58,7 @@ class LogsWriteAccessTest extends \GLPITestCase
 
     public function testCheckOnExistingProtectedDir()
     {
-        vfsStream::setup('root', 0555, []);
+        vfsStream::setup('root', 0o555, []);
 
         $logger = new Logger('test_log');
         $logger->pushHandler(new StreamHandler(vfsStream::url('root/test.log')));

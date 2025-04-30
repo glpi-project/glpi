@@ -36,7 +36,7 @@
 /// Collector Rules collection class
 class RuleMailCollectorCollection extends RuleCollection
 {
-   // From RuleCollection
+    // From RuleCollection
     public $stop_on_first_match = true;
     public static $rightname           = 'rule_mailcollector';
     public $menu_option         = 'mailcollector';
@@ -100,7 +100,7 @@ class RuleMailCollectorCollection extends RuleCollection
 
         // If the criteria is "user has only one time the profile xxx"
         if (in_array('unique_profile', $fields, true)) {
-           //Get all profiles
+            //Get all profiles
             $profiles = Profile_User::getForUser($input['_users_id_requester']);
             foreach ($profiles as $profile) {
                 if (

@@ -32,6 +32,4 @@
  * ---------------------------------------------------------------------
  */
 
-class PluginFooService
-{
-}
+class PluginFooService {}

@@ -36,7 +36,6 @@
 namespace Glpi\Form\QuestionType;
 
 use Glpi\DBAL\JsonFieldInterface;
-use Glpi\Form\Condition\ConditionHandler\ConditionHandlerInterface;
 use Glpi\Form\Condition\ConditionHandler\SingleChoiceFromValuesConditionHandler;
 use Glpi\Form\Condition\UsedAsCriteriaInterface;
 use Glpi\Form\Question;

@@ -51,9 +51,7 @@ final class FormDestinationManager
     /**
      * Private constructor (singleton)
      */
-    private function __construct()
-    {
-    }
+    private function __construct() {}
 
     /**
      * Singleton access method

@@ -39,7 +39,7 @@ use Glpi\DBAL\QueryFunction;
 /// Import rules collection class
 class RuleImportAssetCollection extends RuleCollection
 {
-   // From RuleCollection
+    // From RuleCollection
     public $stop_on_first_match = true;
     public static $rightname           = 'rule_import';
     public $menu_option         = 'linkcomputer';
@@ -94,15 +94,15 @@ class RuleImportAssetCollection extends RuleCollection
         $criteria['LEFT JOIN']['glpi_rulecriterias AS crit'] = [
             'ON'  => [
                 'crit'         => 'rules_id',
-                'glpi_rules'   => 'id'
-            ]
+                'glpi_rules'   => 'id',
+            ],
         ];
         $criteria['GROUPBY'] = ['glpi_rules.id'];
 
         if ($current_tab != '_global') {
             $where = [
                 'crit.criteria'   => 'itemtype',
-                'crit.pattern'    => getSingular($current_tab)
+                'crit.pattern'    => getSingular($current_tab),
             ];
             $criteria['WHERE']  += $where;
         } else {

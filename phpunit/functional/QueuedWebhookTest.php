@@ -93,7 +93,7 @@ class QueuedWebhookTest extends DbTestCase
         $queuedWebhook1->update(
             [
                 'id' => $queuedWebhook1->getID(),
-                'sent_try' => 4
+                'sent_try' => 4,
             ],
         );
 
@@ -102,7 +102,7 @@ class QueuedWebhookTest extends DbTestCase
         $queuedWebhook2->update(
             [
                 'id' => $queuedWebhook2->getID(),
-                'sent_try' => 1
+                'sent_try' => 1,
             ],
         );
 

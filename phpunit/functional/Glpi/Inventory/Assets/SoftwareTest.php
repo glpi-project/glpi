@@ -66,7 +66,7 @@ class SoftwareTest extends AbstractInventoryAsset
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-                'expected'  => '{"arch": "x86_64", "comments": "GNU Image Manipulation Program", "filesize": 67382735, "from": "rpm", "name": "gimp", "publisher": "Fedora Project", "system_category": "Application", "version": "2.8.22-7.fc28", "install_date": "2018-09-03", "manufacturers_id": "Fedora Project", "comment": "GNU Image Manipulation Program", "_system_category": "Application", "operatingsystems_id": 0, "entities_id": 0, "softwarecategories_id": "Application", "is_template_item": 0, "is_deleted_item": 0, "is_recursive": 0, "date_install": "2018-09-03"}'
+                'expected'  => '{"arch": "x86_64", "comments": "GNU Image Manipulation Program", "filesize": 67382735, "from": "rpm", "name": "gimp", "publisher": "Fedora Project", "system_category": "Application", "version": "2.8.22-7.fc28", "install_date": "2018-09-03", "manufacturers_id": "Fedora Project", "comment": "GNU Image Manipulation Program", "_system_category": "Application", "operatingsystems_id": 0, "entities_id": 0, "softwarecategories_id": "Application", "is_template_item": 0, "is_deleted_item": 0, "is_recursive": 0, "date_install": "2018-09-03"}',
             ],
             [
                 'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
@@ -98,8 +98,8 @@ class SoftwareTest extends AbstractInventoryAsset
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-                'expected'  => '{"arch": "x86_64", "comments": "GNU Image Manipulation Program", "filesize": 67382735, "from": "rpm", "name": "gimp", "publisher": "Fedora Project", "system_category": "System Component", "version": "2.8.22-7.fc28", "install_date": "2018-09-03", "manufacturers_id": "Fedora Project", "comment": "GNU Image Manipulation Program", "_system_category": "System Component", "operatingsystems_id": 0, "entities_id": 0, "softwarecategories_id": "System Component", "is_template_item": 0, "is_deleted_item": 0, "is_recursive": 0, "date_install": "2018-09-03"}'
-            ]
+                'expected'  => '{"arch": "x86_64", "comments": "GNU Image Manipulation Program", "filesize": 67382735, "from": "rpm", "name": "gimp", "publisher": "Fedora Project", "system_category": "System Component", "version": "2.8.22-7.fc28", "install_date": "2018-09-03", "manufacturers_id": "Fedora Project", "comment": "GNU Image Manipulation Program", "_system_category": "System Component", "operatingsystems_id": 0, "entities_id": 0, "softwarecategories_id": "System Component", "is_template_item": 0, "is_deleted_item": 0, "is_recursive": 0, "date_install": "2018-09-03"}',
+            ],
         ];
     }
 
@@ -112,7 +112,7 @@ class SoftwareTest extends AbstractInventoryAsset
 
         $computer = getItemByTypeName('Computer', '_test_pc01');
         $asset = new \Glpi\Inventory\Asset\Software($computer, $json->content->softwares);
-        $asset->setExtraData((array)$json->content);
+        $asset->setExtraData((array) $json->content);
         $result = $asset->prepare();
 
         //Manufacturer has been imported into db...
@@ -143,7 +143,7 @@ class SoftwareTest extends AbstractInventoryAsset
         $computer = getItemByTypeName('Computer', '_test_pc01');
         $asset = new \Glpi\Inventory\Asset\Software($computer, $json->content->softwares);
 
-        $extra_data = (array)$json->content;
+        $extra_data = (array) $json->content;
 
         $asset->setExtraData($extra_data);
         $result = $asset->prepare();
@@ -172,13 +172,13 @@ class SoftwareTest extends AbstractInventoryAsset
 
         $computer = getItemByTypeName('Computer', '_test_pc01');
         $asset = new \Glpi\Inventory\Asset\Software($computer, $json->content->softwares);
-        $osasset = new \Glpi\Inventory\Asset\OperatingSystem($computer, (array)$json->content->operatingsystem);
+        $osasset = new \Glpi\Inventory\Asset\OperatingSystem($computer, (array) $json->content->operatingsystem);
         $osasset->prepare();
         //handle
         $osasset->handleLinks();
         $osasset->handle();
 
-        $extra_data = (array)$json->content;
+        $extra_data = (array) $json->content;
         $extra_data['\Glpi\Inventory\Asset\OperatingSystem'] = $osasset;
 
         $asset->setExtraData($extra_data);
@@ -199,7 +199,7 @@ class SoftwareTest extends AbstractInventoryAsset
         $ios = new \Item_OperatingSystem();
         $this->assertTrue($ios->getFromDBByCrit([
             "itemtype" => 'Computer',
-            "items_id" => $computer->fields['id']
+            "items_id" => $computer->fields['id'],
         ]));
 
         $version = new \SoftwareVersion();
@@ -212,20 +212,20 @@ class SoftwareTest extends AbstractInventoryAsset
         $this->assertCount(5, $soft_reference);
 
         $computer2 = getItemByTypeName('Computer', '_test_pc02');
-       //first, check there are no software linked to this computer
+        //first, check there are no software linked to this computer
         $this->assertFalse(
             $sov->getFromDbByCrit(['items_id' => $computer2->fields['id'], 'itemtype' => 'Computer']),
             'A software version is already linked to computer!'
         );
 
         $asset = new \Glpi\Inventory\Asset\Software($computer2, $json->content->softwares);
-        $osasset = new \Glpi\Inventory\Asset\OperatingSystem($computer2, (array)$json->content->operatingsystem);
+        $osasset = new \Glpi\Inventory\Asset\OperatingSystem($computer2, (array) $json->content->operatingsystem);
         $osasset->prepare();
         //handle
         $osasset->handleLinks();
         $osasset->handle();
 
-        $extra_data = (array)$json->content;
+        $extra_data = (array) $json->content;
         $extra_data['\Glpi\Inventory\Asset\OperatingSystem'] = $osasset;
 
         $asset->setExtraData($extra_data);
@@ -292,14 +292,14 @@ class SoftwareTest extends AbstractInventoryAsset
         $computers_id = $computer->add([
             'name'   => 'pc002',
             'serial' => 'ggheb7ne7',
-            'entities_id' => 0
+            'entities_id' => 0,
         ]);
         $this->assertGreaterThan(0, $computers_id);
 
         //computer inventory knows only "gimp" and "php-cli" software
         $this->doInventory($xml_source, true);
 
-       //we have 2 software & versions
+        //we have 2 software & versions
         $softs = $soft->find(['NOT' => ['name' => ['LIKE', '_test_%']]]);
         $this->assertCount(2, $softs);
         $versions = $version->find(['NOT' => ['name' => ['LIKE', '_test_%']]]);
@@ -312,14 +312,14 @@ class SoftwareTest extends AbstractInventoryAsset
                 \SoftwareCategory::getTable() => [
                     'ON' => [
                         \Software::getTable() => 'softwarecategories_id',
-                        \SoftwareCategory::getTable() => 'id'
-                    ]
-                ]
+                        \SoftwareCategory::getTable() => 'id',
+                    ],
+                ],
             ],
             'WHERE' => [
                 \Software::getTable() . ".name" => "gimp",
-                \SoftwareCategory::getTable() . ".name" => "Application"
-            ]
+                \SoftwareCategory::getTable() . ".name" => "Application",
+            ],
         ];
 
         $iterator = $DB->request($criteria);
@@ -331,14 +331,14 @@ class SoftwareTest extends AbstractInventoryAsset
                 \SoftwareCategory::getTable() => [
                     'ON' => [
                         \Software::getTable() => 'softwarecategories_id',
-                        \SoftwareCategory::getTable() => 'id'
-                    ]
-                ]
+                        \SoftwareCategory::getTable() => 'id',
+                    ],
+                ],
             ],
             'WHERE' => [
                 \Software::getTable() . ".name" => "php-cli",
-                \SoftwareCategory::getTable() . ".name" => "Development/Languages"
-            ]
+                \SoftwareCategory::getTable() . ".name" => "Development/Languages",
+            ],
         ];
 
         $iterator = $DB->request($criteria);
@@ -397,14 +397,14 @@ class SoftwareTest extends AbstractInventoryAsset
                 \SoftwareCategory::getTable() => [
                     'ON' => [
                         \Software::getTable() => 'softwarecategories_id',
-                        \SoftwareCategory::getTable() => 'id'
-                    ]
-                ]
+                        \SoftwareCategory::getTable() => 'id',
+                    ],
+                ],
             ],
             'WHERE' => [
                 \Software::getTable() . ".name" => "gimp",
-                \SoftwareCategory::getTable() . ".name" => "Web App"
-            ]
+                \SoftwareCategory::getTable() . ".name" => "Web App",
+            ],
         ];
         $iterator = $DB->request($criteria);
         $this->assertCount(1, $iterator);
@@ -456,7 +456,7 @@ class SoftwareTest extends AbstractInventoryAsset
                 'rules_id'    => $rules_id,
                 'criteria'  => "tag",
                 'pattern'   => "/(.*)/",
-                'condition' => \RuleImportEntity::REGEX_MATCH
+                'condition' => \RuleImportEntity::REGEX_MATCH,
             ])
         );
 
@@ -562,7 +562,7 @@ class SoftwareTest extends AbstractInventoryAsset
         $computer_softversion = new \Item_SoftwareVersion();
         $computer_softversions = $computer_softversion->find([
             'itemtype' => "Computer",
-            'items_id' => $first_computer['id']
+            'items_id' => $first_computer['id'],
         ]);
         $this->assertCount(1, $computer_softversions);
         $first_computer_soft = array_pop($computer_softversions);
@@ -616,7 +616,7 @@ class SoftwareTest extends AbstractInventoryAsset
         $computer_softversion = new \Item_SoftwareVersion();
         $computer_softversions = $computer_softversion->find([
             'itemtype' => "Computer",
-            'items_id' => $first_computer['id']
+            'items_id' => $first_computer['id'],
         ]);
         $this->assertCount(1, $computer_softversions);
         $first_computer_soft = array_pop($computer_softversions);
@@ -650,7 +650,7 @@ class SoftwareTest extends AbstractInventoryAsset
                 'rules_id'    => $rules_id,
                 'criteria'  => "name",
                 'pattern'   => "Microsoft",
-                'condition' => \Rule::PATTERN_CONTAIN
+                'condition' => \Rule::PATTERN_CONTAIN,
             ])
         );
 
@@ -735,7 +735,7 @@ class SoftwareTest extends AbstractInventoryAsset
                 'rules_id'    => $rules_id,
                 'criteria'  => "manufacturer",
                 'pattern'   => "Apple",
-                'condition' => \Rule::PATTERN_CONTAIN
+                'condition' => \Rule::PATTERN_CONTAIN,
             ])
         );
 
@@ -912,7 +912,7 @@ class SoftwareTest extends AbstractInventoryAsset
         $computers_id = $computer->add([
             'name'   => 'pc002',
             'serial' => 'ggheb7ne7',
-            'entities_id' => 0
+            'entities_id' => 0,
         ]);
         $this->assertGreaterThan(0, $computers_id);
 
@@ -933,7 +933,7 @@ class SoftwareTest extends AbstractInventoryAsset
         $this->assertTrue($item_version->getFromDBByCrit([
             "itemtype" => "Computer",
             "items_id" => $computers_id,
-            "softwareversions_id" => $version_data['id']
+            "softwareversions_id" => $version_data['id'],
         ]));
 
         //inventory with two same software: one with name containing an unbreakable space, the other with standard space
@@ -1036,7 +1036,7 @@ class SoftwareTest extends AbstractInventoryAsset
         $computers_id = $computer->add([
             'name'   => 'pc002',
             'serial' => 'ggheb7ne7',
-            'entities_id' => 0
+            'entities_id' => 0,
         ]);
         $this->assertGreaterThan(0, $computers_id);
 
@@ -1054,7 +1054,7 @@ class SoftwareTest extends AbstractInventoryAsset
         $this->assertTrue($item_version->getFromDBByCrit([
             "itemtype" => "Computer",
             "items_id" => $computers_id,
-            "softwareversions_id" => $version_data['id']
+            "softwareversions_id" => $version_data['id'],
         ]));
 
         //inventory with Cisco soft updated
@@ -1115,7 +1115,7 @@ class SoftwareTest extends AbstractInventoryAsset
         $this->assertTrue($item_version->getFromDBByCrit([
             "itemtype" => "Computer",
             "items_id" => $computers_id,
-            "softwareversions_id" => $version_data['id']
+            "softwareversions_id" => $version_data['id'],
         ]));
     }
 
@@ -1160,7 +1160,7 @@ class SoftwareTest extends AbstractInventoryAsset
         $computers_id = $computer->add([
             'name'   => 'pc002',
             'serial' => 'ggheb7ne7',
-            'entities_id' => 0
+            'entities_id' => 0,
         ]);
         $this->assertGreaterThan(0, $computers_id);
 
@@ -1178,7 +1178,7 @@ class SoftwareTest extends AbstractInventoryAsset
         $this->assertTrue($item_version->getFromDBByCrit([
             "itemtype" => "Computer",
             "items_id" => $computers_id,
-            "softwareversions_id" => $version_data['id']
+            "softwareversions_id" => $version_data['id'],
         ]));
 
         //same inventory again
@@ -1196,7 +1196,7 @@ class SoftwareTest extends AbstractInventoryAsset
         $this->assertTrue($item_version->getFromDBByCrit([
             "itemtype" => "Computer",
             "items_id" => $computers_id,
-            "softwareversions_id" => $version_data['id']
+            "softwareversions_id" => $version_data['id'],
         ]));
     }
 
@@ -1241,7 +1241,7 @@ class SoftwareTest extends AbstractInventoryAsset
         $computers_id = $computer->add([
             'name'   => 'pc002',
             'serial' => 'ggheb7ne7',
-            'entities_id' => 0
+            'entities_id' => 0,
         ]);
         $this->assertGreaterThan(0, $computers_id);
 
@@ -1259,7 +1259,7 @@ class SoftwareTest extends AbstractInventoryAsset
         $this->assertTrue($item_version->getFromDBByCrit([
             "itemtype" => "Computer",
             "items_id" => $computers_id,
-            "softwareversions_id" => $version_data['id']
+            "softwareversions_id" => $version_data['id'],
         ]));
 
         //same inventory again
@@ -1277,7 +1277,7 @@ class SoftwareTest extends AbstractInventoryAsset
         $this->assertTrue($item_version->getFromDBByCrit([
             "itemtype" => "Computer",
             "items_id" => $computers_id,
-            "softwareversions_id" => $version_data['id']
+            "softwareversions_id" => $version_data['id'],
         ]));
     }
 
@@ -1318,7 +1318,7 @@ class SoftwareTest extends AbstractInventoryAsset
         $computers_id = $computer->add([
             'name'   => 'pc002',
             'serial' => 'ggheb7ne7',
-            'entities_id' => 0
+            'entities_id' => 0,
         ]);
         $this->assertGreaterThan(0, $computers_id);
 
@@ -1341,7 +1341,7 @@ class SoftwareTest extends AbstractInventoryAsset
         $this->assertTrue($item_version->getFromDBByCrit([
             "itemtype" => "Computer",
             "items_id" => $computers_id,
-            "softwareversions_id" => $versions_id
+            "softwareversions_id" => $versions_id,
         ]));
         $item_versions_id = $item_version->fields['id'];
 
@@ -1364,7 +1364,7 @@ class SoftwareTest extends AbstractInventoryAsset
         $this->assertTrue($item_version->getFromDBByCrit([
             "itemtype" => "Computer",
             "items_id" => $computers_id,
-            "softwareversions_id" => $versions_id
+            "softwareversions_id" => $versions_id,
         ]));
         $this->assertSame($item_version->fields['id'], $item_versions_id);
     }
@@ -1404,7 +1404,7 @@ class SoftwareTest extends AbstractInventoryAsset
         $computers_id = $computer->add([
             'name'   => 'pc002',
             'serial' => 'ggheb7ne7',
-            'entities_id' => 0
+            'entities_id' => 0,
         ]);
         $this->assertGreaterThan(0, $computers_id);
 
@@ -1427,7 +1427,7 @@ class SoftwareTest extends AbstractInventoryAsset
         $this->assertTrue($item_version->getFromDBByCrit([
             "itemtype" => "Computer",
             "items_id" => $computers_id,
-            "softwareversions_id" => $versions_id
+            "softwareversions_id" => $versions_id,
         ]));
         $item_versions_id = $item_version->fields['id'];
 
@@ -1450,7 +1450,7 @@ class SoftwareTest extends AbstractInventoryAsset
         $this->assertTrue($item_version->getFromDBByCrit([
             "itemtype" => "Computer",
             "items_id" => $computers_id,
-            "softwareversions_id" => $versions_id
+            "softwareversions_id" => $versions_id,
         ]));
         $this->assertSame($item_version->fields['id'], $item_versions_id);
     }
@@ -1492,7 +1492,7 @@ class SoftwareTest extends AbstractInventoryAsset
         $computers_id = $computer->add([
             'name'   => 'pc002',
             'serial' => 'ggheb7ne7',
-            'entities_id' => 0
+            'entities_id' => 0,
         ]);
         $this->assertGreaterThan(0, $computers_id);
 
@@ -1515,7 +1515,7 @@ class SoftwareTest extends AbstractInventoryAsset
         $this->assertTrue($item_version->getFromDBByCrit([
             "itemtype" => "Computer",
             "items_id" => $computers_id,
-            "softwareversions_id" => $versions_id
+            "softwareversions_id" => $versions_id,
         ]));
         $item_versions_id = $item_version->fields['id'];
 
@@ -1538,7 +1538,7 @@ class SoftwareTest extends AbstractInventoryAsset
         $this->assertTrue($item_version->getFromDBByCrit([
             "itemtype" => "Computer",
             "items_id" => $computers_id,
-            "softwareversions_id" => $versions_id
+            "softwareversions_id" => $versions_id,
         ]));
         $this->assertSame($item_version->fields['id'], $item_versions_id);
     }
@@ -1575,7 +1575,7 @@ class SoftwareTest extends AbstractInventoryAsset
         $computers_id = $computer->add([
             'name'   => 'pc003',
             'serial' => 'sdfgdfg8dfg',
-            'entities_id' => 0
+            'entities_id' => 0,
         ]);
         $this->assertGreaterThan(0, $computers_id);
 
@@ -1599,7 +1599,7 @@ class SoftwareTest extends AbstractInventoryAsset
             "itemtype" => "Computer",
             "items_id" => $computers_id,
             "softwareversions_id" => $versions_id,
-            "date_install" => "2014-03-04"
+            "date_install" => "2014-03-04",
         ]));
         $item_versions_id = $item_version->fields['id'];
 
@@ -1644,7 +1644,7 @@ class SoftwareTest extends AbstractInventoryAsset
             "itemtype" => "Computer",
             "items_id" => $computers_id,
             "softwareversions_id" => $versions_id,
-            "date_install" => "2024-03-04"
+            "date_install" => "2024-03-04",
         ]));
 
         //check computer-softwareverison relation is the same (ID)
@@ -1678,7 +1678,7 @@ class SoftwareTest extends AbstractInventoryAsset
                 'rules_id'  => $rules_id,
                 'criteria'  => 'name',
                 'condition' => \Rule::PATTERN_IS,
-                'pattern'   => 'firefox'
+                'pattern'   => 'firefox',
             ])
         );
 
@@ -1777,7 +1777,7 @@ class SoftwareTest extends AbstractInventoryAsset
         $computers_id = $computer->add([
             'name'   => 'pc012302',
             'serial' => 'sd65f4sd6f4',
-            'entities_id' => 0
+            'entities_id' => 0,
         ]);
         $this->assertGreaterThan(0, $computers_id);
 

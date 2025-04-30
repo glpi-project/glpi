@@ -64,7 +64,7 @@ class DeviceCamera extends CommonDevice
                 [
                     'name'  => 'devicecameramodels_id',
                     'label' => _n('Model', 'Models', 1),
-                    'type'  => 'dropdownValue'
+                    'type'  => 'dropdownValue',
                 ],
                 [
                     'name'   => 'flashunit',
@@ -95,7 +95,7 @@ class DeviceCamera extends CommonDevice
                     'name'   => 'support',
                     'label'  => __('Support'),
                     'type'   => 'text',
-                ]
+                ],
             ]
         );
     }
@@ -109,7 +109,7 @@ class DeviceCamera extends CommonDevice
             'table'              => 'glpi_devicecameramodels',
             'field'              => 'name',
             'name'               => _n('Model', 'Models', 1),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -232,7 +232,7 @@ class DeviceCamera extends CommonDevice
         return [
             'designation'           => 'equal',
             'devicecameramodels_id' => 'equal',
-            'manufacturers_id'      => 'equal'
+            'manufacturers_id'      => 'equal',
         ];
     }
 

@@ -53,8 +53,8 @@ class DeviceSensor extends CommonDevice
                 [
                     'name'  => 'devicesensortypes_id',
                     'label' => _n('Type', 'Types', 1),
-                    'type'  => 'dropdownValue'
-                ]
+                    'type'  => 'dropdownValue',
+                ],
             ]
         );
     }
@@ -67,7 +67,7 @@ class DeviceSensor extends CommonDevice
             'table'    => 'glpi_devicesensortypes',
             'field'    => 'name',
             'name'     => _n('Type', 'Types', 1),
-            'datatype' => 'dropdown'
+            'datatype' => 'dropdown',
         ];
 
         return $tab;
@@ -125,7 +125,7 @@ class DeviceSensor extends CommonDevice
             'designation'          => 'equal',
             'manufacturers_id'     => 'equal',
             'devicesensortypes_id' => 'equal',
-            'locations_id'         => 'equal'
+            'locations_id'         => 'equal',
         ];
     }
 }

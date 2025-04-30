@@ -121,7 +121,7 @@ class Request extends AbstractRequest
     {
         $params = [
             'options' => [
-                'response' => []
+                'response' => [],
             ],
             'item' => $this->inventory->getAgent(),
         ];
@@ -166,15 +166,15 @@ class Request extends AbstractRequest
 
         $response = [
             'expiration' => $CFG_GLPI['inventory_frequency'] ?? self::DEFAULT_FREQUENCY,
-            'status'     => 'ok'
+            'status'     => 'ok',
         ];
 
         $params = [
             'options' => [
                 'content' => $data,
-                'response' => $response
+                'response' => $response,
             ],
-            'item' => $this->inventory->getAgent()
+            'item' => $this->inventory->getAgent(),
         ];
 
         $params = Plugin::doHookFunction(Hooks::INVENTORY_GET_PARAMS, $params);
@@ -199,19 +199,19 @@ class Request extends AbstractRequest
             $this->setMode(self::JSON_MODE);
             $response = [
                 'expiration' => $CFG_GLPI['inventory_frequency'] ?? self::DEFAULT_FREQUENCY,
-                'status'     => 'ok'
+                'status'     => 'ok',
             ];
         } else {
             $response = [
                 'PROLOG_FREQ'  => $CFG_GLPI['inventory_frequency'] ?? self::DEFAULT_FREQUENCY,
-                'RESPONSE'     => 'SEND'
+                'RESPONSE'     => 'SEND',
             ];
         }
 
         $hook_params = [
             'mode' => $this->getMode(),
             'deviceid' => $this->getDeviceID(),
-            'response' => $response
+            'response' => $response,
         ];
         $hook_response = Plugin::doHookFunction(
             Hooks::PROLOG_RESPONSE,
@@ -272,7 +272,7 @@ class Request extends AbstractRequest
             'inventory' => $this->inventory,
             'deviceid' => $this->getDeviceID(),
             'response' => $response,
-            'query' => $this->query
+            'query' => $this->query,
         ];
 
         $hook_response = Plugin::doHookFunction(
@@ -287,7 +287,7 @@ class Request extends AbstractRequest
             //try to use hook response
             if (isset($hook_response['response']) && count($hook_response['response'])) {
                 $this->addToResponse($response);
-            } else if (isset($hook_response['errors']) && count($hook_response['errors'])) {
+            } elseif (isset($hook_response['errors']) && count($hook_response['errors'])) {
                 $this->addError($hook_response['errors'], 400);
             } else {
                 //nothing expected happens; this is an error
@@ -313,7 +313,7 @@ class Request extends AbstractRequest
 
         $response = [
             'expiration' => $CFG_GLPI['inventory_frequency'] ?? self::DEFAULT_FREQUENCY,
-            'status'     => 'ok'
+            'status'     => 'ok',
         ];
 
         //For the moment it's the Agent who informs us about the active tasks
@@ -345,7 +345,7 @@ class Request extends AbstractRequest
                     // Task is not supported, disable it and add unsupported message in response
                     $this->addToResponse([
                         "message" => "$task task not supported",
-                        "disabled" => $task
+                        "disabled" => $task,
                     ]);
                 }
             }
@@ -404,7 +404,7 @@ class Request extends AbstractRequest
             if ($this->headers->hasHeader('GLPI-Agent-ID')) {
                 $response = [
                     'expiration' => $CFG_GLPI['inventory_frequency'] ?? self::DEFAULT_FREQUENCY,
-                    'status'     => 'ok'
+                    'status'     => 'ok',
                 ];
             } else {
                 $response = ['RESPONSE' => 'SEND'];
@@ -427,7 +427,7 @@ class Request extends AbstractRequest
         // Preset response as GLPI supports native inventory by default
         $params['options']['response'][self::INVENT_TASK] = [
             'server' => 'glpi',
-            'version' => GLPI_VERSION
+            'version' => GLPI_VERSION,
         ];
         $params = Plugin::doHookFunction(Hooks::HANDLE_INVENTORY_TASK, $params);
 
@@ -543,22 +543,22 @@ class Request extends AbstractRequest
         $items = $this->inventory->getItems();
         $status = [
             'metadata' => $this->inventory->getMetadata(),
-            'items'    => $items
+            'items'    => $items,
         ];
 
         if (count($items) == 1) {
             $item = $items[0];
             $status += [
                 'itemtype' => $item->getType(),
-                'items_id' => $item->fields['id']
+                'items_id' => $item->fields['id'],
             ];
-        } else if (count($items)) {
+        } elseif (count($items)) {
             // Defines 'itemtype' only if all items has same type
             $itemtype = null;
             foreach ($items as $item) {
                 if ($itemtype === null && $item->getType() != Unmanaged::class) {
                     $itemtype = $item->getType();
-                } else if ($itemtype !== $item->getType()) {
+                } elseif ($itemtype !== $item->getType()) {
                     $itemtype = false;
                     break;
                 }

@@ -105,7 +105,7 @@ final class ServiceCatalogManager
 
         return [
             'items' => $items,
-            'total' => $total
+            'total' => $total,
         ];
     }
 

@@ -34,7 +34,6 @@
  */
 
 use Glpi\DBAL\QueryExpression;
-use Glpi\DBAL\QueryFunction;
 use Glpi\DBAL\QueryParam;
 use Glpi\DBAL\QuerySubQuery;
 
@@ -48,9 +47,9 @@ class DBmysqlIterator implements SeekableIterator, Countable
      * @var ?DBmysql
      */
     private $conn;
-   // Current SQL query
+    // Current SQL query
     private $sql;
-   // Current result
+    // Current result
     private $res = false;
 
     /**
@@ -71,7 +70,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
      */
     private $position = null;
 
-   //Known query operators
+    //Known query operators
     private $allowed_operators = [
         '=',
         '!=',
@@ -156,7 +155,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
         $having   = '';
         if (count($criteria)) {
             foreach ($criteria as $key => $val) {
-                switch ((string)$key) {
+                switch ((string) $key) {
                     case 'SELECT':
                     case 'FIELDS':
                         $field = $val;
@@ -193,13 +192,13 @@ class DBmysqlIterator implements SeekableIterator, Countable
                         break;
 
                     case 'WHERE':
-                          $where = $val;
-                          unset($criteria[$key]);
+                        $where = $val;
+                        unset($criteria[$key]);
                         break;
 
                     case 'HAVING':
-                         $having = $val;
-                         unset($criteria[$key]);
+                        $having = $val;
+                        unset($criteria[$key]);
                         break;
 
                     case 'GROUP':
@@ -222,7 +221,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
         $this->sql = 'SELECT ';
         $first = true;
 
-       // SELECT field list
+        // SELECT field list
         if ($count) {
             $this->sql .= 'COUNT(';
             if ($distinct) {
@@ -269,21 +268,21 @@ class DBmysqlIterator implements SeekableIterator, Countable
             } else {
                 throw new \LogicException("Missing table name.");
             }
-        } else if ($table) {
+        } elseif ($table) {
             if ($table instanceof \AbstractQuery) {
                 $query = $table;
                 $table = $query->getQuery();
-            } else if ($table instanceof QueryExpression) {
+            } elseif ($table instanceof QueryExpression) {
                 $table = $table->getValue();
             } else {
                 $table = DBmysql::quoteName($table);
             }
             $this->sql .= " FROM $table";
         } else {
-           /*
-            * TODO filter with if ($where || !empty($criteria)) {
-            * but not useful for now, as we CANNOT write something like "SELECT NOW()"
-            */
+            /*
+             * TODO filter with if ($where || !empty($criteria)) {
+             * but not useful for now, as we CANNOT write something like "SELECT NOW()"
+             */
             throw new \LogicException("Missing table name.");
         }
 
@@ -301,7 +300,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
                     E_USER_WARNING
                 );
             }
-        } else if ($where) {
+        } elseif ($where) {
             $this->sql .= " WHERE " . $this->analyseCrit($where);
         }
 
@@ -313,7 +312,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
             } else {
                 throw new \LogicException("Missing group by field.");
             }
-        } else if ($groupby) {
+        } elseif ($groupby) {
             $groupby = DBmysql::quoteName($groupby);
             $this->sql .= " GROUP BY $groupby";
         }
@@ -359,7 +358,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
                     }
                     $cleanorderby[] = $new;
                 }
-            } else if ($o instanceof QueryExpression) {
+            } elseif ($o instanceof QueryExpression) {
                 $cleanorderby[] = $o->getValue();
             } else {
                 throw new \LogicException("Invalid order clause.");
@@ -403,7 +402,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
         if (is_numeric($t)) {
             if ($f instanceof \AbstractQuery) {
                 return $f->getQuery();
-            } else if ($f instanceof QueryExpression) {
+            } elseif ($f instanceof QueryExpression) {
                 return $f->getValue();
             } else {
                 return DBmysql::quoteName($f);
@@ -415,12 +414,13 @@ class DBmysqlIterator implements SeekableIterator, Countable
                     if (is_array($f)) {
                         $sub_count = [];
                         foreach ($f as $sub_f) {
-                             $sub_count[] = $this->handleFieldsAlias("COUNT(DISTINCT", $sub_f, ')');
+                            $sub_count[] = $this->handleFieldsAlias("COUNT(DISTINCT", $sub_f, ')');
                         }
                         return implode(", ", $sub_count);
                     } else {
                         return $this->handleFieldsAlias("COUNT(DISTINCT", $f, ')');
                     }
+                    // no break
                 case 'COUNT':
                 case 'SUM':
                 case 'AVG':
@@ -435,6 +435,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
                     } else {
                         return $this->handleFieldsAlias($t, $f);
                     }
+                    // no break
                 default:
                     if (is_array($f)) {
                         $t = DBmysql::quoteName($t);
@@ -505,9 +506,9 @@ class DBmysqlIterator implements SeekableIterator, Countable
     {
 
         if (!is_array($crit)) {
-           //if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
-           //  trigger_error("Deprecated usage of SQL in DB/request (criteria)", E_USER_DEPRECATED);
-           //}
+            //if ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE) {
+            //  trigger_error("Deprecated usage of SQL in DB/request (criteria)", E_USER_DEPRECATED);
+            //}
             return $crit;
         }
         $ret = "";
@@ -516,25 +517,25 @@ class DBmysqlIterator implements SeekableIterator, Countable
                 $ret .= " $bool ";
             }
             if (is_numeric($name)) {
-               // no key and direct expression
+                // no key and direct expression
                 if ($value instanceof QueryExpression) {
                     $ret .= $value->getValue();
-                } else if ($value instanceof QuerySubQuery) {
+                } elseif ($value instanceof QuerySubQuery) {
                     $ret .= $value->getQuery();
                 } else {
-                   // No Key case => recurse.
+                    // No Key case => recurse.
                     $ret .= "(" . $this->analyseCrit($value) . ")";
                 }
-            } else if (($name === "OR") || ($name === "AND")) {
-               // Binary logical operator
+            } elseif (($name === "OR") || ($name === "AND")) {
+                // Binary logical operator
                 $ret .= "(" . $this->analyseCrit($value, $name) . ")";
-            } else if ($name === "NOT") {
-               // Uninary logicial operator
+            } elseif ($name === "NOT") {
+                // Uninary logicial operator
                 $ret .= " NOT (" . $this->analyseCrit($value) . ")";
-            } else if ($name === "FKEY" || $name === 'ON') {
-               // Foreign Key condition
+            } elseif ($name === "FKEY" || $name === 'ON') {
+                // Foreign Key condition
                 $ret .= $this->analyseFkey($value);
-            } else if ($name === 'RAW') {
+            } elseif ($name === 'RAW') {
                 $key = key($value);
                 $value = current($value);
                 $ret .= '((' . $key . ') ' . $this->analyseCriterion($value) . ')';
@@ -559,7 +560,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
         $criterion = null;
 
         if (is_null($value) || (is_string($value) && strtolower($value) === 'null')) {
-           // NULL condition
+            // NULL condition
             $criterion = 'IS NULL';
         } else {
             if (is_array($value)) {
@@ -570,7 +571,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
                     if (!count($value)) {
                         throw new \RuntimeException('Empty IN are not allowed');
                     }
-                   // Array of Values
+                    // Array of Values
                     return "IN " . $this->analyseCriterionValue($value);
                 }
             } else {
@@ -655,10 +656,10 @@ class DBmysqlIterator implements SeekableIterator, Countable
                 }
 
                 if (isset($jointablecrit['TABLE'])) {
-                   //not a "simple" FKEY
+                    //not a "simple" FKEY
                     $jointablekey = $jointablecrit['TABLE'];
                     unset($jointablecrit['TABLE']);
-                } else if (is_numeric($jointablekey) || $jointablekey == 'FKEY' || $jointablekey == 'ON') {
+                } elseif (is_numeric($jointablekey) || $jointablekey == 'FKEY' || $jointablekey == 'ON') {
                     throw new \LogicException('BAD JOIN');
                 }
 
@@ -697,7 +698,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
                     return (is_numeric($t1) ? DBmysql::quoteName($f1) : DBmysql::quoteName($t1) . '.' . DBmysql::quoteName($f1)) . ' = ' .
                     (is_numeric($t2) ? DBmysql::quoteName($f2) : DBmysql::quoteName($t2) . '.' . DBmysql::quoteName($f2));
                 }
-            } else if (count($values) == 3) {
+            } elseif (count($values) == 3) {
                 $real_values = [];
                 foreach ($values as $k => $v) {
                     if (is_array($v)) {
@@ -719,7 +720,7 @@ class DBmysqlIterator implements SeekableIterator, Countable
                 }
                 return $fkey;
             }
-        } else if ($values instanceof QueryExpression) {
+        } elseif ($values instanceof QueryExpression) {
             return $values->getValue();
         }
         throw new \LogicException('BAD FOREIGN KEY, should be [ table1 => key1, table2 => key2 ] or [ table1 => key1, table2 => key2, [criteria]].');
@@ -824,19 +825,19 @@ class DBmysqlIterator implements SeekableIterator, Countable
     private function setPosition(int $position): void
     {
         if (!($this->res instanceof \mysqli_result)) {
-           // Result is not valid, nothing to do.
+            // Result is not valid, nothing to do.
             return;
         }
 
         if ($position === $this->position) {
-           // Position does not changed, nothing to do
+            // Position does not changed, nothing to do
             return;
         }
 
         if ($position === 0 && $this->position !== null || $position !== $this->position + 1) {
-           //    position is set to 0 and was set previously (rewind case)
-           // OR position is not moved to next element
-           // => seek to requested position
+            //    position is set to 0 and was set previously (rewind case)
+            // OR position is not moved to next element
+            // => seek to requested position
             $this->conn->dataSeek($this->res, $position);
         }
 

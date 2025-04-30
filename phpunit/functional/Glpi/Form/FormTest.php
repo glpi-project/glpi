@@ -97,17 +97,17 @@ class FormTest extends DbTestCase
             \Glpi\Form\QuestionType\QuestionTypeRadio::class => [
                 'options' => [
                     123 => 'Radio 1',
-                ]
+                ],
             ],
             \Glpi\Form\QuestionType\QuestionTypeCheckbox::class => [
                 'options' => [
                     123 => 'Checkbox 1',
-                ]
+                ],
             ],
             \Glpi\Form\QuestionType\QuestionTypeDropdown::class => [
                 'options' => [
                     123 => 'Dropdown 1',
-                ]
+                ],
             ],
             \Glpi\Form\QuestionType\QuestionTypeItem::class => [
                 'itemtype' => 'Computer',

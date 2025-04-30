@@ -271,7 +271,7 @@ class HasVirtualMachineCapacityTest extends DbTestCase
     {
         yield [
             'target_classname' => ItemVirtualMachine::class,
-            'expected' => '%d virtual machines attached to %d assets'
+            'expected' => '%d virtual machines attached to %d assets',
         ];
     }
 }

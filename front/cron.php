@@ -116,7 +116,7 @@ if (PHP_SAPI === 'cli') {
         for ($i = 1; $i < $_SERVER['argc']; $i++) {
             if ($_SERVER['argv'][$i] == '--force') {
                 $mode = -CronTask::MODE_EXTERNAL;
-            } else if (is_numeric($_SERVER['argv'][$i])) {
+            } elseif (is_numeric($_SERVER['argv'][$i])) {
                 // Number of tasks
                 CronTask::launch(CronTask::MODE_EXTERNAL, intval($_SERVER['argv'][$i]));
                 // Only check first parameter when numeric is passed

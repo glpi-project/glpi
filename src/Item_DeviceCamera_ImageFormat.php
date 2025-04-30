@@ -55,7 +55,7 @@ class Item_DeviceCamera_ImageFormat extends CommonDBRelation
             $nb = countElementsInTable(
                 self::getTable(),
                 [
-                    'items_devicecameras_id' => $item->getID()
+                    'items_devicecameras_id' => $item->getID(),
                 ]
             );
         }
@@ -105,8 +105,8 @@ class Item_DeviceCamera_ImageFormat extends CommonDBRelation
             'SELECT' => ['id', 'imageformats_id', 'is_dynamic'],
             'FROM'   => self::getTable(),
             'WHERE'  => [
-                'items_devicecameras_id' => $camera->getID()
-            ]
+                'items_devicecameras_id' => $camera->getID(),
+            ],
         ]);
 
         $entries = [];
@@ -117,7 +117,7 @@ class Item_DeviceCamera_ImageFormat extends CommonDBRelation
                 'itemtype' => self::class,
                 'id' => $row['id'],
                 'imageformats_id' => $item->getLink(),
-                'is_dynamic' => $row['is_dynamic']
+                'is_dynamic' => $row['is_dynamic'],
             ];
         }
 
@@ -126,10 +126,10 @@ class Item_DeviceCamera_ImageFormat extends CommonDBRelation
             'nofilter' => true,
             'columns' => [
                 'imageformats_id' => ImageFormat::getTypeName(1),
-                'is_dynamic' => __('Is dynamic')
+                'is_dynamic' => __('Is dynamic'),
             ],
             'formatters' => [
-                'imageformats_id' => 'raw_html'
+                'imageformats_id' => 'raw_html',
             ],
             'entries' => $entries,
             'total_number' => count($entries),
@@ -137,7 +137,7 @@ class Item_DeviceCamera_ImageFormat extends CommonDBRelation
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => min($_SESSION['glpilist_limit'], count($entries)),
-                'container'     => 'mass' . static::class . $rand
+                'container'     => 'mass' . static::class . $rand,
             ],
         ]);
     }

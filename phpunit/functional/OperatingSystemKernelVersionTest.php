@@ -49,7 +49,7 @@ class OperatingSystemKernelVersionTest extends CommonDropdown
             [\OperatingSystemKernelVersion::getTypeName(), 'Kernel versions'],
             [\OperatingSystemKernelVersion::getTypeName(0), 'Kernel versions'],
             [\OperatingSystemKernelVersion::getTypeName(10), 'Kernel versions'],
-            [\OperatingSystemKernelVersion::getTypeName(1), 'Kernel version']
+            [\OperatingSystemKernelVersion::getTypeName(1), 'Kernel version'],
         ];
     }
 
@@ -62,8 +62,8 @@ class OperatingSystemKernelVersionTest extends CommonDropdown
                     'label'  => 'Kernel',
                     'name'   => 'Kernels',
                     'list'   => true,
-                    'type'   => 'oskernel'
-                ]
+                    'type'   => 'oskernel',
+                ],
             ],
             $instance->getAdditionalFields()
         );
@@ -87,7 +87,7 @@ class OperatingSystemKernelVersionTest extends CommonDropdown
         $this->assertGreaterThan(
             0,
             $kernel->add([
-                'name'   => 'linux'
+                'name'   => 'linux',
             ])
         );
         $instance = new \OperatingSystemKernelVersion();
@@ -95,7 +95,7 @@ class OperatingSystemKernelVersionTest extends CommonDropdown
             0,
             $instance->add([
                 'name'                        => 'Version name ' . $this->getUniqueString(),
-                'operatingsystemkernels_id'   => $kernel->getID()
+                'operatingsystemkernels_id'   => $kernel->getID(),
             ])
         );
         $this->assertTrue($instance->getFromDB($instance->getID()));

@@ -71,16 +71,16 @@ abstract class NotificationEventAbstract implements NotificationEventInterface
                 'data'               => $data,
                 'notificationtarget' => $notificationtarget,
                 'template'           => $template,
-                'notify_me'          => $notify_me
+                'notify_me'          => $notify_me,
             ]);
 
-           // get original timezone
+            // get original timezone
             $orig_tz = $DB->guessTimezone();
 
-           //Foreach notification targets
+            //Foreach notification targets
             foreach ($targets as $target) {
-                 //Get all users affected by this notification
-                 $notificationtarget->addForTarget($target, $options);
+                //Get all users affected by this notification
+                $notificationtarget->addForTarget($target, $options);
 
                 foreach ($notificationtarget->getTargets() as $users_infos) {
                     $key = $users_infos[static::getTargetFieldName()];
@@ -175,6 +175,6 @@ abstract class NotificationEventAbstract implements NotificationEventInterface
      */
     protected static function extraRaise($params)
     {
-       //does nothing; designed to be overriden
+        //does nothing; designed to be overriden
     }
 }

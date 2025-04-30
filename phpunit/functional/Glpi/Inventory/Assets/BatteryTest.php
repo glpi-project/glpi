@@ -63,7 +63,7 @@ class BatteryTest extends AbstractInventoryAsset
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-                'expected'  => '{"capacity": "43746", "chemistry": "lithium-polymer", "date": "2015-11-10", "manufacturer": "SMP", "name": "DELL JHXPY53", "serial": "3701", "voltage": "8614", "designation": "DELL JHXPY53", "manufacturers_id": "SMP", "manufacturing_date": "2015-11-10", "devicebatterytypes_id": "lithium-polymer", "is_dynamic": 1}'
+                'expected'  => '{"capacity": "43746", "chemistry": "lithium-polymer", "date": "2015-11-10", "manufacturer": "SMP", "name": "DELL JHXPY53", "serial": "3701", "voltage": "8614", "designation": "DELL JHXPY53", "manufacturers_id": "SMP", "manufacturing_date": "2015-11-10", "devicebatterytypes_id": "lithium-polymer", "is_dynamic": 1}',
             ], [ //no voltage
                 'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
@@ -81,7 +81,7 @@ class BatteryTest extends AbstractInventoryAsset
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-                'expected'  => '{"capacity": "43746", "chemistry": "lithium-polymer", "date": "2015-11-10", "manufacturer": "SMP", "name": "DELL JHXPY53", "serial": "3701", "voltage": "0", "designation": "DELL JHXPY53", "manufacturers_id": "SMP", "manufacturing_date": "2015-11-10", "devicebatterytypes_id": "lithium-polymer", "is_dynamic": 1}'
+                'expected'  => '{"capacity": "43746", "chemistry": "lithium-polymer", "date": "2015-11-10", "manufacturer": "SMP", "name": "DELL JHXPY53", "serial": "3701", "voltage": "0", "designation": "DELL JHXPY53", "manufacturers_id": "SMP", "manufacturing_date": "2015-11-10", "devicebatterytypes_id": "lithium-polymer", "is_dynamic": 1}',
             ], [ //empty info
                 'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
@@ -98,8 +98,8 @@ class BatteryTest extends AbstractInventoryAsset
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-                'expected'  => '{"chemistry": "Li-ION", "manufacturer": "OTHER MANU", "serial": "00000000", "voltage": "0", "capacity": "0", "manufacturers_id": "OTHER MANU", "devicebatterytypes_id": "Li-ION", "is_dynamic": 1}'
-            ]
+                'expected'  => '{"chemistry": "Li-ION", "manufacturer": "OTHER MANU", "serial": "00000000", "voltage": "0", "capacity": "0", "manufacturers_id": "OTHER MANU", "devicebatterytypes_id": "Li-ION", "is_dynamic": 1}',
+            ],
         ];
     }
 
@@ -112,7 +112,7 @@ class BatteryTest extends AbstractInventoryAsset
 
         $computer = getItemByTypeName('Computer', '_test_pc01');
         $asset = new \Glpi\Inventory\Asset\Battery($computer, $json->content->batteries);
-        $asset->setExtraData((array)$json->content);
+        $asset->setExtraData((array) $json->content);
         $result = $asset->prepare();
         $this->assertEquals(json_decode($expected), $result[0]);
     }
@@ -137,7 +137,7 @@ class BatteryTest extends AbstractInventoryAsset
 
         $computer = getItemByTypeName('Computer', '_test_pc01');
         $asset = new \Glpi\Inventory\Asset\Battery($computer, $json->content->batteries);
-        $asset->setExtraData((array)$json->content);
+        $asset->setExtraData((array) $json->content);
         $result = $asset->prepare();
         $this->assertEquals(json_decode($expected['expected']), $result[0]);
 
@@ -170,7 +170,7 @@ class BatteryTest extends AbstractInventoryAsset
 
         $computer = getItemByTypeName('Computer', '_test_pc02');
         $asset = new \Glpi\Inventory\Asset\Battery($computer, $json->content->batteries);
-        $asset->setExtraData((array)$json->content);
+        $asset->setExtraData((array) $json->content);
         $result = $asset->prepare();
         $this->assertEquals(json_decode($expected['expected']), $result[0]);
 
@@ -222,23 +222,23 @@ class BatteryTest extends AbstractInventoryAsset
   <QUERY>INVENTORY</QUERY>
 </REQUEST>";
 
-       //create manually a computer, with 3 batteries
+        //create manually a computer, with 3 batteries
         $computers_id = $computer->add([
             'name'   => 'pc002',
             'serial' => 'ggheb7ne7',
-            'entities_id' => 0
+            'entities_id' => 0,
         ]);
         $this->assertGreaterThan(0, $computers_id);
 
         $manufacturer = new \Manufacturer();
         $manufacturers_id = $manufacturer->add([
-            'name' => 'SMP'
+            'name' => 'SMP',
         ]);
         $this->assertGreaterThan(0, $manufacturers_id);
 
         $batterytype = new \DeviceBatteryType();
         $types_id = $batterytype->add([
-            'name' => 'lithium-polymer'
+            'name' => 'lithium-polymer',
         ]);
         $this->assertGreaterThan(0, $types_id);
 
@@ -256,7 +256,7 @@ class BatteryTest extends AbstractInventoryAsset
             'items_id'     => $computers_id,
             'itemtype'     => 'Computer',
             'devicebatteries_id' => $battery_1_id,
-            'serial' => '3701'
+            'serial' => '3701',
         ]);
 
         $battery_2_id = $device_battery->add([
@@ -273,21 +273,21 @@ class BatteryTest extends AbstractInventoryAsset
             'items_id'     => $computers_id,
             'itemtype'     => 'Computer',
             'devicebatteries_id' => $battery_2_id,
-            'serial' => '7565'
+            'serial' => '7565',
         ]);
 
         $battery_3_id = $device_battery->add([
             'designation' => 'test battery',
             'manufacturers_id' => $manufacturers_id,
             'devicebatterytypes_id' => $types_id,
-            'entities_id'  => 0
+            'entities_id'  => 0,
         ]);
         $this->assertGreaterThan(0, $battery_3_id);
 
         $item_battery_3_id = $item_battery->add([
             'items_id'     => $computers_id,
             'itemtype'     => 'Computer',
-            'devicebatteries_id' => $battery_3_id
+            'devicebatteries_id' => $battery_3_id,
         ]);
         $this->assertGreaterThan(0, $item_battery_3_id);
 

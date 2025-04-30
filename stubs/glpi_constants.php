@@ -38,7 +38,7 @@
 
 // Wrap in a function to be sure to never declare any variable in the global scope.
 (static function () {
-    $random_val = static fn (array $values) => $values[array_rand($values)];
+    $random_val = static fn(array $values) => $values[array_rand($values)];
 
     // Directories constants
     define('GLPI_CACHE_DIR', dirname(__FILE__, 2) . '/files/_cache');

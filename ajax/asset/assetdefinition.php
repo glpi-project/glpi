@@ -33,7 +33,6 @@
  */
 
 use Glpi\Asset\AssetDefinition;
-use Glpi\Asset\CustomFieldDefinition;
 use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
 
@@ -57,10 +56,10 @@ if ($_REQUEST['action'] === 'get_all_fields') {
     }
     echo json_encode([
         'results' => $field_results,
-        'count' => count($all_fields)
+        'count' => count($all_fields),
     ], JSON_THROW_ON_ERROR);
     return;
-} else if ($_REQUEST['action'] === 'get_core_field_editor') {
+} elseif ($_REQUEST['action'] === 'get_core_field_editor') {
     header("Content-Type: text/html; charset=UTF-8");
     $asset_definition = new AssetDefinition();
     if (!$asset_definition->getFromDB($_GET['assetdefinitions_id'])) {

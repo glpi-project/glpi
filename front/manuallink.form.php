@@ -61,7 +61,7 @@ if (array_key_exists('purge', $_POST) || array_key_exists('delete', $_POST)) {
     }
 
     Html::back();
-} else if (array_key_exists('add', $_POST)) {
+} elseif (array_key_exists('add', $_POST)) {
     $link->check(-1, CREATE, $_POST);
     if ($id = $link->add($_POST)) {
         Event::log(
@@ -76,7 +76,7 @@ if (array_key_exists('purge', $_POST) || array_key_exists('delete', $_POST)) {
         Html::redirect($item->getLinkURL());
     }
     Html::back();
-} else if (array_key_exists('update', $_POST)) {
+} elseif (array_key_exists('update', $_POST)) {
     $link->check($_POST['id'], UPDATE);
     if ($link->update($_POST)) {
         Event::log(
@@ -91,7 +91,7 @@ if (array_key_exists('purge', $_POST) || array_key_exists('delete', $_POST)) {
         Html::redirect($item->getLinkURL());
     }
     Html::back();
-} else if (
+} elseif (
     array_key_exists('id', $_GET)
            || (array_key_exists('itemtype', $_GET) && array_key_exists('items_id', $_GET))
 ) {
@@ -103,7 +103,7 @@ if (array_key_exists('purge', $_POST) || array_key_exists('delete', $_POST)) {
     ManualLink::displayFullPageForItem($id ?? 0, $menus, [
         'formoptions' => 'data-track-changes=true',
         'itemtype'    => $itemtype,
-        'items_id'    => $items_id
+        'items_id'    => $items_id,
     ]);
 } else {
     throw new BadRequestHttpException();

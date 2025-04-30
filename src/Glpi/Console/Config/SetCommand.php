@@ -42,16 +42,15 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\Question;
-use Toolbox;
 
 class SetCommand extends AbstractCommand
 {
-   /**
-    * Error thrown when context is invalid.
-    *
-    * @var integer
-    */
-    const ERROR_INVALID_CONTEXT = 1;
+    /**
+     * Error thrown when context is invalid.
+     *
+     * @var integer
+     */
+    public const ERROR_INVALID_CONTEXT = 1;
 
     protected function configure()
     {
@@ -67,7 +66,7 @@ class SetCommand extends AbstractCommand
     protected function interact(InputInterface $input, OutputInterface $output)
     {
         if (null === $input->getArgument('value')) {
-           /** @var \Symfony\Component\Console\Helper\QuestionHelper $question_helper */
+            /** @var \Symfony\Component\Console\Helper\QuestionHelper $question_helper */
             $question_helper = $this->getHelper('question');
             $question = new Question(__('Configuration value:'), '');
             $question->setHidden(true); // Hide prompt as configuration value may be sensitive

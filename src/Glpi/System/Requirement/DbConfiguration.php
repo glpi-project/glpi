@@ -70,7 +70,7 @@ class DbConfiguration extends AbstractRequirement
         $db_config = $db_config_res->fetch_assoc();
 
         $incompatibilities = [];
-        if ((int)$db_config['innodb_page_size'] < 8192) {
+        if ((int) $db_config['innodb_page_size'] < 8192) {
             $incompatibilities[] = '"innodb_page_size" must be >= 8KB.';
         }
 

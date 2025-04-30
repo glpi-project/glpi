@@ -43,8 +43,7 @@ final class QuestionData
         private string $name,
         private QuestionTypeInterface $type,
         private ?array $extra_data,
-    ) {
-    }
+    ) {}
 
     public function getName(): string
     {

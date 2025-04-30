@@ -50,8 +50,7 @@ final class TemplateFieldConfig implements
     public function __construct(
         private TemplateFieldStrategy $strategy,
         private ?int $specific_template_id = null,
-    ) {
-    }
+    ) {}
 
     #[Override]
     public static function jsonDeserialize(array $data): self

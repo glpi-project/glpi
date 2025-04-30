@@ -35,7 +35,6 @@
 
 namespace Glpi\OAuth;
 
-use GLPIKey;
 use League\OAuth2\Server\Entities\ClientEntityInterface;
 use League\OAuth2\Server\Repositories\ClientRepositoryInterface;
 use OAuthClient;
@@ -50,8 +49,8 @@ class ClientRepository implements ClientRepositoryInterface
         $iterator = $DB->request([
             'FROM'   => 'glpi_oauthclients',
             'WHERE'  => [
-                'identifier' => $clientIdentifier
-            ]
+                'identifier' => $clientIdentifier,
+            ],
         ]);
 
         if (count($iterator) === 1) {
@@ -69,7 +68,7 @@ class ClientRepository implements ClientRepositoryInterface
     {
         $client = new OAuthClient();
         $client->getFromDBByCrit([
-            'identifier' => $clientIdentifier
+            'identifier' => $clientIdentifier,
         ]);
 
         if ($client->fields['secret'] !== $clientSecret) {

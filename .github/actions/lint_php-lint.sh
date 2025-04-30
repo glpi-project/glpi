@@ -7,10 +7,10 @@ composer run lint
 
 vendor/bin/composer-dependency-analyser
 
-touch ~/phpcs.cache
-vendor/bin/phpcs \
-  --cache ~/phpcs.cache \
-  .
+PHP_CS_FIXER_IGNORE_ENV=1 vendor/bin/php-cs-fixer check \
+  --show-progress=dots \
+  --verbose \
+  --diff
 
 echo "Run code static analysis"
 vendor/bin/phpstan analyze \

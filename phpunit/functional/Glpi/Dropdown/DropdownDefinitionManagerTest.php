@@ -35,7 +35,6 @@
 namespace tests\units\Glpi\Dropdown;
 
 use DbTestCase;
-use Glpi\Dropdown\Dropdown;
 
 class DropdownDefinitionManagerTest extends DbTestCase
 {

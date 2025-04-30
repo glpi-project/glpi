@@ -43,25 +43,25 @@ class AuthLdapReplicateTest extends DbTestCase
     public function testCanCreate()
     {
         $this->login();
-        $this->assertTrue((bool)\AuthLdapReplicate::canCreate());
+        $this->assertTrue((bool) \AuthLdapReplicate::canCreate());
 
         $_SESSION['glpiactiveprofile']['config'] = READ;
-        $this->assertFalse((bool)\AuthLdapReplicate::canCreate());
+        $this->assertFalse((bool) \AuthLdapReplicate::canCreate());
 
         $_SESSION['glpiactiveprofile']['config'] = 0;
-        $this->assertFalse((bool)\AuthLdapReplicate::canCreate());
+        $this->assertFalse((bool) \AuthLdapReplicate::canCreate());
     }
 
     public function testCanPurge()
     {
         $this->login();
-        $this->assertTrue((bool)\AuthLdapReplicate::canPurge());
+        $this->assertTrue((bool) \AuthLdapReplicate::canPurge());
 
         $_SESSION['glpiactiveprofile']['config'] = READ;
-        $this->assertFalse((bool)\AuthLdapReplicate::canCreate());
+        $this->assertFalse((bool) \AuthLdapReplicate::canCreate());
 
         $_SESSION['glpiactiveprofile']['config'] = 0;
-        $this->assertFalse((bool)\AuthLdapReplicate::canCreate());
+        $this->assertFalse((bool) \AuthLdapReplicate::canCreate());
     }
 
     public function testGetForbiddenStandardMassiveAction()
@@ -80,7 +80,7 @@ class AuthLdapReplicateTest extends DbTestCase
             //Do not set a port : no port added
             $result = $replicate->$method([
                 'name' => 'test',
-                'host' => 'host'
+                'host' => 'host',
             ]);
             $this->assertArrayNotHasKey('port', $result);
 
@@ -88,7 +88,7 @@ class AuthLdapReplicateTest extends DbTestCase
             $result = $replicate->$method([
                 'name' => 'test',
                 'host' => 'host',
-                'port' => 0
+                'port' => 0,
             ]);
             $this->assertSame(389, $result['port']);
 
@@ -96,7 +96,7 @@ class AuthLdapReplicateTest extends DbTestCase
             $result = $replicate->$method([
                 'name' => 'test',
                 'host' => 'host',
-                'port' => 3389
+                'port' => 3389,
             ]);
             $this->assertSame(3389, $result['port']);
         }

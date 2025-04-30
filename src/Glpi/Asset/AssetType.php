@@ -104,7 +104,7 @@ abstract class AssetType extends CommonType
                     'ON'  => [
                         self::getTable()            => AssetDefinition::getForeignKeyField(),
                         AssetDefinition::getTable() => AssetDefinition::getIndexName(),
-                    ]
+                    ],
                 ],
             ],
             'WHERE' => [
@@ -167,14 +167,14 @@ abstract class AssetType extends CommonType
 
         if (
             array_key_exists($definition_fkey, $input)
-            && (int)$input[$definition_fkey] !== $definition_id
+            && (int) $input[$definition_fkey] !== $definition_id
         ) {
             throw new \RuntimeException('Definition does not match the current concrete class.');
         }
 
         if (
             !$this->isNewItem()
-            && (int)$this->fields[$definition_fkey] !== $definition_id
+            && (int) $this->fields[$definition_fkey] !== $definition_id
         ) {
             throw new \RuntimeException('Definition cannot be changed.');
         }

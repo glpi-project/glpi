@@ -157,7 +157,7 @@ class AbstractProgressIndicatorTest extends GLPITestCase
      */
     private function getInstance(): AbstractProgressIndicator
     {
-        return new class () extends AbstractProgressIndicator {
+        return new class extends AbstractProgressIndicator {
             public int $updates_count = 0;
 
             public function addMessage(MessageType $type, string $message): void

@@ -65,7 +65,7 @@ class DatesModFilter extends AbstractFilter
         }
 
         return [
-            'WHERE' => self::getDatesCriteria("$table.date_mod", $value)
+            'WHERE' => self::getDatesCriteria("$table.date_mod", $value),
         ];
     }
 

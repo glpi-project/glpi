@@ -60,14 +60,14 @@ function update95xto1000()
         require $update_dir . $update_script;
     }
 
-   // ************ Keep it at the end **************
+    // ************ Keep it at the end **************
     foreach ($ADDTODISPLAYPREF as $type => $tab) {
         $rank = 1;
         foreach ($tab as $newval) {
             $DB->updateOrInsert(
                 "glpi_displaypreferences",
                 [
-                    'rank'      => $rank++
+                    'rank'      => $rank++,
                 ],
                 [
                     'users_id'  => "0",
@@ -82,7 +82,7 @@ function update95xto1000()
             'glpi_displaypreferences',
             [
                 'itemtype'  => $type,
-                'num'       => $tab
+                'num'       => $tab,
             ]
         );
     }

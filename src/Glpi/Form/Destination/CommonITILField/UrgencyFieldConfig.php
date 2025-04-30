@@ -51,8 +51,7 @@ final class UrgencyFieldConfig implements
         private UrgencyFieldStrategy $strategy,
         private ?int $specific_question_id = null,
         private ?int $specific_urgency_value = null,
-    ) {
-    }
+    ) {}
 
     #[Override]
     public static function jsonDeserialize(array $data): self

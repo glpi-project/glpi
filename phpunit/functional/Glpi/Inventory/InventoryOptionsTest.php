@@ -36,14 +36,6 @@ namespace tests\units\Glpi\Inventory;
 
 use Glpi\Asset\Asset_PeripheralAsset;
 use InventoryTestCase;
-use Item_OperatingSystem;
-use Lockedfield;
-use OperatingSystem;
-use OperatingSystemArchitecture;
-use OperatingSystemServicePack;
-use OperatingSystemVersion;
-use RuleCriteria;
-use wapmorgan\UnifiedArchive\UnifiedArchive;
 
 class InventoryOptionsTest extends InventoryTestCase
 {
@@ -75,11 +67,11 @@ JSON;
                 'node' => [
                     'name' => 'cpus',
                     'contents' => [
-                        (object)[
+                        (object) [
                             'arch' => 'x86_64',
-                            'name' => 'Intel Core i7'
-                        ]
-                    ]
+                            'name' => 'Intel Core i7',
+                        ],
+                    ],
                 ],
                 'itemtype' => \Item_DeviceProcessor::class,
 
@@ -88,132 +80,132 @@ JSON;
                 'node' => [
                     'name' => 'memories',
                     'contents' => [
-                        (object)[
+                        (object) [
                             'capacity' => 8192,
-                            'type' => 'DDR4'
-                        ]
-                    ]
+                            'type' => 'DDR4',
+                        ],
+                    ],
                 ],
-                'itemtype' => \Item_DeviceMemory::class
+                'itemtype' => \Item_DeviceMemory::class,
             ],
             'component_networkcard' => [
                 'node' => [
                     'name' => 'networks',
                     'contents' => [
-                        (object)[
+                        (object) [
                             'description' => 'Ethernet card',
-                            'mac' => '01:AB:23:CD:4E:F5'
-                        ]
-                    ]
+                            'mac' => '01:AB:23:CD:4E:F5',
+                        ],
+                    ],
                 ],
-                'itemtype' => \Item_DeviceNetworkCard::class
+                'itemtype' => \Item_DeviceNetworkCard::class,
             ],
             'component_graphiccard' => [
                 'node' => [
                     'name' => 'videos',
                     'contents' => [
-                        (object)[
+                        (object) [
                             'name' => 'My video card',
-                            'memory' => 32768
-                        ]
-                    ]
+                            'memory' => 32768,
+                        ],
+                    ],
                 ],
-                'itemtype' => \Item_DeviceGraphicCard::class
+                'itemtype' => \Item_DeviceGraphicCard::class,
             ],
             'component_drive' => [
                 'node' => [
                     'name' => 'storages',
                     'contents' => [
-                        (object)[
-                            'type' => 'DVD Writer'
-                        ]
-                    ]
+                        (object) [
+                            'type' => 'DVD Writer',
+                        ],
+                    ],
                 ],
-                'itemtype' => \Item_DeviceDrive::class
+                'itemtype' => \Item_DeviceDrive::class,
             ],
             'component_control' => [
                 'node' => [
                     'name' => 'controllers',
                     'contents' => [
-                        (object)[
+                        (object) [
                             'caption' => 'Wireless 8260',
                             'driver' => 'iwlwifi',
                             'name' => 'Wireless 8260',
                             'productid' => '24f3',
                             'type' => 'Network controller',
-                            'vendorid' => '8086'
-                        ]
-                    ]
+                            'vendorid' => '8086',
+                        ],
+                    ],
                 ],
-                'itemtype' => \Item_DeviceControl::class
+                'itemtype' => \Item_DeviceControl::class,
             ],
             'component_harddrive' => [
                 'node' => [
                     'name' => 'storages',
                     'contents' => [
-                        (object)[
-                            'name' => 'My hard drive'
-                        ]
-                    ]
+                        (object) [
+                            'name' => 'My hard drive',
+                        ],
+                    ],
                 ],
-                'itemtype' => \Item_DeviceHardDrive::class
+                'itemtype' => \Item_DeviceHardDrive::class,
             ],
             'component_soundcard' => [
                 'node' => [
                     'name' => 'sounds',
                     'contents' => [
-                        (object)[
-                            'name' => 'Audio device'
-                        ]
-                    ]
+                        (object) [
+                            'name' => 'Audio device',
+                        ],
+                    ],
                 ],
-                'itemtype' => \Item_DeviceSoundCard::class
+                'itemtype' => \Item_DeviceSoundCard::class,
             ],
             'component_networkcardvirtual' => [
                 'node' => [
                     'name' => 'networks',
                     'contents' => [
-                        (object)[
+                        (object) [
                             'description' => 'Virtual Ethernet card',
                             'mac' => '01:AB:23:CD:4E:F5',
-                            'virtualdev' => true
-                        ]
-                    ]
+                            'virtualdev' => true,
+                        ],
+                    ],
                 ],
-                'itemtype' => \Item_DeviceNetworkCard::class
+                'itemtype' => \Item_DeviceNetworkCard::class,
             ],
             'component_simcard' => [
                 'node' => [
                     'name' => 'simcards',
                     'contents' => [
-                        (object)[
-                            'serial' => 'azerty'
-                        ]
-                    ]
+                        (object) [
+                            'serial' => 'azerty',
+                        ],
+                    ],
                 ],
-                'itemtype' => \Item_DeviceSimcard::class
+                'itemtype' => \Item_DeviceSimcard::class,
             ],
             'component_powersupply' => [
                 'node' => [
                     'name' => 'powersupplies',
                     'contents' => [
-                        (object)[
-                            'name' => 'Power supply'
-                        ]
-                    ]
+                        (object) [
+                            'name' => 'Power supply',
+                        ],
+                    ],
                 ],
-                'itemtype' => \Item_DevicePowerSupply::class
+                'itemtype' => \Item_DevicePowerSupply::class,
             ],
             'component_battery' => [
                 'node' => [
                     'name' => 'batteries',
                     'contents' => [
-                        (object)[
-                            'capacity' => 50000
-                        ]
-                    ]
+                        (object) [
+                            'capacity' => 50000,
+                        ],
+                    ],
                 ],
-                'itemtype' => \Item_DeviceBattery::class
+                'itemtype' => \Item_DeviceBattery::class,
             ],
         ];
 
@@ -226,7 +218,7 @@ JSON;
             $conf = new \Glpi\Inventory\Conf();
             $this->assertTrue(
                 $conf->saveConf([
-                    $config_name => 0
+                    $config_name => 0,
                 ])
             );
             $this->logout();
@@ -240,8 +232,8 @@ JSON;
                 'FROM' => $device['itemtype']::getTable(),
                 'WHERE' => [
                     'itemtype' => get_class($computer),
-                    'items_id' => $computer->getID()
-                ]
+                    'items_id' => $computer->getID(),
+                ],
             ]);
             $this->assertCount(0, $item_devices);
 
@@ -250,7 +242,7 @@ JSON;
             $conf = new \Glpi\Inventory\Conf();
             $this->assertTrue(
                 $conf->saveConf([
-                    $config_name => 1
+                    $config_name => 1,
                 ])
             );
             $this->logout();
@@ -262,8 +254,8 @@ JSON;
                 'FROM' => $device['itemtype']::getTable(),
                 'WHERE' => [
                     'itemtype' => get_class($computer),
-                    'items_id' => $computer->getID()
-                ]
+                    'items_id' => $computer->getID(),
+                ],
             ]);
             $this->assertCount(1, $item_devices);
         }
@@ -277,30 +269,30 @@ JSON;
         $orig_json = json_decode($this->json_computer);
         //Work with 2 harddrives, 1 network drive and 1 removable drive
         $orig_json->content->drives = [
-            (object)[
+            (object) [
                 'filesystem' => 'ext4',
                 'type' => '/home',
                 'volumn' => '/dev/mapper/vg-home',
                 'total' => 10240000,
-                'free' => 5120000
+                'free' => 5120000,
             ],
-            (object)[
+            (object) [
                 'filesystem' => 'ext4',
                 'type' => '/',
                 'volumn' => '/dev/mapper/vg-root',
                 'total' => 51200,
-                'free' => 25600
+                'free' => 25600,
             ],
-            (object)[
+            (object) [
                 'filesystem' => 'nfs',
                 'type' => '/backups',
-                'volumn' => 'storage.local:/mnt/storage/backups'
+                'volumn' => 'storage.local:/mnt/storage/backups',
             ],
-            (object)[
+            (object) [
                 'filesystem' => 'ntfs',
                 'type' => 'Removable Disk',
-                'volumn' => '/dev/sdd1'
-            ]
+                'volumn' => '/dev/sdd1',
+            ],
         ];
         $json = json_decode(json_encode($orig_json));
 
@@ -309,7 +301,7 @@ JSON;
         $conf = new \Glpi\Inventory\Conf();
         $this->assertTrue(
             $conf->saveConf([
-                'import_volume' => 0
+                'import_volume' => 0,
             ])
         );
         $this->logout();
@@ -323,8 +315,8 @@ JSON;
             'FROM' => \Item_Disk::getTable(),
             'WHERE' => [
                 'itemtype' => get_class($computer),
-                'items_id' => $computer->getID()
-            ]
+                'items_id' => $computer->getID(),
+            ],
         ]);
         $this->assertCount(0, $item_disks);
 
@@ -335,7 +327,7 @@ JSON;
             $conf->saveConf([
                 'import_volume' => 1,
                 'component_networkdrive' => 0,
-                'component_removablemedia' => 0
+                'component_removablemedia' => 0,
             ])
         );
         $this->logout();
@@ -347,8 +339,8 @@ JSON;
             'FROM' => \Item_Disk::getTable(),
             'WHERE' => [
                 'itemtype' => get_class($computer),
-                'items_id' => $computer->getID()
-            ]
+                'items_id' => $computer->getID(),
+            ],
         ]);
         $this->assertCount(2, $item_disks);
 
@@ -359,7 +351,7 @@ JSON;
         $this->assertTrue(
             $conf->saveConf([
                 'component_networkdrive' => 1,
-                'component_removablemedia' => 1
+                'component_removablemedia' => 1,
             ])
         );
         $this->logout();
@@ -372,8 +364,8 @@ JSON;
             'FROM' => \Item_Disk::getTable(),
             'WHERE' => [
                 'itemtype' => get_class($computer),
-                'items_id' => $computer->getID()
-            ]
+                'items_id' => $computer->getID(),
+            ],
         ]);
         $this->assertCount(4, $item_disks);
     }
@@ -387,16 +379,16 @@ JSON;
         //Work with one network card, and one virtual network card
         $partial_mac = ':ab:23:cd:4e:f5';
         $orig_json->content->networks = [
-            (object)[
+            (object) [
                 'description' => 'Ethernet card',
                 'mac' => '01' . $partial_mac,
-                'virtualdev' => false
+                'virtualdev' => false,
             ],
-            (object)[
+            (object) [
                 'description' => 'Virtual Ethernet card',
                 'mac' => '02' . $partial_mac,
-                'virtualdev' => true
-            ]
+                'virtualdev' => true,
+            ],
         ];
         $json = json_decode(json_encode($orig_json));
 
@@ -405,7 +397,7 @@ JSON;
         $conf = new \Glpi\Inventory\Conf();
         $this->assertTrue(
             $conf->saveConf([
-                'component_networkcard' => 0
+                'component_networkcard' => 0,
             ])
         );
         $this->logout();
@@ -419,8 +411,8 @@ JSON;
             'FROM' => \Item_DeviceNetworkCard::getTable(),
             'WHERE' => [
                 'itemtype' => get_class($computer),
-                'items_id' => $computer->getID()
-            ]
+                'items_id' => $computer->getID(),
+            ],
         ]);
         $this->assertCount(0, $item_devices);
 
@@ -430,7 +422,7 @@ JSON;
         $this->assertTrue(
             $conf->saveConf([
                 'component_networkcard' => 1,
-                'component_networkcardvirtual' => 0
+                'component_networkcardvirtual' => 0,
             ])
         );
         $this->logout();
@@ -442,8 +434,8 @@ JSON;
             'FROM' => \Item_DeviceNetworkCard::getTable(),
             'WHERE' => [
                 'itemtype' => get_class($computer),
-                'items_id' => $computer->getID()
-            ]
+                'items_id' => $computer->getID(),
+            ],
         ]);
         $this->assertCount(1, $item_devices);
         $this->assertSame($item_devices->current()['mac'], '01' . $partial_mac);
@@ -453,7 +445,7 @@ JSON;
         $conf = new \Glpi\Inventory\Conf();
         $this->assertTrue(
             $conf->saveConf([
-                'component_networkcardvirtual' => 1
+                'component_networkcardvirtual' => 1,
             ])
         );
         $this->logout();
@@ -466,8 +458,8 @@ JSON;
             'FROM' => \Item_DeviceNetworkCard::getTable(),
             'WHERE' => [
                 'itemtype' => get_class($computer),
-                'items_id' => $computer->getID()
-            ]
+                'items_id' => $computer->getID(),
+            ],
         ]);
         $this->assertCount(2, $item_devices);
     }
@@ -479,12 +471,12 @@ JSON;
 
         $json = json_decode($this->json_computer);
         $json->content->usbdevices = [
-            (object)[
+            (object) [
                 'name' => 'VFS451 Fingerprint Reader',
                 'productid' => '0007',
                 'serial' => '00B0FE47AC85',
                 'vendorid' => '138A',
-            ]
+            ],
         ];
 
         //disable peripherals import
@@ -492,7 +484,7 @@ JSON;
         $conf = new \Glpi\Inventory\Conf();
         $this->assertTrue(
             $conf->saveConf([
-                'import_peripheral' => 0
+                'import_peripheral' => 0,
             ])
         );
         $this->logout();
@@ -505,8 +497,8 @@ JSON;
         $peripherals = $DB->request([
             'FROM' => \Peripheral::getTable(),
             'WHERE' => [
-                'name' => $json->content->usbdevices[0]->name
-            ]
+                'name' => $json->content->usbdevices[0]->name,
+            ],
         ]);
         $this->assertCount(0, $peripherals);
         $item_peripherals = $DB->request([
@@ -514,8 +506,8 @@ JSON;
             'WHERE' => [
                 'itemtype_asset'      => 'Computer',
                 'items_id_asset'      => $computer->getID(),
-                'itemtype_peripheral' => \Peripheral::class
-            ]
+                'itemtype_peripheral' => \Peripheral::class,
+            ],
         ]);
         $this->assertCount(0, $item_peripherals);
 
@@ -524,7 +516,7 @@ JSON;
         $conf = new \Glpi\Inventory\Conf();
         $this->assertTrue(
             $conf->saveConf([
-                'import_peripheral' => 1
+                'import_peripheral' => 1,
             ])
         );
         $this->logout();
@@ -535,8 +527,8 @@ JSON;
         $peripherals = $DB->request([
             'FROM' => \Peripheral::getTable(),
             'WHERE' => [
-                'name' => $json->content->usbdevices[0]->name
-            ]
+                'name' => $json->content->usbdevices[0]->name,
+            ],
         ]);
         $this->assertCount(1, $peripherals);
         $item_peripherals = $DB->request([
@@ -544,8 +536,8 @@ JSON;
             'WHERE' => [
                 'itemtype_asset'      => 'Computer',
                 'items_id_asset'      => $computer->getID(),
-                'itemtype_peripheral' => \Peripheral::class
-            ]
+                'itemtype_peripheral' => \Peripheral::class,
+            ],
         ]);
         $this->assertCount(1, $item_peripherals);
     }
@@ -557,10 +549,10 @@ JSON;
 
         $json = json_decode($this->json_computer);
         $json->content->monitors = [
-            (object)[
+            (object) [
                 'caption' => 'DJCP6',
-                'serial' => 'AFGHHDR0'
-            ]
+                'serial' => 'AFGHHDR0',
+            ],
         ];
 
         //disable monitors import
@@ -568,7 +560,7 @@ JSON;
         $conf = new \Glpi\Inventory\Conf();
         $this->assertTrue(
             $conf->saveConf([
-                'import_monitor' => 0
+                'import_monitor' => 0,
             ])
         );
         $this->logout();
@@ -581,8 +573,8 @@ JSON;
         $monitors = $DB->request([
             'FROM' => \Monitor::getTable(),
             'WHERE' => [
-                'name' => $json->content->monitors[0]->caption
-            ]
+                'name' => $json->content->monitors[0]->caption,
+            ],
         ]);
         $this->assertCount(0, $monitors);
         $item_devices = $DB->request([
@@ -590,8 +582,8 @@ JSON;
             'WHERE' => [
                 'itemtype_asset'      => 'Computer',
                 'items_id_asset'      => $computer->getID(),
-                'itemtype_peripheral' => \Monitor::class
-            ]
+                'itemtype_peripheral' => \Monitor::class,
+            ],
         ]);
         $this->assertCount(0, $item_devices);
 
@@ -600,7 +592,7 @@ JSON;
         $conf = new \Glpi\Inventory\Conf();
         $this->assertTrue(
             $conf->saveConf([
-                'import_monitor' => 1
+                'import_monitor' => 1,
             ])
         );
         $this->logout();
@@ -611,8 +603,8 @@ JSON;
         $monitors = $DB->request([
             'FROM' => \Monitor::getTable(),
             'WHERE' => [
-                'name' => $json->content->monitors[0]->caption
-            ]
+                'name' => $json->content->monitors[0]->caption,
+            ],
         ]);
         $this->assertCount(1, $monitors);
         $item_devices = $DB->request([
@@ -620,8 +612,8 @@ JSON;
             'WHERE' => [
                 'itemtype_asset'      => 'Computer',
                 'items_id_asset'      => $computer->getID(),
-                'itemtype_peripheral' => \Monitor::class
-            ]
+                'itemtype_peripheral' => \Monitor::class,
+            ],
         ]);
         $this->assertCount(1, $item_devices);
     }
@@ -633,10 +625,10 @@ JSON;
 
         $json = json_decode($this->json_computer);
         $json->content->printers = [
-            (object)[
+            (object) [
                 'name' => 'HP Color LaserJet Pro MFP M476 PCL 6',
-                'serial' => 'printerserial'
-            ]
+                'serial' => 'printerserial',
+            ],
         ];
 
         //disable printers import
@@ -644,7 +636,7 @@ JSON;
         $conf = new \Glpi\Inventory\Conf();
         $this->assertTrue(
             $conf->saveConf([
-                'import_printer' => 0
+                'import_printer' => 0,
             ])
         );
         $this->logout();
@@ -657,8 +649,8 @@ JSON;
         $printers = $DB->request([
             'FROM' => \Printer::getTable(),
             'WHERE' => [
-                'name' => $json->content->printers[0]->name
-            ]
+                'name' => $json->content->printers[0]->name,
+            ],
         ]);
         $this->assertCount(0, $printers);
         $item_devices = $DB->request([
@@ -666,8 +658,8 @@ JSON;
             'WHERE' => [
                 'itemtype_asset'      => 'Computer',
                 'items_id_asset'      => $computer->getID(),
-                'itemtype_peripheral' => \Printer::class
-            ]
+                'itemtype_peripheral' => \Printer::class,
+            ],
         ]);
         $this->assertCount(0, $item_devices);
 
@@ -676,7 +668,7 @@ JSON;
         $conf = new \Glpi\Inventory\Conf();
         $this->assertTrue(
             $conf->saveConf([
-                'import_printer' => 1
+                'import_printer' => 1,
             ])
         );
         $this->logout();
@@ -687,8 +679,8 @@ JSON;
         $printers = $DB->request([
             'FROM' => \Printer::getTable(),
             'WHERE' => [
-                'name' => $json->content->printers[0]->name
-            ]
+                'name' => $json->content->printers[0]->name,
+            ],
         ]);
         $this->assertCount(1, $printers);
         $item_devices = $DB->request([
@@ -696,8 +688,8 @@ JSON;
             'WHERE' => [
                 'itemtype_asset'      => 'Computer',
                 'items_id_asset'      => $computer->getID(),
-                'itemtype_peripheral' => \Printer::class
-            ]
+                'itemtype_peripheral' => \Printer::class,
+            ],
         ]);
         $this->assertCount(1, $item_devices);
     }
@@ -709,11 +701,11 @@ JSON;
 
         $json = json_decode($this->json_computer);
         $json->content->softwares = [
-            (object)[
+            (object) [
                 'arch' => 'x86_64',
                 'name' => 'My Software',
-                'version' => '1.0'
-            ]
+                'version' => '1.0',
+            ],
         ];
 
         //disable software import
@@ -721,7 +713,7 @@ JSON;
         $conf = new \Glpi\Inventory\Conf();
         $this->assertTrue(
             $conf->saveConf([
-                'import_software' => 0
+                'import_software' => 0,
             ])
         );
         $this->logout();
@@ -734,16 +726,16 @@ JSON;
         $software = $DB->request([
             'FROM' => \Software::getTable(),
             'WHERE' => [
-                'name' => 'My Software'
-            ]
+                'name' => 'My Software',
+            ],
         ]);
         $this->assertCount(0, $software);
         $item_software = $DB->request([
             'FROM' => \Item_SoftwareVersion::getTable(),
             'WHERE' => [
                 'items_id' => $computer->getID(),
-                'itemtype' => \Computer::class
-            ]
+                'itemtype' => \Computer::class,
+            ],
         ]);
         $this->assertCount(0, $item_software);
 
@@ -752,7 +744,7 @@ JSON;
         $conf = new \Glpi\Inventory\Conf();
         $this->assertTrue(
             $conf->saveConf([
-                'import_software' => 1
+                'import_software' => 1,
             ])
         );
         $this->logout();
@@ -763,16 +755,16 @@ JSON;
         $software = $DB->request([
             'FROM' => \Software::getTable(),
             'WHERE' => [
-                'name' => 'My Software'
-            ]
+                'name' => 'My Software',
+            ],
         ]);
         $this->assertCount(1, $software);
         $item_software = $DB->request([
             'FROM' => \Item_SoftwareVersion::getTable(),
             'WHERE' => [
                 'items_id' => $computer->getID(),
-                'itemtype' => \Computer::class
-            ]
+                'itemtype' => \Computer::class,
+            ],
         ]);
         $this->assertCount(1, $item_software);
     }
@@ -784,12 +776,12 @@ JSON;
 
         $json = json_decode($this->json_computer);
         $json->content->antivirus = [
-            (object)[
+            (object) [
                 'name' => 'Cartapus Antivirus',
                 'version' => '1.2.3.4.5678',
                 'enabled' => true,
-                'guid' => '12345678-1234-1234-1234-123456789012'
-            ]
+                'guid' => '12345678-1234-1234-1234-123456789012',
+            ],
         ];
 
         //disable antivirus import
@@ -797,7 +789,7 @@ JSON;
         $conf = new \Glpi\Inventory\Conf();
         $this->assertTrue(
             $conf->saveConf([
-                'import_antivirus' => 0
+                'import_antivirus' => 0,
             ])
         );
         $this->logout();
@@ -811,8 +803,8 @@ JSON;
             'FROM' => \ItemAntivirus::getTable(),
             'WHERE' => [
                 'itemtype' => \Computer::class,
-                'items_id' => $computer->getID()
-            ]
+                'items_id' => $computer->getID(),
+            ],
         ]);
         $this->assertCount(0, $item_av);
 
@@ -821,7 +813,7 @@ JSON;
         $conf = new \Glpi\Inventory\Conf();
         $this->assertTrue(
             $conf->saveConf([
-                'import_antivirus' => 1
+                'import_antivirus' => 1,
             ])
         );
         $this->logout();
@@ -833,8 +825,8 @@ JSON;
             'FROM' => \ItemAntivirus::getTable(),
             'WHERE' => [
                 'itemtype' => \Computer::class,
-                'items_id' => $computer->getID()
-            ]
+                'items_id' => $computer->getID(),
+            ],
         ]);
         $this->assertCount(1, $item_av);
     }
@@ -902,7 +894,7 @@ JSON;
         $conf = new \Glpi\Inventory\Conf();
         $this->assertTrue(
             $conf->saveConf([
-                'import_unmanaged' => 0
+                'import_unmanaged' => 0,
             ])
         );
         $this->logout();
@@ -921,7 +913,7 @@ JSON;
         $conf = new \Glpi\Inventory\Conf();
         $this->assertTrue(
             $conf->saveConf([
-                'import_unmanaged' => 1
+                'import_unmanaged' => 1,
             ])
         );
         $this->logout();

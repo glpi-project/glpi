@@ -106,7 +106,7 @@ class Migration extends \GLPITestCase
         $this->array($this->queries)->isIdenticalTo([
             'UPDATE pre_table SET mfield = "myvalue"',
             'UPDATE post_table SET mfield = "myvalue"',
-            'UPDATE post_otable SET ofield = "myvalue"'
+            'UPDATE post_otable SET ofield = "myvalue"',
         ]);
     }
 
@@ -122,13 +122,13 @@ class Migration extends \GLPITestCase
             'id'        => '',
             'context'   => '',
             'name'      => '',
-            'value'     => ''
+            'value'     => '',
         ];
 
-       //test with non-existing value => new keys should be inserted
+        //test with non-existing value => new keys should be inserted
         $this->migration->addConfig([
             'one' => 'key',
-            'two' => 'value'
+            'two' => 'value',
         ]);
 
         $this->migration->executeMigration();
@@ -140,11 +140,11 @@ class Migration extends \GLPITestCase
         ];
         $this->array($this->queries)->isIdenticalTo($core_queries, print_r($this->queries, true));
 
-       //test with existing value on different context => new keys should be inserted in correct context
+        //test with existing value on different context => new keys should be inserted in correct context
         $this->queries = [];
         $this->migration->addConfig([
             'one' => 'key',
-            'two' => 'value'
+            'two' => 'value',
         ], 'test-context');
 
         $this->migration->executeMigration();
@@ -155,27 +155,27 @@ class Migration extends \GLPITestCase
             'INSERT INTO `glpi_configs` (`context`, `name`, `value`) VALUES (\'test-context\', \'two\', \'value\')',
         ]);
 
-       //test with one existing value => only new key should be inserted
+        //test with one existing value => only new key should be inserted
         $this->migration->addConfig([
             'one' => 'key',
-            'two' => 'value'
+            'two' => 'value',
         ]);
         $this->queries = [];
         $this->calling($this->db)->request = function ($criteria) {
-           // Call using 'glpi_configs' value for first parameter
-           // corresponds to the call made to retrieve existing values
-           // -> returns a value for config 'one'
+            // Call using 'glpi_configs' value for first parameter
+            // corresponds to the call made to retrieve existing values
+            // -> returns a value for config 'one'
             if ($criteria === ['FROM' => 'glpi_configs', 'WHERE' => ['context' => 'core', 'name' => ['one', 'two']]]) {
-                  $dbresult = [[
-                      'id'        => '42',
-                      'context'   => 'core',
-                      'name'      => 'one',
-                      'value'     => 'setted value'
-                  ]
-                  ];
-                  return new \ArrayIterator($dbresult);
+                $dbresult = [[
+                    'id'        => '42',
+                    'context'   => 'core',
+                    'name'      => 'one',
+                    'value'     => 'setted value',
+                ],
+                ];
+                return new \ArrayIterator($dbresult);
             }
-          // Other calls corresponds to call made in Config::setConfigurationValues()
+            // Other calls corresponds to call made in Config::setConfigurationValues()
             return new \ArrayIterator();
         };
 
@@ -193,7 +193,7 @@ class Migration extends \GLPITestCase
 
         $this->calling($this->db)->numrows = 0;
 
-       //try to backup non existant tables
+        //try to backup non existant tables
         $this->migration->backupTables(['table1', 'table2']);
         $this->migration->executeMigration();
 
@@ -202,8 +202,8 @@ class Migration extends \GLPITestCase
                ' WHERE `table_schema` = \'' . $DB->dbdefault .
                '\' AND `table_type` = \'BASE TABLE\' AND `table_name` LIKE \'table1\'',
             1 => 'SELECT `table_name` AS `TABLE_NAME` FROM `information_schema`.`tables`' .
-               ' WHERE `table_schema` = \'' . $DB->dbdefault  .
-               '\' AND `table_type` = \'BASE TABLE\' AND `table_name` LIKE \'table2\''
+               ' WHERE `table_schema` = \'' . $DB->dbdefault .
+               '\' AND `table_type` = \'BASE TABLE\' AND `table_name` LIKE \'table2\'',
         ]);
 
         //try to backup existant tables
@@ -238,7 +238,7 @@ class Migration extends \GLPITestCase
         global $DB;
         $DB = $this->db;
 
-       // Test change field with move to first column
+        // Test change field with move to first column
         $this->calling($this->db)->fieldExists = true;
 
         $this->migration->changeField('change_table', 'ID', 'id', 'integer', ['first' => 'first']);
@@ -249,7 +249,7 @@ class Migration extends \GLPITestCase
          "CHANGE `ID` `id` INT NOT NULL DEFAULT '0'   FIRST  ",
         ]);
 
-       // Test change field with move to after another column
+        // Test change field with move to after another column
         $this->queries = [];
         $this->calling($this->db)->fieldExists = true;
 
@@ -271,25 +271,25 @@ class Migration extends \GLPITestCase
                 'field'     => 'my_field',
                 'format'    => 'bool',
                 'options'   => [],
-                'sql'       => "ALTER TABLE `my_table` ADD `my_field` TINYINT NOT NULL DEFAULT '0'   "
+                'sql'       => "ALTER TABLE `my_table` ADD `my_field` TINYINT NOT NULL DEFAULT '0'   ",
             ], [
                 'table'     => 'my_table',
                 'field'     => 'my_field',
                 'format'    => 'bool',
                 'options'   => ['value' => 1],
-                'sql'       => "ALTER TABLE `my_table` ADD `my_field` TINYINT NOT NULL DEFAULT '1'   "
+                'sql'       => "ALTER TABLE `my_table` ADD `my_field` TINYINT NOT NULL DEFAULT '1'   ",
             ], [
                 'table'     => 'my_table',
                 'field'     => 'my_field',
                 'format'    => 'char',
                 'options'   => [],
-                'sql'       => "ALTER TABLE `my_table` ADD `my_field` CHAR(1) DEFAULT NULL   "
+                'sql'       => "ALTER TABLE `my_table` ADD `my_field` CHAR(1) DEFAULT NULL   ",
             ], [
                 'table'     => 'my_table',
                 'field'     => 'my_field',
                 'format'    => 'char',
                 'options'   => ['value' => 'a'],
-                'sql'       => "ALTER TABLE `my_table` ADD `my_field` CHAR(1) NOT NULL DEFAULT 'a'   "
+                'sql'       => "ALTER TABLE `my_table` ADD `my_field` CHAR(1) NOT NULL DEFAULT 'a'   ",
             ], [
                 'table'     => 'my_table',
                 'field'     => 'my_field',
@@ -331,37 +331,37 @@ class Migration extends \GLPITestCase
                 'field'     => 'my_field',
                 'format'    => 'integer',
                 'options'   => [],
-                'sql'       => "ALTER TABLE `my_table` ADD `my_field` INT NOT NULL DEFAULT '0'   "
+                'sql'       => "ALTER TABLE `my_table` ADD `my_field` INT NOT NULL DEFAULT '0'   ",
             ], [
                 'table'     => 'my_table',
                 'field'     => 'my_field',
                 'format'    => 'integer',
                 'options'   => ['value' => 2],
-                'sql'       => "ALTER TABLE `my_table` ADD `my_field` INT NOT NULL DEFAULT '2'   "
+                'sql'       => "ALTER TABLE `my_table` ADD `my_field` INT NOT NULL DEFAULT '2'   ",
             ], [
                 'table'     => 'my_table',
                 'field'     => 'my_field',
                 'format'    => 'date',
                 'options'   => [],
-                'sql'       => "ALTER TABLE `my_table` ADD `my_field` DATE DEFAULT NULL   "
+                'sql'       => "ALTER TABLE `my_table` ADD `my_field` DATE DEFAULT NULL   ",
             ], [
                 'table'     => 'my_table',
                 'field'     => 'my_field',
                 'format'    => 'date',
                 'options'   => ['value' => '2018-06-04'],
-                'sql'       => "ALTER TABLE `my_table` ADD `my_field` DATE DEFAULT '2018-06-04'   "
+                'sql'       => "ALTER TABLE `my_table` ADD `my_field` DATE DEFAULT '2018-06-04'   ",
             ], [
                 'table'     => 'my_table',
                 'field'     => 'my_field',
                 'format'    => 'datetime',
                 'options'   => [],
-                'sql'       => "ALTER TABLE `my_table` ADD `my_field` TIMESTAMP NULL DEFAULT NULL   "
+                'sql'       => "ALTER TABLE `my_table` ADD `my_field` TIMESTAMP NULL DEFAULT NULL   ",
             ], [
                 'table'     => 'my_table',
                 'field'     => 'my_field',
                 'format'    => 'datetime',
                 'options'   => ['value' => '2018-06-04 08:16:38'],
-                'sql'       => "ALTER TABLE `my_table` ADD `my_field` TIMESTAMP DEFAULT '2018-06-04 08:16:38'   "
+                'sql'       => "ALTER TABLE `my_table` ADD `my_field` TIMESTAMP DEFAULT '2018-06-04 08:16:38'   ",
             ], [
                 'table'     => 'my_table',
                 'field'     => 'my_field',
@@ -511,25 +511,25 @@ class Migration extends \GLPITestCase
                 'field'     => 'my_field',
                 'format'    => "INT NOT NULL DEFAULT '42'",
                 'options'   => [],
-                'sql'       => "ALTER TABLE `my_table` ADD `my_field` INT NOT NULL DEFAULT '42'   "
+                'sql'       => "ALTER TABLE `my_table` ADD `my_field` INT NOT NULL DEFAULT '42'   ",
             ], [
                 'table'     => 'my_table',
                 'field'     => 'my_field',
                 'format'    => 'integer',
                 'options'   => ['comment' => 'a comment'],
-                'sql'       => "ALTER TABLE `my_table` ADD `my_field` INT NOT NULL DEFAULT '0'  COMMENT 'a comment'  "
+                'sql'       => "ALTER TABLE `my_table` ADD `my_field` INT NOT NULL DEFAULT '0'  COMMENT 'a comment'  ",
             ], [
                 'table'     => 'my_table',
                 'field'     => 'my_field',
                 'format'    => 'integer',
                 'options'   => ['after' => 'other_field'],
-                'sql'       => "ALTER TABLE `my_table` ADD `my_field` INT NOT NULL DEFAULT '0'   AFTER `other_field` "
+                'sql'       => "ALTER TABLE `my_table` ADD `my_field` INT NOT NULL DEFAULT '0'   AFTER `other_field` ",
             ], [
                 'table'     => 'my_table',
                 'field'     => 'my_field',
                 'format'    => 'integer',
                 'options'   => ['first' => true],
-                'sql'       => "ALTER TABLE `my_table` ADD `my_field` INT NOT NULL DEFAULT '0'   FIRST  "
+                'sql'       => "ALTER TABLE `my_table` ADD `my_field` INT NOT NULL DEFAULT '0'   FIRST  ",
             ], [
                 'table'     => 'my_table',
                 'field'     => 'my_field',
@@ -539,8 +539,8 @@ class Migration extends \GLPITestCase
                     "ALTER TABLE `my_table` ADD `my_field` INT NOT NULL DEFAULT '-2'   ",
                     "UPDATE `my_table`
                         SET `my_field` = 0 WHERE `id` = 0",
-                ]
-            ]
+                ],
+            ],
         ];
     }
 
@@ -608,8 +608,8 @@ class Migration extends \GLPITestCase
         // Clean DB to handle potential failure of previous test
         $DB->delete('glpi_profilerights', [
             'name' => [
-                'test_addright_1', 'test_addright_2', 'test_addright_3', 'test_addright_4'
-            ]
+                'test_addright_1', 'test_addright_2', 'test_addright_3', 'test_addright_4',
+            ],
         ]);
 
         //Test adding a READ right when profile has READ and UPDATE config right (Default)
@@ -621,7 +621,7 @@ class Migration extends \GLPITestCase
         //Test adding an UPDATE right when profile has READ and UPDATE group right and CREATE entity right
         $this->migration->addRight('test_addright_3', UPDATE, [
             'group'  => READ | UPDATE,
-            'entity' => CREATE
+            'entity' => CREATE,
         ]);
 
         //Test adding a READ right when profile with no requirements
@@ -631,8 +631,8 @@ class Migration extends \GLPITestCase
             'FROM' => 'glpi_profilerights',
             'WHERE'  => [
                 'name'   => 'test_addright_1',
-                'rights' => READ
-            ]
+                'rights' => READ,
+            ],
         ]);
         $this->integer(count($right1))->isEqualTo(1);
 
@@ -640,8 +640,8 @@ class Migration extends \GLPITestCase
             'FROM' => 'glpi_profilerights',
             'WHERE'  => [
                 'name'   => 'test_addright_2',
-                'rights' => READ
-            ]
+                'rights' => READ,
+            ],
         ]);
         $this->integer(count($right1))->isEqualTo(2);
 
@@ -649,8 +649,8 @@ class Migration extends \GLPITestCase
             'FROM' => 'glpi_profilerights',
             'WHERE'  => [
                 'name'   => 'test_addright_3',
-                'rights' => UPDATE
-            ]
+                'rights' => UPDATE,
+            ],
         ]);
         $this->integer(count($right1))->isEqualTo(1);
 
@@ -658,15 +658,15 @@ class Migration extends \GLPITestCase
             'FROM' => 'glpi_profilerights',
             'WHERE'  => [
                 'name'   => 'test_addright_4',
-                'rights' => READ
-            ]
+                'rights' => READ,
+            ],
         ]);
         $this->integer(count($right1))->isEqualTo(8);
 
         //Test adding a READ right only on profiles where it has not been set yet
         $DB->delete('glpi_profilerights', [
             'profiles_id' => [1, 2, 3, 4],
-            'name' => 'test_addright_4'
+            'name' => 'test_addright_4',
         ]);
 
         $this->migration->addRight('test_addright_4', READ | UPDATE, []);
@@ -675,16 +675,16 @@ class Migration extends \GLPITestCase
             'FROM' => 'glpi_profilerights',
             'WHERE'  => [
                 'name'   => 'test_addright_4',
-                'rights' => READ | UPDATE
-            ]
+                'rights' => READ | UPDATE,
+            ],
         ]);
         $this->integer(count($right4))->isEqualTo(4);
 
         // Clean DB after test
         $DB->delete('glpi_profilerights', [
             'name' => [
-                'test_addright_1', 'test_addright_2', 'test_addright_3', 'test_addright_4'
-            ]
+                'test_addright_1', 'test_addright_2', 'test_addright_3', 'test_addright_4',
+            ],
         ]);
     }
 
@@ -694,8 +694,8 @@ class Migration extends \GLPITestCase
 
         $DB->delete('glpi_profilerights', [
             'name' => [
-                'testright1', 'testright2'
-            ]
+                'testright1', 'testright2',
+            ],
         ]);
         //Test adding a READ right on central interface
         $this->migration->addRightByInterface('testright1', READ, ['interface' => 'central']);
@@ -708,8 +708,8 @@ class Migration extends \GLPITestCase
             'FROM' => 'glpi_profilerights',
             'WHERE'  => [
                 'name'   => 'testright1',
-                'rights' => READ
-            ]
+                'rights' => READ,
+            ],
         ]);
         $this->integer(count($right1))->isEqualTo(7);
 
@@ -717,15 +717,15 @@ class Migration extends \GLPITestCase
             'FROM' => 'glpi_profilerights',
             'WHERE'  => [
                 'name'   => 'testright2',
-                'rights' => READ
-            ]
+                'rights' => READ,
+            ],
         ]);
         $this->integer(count($right2))->isEqualTo(1);
 
         $DB->delete('glpi_profilerights', [
             'name' => [
-                'testright1', 'testright2'
-            ]
+                'testright1', 'testright2',
+            ],
         ]);
     }
 
@@ -746,14 +746,14 @@ class Migration extends \GLPITestCase
         $this->queries = &$queries;
         $this->calling($this->db)->doQuery = function ($query) use (&$queries) {
             if ($query === 'SHOW INDEX FROM `glpi_oldtable`') {
-                  // Make DbUtils::isIndex return false
-                  return false;
+                // Make DbUtils::isIndex return false
+                return false;
             }
             $queries[] = $query;
             return true;
         };
 
-       // Case 1, rename with no buffered changes
+        // Case 1, rename with no buffered changes
         $this->queries = [];
 
         $this->migration->renameTable('glpi_oldtable', 'glpi_newtable');
@@ -764,7 +764,7 @@ class Migration extends \GLPITestCase
             ]
         );
 
-       // Case 2, rename after changes were already applied
+        // Case 2, rename after changes were already applied
         $this->queries = [];
 
         $this->migration->addField('glpi_oldtable', 'bool_field', 'bool');
@@ -782,7 +782,7 @@ class Migration extends \GLPITestCase
             ]
         );
 
-       // Case 3, apply changes after renaming
+        // Case 3, apply changes after renaming
         $this->queries = [];
 
         $this->migration->addField('glpi_oldtable', 'bool_field', 'bool');
@@ -856,8 +856,8 @@ class Migration extends \GLPITestCase
         $this->calling($this->db)->fieldExists = true;
         $this->calling($this->db)->request = new \ArrayIterator([
             [
-                'TABLE_NAME' => 'glpi_item_with_fkey', 'COLUMN_NAME' => 'someoldtypes_id'
-            ]
+                'TABLE_NAME' => 'glpi_item_with_fkey', 'COLUMN_NAME' => 'someoldtypes_id',
+            ],
         ]);
 
 
@@ -891,29 +891,29 @@ class Migration extends \GLPITestCase
                 isset($request['WHERE']['OR'][0])
                 && $request['WHERE']['OR'][0] === ['column_name'  => 'someoldtypes_id']
             ) {
-                  // Request used for foreign key fields
-                  return new \ArrayIterator([
-                      ['TABLE_NAME' => 'glpi_oneitem_with_fkey',     'COLUMN_NAME' => 'someoldtypes_id'],
-                      ['TABLE_NAME' => 'glpi_anotheritem_with_fkey', 'COLUMN_NAME' => 'someoldtypes_id'],
-                      ['TABLE_NAME' => 'glpi_anotheritem_with_fkey', 'COLUMN_NAME' => 'someoldtypes_id_tech'],
-                  ]);
+                // Request used for foreign key fields
+                return new \ArrayIterator([
+                    ['TABLE_NAME' => 'glpi_oneitem_with_fkey',     'COLUMN_NAME' => 'someoldtypes_id'],
+                    ['TABLE_NAME' => 'glpi_anotheritem_with_fkey', 'COLUMN_NAME' => 'someoldtypes_id'],
+                    ['TABLE_NAME' => 'glpi_anotheritem_with_fkey', 'COLUMN_NAME' => 'someoldtypes_id_tech'],
+                ]);
             }
             if (
                 isset($request['WHERE']['OR'][0])
                 && $request['WHERE']['OR'][0] === ['column_name'  => 'itemtype']
             ) {
-                 // Request used for itemtype fields
-                 return new \ArrayIterator([
-                     ['TABLE_NAME' => 'glpi_computers', 'COLUMN_NAME' => 'itemtype'],
-                     ['TABLE_NAME' => 'glpi_users',     'COLUMN_NAME' => 'itemtype'],
-                     ['TABLE_NAME' => 'glpi_stuffs',    'COLUMN_NAME' => 'itemtype_source'],
-                     ['TABLE_NAME' => 'glpi_stuffs',    'COLUMN_NAME' => 'itemtype_dest'],
-                 ]);
+                // Request used for itemtype fields
+                return new \ArrayIterator([
+                    ['TABLE_NAME' => 'glpi_computers', 'COLUMN_NAME' => 'itemtype'],
+                    ['TABLE_NAME' => 'glpi_users',     'COLUMN_NAME' => 'itemtype'],
+                    ['TABLE_NAME' => 'glpi_stuffs',    'COLUMN_NAME' => 'itemtype_source'],
+                    ['TABLE_NAME' => 'glpi_stuffs',    'COLUMN_NAME' => 'itemtype_dest'],
+                ]);
             }
             return [];
         };
 
-       // Test renaming with DB structure update
+        // Test renaming with DB structure update
         $this->migration->renameItemtype('SomeOldType', 'NewName');
         $this->migration->executeMigration();
 
@@ -928,7 +928,7 @@ class Migration extends \GLPITestCase
                 . "CHANGE `someoldtypes_id_tech` `newnames_id_tech` int unsigned NOT NULL DEFAULT '0'   ",
         ]);
 
-       // Test renaming without DB structure update
+        // Test renaming without DB structure update
         $this->queries = [];
 
         $this->migration->renameItemtype('SomeOldType', 'NewName', false);
@@ -974,7 +974,7 @@ class Migration extends \GLPITestCase
                         ],
                         [
                             'id' => 421,
-                        ]
+                        ],
                     ];
                 }
                 return new \ArrayIterator($result);
@@ -984,18 +984,18 @@ class Migration extends \GLPITestCase
                     [
                         'id'        => 1,
                         'itemtype'  => 'Computer',
-                        'query'     => 'is_deleted=0&as_map=0&criteria%5B0%5D%5Blink%5D=AND&criteria%5B0%5D%5Bfield%5D=40&criteria%5B0%5D%5Bsearchtype%5D=contains&criteria%5B0%5D%5Bvalue%5D=LT1&criteria%5B1%5D%5Blink%5D=AND&criteria%5B1%5D%5Bitemtype%5D=Budget&criteria%5B1%5D%5Bmeta%5D=1&criteria%5B1%5D%5Bfield%5D=4&criteria%5B1%5D%5Bsearchtype%5D=contains&criteria%5B1%5D%5Bvalue%5D=&search=Search&itemtype=Computer'
+                        'query'     => 'is_deleted=0&as_map=0&criteria%5B0%5D%5Blink%5D=AND&criteria%5B0%5D%5Bfield%5D=40&criteria%5B0%5D%5Bsearchtype%5D=contains&criteria%5B0%5D%5Bvalue%5D=LT1&criteria%5B1%5D%5Blink%5D=AND&criteria%5B1%5D%5Bitemtype%5D=Budget&criteria%5B1%5D%5Bmeta%5D=1&criteria%5B1%5D%5Bfield%5D=4&criteria%5B1%5D%5Bsearchtype%5D=contains&criteria%5B1%5D%5Bvalue%5D=&search=Search&itemtype=Computer',
                     ],
                     [
                         'id'        => 2,
                         'itemtype'  => 'Budget',
-                        'query'     => 'is_deleted=0&as_map=0&criteria%5B0%5D%5Blink%5D=AND&criteria%5B0%5D%5Bfield%5D=40&criteria%5B0%5D%5Bsearchtype%5D=contains&criteria%5B0%5D%5Bvalue%5D=LT1&criteria%5B1%5D%5Blink%5D=AND&criteria%5B1%5D%5Bitemtype%5D=Computer&criteria%5B1%5D%5Bmeta%5D=1&criteria%5B1%5D%5Bfield%5D=40&criteria%5B1%5D%5Bsearchtype%5D=contains&criteria%5B1%5D%5Bvalue%5D=&search=Search&itemtype=Computer'
+                        'query'     => 'is_deleted=0&as_map=0&criteria%5B0%5D%5Blink%5D=AND&criteria%5B0%5D%5Bfield%5D=40&criteria%5B0%5D%5Bsearchtype%5D=contains&criteria%5B0%5D%5Bvalue%5D=LT1&criteria%5B1%5D%5Blink%5D=AND&criteria%5B1%5D%5Bitemtype%5D=Computer&criteria%5B1%5D%5Bmeta%5D=1&criteria%5B1%5D%5Bfield%5D=40&criteria%5B1%5D%5Bsearchtype%5D=contains&criteria%5B1%5D%5Bvalue%5D=&search=Search&itemtype=Computer',
                     ],
                     [
                         'id'        => 3,
                         'itemtype'  => 'Monitor',
-                        'query'     => 'is_deleted=0&as_map=0&criteria%5B0%5D%5Blink%5D=AND&criteria%5B0%5D%5Bfield%5D=40&criteria%5B0%5D%5Bsearchtype%5D=contains&criteria%5B0%5D%5Bvalue%5D=LT1&criteria%5B1%5D%5Blink%5D=AND&criteria%5B1%5D%5Bitemtype%5D=Budget&criteria%5B1%5D%5Bmeta%5D=1&criteria%5B1%5D%5Bfield%5D=40&criteria%5B1%5D%5Bsearchtype%5D=contains&criteria%5B1%5D%5Bvalue%5D=&search=Search&itemtype=Monitor'
-                    ]
+                        'query'     => 'is_deleted=0&as_map=0&criteria%5B0%5D%5Blink%5D=AND&criteria%5B0%5D%5Bfield%5D=40&criteria%5B0%5D%5Bsearchtype%5D=contains&criteria%5B0%5D%5Bvalue%5D=LT1&criteria%5B1%5D%5Blink%5D=AND&criteria%5B1%5D%5Bitemtype%5D=Budget&criteria%5B1%5D%5Bmeta%5D=1&criteria%5B1%5D%5Bfield%5D=40&criteria%5B1%5D%5Bsearchtype%5D=contains&criteria%5B1%5D%5Bvalue%5D=&search=Search&itemtype=Monitor',
+                    ],
                 ]);
             }
             return new \ArrayIterator([]);
@@ -1041,7 +1041,7 @@ class Migration extends \GLPITestCase
                         ],
                         [
                             'id' => 421,
-                        ]
+                        ],
                     ];
                 }
                 return new \ArrayIterator($result);
@@ -1051,18 +1051,18 @@ class Migration extends \GLPITestCase
                     [
                         'id'        => 1,
                         'itemtype'  => 'Computer',
-                        'query'     => 'is_deleted=0&as_map=0&criteria%5B0%5D%5Blink%5D=AND&criteria%5B0%5D%5Bfield%5D=40&criteria%5B0%5D%5Bsearchtype%5D=contains&criteria%5B0%5D%5Bvalue%5D=LT1&criteria%5B1%5D%5Blink%5D=AND&criteria%5B1%5D%5Bitemtype%5D=Budget&criteria%5B1%5D%5Bmeta%5D=1&criteria%5B1%5D%5Bfield%5D=4&criteria%5B1%5D%5Bsearchtype%5D=contains&criteria%5B1%5D%5Bvalue%5D=&search=Search&itemtype=Computer'
+                        'query'     => 'is_deleted=0&as_map=0&criteria%5B0%5D%5Blink%5D=AND&criteria%5B0%5D%5Bfield%5D=40&criteria%5B0%5D%5Bsearchtype%5D=contains&criteria%5B0%5D%5Bvalue%5D=LT1&criteria%5B1%5D%5Blink%5D=AND&criteria%5B1%5D%5Bitemtype%5D=Budget&criteria%5B1%5D%5Bmeta%5D=1&criteria%5B1%5D%5Bfield%5D=4&criteria%5B1%5D%5Bsearchtype%5D=contains&criteria%5B1%5D%5Bvalue%5D=&search=Search&itemtype=Computer',
                     ],
                     [
                         'id'        => 2,
                         'itemtype'  => 'Budget',
-                        'query'     => 'is_deleted=0&as_map=0&criteria%5B0%5D%5Blink%5D=AND&criteria%5B0%5D%5Bfield%5D=40&criteria%5B0%5D%5Bsearchtype%5D=contains&criteria%5B0%5D%5Bvalue%5D=LT1&criteria%5B1%5D%5Blink%5D=AND&criteria%5B1%5D%5Bitemtype%5D=Computer&criteria%5B1%5D%5Bmeta%5D=1&criteria%5B1%5D%5Bfield%5D=40&criteria%5B1%5D%5Bsearchtype%5D=contains&criteria%5B1%5D%5Bvalue%5D=&search=Search&itemtype=Computer'
+                        'query'     => 'is_deleted=0&as_map=0&criteria%5B0%5D%5Blink%5D=AND&criteria%5B0%5D%5Bfield%5D=40&criteria%5B0%5D%5Bsearchtype%5D=contains&criteria%5B0%5D%5Bvalue%5D=LT1&criteria%5B1%5D%5Blink%5D=AND&criteria%5B1%5D%5Bitemtype%5D=Computer&criteria%5B1%5D%5Bmeta%5D=1&criteria%5B1%5D%5Bfield%5D=40&criteria%5B1%5D%5Bsearchtype%5D=contains&criteria%5B1%5D%5Bvalue%5D=&search=Search&itemtype=Computer',
                     ],
                     [
                         'id'        => 3,
                         'itemtype'  => 'Monitor',
-                        'query'     => 'is_deleted=0&as_map=0&criteria%5B0%5D%5Blink%5D=AND&criteria%5B0%5D%5Bfield%5D=40&criteria%5B0%5D%5Bsearchtype%5D=contains&criteria%5B0%5D%5Bvalue%5D=LT1&criteria%5B1%5D%5Blink%5D=AND&criteria%5B1%5D%5Bitemtype%5D=Budget&criteria%5B1%5D%5Bmeta%5D=1&criteria%5B1%5D%5Bfield%5D=40&criteria%5B1%5D%5Bsearchtype%5D=contains&criteria%5B1%5D%5Bvalue%5D=&search=Search&itemtype=Monitor'
-                    ]
+                        'query'     => 'is_deleted=0&as_map=0&criteria%5B0%5D%5Blink%5D=AND&criteria%5B0%5D%5Bfield%5D=40&criteria%5B0%5D%5Bsearchtype%5D=contains&criteria%5B0%5D%5Bvalue%5D=LT1&criteria%5B1%5D%5Blink%5D=AND&criteria%5B1%5D%5Bitemtype%5D=Budget&criteria%5B1%5D%5Bmeta%5D=1&criteria%5B1%5D%5Bfield%5D=40&criteria%5B1%5D%5Bsearchtype%5D=contains&criteria%5B1%5D%5Bvalue%5D=&search=Search&itemtype=Monitor',
+                    ],
                 ]);
             }
             return new \ArrayIterator([]);
@@ -1095,8 +1095,8 @@ class Migration extends \GLPITestCase
         // Clean DB to handle potential failure of previous test
         $DB->delete('glpi_profilerights', [
             'name' => [
-                'test_replaceright_1', 'test_replaceright_2', 'test_replaceright_3'
-            ]
+                'test_replaceright_1', 'test_replaceright_2', 'test_replaceright_3',
+            ],
         ]);
 
         //Test updating a UPDATE right when profile has READ and UPDATE config right (Default)
@@ -1106,8 +1106,8 @@ class Migration extends \GLPITestCase
             'FROM' => 'glpi_profilerights',
             'WHERE'  => [
                 'name'   => 'test_replaceright_1',
-                'rights' => READ
-            ]
+                'rights' => READ,
+            ],
         ]);
         $this->integer(count($right1))->isEqualTo(1);
 
@@ -1118,23 +1118,23 @@ class Migration extends \GLPITestCase
             'FROM' => 'glpi_profilerights',
             'WHERE'  => [
                 'name'   => 'test_replaceright_2',
-                'rights' => READ
-            ]
+                'rights' => READ,
+            ],
         ]);
         $this->integer(count($right1))->isEqualTo(2);
 
         //Test updating an UPDATE right when profile has READ and UPDATE group right and CREATE entity right
         $this->migration->replaceRight('test_replaceright_2', UPDATE, [
             'group'  => READ | UPDATE,
-            'entity' => CREATE
+            'entity' => CREATE,
         ]);
 
         $right1 = $DB->request([
             'FROM' => 'glpi_profilerights',
             'WHERE'  => [
                 'name'   => 'test_replaceright_2',
-                'rights' => UPDATE
-            ]
+                'rights' => UPDATE,
+            ],
         ]);
         $this->integer(count($right1))->isEqualTo(1);
 
@@ -1145,16 +1145,16 @@ class Migration extends \GLPITestCase
             'FROM' => 'glpi_profilerights',
             'WHERE'  => [
                 'name'   => 'test_replaceright_3',
-                'rights' => READ
-            ]
+                'rights' => READ,
+            ],
         ]);
         $this->integer(count($right1))->isEqualTo(8);
 
         // Clean DB after test
         $DB->delete('glpi_profilerights', [
             'name' => [
-                'test_replaceright_1', 'test_replaceright_2', 'test_replaceright_3'
-            ]
+                'test_replaceright_1', 'test_replaceright_2', 'test_replaceright_3',
+            ],
         ]);
     }
 
@@ -1167,8 +1167,8 @@ class Migration extends \GLPITestCase
             'name' => [
                 'test_giveright_1',
                 'test_giveright_2',
-                'test_giveright_3'
-            ]
+                'test_giveright_3',
+            ],
         ]);
 
         $profiles_id = getItemByTypeName('Profile', 'Super-Admin', true);
@@ -1177,17 +1177,17 @@ class Migration extends \GLPITestCase
         $DB->insert('glpi_profilerights', [
             'name' => 'test_giveright_1',
             'profiles_id' => $profiles_id,
-            'rights' => 0
+            'rights' => 0,
         ]);
         $DB->insert('glpi_profilerights', [
             'name' => 'test_giveright_2',
             'profiles_id' => $profiles_id,
-            'rights' => READ | UPDATE
+            'rights' => READ | UPDATE,
         ]);
         $DB->insert('glpi_profilerights', [
             'name' => 'test_giveright_3',
             'profiles_id' => $profiles_id,
-            'rights' => 0
+            'rights' => 0,
         ]);
 
         // Adding a READ right with default required rights
@@ -1196,7 +1196,7 @@ class Migration extends \GLPITestCase
             'FROM' => 'glpi_profilerights',
             'WHERE' => [
                 'name' => 'test_giveright_1',
-            ]
+            ],
         ]);
         $this->integer(count($rights))->isEqualTo(1);
         $rights = $rights->current();
@@ -1208,7 +1208,7 @@ class Migration extends \GLPITestCase
             'FROM' => 'glpi_profilerights',
             'WHERE' => [
                 'name' => 'test_giveright_1',
-            ]
+            ],
         ]);
         $this->integer(count($rights))->isEqualTo(1);
         $rights = $rights->current();
@@ -1221,7 +1221,7 @@ class Migration extends \GLPITestCase
             'FROM' => 'glpi_profilerights',
             'WHERE' => [
                 'name' => 'test_giveright_1',
-            ]
+            ],
         ]);
         $this->integer(count($rights))->isEqualTo(1);
         $rights = $rights->current();
@@ -1233,7 +1233,7 @@ class Migration extends \GLPITestCase
             'FROM' => 'glpi_profilerights',
             'WHERE' => [
                 'name' => 'test_giveright_2',
-            ]
+            ],
         ]);
         $this->integer(count($rights))->isEqualTo(1);
         $rights = $rights->current();
@@ -1245,7 +1245,7 @@ class Migration extends \GLPITestCase
             'FROM' => 'glpi_profilerights',
             'WHERE' => [
                 'name' => 'test_giveright_3',
-            ]
+            ],
         ]);
         $this->integer(count($rights))->isEqualTo(1);
         $rights = $rights->current();
@@ -1256,8 +1256,8 @@ class Migration extends \GLPITestCase
             'name' => [
                 'test_giveright_1',
                 'test_giveright_2',
-                'test_giveright_3'
-            ]
+                'test_giveright_3',
+            ],
         ]);
     }
 
@@ -1268,7 +1268,7 @@ class Migration extends \GLPITestCase
         $this->variable($DB->insert('glpi_configs', [
             'name' => __FUNCTION__,
             'value' => 'test',
-            'context' => 'test'
+            'context' => 'test',
         ]))->isNotEqualTo(false);
 
         $this->migration->removeConfig([__FUNCTION__]);
@@ -1276,8 +1276,8 @@ class Migration extends \GLPITestCase
         $this->integer(count($DB->request([
             'FROM' => 'glpi_configs',
             'WHERE' => [
-                'name' => __FUNCTION__
-            ]
+                'name' => __FUNCTION__,
+            ],
         ])))->isEqualTo(1);
 
         $this->migration->removeConfig([__FUNCTION__], 'test');
@@ -1285,8 +1285,8 @@ class Migration extends \GLPITestCase
         $this->integer(count($DB->request([
             'FROM' => 'glpi_configs',
             'WHERE' => [
-                'name' => __FUNCTION__
-            ]
+                'name' => __FUNCTION__,
+            ],
         ])))->isEqualTo(0);
     }
 
@@ -1323,25 +1323,25 @@ class Migration extends \GLPITestCase
         // Clean DB to handle potential failure of previous test
         $DB->delete('glpi_profilerights', [
             'name' => [
-                'testReloadCurrentProfile'
-            ]
+                'testReloadCurrentProfile',
+            ],
         ]);
 
         $sub_query = new \Glpi\DBAL\QuerySubQuery([
             'SELECT' => [
-                'profiles_id'
+                'profiles_id',
             ],
             'FROM' => 'glpi_profilerights',
             'WHERE' => [
                 'name' => 'config',
-                'rights' => READ | UPDATE
-            ]
+                'rights' => READ | UPDATE,
+            ],
         ]);
 
         $DB->update('glpi_profiles', [
-            'last_rights_update' => null
+            'last_rights_update' => null,
         ], [
-            'id' => $sub_query
+            'id' => $sub_query,
         ]);
 
         //Test adding a READ right when profile has READ and UPDATE config right (Default)
@@ -1349,12 +1349,12 @@ class Migration extends \GLPITestCase
 
         $last_rights_updates = $DB->request([
             'SELECT' => [
-                'last_rights_update'
+                'last_rights_update',
             ],
             'FROM' => 'glpi_profiles',
             'WHERE' => [
-                'id' => $sub_query
-            ]
+                'id' => $sub_query,
+            ],
         ]);
 
         foreach ($last_rights_updates as $last_rights_update) {
@@ -1364,8 +1364,8 @@ class Migration extends \GLPITestCase
         // Clean DB after test
         $DB->delete('glpi_profilerights', [
             'name' => [
-                'testReloadCurrentProfile'
-            ]
+                'testReloadCurrentProfile',
+            ],
         ]);
     }
 }

@@ -47,8 +47,7 @@ class Response implements \ArrayAccess
         private array $examples = [],
         private string $media_type = 'application/json',
         private int $status_code = 200,
-    ) {
-    }
+    ) {}
 
     /**
      * @return string

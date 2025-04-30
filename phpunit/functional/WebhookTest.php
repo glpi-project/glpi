@@ -78,7 +78,7 @@ class WebhookTest extends \DbTestCase
             'name' => 'Test ticket',
             'content' => 'Test ticket content',
             'externalid' => 'ext1234',
-            'entities_id' => $_SESSION['glpiactive_entity']
+            'entities_id' => $_SESSION['glpiactive_entity'],
         ]);
         $this->assertEquals('ext1234', $ticket->fields['externalid']);
 
@@ -103,13 +103,13 @@ JSON;
             'event' => 'new',
             'is_active' => 1,
             'use_default_payload' => 0,
-            'payload' => $payload
+            'payload' => $payload,
         ]);
 
         $fup = $this->createItem('ITILFollowup', [
             'items_id' => $ticket->getID(),
             'itemtype' => 'Ticket',
-            'content' => 'Test followup'
+            'content' => 'Test followup',
         ]);
 
         $queued_webhooks = getAllDataFromTable(\QueuedWebhook::getTable(), ['webhooks_id' => $webhook->getID()]);
@@ -135,7 +135,7 @@ JSON;
             'name' => 'Test ticket',
             'content' => 'Test ticket content',
             'entities_id' => $_SESSION['glpiactive_entity'],
-            'externalid' => 'ext1234'
+            'externalid' => 'ext1234',
         ]);
 
         $payload = <<<JSON
@@ -152,13 +152,13 @@ JSON;
             'event' => 'new',
             'is_active' => 1,
             'use_default_payload' => 0,
-            'payload' => $payload
+            'payload' => $payload,
         ]);
 
         $fup = $this->createItem('ITILFollowup', [
             'items_id' => $ticket->getID(),
             'itemtype' => 'Ticket',
-            'content' => 'Test followup'
+            'content' => 'Test followup',
         ]);
 
         $queued_webhooks = getAllDataFromTable(\QueuedWebhook::getTable(), ['webhooks_id' => $webhook->getID()]);
@@ -176,7 +176,7 @@ JSON;
             'name' => 'Test ticket',
             'content' => 'Test ticket content',
             'entities_id' => $_SESSION['glpiactive_entity'],
-            'externalid' => 'ext1234'
+            'externalid' => 'ext1234',
         ]);
 
         $payload = <<<JSON
@@ -203,13 +203,13 @@ JSON;
             'is_active' => 1,
             'use_default_payload' => 0,
             'payload' => $payload,
-            'custom_headers' => $custom_headers
+            'custom_headers' => $custom_headers,
         ], ['custom_headers']);
 
         $fup = $this->createItem('ITILFollowup', [
             'items_id' => $ticket->getID(),
             'itemtype' => 'Ticket',
-            'content' => 'Test followup'
+            'content' => 'Test followup',
         ]);
 
         $queued_webhooks = getAllDataFromTable(\QueuedWebhook::getTable(), ['webhooks_id' => $webhook->getID()]);

@@ -39,7 +39,6 @@ use Glpi\DBAL\QueryFunction;
 use Glpi\Event;
 use Glpi\Helpdesk\Tile\LinkableToTilesInterface;
 use Glpi\Helpdesk\Tile\TilesManager;
-use Glpi\Plugin\Hooks;
 use Glpi\UI\IllustrationManager;
 use Ramsey\Uuid\Uuid;
 
@@ -121,7 +120,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
             'autofill_buy_date', 'autofill_delivery_date',
             'autofill_order_date', 'autofill_use_date',
             'autofill_warranty_date',
-            'autofill_decommission_date'
+            'autofill_decommission_date',
         ],
         // Notification
         'notification' => [
@@ -165,7 +164,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
             'custom_helpdesk_home_scene_left', 'custom_helpdesk_home_scene_right',
         ],
         // Configuration
-        'config' => ['enable_custom_css', 'custom_css_code']
+        'config' => ['enable_custom_css', 'custom_css_code'],
     ];
 
     public function getForbiddenStandardMassiveAction()
@@ -197,8 +196,8 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
                 'WHERE' => [
                     'name' => $this->input['name'],
                     'entities_id' => $this->input['entities_id'],
-                    'id' => ['<>', $this->input['id']]
-                ]
+                    'id' => ['<>', $this->input['id']],
+                ],
             ]);
 
             if (count($iterator)) {
@@ -314,7 +313,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
                 if (Session::haveRight(self::$rightname, self::UPDATEHELPDESK)) {
                     foreach ($fields as $field) {
                         if (isset($input[$field])) {
-                             $tmp[$field] = $input[$field];
+                            $tmp[$field] = $input[$field];
                         }
                     }
                 }
@@ -328,7 +327,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
                 }
             }
         }
-       // Add framework  / internal ones
+        // Add framework  / internal ones
         foreach ($input as $key => $val) {
             if ($key[0] === '_') {
                 $tmp[$key] = $input[$key];
@@ -364,9 +363,9 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
 
         $result = $DB->request([
             'SELECT' => [
-                new QueryExpression(QueryFunction::max('id') . '+1', 'newID')
+                new QueryExpression(QueryFunction::max('id') . '+1', 'newID'),
             ],
-            'FROM'   => static::getTable()
+            'FROM'   => static::getTable(),
         ])->current();
         $input['id'] = $result['newID'];
 
@@ -668,7 +667,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
 
     public function showForm($ID, array $options = [])
     {
-        if ((int)$ID === 0) {
+        if ((int) $ID === 0) {
             // Root entity: can edit but cannot delete
             $options['candel'] = false;
         }
@@ -719,7 +718,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
     {
         parent::post_addItem();
 
-       // Add right to current user - Hack to avoid login/logout
+        // Add right to current user - Hack to avoid login/logout
         $_SESSION['glpiactiveentities'][$this->fields['id']] = $this->fields['id'];
         $_SESSION['glpiactiveentities_string']              .= ",'" . $this->fields['id'] . "'";
         // Root entity cannot be deleted, so if we added an entity this means GLPI is now multi-entity
@@ -782,7 +781,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => 'common',
-            'name'               => __('Characteristics')
+            'name'               => __('Characteristics'),
         ];
 
         $tab[] = [
@@ -791,7 +790,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
             'field'              => 'completename',
             'name'               => __('Complete name'),
             'datatype'           => 'itemlink',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -800,7 +799,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
             'field'              => 'id',
             'name'               => __('ID'),
             'massiveaction'      => false,
-            'datatype'           => 'number'
+            'datatype'           => 'number',
         ];
 
         $tab[] = [
@@ -809,7 +808,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
             'field'              => 'name',
             'name'               => __('Name'),
             'datatype'           => 'itemlink',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -818,7 +817,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
             'field'              => 'address',
             'name'               => __('Address'),
             'massiveaction'      => false,
-            'datatype'           => 'text'
+            'datatype'           => 'text',
         ];
 
         $tab[] = [
@@ -924,7 +923,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
             'table'              => static::getTable(),
             'field'              => 'comment',
             'name'               => __('Comments'),
-            'datatype'           => 'text'
+            'datatype'           => 'text',
         ];
 
         $tab[] = [
@@ -933,7 +932,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
             'field'              => 'date_mod',
             'name'               => __('Last update'),
             'datatype'           => 'datetime',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -942,7 +941,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
             'field'              => 'date_creation',
             'name'               => __('Creation date'),
             'datatype'           => 'datetime',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -951,7 +950,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
             'field'              => 'registration_number',
             'name'               => _x('infocom', 'Administrative number'),
             'datatype'           => 'string',
-            'autocomplete'       => true
+            'autocomplete'       => true,
         ];
 
         // add objectlock search options
@@ -961,7 +960,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => 'advanced',
-            'name'               => __('Advanced information')
+            'name'               => __('Advanced information'),
         ];
 
         $tab[] = [
@@ -988,7 +987,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
             'field'              => 'name',
             'name'               => __('LDAP directory of an entity'),
             'massiveaction'      => false,
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -1011,7 +1010,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
 
         $tab[] = [
             'id'                 => 'notif',
-            'name'               => __('Notification options')
+            'name'               => __('Notification options'),
         ];
 
         $tab[] = [
@@ -1026,7 +1025,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
             'max'                => 60,
             'step'               => 1,
             'unit'               => 'minute',
-            'toadd'              => [self::CONFIG_PARENT => __('Inheritance of the parent entity')]
+            'toadd'              => [self::CONFIG_PARENT => __('Inheritance of the parent entity')],
         ];
 
         $tab[] = [
@@ -1036,7 +1035,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
             'name'               => __('Enable notifications by default'),
             'massiveaction'      => false,
             'nosearch'           => true,
-            'datatype'           => 'string'
+            'datatype'           => 'string',
         ];
 
         $tab[] = [
@@ -1122,14 +1121,14 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
             'table'              => static::getTable(),
             'field'              => 'mailing_signature',
             'name'               => __('Email signature'),
-            'datatype'           => 'text'
+            'datatype'           => 'text',
         ];
         $tab[] = [
             'id'                 => '76',
             'table'              => static::getTable(),
             'field'              => 'url_base',
             'name'               => __('URL of the application'),
-            'datatype'           => 'text'
+            'datatype'           => 'text',
         ];
 
         $tab[] = [
@@ -1139,7 +1138,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
             'name'               => __('Alarms on cartridges'),
             'massiveaction'      => false,
             'nosearch'           => true,
-            'datatype'           => 'specific'
+            'datatype'           => 'specific',
         ];
 
         $tab[] = [
@@ -1149,7 +1148,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
             'name'               => __('Alarms on consumables'),
             'massiveaction'      => false,
             'nosearch'           => true,
-            'datatype'           => 'specific'
+            'datatype'           => 'specific',
         ];
 
         $tab[] = [
@@ -1159,7 +1158,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
             'name'               => __('Alarms on expired licenses'),
             'massiveaction'      => false,
             'nosearch'           => true,
-            'datatype'           => 'specific'
+            'datatype'           => 'specific',
         ];
 
         $tab[] = [
@@ -1169,7 +1168,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
             'name'               => __('Send license alarms before'),
             'massiveaction'      => false,
             'nosearch'           => true,
-            'datatype'           => 'specific'
+            'datatype'           => 'specific',
         ];
 
         $tab[] = [
@@ -1179,7 +1178,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
             'name'               => __('Alarms on contracts'),
             'massiveaction'      => false,
             'nosearch'           => true,
-            'datatype'           => 'specific'
+            'datatype'           => 'specific',
         ];
 
         $tab[] = [
@@ -1189,7 +1188,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
             'name'               => __('Send contract alarms before'),
             'massiveaction'      => false,
             'nosearch'           => true,
-            'datatype'           => 'specific'
+            'datatype'           => 'specific',
         ];
 
         $tab[] = [
@@ -1199,7 +1198,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
             'name'               => __('Alarms on financial and administrative information'),
             'massiveaction'      => false,
             'nosearch'           => true,
-            'datatype'           => 'specific'
+            'datatype'           => 'specific',
         ];
 
         $tab[] = [
@@ -1209,7 +1208,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
             'name'               => __('Send financial and administrative information alarms before'),
             'massiveaction'      => false,
             'nosearch'           => true,
-            'datatype'           => 'specific'
+            'datatype'           => 'specific',
         ];
 
         $tab[] = [
@@ -1219,7 +1218,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
             'name'               => __('Alerts on reservations'),
             'massiveaction'      => false,
             'nosearch'           => true,
-            'datatype'           => 'specific'
+            'datatype'           => 'specific',
         ];
 
         $tab[] = [
@@ -1229,7 +1228,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
             'name'               => __('Default value for alarms on contracts'),
             'massiveaction'      => false,
             'nosearch'           => true,
-            'datatype'           => 'specific'
+            'datatype'           => 'specific',
         ];
 
         $tab[] = [
@@ -1239,7 +1238,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
             'name'               => __('Default value for alarms on financial and administrative information'),
             'massiveaction'      => false,
             'nosearch'           => true,
-            'datatype'           => 'specific'
+            'datatype'           => 'specific',
         ];
 
         $tab[] = [
@@ -1249,7 +1248,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
             'name'               => __('Default threshold for cartridges count'),
             'massiveaction'      => false,
             'nosearch'           => true,
-            'datatype'           => 'number'
+            'datatype'           => 'number',
         ];
 
         $tab[] = [
@@ -1259,7 +1258,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
             'name'               => __('Default threshold for consumables count'),
             'massiveaction'      => false,
             'nosearch'           => true,
-            'datatype'           => 'number'
+            'datatype'           => 'number',
         ];
 
         $tab[] = [
@@ -1269,7 +1268,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
             'name'               => __('Alarms on expired certificates'),
             'massiveaction'      => false,
             'nosearch'           => true,
-            'datatype'           => 'specific'
+            'datatype'           => 'specific',
         ];
 
         $tab[] = [
@@ -1279,12 +1278,12 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
             'name'               => __('Send Certificate alarms before'),
             'massiveaction'      => false,
             'nosearch'           => true,
-            'datatype'           => 'specific'
+            'datatype'           => 'specific',
         ];
 
         $tab[] = [
             'id'                 => 'helpdesk',
-            'name'               => __('Assistance')
+            'name'               => __('Assistance'),
         ];
 
         $tab[] = [
@@ -1295,7 +1294,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
             'massiveaction'      => false,
             'nosearch'           => true,
             'datatype'           => 'specific',
-            'additionalfields'   => ['tickettemplates_strategy']
+            'additionalfields'   => ['tickettemplates_strategy'],
         ];
 
         $tab[] = [
@@ -1313,8 +1312,8 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
             'toadd'              => [
                 self::CONFIG_PARENT  => __('Inheritance of the parent entity'),
                 self::CONFIG_NEVER   => __('Never'),
-                0                  => __('Immediatly')
-            ]
+                0                  => __('Immediatly'),
+            ],
         ];
 
         $tab[] = [
@@ -1332,8 +1331,8 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
             'toadd'              => [
                 self::CONFIG_PARENT  => __('Inheritance of the parent entity'),
                 self::CONFIG_NEVER   => __('Never'),
-                0                  => __('Immediatly')
-            ]
+                0                  => __('Immediatly'),
+            ],
         ];
 
         $tab[] = [
@@ -1343,7 +1342,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
             'name'               => __('Alerts on tickets which are not solved'),
             'massiveaction'      => false,
             'nosearch'           => true,
-            'datatype'           => 'specific'
+            'datatype'           => 'specific',
         ];
 
         $tab[] = [
@@ -1353,7 +1352,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
             'name'               => __('Automatic assignment of tickets'),
             'massiveaction'      => false,
             'nosearch'           => true,
-            'datatype'           => 'specific'
+            'datatype'           => 'specific',
         ];
 
         $tab[] = [
@@ -1364,7 +1363,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
             'massiveaction'      => false,
             'nosearch'           => true,
             'datatype'           => 'specific',
-            'additionalfields'   => ['calendars_strategy']
+            'additionalfields'   => ['calendars_strategy'],
         ];
 
         $tab[] = [
@@ -1374,7 +1373,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
             'name'               => __('Tickets default type'),
             'massiveaction'      => false,
             'nosearch'           => true,
-            'datatype'           => 'specific'
+            'datatype'           => 'specific',
         ];
 
         $tab[] = [
@@ -1388,12 +1387,12 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
             'toadd'              => [
                 self::CONFIG_PARENT => __('Inheritance of the parent entity'),
                 self::CONFIG_AUTO   => __('Contract in ticket entity'),
-            ]
+            ],
         ];
 
         $tab[] = [
             'id'                 => 'assets',
-            'name'               => _n('Asset', 'Assets', Session::getPluralNumber())
+            'name'               => _n('Asset', 'Assets', Session::getPluralNumber()),
         ];
 
         $tab[] = [
@@ -1403,7 +1402,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
             'name'               => __('Date of purchase'),
             'massiveaction'      => false,
             'nosearch'           => true,
-            'datatype'           => 'specific'
+            'datatype'           => 'specific',
         ];
 
         $tab[] = [
@@ -1413,7 +1412,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
             'name'               => __('Order date'),
             'massiveaction'      => false,
             'nosearch'           => true,
-            'datatype'           => 'specific'
+            'datatype'           => 'specific',
         ];
 
         $tab[] = [
@@ -1423,7 +1422,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
             'name'               => __('Delivery date'),
             'massiveaction'      => false,
             'nosearch'           => true,
-            'datatype'           => 'specific'
+            'datatype'           => 'specific',
         ];
 
         $tab[] = [
@@ -1433,7 +1432,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
             'name'               => __('Startup date'),
             'massiveaction'      => false,
             'nosearch'           => true,
-            'datatype'           => 'specific'
+            'datatype'           => 'specific',
         ];
 
         $tab[] = [
@@ -1443,7 +1442,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
             'name'               => __('Start date of warranty'),
             'massiveaction'      => false,
             'nosearch'           => true,
-            'datatype'           => 'specific'
+            'datatype'           => 'specific',
         ];
 
         $tab[] = [
@@ -1453,7 +1452,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
             'name'               => sprintf(__('Satisfaction survey configuration (%s)'), Ticket::getTypeName(1)),
             'massiveaction'      => false,
             'nosearch'           => true,
-            'datatype'           => 'specific'
+            'datatype'           => 'specific',
         ];
 
         $tab[] = [
@@ -1462,7 +1461,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
             'field'              => 'inquest_rate',
             'name'               => sprintf(__('Satisfaction survey trigger rate (%s)'), Ticket::getTypeName(1)),
             'massiveaction'      => false,
-            'datatype'           => 'number'
+            'datatype'           => 'number',
         ];
 
         $tab[] = [
@@ -1471,7 +1470,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
             'field'              => 'inquest_delay',
             'name'               => sprintf(__('Create satisfaction survey after (%s)'), Ticket::getTypeName(1)),
             'massiveaction'      => false,
-            'datatype'           => 'number'
+            'datatype'           => 'number',
         ];
 
         $tab[] = [
@@ -1490,7 +1489,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
             'name'               => sprintf(__('Satisfaction survey configuration (%s)'), Change::getTypeName(1)),
             'massiveaction'      => false,
             'nosearch'           => true,
-            'datatype'           => 'specific'
+            'datatype'           => 'specific',
         ];
 
         $tab[] = [
@@ -1499,7 +1498,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
             'field'              => 'inquest_rate_change',
             'name'               => sprintf(__('Satisfaction survey trigger rate (%s)'), Change::getTypeName(1)),
             'massiveaction'      => false,
-            'datatype'           => 'number'
+            'datatype'           => 'number',
         ];
 
         $tab[] = [
@@ -1508,7 +1507,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
             'field'              => 'inquest_delay_change',
             'name'               => sprintf(__('Create satisfaction survey after (%s)'), Change::getTypeName(1)),
             'massiveaction'      => false,
-            'datatype'           => 'number'
+            'datatype'           => 'number',
         ];
 
         $tab[] = [
@@ -1525,12 +1524,12 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
             'table'              => static::getTable(),
             'field'              => 'entities_id_software',
             'linkfield'          => 'entities_id_software', // not a dropdown because of special value
-                                 //TRANS: software in plural
+            //TRANS: software in plural
             'name'               => __('Entity for software creation'),
             'massiveaction'      => false,
             'nosearch'           => true,
             'datatype'           => 'specific',
-            'additionalfields'   => ['entities_strategy_software']
+            'additionalfields'   => ['entities_strategy_software'],
         ];
 
         $tab[] = [
@@ -1540,7 +1539,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
             'name'               => __('Decommission date'),
             'massiveaction'      => false,
             'nosearch'           => true,
-            'datatype'           => 'specific'
+            'datatype'           => 'specific',
         ];
 
         return $tab;
@@ -1561,10 +1560,10 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
         $ruleid     = $rule->add($_POST);
 
         if ($ruleid) {
-           //Add an action associated to the rule
+            //Add an action associated to the rule
             $ruleAction = new RuleAction();
 
-           //Action is : affect computer to this entity
+            //Action is : affect computer to this entity
             $ruleAction->addActionByAttributes(
                 "assign",
                 $ruleid,
@@ -1632,10 +1631,10 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
             'SELECT' => [
                 'id AS entity',
                 'entities_id AS parent',
-                $field
+                $field,
             ],
             'FROM'   => self::getTable(),
-            'ORDER'  => 'level ASC'
+            'ORDER'  => 'level ASC',
         ]);
 
         foreach ($iterator as $entitydata) {
@@ -1646,8 +1645,8 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
             ) {
                 // config inherit from parent
                 $entities[$entitydata['entity']] = $entities[$entitydata['parent']];
-            } else if ($entitydata[$field] > 0) {
-               // config found in entity
+            } elseif ($entitydata[$field] > 0) {
+                // config found in entity
                 $entities[$entitydata['entity']] = $entitydata[$field];
             }
         }
@@ -1669,8 +1668,8 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
         TemplateRenderer::getInstance()->display('pages/admin/entity/address.html.twig', [
             'item' => $entity,
             'params' => [
-                'candel' => false // No deleting from the non-main tab
-            ]
+                'candel' => false, // No deleting from the non-main tab
+            ],
         ]);
         return true;
     }
@@ -1689,9 +1688,9 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
         TemplateRenderer::getInstance()->display('pages/admin/entity/advanced.html.twig', [
             'item' => $entity,
             'params' => [
-                'candel' => false // No deleting from the non-main tab
+                'candel' => false, // No deleting from the non-main tab
             ],
-            'can_use_ldap' => Toolbox::canUseLdap()
+            'can_use_ldap' => Toolbox::canUseLdap(),
         ]);
         return true;
     }
@@ -1722,7 +1721,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
             0 => __('No autofill'),
             Infocom::COPY_BUY_DATE      => __('Copy the date of purchase'),
             Infocom::COPY_ORDER_DATE    => __('Copy the order date'),
-            Infocom::COPY_DELIVERY_DATE => __('Copy the delivery date')
+            Infocom::COPY_DELIVERY_DATE => __('Copy the delivery date'),
         ];
         if ($ID > 0) {
             $warranty_options[self::CONFIG_PARENT] = __('Inheritance of the parent entity');
@@ -1732,7 +1731,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
             0                           => __('No autofill'),
             Infocom::COPY_BUY_DATE      => __('Copy the date of purchase'),
             Infocom::COPY_ORDER_DATE    => __('Copy the order date'),
-            Infocom::COPY_DELIVERY_DATE => __('Copy the delivery date')
+            Infocom::COPY_DELIVERY_DATE => __('Copy the delivery date'),
         ];
         if ($ID > 0) {
             $decom_options[self::CONFIG_PARENT] = __('Inheritance of the parent entity');
@@ -1857,7 +1856,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
             );
         }
 
-       // Notification right applied
+        // Notification right applied
         $canedit = (Notification::canUpdate()
                   && Session::haveAccessToEntity($ID));
         TemplateRenderer::getInstance()->display('pages/admin/entity/notifications.html.twig', [
@@ -1879,7 +1878,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
             'infocom_alert_choices' => [
                 0 => Dropdown::EMPTY_VALUE,
                 4 => __('Warranty expiration date'),
-            ]
+            ],
         ]);
         return true;
     }
@@ -1900,7 +1899,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
             return false;
         }
 
-       // Notification right applied
+        // Notification right applied
         $canedit = Session::haveRight(Config::$rightname, UPDATE)
          && Session::haveAccessToEntity($ID);
         $enable_css_options = [];
@@ -2005,7 +2004,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
         $iterator = $DB->request([
             'SELECT' => 'id',
             'FROM'   => self::getTable(),
-            'WHERE'  => [$field => $value]
+            'WHERE'  => [$field => $value],
         ]);
 
         if (count($iterator) === 1) {
@@ -2126,18 +2125,18 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
             'closeticket_disabled' => (bool) $crontask->getFromDBByCrit([
                 'itemtype'  => 'Ticket',
                 'name'      => 'closeticket',
-                'state'     => CronTask::STATE_DISABLE
+                'state'     => CronTask::STATE_DISABLE,
             ]),
             'purgeticket_disabled' => (bool) $crontask->getFromDBByCrit([
                 'itemtype'  => 'Ticket',
                 'name'      => 'purgeticket',
-                'state'     => CronTask::STATE_DISABLE
+                'state'     => CronTask::STATE_DISABLE,
             ]),
             'params' => [
                 'canedit' => $canedit,
                 'candel' => false, // No deleting from the non-main tab
-                'formfooter' => false
-            ]
+                'formfooter' => false,
+            ],
         ]);
     }
 
@@ -2195,7 +2194,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
             $entities_query = [
                 'SELECT' => ['id', 'entities_id', $fieldref],
                 'FROM'   => self::getTable(),
-                'WHERE'  => ['id' => array_merge([$entities_id], getAncestorsOf(self::getTable(), $entities_id))]
+                'WHERE'  => ['id' => array_merge([$entities_id], getAncestorsOf(self::getTable(), $entities_id))],
             ];
             if ($fieldval !== $fieldref) {
                 $entities_query['SELECT'][] = $fieldval;
@@ -2611,7 +2610,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
                         if (str_contains($values[$field], '_')) {
                             [$type, $sid] = explode('_', $values[$field], 2);
                             if ($type === Infocom::ON_STATUS_CHANGE) {
-                                       // TRANS %s is the name of the state
+                                // TRANS %s is the name of the state
                                 return sprintf(
                                     __('Fill when shifting to state %s'),
                                     Dropdown::getDropdownName(table: 'glpi_states', id: $sid, default: __('None'))
@@ -2818,7 +2817,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
                     if ($field != 'autofill_order_date') {
                         $tab[Infocom::COPY_ORDER_DATE] = __('Copy the order date');
                         if ($field != 'autofill_delivery_date') {
-                             $options[Infocom::COPY_DELIVERY_DATE] = __('Copy the delivery date');
+                            $options[Infocom::COPY_DELIVERY_DATE] = __('Copy the delivery date');
                         }
                     }
                 }
@@ -2830,7 +2829,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
                     Infocom::COPY_BUY_DATE      => __('Copy the date of purchase'),
                     Infocom::COPY_ORDER_DATE    => __('Copy the order date'),
                     Infocom::COPY_DELIVERY_DATE => __('Copy the delivery date'),
-                    self::CONFIG_PARENT         => __('Inheritance of the parent entity')
+                    self::CONFIG_PARENT         => __('Inheritance of the parent entity'),
                 ];
                 $options['value'] = $values[$field];
                 return Dropdown::showFromArray($name, $tab, $options);
@@ -2839,7 +2838,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
             case 'inquest_config_change':
                 $typeinquest = [self::CONFIG_PARENT  => __('Inheritance of the parent entity'),
                     1                    => __('Internal survey'),
-                    2                    => __('External survey')
+                    2                    => __('External survey'),
                 ];
                 $options['value'] = $values[$field];
                 return Dropdown::showFromArray($name, $typeinquest, $options);
@@ -2867,10 +2866,10 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
     {
         $values = parent::getRights();
         $values[self::READHELPDESK]   = ['short' => __('Read parameters'),
-            'long'  => __('Read helpdesk parameters')
+            'long'  => __('Read helpdesk parameters'),
         ];
         $values[self::UPDATEHELPDESK] = ['short' => __('Update parameters'),
-            'long'  => __('Update helpdesk parameters')
+            'long'  => __('Update helpdesk parameters'),
         ];
 
         return $values;
@@ -2957,7 +2956,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
             return null;
         }
         $item  = new $itemtype();
-        $field = $field ?? $item::getForeignKeyField();
+        $field ??= $item::getForeignKeyField();
         if ($this->fields[$field] == self::CONFIG_PARENT) {
             $tid = self::getUsedConfig(str_replace('_id', '_strategy', $field), $this->getID(), $field, $default_value);
             if (!$tid) {
@@ -3023,7 +3022,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
         $breadcrumbs = implode(
             '<i class="fas fa-caret-right mx-1"></i>',
             array_map(
-                static fn (string $name) => '<span class="text-nowrap">' . htmlescape($name) . '</span>',
+                static fn(string $name) => '<span class="text-nowrap">' . htmlescape($name) . '</span>',
                 $names
             )
         );
@@ -3064,7 +3063,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
         $breadcrumbs = implode(
             '<i class="fas fa-caret-right mx-1"></i>',
             array_map(
-                static fn (string $name) => '<span class="text-nowrap text-muted">' . htmlescape($name) . '</span>',
+                static fn(string $name) => '<span class="text-nowrap text-muted">' . htmlescape($name) . '</span>',
                 $names
             )
         );
@@ -3105,7 +3104,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
             'SELECT' => ['id', 'name', 'entities_id'],
             'FROM'   => 'glpi_entities',
             'WHERE'  => ['entities_id' => $sons],
-            'ORDER'  => 'name'
+            'ORDER'  => 'name',
         ]);
 
         $grouped = [];
@@ -3115,7 +3114,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
             }
             $grouped[$row['entities_id']][] = [
                 'id'   => $row['id'],
-                'name' => $row['name']
+                'name' => $row['name'],
             ];
         }
 
@@ -3234,7 +3233,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
                     'itemtype_item' => static::class,
                     'items_id_item' => $this->getID(),
                     'info_text'     => $this->getTilesConfigInformationText(),
-                    'parent_tiles'  => $tiles_manager->getTilesForEntityRecursive($this)
+                    'parent_tiles'  => $tiles_manager->getTilesForEntityRecursive($this),
                 ]
             );
         } else {

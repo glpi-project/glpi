@@ -35,7 +35,6 @@
 namespace Glpi\Tests\Log;
 
 use Monolog\Handler\TestHandler as BaseTestHandler;
-use Monolog\Level;
 
 class TestHandler extends BaseTestHandler
 {

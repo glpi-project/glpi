@@ -38,13 +38,9 @@
 // phpcs:disable PSR1.Classes.ClassDeclaration
 
 if (!class_exists('DB', false)) {
-    class DB extends DBmysql
-    {
-    }
+    class DB extends DBmysql {}
 }
 
 if (!class_exists('DBSlave', false)) {
-    class DBSlave extends DBmysql
-    {
-    }
+    class DBSlave extends DBmysql {}
 }

@@ -39,8 +39,7 @@ final class FuzzyMatcher
 {
     public function __construct(
         private PartialMatchStrategy $strategy,
-    ) {
-    }
+    ) {}
 
     public function match(string $subject, string $filter): bool
     {

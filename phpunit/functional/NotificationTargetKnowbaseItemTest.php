@@ -59,7 +59,7 @@ class NotificationTargetKnowbaseItemTest extends DbTestCase
         $notif = new Notification();
         $knowbasenotifs = $notif->find(
             [
-                'itemtype' => 'KnowbaseItem'
+                'itemtype' => 'KnowbaseItem',
             ]
         );
         // test activate notification

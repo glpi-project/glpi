@@ -44,7 +44,7 @@ class Cluster extends CommonDBTM
     use Glpi\Features\State;
     use AssignableItem;
 
-   // From CommonDBTM
+    // From CommonDBTM
     public $dohistory                   = true;
     public static $rightname                   = 'cluster';
 
@@ -112,7 +112,7 @@ class Cluster extends CommonDBTM
             'field'              => 'completename',
             'name'               => __('Status'),
             'datatype'           => 'dropdown',
-            'condition'          => $this->getStateVisibilityCriteria()
+            'condition'          => $this->getStateVisibilityCriteria(),
         ];
 
         $tab[] = [
@@ -120,7 +120,7 @@ class Cluster extends CommonDBTM
             'table'              => $this->getTable(),
             'field'              => 'uuid',
             'name'               => __('UUID'),
-            'datatype'           => 'string'
+            'datatype'           => 'string',
         ];
 
         $tab[] = [
@@ -128,7 +128,7 @@ class Cluster extends CommonDBTM
             'table'              => $this->getTable(),
             'field'              => 'comment',
             'name'               => __('Comments'),
-            'datatype'           => 'text'
+            'datatype'           => 'text',
         ];
 
         $tab[] = [
@@ -137,7 +137,7 @@ class Cluster extends CommonDBTM
             'field'              => 'date_mod',
             'name'               => __('Last update'),
             'datatype'           => 'datetime',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -146,7 +146,7 @@ class Cluster extends CommonDBTM
             'field'              => 'date_creation',
             'name'               => __('Creation date'),
             'datatype'           => 'datetime',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -156,7 +156,7 @@ class Cluster extends CommonDBTM
             'linkfield'          => 'users_id_tech',
             'name'               => __('Technician in charge'),
             'datatype'           => 'dropdown',
-            'right'              => 'own_ticket'
+            'right'              => 'own_ticket',
         ];
 
         $tab[] = [
@@ -171,13 +171,13 @@ class Cluster extends CommonDBTM
                     'table'              => 'glpi_groups_items',
                     'joinparams'         => [
                         'jointype'           => 'itemtype_item',
-                        'condition'          => ['NEWTABLE.type' => Group_Item::GROUP_TYPE_TECH]
-                    ]
-                ]
+                        'condition'          => ['NEWTABLE.type' => Group_Item::GROUP_TYPE_TECH],
+                    ],
+                ],
             ],
             'forcegroupby'       => true,
             'massiveaction'      => false,
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab = array_merge($tab, Notepad::rawSearchOptionsToAdd());

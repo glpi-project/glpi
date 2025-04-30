@@ -49,7 +49,7 @@ function update954to955()
 
     $migration->setVersion('9.5.5');
 
-   /* Add `DEFAULT CURRENT_TIMESTAMP` to some date fields */
+    /* Add `DEFAULT CURRENT_TIMESTAMP` to some date fields */
     $tables = [
         'glpi_alerts',
         'glpi_crontasklogs',
@@ -70,9 +70,9 @@ function update954to955()
         $type = $type_result->current()['DATA_TYPE'];
         $migration->changeField($table, 'date', 'date', $type . ' NOT NULL DEFAULT CURRENT_TIMESTAMP');
     }
-   /* /Add `DEFAULT CURRENT_TIMESTAMP` to some date fields */
+    /* /Add `DEFAULT CURRENT_TIMESTAMP` to some date fields */
 
-   // ************ Keep it at the end **************
+    // ************ Keep it at the end **************
     $migration->executeMigration();
 
     return $updateresult;

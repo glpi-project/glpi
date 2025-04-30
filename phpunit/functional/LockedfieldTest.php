@@ -44,12 +44,12 @@ class LockedfieldTest extends DbTestCase
     public function testWithComputer()
     {
         $computer = new \Computer();
-        $cid = (int)$computer->add([
+        $cid = (int) $computer->add([
             'name'         => 'Computer from inventory',
             'serial'       => '123456',
             'otherserial'  => '789012',
             'entities_id'  => 0,
-            'is_dynamic'   => 1
+            'is_dynamic'   => 1,
         ]);
         $this->assertGreaterThan(0, $cid);
 
@@ -70,7 +70,7 @@ class LockedfieldTest extends DbTestCase
             $computer->update([
                 'id' => $cid,
                 'otherserial'  => '789012',
-                'is_dynamic'   => 1
+                'is_dynamic'   => 1,
             ])
         );
 
@@ -83,7 +83,7 @@ class LockedfieldTest extends DbTestCase
             $computer->update([
                 'id' => $cid,
                 'name'         => 'Computer name changed',
-                'is_dynamic'   => 1
+                'is_dynamic'   => 1,
             ])
         );
 
@@ -102,12 +102,12 @@ class LockedfieldTest extends DbTestCase
     public function testGlobalLock()
     {
         $computer = new \Computer();
-        $cid = (int)$computer->add([
+        $cid = (int) $computer->add([
             'name'         => 'Computer from inventory',
             'serial'       => '123456',
             'otherserial'  => '789012',
             'entities_id'  => 0,
-            'is_dynamic'   => 1
+            'is_dynamic'   => 1,
         ]);
         $this->assertGreaterThan(0, $cid);
 
@@ -119,7 +119,7 @@ class LockedfieldTest extends DbTestCase
         $this->assertGreaterThan(
             0,
             $lockedfield->add([
-                'item' => 'Computer - otherserial'
+                'item' => 'Computer - otherserial',
             ])
         );
 
@@ -131,7 +131,7 @@ class LockedfieldTest extends DbTestCase
             $computer->update([
                 'id' => $cid,
                 'otherserial'  => 'changed',
-                'is_dynamic' => 1
+                'is_dynamic' => 1,
             ])
         );
 
@@ -144,7 +144,7 @@ class LockedfieldTest extends DbTestCase
             $computer->update([
                 'id' => $cid,
                 'name' => 'Computer name changed',
-                'is_dynamic' => 1
+                'is_dynamic' => 1,
             ])
         );
 
@@ -171,17 +171,17 @@ class LockedfieldTest extends DbTestCase
         $this->assertGreaterThan(
             0,
             $lockedfield->add([
-                'item' => 'Computer - otherserial'
+                'item' => 'Computer - otherserial',
             ])
         );
 
         $computer = new \Computer();
-        $cid = (int)$computer->add([
+        $cid = (int) $computer->add([
             'name'         => 'Computer from inventory',
             'serial'       => '123456',
             'otherserial'  => '789012',
             'entities_id'  => 0,
-            'is_dynamic'   => 1
+            'is_dynamic'   => 1,
         ]);
         $this->assertGreaterThan(0, $cid);
 
@@ -197,7 +197,7 @@ class LockedfieldTest extends DbTestCase
             $computer->update([
                 'id' => $cid,
                 'otherserial'  => 'changed',
-                'is_dynamic' => 1
+                'is_dynamic' => 1,
             ])
         );
 
@@ -211,7 +211,7 @@ class LockedfieldTest extends DbTestCase
             $computer->update([
                 'id' => $cid,
                 'name' => 'Computer name changed',
-                'is_dynamic' => 1
+                'is_dynamic' => 1,
             ])
         );
 
@@ -276,11 +276,11 @@ class LockedfieldTest extends DbTestCase
                 \Rule::getTable() => [
                     'ON' => [
                         \RuleMatchedLog::getTable() => 'rules_id',
-                        \Rule::getTable() => 'id'
-                    ]
-                ]
+                        \Rule::getTable() => 'id',
+                    ],
+                ],
             ],
-            'WHERE' => []
+            'WHERE' => [],
         ];
         $iterator = $DB->request($criteria);
         $this->assertSame('Printer import (by serial)', $iterator->current()['name']);
@@ -300,7 +300,7 @@ class LockedfieldTest extends DbTestCase
         $this->assertTrue(
             $printer->update([
                 'id' => $printers_id,
-                'locations_id' => $locations_id
+                'locations_id' => $locations_id,
             ])
         );
         $this->assertSame(['locations_id' => null], $lockedfield->getLockedValues($printer->getType(), $printers_id));
@@ -401,11 +401,11 @@ class LockedfieldTest extends DbTestCase
                 \Rule::getTable() => [
                     'ON' => [
                         \RuleMatchedLog::getTable() => 'rules_id',
-                        \Rule::getTable() => 'id'
-                    ]
-                ]
+                        \Rule::getTable() => 'id',
+                    ],
+                ],
             ],
-            'WHERE' => []
+            'WHERE' => [],
         ];
         $iterator = $DB->request($criteria);
         $this->assertSame('Printer import (by serial)', $iterator->current()['name']);
@@ -426,7 +426,7 @@ class LockedfieldTest extends DbTestCase
         $this->assertTrue(
             $printer->update([
                 'id' => $printers_id,
-                'locations_id' => $locations_id
+                'locations_id' => $locations_id,
             ])
         );
         $this->assertSame(['locations_id' => null], $lockedfield->getLockedValues($printer->getType(), $printers_id));
@@ -538,7 +538,7 @@ class LockedfieldTest extends DbTestCase
         $this->assertTrue(
             $cos->update([
                 'id' => $cos->fields['id'],
-                'operatingsystemarchitectures_id' => $newarchs_id
+                'operatingsystemarchitectures_id' => $newarchs_id,
             ])
         );
         $this->assertSame(['operatingsystemarchitectures_id' => null], $lockedfield->getLockedValues($cos->getType(), $cos->fields['id']));
@@ -550,7 +550,7 @@ class LockedfieldTest extends DbTestCase
         $this->assertTrue(
             $iav->update([
                 'id' => $iav->fields['id'],
-                'manufacturers_id' => $newmanufacturers_id
+                'manufacturers_id' => $newmanufacturers_id,
             ])
         );
         $this->assertSame(['manufacturers_id' => null], $lockedfield->getLockedValues($iav->getType(), $iav->fields['id']));
@@ -598,13 +598,13 @@ class LockedfieldTest extends DbTestCase
             ], [
                 'condition' => \RuleImportAsset::PATTERN_EXISTS,
                 'criteria'  => 'name',
-                'pattern'   => '1'
-            ]
+                'pattern'   => '1',
+            ],
         ];
         $action = [
             'action_type' => 'assign',
             'field'       => '_inventory',
-            'value'       => \RuleImportAsset::RULE_ACTION_LINK_OR_IMPORT
+            'value'       => \RuleImportAsset::RULE_ACTION_LINK_OR_IMPORT,
         ];
         $rule = new \RuleImportAsset();
         $collection = new \RuleImportAssetCollection();
@@ -629,7 +629,7 @@ class LockedfieldTest extends DbTestCase
                 'pattern'   => $crit['pattern'],
                 'condition' => $crit['condition'],
             ];
-            $this->assertGreaterThan(0, (int)$rulecriteria->add($input));
+            $this->assertGreaterThan(0, (int) $rulecriteria->add($input));
         }
 
         // Add action
@@ -640,7 +640,7 @@ class LockedfieldTest extends DbTestCase
             'field'       => $action['field'],
             'value'       => $action['value'],
         ];
-        $this->assertGreaterThan(0, (int)$ruleaction->add($input));
+        $this->assertGreaterThan(0, (int) $ruleaction->add($input));
 
         //UPDATE rule
         $criteria = [
@@ -651,17 +651,17 @@ class LockedfieldTest extends DbTestCase
             ], [
                 'condition' => \RuleImportAsset::PATTERN_FIND,
                 'criteria'  => 'name',
-                'pattern'   => '1'
+                'pattern'   => '1',
             ], [
                 'condition' => \RuleImportAsset::PATTERN_EXISTS,
                 'criteria' => 'name',
-                'pattern' => '1'
-            ]
+                'pattern' => '1',
+            ],
         ];
         $action = [
             'action_type' => 'assign',
             'field'       => '_inventory',
-            'value'       => \RuleImportAsset::RULE_ACTION_LINK_OR_IMPORT
+            'value'       => \RuleImportAsset::RULE_ACTION_LINK_OR_IMPORT,
         ];
         $rule = new \RuleImportAsset();
         $collection = new \RuleImportAssetCollection();
@@ -687,7 +687,7 @@ class LockedfieldTest extends DbTestCase
                 'pattern'   => $crit['pattern'],
                 'condition' => $crit['condition'],
             ];
-            $this->assertGreaterThan(0, (int)$rulecriteria->add($input));
+            $this->assertGreaterThan(0, (int) $rulecriteria->add($input));
         }
 
         // Add action
@@ -698,7 +698,7 @@ class LockedfieldTest extends DbTestCase
             'field'       => $action['field'],
             'value'       => $action['value'],
         ];
-        $this->assertGreaterThan(0, (int)$ruleaction->add($input));
+        $this->assertGreaterThan(0, (int) $ruleaction->add($input));
 
         //keep only postgresql
         $json = json_decode(file_get_contents(GLPI_ROOT . '/vendor/glpi-project/inventory_format/examples/computer_2_partial_dbs.json'));
@@ -733,7 +733,7 @@ class LockedfieldTest extends DbTestCase
         $this->assertTrue(
             $database->update([
                 'id' => $database->fields['id'],
-                'manufacturers_id' => $newmanufacturers_id
+                'manufacturers_id' => $newmanufacturers_id,
             ])
         );
         $this->assertSame(['manufacturers_id' => null], $lockedfield->getLockedValues($database->getType(), $database->fields['id']));
@@ -769,12 +769,12 @@ class LockedfieldTest extends DbTestCase
         $this->login('glpi', 'glpi');
 
         $computer = new \Computer();
-        $cid = (int)$computer->add([
+        $cid = (int) $computer->add([
             'name'         => 'Computer from inventory',
             'serial'       => '123456',
             'otherserial'  => '789012',
             'entities_id'  => 0,
-            'is_dynamic'   => 1
+            'is_dynamic'   => 1,
         ]);
         $this->assertGreaterThan(0, $cid);
 
@@ -788,8 +788,8 @@ class LockedfieldTest extends DbTestCase
         );
 
         $global_lockedfield = new \Lockedfield();
-        $global_lockedfield_id = (int)$global_lockedfield->add([
-            'item' => 'Computer - manufacturers_id'
+        $global_lockedfield_id = (int) $global_lockedfield->add([
+            'item' => 'Computer - manufacturers_id',
         ]);
         $this->assertGreaterThan(0, $global_lockedfield_id);
 
@@ -875,21 +875,21 @@ class LockedfieldTest extends DbTestCase
         $this->login('glpi', 'glpi');
 
         $location = new Location();
-        $location_id = (int)$location->add([
+        $location_id = (int) $location->add([
             'entities' => 0,
             'name' => 'Location 1',
         ]);
         $this->assertGreaterThan(0, $location_id);
 
         $location2 = new Location();
-        $location_id2 = (int)$location2->add([
+        $location_id2 = (int) $location2->add([
             'entities' => 0,
             'name' => 'Location 2',
         ]);
         $this->assertGreaterThan(0, $location_id2);
 
         $computer = new \Computer();
-        $cid = (int)$computer->add([
+        $cid = (int) $computer->add([
             'name'         => 'Computer',
             'entities_id'  => 0,
             'is_dynamic'   => 1,
@@ -898,8 +898,8 @@ class LockedfieldTest extends DbTestCase
         $this->assertGreaterThan(0, $cid);
 
         $global_lockedfield = new \Lockedfield();
-        $global_lockedfield_id = (int)$global_lockedfield->add([
-            'item' => 'Computer - locations_id'
+        $global_lockedfield_id = (int) $global_lockedfield->add([
+            'item' => 'Computer - locations_id',
         ]);
         $this->assertGreaterThan(0, $global_lockedfield_id);
 

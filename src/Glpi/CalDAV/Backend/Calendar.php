@@ -59,10 +59,10 @@ class Calendar extends AbstractBackend
 {
     use CalDAVUriUtilTrait;
 
-    const BASE_CALENDAR_URI = 'calendar';
-    const CALENDAR_ROOT     = 'calendars';
-    const PREFIX_GROUPS     = self::CALENDAR_ROOT . '/groups';
-    const PREFIX_USERS      = self::CALENDAR_ROOT . '/users';
+    public const BASE_CALENDAR_URI = 'calendar';
+    public const CALENDAR_ROOT     = 'calendars';
+    public const PREFIX_GROUPS     = self::CALENDAR_ROOT . '/groups';
+    public const PREFIX_USERS      = self::CALENDAR_ROOT . '/users';
 
     public function getCalendarsForUser($principalPath)
     {
@@ -81,7 +81,7 @@ class Calendar extends AbstractBackend
         );
 
         $calendars_params = [
-         // Calendar of current principal
+            // Calendar of current principal
             $principal_calendar_key => [
                 'key'          => $principal_calendar_key,
                 'uri'          => self::BASE_CALENDAR_URI,
@@ -89,7 +89,7 @@ class Calendar extends AbstractBackend
                 'name'         => $principal_item->getName(),
                 'desc'         => sprintf(__('Calendar of %s'), $principal_item->getFriendlyName()),
                 'color'        => null,
-            ]
+            ],
         ];
 
         if ($principal_item instanceof \User) {
@@ -276,7 +276,7 @@ class Calendar extends AbstractBackend
 
         $calendardata  = $vcalendar->serialize();
         $vcomponent    = $vcalendar->getBaseComponent();
-       /* @var \DateTimeInterface $last_modified */
+        /* @var \DateTimeInterface $last_modified */
         $last_modified = $vcomponent->{'LAST-MODIFIED'} instanceof DateTime
          ? $vcomponent->{'LAST-MODIFIED'}->getDateTime()
          : new \DateTime();
@@ -285,7 +285,7 @@ class Calendar extends AbstractBackend
             'uri'          => $vcomponent->UID . '.ics',
             'lastmodified' => (new \DateTime('@' . $last_modified->getTimestamp())),
             'size'         => strlen($calendardata),
-            'calendardata' => $calendardata
+            'calendardata' => $calendardata,
         ];
     }
 
@@ -305,7 +305,7 @@ class Calendar extends AbstractBackend
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-       /* @var \Sabre\VObject\Component\VCalendar $vcalendar */
+        /* @var \Sabre\VObject\Component\VCalendar $vcalendar */
         $vcalendar = Reader::read($calendarData);
         $vcomponent = $vcalendar->getBaseComponent();
 
@@ -316,8 +316,8 @@ class Calendar extends AbstractBackend
         $input = [];
 
         if (null === $item) {
-           // $item is null when a new calendar item is created
-           // New objects are handled as PlanningExternalEvent
+            // $item is null when a new calendar item is created
+            // New objects are handled as PlanningExternalEvent
             $item = new \PlanningExternalEvent();
 
             $principal_id   = \Planning::getActorIdFromPlanningKey($calendarId);
@@ -339,12 +339,12 @@ class Calendar extends AbstractBackend
         if ($vcomponent->UID instanceof FlatText) {
             $input['uuid'] = $vcomponent->UID->getValue();
         } else {
-           // Generate a new UUID if none exists.
+            // Generate a new UUID if none exists.
             $input['uuid'] = Uuid::uuid4();
         }
 
         if ($item->isNewItem()) {
-           // Auto set entities_id if exists and not set
+            // Auto set entities_id if exists and not set
             if (
                 !array_key_exists('entities_id', $input)
                 && $item->isField('entities_id')
@@ -390,7 +390,7 @@ class Calendar extends AbstractBackend
 
         $vobject = new \VObject();
 
-       // Load existing object if exists.
+        // Load existing object if exists.
         $vobject->getFromDBByCrit(
             [
                 'itemtype' => $itemtype,

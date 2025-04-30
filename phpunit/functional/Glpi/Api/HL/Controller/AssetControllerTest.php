@@ -68,18 +68,18 @@ class AssetControllerTest extends \HLAPITestCase
             ['schema' => 'Computer', 'filters' => ['name=like=_test_pc1*'], 'expected' => ['count' => ['>=', 3]]],
             [
                 'schema' => 'Computer', 'filters' => [
-                    'name=like=_test_pc1*;name=like=*3*'
-                ], 'expected' => ['count' => ['>=', 1]]
+                    'name=like=_test_pc1*;name=like=*3*',
+                ], 'expected' => ['count' => ['>=', 1]],
             ],
             [
                 'schema' => 'Computer', 'filters' => [
-                    '(name=like=_test_pc1*;name=like=*3*)'
-                ], 'expected' => ['count' => ['>=', 1]]
+                    '(name=like=_test_pc1*;name=like=*3*)',
+                ], 'expected' => ['count' => ['>=', 1]],
             ],
             [
                 'schema' => 'Computer', 'filters' => [
-                    '(name=like=_test_pc1*;name=like=*3*),name==_test_pc_with_encoded_comment'
-                ], 'expected' => ['count' => ['>=', 2]]
+                    '(name=like=_test_pc1*;name=like=*3*),name==_test_pc_with_encoded_comment',
+                ], 'expected' => ['count' => ['>=', 2]],
             ],
             ['schema' => 'Monitor', 'filters' => [], 'expected' => ['count' => ['>', 0]]],
             ['schema' => 'Monitor', 'filters' => ['name=="_test_monitor_1"'], 'expected' => ['count' => ['>=', 1]]],
@@ -114,16 +114,16 @@ class AssetControllerTest extends \HLAPITestCase
         $dataset = [
             [
                 'name' => 'testAutoSearch_1',
-                'entity' => $entity
+                'entity' => $entity,
             ],
             [
                 'name' => 'testAutoSearch_2',
-                'entity' => $entity
+                'entity' => $entity,
             ],
             [
                 'name' => 'testAutoSearch_3',
-                'entity' => $entity
-            ]
+                'entity' => $entity,
+            ],
         ];
         $this->api->call(new Request('GET', '/Assets'), function ($call) use ($dataset) {
             /** @var \HLAPICallAsserter $call */
@@ -175,7 +175,7 @@ class AssetControllerTest extends \HLAPITestCase
     {
         $types = [
             'Computer', 'Monitor', 'NetworkEquipment', 'Peripheral', 'Phone', 'Printer',
-            'Software', 'Rack', 'Enclosure', 'PDU', 'PassiveDCEquipment', 'Cable', 'Socket'
+            'Software', 'Rack', 'Enclosure', 'PDU', 'PassiveDCEquipment', 'Cable', 'Socket',
         ];
         foreach ($types as $type) {
             $unique_id = __FUNCTION__ . '_' . random_int(0, 10000);
@@ -186,7 +186,7 @@ class AssetControllerTest extends \HLAPITestCase
                 $fields['entity'] = getItemByTypeName('Entity', '_test_root_entity', true);
             }
             yield [
-                $type, $fields
+                $type, $fields,
             ];
         }
     }
@@ -205,7 +205,7 @@ class AssetControllerTest extends \HLAPITestCase
         $rack_id = $rack->add([
             'name' => __FUNCTION__,
             'entities_id' => $this->getTestRootEntity(true),
-            'number_units' => 20
+            'number_units' => 20,
         ]);
         // Create computer
         $computer = new \Computer();

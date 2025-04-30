@@ -45,7 +45,7 @@ class Lockedfield extends CommonDBTM
     /** @var CommonDBTM */
     private $item;
 
-   // From CommonDBTM
+    // From CommonDBTM
     public $dohistory                   = false;
 
     public static $rightname                   = 'locked_field';
@@ -159,7 +159,7 @@ class Lockedfield extends CommonDBTM
             'table'              => $this->getTable(),
             'field'              => 'date_creation',
             'name'               => __('Creation date'),
-            'datatype'           => 'date'
+            'datatype'           => 'date',
         ];
 
         $tab[] = [
@@ -177,7 +177,7 @@ class Lockedfield extends CommonDBTM
             'field' => 'is_global',
             'name' => __('Global'),
             'datatype' => 'bool',
-            'massiveaction' => false
+            'massiveaction' => false,
         ];
 
         $tab[] = [
@@ -191,7 +191,7 @@ class Lockedfield extends CommonDBTM
             'nosearch'           => true,
             'additionalfields'   => ['itemtype'],
             'joinparams'         => [
-                'jointype'           => 'child'
+                'jointype'           => 'child',
             ],
             'forcegroupby'       => true,
         ];
@@ -217,7 +217,7 @@ class Lockedfield extends CommonDBTM
             return false;
         }
         $this->item = $item;
-        return (bool)$item->isDynamic();
+        return (bool) $item->isDynamic();
     }
 
     public function getLockedNames($itemtype, $items_id)
@@ -251,10 +251,10 @@ class Lockedfield extends CommonDBTM
                 [
                     'OR' => [
                         'items_id'  => $items_id,
-                        'is_global' => 1
-                    ]
-                ]
-            ]
+                        'is_global' => 1,
+                    ],
+                ],
+            ],
         ]);
 
         $locks = [];
@@ -284,10 +284,10 @@ class Lockedfield extends CommonDBTM
                 [
                     'OR' => [
                         'items_id'  => $items_id,
-                        'is_global' => 1
-                    ]
-                ]
-            ]
+                        'is_global' => 1,
+                    ],
+                ],
+            ],
         ]);
 
         $locks = [];
@@ -314,7 +314,7 @@ class Lockedfield extends CommonDBTM
             $this->getTable(),
             [
                 'itemtype'  => $this->item->getType(),
-                'items_id'  => $this->item->fields['id']
+                'items_id'  => $this->item->fields['id'],
             ]
         );
     }
@@ -331,12 +331,12 @@ class Lockedfield extends CommonDBTM
         return $DB->update(
             $this->getTable(),
             [
-                'value'  => $value
+                'value'  => $value,
             ],
             [
                 'itemtype'  => $itemtype,
                 'items_id'  => $items_id,
-                'field'     => $field
+                'field'     => $field,
             ]
         );
     }
@@ -381,7 +381,7 @@ class Lockedfield extends CommonDBTM
     protected function prepareInput($input)
     {
         if (isset($input['item'])) {
-            list($itemtype, $field) = explode(' - ', $input['item']);
+            [$itemtype, $field] = explode(' - ', $input['item']);
             $input['itemtype'] = $itemtype;
             $input['items_id'] = 0;
             $input['field'] = $field;
@@ -419,7 +419,7 @@ class Lockedfield extends CommonDBTM
         $iterator = $DB->request([
             'SELECT' => ['itemtype', 'field'],
             'FROM'   => $this->getTable(),
-            'WHERE'  => ['is_global' => 1]
+            'WHERE'  => ['is_global' => 1],
         ]);
 
         $lockeds = [];
@@ -443,7 +443,7 @@ class Lockedfield extends CommonDBTM
             'networks_id',
             'manufacturers_id',
             'uuid',
-            'comment'
+            'comment',
         ];
         $itemtypes = $CFG_GLPI['inventory_types'] + $CFG_GLPI['inventory_lockable_objects'];
 
@@ -470,7 +470,7 @@ class Lockedfield extends CommonDBTM
                         if (isset($search_option['linkfield']) && $search_option['linkfield'] == $field) {
                             $field_name = $search_option['name'];
                             break;
-                        } else if (isset($search_option['field']) && $search_option['field'] == $field) {
+                        } elseif (isset($search_option['field']) && $search_option['field'] == $field) {
                             $field_name = $search_option['name'];
                             break;
                         }

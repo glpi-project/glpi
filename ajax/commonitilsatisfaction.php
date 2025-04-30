@@ -78,7 +78,7 @@ if (isset($_POST['inquest_config' . $config_suffix], $_POST['entities_id'])) {
             'inquest_max_rate' => $inquest_max_rate,
             'inquest_mandatory_comment' => $inquest_mandatory_comment,
             'max_closedate' => $max_closedate,
-            'inquest_URL' => $ent->fields['inquest_URL' . $config_suffix] ?? ''
+            'inquest_URL' => $ent->fields['inquest_URL' . $config_suffix] ?? '',
         ]);
     }
 }

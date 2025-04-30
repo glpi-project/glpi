@@ -140,7 +140,7 @@ class ItemTranslation extends CommonDBChild
     {
         $translations = (new static())->find([
             static::$items_id => $item->getID(),
-            static::$itemtype => $item->getType()
+            static::$itemtype => $item->getType(),
         ]);
 
         return array_map(fn($id) => static::getById($id), array_keys($translations));
@@ -155,7 +155,7 @@ class ItemTranslation extends CommonDBChild
             static::$items_id => $item->getID(),
             static::$itemtype => $item->getType(),
             'key'             => $key,
-            'language'        => $language
+            'language'        => $language,
         ]);
 
         if (!empty($translation)) {
@@ -218,7 +218,7 @@ class ItemTranslation extends CommonDBChild
             }
         );
 
-        return $total_handlers > 0 ? (int)(($translated_handlers / $total_handlers) * 100) : 0;
+        return $total_handlers > 0 ? (int) (($translated_handlers / $total_handlers) * 100) : 0;
     }
 
     public function getTranslationsToDo(): int

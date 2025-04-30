@@ -64,7 +64,7 @@ if (!$DB->fieldExists('glpi_itemvirtualmachines', 'items_id')) {
         'items_id',
         "int {$default_key_sign} NOT NULL DEFAULT '0'",
         [
-            'after' => 'itemtype'
+            'after' => 'itemtype',
         ]
     );
     $migration->migrationOneTable('glpi_itemvirtualmachines');

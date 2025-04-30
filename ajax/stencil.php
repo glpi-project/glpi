@@ -47,13 +47,13 @@ if (isset($_POST['id'])) {
     if (isset($_POST['update'])) {
         $stencil->check($_POST['id'], UPDATE);
         $stencil->update($_POST);
-    } else if (isset($_POST['add-new-zone'])) {
+    } elseif (isset($_POST['add-new-zone'])) {
         $stencil->check($_POST['id'], UPDATE);
         $stencil->addNewZones($_POST);
-    } else if (isset($_POST['remove-zone'])) {
+    } elseif (isset($_POST['remove-zone'])) {
         $stencil->check($_POST['id'], UPDATE);
         $stencil->removeZones($_POST);
-    } else if (isset($_POST['reset-zone'])) {
+    } elseif (isset($_POST['reset-zone'])) {
         $stencil->check($_POST['id'], UPDATE);
         $stencil->resetZones($_POST);
     }

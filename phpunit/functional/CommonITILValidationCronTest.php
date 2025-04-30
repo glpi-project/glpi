@@ -111,7 +111,7 @@ class CommonITILValidationCronTest extends DbTestCase
 
         // verify last reminder date is empty
         $this->assertTrue($ticket_validation->getFromDB($ticket_validation_id));
-        $this->assertEmpty((string)$ticket_validation->fields['last_reminder_date']);
+        $this->assertEmpty((string) $ticket_validation->fields['last_reminder_date']);
 
         // Solve ticket
         $this->assertTrue(
@@ -126,7 +126,7 @@ class CommonITILValidationCronTest extends DbTestCase
 
         // verify last reminder date is empty
         $this->assertTrue($ticket_validation->getFromDB($ticket_validation_id));
-        $this->assertEmpty((string)$ticket_validation->fields['last_reminder_date']);
+        $this->assertEmpty((string) $ticket_validation->fields['last_reminder_date']);
 
         // Close ticket
         $this->assertTrue(
@@ -141,6 +141,6 @@ class CommonITILValidationCronTest extends DbTestCase
 
         // verify last reminder date is empty
         $this->assertTrue($ticket_validation->getFromDB($ticket_validation_id));
-        $this->assertEmpty((string)$ticket_validation->fields['last_reminder_date']);
+        $this->assertEmpty((string) $ticket_validation->fields['last_reminder_date']);
     }
 }

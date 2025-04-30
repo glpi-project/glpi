@@ -162,7 +162,7 @@ TWIG, $twig_params);
                 'itemtype'  => self::class,
                 'id'        => $data['linkid'],
                 'row_class' => $data['is_deleted'] ? 'table-danger' : '',
-                'num'       => $data['num']
+                'num'       => $data['num'],
             ];
             $contract = new Contract();
             $contract->getFromResultSet($data);
@@ -232,7 +232,7 @@ TWIG, $twig_params);
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
                 'container'     => 'mass' . static::class . $rand,
-            ]
+            ],
         ]);
     }
 }

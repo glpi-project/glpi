@@ -68,21 +68,21 @@ if (!isset($_GET["withtemplate"])) {
 }
 
 if (isset($_GET['id']) && !empty($_GET['id'])) {
-    $_GET['id'] = (int)$_GET['id'];
+    $_GET['id'] = (int) $_GET['id'];
 }
 
 if ($item = getItemForItemtype($_GET['_itemtype'])) {
     if ($item->get_item_to_display_tab) {
-       // No id if ruleCollection but check right
+        // No id if ruleCollection but check right
         if ($item instanceof RuleCollection) {
             if (!$item->canList()) {
                 return;
             }
-        } else if (!isset($_GET["id"]) || $item->isNewID($_GET["id"])) {
+        } elseif (!isset($_GET["id"]) || $item->isNewID($_GET["id"])) {
             if (!$item->can(-1, CREATE, $_GET)) {
                 return;
             }
-        } else if (!$item->can($_GET["id"], READ)) {
+        } elseif (!$item->can($_GET["id"], READ)) {
             return;
         }
     }
@@ -106,5 +106,5 @@ if (isset($options['locked'])) {
 }
 
 \Glpi\Debug\Profiler::getInstance()->start('CommonGLPI::displayStandardTab');
-CommonGLPI::displayStandardTab($item, $_GET['_glpi_tab'], (int)$_GET["withtemplate"], $options);
+CommonGLPI::displayStandardTab($item, $_GET['_glpi_tab'], (int) $_GET["withtemplate"], $options);
 \Glpi\Debug\Profiler::getInstance()->stop('CommonGLPI::displayStandardTab');

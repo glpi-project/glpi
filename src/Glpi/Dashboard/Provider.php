@@ -117,10 +117,10 @@ class Provider
                         'FKEY' => [
                             Profile_User::getTable() => 'users_id',
                             User::getTable() => 'id',
-                        ]
-                    ]
-                ] ,
-                'WHERE'  => $where
+                        ],
+                    ],
+                ],
+                'WHERE'  => $where,
             ];
         } else {
             if ($item->isEntityAssign()) {
@@ -129,7 +129,7 @@ class Provider
             $request = [
                 'SELECT' => ['COUNT DISTINCT' => $item::getTableField($item::getIndexName()) . ' as cpt'],
                 'FROM'   => $i_table,
-                'WHERE'  => $where
+                'WHERE'  => $where,
             ];
         }
 
@@ -309,9 +309,9 @@ class Provider
                                 'field'      => 187,
                                 'searchtype' => 'equals',
                                 'value'      => 1,
-                            ]
-                        ]
-                    ]
+                            ],
+                        ],
+                    ],
                 ];
                 $query_criteria['WHERE']["$table.status"] = Ticket::getNotSolvedStatusArray();
                 $query_criteria['WHERE'][] = [
@@ -320,7 +320,7 @@ class Provider
                         CommonITILObject::generateSLAOLAComputation('internal_time_to_resolve', 'glpi_tickets'),
                         CommonITILObject::generateSLAOLAComputation('time_to_own', 'glpi_tickets'),
                         CommonITILObject::generateSLAOLAComputation('internal_time_to_own', 'glpi_tickets'),
-                    ]
+                    ],
                 ];
                 break;
 
@@ -333,7 +333,7 @@ class Provider
                         'searchtype' => 'equals',
                         'value'      => CommonITILValidation::WAITING,
                     ],
-                    $notold
+                    $notold,
                 ];
 
                 if ($params['validation_check_user']) {
@@ -359,21 +359,21 @@ class Provider
                         'glpi_ticketvalidations' => [
                             'ON' => [
                                 'glpi_ticketvalidations' => 'tickets_id',
-                                $table                   => 'id'
-                            ]
-                        ]
+                                $table                   => 'id',
+                            ],
+                        ],
                     ],
-                    'WHERE' => $where
+                    'WHERE' => $where,
                 ]);
                 break;
 
-           // Statuses speciale cases (no break)
+                // Statuses speciale cases (no break)
             case 'incoming':
                 $status = Ticket::INCOMING;
                 $params['icon']  = Ticket::getIcon();
                 $params['label'] = __("Incoming tickets");
                 $skip = true;
-               //no break
+                //no break
             case 'waiting':
                 if (!$skip) {
                     $status = Ticket::WAITING;
@@ -381,7 +381,7 @@ class Provider
                     $params['label'] = __("Pending tickets");
                     $skip = true;
                 }
-               //no break
+                //no break
             case 'assigned':
                 if (!$skip) {
                     $status = Ticket::ASSIGNED;
@@ -389,7 +389,7 @@ class Provider
                     $params['label'] = __("Assigned tickets");
                     $skip = true;
                 }
-             //no break
+                //no break
             case 'planned':
                 if (!$skip) {
                     $status = Ticket::PLANNED;
@@ -397,7 +397,7 @@ class Provider
                     $params['label'] = __("Planned tickets");
                     $skip = true;
                 }
-             //no break
+                //no break
             case 'solved':
                 if (!$skip) {
                     $status = Ticket::SOLVED;
@@ -405,7 +405,7 @@ class Provider
                     $params['label'] = __("Solved tickets");
                     $skip = true;
                 }
-             //no break
+                //no break
             case 'closed':
                 if (!$skip) {
                     $status = Ticket::CLOSED;
@@ -413,7 +413,7 @@ class Provider
                     $params['label'] = __("Closed tickets");
                     $skip = true;
                 }
-             //no break
+                //no break
             case 'status':
                 if (!$skip) {
                     $status = Ticket::INCOMING;
@@ -423,12 +423,12 @@ class Provider
                         'field'      => 12,
                         'searchtype' => 'equals',
                         'value'      => $status,
-                    ]
+                    ],
                 ];
                 $query_criteria = array_merge_recursive($query_criteria, [
                     'WHERE' => [
                         "$table.status" => $status,
-                    ]
+                    ],
                 ]);
                 break;
         }
@@ -442,7 +442,7 @@ class Provider
 
         $url = Ticket::getSearchURL() . "?" . Toolbox::append_params([
             'criteria' => $search_criteria,
-            'reset'    => 'reset'
+            'reset'    => 'reset',
         ]);
 
         Profiler::getInstance()->stop(__METHOD__ . ' build SQL criteria');
@@ -522,9 +522,9 @@ class Provider
                         $table => 'id',
                         [
                             'AND' => [
-                                "ul.type" => Ticket_User::ASSIGN
-                            ]
-                        ]
+                                "ul.type" => Ticket_User::ASSIGN,
+                            ],
+                        ],
                     ],
                 ],
                 $userTable => [
@@ -545,7 +545,7 @@ class Provider
                 'sla_state DESC',
                 'cpt DESC',
                 "$userTable.id",
-            ]
+            ],
         ];
 
         unset($params['apply_filters'][GroupTechFilter::getId()]);
@@ -585,7 +585,7 @@ class Provider
             $names[$row['name']] = $row['username'];
         }
 
-       // set legend for each serie
+        // set legend for each serie
         $data['series'][0]['name'] = __('Late own and resolve');
         $data['series'][1]['name'] = __('Late resolve');
         $data['series'][2]['name'] = __('Late own');
@@ -594,7 +594,7 @@ class Provider
         $data['series'][1]['data'] = [];
         $data['series'][2]['data'] = [];
         $data['series'][3]['data'] = [];
-       // ensure thare are 2 values per user (late and in time)
+        // ensure thare are 2 values per user (late and in time)
         foreach ($names as $name => $username) {
             if (!isset($allLate[$name])) {
                 $allLate[$name] = 0;
@@ -669,9 +669,9 @@ class Provider
                         $table => 'id',
                         [
                             'AND' => [
-                                "gl.type" => Ticket_User::ASSIGN
-                            ]
-                        ]
+                                "gl.type" => Ticket_User::ASSIGN,
+                            ],
+                        ],
                     ],
                 ],
                 $groupTable => [
@@ -692,7 +692,7 @@ class Provider
                 'sla_state DESC',
                 'cpt DESC',
                 "$groupTable.id",
-            ]
+            ],
         ];
 
         unset($params['apply_filters'][UserTechFilter::getId()]);
@@ -732,7 +732,7 @@ class Provider
             $names[$row['name']] = $row['name'];
         }
 
-       // set legend for each serie
+        // set legend for each serie
         $data['series'][0]['name'] = __('Late own and resolve');
         $data['series'][1]['name'] = __('Late resolve');
         $data['series'][2]['name'] = __('Late own');
@@ -741,7 +741,7 @@ class Provider
         $data['series'][1]['data'] = [];
         $data['series'][2]['data'] = [];
         $data['series'][3]['data'] = [];
-       // ensure thare are 2 values per user (late and in time)
+        // ensure thare are 2 values per user (late and in time)
         foreach ($names as $name => $username) {
             if (!isset($allLate[$name])) {
                 $allLate[$name] = 0;
@@ -813,7 +813,7 @@ class Provider
         $fk_table    = $fk_item::getTable();
         $fk_itemtype = $fk_item::getType();
 
-       // try to autodetect searchoption id
+        // try to autodetect searchoption id
         $searchoptions = $item->rawSearchOptions();
         $found_so = array_filter($searchoptions, function ($searchoption) use ($fk_table) {
             return isset($searchoption['table']) && $searchoption['table'] === $fk_table;
@@ -865,8 +865,8 @@ class Provider
                         'ON' => [
                             $fk_table => 'id',
                             $c_table  => getForeignKeyFieldForItemType($fk_itemtype),
-                        ]
-                    ]
+                        ],
+                    ],
                 ],
                 'GROUPBY'   => "$fk_table.$name",
                 'ORDERBY'   => "cpt DESC",
@@ -903,7 +903,7 @@ class Provider
 
         if (count($data) === 0) {
             $data = [
-                'nodata' => true
+                'nodata' => true,
             ];
         }
 
@@ -940,7 +940,7 @@ class Provider
         $criteria = array_merge_recursive(
             [
                 'SELECT' => "$i_table.*",
-                'FROM'   => $i_table
+                'FROM'   => $i_table,
             ],
             self::getFiltersCriteria($i_table, $params['apply_filters']),
             $item instanceof CommonDBVisible ? $item::getVisibilityCriteria() : []
@@ -963,7 +963,7 @@ class Provider
         $nb_items = count($data);
         if ($nb_items === 0) {
             $data = [
-                'nodata' => true
+                'nodata' => true,
             ];
         }
 
@@ -1010,7 +1010,7 @@ class Provider
                     "$t_table.is_deleted" => 0,
                 ] + getEntitiesRestrictCriteria($t_table),
                 'GROUPBY' => 'ticket_month',
-                'ORDER'   => 'ticket_month ASC'
+                'ORDER'   => 'ticket_month ASC',
             ],
             Ticket::getCriteriaFromProfile(),
             self::getFiltersCriteria($t_table, $params['apply_filters'])
@@ -1024,20 +1024,20 @@ class Provider
                     'link'       => 'AND',
                     'field'      => 15,
                     'searchtype' => 'morethan',
-                    'value'      => null
+                    'value'      => null,
                 ], [
                     'link'       => 'AND',
                     'field'      => 15,
                     'searchtype' => 'lessthan',
-                    'value'      => null
+                    'value'      => null,
                 ],
             ],
-            'reset' => 'reset'
+            'reset' => 'reset',
         ];
 
         $data = [];
         foreach ($iterator as $result) {
-            list($start_day, $end_day) = self::formatMonthyearDates($result['ticket_month']);
+            [$start_day, $end_day] = self::formatMonthyearDates($result['ticket_month']);
 
             $s_criteria['criteria'][0]['value'] = $start_day;
             $s_criteria['criteria'][1]['value'] = $end_day;
@@ -1078,7 +1078,7 @@ class Provider
         $params = array_merge($default_params, $params);
 
         $year   = date("Y") - 15;
-        $begin  = date("Y-m-d", mktime(1, 0, 0, (int)date("m"), (int)date("d"), $year));
+        $begin  = date("Y-m-d", mktime(1, 0, 0, (int) date("m"), (int) date("d"), $year));
         $end    = date("Y-m-d");
 
         if (
@@ -1105,18 +1105,18 @@ class Provider
                                 'link'       => 'AND',
                                 'field'      => 15, // creation date
                                 'searchtype' => 'morethan',
-                                'value'      => null
+                                'value'      => null,
                             ], [
                                 'link'       => 'AND',
                                 'field'      => 15, // creation date
                                 'searchtype' => 'lessthan',
-                                'value'      => null
+                                'value'      => null,
                             ],
                         ],
                         $base_search_criteria
                     ),
-                    'reset' => 'reset'
-                ]
+                    'reset' => 'reset',
+                ],
             ],
             'inter_solved' => [
                 'name'   => _nx('ticket', 'Solved', 'Solved', Session::getPluralNumber()),
@@ -1127,18 +1127,18 @@ class Provider
                                 'link'       => 'AND',
                                 'field'      => 17, // solve date
                                 'searchtype' => 'morethan',
-                                'value'      => null
+                                'value'      => null,
                             ], [
                                 'link'       => 'AND',
                                 'field'      => 17, // solve date
                                 'searchtype' => 'lessthan',
-                                'value'      => null
+                                'value'      => null,
                             ],
                         ],
                         $base_search_criteria
                     ),
-                    'reset' => 'reset'
-                ]
+                    'reset' => 'reset',
+                ],
             ],
             'inter_solved_late' => [
                 'name'   => __('Late'),
@@ -1149,23 +1149,23 @@ class Provider
                                 'link'       => 'AND',
                                 'field'      => 17, // solve date
                                 'searchtype' => 'morethan',
-                                'value'      => null
+                                'value'      => null,
                             ], [
                                 'link'       => 'AND',
                                 'field'      => 17, // solve date
                                 'searchtype' => 'lessthan',
-                                'value'      => null
+                                'value'      => null,
                             ], [
                                 'link'       => 'AND',
                                 'field'      => 82, // time_to_resolve exceed solve date
                                 'searchtype' => 'equals',
-                                'value'      => 1
+                                'value'      => 1,
                             ],
                         ],
                         $base_search_criteria
                     ),
-                    'reset' => 'reset'
-                ]
+                    'reset' => 'reset',
+                ],
             ],
             'inter_closed' => [
                 'name'   => __('Closed'),
@@ -1176,18 +1176,18 @@ class Provider
                                 'link'       => 'AND',
                                 'field'      => 16, // close date
                                 'searchtype' => 'morethan',
-                                'value'      => null
+                                'value'      => null,
                             ], [
                                 'link'       => 'AND',
                                 'field'      => 16, // close date
                                 'searchtype' => 'lessthan',
-                                'value'      => null
+                                'value'      => null,
                             ],
                         ],
                         $base_search_criteria
                     ),
-                    'reset' => 'reset'
-                ]
+                    'reset' => 'reset',
+                ],
             ],
         ];
 
@@ -1211,13 +1211,13 @@ class Provider
             );
 
             if ($i === 0) {
-                 $monthsyears = array_keys($values);
+                $monthsyears = array_keys($values);
             }
             $values = array_values($values);
 
             foreach ($values as $index => $number) {
                 $current_monthyear = $monthsyears[$index];
-                list($start_day, $end_day) = self::formatMonthyearDates($current_monthyear);
+                [$start_day, $end_day] = self::formatMonthyearDates($current_monthyear);
                 $serie['search']['criteria'][0]['value'] = $start_day;
                 $serie['search']['criteria'][1]['value'] = $end_day;
 
@@ -1338,7 +1338,7 @@ class Provider
             ],
             'FROM' => new QuerySubQuery($sub_query, "{$t_table}_distinct"),
             'ORDER'   => 'period ASC',
-            'GROUP'    => ['period']
+            'GROUP'    => ['period'],
         ];
 
         Profiler::getInstance()->stop(__METHOD__ . ' build SQL criteria');
@@ -1351,30 +1351,30 @@ class Provider
                         'link'       => 'AND',
                         'field'      => 12, // status
                         'searchtype' => 'equals',
-                        'value'      => null
+                        'value'      => null,
                     ], [
                         'link'       => 'AND',
                         'field'      => 15, // creation date
                         'searchtype' => 'morethan',
-                        'value'      => null
+                        'value'      => null,
                     ], [
                         'link'       => 'AND',
                         'field'      => 15, // creation date
                         'searchtype' => 'lessthan',
-                        'value'      => null
+                        'value'      => null,
                     ],
                 ],
                 self::getSearchFiltersCriteria($t_table, $params['apply_filters'])['criteria'] ?? []
             ),
-            'reset' => 'reset'
+            'reset' => 'reset',
         ];
 
         $data = [
             'labels' => [],
-            'series' => []
+            'series' => [],
         ];
         foreach ($iterator as $result) {
-            list($start_day, $end_day) = self::formatMonthyearDates($result['period']);
+            [$start_day, $end_day] = self::formatMonthyearDates($result['period']);
             $s_params['criteria'][1]['value'] = $start_day;
             $s_params['criteria'][2]['value'] = $end_day;
 
@@ -1440,7 +1440,7 @@ class Provider
         $n_fields = [
             "$ug_table.firstname as first",
             "$ug_table.realname as second",
-            "$ug_table.name as username"
+            "$ug_table.name as username",
         ];
 
         $where = [
@@ -1450,14 +1450,14 @@ class Provider
         $case_array = explode('_', $case);
         if ($case_array[0] == 'user') {
             $where["$ug_table.is_deleted"]  = 0;
-            $params['icon'] = $params['icon'] ?? User::getIcon();
-        } else if ($case_array[0] == 'group') {
+            $params['icon'] ??= User::getIcon();
+        } elseif ($case_array[0] == 'group') {
             $li_table = Group_Ticket::getTable();
             $ug_table = Group::getTable();
             $n_fields = [
-                "$ug_table.completename as first"
+                "$ug_table.completename as first",
             ];
-            $params['icon'] = $params['icon'] ?? Group::getIcon();
+            $params['icon'] ??= Group::getIcon();
         }
 
         $type = 0;
@@ -1503,17 +1503,17 @@ class Provider
                             $t_table  => 'id',
                             [
                                 'AND' => [
-                                    "$li_table.type" => $type
-                                ]
-                            ]
-                        ]
+                                    "$li_table.type" => $type,
+                                ],
+                            ],
+                        ],
                     ],
                     $ug_table => [
                         'ON' => [
                             $li_table => getForeignKeyFieldForTable($ug_table),
-                            $ug_table  => 'id'
-                        ]
-                    ]
+                            $ug_table  => 'id',
+                        ],
+                    ],
                 ],
                 'GROUPBY' => "$ug_table.id",
                 'ORDER'   => 'nb_tickets DESC',
@@ -1532,12 +1532,12 @@ class Provider
                         'link'       => 'AND',
                         'field'      => $soption,
                         'searchtype' => 'equals',
-                        'value'      => null
+                        'value'      => null,
                     ],
                 ],
                 self::getSearchFiltersCriteria($t_table, $params['apply_filters'])['criteria'] ?? []
             ),
-            'reset' => 'reset'
+            'reset' => 'reset',
         ];
         $data = [];
         foreach ($iterator as $result) {
@@ -1592,7 +1592,7 @@ class Provider
                     'is_deleted' => 0,
                 ] + getEntitiesRestrictCriteria($t_table),
                 'ORDER' => 'period ASC',
-                'GROUP' => ['period']
+                'GROUP' => ['period'],
             ],
             Ticket::getCriteriaFromProfile(),
             self::getFiltersCriteria($t_table, $params['apply_filters'])
@@ -1605,18 +1605,18 @@ class Provider
             'series' => [
                 [
                     'name' => __("Time to own"),
-                    'data' => []
+                    'data' => [],
                 ], [
                     'name' => __("Waiting time"),
-                    'data' => []
+                    'data' => [],
                 ], [
                     'name' => __("Time to resolve"),
-                    'data' => []
+                    'data' => [],
                 ], [
                     'name' => __("Time to close"),
-                    'data' => []
-                ]
-            ]
+                    'data' => [],
+                ],
+            ],
         ];
         foreach ($iterator as $r) {
             $data['labels'][] = $r['period'];
@@ -1695,7 +1695,7 @@ class Provider
                     'label'  => __("Closed"),
                     'url'    => $closed['url'],
                     'color'  => '#555555',
-                ]
+                ],
             ],
             'label' => $params['label'],
             'icon'  => $params['icon'],

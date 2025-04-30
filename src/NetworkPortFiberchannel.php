@@ -34,7 +34,6 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
-use Glpi\Socket;
 
 /**
  * NetworkPortFiberchannel class : Fiberchannel instantiation of NetworkPort
@@ -134,7 +133,7 @@ TWIG, $twig_params);
 
         $tab[] = [
             'id'                 => 'common',
-            'name'               => __('Characteristics')
+            'name'               => __('Characteristics'),
         ];
 
         $tab[] = [
@@ -145,8 +144,8 @@ TWIG, $twig_params);
             'name'               => __('MAC'),
             'massiveaction'      => false,
             'joinparams'         => [
-                'jointype'           => 'empty'
-            ]
+                'jointype'           => 'empty',
+            ],
         ];
 
         $tab[] = [
@@ -163,7 +162,7 @@ TWIG, $twig_params);
             'field'              => 'speed',
             'name'               => __('Fiber channel port speed'),
             'massiveaction'      => false,
-            'datatype'           => 'specific'
+            'datatype'           => 'specific',
         ];
 
         $tab[] = [
@@ -171,7 +170,7 @@ TWIG, $twig_params);
             'table'              => 'glpi_networkportfiberchanneltypes',
             'field'              => 'name',
             'name'               => __('Fiber port type'),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         return $tab;
@@ -228,12 +227,12 @@ TWIG, $twig_params);
     {
         $tmp = [
             0     => '',
-                   //TRANS: %d is the speed
+            //TRANS: %d is the speed
             10    => sprintf(__('%d Mbit/s'), 10),
             100   => sprintf(__('%d Mbit/s'), 100),
-                   //TRANS: %d is the speed
+            //TRANS: %d is the speed
             1000  => sprintf(__('%d Gbit/s'), 1),
-            10000 => sprintf(__('%d Gbit/s'), 10)
+            10000 => sprintf(__('%d Gbit/s'), 10),
         ];
 
         if (is_null($val)) {
@@ -284,9 +283,9 @@ TWIG, $twig_params);
                 'linkfield'           => 'networkports_id',
                 'beforejoin'         => [
                     'table'              => 'glpi_networkportfiberchannels',
-                    'joinparams'         => $joinparams
-                ]
-            ]
+                    'joinparams'         => $joinparams,
+                ],
+            ],
         ];
     }
 }

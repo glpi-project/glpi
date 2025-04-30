@@ -161,7 +161,7 @@ class SourceCodeIntegrityChecker
         }
         return [
             'algorithm' => $algorithm,
-            'files' => $hashes
+            'files' => $hashes,
         ];
     }
 
@@ -252,7 +252,7 @@ class SourceCodeIntegrityChecker
     {
         $summary = $this->getSummary();
         // ignore OK files in case they are present
-        $summary = array_filter($summary, static fn ($status) => $status !== self::STATUS_OK);
+        $summary = array_filter($summary, static fn($status) => $status !== self::STATUS_OK);
         // Ensure the release is downloaded
         $release_path = GLPI_TMP_DIR . '/glpi-' . VersionParser::getNormalizedVersion(GLPI_VERSION) . '.tgz';
         if (!file_exists($release_path)) {

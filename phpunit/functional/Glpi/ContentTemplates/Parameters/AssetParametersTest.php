@@ -47,7 +47,7 @@ class AssetParametersTest extends AbstractParameters
         $this->createItem('Computer', [
             'name'        => 'pc_testGetValues',
             'serial'      => 'abcd1234',
-            'entities_id' => $test_entity_id
+            'entities_id' => $test_entity_id,
         ]);
 
         $parameters = new AssetParameters();
@@ -62,7 +62,7 @@ class AssetParametersTest extends AbstractParameters
                     'id'           => $test_entity_id,
                     'name'         => '_test_child_2',
                     'completename' => 'Root entity > _test_root_entity > _test_child_2',
-                ]
+                ],
             ],
             $values
         );

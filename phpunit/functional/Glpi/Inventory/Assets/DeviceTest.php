@@ -116,7 +116,7 @@ class DeviceTest extends AbstractInventoryAsset
                 "itemtype" => \Item_DeviceMemory::class,
                 "entities_id" => $computer->fields['entities_id'],
                 "buy_date" => $infocom_buy_date,
-                "value" => $infocom_value
+                "value" => $infocom_value,
             ];
             //create infocom
             $id = $info_com->add($input);
@@ -220,7 +220,7 @@ class DeviceTest extends AbstractInventoryAsset
                 "itemtype" => \Item_DeviceHardDrive::class,
                 "entities_id" => $computer->fields['entities_id'],
                 "buy_date" => $infocom_buy_date,
-                "value" => $infocom_value
+                "value" => $infocom_value,
             ];
             //create infocom
             $id = $info_com->add($input);
@@ -313,8 +313,8 @@ class DeviceTest extends AbstractInventoryAsset
         $logs = $DB->request([
             'FROM' => \Log::getTable(),
             'WHERE' => [
-                'itemtype' => \Item_DeviceMemory::class
-            ]
+                'itemtype' => \Item_DeviceMemory::class,
+            ],
         ]);
         $this->assertCount(0, $logs);
 
@@ -378,7 +378,7 @@ class DeviceTest extends AbstractInventoryAsset
             'FROM' => \Log::getTable(),
             'WHERE' => [
                 'itemtype' => \Item_DeviceMemory::class,
-            ]
+            ],
         ]);
         $this->assertCount(2, $logs); //for each memory module
 

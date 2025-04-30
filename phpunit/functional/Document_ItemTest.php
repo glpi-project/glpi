@@ -155,7 +155,7 @@ class Document_ItemTest extends DbTestCase
         $this->assertGreaterThan(
             0,
             $document->add([
-                'name'   => 'Test document to link'
+                'name'   => 'Test document to link',
             ])
         );
         $input['documents_id'] = $document->getID();
@@ -166,7 +166,7 @@ class Document_ItemTest extends DbTestCase
             'documents_id' => $document->getID(),
             'users_id'     => false,
             'entities_id'  => 0,
-            'is_recursive' => 0
+            'is_recursive' => 0,
         ];
 
         $this->assertSame(
@@ -187,11 +187,11 @@ class Document_ItemTest extends DbTestCase
                     'glpi_documents_items.documents_id'  => 1,
                     [
                         'glpi_documents_items.itemtype'  => 'Document',
-                        'glpi_documents_items.items_id'  => 1
-                    ]
-                ]
+                        'glpi_documents_items.items_id'  => 1,
+                    ],
+                ],
             ],
-            'ORDER'           => 'itemtype'
+            'ORDER'           => 'itemtype',
         ];
         $this->assertSame($expected, \Document_Item::getDistinctTypesParams(1));
 
@@ -205,17 +205,17 @@ class Document_ItemTest extends DbTestCase
                     'glpi_documents_items.documents_id'  => 1,
                     [
                         'glpi_documents_items.itemtype'  => 'Document',
-                        'glpi_documents_items.items_id'  => 1
-                    ]
+                        'glpi_documents_items.items_id'  => 1,
+                    ],
                 ],
                 [
                     'date_mod'  => [
                         '>',
-                        '2000-01-01'
-                    ]
-                ]
+                        '2000-01-01',
+                    ],
+                ],
             ],
-            'ORDER'           => 'itemtype'
+            'ORDER'           => 'itemtype',
         ];
         $this->assertSame($expected, \Document_Item::getDistinctTypesParams(1, $extra_where));
     }
@@ -229,7 +229,7 @@ class Document_ItemTest extends DbTestCase
         $tickets_id = $ticket->add([
             'name' => '',
             'content' => 'Test modification date not updated from Document_Item',
-            'date_mod' => '2020-01-01'
+            'date_mod' => '2020-01-01',
         ]);
 
         $this->assertGreaterThan(0, $tickets_id);
@@ -241,7 +241,7 @@ class Document_ItemTest extends DbTestCase
             $doc->add([
                 'users_id'     => $uid,
                 'tickets_id'   => $tickets_id,
-                'name'         => 'A simple document object'
+                'name'         => 'A simple document object',
             ])
         );
 
@@ -254,7 +254,7 @@ class Document_ItemTest extends DbTestCase
                 'items_id'      => $tickets_id,
                 'itemtype'      => 'Ticket',
                 'documents_id'  => $doc->getID(),
-                '_do_update_ticket' => false
+                '_do_update_ticket' => false,
             ])
         );
 
@@ -269,7 +269,7 @@ class Document_ItemTest extends DbTestCase
             $doc->add([
                 'users_id'     => $uid,
                 'tickets_id'   => $tickets_id,
-                'name'         => 'A simple document object'
+                'name'         => 'A simple document object',
             ])
         );
 

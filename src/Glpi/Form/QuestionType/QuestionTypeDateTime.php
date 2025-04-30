@@ -38,7 +38,6 @@ namespace Glpi\Form\QuestionType;
 use DateTime;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\JsonFieldInterface;
-use Glpi\Form\Condition\ConditionHandler\ConditionHandlerInterface;
 use Glpi\Form\Condition\ConditionHandler\DateAndTimeConditionHandler;
 use Glpi\Form\Condition\ConditionHandler\DateConditionHandler;
 use Glpi\Form\Condition\ConditionHandler\TimeConditionHandler;
@@ -136,7 +135,7 @@ class QuestionTypeDateTime extends AbstractQuestionType implements FormQuestionD
                 'date'            => __('Current date'),
                 'time'            => __('Current time'),
                 'datetime-local'  => __('Current date and time'),
-            ]
+            ],
         ];
     }
 
@@ -200,7 +199,7 @@ class QuestionTypeDateTime extends AbstractQuestionType implements FormQuestionD
         $allowed_keys = [
             'is_default_value_current_time',
             'is_date_enabled',
-            'is_time_enabled'
+            'is_time_enabled',
         ];
 
         return empty(array_diff(array_keys($input), $allowed_keys))
@@ -300,8 +299,8 @@ TWIG;
             'is_time_enabled' => $this->isTimeEnabled($question),
             'labels' => [
                 'date' => _n('Date', 'Dates', 1),
-                'time' => _n('Time', 'Times', 1)
-            ]
+                'time' => _n('Time', 'Times', 1),
+            ],
         ]);
     }
 
@@ -323,7 +322,7 @@ TWIG;
         return $twig->renderFromStringTemplate($template, [
             'question'      => $question,
             'input_type'    => $this->getInputType($question, true),
-            'default_value' => $this->getDefaultValue($question) ?? ''
+            'default_value' => $this->getDefaultValue($question) ?? '',
         ]);
     }
 

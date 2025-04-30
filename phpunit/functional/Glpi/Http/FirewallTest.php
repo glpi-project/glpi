@@ -96,7 +96,7 @@ class FirewallTest extends \DbTestCase
                             'css.php' => '',
                         ],
                         'index.php' => '',
-                    ]
+                    ],
                 ],
                 'myplugindir' => [
                     'pluginb' => [
@@ -149,8 +149,8 @@ class FirewallTest extends \DbTestCase
             // Default strategies
             foreach ($default_mapping as $path => $expected_strategy) {
                 $this->dotestComputeFallbackStrategy(
-                    root_doc:          $root_doc,
-                    path:              $root_doc . $path,
+                    root_doc: $root_doc,
+                    path: $root_doc . $path,
                     expected_strategy: $expected_strategy,
                 );
             }
@@ -159,15 +159,15 @@ class FirewallTest extends \DbTestCase
 
             // `/front/planning.php` has a specific strategy only if some get parameters are defined
             $this->dotestComputeFallbackStrategy(
-                root_doc:          $root_doc,
-                path:              $root_doc . '/front/planning.php',
+                root_doc: $root_doc,
+                path: $root_doc . '/front/planning.php',
                 expected_strategy: $default_for_core_legacy,
             );
 
             $_GET['token'] = 'abc';
             $this->dotestComputeFallbackStrategy(
-                root_doc:          $root_doc,
-                path:              $root_doc . '/front/planning.php',
+                root_doc: $root_doc,
+                path: $root_doc . '/front/planning.php',
                 expected_strategy: 'no_check',
             );
             unset($_GET['token']);
@@ -175,8 +175,8 @@ class FirewallTest extends \DbTestCase
             $legacy_faq_urls = ['/front/helpdesk.faq.php'];
             foreach ($legacy_faq_urls as $faq_url) {
                 $this->dotestComputeFallbackStrategy(
-                    root_doc:          $root_doc,
-                    path:              $root_doc . $faq_url,
+                    root_doc: $root_doc,
+                    path: $root_doc . $faq_url,
                     expected_strategy: 'faq_access',
                 );
             }
@@ -196,8 +196,8 @@ class FirewallTest extends \DbTestCase
             ];
             foreach ($legacy_no_check_urls as $no_check_url) {
                 $this->dotestComputeFallbackStrategy(
-                    root_doc:          $root_doc,
-                    path:              $root_doc . $no_check_url,
+                    root_doc: $root_doc,
+                    path: $root_doc . $no_check_url,
                     expected_strategy: 'no_check',
                 );
             }
@@ -205,40 +205,40 @@ class FirewallTest extends \DbTestCase
             // Specific strategies defined by plugins
             Firewall::addPluginStrategyForLegacyScripts('myplugin', '#^.*/foo.php#', 'faq_access');
             $this->dotestComputeFallbackStrategy(
-                root_doc:          $root_doc,
-                path:              $root_doc . '/marketplace/myplugin/ajax/foo.php',
+                root_doc: $root_doc,
+                path: $root_doc . '/marketplace/myplugin/ajax/foo.php',
                 expected_strategy: 'faq_access',
             );
             $this->dotestComputeFallbackStrategy(
-                root_doc:          $root_doc,
-                path:              $root_doc . '/marketplace/myplugin/front/foo.php',
+                root_doc: $root_doc,
+                path: $root_doc . '/marketplace/myplugin/front/foo.php',
                 expected_strategy: 'faq_access',
             );
             $this->dotestComputeFallbackStrategy(
-                root_doc:          $root_doc,
-                path:              $root_doc . '/marketplace/myplugin/front/dir/bar.php',
+                root_doc: $root_doc,
+                path: $root_doc . '/marketplace/myplugin/front/dir/bar.php',
                 expected_strategy: $default_for_plugins_legacy, // does not match the pattern
             );
             Firewall::addPluginStrategyForLegacyScripts('myplugin', '#^/front/dir/#', 'helpdesk_access');
             $this->dotestComputeFallbackStrategy(
-                root_doc:          $root_doc,
-                path:              $root_doc . '/marketplace/myplugin/ajax/foo.php',
+                root_doc: $root_doc,
+                path: $root_doc . '/marketplace/myplugin/ajax/foo.php',
                 expected_strategy: 'faq_access',
             );
             $this->dotestComputeFallbackStrategy(
-                root_doc:          $root_doc,
-                path:              $root_doc . '/marketplace/myplugin/front/foo.php',
+                root_doc: $root_doc,
+                path: $root_doc . '/marketplace/myplugin/front/foo.php',
                 expected_strategy: 'faq_access',
             );
             $this->dotestComputeFallbackStrategy(
-                root_doc:          $root_doc,
-                path:              $root_doc . '/marketplace/myplugin/front/dir/bar.php',
+                root_doc: $root_doc,
+                path: $root_doc . '/marketplace/myplugin/front/dir/bar.php',
                 expected_strategy: 'helpdesk_access',
             );
             Firewall::addPluginStrategyForLegacyScripts('myplugin', '#^/PluginRoute$#', 'helpdesk_access');
             $this->dotestComputeFallbackStrategy(
-                root_doc:          $root_doc,
-                path:              $root_doc . '/marketplace/myplugin/PluginRoute',
+                root_doc: $root_doc,
+                path: $root_doc . '/marketplace/myplugin/PluginRoute',
                 expected_strategy: $default_for_symfony_routes, // fallback strategies MUST NOT apply to symfony routes
             );
             Firewall::resetPluginsStrategies();

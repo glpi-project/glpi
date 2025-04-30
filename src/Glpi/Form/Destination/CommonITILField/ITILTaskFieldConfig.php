@@ -50,8 +50,7 @@ final class ITILTaskFieldConfig implements
     public function __construct(
         private ITILTaskFieldStrategy $strategy,
         private ?array $specific_itiltasktemplates_ids = null,
-    ) {
-    }
+    ) {}
 
     #[Override]
     public static function jsonDeserialize(array $data): self

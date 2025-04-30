@@ -68,7 +68,7 @@ class AuthLdapTest extends DbTestCase
             'is_active' => 1,
             'basedn' => 'ou=people,dc=mycompany',
             'login_field' => 'uid',
-            'phone_field' => '01.02.03.04.05'
+            'phone_field' => '01.02.03.04.05',
         ]);
 
         // Assert
@@ -84,7 +84,7 @@ class AuthLdapTest extends DbTestCase
             'is_active' => 1,
             'basedn' => 'ou=people,dc=mycompany',
             'login_field' => 'uid',
-            'phone_field' => '01.02.03.04.05'
+            'phone_field' => '01.02.03.04.05',
         ]);
 
         // Assert

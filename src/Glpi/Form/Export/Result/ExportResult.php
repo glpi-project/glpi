@@ -40,8 +40,7 @@ final class ExportResult
     public function __construct(
         private string $filename,
         private string $json_content,
-    ) {
-    }
+    ) {}
 
     public function getFileName(): string
     {

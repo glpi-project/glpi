@@ -40,7 +40,6 @@ use DbTestCase;
 use DropdownVisibility;
 use Phone;
 use Printer;
-use Psr\Log\LogLevel;
 use ReflectionClass;
 use Toolbox;
 
@@ -116,7 +115,7 @@ class StateTest extends DbTestCase
                 'itemtype' => \State::getType(),
                 'items_id' => $states_id,
                 'visible_itemtype' => Computer::getType(),
-                'is_visible' => 1
+                'is_visible' => 1,
             ])
         );
         $this->assertTrue(
@@ -124,7 +123,7 @@ class StateTest extends DbTestCase
                 'itemtype' => \State::getType(),
                 'items_id' => $states_id,
                 'visible_itemtype' => Phone::getType(),
-                'is_visible' => 1
+                'is_visible' => 1,
             ])
         );
         $this->assertFalse(
@@ -132,7 +131,7 @@ class StateTest extends DbTestCase
                 'itemtype' => \State::getType(),
                 'items_id' => $states_id,
                 'visible_itemtype' => Printer::getType(),
-                'is_visible' => 0
+                'is_visible' => 0,
             ])
         );
 
@@ -152,7 +151,7 @@ class StateTest extends DbTestCase
                 'itemtype' => \State::getType(),
                 'items_id' => $states_id,
                 'visible_itemtype' => Computer::getType(),
-                'is_visible' => 0
+                'is_visible' => 0,
             ])
         );
         $this->assertTrue(
@@ -160,7 +159,7 @@ class StateTest extends DbTestCase
                 'itemtype' => \State::getType(),
                 'items_id' => $states_id,
                 'visible_itemtype' => Phone::getType(),
-                'is_visible' => 1
+                'is_visible' => 1,
             ])
         );
         $this->assertTrue(
@@ -168,7 +167,7 @@ class StateTest extends DbTestCase
                 'itemtype' => \State::getType(),
                 'items_id' => $states_id,
                 'visible_itemtype' => Printer::getType(),
-                'is_visible' => 1
+                'is_visible' => 1,
             ])
         );
 
@@ -255,7 +254,7 @@ class StateTest extends DbTestCase
         $state = new \State();
         $states_id = $state->add([
             'name' => 'Test computer and phone',
-            'is_visible_' . strtolower($itemtype) => '1'
+            'is_visible_' . strtolower($itemtype) => '1',
         ]);
         $this->assertGreaterThan(0, $states_id);
 
@@ -286,17 +285,17 @@ class StateTest extends DbTestCase
                             DropdownVisibility::getTable() => 'items_id',
                             \State::getTable() => 'id', [
                                 'AND' => [
-                                    DropdownVisibility::getTable() . '.itemtype' => \State::getType()
-                                ]
-                            ]
-                        ]
-                    ]
+                                    DropdownVisibility::getTable() . '.itemtype' => \State::getType(),
+                                ],
+                            ],
+                        ],
+                    ],
                 ],
                 'WHERE' => [
                     DropdownVisibility::getTable() . '.itemtype' => \State::getType(),
                     DropdownVisibility::getTable() . '.visible_itemtype' => $itemtype,
-                    DropdownVisibility::getTable() . '.is_visible' => 1
-                ]
+                    DropdownVisibility::getTable() . '.is_visible' => 1,
+                ],
             ],
             $item->getStateVisibilityCriteria()
         );

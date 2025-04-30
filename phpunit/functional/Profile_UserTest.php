@@ -54,7 +54,7 @@ class Profile_UserTest extends DbTestCase
 
         // Default: 4 super admin account authorizations
         $authorizations = (new \Profile_User())->find([
-            'profiles_id' => $super_admin->fields['id']
+            'profiles_id' => $super_admin->fields['id'],
         ]);
         $this->assertCount(4, $authorizations);
         $glpi_users_id = getItemByTypeName('User', 'glpi', true);

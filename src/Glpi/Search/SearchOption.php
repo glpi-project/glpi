@@ -416,7 +416,7 @@ final class SearchOption implements \ArrayAccess
             'contains'    => __('contains'),
             'notcontains' => __('not contains'),
             'empty'       => __('is empty'),
-            'searchopt'   => []
+            'searchopt'   => [],
         ];
 
         if (isset($searchopt[$field_num]) && isset($searchopt[$field_num]['table'])) {
@@ -426,7 +426,7 @@ final class SearchOption implements \ArrayAccess
             if (isset($actions['searchopt']['searchtype'])) {
                 // Reset search option
                 $actions = [
-                    'searchopt'   => $searchopt[$field_num]
+                    'searchopt'   => $searchopt[$field_num],
                 ];
                 if (!is_array($actions['searchopt']['searchtype'])) {
                     $actions['searchopt']['searchtype'] = [$actions['searchopt']['searchtype']];
@@ -485,7 +485,7 @@ final class SearchOption implements \ArrayAccess
                             'equals'      => __('is'),
                             'notequals'   => __('is not'),
                             'empty'       => __('is empty'),
-                            'searchopt'   => $searchopt[$field_num]
+                            'searchopt'   => $searchopt[$field_num],
                         ];
                         // No is / isnot if no limits defined
                         if (
@@ -510,21 +510,21 @@ final class SearchOption implements \ArrayAccess
                             'contains'    => __('contains'),
                             'notcontains' => __('not contains'),
                             'empty'       => __('is empty'),
-                            'searchopt'   => $searchopt[$field_num]
+                            'searchopt'   => $searchopt[$field_num],
                         ];
 
                     case 'right':
                         return ['equals'    => __('is'),
                             'notequals' => __('is not'),
                             'empty'     => __('is empty'),
-                            'searchopt' => $searchopt[$field_num]
+                            'searchopt' => $searchopt[$field_num],
                         ];
 
                     case 'itemtypename':
                         return ['equals'    => __('is'),
                             'notequals' => __('is not'),
                             'empty'     => __('is empty'),
-                            'searchopt' => $searchopt[$field_num]
+                            'searchopt' => $searchopt[$field_num],
                         ];
 
                     case 'date':
@@ -538,7 +538,7 @@ final class SearchOption implements \ArrayAccess
                             'contains'    => __('contains'),
                             'notcontains' => __('not contains'),
                             'empty'       => __('is empty'),
-                            'searchopt'   => $searchopt[$field_num]
+                            'searchopt'   => $searchopt[$field_num],
                         ];
                 }
             }
@@ -555,7 +555,7 @@ final class SearchOption implements \ArrayAccess
                     return ['equals'    => __('is'),
                         'notequals' => __('is not'),
                         'empty'     => __('is empty'),
-                        'searchopt' => $searchopt[$field_num]
+                        'searchopt' => $searchopt[$field_num],
                     ];
 
                 case 'name':
@@ -566,7 +566,7 @@ final class SearchOption implements \ArrayAccess
                         'equals'      => __('is'),
                         'notequals'   => __('is not'),
                         'empty'       => __('is empty'),
-                        'searchopt'   => $searchopt[$field_num]
+                        'searchopt'   => $searchopt[$field_num],
                     ];
 
                     // Specific case of TreeDropdown : add under
@@ -726,7 +726,7 @@ final class SearchOption implements \ArrayAccess
             $toview[] = 1;
         }
 
-        if (isset($params['as_map']) && (int)$params['as_map'] === 1) {
+        if (isset($params['as_map']) && (int) $params['as_map'] === 1) {
             if ($itemtype !== \AllAssets::getType()) {
                 // Add location name when map mode
                 $loc_opt = self::getOptionNumber($itemtype, 'completename', 'Location');
@@ -771,12 +771,12 @@ final class SearchOption implements \ArrayAccess
     public static function generateAProbablyUniqueId(string $string_identifier, ?string $plugin = null): int
     {
         // Generates an ID that can be assigned anywhere in the 10000-19999 range
-        $generated_id = (int)abs((int)hexdec(hash('xxh3', $string_identifier))) % 10000 + 10000;
+        $generated_id = (int) abs((int) hexdec(hash('xxh3', $string_identifier))) % 10000 + 10000;
 
         if ($plugin !== null && $plugin !== '') {
             // For plugins, increment the generated ID from a value between 10000 to 79999,
             // to get a final ID anywhere in the 20000-99999 range.
-            $plugin_increment = (int)abs((int)hexdec(hash('xxh3', $plugin))) % 80000 + 10000;
+            $plugin_increment = (int) abs((int) hexdec(hash('xxh3', $plugin))) % 80000 + 10000;
             $generated_id += $plugin_increment;
         }
 

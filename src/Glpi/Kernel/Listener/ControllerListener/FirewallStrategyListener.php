@@ -42,9 +42,7 @@ use Symfony\Component\HttpKernel\KernelEvents;
 
 final readonly class FirewallStrategyListener implements EventSubscriberInterface
 {
-    public function __construct(private Firewall $firewall)
-    {
-    }
+    public function __construct(private Firewall $firewall) {}
 
     public static function getSubscribedEvents(): array
     {

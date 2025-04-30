@@ -34,8 +34,6 @@
 
 namespace Glpi\Log;
 
-use Monolog\Formatter\LineFormatter;
-
 final class ErrorLogLineFormatter extends AbstractLogLineFormatter
 {
     public function __construct()

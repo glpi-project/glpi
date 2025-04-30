@@ -67,7 +67,7 @@ abstract class AbstractPlanningEvent extends \DbTestCase
                 'interval'  => 1,
                 'byweekday' => 'MO',
                 'bymonth'   => 1,
-                'exceptions' => "$this->exdate1, $this->exdate2"
+                'exceptions' => "$this->exdate1, $this->exdate2",
             ],
             'state'      => \Planning::TODO,
             'background' => 1,
@@ -81,10 +81,10 @@ abstract class AbstractPlanningEvent extends \DbTestCase
         $event = new $this->myclass();
         $id    = $event->add($this->input);
 
-        $this->assertGreaterThan(0, (int)$id);
+        $this->assertGreaterThan(0, (int) $id);
         $this->assertTrue($event->getFromDB($id));
 
-       // check end date
+        // check end date
         if (isset($event->fields['end'])) {
             $this->assertEquals($this->end, $event->fields['end']);
         }
@@ -151,7 +151,7 @@ abstract class AbstractPlanningEvent extends \DbTestCase
 
         $event = new $this->myclass();
         $id    = $event->add($this->input);
-        $this->assertGreaterThan(0, (int)$id);
+        $this->assertGreaterThan(0, (int) $id);
 
         $this->assertTrue($event->delete(['id' => $id]));
         $this->assertFalse($event->getFromDB($id));

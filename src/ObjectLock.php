@@ -128,7 +128,7 @@ class ObjectLock extends CommonDBTM
             $useremail = new UserEmail();
             $showAskUnlock = $useremail->getFromDBByCrit([
                 'users_id' => $this->fields['users_id'],
-                'is_default' => 1
+                'is_default' => 1,
             ]) && ($CFG_GLPI['notifications_mailing'] == 1);
         }
 
@@ -136,11 +136,11 @@ class ObjectLock extends CommonDBTM
             if (
                 !($gotIt = $this->getFromDBByCrit([
                     'itemtype' => $this->fields['itemtype'],
-                    'items_id' => $this->fields['items_id']
+                    'items_id' => $this->fields['items_id'],
                 ]))
                 && $id = $this->add(['itemtype' => $this->fields['itemtype'],
                     'items_id' => $this->fields['items_id'],
-                    'users_id' => Session::getLoginUserID()
+                    'users_id' => Session::getLoginUserID(),
                 ])
             ) {
                 $new_lock = true;
@@ -149,7 +149,7 @@ class ObjectLock extends CommonDBTM
                 if (!$gotIt) {
                     $this->getFromDBByCrit([
                         'itemtype' => $this->fields['itemtype'],
-                        'items_id' => $this->fields['items_id']
+                        'items_id' => $this->fields['items_id'],
                     ]);
                 }
                 // open the object as read-only as it is already locked by someone
@@ -164,7 +164,7 @@ class ObjectLock extends CommonDBTM
             'item' => $this,
             'user_data' => $user_data,
             'show_ask_unlock' => $showAskUnlock,
-            'autolock_readmode' => $autolock
+            'autolock_readmode' => $autolock,
         ]);
         return $ret;
     }
@@ -185,7 +185,7 @@ class ObjectLock extends CommonDBTM
             && in_array($this->fields['itemtype'], $CFG_GLPI['lock_item_list'], true)
             && $this->getFromDBByCrit([
                 'itemtype' => $itemtype,
-                'items_id' => $items_id
+                'items_id' => $items_id,
             ])
         ) {
             $ret = true;
@@ -324,9 +324,9 @@ class ObjectLock extends CommonDBTM
                     'jointype'   => '',
                     'beforejoin' => [
                         'table'      => self::getTable(),
-                        'joinparams' => ['jointype' => "itemtype_item"]
-                    ]
-                ]
+                        'joinparams' => ['jointype' => "itemtype_item"],
+                    ],
+                ],
             ];
 
             $tab[] = [
@@ -337,7 +337,7 @@ class ObjectLock extends CommonDBTM
                 'name'          => __('Locked date'),
                 'joinparams'    => ['jointype' => 'itemtype_item'],
                 'massiveaction' => false,
-                'forcegroupby'  => true
+                'forcegroupby'  => true,
             ];
 
             $tab[] = [
@@ -349,7 +349,7 @@ class ObjectLock extends CommonDBTM
                 'joinparams'    => ['jointype' => 'itemtype_item'],
                 'massiveaction' => false,
                 'forcegroupby'  => true,
-                'additionalfields' => ['date', 'users_id']
+                'additionalfields' => ['date', 'users_id'],
             ];
         }
 
@@ -425,7 +425,7 @@ TWIG;
             case 'unlockobject':
                 return [
                     'description' => __('Unlock forgotten locked objects'),
-                    'parameter'   => __('Timeout to force unlock (hours)')
+                    'parameter'   => __('Timeout to force unlock (hours)'),
                 ];
         }
         return [];
@@ -448,7 +448,7 @@ TWIG;
         $lockedItems = getAllDataFromTable(
             getTableForItemType(__CLASS__),
             [
-                'date' => ['<', date("Y-m-d H:i:s", time() - ($task->fields['param'] * HOUR_TIMESTAMP))]
+                'date' => ['<', date("Y-m-d H:i:s", time() - ($task->fields['param'] * HOUR_TIMESTAMP))],
             ]
         );
 

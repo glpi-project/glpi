@@ -216,7 +216,7 @@ class IsReservableCapacityTest extends DbTestCase
     public static function provideIsUsed(): iterable
     {
         yield [
-            'target_classname' => ReservationItem::class
+            'target_classname' => ReservationItem::class,
         ];
     }
 
@@ -224,7 +224,7 @@ class IsReservableCapacityTest extends DbTestCase
     {
         yield [
             'target_classname' => ReservationItem::class,
-            'expected' => 'Used by %d of %d assets'
+            'expected' => 'Used by %d of %d assets',
         ];
     }
 }

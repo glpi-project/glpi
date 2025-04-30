@@ -32,9 +32,9 @@
  * ---------------------------------------------------------------------
  */
 
- namespace Glpi\Helpdesk\Tile;
+namespace Glpi\Helpdesk\Tile;
 
- use Glpi\Session\SessionInfo;
+use Glpi\Session\SessionInfo;
 
 interface TileInterface
 {

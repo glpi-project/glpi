@@ -55,7 +55,7 @@ class Item_DeviceCamera_ImageResolution extends CommonDBRelation
             $nb = countElementsInTable(
                 self::getTable(),
                 [
-                    'items_devicecameras_id' => $item->getID()
+                    'items_devicecameras_id' => $item->getID(),
                 ]
             );
         }
@@ -108,13 +108,13 @@ class Item_DeviceCamera_ImageResolution extends CommonDBRelation
                 ImageResolution::getTable() => [
                     'ON' => [
                         ImageResolution::getTable() => 'id',
-                        self::getTable() => 'imageresolutions_id'
-                    ]
-                ]
+                        self::getTable() => 'imageresolutions_id',
+                    ],
+                ],
             ],
             'WHERE'  => [
-                'items_devicecameras_id' => $camera->getID()
-            ]
+                'items_devicecameras_id' => $camera->getID(),
+            ],
         ]);
 
         $entries = [];
@@ -127,7 +127,7 @@ class Item_DeviceCamera_ImageResolution extends CommonDBRelation
                 'id' => $row['id'],
                 'imageresolutions_id' => $item->getLink(),
                 'is_video' => Dropdown::getYesNo($row['is_video']),
-                'is_dynamic' => $row['is_dynamic']
+                'is_dynamic' => $row['is_dynamic'],
             ];
         }
 
@@ -137,10 +137,10 @@ class Item_DeviceCamera_ImageResolution extends CommonDBRelation
             'columns' => [
                 'imageresolutions_id' => ImageResolution::getTypeName(1),
                 'is_video' => __('Is Video'),
-                'is_dynamic' => __('Is dynamic')
+                'is_dynamic' => __('Is dynamic'),
             ],
             'formatters' => [
-                'imageresolutions_id' => 'raw_html'
+                'imageresolutions_id' => 'raw_html',
             ],
             'entries' => $entries,
             'total_number' => count($entries),
@@ -148,7 +148,7 @@ class Item_DeviceCamera_ImageResolution extends CommonDBRelation
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => min($_SESSION['glpilist_limit'], count($entries)),
-                'container'     => 'mass' . static::class . $rand
+                'container'     => 'mass' . static::class . $rand,
             ],
         ]);
     }

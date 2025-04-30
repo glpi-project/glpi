@@ -70,9 +70,9 @@ class CommonAjaxControllerTest extends DbTestCase
                         'info'    => [],
                         'warning' => [],
                         'error'   => ["Invalid id"],
-                    ]
+                    ],
                 ])
-            )
+            ),
         ];
         yield [
             'input' => ['id' => $invalid_id],
@@ -84,14 +84,14 @@ class CommonAjaxControllerTest extends DbTestCase
                         'info'    => [],
                         'warning' => [],
                         'error'   => ["Forbidden itemtype"],
-                    ]
+                    ],
                 ])
-            )
+            ),
         ];
         yield [
             'input' => [
                 'id' => $invalid_id,
-                'itemtype' => 'Computer'
+                'itemtype' => 'Computer',
             ],
             'expected_response' => new Response(
                 403,
@@ -101,14 +101,14 @@ class CommonAjaxControllerTest extends DbTestCase
                         'info'    => [],
                         'warning' => [],
                         'error'   => ["Forbidden itemtype"],
-                    ]
+                    ],
                 ])
-            )
+            ),
         ];
         yield [
             'input' => [
                 'id'       => $form_1->getID(),
-                'itemtype' => $form_1->getType()
+                'itemtype' => $form_1->getType(),
             ],
             'expected_response' => new Response(
                 400,
@@ -118,9 +118,9 @@ class CommonAjaxControllerTest extends DbTestCase
                         'info'    => [],
                         'warning' => [],
                         'error'   => ["Invalid action"],
-                    ]
+                    ],
                 ])
-            )
+            ),
         ];
 
         // Second tests set: update request
@@ -140,9 +140,9 @@ class CommonAjaxControllerTest extends DbTestCase
                         'info'    => [],
                         'warning' => [],
                         'error'   => ["You don't have permission to perform this action."],
-                    ]
+                    ],
                 ])
-            )
+            ),
         ];
         yield [
             'input' => [
@@ -159,9 +159,9 @@ class CommonAjaxControllerTest extends DbTestCase
                         'info'    => [],
                         'warning' => [],
                         'error'   => ["Item not found."],
-                    ]
+                    ],
                 ])
-            )
+            ),
         ];
         yield [
             'input' => [
@@ -179,9 +179,9 @@ class CommonAjaxControllerTest extends DbTestCase
                         'info'    => [],
                         'warning' => [],
                         'error'   => [],
-                    ]
+                    ],
                 ])
-            )
+            ),
         ];
         // We can't test the "Failed to update item" response because it doesn't
         // seem to be a way to send an invalid update request that isn't already
@@ -204,9 +204,9 @@ class CommonAjaxControllerTest extends DbTestCase
                         'info'    => [],
                         'warning' => [],
                         'error'   => ["You don't have permission to perform this action."],
-                    ]
+                    ],
                 ])
-            )
+            ),
         ];
         yield [
             'input' => [
@@ -222,9 +222,9 @@ class CommonAjaxControllerTest extends DbTestCase
                         'info'    => [],
                         'warning' => [],
                         'error'   => ["Item not found."],
-                    ]
+                    ],
                 ])
-            )
+            ),
         ];
         yield [
             'input' => [
@@ -241,9 +241,9 @@ class CommonAjaxControllerTest extends DbTestCase
                         'info'    => [],
                         'warning' => [],
                         'error'   => [],
-                    ]
+                    ],
                 ])
-            )
+            ),
         ];
         // We can't test the "Failed to delete item" response it because doesn't
         // seem to be a way to send an invalid delete request that isn't already
@@ -265,9 +265,9 @@ class CommonAjaxControllerTest extends DbTestCase
                         'info'    => [],
                         'warning' => [],
                         'error'   => ["You don't have permission to perform this action."],
-                    ]
+                    ],
                 ])
-            )
+            ),
         ];
         yield [
             'input' => [
@@ -283,9 +283,9 @@ class CommonAjaxControllerTest extends DbTestCase
                         'info'    => [],
                         'warning' => [],
                         'error'   => ["Item not found."],
-                    ]
+                    ],
                 ])
-            )
+            ),
         ];
         yield [
             'input' => [
@@ -302,9 +302,9 @@ class CommonAjaxControllerTest extends DbTestCase
                         'info'    => [],
                         'warning' => [],
                         'error'   => [],
-                    ]
+                    ],
                 ])
-            )
+            ),
         ];
         // We can't test the "Failed to restore item" response because it doesn't
         // seem to be a way to send an invalid delete request that isn't already
@@ -326,9 +326,9 @@ class CommonAjaxControllerTest extends DbTestCase
                         'info'    => [],
                         'warning' => [],
                         'error'   => ["You don't have permission to perform this action."],
-                    ]
+                    ],
                 ])
-            )
+            ),
         ];
         yield [
             'input' => [
@@ -344,9 +344,9 @@ class CommonAjaxControllerTest extends DbTestCase
                         'info'    => [],
                         'warning' => [],
                         'error'   => ["Item not found."],
-                    ]
+                    ],
                 ])
-            )
+            ),
         ];
         yield [
             'input' => [
@@ -358,9 +358,9 @@ class CommonAjaxControllerTest extends DbTestCase
                 200,
                 ['Content-Type' => 'application/json'],
                 json_encode([
-                    'redirect' => "/glpi/front/form/form.php"
+                    'redirect' => "/glpi/front/form/form.php",
                 ])
-            )
+            ),
         ];
         // We can't test the "Failed to purge item" response because it doesn't
         // seem to be a way to send an invalid purge request that isn't already
@@ -402,8 +402,8 @@ class CommonAjaxControllerTest extends DbTestCase
 
             // Validate body
             $this->assertEquals(
-                (string)$expected_response->getBody(),
-                (string)$response->getBody()
+                (string) $expected_response->getBody(),
+                (string) $response->getBody()
             );
         }
     }

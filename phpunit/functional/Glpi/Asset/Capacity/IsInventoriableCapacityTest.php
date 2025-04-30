@@ -256,9 +256,9 @@ class IsInventoriableCapacityTest extends DbTestCase
                 new Capacity(
                     name: \Glpi\Asset\Capacity\IsInventoriableCapacity::class,
                     config: new \Glpi\Asset\CapacityConfig([
-                        'inventory_mainasset' => \Glpi\Inventory\MainAsset\GenericAsset::class
+                        'inventory_mainasset' => \Glpi\Inventory\MainAsset\GenericAsset::class,
                     ])
-                )
+                ),
             ]
         );
         $classname  = $definition->getAssetClassName();
@@ -269,7 +269,7 @@ class IsInventoriableCapacityTest extends DbTestCase
             'WHERE' => [
                 'sub_type' => \RuleImportAsset::class,
                 'name' => $classname . ' import (by uuid)',
-            ]
+            ],
         ];
         $iterator = $DB->request($criteria);
         //specific computer rule should be present
@@ -283,10 +283,10 @@ class IsInventoriableCapacityTest extends DbTestCase
                     [
                         'name' => \Glpi\Asset\Capacity\IsInventoriableCapacity::class,
                         'config' => [
-                            'inventory_mainasset' => \Glpi\Inventory\MainAsset\GenericNetworkAsset::class
-                        ]
-                    ]
-                ]
+                            'inventory_mainasset' => \Glpi\Inventory\MainAsset\GenericNetworkAsset::class,
+                        ],
+                    ],
+                ],
             ])
         );
         $this->assertTrue($definition->getFromDB($definition->getID()));

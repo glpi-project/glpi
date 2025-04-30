@@ -42,7 +42,7 @@ class SlaLevel extends LevelAgreementLevel
     protected $ruleactionclass    = 'SlaLevelAction';
     protected static $parentclass = 'SLA';
     protected static $fkparent    = 'slas_id';
-   // No criteria
+    // No criteria
     protected $rulecriteriaclass = 'SlaLevelCriteria';
 
     public static function getTable($classname = null)
@@ -107,10 +107,10 @@ class SlaLevel extends LevelAgreementLevel
             'FROM'   => self::getTable(),
             'WHERE'  => [
                 'slas_id'   => $slas_id,
-                'is_active' => 1
+                'is_active' => 1,
             ],
             'ORDER'  => 'execution_time ASC',
-            'LIMIT'  => 1
+            'LIMIT'  => 1,
         ]);
 
         if ($result = $iterator->current()) {
@@ -135,7 +135,7 @@ class SlaLevel extends LevelAgreementLevel
         $iterator = $DB->request([
             'SELECT' => 'execution_time',
             'FROM'   => self::getTable(),
-            'WHERE'  => ['id' => $slalevels_id]
+            'WHERE'  => ['id' => $slalevels_id],
         ]);
 
         if ($result = $iterator->current()) {
@@ -148,14 +148,14 @@ class SlaLevel extends LevelAgreementLevel
                     'slas_id'         => $slas_id,
                     'is_active'       => 1,
                     'id'              => ['<>', $slalevels_id],
-                    'execution_time'  => ['>', $execution_time]
+                    'execution_time'  => ['>', $execution_time],
                 ],
                 'ORDER'  => 'execution_time ASC',
-                'LIMIT'  => 1
+                'LIMIT'  => 1,
             ]);
 
             if ($result = $lvl_iterator->current()) {
-                 return $result['id'];
+                return $result['id'];
             }
         }
         return 0;

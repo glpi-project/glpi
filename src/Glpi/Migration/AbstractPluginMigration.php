@@ -194,7 +194,7 @@ abstract class AbstractPluginMigration
     {
         $criteria = [
             'FROM'  => $table,
-            'COUNT' => 'cpt'
+            'COUNT' => 'cpt',
         ];
 
         if (!empty($conditions)) {

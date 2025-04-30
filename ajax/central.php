@@ -52,7 +52,7 @@ unset($_REQUEST['params']['_idor_token']);
 if (
     !Session::validateIDOR([
         'itemtype'     => $_REQUEST['itemtype'],
-        '_idor_token'  => $idor
+        '_idor_token'  => $idor,
     ] + $_REQUEST['params'])
 ) {
     throw new BadRequestHttpException();

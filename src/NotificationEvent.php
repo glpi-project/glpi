@@ -33,7 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
 
 /**
  * Class which manages notification events
@@ -120,17 +119,17 @@ class NotificationEvent extends CommonDBTM
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-       //If notifications are enabled in GLPI's configuration
+        //If notifications are enabled in GLPI's configuration
         if ($CFG_GLPI["use_notifications"] && Notification_NotificationTemplate::hasActiveMode()) {
             $notificationtarget = NotificationTarget::getInstance($item, $event, $options);
             if (!$notificationtarget) {
                 return false;
             }
 
-           //Process more infos (for example for tickets)
+            //Process more infos (for example for tickets)
             $notificationtarget->addAdditionnalInfosForTarget();
 
-           //Foreach notification
+            //Foreach notification
             $notifications = Notification::getNotificationsByEventAndType(
                 $event,
                 $item->getType(),
@@ -158,39 +157,39 @@ class NotificationEvent extends CommonDBTM
                 $emitter = null;
 
                 if (Session::isCron()) {
-                   // Cron notify me
+                    // Cron notify me
                     $notify_me = true;
 
-                   // If mailcollector_user is set, use the given user preferences
+                    // If mailcollector_user is set, use the given user preferences
                     if (isset($_SESSION['mailcollector_user'])) {
                         $mailcollector_user = $_SESSION['mailcollector_user'];
 
                         if (is_int($mailcollector_user)) {
-                         // Try to load the given user and his preferences
+                            // Try to load the given user and his preferences
                             $user = new User();
                             $res = $user->getFromDB($_SESSION['mailcollector_user']);
 
                             if ($res) {
-                                 $user->computePreferences();
-                                 $notify_me = $user->fields['notification_to_myself'];
-                                 $emitter = $_SESSION['mailcollector_user'];
+                                $user->computePreferences();
+                                $notify_me = $user->fields['notification_to_myself'];
+                                $emitter = $_SESSION['mailcollector_user'];
                             }
                         } else {
-                     // Special case for anonymous helpdesk, we have an email
-                     // instead of an ID
-                     // -> load the global conf and use the email as the emitter
+                            // Special case for anonymous helpdesk, we have an email
+                            // instead of an ID
+                            // -> load the global conf and use the email as the emitter
                             $notify_me = $CFG_GLPI['notification_to_myself'];
                             $emitter = $mailcollector_user;
                         }
                     }
                 } else {
-                 // Not cron see my pref
+                    // Not cron see my pref
                     $notify_me = $_SESSION['glpinotification_to_myself'];
                 }
 
                 $options['mode'] = $data['mode'];
                 if (!isset($processed[$data['mode']])) { // targets list per mode to avoid spam
-                     $processed[$data['mode']] = [];
+                    $processed[$data['mode']] = [];
                 }
                 $options['processed'] = &$processed[$data['mode']];
                 $eventclass = Notification_NotificationTemplate::getModeClass($data['mode'], 'event');

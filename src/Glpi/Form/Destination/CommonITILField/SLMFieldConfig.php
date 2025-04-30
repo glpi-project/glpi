@@ -49,8 +49,7 @@ abstract class SLMFieldConfig implements
     public function __construct(
         private SLMFieldStrategy $strategy,
         private ?int $specific_slm_id = null,
-    ) {
-    }
+    ) {}
 
     #[Override]
     public function jsonSerialize(): array

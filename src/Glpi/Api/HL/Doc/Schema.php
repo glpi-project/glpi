@@ -161,12 +161,12 @@ class Schema implements \ArrayAccess
         }
         if ($this->getType() === self::TYPE_OBJECT) {
             $r['properties'] = $this->getProperties();
-        } else if ($this->getType() === self::TYPE_ARRAY) {
+        } elseif ($this->getType() === self::TYPE_ARRAY) {
             $items = $this->getItems();
             if ($items !== null) {
                 $r['items'] = $items->toArray();
             }
-        } else if ($this->enum !== null) {
+        } elseif ($this->enum !== null) {
             $r['enum'] = $this->enum;
         }
         if ($this->default !== null) {
@@ -240,7 +240,7 @@ class Schema implements \ArrayAccess
             }
             if (isset($join['ref-join']['fkey'])) {
                 $join['ref-join']['join_parent'] = $prefix;
-            } else if (isset($join['fkey'])) {
+            } elseif (isset($join['fkey'])) {
                 $join['join_parent'] = $prefix;
             }
             return $join;
@@ -250,11 +250,11 @@ class Schema implements \ArrayAccess
                 $new_join = $prop['x-join'] + ['parent_type' => self::TYPE_OBJECT];
                 $joins[$prefix . $name] = $fn_add_parent_hint($new_join, $prefix);
                 $joins += self::getJoins($prop['properties'], $prefix . $name . '.', $new_join);
-            } else if ($prop['type'] === self::TYPE_ARRAY && isset($prop['items']['x-join'])) {
+            } elseif ($prop['type'] === self::TYPE_ARRAY && isset($prop['items']['x-join'])) {
                 $new_join = $prop['items']['x-join'] + ['parent_type' => self::TYPE_ARRAY];
                 $joins[$prefix . $name] = $fn_add_parent_hint($new_join, $prefix);
                 $joins += self::getJoins($prop['items']['properties'], $prefix . $name . '.', $new_join);
-            } else if ($prop['type'] === self::TYPE_OBJECT && isset($prop['properties'])) {
+            } elseif ($prop['type'] === self::TYPE_OBJECT && isset($prop['properties'])) {
                 if (isset($prop['x-join'])) {
                     $parent_join = $prop['x-join'];
                 }
@@ -310,7 +310,7 @@ class Schema implements \ArrayAccess
                     ...$prop,
                     ...[
                         'x-full-schema' => $parent_obj['x-full-schema'] ?? null,
-                    ]
+                    ],
                 ];
             }
         }
@@ -328,7 +328,7 @@ class Schema implements \ArrayAccess
         $schema_versions = [
             'introduced' => $schema['x-version-introduced'],
             'deprecated' => $schema['x-version-deprecated'] ?? null,
-            'removed' => $schema['x-version-removed'] ?? null
+            'removed' => $schema['x-version-removed'] ?? null,
         ];
 
         // Check if the schema itself is applicable to the requested version
@@ -365,7 +365,7 @@ class Schema implements \ArrayAccess
             $prop_versions = [
                 'introduced' => $prop['x-version-introduced'] ?? $schema_versions['introduced'],
                 'deprecated' => $prop['x-version-deprecated'] ?? $schema_versions['deprecated'],
-                'removed' => $prop['x-version-removed'] ?? $schema_versions['removed']
+                'removed' => $prop['x-version-removed'] ?? $schema_versions['removed'],
             ];
             // Check if the property is applicable to the requested version
             // If the requested version is before the introduction of the property, or after the removal of the property, it is not applicable
@@ -381,7 +381,7 @@ class Schema implements \ArrayAccess
                 if (!empty($prop['properties'])) {
                     $filtered_prop['properties'] = self::filterPropertiesByAPIVersion($prop['properties'], $prop_versions, $api_version);
                 }
-            } else if ($prop['type'] === self::TYPE_ARRAY && isset($prop['items'])) {
+            } elseif ($prop['type'] === self::TYPE_ARRAY && isset($prop['items'])) {
                 if (!empty($prop['items']['properties'])) {
                     $filtered_prop['items']['properties'] = self::filterPropertiesByAPIVersion($prop['items']['properties'], $prop_versions, $api_version);
                 }
@@ -424,7 +424,7 @@ class Schema implements \ArrayAccess
             self::FORMAT_INTEGER_INT64 => ((abs($value) & 0x7FFFFFFFFFFFFFFF) === abs($value)),
             // Double: float and has 2 or less decimal places
             // We also accept integers as doubles (no decimal places specified)
-            self::FORMAT_NUMBER_DOUBLE => is_int($value) || (is_float($value) && (strlen(substr(strrchr((string)$value, "."), 1)) <= 2)),
+            self::FORMAT_NUMBER_DOUBLE => is_int($value) || (is_float($value) && (strlen(substr(strrchr((string) $value, "."), 1)) <= 2)),
             self::FORMAT_NUMBER_FLOAT => is_int($value) || is_float($value),
             // Binary: binary data like used for Files
             self::FORMAT_STRING_BINARY, self::FORMAT_STRING_PASSWORD, self::FORMAT_STRING_STRING => is_string($value),
@@ -450,7 +450,7 @@ class Schema implements \ArrayAccess
             if ($cv === null) {
                 if ($operation === 'read' && ($sv['x-writeonly'] ?? false)) {
                     $ignored = true;
-                } else if ($operation === 'write' && ($sv['x-readonly'] ?? false)) {
+                } elseif ($operation === 'write' && ($sv['x-readonly'] ?? false)) {
                     $ignored = true;
                 }
             }
@@ -518,13 +518,13 @@ class Schema implements \ArrayAccess
         foreach ($schemas as $n => $s) {
             $subtype_info[] = [
                 'schema_name' => $n,
-                'itemtype' => $s['x-itemtype']
+                'itemtype' => $s['x-itemtype'],
             ];
         }
         return [
             'x-subtypes' => $subtype_info,
             'type' => self::TYPE_OBJECT,
-            'properties' => $shared_properties
+            'properties' => $shared_properties,
         ];
     }
 

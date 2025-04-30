@@ -51,8 +51,7 @@ final class RequestTypeFieldConfig implements
         private RequestTypeFieldStrategy $strategy,
         private ?int $specific_question_id = null,
         private ?int $specific_request_type = null,
-    ) {
-    }
+    ) {}
 
     #[Override]
     public static function jsonDeserialize(array $data): self

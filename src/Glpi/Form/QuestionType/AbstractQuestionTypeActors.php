@@ -43,7 +43,6 @@ use Glpi\Form\Export\Serializer\DynamicExportDataField;
 use Glpi\Form\Export\Specification\DataRequirementSpecification;
 use Glpi\Form\Migration\FormQuestionDataConverterInterface;
 use Glpi\Form\Condition\ConditionHandler\ActorConditionHandler;
-use Glpi\Form\Condition\ConditionHandler\ConditionHandlerInterface;
 use Glpi\Form\Condition\UsedAsCriteriaInterface;
 use Glpi\Form\Question;
 use Group;
@@ -164,7 +163,7 @@ abstract class AbstractQuestionTypeActors extends AbstractQuestionType implement
 
             $actors[] = [
                 'itemtype' => $itemtype,
-                'items_id' => $item_id
+                'items_id' => $item_id,
             ];
         }
 
@@ -235,7 +234,7 @@ abstract class AbstractQuestionTypeActors extends AbstractQuestionType implement
         $default_values = [
             getForeignKeyFieldForItemType(User::class) => $config->getUsersIds(),
             getForeignKeyFieldForItemType(Group::class) => $config->getGroupsIds(),
-            getForeignKeyFieldForItemType(Supplier::class) => $config->getSuppliersIds()
+            getForeignKeyFieldForItemType(Supplier::class) => $config->getSuppliersIds(),
         ];
 
         if ($multiple) {
@@ -372,7 +371,7 @@ TWIG;
         $twig = TemplateRenderer::getInstance();
         return $twig->renderFromStringTemplate($template, [
             'is_multiple_actors' => $this->isMultipleActors($question),
-            'is_multiple_actors_label' => __('Allow multiple actors')
+            'is_multiple_actors_label' => __('Allow multiple actors'),
         ]);
     }
 
@@ -435,7 +434,7 @@ TWIG;
             'question'           => $question,
             'allowed_types'      => $this->getAllowedActorTypes(),
             'is_multiple_actors' => $is_multiple_actors,
-            'aria_label'         => $question->fields['name']
+            'aria_label'         => $question->fields['name'],
         ]);
     }
 

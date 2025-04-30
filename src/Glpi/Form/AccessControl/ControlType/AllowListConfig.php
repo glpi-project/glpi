@@ -49,8 +49,7 @@ final class AllowListConfig implements JsonFieldInterface
         private array $user_ids = [],
         private array $group_ids = [],
         private array $profile_ids = [],
-    ) {
-    }
+    ) {}
 
     #[Override]
     public static function jsonDeserialize(array $data): self

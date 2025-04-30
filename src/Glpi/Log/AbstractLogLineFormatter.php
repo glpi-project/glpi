@@ -50,7 +50,7 @@ abstract class AbstractLogLineFormatter extends LineFormatter
                         [
                             'file' => $e->getFile(),
                             'line' => $e->getLine(),
-                        ]
+                        ],
                     ],
                     $e->getTrace()
                 )
@@ -69,7 +69,7 @@ abstract class AbstractLogLineFormatter extends LineFormatter
                                 [
                                     'file' => $previous->getFile(),
                                     'line' => $previous->getLine(),
-                                ]
+                                ],
                             ],
                             $previous->getTrace()
                         )

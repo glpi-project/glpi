@@ -37,7 +37,6 @@ namespace Glpi\Form\ServiceCatalog;
 
 use CommonGLPI;
 use Glpi\Application\View\TemplateRenderer;
-use Glpi\Form\Form;
 use Override;
 use Session;
 use Ticket;

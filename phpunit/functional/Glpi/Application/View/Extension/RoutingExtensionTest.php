@@ -88,11 +88,8 @@ class RoutingExtensionTest extends TestCase
 
     public function getUrlGeneratorStub(): UrlGeneratorInterface
     {
-        return new class () implements UrlGeneratorInterface
-        {
-            public function setContext(RequestContext $context): void
-            {
-            }
+        return new class implements UrlGeneratorInterface {
+            public function setContext(RequestContext $context): void {}
 
             public function getContext(): RequestContext
             {

@@ -60,7 +60,7 @@ class FrontEndAssetsExtension extends \GLPITestCase
                             'styles_1.scss' => '/* SCSS file to compile */',
                             'styles_2.scss' => '/* SCSS file to compile */',
                         ],
-                    ]
+                    ],
                 ],
                 'plugins' => [
                     'anotherplugin' => [
@@ -69,7 +69,7 @@ class FrontEndAssetsExtension extends \GLPITestCase
                             'static_2.css'     => '/* Source CSS file */',
                             'static_1.min.css' => '/* Minified CSS file */',
                         ],
-                    ]
+                    ],
                 ],
                 'public' => [
                     'css_compiled' => [

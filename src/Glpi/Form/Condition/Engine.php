@@ -38,7 +38,6 @@ use Glpi\Form\Comment;
 use Glpi\Form\Condition\ConditionHandler\ConditionHandlerInterface;
 use Glpi\Form\Form;
 use Glpi\Form\Question;
-use Glpi\Form\Condition\VisibilityStrategy;
 use Glpi\Form\Section;
 use LogicException;
 
@@ -57,8 +56,7 @@ final class Engine
     public function __construct(
         private Form $form,
         private EngineInput $input,
-    ) {
-    }
+    ) {}
 
     public function computeVisibility(): EngineVisibilityOutput
     {
@@ -232,7 +230,7 @@ final class Engine
 
         $condition_handler = array_filter(
             $item->getConditionHandlers($config ?? null),
-            fn (ConditionHandlerInterface $handler): bool => in_array(
+            fn(ConditionHandlerInterface $handler): bool => in_array(
                 $condition->getValueOperator(),
                 $handler->getSupportedValueOperators(),
             ),

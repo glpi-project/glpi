@@ -35,13 +35,13 @@
 
 class RuleAsset extends Rule
 {
-   // From Rule
+    // From Rule
     public static $rightname = 'rule_asset';
 
-    const ONADD    = 1;
-    const ONUPDATE = 2;
+    public const ONADD    = 1;
+    public const ONUPDATE = 2;
 
-    const PARENT  = 1024;
+    public const PARENT  = 1024;
 
     public function getTitle()
     {
@@ -77,7 +77,7 @@ class RuleAsset extends Rule
                 __('%1$s / %2$s'),
                 __('Add'),
                 __('Update')
-            )
+            ),
         ];
     }
 
@@ -102,7 +102,7 @@ class RuleAsset extends Rule
         $criterias['_itemtype']['allow_condition']  = [Rule::PATTERN_IS,
             Rule::PATTERN_IS_NOT,
             Rule::REGEX_MATCH,
-            Rule::REGEX_NOT_MATCH
+            Rule::REGEX_NOT_MATCH,
         ];
 
         $criterias['states_id']['table']            = 'glpi_states';
@@ -171,7 +171,7 @@ class RuleAsset extends Rule
             Rule::PATTERN_END,
             Rule::PATTERN_IS_EMPTY,
             Rule::PATTERN_CONTAIN,
-            Rule::PATTERN_NOT_CONTAIN
+            Rule::PATTERN_NOT_CONTAIN,
         ];
 
         return $criterias;
@@ -247,7 +247,7 @@ class RuleAsset extends Rule
         $values = parent::getRights();
         $values[self::PARENT] = [
             'short' => __('Parent business'),
-            'long'  => __('Business rules (entity parent)')
+            'long'  => __('Business rules (entity parent)'),
         ];
 
         return $values;
@@ -273,8 +273,8 @@ class RuleAsset extends Rule
                             isset($actions[$action->fields["field"]]["appendtoarray"])
                             && isset($actions[$action->fields["field"]]["appendtoarrayfield"])
                         ) {
-                             $value = $actions[$action->fields["field"]]["appendtoarray"];
-                             $value[$actions[$action->fields["field"]]["appendtoarrayfield"]]
+                            $value = $actions[$action->fields["field"]]["appendtoarray"];
+                            $value[$actions[$action->fields["field"]]["appendtoarrayfield"]]
                             = $action->fields["value"];
                         }
                         $output[$actions[$action->fields["field"]]["appendto"]][] = $value;

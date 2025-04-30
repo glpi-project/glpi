@@ -42,7 +42,7 @@ include_once __DIR__ . '/../../../../abstracts/AbstractInventoryAsset.php';
 
 class NetworkEquipmentTest extends AbstractInventoryAsset
 {
-    const INV_FIXTURES = GLPI_ROOT . '/vendor/glpi-project/inventory_format/examples/';
+    public const INV_FIXTURES = GLPI_ROOT . '/vendor/glpi-project/inventory_format/examples/';
 
     public static function assetProvider(): array
     {
@@ -86,7 +86,7 @@ class NetworkEquipmentTest extends AbstractInventoryAsset
   <DEVICEID>foo</DEVICEID>
   <QUERY>SNMPQUERY</QUERY>
 </REQUEST>",
-                'asset'  => '{"description":"Cisco NX-OS(tm) ucs, Software (ucs-6100-k9-system), Version 5.0(3)N2(4.02b), RELEASE SOFTWARE Copyright (c) 2002-2013 by Cisco Systems, Inc.   Compiled 1/16/2019 18:00:00", "sysdescr":"Cisco NX-OS(tm) ucs, Software (ucs-6100-k9-system), Version 5.0(3)N2(4.02b), RELEASE SOFTWARE Copyright (c) 2002-2013 by Cisco Systems, Inc.   Compiled 1/16/2019 18:00:00", "autoupdatesystems_id":"GLPI Native Inventory","last_inventory_update": "DATE_NOW","contact":"noc@glpi-project.org","cpu":4,"firmware":"5.0(3)N2(4.02b)","location":"paris.pa3","mac":"8c:60:4f:8d:ae:fc","manufacturer":"Cisco","model":"UCS 6248UP 48-Port","name":"ucs6248up-cluster-pa3-B","serial":"SSI1912014B","type":"Networking","uptime":"482 days, 05:42:18.50","ips":["127.0.0.1","10.2.5.10","192.168.12.5"],"locations_id":"paris.pa3","networkequipmentmodels_id":"UCS 6248UP 48-Port","networkequipmenttypes_id":"Networking","manufacturers_id":"Cisco","is_deleted": 0}'
+                'asset'  => '{"description":"Cisco NX-OS(tm) ucs, Software (ucs-6100-k9-system), Version 5.0(3)N2(4.02b), RELEASE SOFTWARE Copyright (c) 2002-2013 by Cisco Systems, Inc.   Compiled 1/16/2019 18:00:00", "sysdescr":"Cisco NX-OS(tm) ucs, Software (ucs-6100-k9-system), Version 5.0(3)N2(4.02b), RELEASE SOFTWARE Copyright (c) 2002-2013 by Cisco Systems, Inc.   Compiled 1/16/2019 18:00:00", "autoupdatesystems_id":"GLPI Native Inventory","last_inventory_update": "DATE_NOW","contact":"noc@glpi-project.org","cpu":4,"firmware":"5.0(3)N2(4.02b)","location":"paris.pa3","mac":"8c:60:4f:8d:ae:fc","manufacturer":"Cisco","model":"UCS 6248UP 48-Port","name":"ucs6248up-cluster-pa3-B","serial":"SSI1912014B","type":"Networking","uptime":"482 days, 05:42:18.50","ips":["127.0.0.1","10.2.5.10","192.168.12.5"],"locations_id":"paris.pa3","networkequipmentmodels_id":"UCS 6248UP 48-Port","networkequipmenttypes_id":"Networking","manufacturers_id":"Cisco","is_deleted": 0}',
             ], [
                 'xml'   => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
@@ -155,8 +155,8 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
   <DEVICEID>foo</DEVICEID>
   <QUERY>SNMPQUERY</QUERY>
 </REQUEST>",
-                'asset'  => '{"autoupdatesystems_id":"GLPI Native Inventory","last_inventory_update":"DATE_NOW","cpu":47,"firmware":"12.2(55)SE6","ips":["10.1.0.100","10.1.0.22","10.1.0.41","10.1.0.45","10.1.0.59","10.11.11.1","10.11.11.5","10.11.13.1","10.11.13.5","172.21.0.1","172.21.0.7","172.22.0.1","172.22.0.5","172.23.0.1","172.23.0.5","172.24.0.1","172.24.0.5","172.25.1.15","172.28.200.1","172.28.200.5","172.28.211.5","172.28.215.1","172.28.221.1","185.10.253.65","185.10.253.97","185.10.254.1","185.10.255.146","185.10.255.224","185.10.255.250"],"location":"paris.pa3","mac":"00:23:ac:6a:01:00","manufacturer":"Cisco","model":"Catalyst 3750-24\/48","name":"3k-1-pa3.teclib.infra","ram":128,"serial":"FOC1243W0ED","type":"Networking","uptime":"103 days, 13:53:28.28","description":"Cisco IOS Software, C3750 Software (C3750-IPSERVICESK9-M), Version 12.2(55)SE6, RELEASE SOFTWARE (fc1)\nTechnical Support: http:\/\/www.cisco.com\/techsupport\nCopyright (c) 1986-2012 by Cisco Systems, Inc.\nCompiled Mon 23-Jul-12 13:22 by prod_rel_team","sysdescr":"Cisco IOS Software, C3750 Software (C3750-IPSERVICESK9-M), Version 12.2(55)SE6, RELEASE SOFTWARE (fc1)\nTechnical Support: http:\/\/www.cisco.com\/techsupport\nCopyright (c) 1986-2012 by Cisco Systems, Inc.\nCompiled Mon 23-Jul-12 13:22 by prod_rel_team","locations_id":"paris.pa3","networkequipmentmodels_id":"Catalyst 3750-24\/48","networkequipmenttypes_id":"Networking","manufacturers_id":"Cisco","is_deleted": 0}'
-            ]
+                'asset'  => '{"autoupdatesystems_id":"GLPI Native Inventory","last_inventory_update":"DATE_NOW","cpu":47,"firmware":"12.2(55)SE6","ips":["10.1.0.100","10.1.0.22","10.1.0.41","10.1.0.45","10.1.0.59","10.11.11.1","10.11.11.5","10.11.13.1","10.11.13.5","172.21.0.1","172.21.0.7","172.22.0.1","172.22.0.5","172.23.0.1","172.23.0.5","172.24.0.1","172.24.0.5","172.25.1.15","172.28.200.1","172.28.200.5","172.28.211.5","172.28.215.1","172.28.221.1","185.10.253.65","185.10.253.97","185.10.254.1","185.10.255.146","185.10.255.224","185.10.255.250"],"location":"paris.pa3","mac":"00:23:ac:6a:01:00","manufacturer":"Cisco","model":"Catalyst 3750-24\/48","name":"3k-1-pa3.teclib.infra","ram":128,"serial":"FOC1243W0ED","type":"Networking","uptime":"103 days, 13:53:28.28","description":"Cisco IOS Software, C3750 Software (C3750-IPSERVICESK9-M), Version 12.2(55)SE6, RELEASE SOFTWARE (fc1)\nTechnical Support: http:\/\/www.cisco.com\/techsupport\nCopyright (c) 1986-2012 by Cisco Systems, Inc.\nCompiled Mon 23-Jul-12 13:22 by prod_rel_team","sysdescr":"Cisco IOS Software, C3750 Software (C3750-IPSERVICESK9-M), Version 12.2(55)SE6, RELEASE SOFTWARE (fc1)\nTechnical Support: http:\/\/www.cisco.com\/techsupport\nCopyright (c) 1986-2012 by Cisco Systems, Inc.\nCompiled Mon 23-Jul-12 13:22 by prod_rel_team","locations_id":"paris.pa3","networkequipmentmodels_id":"Catalyst 3750-24\/48","networkequipmenttypes_id":"Networking","manufacturers_id":"Cisco","is_deleted": 0}',
+            ],
         ];
     }
 
@@ -172,20 +172,20 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
 
         $netequ = new \NetworkEquipment();
         $main = new \Glpi\Inventory\MainAsset\NetworkEquipment($netequ, $json);
-        $main->setExtraData((array)$json->content);
+        $main->setExtraData((array) $json->content);
         $result = $main->prepare();
         $this->assertEquals(json_decode($asset), $result[0]);
     }
 
     public function testStacked()
     {
-       //non stacked
+        //non stacked
         $json_str = file_get_contents(self::INV_FIXTURES . 'networkequipment_1.json');
         $json = json_decode($json_str);
 
         $netequ = new \NetworkEquipment();
 
-        $data = (array)$json->content;
+        $data = (array) $json->content;
         $inventory = new \Glpi\Inventory\Inventory();
         $this->assertTrue($inventory->setData($json));
 
@@ -205,7 +205,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
 
         $netequ = new \NetworkEquipment();
 
-        $data = (array)$json->content;
+        $data = (array) $json->content;
         $inventory = new \Glpi\Inventory\Inventory();
         $this->assertTrue($inventory->setData($json));
 
@@ -277,14 +277,14 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
                 'type' => 'chassis',
                 'firmware' => '12.2(55)SE6',
                 'stack_number' => 8,
-            ]
+            ],
         ];
 
         $this->assertTrue($main->isStackedSwitch());
         $stack = $main->getStackedSwitches();
         $this->assertSame(array_keys($stack), array_keys($expected_stack));
         foreach ($expected_stack as $key => $entry) {
-            $this->assertSame((array)$stack[$key], $entry);
+            $this->assertSame((array) $stack[$key], $entry);
         }
     }
 
@@ -394,7 +394,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
 
         $this->assertSame(2, countElementsInTable($networkPort->getTable()), 'Must have two ports');
 
-        foreach ([['DL253300100', 177783810], ['DL253300200', 242009090]] as list($serial, $logical_number)) {
+        foreach ([['DL253300100', 177783810], ['DL253300200', 242009090]] as [$serial, $logical_number]) {
             $this->assertTrue(
                 $networkEquipment->getFromDBByCrit(['serial' => $serial]),
                 "Switch s/n $serial doesn't exist"
@@ -404,7 +404,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
                 $networkPort->getFromDBByCrit([
                     'itemtype' => $networkEquipment->getType(),
                     'items_id' => $networkEquipment->getID(),
-                    'logical_number' => $logical_number
+                    'logical_number' => $logical_number,
                 ]),
                 sprintf("Switch \"%s\" doesn't have port with ifindex %d", $networkEquipment->fields['name'], $logical_number)
             );
@@ -418,7 +418,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
 
         $netequ = new \NetworkEquipment();
 
-        $data = (array)$json->content;
+        $data = (array) $json->content;
         $inventory = new \Glpi\Inventory\Inventory();
         $this->assertTrue($inventory->setData($json));
 
@@ -483,7 +483,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         // Another switch
         $networkequipments_other_id = $networkEquipment->add([
             'name'        => 'otherswitch',
-            'entities_id' => 0
+            'entities_id' => 0,
         ]);
         $this->assertGreaterThan(0, $networkequipments_other_id);
 
@@ -492,7 +492,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
             'items_id'       => $networkequipments_other_id,
             'entities_id'    => 0,
             'mac'            => '00:24:b5:bd:c8:01',
-            'logical_number' => 22
+            'logical_number' => 22,
         ]);
         $this->assertGreaterThan(0, $networkports_other_id);
 
@@ -570,7 +570,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         // Unmanaged device
         $unmanageds_id = $unmanaged->add([
             'name'        => 'Unmanaged device',
-            'entities_id' => 0
+            'entities_id' => 0,
         ]);
         $this->assertGreaterThan(0, $unmanageds_id);
 
@@ -579,7 +579,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
             'items_id'       => $unmanageds_id,
             'entities_id'    => 0,
             'mac'            => '00:24:b5:bd:c8:01',
-            'logical_number' => 22
+            'logical_number' => 22,
         ]);
         $this->assertGreaterThan(0, $unmanaged_networkports_id);
 
@@ -729,7 +729,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         // Another switch
         $networkequipments_other_id = $networkEquipment->add([
             'name'        => 'otherswitch',
-            'entities_id' => 0
+            'entities_id' => 0,
         ]);
         $this->assertGreaterThan(0, $networkequipments_other_id);
 
@@ -738,14 +738,14 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
             'itemtype'          => 'NetworkEquipment',
             'instantiation_type' => 'NetworkPortAggregate',
             'items_id'          => $networkequipments_other_id,
-            'entities_id'       => 0
+            'entities_id'       => 0,
         ]);
         $this->assertGreaterThan(0, $managementports_id);
 
         $networknames_id = $networkName->add([
             'entities_id' => 0,
             'itemtype'    => 'NetworkPort',
-            'items_id'    => $managementports_id
+            'items_id'    => $managementports_id,
         ]);
         $this->assertGreaterThan(0, $networknames_id);
 
@@ -753,7 +753,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
             'entities_id' => 0,
             'itemtype' => 'NetworkName',
             'items_id' => $networknames_id,
-            'name' => '192.168.200.124'
+            'name' => '192.168.200.124',
         ]);
         $this->assertGreaterThan(0, $ipaddress_id);
 
@@ -764,7 +764,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
             'entities_id'    => 0,
             'mac'            => '00:24:b5:bd:c8:01',
             'logical_number' => 22,
-            'ifdescr' => 'GigabitEthernet0/10'
+            'ifdescr' => 'GigabitEthernet0/10',
         ]);
         $this->assertGreaterThan(0, $networkports_other_id);
 
@@ -847,21 +847,21 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         // Unmanaged
         $unmanageds_id = $unmanaged->add([
             'name'        => 'otherswitch',
-            'entities_id' => 0
+            'entities_id' => 0,
         ]);
         $this->assertGreaterThan(0, $unmanageds_id);
 
         $networkports_unknown_id = $networkport->add([
             'itemtype'       => 'Unmanaged',
             'items_id'       => $unmanageds_id,
-            'entities_id'    => 0
+            'entities_id'    => 0,
         ]);
         $this->assertGreaterThan(0, $networkports_unknown_id);
 
         $networknames_id = $networkName->add([
             'entities_id' => 0,
             'itemtype'    => 'NetworkPort',
-            'items_id'    => $networkports_unknown_id
+            'items_id'    => $networkports_unknown_id,
         ]);
         $this->assertGreaterThan(0, $networknames_id);
 
@@ -869,7 +869,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
             'entities_id' => 0,
             'itemtype' => 'NetworkName',
             'items_id' => $networknames_id,
-            'name' => '192.168.200.124'
+            'name' => '192.168.200.124',
         ]);
         $this->assertGreaterThan(0, $ipaddress_id);
 
@@ -928,7 +928,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
             'ifalias' => null,
             'portduplex' => null,
             'trunk' => 0,
-            'lastup' => null
+            'lastup' => null,
         ];
         $networkport = new \NetworkPort();
         $this->assertTrue($networkport->getFromDBByCrit(['name' => 'GigabitEthernet0/10']));
@@ -1063,7 +1063,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         // Another switch
         $networkequipments_other_id = $networkEquipment->add([
             'name'        => 'juniperswitch3',
-            'entities_id' => 0
+            'entities_id' => 0,
         ]);
         $this->assertGreaterThan(0, $networkequipments_other_id);
 
@@ -1074,7 +1074,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
             'entities_id'    => 0,
             'mac'            => '2c:6b:f5:98:f9:70',
             'logical_number' => 504,
-            'ifdescr' => 'ge-0/0/1.0'
+            'ifdescr' => 'ge-0/0/1.0',
         ]);
         $this->assertGreaterThan(0, $networkports_other_id);
 
@@ -1306,7 +1306,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
             'NetworkName_name'   => '',
             'NetworkName_fqdns_id' => 0,
             'NetworkName__ipaddresses' => [
-                '-1' => '10.226.164.55'
+                '-1' => '10.226.164.55',
             ],
 
         ]);
@@ -1455,7 +1455,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
             'NetworkName_name'   => '',
             'NetworkName_fqdns_id' => 0,
             'NetworkName__ipaddresses' => [
-                '-1' => '10.226.164.55'
+                '-1' => '10.226.164.55',
             ],
             'ifdescr'         => '27',
         ]);
@@ -1473,7 +1473,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
             'NetworkName_name'   => '',
             'NetworkName_fqdns_id' => 0,
             'NetworkName__ipaddresses' => [
-                '-1' => '10.226.164.55'
+                '-1' => '10.226.164.55',
             ],
             'ifdescr'         => '28',
         ]);
@@ -1491,7 +1491,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
             'NetworkName_name'   => '',
             'NetworkName_fqdns_id' => 0,
             'NetworkName__ipaddresses' => [
-                '-1' => '10.226.164.55'
+                '-1' => '10.226.164.55',
             ],
             'ifdescr'         => '29',
         ]);
@@ -2002,7 +2002,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
             'NetworkName_name'   => '',
             'NetworkName_fqdns_id' => 0,
             'NetworkName__ipaddresses' => [
-                '-1' => '172.16.100.252'
+                '-1' => '172.16.100.252',
             ],
         ]);
         $this->assertGreaterThan(0, $mngtports_id);
@@ -2101,22 +2101,22 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
           <QUERY>SNMPQUERY</QUERY>
         </REQUEST>";
 
-          // Import the switch into GLPI
-          $converter = new \Glpi\Inventory\Converter();
-          $data = json_decode($converter->convert($xml_source));
-          $inventory = new \Glpi\Inventory\Inventory($data);
+        // Import the switch into GLPI
+        $converter = new \Glpi\Inventory\Converter();
+        $data = json_decode($converter->convert($xml_source));
+        $inventory = new \Glpi\Inventory\Inventory($data);
 
-          $this->assertFalse($inventory->inError());
-          $this->assertSame([], $inventory->getErrors());
+        $this->assertFalse($inventory->inError());
+        $this->assertSame([], $inventory->getErrors());
 
-          // check sysdescr
-          $networkequipement = new \NetworkEquipment();
-          $found_np = $networkequipement->find(['name' => "ucs6248up-cluster-pa3-B"]);
-          $this->assertCount(1, $found_np);
-          $first_np = array_pop($found_np);
-          $this->assertSame("this a sysdescr", $first_np['sysdescr']);
+        // check sysdescr
+        $networkequipement = new \NetworkEquipment();
+        $found_np = $networkequipement->find(['name' => "ucs6248up-cluster-pa3-B"]);
+        $this->assertCount(1, $found_np);
+        $first_np = array_pop($found_np);
+        $this->assertSame("this a sysdescr", $first_np['sysdescr']);
 
-          $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
           <REQUEST>
             <CONTENT>
               <DEVICE>
@@ -2155,20 +2155,20 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
             <QUERY>SNMPQUERY</QUERY>
           </REQUEST>";
 
-          // Import the switch into GLPI
-          $converter = new \Glpi\Inventory\Converter();
-          $data = json_decode($converter->convert($xml_source));
-          $inventory = new \Glpi\Inventory\Inventory($data);
+        // Import the switch into GLPI
+        $converter = new \Glpi\Inventory\Converter();
+        $data = json_decode($converter->convert($xml_source));
+        $inventory = new \Glpi\Inventory\Inventory($data);
 
-          $this->assertFalse($inventory->inError());
-          $this->assertSame([], $inventory->getErrors());
+        $this->assertFalse($inventory->inError());
+        $this->assertSame([], $inventory->getErrors());
 
-          // check sysdescr
-          $networkequipement = new \NetworkEquipment();
-          $found_np = $networkequipement->find(['name' => "ucs6248up-cluster-pa3-B"]);
-          $this->assertCount(1, $found_np);
-          $first_np = array_pop($found_np);
-          $this->assertSame("this a updated sysdescr", $first_np['sysdescr']);
+        // check sysdescr
+        $networkequipement = new \NetworkEquipment();
+        $found_np = $networkequipement->find(['name' => "ucs6248up-cluster-pa3-B"]);
+        $this->assertCount(1, $found_np);
+        $first_np = array_pop($found_np);
+        $this->assertSame("this a updated sysdescr", $first_np['sysdescr']);
     }
 
     public function testSwitchMacConnection1()
@@ -2235,7 +2235,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         $computers_id = $computer->add([
             'name'   => 'pc002',
             'serial' => 'ggheb7ne7',
-            'entities_id' => 0
+            'entities_id' => 0,
         ]);
         $this->assertGreaterThan(0, $computers_id);
 
@@ -2705,7 +2705,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
                          }
                       ]
                    }
-                }'
+                }',
             ],
             ['json_source' =>
                 '{
@@ -2725,7 +2725,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
                          }
                       ]
                    }
-                }'
+                }',
             ],
             ['json_source' =>
                 '{
@@ -2744,7 +2744,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
                          }
                       ]
                    }
-                }'
+                }',
             ],
         ];
     }
@@ -2785,7 +2785,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
 
         $networkEquipment = getItemByTypeName('NetworkEquipment', '_test_networkequipment_1');
 
-        $asset = new \Glpi\Inventory\Asset\NetworkPort($networkEquipment, (array)$json->content->network_ports);
+        $asset = new \Glpi\Inventory\Asset\NetworkPort($networkEquipment, (array) $json->content->network_ports);
         $asset->setMainAsset(new \Glpi\Inventory\MainAsset\NetworkEquipment($networkEquipment, []));
 
         $result = $asset->prepare();
@@ -3186,7 +3186,7 @@ Compiled Wed 25-Jan-23 16:15 by mcpre</COMMENTS>
 
         $server_serial = [
             'DKFJG3541DF' => 43, //42  Gi1/0/x + 1 -> Gi0/0
-            'FOC2637YAPH' => 42  //42  Gi2/0/x
+            'FOC2637YAPH' => 42,  //42  Gi2/0/x
         ];
 
         foreach ($server_serial as $serial => $nb_port) {
@@ -3227,7 +3227,7 @@ Compiled Wed 25-Jan-23 16:15 by mcpre</COMMENTS>
         $server_serial = [
             '18OL0530E253' => 51, //42
             '17OL07000107' => 27,  //42
-            '17OL07000020' => 27  //42
+            '17OL07000020' => 27,  //42
         ];
 
         foreach ($server_serial as $serial => $nb_port) {
@@ -3689,7 +3689,7 @@ Compiled Wed 25-Jan-23 16:15 by mcpre</COMMENTS>
             $stack_1_ports, //3x1/0/x + 1 management port
             $ports = $networkPort->find([
                 'itemtype' => $networkEquipment->getType(),
-                'items_id' => $networkEquipment->getID()
+                'items_id' => $networkEquipment->getID(),
             ])
         );
         foreach ($ports as $port) {
@@ -3710,7 +3710,7 @@ Compiled Wed 25-Jan-23 16:15 by mcpre</COMMENTS>
             $stack_2_ports, //5x2/0/x + 1 management port
             $ports = $networkPort->find([
                 'itemtype' => $networkEquipment->getType(),
-                'items_id' => $networkEquipment->getID()
+                'items_id' => $networkEquipment->getID(),
             ])
         );
         foreach ($ports as $port) {
@@ -3731,7 +3731,7 @@ Compiled Wed 25-Jan-23 16:15 by mcpre</COMMENTS>
             $stack_3_ports, //6x3/0/x + 1 management port
             $ports = $networkPort->find([
                 'itemtype' => $networkEquipment->getType(),
-                'items_id' => $networkEquipment->getID()
+                'items_id' => $networkEquipment->getID(),
             ])
         );
         foreach ($ports as $port) {
@@ -4048,7 +4048,7 @@ Compiled Wed 25-Jan-23 16:15 by mcpre</COMMENTS>
             $stack_2_ports,
             $ports = $networkPort->find([
                 'itemtype' => $networkEquipment->getType(),
-                'items_id' => $networkEquipment->getID()
+                'items_id' => $networkEquipment->getID(),
             ])
         );
         foreach ($ports as $port) {
@@ -4068,7 +4068,7 @@ Compiled Wed 25-Jan-23 16:15 by mcpre</COMMENTS>
             $stack_3_ports,
             $ports = $networkPort->find([
                 'itemtype' => $networkEquipment->getType(),
-                'items_id' => $networkEquipment->getID()
+                'items_id' => $networkEquipment->getID(),
             ])
         );
         foreach ($ports as $port) {

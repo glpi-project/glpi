@@ -39,6 +39,4 @@ namespace Glpi\Search\Output;
  *
  * @internal Not for use outside {@link Search} class and the "Glpi\Search" namespace.
  */
-final class TableSearchOutput extends HTMLSearchOutput
-{
-}
+final class TableSearchOutput extends HTMLSearchOutput {}

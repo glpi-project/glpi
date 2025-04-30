@@ -49,7 +49,8 @@ final class FrontEndAssetsListener implements EventSubscriberInterface
     use LegacyRouterTrait;
 
     public function __construct(
-        #[Autowire('%kernel.project_dir%')] string $glpi_root,
+        #[Autowire('%kernel.project_dir%')]
+        string $glpi_root,
         array $plugin_directories = PLUGINS_DIRECTORIES,
     ) {
         $this->glpi_root = $glpi_root;

@@ -118,7 +118,7 @@ final class FormTile extends CommonDBChild implements TileInterface
             return "";
         }
 
-        return Html::getPrefixedUrl('/Form/Render/' .  $this->form->getID());
+        return Html::getPrefixedUrl('/Form/Render/' . $this->form->getID());
     }
 
     #[Override]

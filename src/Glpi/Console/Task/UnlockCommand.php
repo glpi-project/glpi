@@ -106,7 +106,7 @@ class UnlockCommand extends AbstractCommand
                     QueryFunction::concat(
                         params: ['itemtype', new QueryExpression($this->db::quoteValue('::')), 'name'],
                         alias: 'task'
-                    )
+                    ),
                 ],
                 'FROM'   => CronTask::getTable(),
                 'WHERE'  => [
@@ -115,8 +115,8 @@ class UnlockCommand extends AbstractCommand
                         QueryFunction::unixTimestamp('lastrun') . " + $delay"
                         . " < "
                         . QueryFunction::unixTimestamp()
-                    )
-                ]
+                    ),
+                ],
             ]
         );
 

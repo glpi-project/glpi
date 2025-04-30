@@ -48,7 +48,7 @@ class Update extends \GLPITestCase
         $expected = [
             'dbversion' => GLPI_SCHEMA_VERSION,
             'language'  => 'en_GB',
-            'version'   => GLPI_VERSION
+            'version'   => GLPI_VERSION,
         ];
         $this->array($update->getCurrents())->isEqualTo($expected);
     }

@@ -64,10 +64,10 @@ class NotificationMailing implements NotificationInterface
      **/
     public static function isUserAddressValid($address, $options = ['checkdns' => false])
     {
-       //drop sanitize...
+        //drop sanitize...
         $isValid = GLPIMailer::validateAddress($address);
 
-        $checkdns = (isset($options['checkdns']) ? $options['checkdns'] :  false);
+        $checkdns = ($options['checkdns'] ?? false);
         if ($checkdns) {
             $domain    = substr($address, strrpos($address, '@') + 1);
             if (
@@ -188,7 +188,7 @@ class NotificationMailing implements NotificationInterface
             Session::addMessageAfterRedirect(__s('Error inserting email to queue'), true, ERROR);
             return false;
         } else {
-           //TRANS to be written in logs %1$s is the to email / %2$s is the subject of the mail
+            //TRANS to be written in logs %1$s is the to email / %2$s is the subject of the mail
             Toolbox::logInFile(
                 "mail",
                 sprintf(

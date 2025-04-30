@@ -87,7 +87,7 @@ class SolutionType extends CommonDropdown
             'table'              => $this->getTable(),
             'field'              => 'is_incident',
             'name'               => __('Visible for an incident'),
-            'datatype'           => 'bool'
+            'datatype'           => 'bool',
         ];
 
         $tab[] = [
@@ -95,7 +95,7 @@ class SolutionType extends CommonDropdown
             'table'              => $this->getTable(),
             'field'              => 'is_request',
             'name'               => __('Visible for a request'),
-            'datatype'           => 'bool'
+            'datatype'           => 'bool',
         ];
 
         $tab[] = [
@@ -103,7 +103,7 @@ class SolutionType extends CommonDropdown
             'table'              => $this->getTable(),
             'field'              => 'is_problem',
             'name'               => __('Visible for a problem'),
-            'datatype'           => 'bool'
+            'datatype'           => 'bool',
         ];
 
         $tab[] = [
@@ -111,7 +111,7 @@ class SolutionType extends CommonDropdown
             'table'              => $this->getTable(),
             'field'              => 'is_change',
             'name'               => __('Visible for a change'),
-            'datatype'           => 'bool'
+            'datatype'           => 'bool',
         ];
 
         return $tab;

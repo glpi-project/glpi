@@ -78,9 +78,9 @@ class DatabaseSchemaConsistencyChecker extends AbstractDatabaseChecker
                     break;
                 case 'date_mod':
                     if ($table_name === 'glpi_logs') {
-                      // Logs cannot be modified and their date is stored on `date_mod`.
-                      // FIXME It would be more logical to have a `date` instead, but renaming it is not so simple as table
-                      // can contains millions of rows.
+                        // Logs cannot be modified and their date is stored on `date_mod`.
+                        // FIXME It would be more logical to have a `date` instead, but renaming it is not so simple as table
+                        // can contains millions of rows.
                         break;
                     }
                     if (!in_array('date_creation', $columns)) {

@@ -66,7 +66,7 @@ if (isset($_POST["add"])) {
         if ($_SESSION['glpibackcreated'] && (!isset($_POST['itemtype']) || !isset($_POST['items_id']))) {
             Html::redirect($doc->getLinkURL());
         }
-    } else if ($newID = $doc->add($_POST)) {
+    } elseif ($newID = $doc->add($_POST)) {
         Event::log(
             $newID,
             "documents",
@@ -74,14 +74,14 @@ if (isset($_POST["add"])) {
             "login",
             sprintf(__('%1$s adds the item %2$s'), $_SESSION["glpiname"], $doc->fields["name"])
         );
-       // Not from item tab
+        // Not from item tab
         if ($_SESSION['glpibackcreated'] && (!isset($_POST['itemtype']) || !isset($_POST['items_id']))) {
             Html::redirect($doc->getLinkURL());
         }
     }
 
     Html::back();
-} else if (isset($_POST["delete"])) {
+} elseif (isset($_POST["delete"])) {
     $doc->check($_POST["id"], DELETE);
 
     if ($doc->delete($_POST)) {
@@ -95,7 +95,7 @@ if (isset($_POST["add"])) {
         );
     }
     $doc->redirectToList();
-} else if (isset($_POST["restore"])) {
+} elseif (isset($_POST["restore"])) {
     $doc->check($_POST["id"], DELETE);
 
     if ($doc->restore($_POST)) {
@@ -109,7 +109,7 @@ if (isset($_POST["add"])) {
         );
     }
     $doc->redirectToList();
-} else if (isset($_POST["purge"])) {
+} elseif (isset($_POST["purge"])) {
     $doc->check($_POST["id"], PURGE);
 
     if ($doc->delete($_POST, 1)) {
@@ -123,7 +123,7 @@ if (isset($_POST["add"])) {
         );
     }
     $doc->redirectToList();
-} else if (isset($_POST["update"])) {
+} elseif (isset($_POST["update"])) {
     $doc->check($_POST["id"], UPDATE);
 
     if ($doc->update($_POST)) {
@@ -140,6 +140,6 @@ if (isset($_POST["add"])) {
 } else {
     $menus = ["management", "document"];
     Document::displayFullPageForItem($_GET["id"], $menus, [
-        'formoptions'  => "data-track-changes=true"
+        'formoptions'  => "data-track-changes=true",
     ]);
 }

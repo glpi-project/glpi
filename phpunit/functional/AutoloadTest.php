@@ -64,7 +64,7 @@ class AutoloadTest extends DbTestCase
             $this->assertSame(
                 [
                     'plugin' => $plug,
-                    'class'  => $class
+                    'class'  => $class,
                 ],
                 $res
             );

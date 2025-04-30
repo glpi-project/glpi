@@ -40,7 +40,7 @@
  **/
 class Item_Ticket extends CommonItilObject_Item
 {
-   // From CommonDBRelation
+    // From CommonDBRelation
     public static $itemtype_1          = 'Ticket';
     public static $items_id_1          = 'tickets_id';
 
@@ -87,11 +87,11 @@ class Item_Ticket extends CommonItilObject_Item
     public function prepareInputForAdd($input)
     {
 
-       // Avoid duplicate entry
+        // Avoid duplicate entry
         if (
             countElementsInTable($this->getTable(), ['tickets_id' => $input['tickets_id'],
                 'itemtype'   => $input['itemtype'],
-                'items_id'   => $input['items_id']
+                'items_id'   => $input['items_id'],
             ]) > 0
         ) {
             return false;
@@ -100,25 +100,25 @@ class Item_Ticket extends CommonItilObject_Item
         $ticket = new Ticket();
         $ticket->getFromDB($input['tickets_id']);
 
-       // Get item location if location is not already set in ticket
+        // Get item location if location is not already set in ticket
         if (empty($ticket->fields['locations_id'])) {
             if (($input["items_id"] > 0) && !empty($input["itemtype"])) {
                 if ($item = getItemForItemtype($input["itemtype"])) {
                     if ($item->getFromDB($input["items_id"])) {
                         if ($item->isField('locations_id')) {
-                             $ticket->fields['_locations_id_of_item'] = $item->fields['locations_id'];
+                            $ticket->fields['_locations_id_of_item'] = $item->fields['locations_id'];
 
-                             // Process Business Rules
-                             $rules = new RuleTicketCollection($ticket->fields['entities_id']);
+                            // Process Business Rules
+                            $rules = new RuleTicketCollection($ticket->fields['entities_id']);
 
-                             $ticket->fields = $rules->processAllRules(
-                                 $ticket->fields,
-                                 $ticket->fields,
-                                 ['recursive' => true]
-                             );
+                            $ticket->fields = $rules->processAllRules(
+                                $ticket->fields,
+                                $ticket->fields,
+                                ['recursive' => true]
+                            );
 
-                               unset($ticket->fields['_locations_id_of_item']);
-                               $ticket->updateInDB(['locations_id']);
+                            unset($ticket->fields['_locations_id_of_item']);
+                            $ticket->updateInDB(['locations_id']);
                         }
                     }
                 }
@@ -171,15 +171,15 @@ class Item_Ticket extends CommonItilObject_Item
                     'glpi_tickets' => [
                         'FKEY' => [
                             'glpi_items_tickets' => 'tickets_id',
-                            'glpi_tickets'       => 'id'
-                        ]
-                    ]
+                            'glpi_tickets'       => 'id',
+                        ],
+                    ],
                 ],
                 'WHERE' => [
                     'itemtype' => $item->getType(),
                     'items_id' => $item->getID(),
-                    'is_deleted' => 0
-                ]
+                    'is_deleted' => 0,
+                ],
             ]
         );
 
@@ -194,15 +194,15 @@ class Item_Ticket extends CommonItilObject_Item
                             'glpi_tickets' => [
                                 'FKEY' => [
                                     'glpi_items_tickets' => 'tickets_id',
-                                    'glpi_tickets'       => 'id'
-                                ]
-                            ]
+                                    'glpi_tickets'       => 'id',
+                                ],
+                            ],
                         ],
                         'WHERE' => [
                             'itemtype' => $type,
                             'items_id' => $tab,
-                            'is_deleted' => 0
-                        ]
+                            'is_deleted' => 0,
+                        ],
                     ]
                 );
             }

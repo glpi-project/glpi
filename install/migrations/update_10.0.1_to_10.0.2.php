@@ -67,7 +67,7 @@ function update1001to1002()
             $DB->updateOrInsert(
                 "glpi_displaypreferences",
                 [
-                    'rank'      => $rank++
+                    'rank'      => $rank++,
                 ],
                 [
                     'users_id'  => "0",
@@ -82,7 +82,7 @@ function update1001to1002()
             'glpi_displaypreferences',
             [
                 'itemtype'  => $type,
-                'num'       => $tab
+                'num'       => $tab,
             ]
         );
     }

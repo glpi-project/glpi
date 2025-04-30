@@ -594,7 +594,7 @@ class DropdownDefinitionTest extends DbTestCase
             'plurals' => [
                 'one' => 'Test',
                 'other' => 'Tests',
-            ]
+            ],
         ]));
         $this->assertTrue($definition->update([
             'id' => $definition->getID(),
@@ -603,7 +603,7 @@ class DropdownDefinitionTest extends DbTestCase
             'plurals' => [
                 'one' => 'Test FR',
                 'other' => 'Tests FR',
-            ]
+            ],
         ]));
 
         $definition->getFromDB($definition->getID());
@@ -681,15 +681,15 @@ class DropdownDefinitionTest extends DbTestCase
         yield [
             'language' => 'not a valid language',
             'expected' => [
-            ]
+            ],
         ];
 
         yield [
             'language' => 'en_US',
             'expected' => [
                 ["id" => "one", "formula" => "n == 1", "examples" => "1"],
-                ["id" => "other", "formula" => null, "examples" => "0, 2~16, 100, 1000, 10000, 100000, 1000000, …"]
-            ]
+                ["id" => "other", "formula" => null, "examples" => "0, 2~16, 100, 1000, 10000, 100000, 1000000, …"],
+            ],
         ];
 
         yield [
@@ -698,7 +698,7 @@ class DropdownDefinitionTest extends DbTestCase
                 ["id" => "one", "formula" => "(n == 0 || n == 1)", "examples" => "0, 1"],
                 ["id" => "many", "formula" => "n != 0 && n % 1000000 == 0", "examples" => "1000000, 1c6, 2c6, 3c6, 4c6, 5c6, 6c6, …"],
                 ["id" => "other", "formula" => null, "examples" => "2~17, 100, 1000, 10000, 100000, 1c3, 2c3, 3c3, 4c3, 5c3, 6c3, …"],
-            ]
+            ],
         ];
     }
 

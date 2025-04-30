@@ -101,7 +101,7 @@ if (countElementsInTable('glpi_notifications', ['itemtype' => 'KnowbaseItem']) =
             ##FOREACHtargets## &lt;p&gt;##lang.target.itemtype## : ##target.type##
             &lt;br&gt;##lang.target.name## : ##target.name##
             &lt;br&gt;##lang.target.url## : ##target.url## &lt;/p&gt;##ENDFOREACHtargets##
-            HTML
+            HTML,
         ]
     );
 

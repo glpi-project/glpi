@@ -45,17 +45,17 @@ class Response extends \GuzzleHttp\Psr7\Response
     /**
      * "application/json" content type.
      */
-    const CONTENT_TYPE_JSON = 'application/json';
+    public const CONTENT_TYPE_JSON = 'application/json';
 
     /**
      * "text/html" content type.
      */
-    const CONTENT_TYPE_TEXT_HTML = 'text/html';
+    public const CONTENT_TYPE_TEXT_HTML = 'text/html';
 
     /**
      * "text/plain" content type.
      */
-    const CONTENT_TYPE_TEXT_PLAIN = 'text/plain';
+    public const CONTENT_TYPE_TEXT_PLAIN = 'text/plain';
 
     /**
      * Send the given HTTP code then die with the error message in the given format.

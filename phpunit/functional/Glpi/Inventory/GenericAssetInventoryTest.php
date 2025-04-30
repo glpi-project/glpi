@@ -56,7 +56,7 @@ class GenericAssetInventoryTest extends InventoryTestCase
             capacities: array_merge(
                 $capacities,
                 [
-                    new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\IsInventoriableCapacity::class)
+                    new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\IsInventoriableCapacity::class),
                 ]
             )
         );
@@ -99,11 +99,11 @@ class GenericAssetInventoryTest extends InventoryTestCase
                 \Rule::getTable() => [
                     'ON' => [
                         \RuleMatchedLog::getTable() => 'rules_id',
-                        \Rule::getTable() => 'id'
-                    ]
-                ]
+                        \Rule::getTable() => 'id',
+                    ],
+                ],
             ],
-            'WHERE' => ['itemtype' => $classname]
+            'WHERE' => ['itemtype' => $classname],
         ];
 
         $iterator = $DB->request($criteria);
@@ -284,7 +284,7 @@ class GenericAssetInventoryTest extends InventoryTestCase
             ], [
                 'totalsize' => 51913,
                 'freesize' => 33722,
-            ]
+            ],
         ];
 
         $i = 0;
@@ -307,7 +307,7 @@ class GenericAssetInventoryTest extends InventoryTestCase
                 'itemtype'     => $classname,
                 'entities_id'  => 0,
                 'is_deleted'   => 0,
-                'is_dynamic'   => 1
+                'is_dynamic'   => 1,
             ];
             ksort($volume);
             ksort($expected);
@@ -375,7 +375,7 @@ class GenericAssetInventoryTest extends InventoryTestCase
             ], [
                 'totalsize' => 51913,
                 'freesize' => 33722,
-            ]
+            ],
         ];
 
         $i = 0;
@@ -398,7 +398,7 @@ class GenericAssetInventoryTest extends InventoryTestCase
                 'itemtype'     => $classname,
                 'entities_id'  => 0,
                 'is_deleted'   => 0,
-                'is_dynamic'   => 1
+                'is_dynamic'   => 1,
             ];
             ksort($volume);
             ksort($expected);
@@ -425,13 +425,13 @@ class GenericAssetInventoryTest extends InventoryTestCase
                 'mac' => 'e0:dc:ff:ed:09:59',
                 'ifstatus' => '1',
                 'ifinternalstatus' => '1',
-            ]
+            ],
         ];
 
         $ips = [
             'No description found'  => [
                 'v4'   => '172.28.214.132',
-            ]
+            ],
         ];
 
         $i = 0;
@@ -473,7 +473,7 @@ class GenericAssetInventoryTest extends InventoryTestCase
                 'ifalias' => null,
                 'portduplex' => null,
                 'trunk' => 0,
-                'lastup' => null
+                'lastup' => null,
             ];
 
             $this->assertIsArray($port);
@@ -484,7 +484,7 @@ class GenericAssetInventoryTest extends InventoryTestCase
             $ip_iterator = $DB->request([
                 'SELECT'       => [
                     \IPAddress::getTable() . '.name',
-                    \IPAddress::getTable() . '.version'
+                    \IPAddress::getTable() . '.version',
                 ],
                 'FROM'   => \IPAddress::getTable(),
                 'INNER JOIN'   => [
@@ -492,22 +492,22 @@ class GenericAssetInventoryTest extends InventoryTestCase
                         'ON'  => [
                             \IPAddress::getTable()     => 'items_id',
                             \NetworkName::getTable()   => 'id', [
-                                'AND' => [\IPAddress::getTable() . '.itemtype'  => \NetworkName::getType()]
-                            ]
-                        ]
-                    ]
+                                'AND' => [\IPAddress::getTable() . '.itemtype'  => \NetworkName::getType()],
+                            ],
+                        ],
+                    ],
                 ],
                 'WHERE'  => [
                     \NetworkName::getTable() . '.itemtype'  => \NetworkPort::getType(),
-                    \NetworkName::getTable() . '.items_id'  => $ports_id
-                ]
+                    \NetworkName::getTable() . '.items_id'  => $ports_id,
+                ],
             ]);
 
             $this->assertCount(count($ips[$port['name']] ?? []), $ip_iterator);
             if (isset($ips[$port['name']])) {
                 //FIXME: missing all ipv6 :(
                 $ip = $ip_iterator->current();
-                $this->assertSame(4, (int)$ip['version']);
+                $this->assertSame(4, (int) $ip['version']);
                 $this->assertSame($ips[$port['name']]['v4'], $ip['name']);
             }
         }
@@ -544,7 +544,7 @@ class GenericAssetInventoryTest extends InventoryTestCase
             'Item_DeviceGeneric' => 0,
             'Item_DeviceSimcard' => 1,
             'Item_DeviceSensor' => 48,
-            'Item_DeviceCamera' => 2
+            'Item_DeviceCamera' => 2,
         ];
 
         foreach ($expecteds as $type => $count) {
@@ -566,7 +566,7 @@ class GenericAssetInventoryTest extends InventoryTestCase
                     'otherserial' => null,
                     'locations_id' => 0,
                     'states_id' => 0,
-                ]
+                ],
             ],
             'Item_DeviceProcessor' => [
                 [
@@ -601,7 +601,7 @@ class GenericAssetInventoryTest extends InventoryTestCase
                     'busID' => null,
                     'otherserial' => null,
                     'locations_id' => 0,
-                    'states_id' => 0
+                    'states_id' => 0,
                 ],
             ],
             'Item_DeviceHardDrive' => [],
@@ -620,7 +620,7 @@ class GenericAssetInventoryTest extends InventoryTestCase
                     'otherserial' => null,
                     'locations_id' => 0,
                     'states_id' => 0,
-                ]
+                ],
             ],
             'Item_DeviceDrive' => [],
             'Item_DeviceBattery' => [
@@ -637,7 +637,7 @@ class GenericAssetInventoryTest extends InventoryTestCase
                     'otherserial' => null,
                     'locations_id' => 0,
                     'states_id' => 0,
-                    'real_capacity' => 0
+                    'real_capacity' => 0,
                 ],
             ],
             'Item_DeviceGraphicCard' => [],
@@ -669,7 +669,7 @@ class GenericAssetInventoryTest extends InventoryTestCase
                     'puk2' => '',
                     'msin' => '',
                     'comment' => null,
-                ]
+                ],
             ],
             'Item_DeviceCamera' => [
                 [
@@ -692,8 +692,8 @@ class GenericAssetInventoryTest extends InventoryTestCase
                     'is_recursive' => 0,
                     'locations_id' => 0,
                     'states_id' => 0,
-                ]
-            ]
+                ],
+            ],
         ];
 
         foreach ($expecteds as $type => $expected) {
@@ -732,7 +732,7 @@ class GenericAssetInventoryTest extends InventoryTestCase
                 'softname' => 'Q Android 10.0 api 29',
                 'version' => '29',
                 'dateinstall' => null,
-            ]
+            ],
         ];
 
         $i = 0;
@@ -743,7 +743,7 @@ class GenericAssetInventoryTest extends InventoryTestCase
                 [
                     'softname'     => $soft['softname'],
                     'version'      => $soft['version'],
-                    'dateinstall'  => $soft['dateinstall']
+                    'dateinstall'  => $soft['dateinstall'],
                 ]
             );
             ++$i;
@@ -768,7 +768,7 @@ class GenericAssetInventoryTest extends InventoryTestCase
             capacities: array_merge(
                 $capacities,
                 [
-                    new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\IsInventoriableCapacity::class)
+                    new \Glpi\Asset\Capacity(name: \Glpi\Asset\Capacity\IsInventoriableCapacity::class),
                 ]
             )
         );
@@ -891,11 +891,11 @@ class GenericAssetInventoryTest extends InventoryTestCase
                 \Rule::getTable() => [
                     'ON' => [
                         \RuleMatchedLog::getTable() => 'rules_id',
-                        \Rule::getTable() => 'id'
-                    ]
-                ]
+                        \Rule::getTable() => 'id',
+                    ],
+                ],
             ],
-            'WHERE' => []
+            'WHERE' => [],
         ];
 
         $computer_criteria = $criteria;
@@ -1013,11 +1013,11 @@ class GenericAssetInventoryTest extends InventoryTestCase
                 \Rule::getTable() => [
                     'ON' => [
                         \RuleMatchedLog::getTable() => 'rules_id',
-                        \Rule::getTable() => 'id'
-                    ]
-                ]
+                        \Rule::getTable() => 'id',
+                    ],
+                ],
             ],
-            'WHERE' => []
+            'WHERE' => [],
         ];
 
         $monitor_criteria = $criteria;
@@ -1069,7 +1069,7 @@ class GenericAssetInventoryTest extends InventoryTestCase
                 'remoteid' => '123456789',
                 'type' => 'teamviewer',
                 'is_dynamic' => 1,
-                'is_deleted' => 0
+                'is_deleted' => 0,
             ],
             $remote
         );
@@ -1182,25 +1182,25 @@ class GenericAssetInventoryTest extends InventoryTestCase
                 'mac' => '52:54:00:fa:20:0e',
                 'ifstatus' => '2',
                 'ifinternalstatus' => '2',
-            ]
+            ],
         ];
 
         $ips = [
             'lo'  => [
                 'v4'   => '127.0.0.1',
-                'v6'   => '::1'
+                'v6'   => '::1',
             ],
             'enp57s0u1u4'  => [
                 'v4'   => '192.168.1.142',
-                'v6'   => 'fe80::b283:4fa3:d3f2:96b1'
+                'v6'   => 'fe80::b283:4fa3:d3f2:96b1',
             ],
             'wlp58s0'   => [
                 'v4'   => '192.168.1.118',
-                'v6'   => 'fe80::92a4:26c6:99dd:2d60'
+                'v6'   => 'fe80::92a4:26c6:99dd:2d60',
             ],
             'virbr0' => [
-                'v4'   => '192.168.122.1'
-            ]
+                'v4'   => '192.168.122.1',
+            ],
         ];
 
         $i = 0;
@@ -1242,7 +1242,7 @@ class GenericAssetInventoryTest extends InventoryTestCase
                 'ifalias' => null,
                 'portduplex' => null,
                 'trunk' => 0,
-                'lastup' => null
+                'lastup' => null,
             ];
 
             $this->assertIsArray($port);
@@ -1253,7 +1253,7 @@ class GenericAssetInventoryTest extends InventoryTestCase
             $ip_iterator = $DB->request([
                 'SELECT'       => [
                     \IPAddress::getTable() . '.name',
-                    \IPAddress::getTable() . '.version'
+                    \IPAddress::getTable() . '.version',
                 ],
                 'FROM'   => \IPAddress::getTable(),
                 'INNER JOIN'   => [
@@ -1261,22 +1261,22 @@ class GenericAssetInventoryTest extends InventoryTestCase
                         'ON'  => [
                             \IPAddress::getTable()     => 'items_id',
                             \NetworkName::getTable()   => 'id', [
-                                'AND' => [\IPAddress::getTable() . '.itemtype'  => \NetworkName::getType()]
-                            ]
-                        ]
-                    ]
+                                'AND' => [\IPAddress::getTable() . '.itemtype'  => \NetworkName::getType()],
+                            ],
+                        ],
+                    ],
                 ],
                 'WHERE'  => [
                     \NetworkName::getTable() . '.itemtype'  => \NetworkPort::getType(),
-                    \NetworkName::getTable() . '.items_id'  => $ports_id
-                ]
+                    \NetworkName::getTable() . '.items_id'  => $ports_id,
+                ],
             ]);
 
             $this->assertCount(count($ips[$port['name']] ?? []), $ip_iterator);
             if (isset($ips[$port['name']])) {
                 //FIXME: missing all ipv6 :(
                 $ip = $ip_iterator->current();
-                $this->assertSame(4, (int)$ip['version']);
+                $this->assertSame(4, (int) $ip['version']);
                 $this->assertSame($ips[$port['name']]['v4'], $ip['name']);
             }
         }
@@ -1345,7 +1345,7 @@ class GenericAssetInventoryTest extends InventoryTestCase
                     'otherserial' => null,
                     'locations_id' => 0,
                     'states_id' => 0,
-                ]
+                ],
             ],
             'Item_DeviceProcessor' =>
                 [
@@ -1922,7 +1922,7 @@ class GenericAssetInventoryTest extends InventoryTestCase
                 'encryption_tool' => null,
                 'encryption_algorithm' => null,
                 'encryption_type' => null,
-            ]
+            ],
         ];
 
         $i = 0;
@@ -1934,7 +1934,7 @@ class GenericAssetInventoryTest extends InventoryTestCase
                 'itemtype' => $classname,
                 'entities_id' => 0,
                 'is_deleted' => 0,
-                'is_dynamic' => 1
+                'is_dynamic' => 1,
             ];
 
             ksort($expected);
@@ -1972,7 +1972,7 @@ class GenericAssetInventoryTest extends InventoryTestCase
             'otherserial' => null,
             'locations_id' => 0,
             'states_id' => 0,
-            'real_capacity' => 50570
+            'real_capacity' => 50570,
         ];
 
         //hack to replace expected fkeys
@@ -2001,15 +2001,15 @@ class GenericAssetInventoryTest extends InventoryTestCase
                 'glpi_rulecriterias' => [
                     'FKEY' => [
                         'glpi_rules' => 'id',
-                        'glpi_rulecriterias' => 'rules_id'
-                    ]
-                ]
+                        'glpi_rulecriterias' => 'rules_id',
+                    ],
+                ],
             ],
             'WHERE' => [
                 'sub_type' => \RuleImportAsset::class,
                 'criteria' => 'itemtype',
-                'pattern' => \Computer::class
-            ]
+                'pattern' => \Computer::class,
+            ],
         ];
         $iterator = $DB->request($criteria);
         $tpl_rules_count = $iterator->current()['cnt'];

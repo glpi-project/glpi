@@ -35,7 +35,6 @@
 namespace Glpi\Dropdown;
 
 use Glpi\CustomObject\AbstractDefinitionManager;
-use ReflectionClass;
 
 /**
  * @extends AbstractDefinitionManager<DropdownDefinition>

@@ -303,7 +303,7 @@ class ITILControllerTest extends \HLAPITestCase
             'content' => 'test',
             'tickets_id' => $tickets_id,
             'itemtype_target' => 'User',
-            'items_id_target' => 2
+            'items_id_target' => 2,
         ]));
 
         // Create a document

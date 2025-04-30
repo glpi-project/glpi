@@ -105,7 +105,7 @@ final class IndexController extends AbstractController
                 'errors'    => $errors,
                 'title'     => __('Access denied'),
                 'login_url' => $CFG_GLPI["root_doc"] . '/front/logout.php?noAUTO=1&redirect=' . \rawurlencode($redirect),
-                'lang'      => $CFG_GLPI["languages"][$_SESSION['glpilanguage']][3]
+                'lang'      => $CFG_GLPI["languages"][$_SESSION['glpilanguage']][3],
             ]);
         }
 
@@ -121,7 +121,7 @@ final class IndexController extends AbstractController
                 $code = is_array($_POST['totp_code']) ? implode('', $_POST['totp_code']) : $_POST['totp_code'];
                 $totp = new \Glpi\Security\TOTPManager();
                 if (Session::validateIDOR($_POST) && ($algorithm = $totp->verifyCodeForSecret($code, $_POST['secret'])) !== false) {
-                    $totp->setSecretForUser((int)$_SESSION['mfa_pre_auth']['user']['id'], $_POST['secret'], $algorithm);
+                    $totp->setSecretForUser((int) $_SESSION['mfa_pre_auth']['user']['id'], $_POST['secret'], $algorithm);
                 } else {
                     Session::addMessageAfterRedirect(__s('Invalid code'), false, ERROR);
                 }
@@ -132,7 +132,7 @@ final class IndexController extends AbstractController
                 if (isset($_GET['mfa_setup'])) {
                     // Login started. 2FA needs configured.
                     $totp = new \Glpi\Security\TOTPManager();
-                    $totp->showTOTPSetupForm((int)$_SESSION['mfa_pre_auth']['user']['id']);
+                    $totp->showTOTPSetupForm((int) $_SESSION['mfa_pre_auth']['user']['id']);
                 } else {
                     // Login started. Need to ask for the TOTP code.
                     $totp = new \Glpi\Security\TOTPManager();
@@ -157,21 +157,21 @@ final class IndexController extends AbstractController
                 && countElementsInTable('glpi_notifications', [
                     'itemtype' => 'User',
                     'event' => 'passwordforget',
-                    'is_active' => 1
+                    'is_active' => 1,
                 ]),
             'languages_dropdown'  => Dropdown::showLanguages('language', [
                 'display'             => false,
                 'rand'                => $rand,
                 'display_emptychoice' => true,
                 'emptylabel'          => __('Default (from user profile)'),
-                'width'               => '100%'
+                'width'               => '100%',
             ]),
             'right_panel'         => strlen($CFG_GLPI['text_login']) > 0
                 || count($PLUGIN_HOOKS[Hooks::DISPLAY_LOGIN] ?? []) > 0
                 || $CFG_GLPI["use_public_faq"],
             'auth_dropdown_login' => Auth::dropdownLogin(false, $rand),
             'copyright_message'   => Html::getCopyrightMessage(false),
-            'must_call_cron'      => CronTask::mustRunWebTasks()
+            'must_call_cron'      => CronTask::mustRunWebTasks(),
         ]);
     }
 }

@@ -49,8 +49,7 @@ final class QuestionTypeItemDefaultValueConfig implements JsonFieldInterface
      */
     public function __construct(
         private null|int|string $items_id = null
-    ) {
-    }
+    ) {}
 
     #[Override]
     public static function jsonDeserialize(array $data): self

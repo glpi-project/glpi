@@ -158,7 +158,7 @@ abstract class SortStrategyTestCase extends \DbTestCase
                 [
                     'name' => 'KnowbaseItem with category',
                     'forms_categories_id' => $categories[1]->getID(),
-                    'show_in_service_catalog' => true
+                    'show_in_service_catalog' => true,
                 ],
             ]
         );

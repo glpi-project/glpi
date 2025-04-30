@@ -192,7 +192,7 @@ final class Server
                 // Export public key to the public key file
                 $pubkey = openssl_pkey_get_details($res);
                 if ($pubkey !== false && file_put_contents($public_key_path, $pubkey['key']) === strlen($pubkey['key'])) {
-                    if (chmod($private_key_path, 0660) && chmod($public_key_path, 0660)) {
+                    if (chmod($private_key_path, 0o660) && chmod($public_key_path, 0o660)) {
                         $success = true;
                     } else {
                         $error = 'Unable to set permissions on the generated keys';

@@ -57,13 +57,13 @@ class ProjectState extends CommonDropdown
                 'name'     => 'color',
                 'label'    => __('Color'),
                 'type'     => 'color',
-                'list'     => true
+                'list'     => true,
             ],
             [
                 'name'     => 'is_finished',
                 'label'    => __('Finished state'),
                 'type'     => 'bool',
-                'list'     => true
+                'list'     => true,
             ],
         ];
     }
@@ -77,7 +77,7 @@ class ProjectState extends CommonDropdown
             'table'              => static::getTable(),
             'field'              => 'color',
             'name'               => __('Color'),
-            'datatype'           => 'color'
+            'datatype'           => 'color',
         ];
 
         $tab[] = [
@@ -85,7 +85,7 @@ class ProjectState extends CommonDropdown
             'table'              => static::getTable(),
             'field'              => 'is_finished',
             'name'               => __('Finished state'),
-            'datatype'           => 'bool'
+            'datatype'           => 'bool',
         ];
 
         return $tab;

@@ -42,10 +42,10 @@ $migration->addPostQuery(
     $DB->buildUpdate(
         'glpi_lockedfields',
         [
-            'value' => null
+            'value' => null,
         ],
         [
-            'is_global' => 1
+            'is_global' => 1,
         ]
     )
 );
@@ -56,7 +56,7 @@ $migration->addPostQuery(
         'glpi_lockedfields',
         [
             'is_global' => 1,
-            'field' => 'entities_id'
+            'field' => 'entities_id',
         ]
     )
 );

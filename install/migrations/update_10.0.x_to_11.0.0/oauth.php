@@ -102,7 +102,7 @@ if (!$DB->tableExists('glpi_oauthclients')) {
     $migration->changeField('glpi_oauthclients', 'redirect_uri', 'redirect_uri', 'TEXT NOT NULL');
 
     $migration->addField('glpi_oauthclients', 'allowed_ips', 'TEXT DEFAULT NULL', [
-        'after' => 'is_confidential'
+        'after' => 'is_confidential',
     ]);
 }
 

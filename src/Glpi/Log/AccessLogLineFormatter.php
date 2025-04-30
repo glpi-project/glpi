@@ -34,7 +34,6 @@
 
 namespace Glpi\Log;
 
-use Monolog\Formatter\LineFormatter;
 use Monolog\LogRecord;
 use Session;
 use Symfony\Component\HttpFoundation\Request;

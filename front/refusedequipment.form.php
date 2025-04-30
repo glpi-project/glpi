@@ -60,7 +60,7 @@ if (isset($_POST["purge"])) {
         );
     }
     $refusedequipment->redirectToList();
-} else if (isset($_POST["update"])) {
+} elseif (isset($_POST["update"])) {
     $refusedequipment->check($_POST["id"], UPDATE);
     $refusedequipment->update($_POST);
     Event::log(
@@ -76,6 +76,6 @@ if (isset($_POST["purge"])) {
     $menus = ["admin", "glpi\inventory\inventory", "RefusedEquipment"];
     RefusedEquipment::displayFullPageForItem($_GET["id"], $menus, [
         'withtemplate' => $_GET["withtemplate"],
-        'formoptions'  => "data-track-changes=true"
+        'formoptions'  => "data-track-changes=true",
     ]);
 }

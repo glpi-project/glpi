@@ -65,7 +65,7 @@ final class ItemConditionHandlerTest extends AbstractConditionHandler
                 'condition_value'     => ['itemtype' => $itemtype, 'items_id' => 1],
                 'submitted_answer'    => ['itemtype' => $itemtype, 'items_id' => 1],
                 'expected_result'     => true,
-                'question_extra_data' => $extra_data
+                'question_extra_data' => $extra_data,
             ];
             yield "Equals check - case 2 for $type (different items_id)" => [
                 'question_type'       => $type,
@@ -73,7 +73,7 @@ final class ItemConditionHandlerTest extends AbstractConditionHandler
                 'condition_value'     => ['itemtype' => $itemtype, 'items_id' => 1],
                 'submitted_answer'    => ['itemtype' => $itemtype, 'items_id' => 2],
                 'expected_result'     => false,
-                'question_extra_data' => $extra_data
+                'question_extra_data' => $extra_data,
             ];
 
             // Test item answers with the NOT_EQUALS operator
@@ -83,7 +83,7 @@ final class ItemConditionHandlerTest extends AbstractConditionHandler
                 'condition_value'     => ['itemtype' => $itemtype, 'items_id' => 1],
                 'submitted_answer'    => ['itemtype' => $itemtype, 'items_id' => 1],
                 'expected_result'     => false,
-                'question_extra_data' => $extra_data
+                'question_extra_data' => $extra_data,
             ];
             yield "Not equals check - case 2 for $type (different items_id)" => [
                 'question_type'       => $type,
@@ -91,7 +91,7 @@ final class ItemConditionHandlerTest extends AbstractConditionHandler
                 'condition_value'     => ['itemtype' => $itemtype, 'items_id' => 1],
                 'submitted_answer'    => ['itemtype' => $itemtype, 'items_id' => 2],
                 'expected_result'     => true,
-                'question_extra_data' => $extra_data
+                'question_extra_data' => $extra_data,
             ];
         }
     }

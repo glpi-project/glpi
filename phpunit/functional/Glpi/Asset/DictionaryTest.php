@@ -63,7 +63,7 @@ class DictionaryTest extends DbTestCase
                         break;
                     }
                 }
-            } else if ($group['type'] === 'Types') {
+            } elseif ($group['type'] === 'Types') {
                 foreach ($group['entries'] as $entry) {
                     if (
                         $entry['label'] === $definition->getAssetTypeClassName()::getTypeName(Session::getPluralNumber())

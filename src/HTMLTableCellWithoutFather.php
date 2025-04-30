@@ -33,6 +33,4 @@
  * ---------------------------------------------------------------------
  */
 
-class HTMLTableCellWithoutFather extends \Exception
-{
-}
+class HTMLTableCellWithoutFather extends \Exception {}

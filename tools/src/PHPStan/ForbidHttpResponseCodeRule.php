@@ -61,7 +61,7 @@ class ForbidHttpResponseCodeRule implements Rule
                     'You should not use the `http_response_code` function to change the response code. Due to a PHP bug, it may not provide the expected result (see https://bugs.php.net/bug.php?id=81451).',
                 )
                 ->identifier('glpi.forbidHttpResponseCode')
-                ->build()
+                ->build(),
             ];
         }
 

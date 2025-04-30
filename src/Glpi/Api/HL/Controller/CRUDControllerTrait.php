@@ -35,6 +35,4 @@
 
 namespace Glpi\Api\HL\Controller;
 
-trait CRUDControllerTrait
-{
-}
+trait CRUDControllerTrait {}

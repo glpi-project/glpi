@@ -40,6 +40,5 @@ final class DataRequirementSpecification
     public function __construct(
         public string $itemtype = "",
         public string $name = "",
-    ) {
-    }
+    ) {}
 }

@@ -133,21 +133,21 @@ final class QuestionTypesManagerTest extends DbTestCase
                 (new QuestionTypeShortText())->getName(),
                 (new QuestionTypeEmail())->getName(),
                 (new QuestionTypeNumber())->getName(),
-            ]
+            ],
         ];
 
         yield [
             'category' => QuestionTypeCategory::LONG_ANSWER,
             'expected_types' => [
                 (new QuestionTypeLongText())->getName(),
-            ]
+            ],
         ];
 
         yield [
             'category' => QuestionTypeCategory::DATE_AND_TIME,
             'expected_types' => [
                 (new QuestionTypeDateTime())->getName(),
-            ]
+            ],
         ];
 
         yield [
@@ -156,49 +156,49 @@ final class QuestionTypesManagerTest extends DbTestCase
                 (new QuestionTypeRequester())->getName(),
                 (new QuestionTypeObserver())->getName(),
                 (new QuestionTypeAssignee())->getName(),
-            ]
+            ],
         ];
 
         yield [
             'category' => QuestionTypeCategory::URGENCY,
             'expected_types' => [
                 (new QuestionTypeUrgency())->getName(),
-            ]
+            ],
         ];
 
         yield [
             'category' => QuestionTypeCategory::REQUEST_TYPE,
             'expected_types' => [
                 (new QuestionTypeRequestType())->getName(),
-            ]
+            ],
         ];
 
         yield [
             'category' => QuestionTypeCategory::FILE,
             'expected_types' => [
                 (new QuestionTypeFile())->getName(),
-            ]
+            ],
         ];
 
         yield [
             'category' => QuestionTypeCategory::RADIO,
             'expected_types' => [
                 (new QuestionTypeRadio())->getName(),
-            ]
+            ],
         ];
 
         yield [
             'category' => QuestionTypeCategory::CHECKBOX,
             'expected_types' => [
                 (new QuestionTypeCheckbox())->getName(),
-            ]
+            ],
         ];
 
         yield [
             'category' => QuestionTypeCategory::DROPDOWN,
             'expected_types' => [
                 (new QuestionTypeDropdown())->getName(),
-            ]
+            ],
         ];
 
         yield [
@@ -207,7 +207,7 @@ final class QuestionTypesManagerTest extends DbTestCase
                 (new QuestionTypeItem())->getName(),
                 (new QuestionTypeUserDevice())->getName(),
                 (new QuestionTypeItemDropdown())->getName(),
-            ]
+            ],
         ];
 
         yield [
@@ -215,7 +215,7 @@ final class QuestionTypesManagerTest extends DbTestCase
             'expected_types' => [
                 (new QuestionTypeRange())->getName(),
                 (new QuestionTypeColor())->getName(),
-            ]
+            ],
         ];
     }
 

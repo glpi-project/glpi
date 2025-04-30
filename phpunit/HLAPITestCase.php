@@ -33,7 +33,6 @@
  */
 
 use Glpi\Api\HL\Controller\CoreController;
-use Glpi\Api\HL\Middleware\InternalAuthMiddleware;
 use Glpi\Api\HL\Doc as Doc;
 use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
 use Glpi\Api\HL\Route;
@@ -69,14 +68,14 @@ class HLAPITestCase extends \DbTestCase
     public function login(string $user_name = TU_USER, string $user_pass = TU_PASS, bool $noauto = true, bool $expected = true): \Auth
     {
         $request = new Request('POST', '/token', [
-            'Content-Type' => 'application/json'
+            'Content-Type' => 'application/json',
         ], json_encode([
             'grant_type' => 'password',
             'client_id' => TU_OAUTH_CLIENT_ID,
             'client_secret' => TU_OAUTH_CLIENT_SECRET,
             'username' => $user_name,
             'password' => $user_pass,
-            'scope' => ''
+            'scope' => '',
         ]));
         $this->api->call($request, function ($call) {
             /** @var \HLAPICallAsserter $call */
@@ -191,7 +190,7 @@ final class HLAPIHelper
             $all_routes = [...$all_routes, ...$this->router->matchAll(new Request($method, $endpoint . '/1'))];
         }
         // Remove default routes
-        $all_routes = array_filter($all_routes, static fn ($route) => !($route->getController() === CoreController::class && $route->getMethod()->getShortName() === 'defaultRoute'));
+        $all_routes = array_filter($all_routes, static fn($route) => !($route->getController() === CoreController::class && $route->getMethod()->getShortName() === 'defaultRoute'));
         return $all_routes;
     }
 
@@ -201,7 +200,7 @@ final class HLAPIHelper
         $this->test->assertNotNull($doc, 'No documentation found for route ' . $route_path->getRoutePath() . ' with method ' . $method);
 
         $params = $doc->getParameters();
-        $body_params = array_filter($params, static fn ($param) => $param->getName() === '_' && $param->getLocation() === 'body');
+        $body_params = array_filter($params, static fn($param) => $param->getName() === '_' && $param->getLocation() === 'body');
         if (empty($body_params)) {
             return null;
         }
@@ -214,7 +213,7 @@ final class HLAPIHelper
             if ($is_array) {
                 $schema = [
                     'type' => Doc\Schema::TYPE_ARRAY,
-                    'items' => $schema
+                    'items' => $schema,
                 ];
             }
         }
@@ -227,7 +226,7 @@ final class HLAPIHelper
         $this->test->assertNotNull($doc, 'No documentation found for route ' . $route_path->getRoutePath() . ' with method ' . $method);
 
         $responses = $doc->getResponses();
-        $response = array_filter($responses, static fn ($response) => $response->getStatusCode() === $status)[0] ?? null;
+        $response = array_filter($responses, static fn($response) => $response->getStatusCode() === $status)[0] ?? null;
         if ($response === null) {
             return null;
         }
@@ -244,14 +243,14 @@ final class HLAPIHelper
         $this->test->assertNotNull($doc, 'No documentation found for route ' . $route_path->getRoutePath() . ' with method GET');
 
         $params = $doc->getParameters();
-        $matches = array_filter($params, static fn ($param) => $param->getName() === $parameter && $param->getLocation() === $location);
+        $matches = array_filter($params, static fn($param) => $param->getName() === $parameter && $param->getLocation() === $location);
         return !empty($matches);
     }
 
     private function routePathHasMiddleware(RoutePath $route_path, string $middleware_class): bool
     {
         $middlewares = $route_path->getMiddlewares();
-        $matches = array_filter($middlewares, static fn ($middleware) => $middleware === $middleware_class);
+        $matches = array_filter($middlewares, static fn($middleware) => $middleware === $middleware_class);
         return !empty($matches);
     }
 
@@ -322,11 +321,11 @@ final class HLAPIHelper
                 $get_schema = $this->getRoutePathResponseSchema(route_path: $route, method: 'GET', attributes: $attributes);
                 $this->test->assertNotNull($get_schema, 'The GET route for endpoint "' . $endpoint . '" does not have a response schema');
                 $this->test->assertEquals($schema_json, json_encode($get_schema), 'The POST route for endpoint "' . $endpoint . '" body schema does not match the GET route response schema');
-            } else if (in_array('PATCH', $route->getRouteMethods(), true)) {
+            } elseif (in_array('PATCH', $route->getRouteMethods(), true)) {
                 $patch_schema = $this->getRoutePathBodySchema(route_path: $route, method: 'PATCH', attributes: $attributes);
                 $this->test->assertNotNull($patch_schema, 'The PATCH route for endpoint "' . $endpoint . '" does not have a body schema');
                 $this->test->assertEquals($schema_json, json_encode($patch_schema), 'The input body for the POST route path and the body for the PATCH route path of endpoint "' . $endpoint . '" do not match');
-            } else if (in_array('DELETE', $route->getRouteMethods(), true)) {
+            } elseif (in_array('DELETE', $route->getRouteMethods(), true)) {
                 $delete_schema = $this->getRoutePathBodySchema(route_path: $route, method: 'DELETE', attributes: $attributes);
                 $this->test->assertNull($delete_schema, 'The DELETE route for endpoint "' . $endpoint . '" has a body schema');
             }
@@ -438,7 +437,7 @@ final class HLAPIHelper
             /** @var \HLAPICallAsserter $call */
             $call->response
                 ->isOK()
-                ->jsonContent(fn ($content) => $this->test->assertNull($content));
+                ->jsonContent(fn($content) => $this->test->assertNull($content));
         });
 
         $itemtype = $schema['x-itemtype'];
@@ -468,7 +467,7 @@ final class HLAPIHelper
                     /** @var \HLAPICallAsserter $call */
                     $call->response
                         ->isOK()
-                        ->jsonContent(fn ($content) => $this->test->assertNull($content));
+                        ->jsonContent(fn($content) => $this->test->assertNull($content));
                 });
             }
         }
@@ -499,7 +498,7 @@ final class HLAPIHelper
 
         /** @var RoutePath[] $routes */
         $routes = [...$this->getRoutesForEndpoint($endpoint)];
-        $search_route = array_filter($routes, static fn ($rp) => in_array('GET', $rp->getRouteMethods()))[0] ?? null;
+        $search_route = array_filter($routes, static fn($rp) => in_array('GET', $rp->getRouteMethods()))[0] ?? null;
 
         $this->test->assertNotNull($search_route, 'No GET route found for endpoint "' . $endpoint . '"');
         $response_schema = $this->getRoutePathResponseSchema(route_path: $search_route, method: 'GET', attributes: $search_route->getAttributesFromPath($endpoint));
@@ -668,8 +667,7 @@ final class HLAPICallAsserter
         public HLAPITestCase $test,
         private Router $router,
         private Response $response
-    ) {
-    }
+    ) {}
 
     public function __get(string $name)
     {
@@ -696,8 +694,7 @@ final class HLAPIRequestAsserter
     public function __construct(
         private HLAPICallAsserter $call_asserter,
         private Request $request
-    ) {
-    }
+    ) {}
 
     public function method(callable $fn): self
     {
@@ -737,8 +734,7 @@ final class HLAPIResponseAsserter
         private HLAPICallAsserter $call_asserter,
         private Response $response,
         private string $api_version,
-    ) {
-    }
+    ) {}
 
     public function status(callable $fn): self
     {
@@ -840,7 +836,7 @@ final class HLAPIResponseAsserter
             // Verify the JSON content matches the OpenAPI schema
             $matches = Doc\Schema::fromArray($schema)->isValid($item, $operation);
             if (!$matches) {
-                $fail_msg = $fail_msg ?? 'Response content does not match the schema';
+                $fail_msg ??= 'Response content does not match the schema';
                 $fail_msg .= ":\n" . var_export($item, true);
                 $fail_msg .= "\n\nSchema:\n" . var_export($schema, true);
                 $this->call_asserter->test->assertTrue($matches, $fail_msg);
@@ -857,8 +853,7 @@ final class HLAPIRouteAsserter
     public function __construct(
         private HLAPICallAsserter $call_asserter,
         private RoutePath $routePath
-    ) {
-    }
+    ) {}
 
     public function path(callable $fn): self
     {

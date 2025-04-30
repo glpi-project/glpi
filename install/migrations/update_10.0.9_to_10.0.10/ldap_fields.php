@@ -75,8 +75,8 @@ $users = $DB->request([
                 // only a pre-filter, MySQL 5.7 does not support the complex regex used in PHP
                 'user_dn' => ['REGEXP', '(<|>|&)'],
                 'sync_field' => ['REGEXP', '(<|>|&)'],
-            ]
-        ]
+            ],
+        ],
     ],
 ]);
 foreach ($users as $user) {

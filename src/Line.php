@@ -129,7 +129,7 @@ class Line extends CommonDBTM
             'field'              => 'id',
             'name'               => __('ID'),
             'massiveaction'      => false,
-            'datatype'           => 'number'
+            'datatype'           => 'number',
         ];
 
         $tab[] = [
@@ -145,7 +145,7 @@ class Line extends CommonDBTM
             'table'              => $this->getTable(),
             'field'              => 'comment',
             'name'               => __('Comments'),
-            'datatype'           => 'text'
+            'datatype'           => 'text',
         ];
 
         $tab[] = [
@@ -154,7 +154,7 @@ class Line extends CommonDBTM
             'field'              => 'date_mod',
             'name'               => __('Last update'),
             'datatype'           => 'datetime',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -163,7 +163,7 @@ class Line extends CommonDBTM
             'field'              => 'completename',
             'name'               => __('Status'),
             'datatype'           => 'dropdown',
-            'condition'          => $this->getStateVisibilityCriteria()
+            'condition'          => $this->getStateVisibilityCriteria(),
         ];
 
         $tab[] = [
@@ -172,7 +172,7 @@ class Line extends CommonDBTM
             'field'              => 'name',
             'name'               => User::getTypeName(1),
             'datatype'           => 'dropdown',
-            'right'              => 'all'
+            'right'              => 'all',
         ];
 
         $tab[] = [
@@ -186,13 +186,13 @@ class Line extends CommonDBTM
                     'table'              => 'glpi_groups_items',
                     'joinparams'         => [
                         'jointype'           => 'itemtype_item',
-                        'condition'          => ['NEWTABLE.type' => Group_Item::GROUP_TYPE_NORMAL]
-                    ]
-                ]
+                        'condition'          => ['NEWTABLE.type' => Group_Item::GROUP_TYPE_NORMAL],
+                    ],
+                ],
             ],
             'forcegroupby'       => true,
             'massiveaction'      => false,
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -201,7 +201,7 @@ class Line extends CommonDBTM
             'field'              => 'completename',
             'name'               => Entity::getTypeName(1),
             'massiveaction'      => false,
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -210,7 +210,7 @@ class Line extends CommonDBTM
             'field'              => 'date_creation',
             'name'               => __('Creation date'),
             'datatype'           => 'datetime',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -219,7 +219,7 @@ class Line extends CommonDBTM
             'field'              => 'name',
             'name'               => LineOperator::getTypeName(1),
             'massiveaction'      => true,
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [

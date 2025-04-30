@@ -112,7 +112,7 @@ class APIRestTest extends TestCase
             'id'                              => 1,
             'enable_api'                      => true,
             'enable_api_login_credentials'    => true,
-            'enable_api_login_external_token' => true
+            'enable_api_login_external_token' => true,
         ]);
     }
 
@@ -121,7 +121,7 @@ class APIRestTest extends TestCase
         $apiclient = new APIClient();
         $this->assertGreaterThan(
             0,
-            (int)$apiclient->add([
+            (int) $apiclient->add([
                 'name'             => 'test app token',
                 'is_active'        => 1,
                 'ipv4_range_start' => '127.0.0.1',
@@ -141,8 +141,8 @@ class APIRestTest extends TestCase
                 'query' => [
                     'login'     => TU_USER,
                     'password'  => TU_PASS,
-                    'app_token' => $app_token
-                ]
+                    'app_token' => $app_token,
+                ],
             ]
         );
         $this->assertNotFalse($data);
@@ -154,8 +154,8 @@ class APIRestTest extends TestCase
             ['query' => [
                 'login'     => TU_USER,
                 'password'  => TU_PASS,
-                'app_token' => "test_invalid_token"
-            ]
+                'app_token' => "test_invalid_token",
+            ],
             ],
             400,
             'ERROR_WRONG_APP_TOKEN_PARAMETER'
@@ -170,8 +170,8 @@ class APIRestTest extends TestCase
                 'headers' => ['Session-Token' => $this->session_token],
                 'json'    => [
                     'entities_id'   => 'all',
-                    'is_recursive'  => true
-                ]
+                    'is_recursive'  => true,
+                ],
             ],
             200
         );
@@ -214,7 +214,7 @@ class APIRestTest extends TestCase
             [
                 'verb'    => 'POST',
                 'headers' => ['Session-Token' => $this->session_token],
-                'json'    => ['profiles_id'   => 4]
+                'json'    => ['profiles_id'   => 4],
             ]
         );
 
@@ -224,7 +224,7 @@ class APIRestTest extends TestCase
             [
                 'verb'    => 'POST',
                 'headers' => ['Session-Token' => $this->session_token],
-                'json'    => ['profiles_id'   => 9999]
+                'json'    => ['profiles_id'   => 9999],
             ],
             404,
             'ERROR_ITEM_NOT_FOUND'
@@ -236,7 +236,7 @@ class APIRestTest extends TestCase
             [
                 'verb'    => 'POST',
                 'headers' => ['Session-Token' => $this->session_token],
-                'json'    => ['something_bad' => 4]
+                'json'    => ['something_bad' => 4],
             ],
             400,
             'ERROR'
@@ -300,16 +300,16 @@ class APIRestTest extends TestCase
                     'items'            => [
                         [
                             'itemtype' => 'User',
-                            'items_id' => $uid
+                            'items_id' => $uid,
                         ],
                         [
                             'itemtype' => 'Entity',
-                            'items_id' => $eid
-                        ]
+                            'items_id' => $eid,
+                        ],
                     ],
                     'with_logs'        => true,
-                    'expand_dropdowns' => true
-                ]
+                    'expand_dropdowns' => true,
+                ],
             ]
         );
 
@@ -337,7 +337,7 @@ class APIRestTest extends TestCase
             'listSearchOptions',
             [
                 'itemtype' => 'Computer',
-                'headers'  => ['Session-Token' => $this->session_token]
+                'headers'  => ['Session-Token' => $this->session_token],
             ]
         );
 
@@ -369,8 +369,8 @@ class APIRestTest extends TestCase
                     'order'         => 'DESC',
                     'range'         => '0-10',
                     'forcedisplay'  => '81',
-                    'rawdata'       => true
-                ]
+                    'rawdata'       => true,
+                ],
             ]
         );
 
@@ -410,8 +410,8 @@ class APIRestTest extends TestCase
                     'order'         => 'DESC',
                     'range'         => '0-2',
                     'forcedisplay'  => '81',
-                    'rawdata'       => true
-                ]
+                    'rawdata'       => true,
+                ],
             ],
             206
         );
@@ -452,9 +452,9 @@ class APIRestTest extends TestCase
                             'field'      => 1,
                             'searchtype' => 'contains',
                             'value'      => 'nonexistent',
-                        ]
-                    ]
-                ]
+                        ],
+                    ],
+                ],
             ]
         );
 
@@ -490,9 +490,9 @@ class APIRestTest extends TestCase
                         'field'      => '134343',
                         'searchtype' => 'contains',
                         'value'      => 'dsadasd',
-                    ]
-                    ]
-                ]
+                    ],
+                    ],
+                ],
             ],
             400,   // 400 code expected (error, bad request)
             'ERROR'
@@ -511,9 +511,9 @@ class APIRestTest extends TestCase
                             'field'      => '\134343',
                             'searchtype' => 'contains',
                             'value'      => 'dsadasd',
-                        ]
-                    ]
-                ]
+                        ],
+                    ],
+                ],
             ],
             400,   // 400 code expected (error, bad request)
             'ERROR'
@@ -531,9 +531,9 @@ class APIRestTest extends TestCase
                         [
                             'field'      => '134343',
                             'searchtype' => 'contains',
-                        ]
-                    ]
-                ]
+                        ],
+                    ],
+                ],
             ],
             400,  // 400 code expected (error, bad request)
             'ERROR'
@@ -546,8 +546,8 @@ class APIRestTest extends TestCase
             'badEndpoint',
             [
                 'headers' => [
-                    'Session-Token' => $this->session_token
-                ]
+                    'Session-Token' => $this->session_token,
+                ],
             ],
             $expected_code,
             $expected_symbol
@@ -567,7 +567,7 @@ class APIRestTest extends TestCase
                 'verb'     => 'POST',
                 'itemtype' => 'Computer',
                 'headers'  => ['Session-Token' => $this->session_token],
-                'json'     => ['input' => ['name' => "My single computer "]]
+                'json'     => ['input' => ['name' => "My single computer "]],
             ],
             201
         );
@@ -578,10 +578,10 @@ class APIRestTest extends TestCase
 
         $computers_id = $data['id'];
         $this->assertTrue(is_numeric($computers_id));
-        $this->assertGreaterThanOrEqual(0, (int)$computers_id);
+        $this->assertGreaterThanOrEqual(0, (int) $computers_id);
 
         $computer = new Computer();
-        $this->assertTrue((bool)$computer->getFromDB($computers_id));
+        $this->assertTrue((bool) $computer->getFromDB($computers_id));
         return $computer;
     }
 
@@ -612,9 +612,9 @@ class APIRestTest extends TestCase
                         'NetworkName__ipaddresses' => [
                             '-1' => "1.2.3.4",
                         ],
-                        '_create_children'         => true
-                    ]
-                ]
+                        '_create_children'         => true,
+                    ],
+                ],
             ],
             201
         );
@@ -643,9 +643,9 @@ class APIRestTest extends TestCase
                     'input' => [
                         'itemtype' => 'Computer',
                         'items_id' => $computers_id,
-                        'content'  => 'note about a computer'
-                    ]
-                ]
+                        'content'  => 'note about a computer',
+                    ],
+                ],
             ],
             201
         );
@@ -678,14 +678,14 @@ class APIRestTest extends TestCase
                 'json'     => [
                     'input' => [
                         [
-                            'name' => "My computer 2"
+                            'name' => "My computer 2",
                         ],[
-                            'name' => "My computer 3"
+                            'name' => "My computer 3",
                         ],[
-                            'name' => "My computer 4"
-                        ]
-                    ]
-                ]
+                            'name' => "My computer 4",
+                        ],
+                    ],
+                ],
             ],
             201
         );
@@ -703,12 +703,12 @@ class APIRestTest extends TestCase
         $this->assertTrue(is_numeric($first_computer['id']));
         $this->assertTrue(is_numeric($second_computer['id']));
 
-        $this->assertGreaterThanOrEqual(0, (int)$first_computer['id']);
-        $this->assertGreaterThanOrEqual(0, (int)$second_computer['id']);
+        $this->assertGreaterThanOrEqual(0, (int) $first_computer['id']);
+        $this->assertGreaterThanOrEqual(0, (int) $second_computer['id']);
 
         $computer = new Computer();
-        $this->assertTrue((bool)$computer->getFromDB($first_computer['id']));
-        $this->assertTrue((bool)$computer->getFromDB($second_computer['id']));
+        $this->assertTrue((bool) $computer->getFromDB($first_computer['id']));
+        $this->assertTrue((bool) $computer->getFromDB($second_computer['id']));
 
         unset($data['headers']);
         return $data;
@@ -729,8 +729,8 @@ class APIRestTest extends TestCase
                 'headers'  => ['Session-Token' => $this->session_token],
                 'query'    => [
                     'expand_dropdowns' => true,
-                    'with_logs'        => true
-                ]
+                    'with_logs'        => true,
+                ],
             ]
         );
 
@@ -751,7 +751,7 @@ class APIRestTest extends TestCase
                 'itemtype' => 'Entity',
                 'id'       => $eid,
                 'headers'  => ['Session-Token' => $this->session_token],
-                'query'    => ['get_hateoas' => false]
+                'query'    => ['get_hateoas' => false],
             ]
         );
 
@@ -768,7 +768,7 @@ class APIRestTest extends TestCase
                 'itemtype' => 'Computer',
                 'id'       => $computers_id,
                 'headers'  => ['Session-Token' => $this->session_token],
-                'query'    => ['with_networkports' => true]
+                'query'    => ['with_networkports' => true],
             ]
         );
 
@@ -788,7 +788,7 @@ class APIRestTest extends TestCase
             ['itemtype' => 'Computer',
                 'id'       => $computers_id,
                 'headers'  => ['Session-Token' => $this->session_token],
-                'query'    => ['with_networkports' => true]
+                'query'    => ['with_networkports' => true],
             ]
         );
 
@@ -830,7 +830,7 @@ class APIRestTest extends TestCase
                 'itemtype' => 'Computer',
                 'id'       => $computers_id,
                 'headers'  => ['Session-Token'     => $this->session_token],
-                'query'    => ['with_notes' => true]
+                'query'    => ['with_notes' => true],
             ]
         );
 
@@ -856,8 +856,8 @@ class APIRestTest extends TestCase
                 'itemtype' => 'User',
                 'headers'  => ['Session-Token' => $this->session_token],
                 'query'    => [
-                    'expand_dropdowns' => true
-                ]
+                    'expand_dropdowns' => true,
+                ],
             ]
         );
 
@@ -884,8 +884,8 @@ class APIRestTest extends TestCase
                 'headers'  => ['Session-Token' => $this->session_token],
                 'query'    => [
                     'range' => '0-1',
-                    'expand_dropdowns' => true
-                ]
+                    'expand_dropdowns' => true,
+                ],
             ],
             206
         );
@@ -909,7 +909,7 @@ class APIRestTest extends TestCase
             [
                 'itemtype' => 'User',
                 'headers'  => ['Session-Token' => $this->session_token],
-                'query'    => ['searchText' => ['name' => 'gl']]
+                'query'    => ['searchText' => ['name' => 'gl']],
             ]
         );
 
@@ -930,7 +930,7 @@ class APIRestTest extends TestCase
             [
                 'itemtype' => 'User',
                 'headers'  => ['Session-Token' => $this->session_token],
-                'query'    => ['only_id' => true]
+                'query'    => ['only_id' => true],
             ]
         );
 
@@ -950,7 +950,7 @@ class APIRestTest extends TestCase
             [
                 'itemtype' => 'Config',
                 'headers'  => ['Session-Token' => $this->session_token],
-                'query'    => ['expand_dropdowns' => true]
+                'query'    => ['expand_dropdowns' => true],
             ],
             206
         );
@@ -977,8 +977,8 @@ class APIRestTest extends TestCase
                 'headers'  => ['Session-Token' => $this->session_token],
                 'query'    => [
                     'range' => '100-105',
-                    'expand_dropdowns' => true
-                ]
+                    'expand_dropdowns' => true,
+                ],
             ],
             400,
             'ERROR_RANGE_EXCEED_TOTAL'
@@ -998,8 +998,8 @@ class APIRestTest extends TestCase
             [
                 'query' => [
                     'login'    => 'post-only',
-                    'password' => 'postonly'
-                ]
+                    'password' => 'postonly',
+                ],
             ]
         );
 
@@ -1008,9 +1008,9 @@ class APIRestTest extends TestCase
         $tickets_id = $ticket->add([
             'name'                => 'test post-only',
             'content'             => 'test post-only',
-            '_users_id_requester' => 2
+            '_users_id_requester' => 2,
         ]);
-        $this->assertGreaterThan(0, (int)$tickets_id);
+        $this->assertGreaterThan(0, (int) $tickets_id);
 
         // try to access this ticket with post-only
         $this->query(
@@ -1019,8 +1019,8 @@ class APIRestTest extends TestCase
                 'itemtype' => 'Ticket',
                 'id'       => $tickets_id,
                 'headers'  => [
-                    'Session-Token' => $data['session_token']
-                ]
+                    'Session-Token' => $data['session_token'],
+                ],
             ],
             403,
             'ERROR_RIGHT_MISSING'
@@ -1033,8 +1033,8 @@ class APIRestTest extends TestCase
                 'itemtype' => 'Ticket',
                 'headers'  => ['Session-Token' => $data['session_token'],],
                 'query'    => [
-                    'expand_dropdowns' => true
-                ]
+                    'expand_dropdowns' => true,
+                ],
             ]
         );
 
@@ -1060,9 +1060,9 @@ class APIRestTest extends TestCase
                 'json'     => [
                     'input' => [
                         'id'     => $computers_id,
-                        'serial' => "abcdef"
-                    ]
-                ]
+                        'serial' => "abcdef",
+                    ],
+                ],
             ]
         );
 
@@ -1072,10 +1072,10 @@ class APIRestTest extends TestCase
         $this->assertIsArray($computer);
         $this->assertArrayHasKey($computers_id, $computer);
         $this->assertArrayHasKey('message', $computer);
-        $this->assertTrue((bool)$computer[$computers_id]);
+        $this->assertTrue((bool) $computer[$computers_id]);
 
         $computer = new Computer();
-        $this->assertTrue((bool)$computer->getFromDB($computers_id));
+        $this->assertTrue((bool) $computer->getFromDB($computers_id));
         $this->assertSame('abcdef', $computer->fields['serial']);
     }
 
@@ -1087,7 +1087,7 @@ class APIRestTest extends TestCase
         foreach ($computers_id_collection as $computers_id) {
             $input[] = [
                 'id'          => $computers_id['id'],
-                'otherserial' => "abcdef"
+                'otherserial' => "abcdef",
             ];
         }
         $data = $this->query(
@@ -1096,7 +1096,7 @@ class APIRestTest extends TestCase
                 'itemtype' => 'Computer',
                 'verb'     => 'PUT',
                 'headers'  => ['Session-Token' => $this->session_token],
-                'json'     => ['input' => $input]
+                'json'     => ['input' => $input],
             ]
         );
 
@@ -1110,7 +1110,7 @@ class APIRestTest extends TestCase
             $this->assertArrayHasKey('message', $row);
             $this->assertTrue(true, (bool) $row[$computers_id]);
 
-            $this->assertTrue((bool)$computer->getFromDB($computers_id));
+            $this->assertTrue((bool) $computer->getFromDB($computers_id));
             $this->assertSame('abcdef', $computer->fields['otherserial']);
         }
     }
@@ -1125,7 +1125,7 @@ class APIRestTest extends TestCase
             0,
             $computer->add([
                 'name'         => 'A computer to delete',
-                'entities_id'  => $eid
+                'entities_id'  => $eid,
             ])
         );
         $computers_id = $computer->getID();
@@ -1137,7 +1137,7 @@ class APIRestTest extends TestCase
                 'id'       => $computers_id,
                 'verb'     => 'DELETE',
                 'headers'  => ['Session-Token' => $this->session_token],
-                'query'    => ['force_purge' => "true"]
+                'query'    => ['force_purge' => "true"],
             ]
         );
 
@@ -1150,7 +1150,7 @@ class APIRestTest extends TestCase
         $this->assertArrayHasKey('message', $computer);
 
         $computer = new \Computer();
-        $this->assertFalse((bool)$computer->getFromDB($computers_id));
+        $this->assertFalse((bool) $computer->getFromDB($computers_id));
     }
 
 
@@ -1171,8 +1171,8 @@ class APIRestTest extends TestCase
                 'headers'  => ['Session-Token' => $this->session_token],
                 'json'     => [
                     'input'       => $input,
-                    'force_purge' => true
-                ]
+                    'force_purge' => true,
+                ],
             ]
         );
 
@@ -1184,16 +1184,16 @@ class APIRestTest extends TestCase
             $this->assertIsArray($row);
             $this->assertArrayHasKey($computers_id, $row);
             $this->assertArrayHasKey('message', $row);
-            $this->assertTrue((bool)$row[$computers_id]);
+            $this->assertTrue((bool) $row[$computers_id]);
 
-            $this->assertFalse((bool)$computer->getFromDB($computers_id));
+            $this->assertFalse((bool) $computer->getFromDB($computers_id));
         }
 
         // Test multiple delete with multi-status
         $input = [];
         $computers_id_collection = [
             ['id'  => $lastComputer['id']],
-            ['id'  => $lastComputer['id'] + 1] // Non existing computer id
+            ['id'  => $lastComputer['id'] + 1], // Non existing computer id
         ];
         foreach ($computers_id_collection as $computers_id) {
             $input[] = ['id' => $computers_id['id']];
@@ -1206,8 +1206,8 @@ class APIRestTest extends TestCase
                 'headers'  => ['Session-Token' => $this->session_token],
                 'json'     => [
                     'input'       => $input,
-                    'force_purge' => true
-                ]
+                    'force_purge' => true,
+                ],
             ],
             207
         );
@@ -1230,9 +1230,9 @@ class APIRestTest extends TestCase
                 'json'    => [
                     'input' => [
                         'name'        => "my computer', (SELECT `password` from `glpi_users` as `otherserial` WHERE `id`=2), '0 ' , '2016-10-26 00:00:00', '2016-10-26 00 :00 :00')#",
-                        'otherserial' => "Not hacked"
-                    ]
-                ]
+                        'otherserial' => "Not hacked",
+                    ],
+                ],
             ],
             201
         );
@@ -1241,7 +1241,7 @@ class APIRestTest extends TestCase
         $new_id = $data['id'];
 
         $computer = new Computer();
-        $this->assertTrue((bool)$computer->getFromDB($new_id));
+        $this->assertTrue((bool) $computer->getFromDB($new_id));
 
         //Add SQL injection spotted!
         $this->assertFalse($computer->fields['otherserial'] != 'Not hacked');
@@ -1255,13 +1255,13 @@ class APIRestTest extends TestCase
                 'json'    => [
                     'input' => [
                         'id'     => $new_id,
-                        'serial' => "abcdef', `otherserial`='injected"
-                    ]
-                ]
+                        'serial' => "abcdef', `otherserial`='injected",
+                    ],
+                ],
             ]
         );
 
-        $this->assertTrue((bool)$computer->getFromDB($new_id));
+        $this->assertTrue((bool) $computer->getFromDB($new_id));
         //Update SQL injection spotted!
         $this->assertFalse($computer->fields['otherserial'] === 'injected');
 
@@ -1295,7 +1295,7 @@ class APIRestTest extends TestCase
                 [
                     'itemtype' => 'Config',
                     'id'       => $row['id'],
-                    'headers' => ['Session-Token' => $this->session_token]
+                    'headers' => ['Session-Token' => $this->session_token],
                 ]
             );
             $this->assertArrayNotHasKey('value', $data);
@@ -1309,7 +1309,7 @@ class APIRestTest extends TestCase
             [
                 'itemtype' => 'Config',
                 'id'       => $config->getID(),
-                'headers' => ['Session-Token' => $this->session_token]
+                'headers' => ['Session-Token' => $this->session_token],
             ]
         );
 
@@ -1321,7 +1321,7 @@ class APIRestTest extends TestCase
             [
                 'itemtype' => 'Config',
                 'headers'  => ['Session-Token' => $this->session_token],
-                'query'    => []
+                'query'    => [],
             ],
             206
         );
@@ -1370,7 +1370,7 @@ class APIRestTest extends TestCase
             ['rights' => 2],
             [
                 'profiles_id'  => 4,
-                'name'         => 'devicesimcard_pinpuk'
+                'name'         => 'devicesimcard_pinpuk',
             ]
         );
 
@@ -1385,7 +1385,7 @@ class APIRestTest extends TestCase
             ['rights' => 3],
             [
                 'profiles_id'  => 4,
-                'name'         => 'devicesimcard_pinpuk'
+                'name'         => 'devicesimcard_pinpuk',
             ]
         );
         $this->session_token = $backupSessionToken;
@@ -1396,7 +1396,7 @@ class APIRestTest extends TestCase
             [
                 'itemtype' => 'Item_DeviceSimcard',
                 'id'       => $id,
-                'headers'  => ['Session-Token' => $limitedSessionToken]
+                'headers'  => ['Session-Token' => $limitedSessionToken],
             ]
         );
         foreach ($sensitiveFields as $field) {
@@ -1409,7 +1409,7 @@ class APIRestTest extends TestCase
             [
                 'itemtype' => 'Item_DeviceSimcard',
                 'id'       => $id,
-                'headers'  => ['Session-Token' => $this->session_token]
+                'headers'  => ['Session-Token' => $this->session_token],
             ]
         );
         foreach ($sensitiveFields as $field) {
@@ -1427,10 +1427,10 @@ class APIRestTest extends TestCase
                         [
                             'field'      => 15,
                             'searchtype' => 'equals',
-                            'value'      => $input['pin']
-                        ]
-                    ]
-                ]
+                            'value'      => $input['pin'],
+                        ],
+                    ],
+                ],
             ],
             400,
             'ERROR'
@@ -1443,8 +1443,8 @@ class APIRestTest extends TestCase
                 'itemtype' => 'Item_DeviceSimcard',
                 'headers'  => ['Session-Token' => $this->session_token],
                 'query'    => [
-                    'forcedisplay'  => [15]
-                ]
+                    'forcedisplay'  => [15],
+                ],
             ],
             400,
             'ERROR'
@@ -1466,9 +1466,9 @@ class APIRestTest extends TestCase
 
     public function testUndisclosedField()
     {
-       // test common cases
+        // test common cases
         $itemtypes = [
-            'APIClient', 'AuthLDAP', 'MailCollector', 'User'
+            'APIClient', 'AuthLDAP', 'MailCollector', 'User',
         ];
         /** @var class-string $itemtype */
         foreach ($itemtypes as $itemtype) {
@@ -1476,7 +1476,7 @@ class APIRestTest extends TestCase
                 'getItems',
                 [
                     'itemtype' => $itemtype,
-                    'headers'  => ['Session-Token' => $this->session_token]
+                    'headers'  => ['Session-Token' => $this->session_token],
                 ]
             );
 
@@ -1494,7 +1494,7 @@ class APIRestTest extends TestCase
         // test specific cases
         // Config
         $data = $this->query('getGlpiConfig', [
-            'headers'  => ['Session-Token' => $this->session_token]
+            'headers'  => ['Session-Token' => $this->session_token],
         ]);
 
         // Test undisclosed data are actually not disclosed
@@ -1554,7 +1554,7 @@ class APIRestTest extends TestCase
         // Disable notifications
         Config::setConfigurationValues('core', [
             'use_notifications' => '0',
-            'notifications_mailing' => '0'
+            'notifications_mailing' => '0',
         ]);
 
         // Check that disabled notifications prevent password changes
@@ -1563,8 +1563,8 @@ class APIRestTest extends TestCase
             [
                 'verb'    => 'PUT',
                 'json'    => [
-                    'email'  => $email
-                ]
+                    'email'  => $email,
+                ],
             ],
             400,
             'ERROR'
@@ -1573,7 +1573,7 @@ class APIRestTest extends TestCase
         // Enable notifications
         Config::setConfigurationValues('core', [
             'use_notifications' => '1',
-            'notifications_mailing' => '1'
+            'notifications_mailing' => '1',
         ]);
 
         // Test an unknown email, query will succeed to avoid exposing whether
@@ -1582,11 +1582,11 @@ class APIRestTest extends TestCase
         $this->query('lostPassword', [
             'verb'    => 'PUT',
             'json'    => [
-                'email'  => 'nonexistent@localhost.local'
+                'email'  => 'nonexistent@localhost.local',
             ],
             'server_errors' => [
-                "Failed to find a single user for 'nonexistent@localhost.local', 0 user(s) found."
-            ]
+                "Failed to find a single user for 'nonexistent@localhost.local', 0 user(s) found.",
+            ],
         ], 200);
 
         // Test a valid email is accepted
@@ -1595,8 +1595,8 @@ class APIRestTest extends TestCase
             [
                 'verb'    => 'PATCH',
                 'json'    => [
-                    'email'  => $email
-                ]
+                    'email'  => $email,
+                ],
             ],
             200
         );
@@ -1615,7 +1615,7 @@ class APIRestTest extends TestCase
                     'email'                 => $email,
                     'password_forget_token' => $token . 'bad',
                     'password'              => 'NewPassword',
-                ]
+                ],
             ],
             400,
             'ERROR'
@@ -1630,7 +1630,7 @@ class APIRestTest extends TestCase
                     'email'                 => $email,
                     'password_forget_token' => $token,
                     'password'              => 'NewPassword',
-                ]
+                ],
             ],
             200
         );
@@ -1659,7 +1659,7 @@ class APIRestTest extends TestCase
         //diable notifications
         Config::setConfigurationValues('core', [
             'use_notifications' => '0',
-            'notifications_mailing' => '0'
+            'notifications_mailing' => '0',
         ]);
     }
 
@@ -1742,7 +1742,7 @@ class APIRestTest extends TestCase
             $expected_codes = [$expected_codes];
         }
 
-        $verb = isset($params['verb']) ? $params['verb'] : 'GET';
+        $verb = $params['verb'] ?? 'GET';
 
         $resource_path  = parse_url($resource, PHP_URL_PATH);
         $resource_query = parse_url($resource, PHP_URL_QUERY);
@@ -1759,9 +1759,8 @@ class APIRestTest extends TestCase
                       (isset($params['itemtype'])
                          ? $params['itemtype'] . '/'
                          : '') .
-                      (isset($params['id'])
-                         ? $params['id']
-                         : '') .
+                      ($params['id']
+                         ?? '') .
                       (!empty($resource_query)
                          ? '?' . $resource_query
                          : '');
@@ -1821,8 +1820,8 @@ class APIRestTest extends TestCase
                 'headers' => [
                     'Origin' => "http://localhost",
                     'Access-Control-Request-Method'  => 'GET',
-                    'Access-Control-Request-Headers' => 'X-Requested-With'
-                ]
+                    'Access-Control-Request-Headers' => 'X-Requested-With',
+                ],
             ]
         );
 
@@ -1895,8 +1894,8 @@ class APIRestTest extends TestCase
             'initSession?get_full_session=true',
             [
                 'headers' => [
-                    'Authorization' => "user_token $token"
-                ]
+                    'Authorization' => "user_token $token",
+                ],
             ]
         );
 
@@ -1917,8 +1916,8 @@ class APIRestTest extends TestCase
             'badEndpoint',
             [
                 'headers' => [
-                    'Session-Token' => $this->session_token
-                ]
+                    'Session-Token' => $this->session_token,
+                ],
             ],
             400,
             'ERROR_RESOURCE_NOT_FOUND_NOR_COMMONDBTM'
@@ -1931,8 +1930,8 @@ class APIRestTest extends TestCase
                 'parent_id'       => 0,
                 'parent_itemtype' => 'Entity',
                 'headers'         => [
-                    'Session-Token' => $this->session_token
-                ]
+                    'Session-Token' => $this->session_token,
+                ],
             ],
             400,
             'ERROR_RESOURCE_NOT_FOUND_NOR_COMMONDBTM'
@@ -1951,13 +1950,13 @@ class APIRestTest extends TestCase
                 'id'       => $computers_id,
                 'verb'     => 'PUT',
                 'headers'  => [
-                    'Session-Token' => $this->session_token
+                    'Session-Token' => $this->session_token,
                 ],
                 'json'     => [
                     'input' => [
-                        'serial' => "abcdefg"
-                    ]
-                ]
+                        'serial' => "abcdefg",
+                    ],
+                ],
             ]
         );
 
@@ -1969,10 +1968,10 @@ class APIRestTest extends TestCase
         $this->assertIsArray($computer);
         $this->assertArrayHasKey($computers_id, $computer);
         $this->assertArrayHasKey('message', $computer);
-        $this->assertTrue((bool)$computer[$computers_id]);
+        $this->assertTrue((bool) $computer[$computers_id]);
 
         $computer = new \Computer();
-        $this->assertTrue((bool)$computer->getFromDB($computers_id));
+        $this->assertTrue((bool) $computer->getFromDB($computers_id));
         $this->assertSame('abcdefg', $computer->fields['serial']);
     }
 
@@ -1990,7 +1989,7 @@ class APIRestTest extends TestCase
                 'verb'      => 'POST',
                 'itemtype'  => 'Document',
                 'headers'   => [
-                    'Session-Token' => $this->session_token
+                    'Session-Token' => $this->session_token,
                 ],
                 'multipart' => [
                     // the document part
@@ -2000,16 +1999,16 @@ class APIRestTest extends TestCase
                             'input' => [
                                 'name'       => $document_name,
                                 '_filename'  => [$filename],
-                            ]
-                        ])
+                            ],
+                        ]),
                     ],
                     // the FILE part
                     [
                         'name'     => 'filename[]',
                         'contents' => $filecontent,
-                        'filename' => $filename
-                    ]
-                ]
+                        'filename' => $filename,
+                    ],
+                ],
             ],
             201
         );
@@ -2019,10 +2018,10 @@ class APIRestTest extends TestCase
         $this->assertArrayHasKey('message', $data);
         $documents_id = $data['id'];
         $this->assertTrue(is_numeric($documents_id));
-        $this->assertGreaterThan(0, (int)$documents_id);
+        $this->assertGreaterThan(0, (int) $documents_id);
 
         $document = new \Document();
-        $this->assertTrue((bool)$document->getFromDB($documents_id));
+        $this->assertTrue((bool) $document->getFromDB($documents_id));
 
         $this->assertIsArray($document->fields);
         $this->assertSame('text/plain', $document->fields['mime']);
@@ -2041,7 +2040,7 @@ class APIRestTest extends TestCase
                 'itemtype' => 'Computer',
                 'verb'     => 'PUT',
                 'headers'  => ['Session-Token' => $this->session_token],
-                'json'     => []
+                'json'     => [],
             ],
             400,
             'ERROR_JSON_PAYLOAD_INVALID'
@@ -2072,7 +2071,7 @@ class APIRestTest extends TestCase
                 'verb' => 'POST',
                 'itemtype' => 'Computer',
                 'headers' => ['Session-Token' => $this->session_token],
-                'json' => ['input' => array_map(fn($name) => ['name' => $name], $names)]
+                'json' => ['input' => array_map(fn($name) => ['name' => $name], $names)],
             ],
             201
         );
@@ -2085,7 +2084,7 @@ class APIRestTest extends TestCase
     {
         foreach ($computers as $computer_id) {
             $computer = new Computer();
-            $this->assertTrue((bool)$computer->getFromDB($computer_id));
+            $this->assertTrue((bool) $computer->getFromDB($computer_id));
         }
     }
 
@@ -2097,7 +2096,7 @@ class APIRestTest extends TestCase
                 'itemtype' => 'Computer',
                 'id' => $computer_id,
                 'headers' => ['Session-Token' => $this->session_token],
-                'query' => ['with_networkports' => true]
+                'query' => ['with_networkports' => true],
             ]
         );
 
@@ -2133,10 +2132,10 @@ class APIRestTest extends TestCase
                     'input' => [
                         [
                             'networkports_id_1' => $networkports[0],
-                            'networkports_id_2' => $networkports[1]
-                        ]
-                    ]
-                ]
+                            'networkports_id_2' => $networkports[1],
+                        ],
+                    ],
+                ],
             ],
             201
         );
@@ -2145,10 +2144,10 @@ class APIRestTest extends TestCase
         $data = $data[0];
         $this->assertArrayHasKey('id', $data);
         $this->assertArrayHasKey('message', $data);
-        $this->assertGreaterThan(0, (int)$data['id']);
+        $this->assertGreaterThan(0, (int) $data['id']);
 
         $networkport_networkport = new NetworkPort_NetworkPort();
-        $this->assertTrue((bool)$networkport_networkport->getFromDB($data['id']));
+        $this->assertTrue((bool) $networkport_networkport->getFromDB($data['id']));
     }
 
     private function assertNetworkPortLink(array $computers, array $networkports)
@@ -2159,7 +2158,7 @@ class APIRestTest extends TestCase
                 'itemtype' => 'Computer',
                 'id' => $computers[0],
                 'headers' => ['Session-Token' => $this->session_token],
-                'query' => ['with_networkports' => true]
+                'query' => ['with_networkports' => true],
             ]
         );
 
@@ -2184,24 +2183,24 @@ class APIRestTest extends TestCase
 
         $tt_id = $ticketTemplate->add([
             'entities_id' => getItemByTypeName('Entity', '_test_child_1', true),
-            'name'        => 'test'
+            'name'        => 'test',
         ]);
-        $this->assertTrue((bool)$tt_id);
+        $this->assertTrue((bool) $tt_id);
 
         $ttmf_id = $ticketTMF->add([
             'tickettemplates_id' => $tt_id,
-            'num'                => 7
+            'num'                => 7,
         ]);
-        $this->assertTrue((bool)$ttmf_id);
+        $this->assertTrue((bool) $ttmf_id);
 
         $data = $this->query(
             'getItems',
             [
                 'query'     => [
-                    'searchText' => ['tickettemplates_id' => "^" . $tt_id . "$"]
+                    'searchText' => ['tickettemplates_id' => "^" . $tt_id . "$"],
                 ],
                 'itemtype'   => 'TicketTemplateMandatoryField',
-                'headers'    => ['Session-Token' => $this->session_token]
+                'headers'    => ['Session-Token' => $this->session_token],
             ],
             200
         );
@@ -2380,7 +2379,7 @@ class APIRestTest extends TestCase
         $data = $this->query("$deprecated_itemtype", [
             'headers' => $headers,
             'verb'    => "POST",
-            'json'    => ['input' => $input]
+            'json'    => ['input' => $input],
         ], 201);
 
         $this->assertGreaterThan(0, $data['id']);
@@ -2420,7 +2419,7 @@ class APIRestTest extends TestCase
             [
                 'headers' => $headers,
                 'verb'    => "PUT",
-                'json'    => ['input' => $update_input]
+                'json'    => ['input' => $update_input],
             ],
             200
         );
@@ -2532,7 +2531,7 @@ class APIRestTest extends TestCase
         $computer = new Computer();
         $deleted_computers_id = $computer->add([
             'name' => 'test deleted PC',
-            'entities_id' => getItemByTypeName("Entity", '_test_root_entity', true)
+            'entities_id' => getItemByTypeName("Entity", '_test_root_entity', true),
         ]);
         $this->assertGreaterThan(0, $deleted_computers_id);
         $this->assertTrue($computer->delete(['id' => $deleted_computers_id]));
@@ -2680,13 +2679,13 @@ class APIRestTest extends TestCase
                 'url' => 'getMassiveActionParameters/Computer',
                 'status' => 400,
                 'response' => [],
-                'error' => "ERROR_MASSIVEACTION_KEY"
+                'error' => "ERROR_MASSIVEACTION_KEY",
             ],
             [
                 'url' => 'getMassiveActionParameters/Computer/MassiveAction:doesnotexist',
                 'status' => 400,
                 'response' => [],
-                'error' => "ERROR_MASSIVEACTION_KEY"
+                'error' => "ERROR_MASSIVEACTION_KEY",
             ],
             [
                 'url' => 'getMassiveActionParameters/Computer/MassiveAction:update',
@@ -2704,7 +2703,7 @@ class APIRestTest extends TestCase
                 'url' => 'getMassiveActionParameters/Computer/MassiveAction:create_template',
                 'status' => 400,
                 'response' => [],
-                'error' => "ERROR_MASSIVEACTION_KEY"
+                'error' => "ERROR_MASSIVEACTION_KEY",
             ],
             [
                 'url' => 'getMassiveActionParameters/Computer/Infocom:activate',
@@ -2848,7 +2847,7 @@ class APIRestTest extends TestCase
                 ],
                 'status' => 400,
                 'response' => [],
-                'error' => "ERROR_MASSIVEACTION_KEY"
+                'error' => "ERROR_MASSIVEACTION_KEY",
             ],
             [
                 'url' => 'applyMassiveAction/Computer/MassiveAction:doesnotexist',
@@ -2857,7 +2856,7 @@ class APIRestTest extends TestCase
                 ],
                 'status' => 400,
                 'response' => [],
-                'error' => "ERROR_MASSIVEACTION_KEY"
+                'error' => "ERROR_MASSIVEACTION_KEY",
             ],
             [
                 'url' => 'applyMassiveAction/Computer/MassiveAction:amend_comment',
@@ -2866,14 +2865,14 @@ class APIRestTest extends TestCase
                 ],
                 'status' => 400,
                 'response' => [],
-                'error' => "ERROR_MASSIVEACTION_NO_IDS"
+                'error' => "ERROR_MASSIVEACTION_NO_IDS",
             ],
             [
                 'url' => 'applyMassiveAction/Computer/MassiveAction:amend_comment',
                 'payload' => [
                     'ids' => [
                         getItemByTypeName('Computer', '_test_pc01', true),
-                        getItemByTypeName('Computer', '_test_pc02', true)
+                        getItemByTypeName('Computer', '_test_pc02', true),
                     ],
                     'input' => [
                         'amendment' => "newtexttoadd",
@@ -2908,14 +2907,14 @@ class APIRestTest extends TestCase
                         $computer = getItemByTypeName('Computer', $computer);
                         $this->assertEquals("test comment\n\nnewtexttoadd", $computer->fields['comment']);
                     }
-                }
+                },
             ],
             [
                 'url' => 'applyMassiveAction/Computer/MassiveAction:add_note',
                 'payload' => [
                     'ids' => [
                         getItemByTypeName('Computer', '_test_pc01', true),
-                        getItemByTypeName('Computer', '_test_pc02', true)
+                        getItemByTypeName('Computer', '_test_pc02', true),
                     ],
                     'input' => [
                         'add_note' => "new note",
@@ -2971,8 +2970,8 @@ class APIRestTest extends TestCase
                             $this->assertEquals("new note", $existing_note['content']);
                         }
                     }
-                }
-            ]
+                },
+            ],
         ];
     }
 
@@ -3083,8 +3082,8 @@ class APIRestTest extends TestCase
         $input = [
             'input' => [
                 'name' => "test_ActorUpdate_Ticket_$rand",
-                'content' => 'content'
-            ]
+                'content' => 'content',
+            ],
         ];
         $data = $this->query(
             "/Ticket",
@@ -3107,10 +3106,10 @@ class APIRestTest extends TestCase
                             'itemtype' => "Group",
                             'items_id' => $groups_id,
                             'use_notification' => 1,
-                        ]
-                    ]
-                ]
-            ]
+                        ],
+                    ],
+                ],
+            ],
         ];
         $this->query(
             "/Ticket/$tickets_id/",
@@ -3160,11 +3159,11 @@ class APIRestTest extends TestCase
                             'input' => [
                                 'serial' => 'abcdefg',
                                 'comment' => 'This computer has been updated.',
-                            ]
+                            ],
                         ],
                         '',
                         '&'
-                    )
+                    ),
                 ]
             );
         } catch (\GuzzleHttp\Exception\RequestException $e) {
@@ -3178,16 +3177,16 @@ class APIRestTest extends TestCase
         $this->assertEquals(
             [
                 [
-                    (string)$computers_id => true,
+                    (string) $computers_id => true,
                     'message'             => '',
-                ]
+                ],
             ],
             json_decode($body, true)
         );
 
         // Check computer is updated
         $computer = new \Computer();
-        $this->assertTrue((bool)$computer->getFromDB($computers_id));
+        $this->assertTrue((bool) $computer->getFromDB($computers_id));
         $this->assertSame('abcdefg', $computer->fields['serial']);
         $this->assertSame('This computer has been updated.', $computer->fields['comment']);
     }
@@ -3214,10 +3213,10 @@ class APIRestTest extends TestCase
                     'body' => http_build_query(
                         [
                             'input' => [
-                                'id' => $computers_id
-                            ]
+                                'id' => $computers_id,
+                            ],
                         ]
-                    )
+                    ),
                 ]
             );
         } catch (\GuzzleHttp\Exception\RequestException $e) {
@@ -3231,17 +3230,17 @@ class APIRestTest extends TestCase
         $this->assertEquals(
             [
                 [
-                    (string)$computers_id => true,
+                    (string) $computers_id => true,
                     'message'             => '',
-                ]
+                ],
             ],
             json_decode($body, true)
         );
 
         // Check computer is updated
         $computer = new \Computer();
-        $this->assertTrue((bool)$computer->getFromDB($computers_id));
-        $this->assertTrue((bool)$computer->getField('is_deleted'));
+        $this->assertTrue((bool) $computer->getFromDB($computers_id));
+        $this->assertTrue((bool) $computer->getField('is_deleted'));
     }
 
     public function testSearchTextResponseCode()
@@ -3251,7 +3250,7 @@ class APIRestTest extends TestCase
             [
                 'itemtype' => Computer::class,
                 'headers'  => ['Session-Token' => $this->session_token],
-                'query'    => ['searchText' => ['test' => 'test']]
+                'query'    => ['searchText' => ['test' => 'test']],
             ],
             400,
             'ERROR_FIELD_NOT_FOUND'
@@ -3263,7 +3262,7 @@ class APIRestTest extends TestCase
             'getItems',
             ['itemtype' => Computer::class,
                 'headers'  => ['Session-Token' => $this->session_token],
-                'query'    => ['searchText' => ['name' => 'test']]
+                'query'    => ['searchText' => ['name' => 'test']],
             ],
             200,
         );
@@ -3276,7 +3275,7 @@ class APIRestTest extends TestCase
         // Enable notifications
         Config::setConfigurationValues('core', [
             'use_notifications' => '1',
-            'notifications_mailing' => '1'
+            'notifications_mailing' => '1',
         ]);
 
         // Trigger a notification sending
@@ -3286,8 +3285,8 @@ class APIRestTest extends TestCase
             [
                 'verb'    => 'PATCH',
                 'json'    => [
-                    'email'  => $user->getDefaultEmail()
-                ]
+                    'email'  => $user->getDefaultEmail(),
+                ],
             ],
             200
         );
@@ -3298,8 +3297,8 @@ class APIRestTest extends TestCase
             [
                 'query' => [
                     'login'    => 'glpi',
-                    'password' => 'glpi'
-                ]
+                    'password' => 'glpi',
+                ],
             ]
         );
         $this->assertArrayHasKey('session_token', $data);
@@ -3318,7 +3317,7 @@ class APIRestTest extends TestCase
 
         $notifications = \array_filter(
             $result,
-            fn ($notification) => $notification['name'] === '[GLPI] Forgotten password?'
+            fn($notification) => $notification['name'] === '[GLPI] Forgotten password?'
         );
 
         $this->assertNotEmpty($notifications);
@@ -3336,8 +3335,8 @@ class APIRestTest extends TestCase
                 'headers'  => ['Session-Token' => $data['session_token']],
                 'query'    => [
                     'reset'         => 'reset',
-                    'forcedisplay'  => [12, 13]
-                ]
+                    'forcedisplay'  => [12, 13],
+                ],
             ],
             200
         );
@@ -3349,7 +3348,7 @@ class APIRestTest extends TestCase
 
         $notifications = \array_filter(
             $result['data'],
-            fn ($notification) => $notification['1'] === '[GLPI] Forgotten password?'
+            fn($notification) => $notification['1'] === '[GLPI] Forgotten password?'
         );
 
         foreach ($notifications as $notification) {

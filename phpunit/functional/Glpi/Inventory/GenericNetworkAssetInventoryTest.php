@@ -59,9 +59,9 @@ class GenericNetworkAssetInventoryTest extends InventoryTestCase
                     new \Glpi\Asset\Capacity(
                         name: \Glpi\Asset\Capacity\IsInventoriableCapacity::class,
                         config: new \Glpi\Asset\CapacityConfig([
-                            'inventory_mainasset' => \Glpi\Inventory\MainAsset\GenericNetworkAsset::class
+                            'inventory_mainasset' => \Glpi\Inventory\MainAsset\GenericNetworkAsset::class,
                         ])
-                    )
+                    ),
                 ]
             )
         );
@@ -180,11 +180,11 @@ class GenericNetworkAssetInventoryTest extends InventoryTestCase
                 \Rule::getTable() => [
                     'ON' => [
                         \RuleMatchedLog::getTable() => 'rules_id',
-                        \Rule::getTable() => 'id'
-                    ]
-                ]
+                        \Rule::getTable() => 'id',
+                    ],
+                ],
             ],
-            'WHERE' => ['itemtype' => $classname]
+            'WHERE' => ['itemtype' => $classname],
         ];
 
         $iterator = $DB->request($neteq_criteria);
@@ -292,7 +292,7 @@ class GenericNetworkAssetInventoryTest extends InventoryTestCase
         $asset = $this->inventoryNetworkEquipment([
             new \Glpi\Asset\Capacity(
                 name: \Glpi\Asset\Capacity\HasNetworkPortCapacity::class
-            )
+            ),
         ]);
 
         $equipments_id = $asset->getID();
@@ -323,7 +323,7 @@ class GenericNetworkAssetInventoryTest extends InventoryTestCase
             'Management' => [
                 '10.2.5.10',
                 '192.168.12.5',
-            ]
+            ],
         ];
 
         $i = 0;
@@ -366,7 +366,7 @@ class GenericNetworkAssetInventoryTest extends InventoryTestCase
                     'ifalias' => null,
                     'portduplex' => null,
                     'trunk' => 0,
-                    'lastup' => null
+                    'lastup' => null,
                 ];
 
                 $this->assertIsArray($port);
@@ -387,7 +387,7 @@ class GenericNetworkAssetInventoryTest extends InventoryTestCase
             $ip_iterator = $DB->request([
                 'SELECT'       => [
                     \IPAddress::getTable() . '.name',
-                    \IPAddress::getTable() . '.version'
+                    \IPAddress::getTable() . '.version',
                 ],
                 'FROM'   => \IPAddress::getTable(),
                 'INNER JOIN'   => [
@@ -395,15 +395,15 @@ class GenericNetworkAssetInventoryTest extends InventoryTestCase
                         'ON'  => [
                             \IPAddress::getTable()     => 'items_id',
                             \NetworkName::getTable()   => 'id', [
-                                'AND' => [\IPAddress::getTable() . '.itemtype'  => \NetworkName::getType()]
-                            ]
-                        ]
-                    ]
+                                'AND' => [\IPAddress::getTable() . '.itemtype'  => \NetworkName::getType()],
+                            ],
+                        ],
+                    ],
                 ],
                 'WHERE'  => [
                     \NetworkName::getTable() . '.itemtype'  => \NetworkPort::getType(),
-                    \NetworkName::getTable() . '.items_id'  => $ports_id
-                ]
+                    \NetworkName::getTable() . '.items_id'  => $ports_id,
+                ],
             ]);
 
             $this->assertCount(count($ips[$port['name']] ?? []), $ip_iterator);
@@ -447,11 +447,11 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                 \Rule::getTable() => [
                     'ON' => [
                         \RuleMatchedLog::getTable() => 'rules_id',
-                        \Rule::getTable() => 'id'
-                    ]
-                ]
+                        \Rule::getTable() => 'id',
+                    ],
+                ],
             ],
-            'WHERE' => ['itemtype' => \Unmanaged::class]
+            'WHERE' => ['itemtype' => \Unmanaged::class],
         ];
         $iterator = $DB->request($unmanaged_criteria);
         $this->assertCount(5, $iterator);
@@ -474,7 +474,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
         $asset = $this->inventoryNetworkEquipment([
             new \Glpi\Asset\Capacity(
                 name: \Glpi\Asset\Capacity\HasDevicesCapacity::class
-            )
+            ),
         ]);
 
         $equipments_id = $asset->getID();
@@ -534,7 +534,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                     'otherserial' => null,
                     'locations_id' => 0,
                     'states_id' => 0,
-                ]
+                ],
             ],
             'Item_DeviceMemory' => [],
             'Item_DeviceHardDrive' => [],
@@ -575,15 +575,15 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                 'glpi_rulecriterias' => [
                     'FKEY' => [
                         'glpi_rules' => 'id',
-                        'glpi_rulecriterias' => 'rules_id'
-                    ]
-                ]
+                        'glpi_rulecriterias' => 'rules_id',
+                    ],
+                ],
             ],
             'WHERE' => [
                 'sub_type' => \RuleImportAsset::class,
                 'criteria' => 'itemtype',
-                'pattern' => \NetworkEquipment::class
-            ]
+                'pattern' => \NetworkEquipment::class,
+            ],
         ];
         $iterator = $DB->request($criteria);
         $tpl_rules_count = $iterator->current()['cnt'];
@@ -598,7 +598,7 @@ Compiled Tue 28-Sep-10 13:44 by prod_rel_team",
                     new \Glpi\Asset\Capacity(
                         name: \Glpi\Asset\Capacity\IsInventoriableCapacity::class,
                         config: new \Glpi\Asset\CapacityConfig(['inventory_mainasset' => \Glpi\Inventory\MainAsset\GenericNetworkAsset::class])
-                    )
+                    ),
                 ]
             )
         );

@@ -101,7 +101,7 @@ class ServerTest extends DbTestCase
                 $group_user = new \Group_User();
                 $this->assertGreaterThan(
                     0,
-                    (int)$group_user->add([
+                    (int) $group_user->add([
                         'groups_id' => $group_id,
                         'users_id'  => $user_id,
                     ])
@@ -126,7 +126,7 @@ class ServerTest extends DbTestCase
                     [
                         'href'         => 'calendars/',
                         'resourcetype' => 'd:collection',
-                    ]
+                    ],
                 ],
                 'login' => $user_data['name'],
                 'pass' => $user_data['pass'],
@@ -145,7 +145,7 @@ class ServerTest extends DbTestCase
                     [
                         'href'         => 'principals/users/',
                         'resourcetype' => 'd:collection',
-                    ]
+                    ],
                 ],
                 'login' => $user_data['name'],
                 'pass' => $user_data['pass'],
@@ -164,7 +164,7 @@ class ServerTest extends DbTestCase
                     [
                         'href'         => 'calendars/users/',
                         'resourcetype' => 'd:collection',
-                    ]
+                    ],
                 ],
                 'login' => $user_data['name'],
                 'pass' => $user_data['pass'],
@@ -182,7 +182,7 @@ class ServerTest extends DbTestCase
             ];
             $groups = $user_data['seeall'] ? $all_groups_id : $user_data['groups'];
             foreach ($groups as $group_id) {
-               // Group principal should be listed in 'principals/groups/' result
+                // Group principal should be listed in 'principals/groups/' result
                 $groups_expected_results[] = [
                     'href'         => 'principals/groups/' . $group_id . '/',
                     'resourcetype' => 'd:principal',
@@ -214,7 +214,7 @@ class ServerTest extends DbTestCase
             [
                 'href'         => 'principals/users/',
                 'resourcetype' => 'd:collection',
-            ]
+            ],
         ];
         foreach ($users as $user_data) {
             $expected_results[] = [
@@ -256,7 +256,7 @@ class ServerTest extends DbTestCase
             [
                 'href'         => 'calendars/users/',
                 'resourcetype' => 'd:collection',
-            ]
+            ],
         ];
         foreach ($users as $user_data) {
             $expected_results[] = [
@@ -281,7 +281,7 @@ class ServerTest extends DbTestCase
                     [
                         'href'         => 'calendars/users/' . $user_data['name'] . '/calendar/',
                         'resourcetype' => ['d:collection', 'cal:calendar'],
-                    ]
+                    ],
                 ],
                 'login'            => 'glpi',
                 'pass'             => 'glpi',
@@ -318,7 +318,7 @@ class ServerTest extends DbTestCase
                     [
                         'href'         => 'calendars/users/' . $user_data['name'] . '/calendar/',
                         'resourcetype' => ['d:collection', 'cal:calendar'],
-                    ]
+                    ],
                 ],
                 'login' => $user_data['name'],
                 'pass' => $user_data['pass'],
@@ -336,7 +336,7 @@ class ServerTest extends DbTestCase
             ];
             $groups = $user_data['seeall'] ? $all_groups_id : $user_data['groups'];
             foreach ($groups as $group_id) {
-               // Group principal should be listed in 'calendars/groups/' result
+                // Group principal should be listed in 'calendars/groups/' result
                 $groups_expected_results[] = [
                     'href'         => 'calendars/groups/' . $group_id . '/',
                     'resourcetype' => 'd:collection',
@@ -405,7 +405,7 @@ class ServerTest extends DbTestCase
 
             $this->assertEquals(
                 count($expected_results),
-                (int)$xpath->evaluate('count(/d:multistatus/d:response)')
+                (int) $xpath->evaluate('count(/d:multistatus/d:response)')
             );
 
             $response_index = 1;
@@ -423,12 +423,12 @@ class ServerTest extends DbTestCase
                 }
                 $this->assertEquals(
                     count($resourcetypes),
-                    (int)$xpath->evaluate('count(' . $result_path . '/d:propstat/d:prop/d:resourcetype/child::node())')
+                    (int) $xpath->evaluate('count(' . $result_path . '/d:propstat/d:prop/d:resourcetype/child::node())')
                 );
                 foreach ($resourcetypes as $resourcetype) {
                     $this->assertEquals(
                         1,
-                        (int)$xpath->evaluate('count(' . $result_path . '/d:propstat/d:prop/d:resourcetype/' . $resourcetype . ')')
+                        (int) $xpath->evaluate('count(' . $result_path . '/d:propstat/d:prop/d:resourcetype/' . $resourcetype . ')')
                     );
                 }
 
@@ -448,7 +448,7 @@ class ServerTest extends DbTestCase
         $user  = getItemByTypeName('User', $login);
 
         $group = new \Group();
-        $group_id = (int)$group->add([
+        $group_id = (int) $group->add([
             'name'    => 'Test group',
             'is_task' => 1,
         ]);
@@ -458,7 +458,7 @@ class ServerTest extends DbTestCase
         $group_user = new \Group_User();
         $this->assertGreaterThan(
             0,
-            (int)$group_user->add([
+            (int) $group_user->add([
                 'groups_id' => $group_id,
                 'users_id'  => $user->fields['id'],
             ])
@@ -497,7 +497,7 @@ class ServerTest extends DbTestCase
         $user  = getItemByTypeName('User', $login);
 
         $group = new \Group();
-        $group_id = (int)$group->add([
+        $group_id = (int) $group->add([
             'name'    => 'Test group',
             'is_task' => 1,
         ]);
@@ -507,7 +507,7 @@ class ServerTest extends DbTestCase
         $group_user = new \Group_User();
         $this->assertGreaterThan(
             0,
-            (int)$group_user->add([
+            (int) $group_user->add([
                 'groups_id' => $group_id,
                 'users_id'  => $user->fields['id'],
             ])
@@ -545,15 +545,15 @@ class ServerTest extends DbTestCase
 
             $this->assertEquals(
                 2,
-                (int)$xpath->evaluate('count(' . $result_path . '/d:propstat/d:prop/d:resourcetype/child::node())')
+                (int) $xpath->evaluate('count(' . $result_path . '/d:propstat/d:prop/d:resourcetype/child::node())')
             );
             $this->assertEquals(
                 1,
-                (int)$xpath->evaluate('count(' . $result_path . '/d:propstat/d:prop/d:resourcetype/d:collection)')
+                (int) $xpath->evaluate('count(' . $result_path . '/d:propstat/d:prop/d:resourcetype/d:collection)')
             );
             $this->assertEquals(
                 1,
-                (int)$xpath->evaluate('count(' . $result_path . '/d:propstat/d:prop/d:resourcetype/cal:calendar)')
+                (int) $xpath->evaluate('count(' . $result_path . '/d:propstat/d:prop/d:resourcetype/cal:calendar)')
             );
 
             $this->assertEquals(
@@ -563,19 +563,19 @@ class ServerTest extends DbTestCase
 
             $this->assertEquals(
                 3,
-                (int)$xpath->evaluate('count(' . $result_path . '/d:propstat/d:prop/cal:supported-calendar-component-set/cal:comp)')
+                (int) $xpath->evaluate('count(' . $result_path . '/d:propstat/d:prop/cal:supported-calendar-component-set/cal:comp)')
             );
             $this->assertEquals(
                 1,
-                (int)$xpath->evaluate('count(' . $result_path . '/d:propstat/d:prop/cal:supported-calendar-component-set/cal:comp[@name="VEVENT"])')
+                (int) $xpath->evaluate('count(' . $result_path . '/d:propstat/d:prop/cal:supported-calendar-component-set/cal:comp[@name="VEVENT"])')
             );
             $this->assertEquals(
                 1,
-                (int)$xpath->evaluate('count(' . $result_path . '/d:propstat/d:prop/cal:supported-calendar-component-set/cal:comp[@name="VJOURNAL"])')
+                (int) $xpath->evaluate('count(' . $result_path . '/d:propstat/d:prop/cal:supported-calendar-component-set/cal:comp[@name="VJOURNAL"])')
             );
             $this->assertEquals(
                 1,
-                (int)$xpath->evaluate('count(' . $result_path . '/d:propstat/d:prop/cal:supported-calendar-component-set/cal:comp[@name="VTODO"])')
+                (int) $xpath->evaluate('count(' . $result_path . '/d:propstat/d:prop/cal:supported-calendar-component-set/cal:comp[@name="VTODO"])')
             );
         }
     }
@@ -588,7 +588,7 @@ class ServerTest extends DbTestCase
         $user  = getItemByTypeName('User', 'tech');
 
         $group = new \Group();
-        $group_id = (int)$group->add([
+        $group_id = (int) $group->add([
             'name'    => 'Test group',
             'is_task' => 1,
         ]);
@@ -598,7 +598,7 @@ class ServerTest extends DbTestCase
         $group_user = new \Group_User();
         $this->assertGreaterThan(
             0,
-            (int)$group_user->add([
+            (int) $group_user->add([
                 'groups_id' => $group_id,
                 'users_id'  => $user->fields['id'],
             ])
@@ -634,7 +634,7 @@ class ServerTest extends DbTestCase
         $user  = getItemByTypeName('User', 'tech');
 
         $group = new \Group();
-        $group_id = (int)$group->add([
+        $group_id = (int) $group->add([
             'name'    => 'Test group',
             'is_task' => 1,
         ]);
@@ -644,7 +644,7 @@ class ServerTest extends DbTestCase
         $group_user = new \Group_User();
         $this->assertGreaterThan(
             0,
-            (int)$group_user->add([
+            (int) $group_user->add([
                 'groups_id' => $group_id,
                 'users_id'  => $user->fields['id'],
             ])
@@ -692,13 +692,13 @@ class ServerTest extends DbTestCase
         $this->login($login, $pass);
 
         $event = new \PlanningExternalEvent();
-        $event_id = (int)$event->add([
+        $event_id = (int) $event->add([
             'name'        => 'Test event created in GLPI',
             'text'        => 'Evt description',
             'entities_id' => $_SESSION['glpiactive_entity'],
             'plan'        => [
                 'begin' => '2019-06-15 13:00:00',
-                'end'   => '2019-06-15 13:45:00'
+                'end'   => '2019-06-15 13:45:00',
             ],
             'rrule'       => [
                 'freq'      => 'weekly',
@@ -727,13 +727,13 @@ class ServerTest extends DbTestCase
         $this->login($login, $pass);
 
         $event = new \PlanningExternalEvent();
-        $event_id = (int)$event->add([
+        $event_id = (int) $event->add([
             'name'        => 'Test event created in GLPI',
             'text'        => 'Evt description',
             'entities_id' => $_SESSION['glpiactive_entity'],
             'plan'        => [
                 'begin' => '2019-06-15 13:00:00',
-                'end'   => '2019-06-15 13:45:00'
+                'end'   => '2019-06-15 13:45:00',
             ],
             'rrule'       => [
                 'freq'      => 'weekly',
@@ -763,13 +763,13 @@ class ServerTest extends DbTestCase
         $this->login($login, $pass);
 
         $event = new \PlanningExternalEvent();
-        $event_id = (int)$event->add([
+        $event_id = (int) $event->add([
             'name'        => 'Test event created in GLPI',
             'text'        => 'Evt description',
             'entities_id' => $_SESSION['glpiactive_entity'],
             'plan'        => [
                 'begin' => '2019-06-15 13:00:00',
-                'end'   => '2019-06-15 13:45:00'
+                'end'   => '2019-06-15 13:45:00',
             ],
             'rrule'       => [
                 'freq'      => 'weekly',
@@ -799,13 +799,13 @@ class ServerTest extends DbTestCase
         $this->login($login, $pass);
 
         $event = new \PlanningExternalEvent();
-        $event_id = (int)$event->add([
+        $event_id = (int) $event->add([
             'name'        => 'Test event created in GLPI',
             'text'        => 'Evt description',
             'entities_id' => $_SESSION['glpiactive_entity'],
             'plan'        => [
                 'begin' => '2019-06-15 13:00:00',
-                'end'   => '2019-06-15 13:45:00'
+                'end'   => '2019-06-15 13:45:00',
             ],
             'rrule'       => [
                 'freq'      => 'weekly',
@@ -836,13 +836,13 @@ class ServerTest extends DbTestCase
         $this->login($login, $pass);
 
         $event = new \PlanningExternalEvent();
-        $event_id = (int)$event->add([
+        $event_id = (int) $event->add([
             'name'        => 'Test event created in GLPI',
             'text'        => 'Evt description',
             'entities_id' => $_SESSION['glpiactive_entity'],
             'plan'        => [
                 'begin' => '2019-06-15 13:00:00',
-                'end'   => '2019-06-15 13:45:00'
+                'end'   => '2019-06-15 13:45:00',
             ],
             'rrule'       => [
                 'freq'      => 'weekly',
@@ -984,13 +984,13 @@ VCALENDAR
         $this->login($login, $pass);
 
         $event = new \PlanningExternalEvent();
-        $event_id = (int)$event->add([
+        $event_id = (int) $event->add([
             'name'        => 'Test event created in GLPI',
             'text'        => 'Description of the event.',
             'entities_id' => $_SESSION['glpiactive_entity'],
             'plan'        => [
                 'begin' => '2019-06-15 13:00:00',
-                'end'   => '2019-06-15 13:45:00'
+                'end'   => '2019-06-15 13:45:00',
             ],
             'rrule'       => [
                 'freq'      => 'daily',
@@ -1100,11 +1100,11 @@ VCALENDAR
 
         // Not planned task
         $event = new \PlanningExternalEvent();
-        $event_id = (int)$event->add([
+        $event_id = (int) $event->add([
             'name'        => 'Task created in GLPI',
             'text'        => 'Description of the task.',
             'entities_id' => $_SESSION['glpiactive_entity'],
-            'state'       => \Planning::DONE
+            'state'       => \Planning::DONE,
         ]);
         $this->assertGreaterThan(0, $event_id);
         $event->getFromDB($event_id);
@@ -1129,18 +1129,18 @@ VCALENDAR
 
         // Planned task
         $event = new \PlanningExternalEvent();
-        $event_id = (int)$event->add([
+        $event_id = (int) $event->add([
             'name'        => 'Task created in GLPI',
             'text'        => 'Description of the task.',
             'entities_id' => $_SESSION['glpiactive_entity'],
             'plan'        => [
                 'begin' => '2019-06-15 13:00:00',
-                'end'   => '2019-06-15 13:45:00'
+                'end'   => '2019-06-15 13:45:00',
             ],
             'rrule'       => [
                 'freq' => 'monthly',
             ],
-            'state'       => \Planning::TODO
+            'state'       => \Planning::TODO,
         ]);
         $this->assertGreaterThan(0, $event_id);
         $this->assertTrue($event->getFromDB($event_id));
@@ -1275,11 +1275,11 @@ VCALENDAR
         $this->login($login, $pass);
 
         $event = new \PlanningExternalEvent();
-        $event_id = (int)$event->add([
+        $event_id = (int) $event->add([
             'name'        => 'Note created in GLPI',
             'text'        => 'Description of the note.',
             'entities_id' => $_SESSION['glpiactive_entity'],
-            'state'       => \Planning::INFO
+            'state'       => \Planning::INFO,
         ]);
         $this->assertGreaterThan(0, $event_id);
         $this->assertTrue($event->getFromDB($event_id));
@@ -1371,7 +1371,7 @@ VCALENDAR
         $this->login($login, $pass);
 
         $reminder = new \Reminder();
-        $reminder_id = (int)$reminder->add([
+        $reminder_id = (int) $reminder->add([
             'name'        => 'Test reminder created in GLPI',
             'text'        => 'Description of the reminder.',
             'entities_id' => $_SESSION['glpiactive_entity'],
@@ -1445,13 +1445,13 @@ VCALENDAR
         $this->login($login, $pass);
 
         $reminder = new \Reminder();
-        $reminder_id = (int)$reminder->add([
+        $reminder_id = (int) $reminder->add([
             'name'        => 'Test reminder created in GLPI',
             'text'        => 'Description of the reminder.',
             'entities_id' => $_SESSION['glpiactive_entity'],
             'plan'        => [
                 'begin' => '2019-06-15 13:00:00',
-                'end'   => '2019-06-15 13:45:00'
+                'end'   => '2019-06-15 13:45:00',
             ],
             'state'       => \Planning::TODO,
         ]);
@@ -1529,7 +1529,7 @@ VCALENDAR
         $this->login($login, $pass);
 
         $ticket = new \Ticket();
-        $ticket_id = (int)$ticket->add([
+        $ticket_id = (int) $ticket->add([
             'name'               => 'Test ticket',
             'content'            => 'Ticket content.',
             'users_id_recipient' => $user->fields['id'],
@@ -1538,7 +1538,7 @@ VCALENDAR
         $this->assertGreaterThan(0, $ticket_id);
 
         $ticket_task = new \TicketTask();
-        $ticket_task_id = (int)$ticket_task->add([
+        $ticket_task_id = (int) $ticket_task->add([
             'tickets_id'    => $ticket_id,
             'content'       => 'Description of the task.',
             'users_id_tech' => $user->fields['id'],
@@ -1649,7 +1649,7 @@ VCALENDAR
         $this->login($login, $pass);
 
         $project = new \Project();
-        $project_id = (int)$project->add([
+        $project_id = (int) $project->add([
             'name'        => 'Test project',
             'content'     => 'Project content.',
             'entities_id' => $_SESSION['glpiactive_entity'],
@@ -1657,7 +1657,7 @@ VCALENDAR
         $this->assertGreaterThan(0, $project_id);
 
         $project_task = new \ProjectTask();
-        $project_task_id = (int)$project_task->add([
+        $project_task_id = (int) $project_task->add([
             'name'        => 'Test task created in GLPI',
             'content'     => 'Description of the task.',
             'projects_id' => $project_id,
@@ -1667,7 +1667,7 @@ VCALENDAR
         $this->assertTrue($project_task->getFromDB($project_task_id));
 
         $project_task_team = new \ProjectTaskTeam();
-        $project_task_team_id = (int)$project_task_team->add([
+        $project_task_team_id = (int) $project_task_team->add([
             'projecttasks_id' => $project_task_id,
             'itemtype'        => 'User',
             'items_id'        => $user->fields['id'],
@@ -1693,7 +1693,7 @@ VCALENDAR
 
         $this->validateCommonVComponentProperties($vcomp, $project_task->fields);
         $this->assertInstanceOf(\Sabre\VObject\Property\IntegerValue::class, $vcomp->{'PERCENT-COMPLETE'});
-        $this->assertEquals((int)$project_task->fields['percent_done'], $vcomp->{'PERCENT-COMPLETE'}->getValue());
+        $this->assertEquals((int) $project_task->fields['percent_done'], $vcomp->{'PERCENT-COMPLETE'}->getValue());
 
         // Test updating VTODO object (without plan information)
         $server = $this->getServerInstance('PUT', $project_task_path);

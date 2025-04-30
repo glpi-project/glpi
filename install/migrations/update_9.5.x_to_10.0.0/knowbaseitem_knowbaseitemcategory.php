@@ -58,14 +58,14 @@ if ($DB->fieldExists('glpi_knowbaseitems', 'knowbaseitemcategories_id')) {
     $iterator = $DB->request([
         'SELECT' => ['id', 'knowbaseitemcategories_id'],
         'FROM'   => 'glpi_knowbaseitems',
-        'WHERE'  => ['knowbaseitemcategories_id' => ['>', 0]]
+        'WHERE'  => ['knowbaseitemcategories_id' => ['>', 0]],
     ]);
     if (count($iterator)) {
-       //migrate existing data
+        //migrate existing data
         foreach ($iterator as $row) {
             $DB->insert("glpi_knowbaseitems_knowbaseitemcategories", [
                 'knowbaseitemcategories_id'   => $row['knowbaseitemcategories_id'],
-                'knowbaseitems_id'            => $row['id']
+                'knowbaseitems_id'            => $row['id'],
             ]);
         }
     }

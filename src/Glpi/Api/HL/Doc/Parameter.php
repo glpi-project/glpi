@@ -53,8 +53,7 @@ class Parameter implements \ArrayAccess
         private Schema|SchemaReference $schema,
         private ?string $example = null,
         private bool $required = false
-    ) {
-    }
+    ) {}
 
     /**
      * @return string

@@ -53,9 +53,7 @@ abstract class AbstractCapacity implements CapacityInterface
      *
      * Declared as final to ensure that constructor can be called without having to pass any parameter.
      */
-    final public function __construct()
-    {
-    }
+    final public function __construct() {}
 
     public function getDescription(): string
     {
@@ -180,30 +178,20 @@ abstract class AbstractCapacity implements CapacityInterface
         return countElementsInTable(
             Asset::getTable(),
             $where_clause + [
-                AssetDefinition::getForeignKeyField() => $classname::getDefinition()->fields['id']
+                AssetDefinition::getForeignKeyField() => $classname::getDefinition()->fields['id'],
             ]
         );
     }
 
-    public function onClassBootstrap(string $classname, CapacityConfig $config): void
-    {
-    }
+    public function onClassBootstrap(string $classname, CapacityConfig $config): void {}
 
-    public function onObjectInstanciation(Asset $object, CapacityConfig $config): void
-    {
-    }
+    public function onObjectInstanciation(Asset $object, CapacityConfig $config): void {}
 
-    public function onCapacityEnabled(string $classname, CapacityConfig $config): void
-    {
-    }
+    public function onCapacityEnabled(string $classname, CapacityConfig $config): void {}
 
-    public function onCapacityDisabled(string $classname, CapacityConfig $config): void
-    {
-    }
+    public function onCapacityDisabled(string $classname, CapacityConfig $config): void {}
 
-    public function onCapacityUpdated(string $classname, CapacityConfig $old_config, CapacityConfig $new_config): void
-    {
-    }
+    public function onCapacityUpdated(string $classname, CapacityConfig $old_config, CapacityConfig $new_config): void {}
 
     /**
      * Delete logs related to relations between two itemtypes.

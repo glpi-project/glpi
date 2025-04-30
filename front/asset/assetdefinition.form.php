@@ -64,7 +64,7 @@ if (isset($_POST['add'])) {
     $asset_definition->check($_POST['id'], UPDATE);
 
     if (
-        (bool)($_POST['_update_capacities'] ?? false)
+        (bool) ($_POST['_update_capacities'] ?? false)
         && !array_key_exists('capacities', $_POST)
     ) {
         // If no capacities are checked, `$_POST['capacities']` will not be sent in request.
@@ -75,7 +75,7 @@ if (isset($_POST['add'])) {
         // Ensure profiles can be updated
         foreach (array_keys($_POST['profiles']) as $profile_id) {
             $profile = new Profile();
-            $profile->check((int)$profile_id, UPDATE);
+            $profile->check((int) $profile_id, UPDATE);
         }
 
         // Convert profiles input from the `components/checkbox_matrix.html.twig` format

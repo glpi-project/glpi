@@ -206,14 +206,14 @@ final class SLATTRFieldTest extends AbstractDestinationFieldTest
             ],
             'field_config' => new SLATTRFieldConfig(
                 strategy: SLMFieldStrategy::FROM_TEMPLATE
-            )
+            ),
         ];
 
         yield 'Specific SLA' => [
             'field_key'     => SLATTRField::getKey(),
             'fields_to_set' => [
                 'sla_rule'         => 2, // PluginFormcreatorAbstractItilTarget::SLA_RULE_SPECIFIC
-                'sla_question_ttr' => fn (AbstractDestinationFieldTest $context) => $context->createItem(
+                'sla_question_ttr' => fn(AbstractDestinationFieldTest $context) => $context->createItem(
                     SLA::class,
                     [
                         'name'            => '_test_sla_ttr',
@@ -223,10 +223,10 @@ final class SLATTRFieldTest extends AbstractDestinationFieldTest
                     ]
                 )->getID(),
             ],
-            'field_config' => fn ($migration, $form) => new SLATTRFieldConfig(
+            'field_config' => fn($migration, $form) => new SLATTRFieldConfig(
                 strategy: SLMFieldStrategy::SPECIFIC_VALUE,
                 specific_slm_id: getItemByTypeName(SLA::class, '_test_sla_ttr', true)
-            )
+            ),
         ];
     }
 }

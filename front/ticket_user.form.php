@@ -56,7 +56,7 @@ if (isset($_POST["update"])) {
     } else {
         Html::back();
     }
-} else if (isset($_POST['delete'])) {
+} elseif (isset($_POST['delete'])) {
     $link->check($_POST['id'], DELETE);
     $link->delete($_POST);
 

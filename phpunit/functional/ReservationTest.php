@@ -120,7 +120,7 @@ class ReservationTest extends DbTestCase
         \Reservation::handleAddForm([
             "itemtype"  => "Computer",
             "items" => [
-                0       => (string) $res_item->fields["id"]
+                0       => (string) $res_item->fields["id"],
             ],
             "resa" => [
                 "begin" => "2023-11-02 00:00:00",
@@ -134,7 +134,7 @@ class ReservationTest extends DbTestCase
                 ],
             ],
             "users_id"  => getItemByTypeName('User', TU_USER, true),
-            "comment"   => ""
+            "comment"   => "",
         ]);
         $this->assertEquals(5, count($reservation->find()));
     }
@@ -153,7 +153,7 @@ class ReservationTest extends DbTestCase
             [
                 'begin'                   => "2023-11-03 00:00:00",
                 'end'                     => "2023-11-04 00:00:00",
-            ]
+            ],
         ];
     }
 

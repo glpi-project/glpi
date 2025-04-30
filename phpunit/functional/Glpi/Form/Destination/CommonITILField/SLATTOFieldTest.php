@@ -206,14 +206,14 @@ final class SLATTOFieldTest extends AbstractDestinationFieldTest
             ],
             'field_config' => new SLATTOFieldConfig(
                 strategy: SLMFieldStrategy::FROM_TEMPLATE
-            )
+            ),
         ];
 
         yield 'Specific SLA' => [
             'field_key'     => SLATTOField::getKey(),
             'fields_to_set' => [
                 'sla_rule'         => 2, // PluginFormcreatorAbstractItilTarget::SLA_RULE_SPECIFIC
-                'sla_question_tto' => fn (AbstractDestinationFieldTest $context) => $context->createItem(
+                'sla_question_tto' => fn(AbstractDestinationFieldTest $context) => $context->createItem(
                     SLA::class,
                     [
                         'name'            => '_test_sla_tto',
@@ -223,10 +223,10 @@ final class SLATTOFieldTest extends AbstractDestinationFieldTest
                     ]
                 )->getID(),
             ],
-            'field_config' => fn ($migration, $form) => new SLATTOFieldConfig(
+            'field_config' => fn($migration, $form) => new SLATTOFieldConfig(
                 strategy: SLMFieldStrategy::SPECIFIC_VALUE,
                 specific_slm_id: getItemByTypeName(SLA::class, '_test_sla_tto', true)
-            )
+            ),
         ];
     }
 }

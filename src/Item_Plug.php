@@ -95,8 +95,8 @@ class Item_Plug extends CommonDBRelation
             'FROM'   => self::getTable(),
             'WHERE'  => [
                 static::$itemtype_1 => $item::class,
-                static::$items_id_1 => $item->getID()
-            ]
+                static::$items_id_1 => $item->getID(),
+            ],
         ]);
 
         if ($canedit) {
@@ -109,7 +109,7 @@ class Item_Plug extends CommonDBRelation
             echo "<label for='dropdown_plugs_id$rand'>" . __s('Add a new plug') . "</label></td><td>";
             Plug::dropdown([
                 'name'   => "plugs_id",
-                'rand'   => $rand
+                'rand'   => $rand,
             ]);
             echo "</td><td>";
             echo "<label for='number_plugs'>" . __s('Number');
@@ -119,7 +119,7 @@ class Item_Plug extends CommonDBRelation
                 [
                     'id'     => 'number_plugs',
                     'type'   => 'number',
-                    'min'    => 1
+                    'min'    => 1,
                 ]
             );
             echo "</td><td>";
@@ -136,7 +136,7 @@ class Item_Plug extends CommonDBRelation
                 'itemtype' => self::class,
                 'id' => $row['id'],
                 'plugs_id' => $plug->getLink(),
-                'number_plugs' => $row['number_plugs']
+                'number_plugs' => $row['number_plugs'],
             ];
         }
 
@@ -145,10 +145,10 @@ class Item_Plug extends CommonDBRelation
             'nofilter' => true,
             'columns' => [
                 'plugs_id' => __('Name'),
-                'number_plugs' => __('Number')
+                'number_plugs' => __('Number'),
             ],
             'formatters' => [
-                'plugs_id' => 'raw_html'
+                'plugs_id' => 'raw_html',
             ],
             'entries' => $entries,
             'total_number' => count($entries),
@@ -156,7 +156,7 @@ class Item_Plug extends CommonDBRelation
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => min($_SESSION['glpilist_limit'], count($entries)),
-                'container'     => 'mass' . static::class . $rand
+                'container'     => 'mass' . static::class . $rand,
             ],
         ]);
     }

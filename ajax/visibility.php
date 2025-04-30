@@ -63,7 +63,7 @@ if (
         case 'User':
             $params = [
                 'right' => isset($_POST['allusers']) ? 'all' : $_POST['right'],
-                'name' => $prefix . 'users_id' . $suffix
+                'name' => $prefix . 'users_id' . $suffix,
             ];
             User::dropdown($params);
             $display = true;
@@ -71,7 +71,7 @@ if (
 
         case 'Group':
             $params             = ['rand' => $rand,
-                'name' => $prefix . 'groups_id' . $suffix
+                'name' => $prefix . 'groups_id' . $suffix,
             ];
             $params['toupdate'] = ['value_fieldname'
                                                   => 'value',
@@ -79,8 +79,8 @@ if (
                 'url'        => $CFG_GLPI["root_doc"] . "/ajax/subvisibility.php",
                 'moreparams' => ['items_id' => '__VALUE__',
                     'type'     => $_POST['type'],
-                    'prefix'   => $_POST['prefix']
-                ]
+                    'prefix'   => $_POST['prefix'],
+                ],
             ];
 
             Group::dropdown($params);
@@ -112,8 +112,8 @@ if (
                 'name'      => $prefix . 'profiles_id' . $suffix,
                 'condition' => [
                     'glpi_profilerights.name'     => $righttocheck,
-                    'glpi_profilerights.rights'   => ['&', $checkright]
-                ]
+                    'glpi_profilerights.rights'   => ['&', $checkright],
+                ],
             ];
             $params['toupdate'] = ['value_fieldname'
                                                   => 'value',
@@ -121,8 +121,8 @@ if (
                 'url'        => $CFG_GLPI["root_doc"] . "/ajax/subvisibility.php",
                 'moreparams' => ['items_id' => '__VALUE__',
                     'type'     => $_POST['type'],
-                    'prefix'   => $_POST['prefix']
-                ]
+                    'prefix'   => $_POST['prefix'],
+                ],
             ];
 
             Profile::dropdown($params);

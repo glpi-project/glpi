@@ -44,8 +44,7 @@ final class SingleChoiceFromValuesConditionHandler implements
 {
     public function __construct(
         private array $values,
-    ) {
-    }
+    ) {}
 
     #[Override]
     public function getSupportedValueOperators(): array

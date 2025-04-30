@@ -58,7 +58,7 @@ if (countElementsInTable('glpi_rules', ['uuid' => 'glpi_rule_mail_collector_glpi
             [
                 'criteria'  => 'message_id',
                 'condition' => 6,
-                'pattern'   => '/GLPI(_(?<uuid>[a-z0-9]+))?(-(?<itemtype>[a-z]+))?(-(?<items_id>[0-9]+))?(\/(?<event>[a-z_]+))?(\.(?<random>[0-9]+\.[0-9]+))?@(?<uname>.+)/i'
+                'pattern'   => '/GLPI(_(?<uuid>[a-z0-9]+))?(-(?<itemtype>[a-z]+))?(-(?<items_id>[0-9]+))?(\/(?<event>[a-z_]+))?(\.(?<random>[0-9]+\.[0-9]+))?@(?<uname>.+)/i',
             ],
         ],
         [
@@ -66,7 +66,7 @@ if (countElementsInTable('glpi_rules', ['uuid' => 'glpi_rule_mail_collector_glpi
                 'field'         => '_refuse_email_no_response',
                 'action_type'  => "assign",
                 'value'         => 1,
-            ]
+            ],
         ]
     );
 

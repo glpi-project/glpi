@@ -163,7 +163,7 @@ final class DatabaseMapper
             'FROM' => $item::getTable(),
         ];
         $condition = [
-            'name' => $name
+            'name' => $name,
         ];
 
         // Check entities

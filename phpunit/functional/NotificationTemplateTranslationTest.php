@@ -47,14 +47,14 @@ class NotificationTemplateTranslationTest extends DbTestCase
         $iterator = $DB->request([
             'SELECT' => 'id',
             'FROM'   => \NotificationTemplateTranslation::getTable(),
-            'LIMIT'  => 1
+            'LIMIT'  => 1,
         ]);
 
         $data = $iterator->current();
         $translation = new \NotificationTemplateTranslation();
         $translation->getFromDB($data['id']);
         $added = $translation->clone();
-        $this->assertGreaterThan(0, (int)$added);
+        $this->assertGreaterThan(0, (int) $added);
 
         $clonedTranslation = new \NotificationTemplateTranslation();
         $this->assertTrue($clonedTranslation->getFromDB($added));
@@ -72,10 +72,10 @@ class NotificationTemplateTranslationTest extends DbTestCase
         $iterator = $DB->request([
             'SELECT' => [
                 'id',
-                'notificationtemplates_id'
+                'notificationtemplates_id',
             ],
             'FROM'   => \NotificationTemplateTranslation::getTable(),
-            'LIMIT'  => 1
+            'LIMIT'  => 1,
         ]);
 
         $data = $iterator->current();
@@ -85,12 +85,12 @@ class NotificationTemplateTranslationTest extends DbTestCase
 
         $translations = $DB->request([
             'FROM'   => \NotificationTemplateTranslation::getTable(),
-            'WHERE'  => ['notificationtemplates_id' => $data['notificationtemplates_id']]
+            'WHERE'  => ['notificationtemplates_id' => $data['notificationtemplates_id']],
         ]);
 
         $clonedTranslations = $DB->request([
             'FROM'   => \NotificationTemplateTranslation::getTable(),
-            'WHERE'  => ['notificationtemplates_id' => $added]
+            'WHERE'  => ['notificationtemplates_id' => $added],
         ]);
 
         $this->assertCount(count($clonedTranslations), $translations);

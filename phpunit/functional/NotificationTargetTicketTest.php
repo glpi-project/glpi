@@ -95,7 +95,7 @@ class NotificationTargetTicketTest extends DbTestCase
         $basic_options = [
             'additionnaloption' => [
                 'usertype' => \NotificationTarget::GLPI_USER,
-            ]
+            ],
         ];
         $ret = $notiftargetticket->getDataForObject($tkt, $basic_options);
         $this->assertSame('external_id', $ret['##ticket.externalid##']);
@@ -118,8 +118,8 @@ class NotificationTargetTicketTest extends DbTestCase
                 '##task.user##'            => '_test_user',
                 '##task.group##'           => '',
                 '##task.begin##'           => '',
-                '##task.end##'             => ''
-            ]
+                '##task.end##'             => '',
+            ],
         ];
 
         $ret = $notiftargetticket->getDataForObject($tkt, $basic_options);
@@ -193,8 +193,8 @@ class NotificationTargetTicketTest extends DbTestCase
                 '##task.user##'            => '_test_user',
                 '##task.group##'           => '',
                 '##task.begin##'           => '',
-                '##task.end##'             => ''
-            ]
+                '##task.end##'             => '',
+            ],
         ];
 
         $this->assertSame($expected, $ret['tasks']);
@@ -319,7 +319,7 @@ class NotificationTargetTicketTest extends DbTestCase
                 'usertype' => NotificationTarget::GLPI_USER,
                 'is_self_service' => false,
                 'show_private'    => true,
-            ]
+            ],
         ];
 
         $notiftargetticket = new \NotificationTargetTicket(getItemByTypeName('Entity', '_test_root_entity', true), 'new', $ticket);
@@ -369,19 +369,19 @@ class NotificationTargetTicketTest extends DbTestCase
                 "##timelineitems.description##" => $fup_tech->fields['content'],
                 "##timelineitems.position##" => "right",
                 "##timelineitems.author##" => "tech",
-            ]
+            ],
         ];
 
         $this->assertSame($expected, $ret['timelineitems']);
 
-        $this->assertTrue((bool)$this->login('post-only', 'postonly', true));
+        $this->assertTrue((bool) $this->login('post-only', 'postonly', true));
 
         $basic_options = [
             'additionnaloption' => [
                 'usertype' => NotificationTarget::GLPI_USER,
                 'is_self_service' => true,
                 'show_private'    => false,
-            ]
+            ],
         ];
 
         $ret = $notiftargetticket->getDataForObject($ticket, $basic_options);
@@ -416,7 +416,7 @@ class NotificationTargetTicketTest extends DbTestCase
                 "##timelineitems.description##" => $fup_tech->fields['content'],
                 "##timelineitems.position##" => "right",
                 "##timelineitems.author##" => "tech",
-            ]
+            ],
         ];
 
         //add a test for tech, but force the `show_private` option to false to ensure that presence of this option will
@@ -426,7 +426,7 @@ class NotificationTargetTicketTest extends DbTestCase
                 'usertype' => NotificationTarget::GLPI_USER,
                 'is_self_service' => false,
                 'show_private'    => false,
-            ]
+            ],
         ];
 
         $ret = $notiftargetticket->getDataForObject($ticket, $basic_options);
@@ -461,7 +461,7 @@ class NotificationTargetTicketTest extends DbTestCase
                 "##timelineitems.description##" => $fup_tech->fields['content'],
                 "##timelineitems.position##" => "right",
                 "##timelineitems.author##" => "tech",
-            ]
+            ],
         ];
 
         $this->assertSame($expected, $ret['timelineitems']);
@@ -497,7 +497,7 @@ class NotificationTargetTicketTest extends DbTestCase
                 'usertype' => NotificationTarget::GLPI_USER,
                 'is_self_service' => false,
                 'show_private'    => true,
-            ]
+            ],
         ];
         $notiftargetticket = new \NotificationTargetTicket($root, 'new', $ticket);
         $ret = $notiftargetticket->getDataForObject($ticket, $basic_options);
@@ -505,10 +505,10 @@ class NotificationTargetTicketTest extends DbTestCase
 
         $root_expected_url = str_replace([
             '%base_url%',
-            '%ticket_id%'
+            '%ticket_id%',
         ], [
             "root.tld",
-            $root_tickets_id
+            $root_tickets_id,
         ], $expected_raw_url);
         $this->assertEquals($root_expected_url, $ret['##ticket.url##']);
 
@@ -532,10 +532,10 @@ class NotificationTargetTicketTest extends DbTestCase
 
         $parent_expected_url = str_replace([
             '%base_url%',
-            '%ticket_id%'
+            '%ticket_id%',
         ], [
             "parent.tld",
-            $parent_tickets_id
+            $parent_tickets_id,
         ], $expected_raw_url);
         $this->assertEquals($parent_expected_url, $ret['##ticket.url##']);
     }

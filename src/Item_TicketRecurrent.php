@@ -40,7 +40,7 @@
  **/
 class Item_TicketRecurrent extends CommonItilObject_Item
 {
-   // From CommonDBRelation
+    // From CommonDBRelation
     public static $itemtype_1          = 'TicketRecurrent';
     public static $items_id_1          = 'ticketrecurrents_id';
 

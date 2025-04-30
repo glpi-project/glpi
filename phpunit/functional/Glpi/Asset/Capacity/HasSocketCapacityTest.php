@@ -207,8 +207,8 @@ class HasSocketCapacityTest extends DbTestCase
                 [
                     'itemtype' => Socket::class,
                     'items_id' => $socket_1->getID(),
-                ]
-            ]
+                ],
+            ],
 
         ];
         $item_2_logs_criteria = [
@@ -217,8 +217,8 @@ class HasSocketCapacityTest extends DbTestCase
                 [
                     'itemtype' => Socket::class,
                     'items_id' => $socket_2->getID(),
-                ]
-            ]
+                ],
+            ],
         ];
 
         // Ensure relation, display preferences, and class is registered to global config
@@ -291,7 +291,7 @@ class HasSocketCapacityTest extends DbTestCase
     {
         yield [
             'target_classname' => Socket::class,
-            'expected' => '%d sockets attached to %d assets'
+            'expected' => '%d sockets attached to %d assets',
         ];
     }
 }

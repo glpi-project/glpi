@@ -97,7 +97,7 @@ final class FormTagsManagerTest extends DbTestCase
                 label: 'Answer: Last name',
                 value: $this->getQuestionId($form, 'Last name'),
                 provider: AnswerTagProvider::class,
-            )
+            ),
         ];
 
         // Without filter
@@ -156,7 +156,7 @@ final class FormTagsManagerTest extends DbTestCase
 
         // With "Form name" filter
         $this->checkGetTags($form, "Form name", [
-            $this->getTagByName($tags, 'Form name: First and last name form')
+            $this->getTagByName($tags, 'Form name: First and last name form'),
         ]);
 
         // With "Section" filter

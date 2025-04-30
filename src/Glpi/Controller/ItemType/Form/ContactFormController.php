@@ -70,6 +70,6 @@ class ContactFormController extends GenericFormController
             throw new AccessDeniedHttpException();
         }
 
-        return new StreamedResponse(fn () => $contact->generateVcard());
+        return new StreamedResponse(fn() => $contact->generateVcard());
     }
 }

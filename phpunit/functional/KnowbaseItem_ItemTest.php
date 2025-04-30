@@ -110,7 +110,7 @@ class KnowbaseItem_ItemTest extends DbTestCase
             2 => [
                 'id'       => '_ticket03',
                 'itemtype' => \Ticket::getType(),
-            ]
+            ],
         ];
 
         foreach ($expecteds as $key => $expected) {
@@ -127,7 +127,7 @@ class KnowbaseItem_ItemTest extends DbTestCase
             1 => [
                 'id'       => '_ticket02',
                 'itemtype' => \Ticket::getType(),
-            ]
+            ],
         ];
 
         foreach ($expecteds as $key => $expected) {
@@ -147,7 +147,7 @@ class KnowbaseItem_ItemTest extends DbTestCase
             1 => [
                 'id'       => '_test_pc21',
                 'itemtype' => \Computer::getType(),
-            ]
+            ],
         ];
 
         foreach ($expecteds as $key => $expected) {

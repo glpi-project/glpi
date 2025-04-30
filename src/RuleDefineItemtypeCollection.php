@@ -36,7 +36,7 @@
 
 class RuleDefineItemtypeCollection extends RuleCollection
 {
-   // From RuleCollection
+    // From RuleCollection
     public $stop_on_first_match = true;
     public static $rightname           = 'rule_import';
     public $menu_option         = 'defineasset';

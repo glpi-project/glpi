@@ -58,7 +58,7 @@ class CalendarRoot extends \Sabre\CalDAV\CalendarRoot
                 break;
         }
 
-       // Return calendar path relative to calendar root path
+        // Return calendar path relative to calendar root path
         return preg_replace(
             '/^' . preg_quote(Calendar::CALENDAR_ROOT . '/', '/') . '/',
             '',

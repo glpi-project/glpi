@@ -45,7 +45,7 @@ class Budget extends CommonDropdown
 {
     use Glpi\Features\Clonable;
 
-   // From CommonDBTM
+    // From CommonDBTM
     public $dohistory           = true;
 
     public static $rightname           = 'budget';
@@ -99,7 +99,7 @@ class Budget extends CommonDropdown
             switch ($item->getType()) {
                 case __CLASS__:
                     return [1 => self::createTabEntry(__('Main')),
-                        2 => self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), 0, $item::getType(), 'ti ti-package')
+                        2 => self::createTabEntry(_n('Item', 'Items', Session::getPluralNumber()), 0, $item::getType(), 'ti ti-package'),
                     ];
             }
         }
@@ -139,8 +139,8 @@ class Budget extends CommonDropdown
             'item' => $this,
             'no_header' => true,
             'params' => [
-                'canedit' => $this->canUpdateItem()
-            ]
+                'canedit' => $this->canUpdateItem(),
+            ],
         ]);
         return true;
     }
@@ -163,7 +163,7 @@ class Budget extends CommonDropdown
 
         $tab[] = [
             'id'                 => 'common',
-            'name'               => __('Characteristics')
+            'name'               => __('Characteristics'),
         ];
 
         $tab[] = [
@@ -181,7 +181,7 @@ class Budget extends CommonDropdown
             'field'              => 'id',
             'name'               => __('ID'),
             'massiveaction'      => false,
-            'datatype'           => 'number'
+            'datatype'           => 'number',
         ];
 
         $tab[] = [
@@ -190,7 +190,7 @@ class Budget extends CommonDropdown
             'field'              => 'date_mod',
             'name'               => __('Last update'),
             'datatype'           => 'datetime',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -199,7 +199,7 @@ class Budget extends CommonDropdown
             'field'              => 'date_creation',
             'name'               => __('Creation date'),
             'datatype'           => 'datetime',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -207,7 +207,7 @@ class Budget extends CommonDropdown
             'table'              => 'glpi_budgettypes',
             'field'              => 'name',
             'name'               => _n('Type', 'Types', 1),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -215,7 +215,7 @@ class Budget extends CommonDropdown
             'table'              => $this->getTable(),
             'field'              => 'begin_date',
             'name'               => __('Start date'),
-            'datatype'           => 'date'
+            'datatype'           => 'date',
         ];
 
         $tab[] = [
@@ -223,7 +223,7 @@ class Budget extends CommonDropdown
             'table'              => $this->getTable(),
             'field'              => 'end_date',
             'name'               => __('End date'),
-            'datatype'           => 'date'
+            'datatype'           => 'date',
         ];
 
         $tab[] = [
@@ -231,7 +231,7 @@ class Budget extends CommonDropdown
             'table'              => $this->getTable(),
             'field'              => 'value',
             'name'               => _x('price', 'Value'),
-            'datatype'           => 'decimal'
+            'datatype'           => 'decimal',
         ];
 
         $tab[] = [
@@ -239,7 +239,7 @@ class Budget extends CommonDropdown
             'table'              => $this->getTable(),
             'field'              => 'comment',
             'name'               => __('Comments'),
-            'datatype'           => 'text'
+            'datatype'           => 'text',
         ];
 
         $tab[] = [
@@ -259,7 +259,7 @@ class Budget extends CommonDropdown
             'field'              => 'completename',
             'name'               => Entity::getTypeName(1),
             'massiveaction'      => false,
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -267,10 +267,10 @@ class Budget extends CommonDropdown
             'table'              => $this->getTable(),
             'field'              => 'is_recursive',
             'name'               => __('Child entities'),
-            'datatype'           => 'bool'
+            'datatype'           => 'bool',
         ];
 
-       // add objectlock search options
+        // add objectlock search options
         $tab = array_merge($tab, ObjectLock::rawSearchOptionsToAdd(get_class($this)));
         $tab = array_merge($tab, Location::rawSearchOptionsToAdd());
 
@@ -298,13 +298,13 @@ class Budget extends CommonDropdown
             'FROM'            => 'glpi_infocoms',
             'WHERE'           => [
                 'budgets_id'   => $budgets_id,
-                'NOT'          => ['itemtype' => ['ConsumableItem', 'CartridgeItem', 'Software']]
+                'NOT'          => ['itemtype' => ['ConsumableItem', 'CartridgeItem', 'Software']],
             ],
-            'ORDER'           => 'itemtype'
+            'ORDER'           => 'itemtype',
         ]);
         $itemtypes = [
             // These types shouldn't be in the glpi_infocoms table, but have their costs elsewhere
-            'Contract', 'Ticket', 'Problem', 'Change', 'Project'
+            'Contract', 'Ticket', 'Problem', 'Change', 'Project',
         ];
         foreach ($iterator as $row) {
             $itemtypes[] = $row['itemtype'];
@@ -339,17 +339,17 @@ class Budget extends CommonDropdown
                     $item_table => [
                         'ON' => [
                             $item_table => 'id',
-                            'glpi_infocoms'   => 'items_id'
-                        ]
-                    ]
+                            'glpi_infocoms'   => 'items_id',
+                        ],
+                    ],
                 ],
                 'WHERE'        => [
                     'glpi_infocoms.itemtype'            => $itemtype,
-                    'glpi_infocoms.budgets_id'          => $budgets_id
+                    'glpi_infocoms.budgets_id'          => $budgets_id,
                 ],
                 'ORDERBY'      => [
-                    $item_table . '.entities_id'
-                ]
+                    $item_table . '.entities_id',
+                ],
             ];
             if ($entity_restrict) {
                 $criteria['WHERE'] += getEntitiesRestrictCriteria($item_table);
@@ -383,21 +383,21 @@ class Budget extends CommonDropdown
                     $item_table => [
                         'ON' => [
                             $item_table => 'id',
-                            $cost_table => $itemtype::getForeignKeyField()
-                        ]
-                    ]
+                            $cost_table => $itemtype::getForeignKeyField(),
+                        ],
+                    ],
                 ],
                 'WHERE' => [
                     $cost_table . '.budgets_id' => $budgets_id,
                 ],
                 'GROUPBY'      => [
                     $item_table . '.id',
-                    $item_table . '.entities_id'
+                    $item_table . '.entities_id',
                 ],
                 'ORDERBY'      => [
                     $item_table . '.entities_id',
-                    $item_table . '.name'
-                ]
+                    $item_table . '.name',
+                ],
             ];
             if ($entity_restrict) {
                 $criteria['WHERE'] += getEntitiesRestrictCriteria($item_table);
@@ -481,7 +481,8 @@ class Budget extends CommonDropdown
             $name = NOT_AVAILABLE;
             if ($items[$itemtype]->getFromDB($data["id"])) {
                 if ($items[$itemtype] instanceof Item_Devices) {
-                    $tmpitem = new $items[$itemtype]::$itemtype_2();
+                    $tmpitemtype = $items[$itemtype]::$itemtype_2;
+                    $tmpitem = new $itemtype();
                     if ($tmpitem->getFromDB($data[$items[$itemtype]::$items_id_2])) {
                         $name = $tmpitem->getLink(['additional' => true]);
                     }
@@ -545,7 +546,7 @@ class Budget extends CommonDropdown
         }
 
         $iterator = $DB->request([
-            'FROM' => $this->getItemListCriteria(false)
+            'FROM' => $this->getItemListCriteria(false),
         ]);
 
         $itemtypes = [];
@@ -554,7 +555,7 @@ class Budget extends CommonDropdown
                 'name' => __('Other entities'),
                 'itemtypes' => [],
                 'total' => 0,
-            ]
+            ],
         ];
         $entries = [];
         $itemtype_totals = [];

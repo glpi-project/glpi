@@ -99,9 +99,7 @@ abstract class AbstractDefinitionManager
      * @phpstan-param ConcreteDefinition $definition
      * @return void
      */
-    public function bootstrapDefinition(AbstractDefinition $definition)
-    {
-    }
+    public function bootstrapDefinition(AbstractDefinition $definition) {}
 
     final public function getCustomObjectClassNames(bool $with_namespace = true): array
     {

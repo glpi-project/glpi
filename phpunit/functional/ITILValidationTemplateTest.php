@@ -47,7 +47,7 @@ class ITILValidationTemplateTest extends AbstractITILChildTemplate
         $validationTemplate = new GlobalITILValidationTemplate();
         $this->assertGreaterThan(
             0,
-            (int)$validationTemplate->add([
+            (int) $validationTemplate->add([
                 'name'         => 'Validation template',
                 'description'  => 'a description',
                 'content'      => '',
@@ -57,7 +57,7 @@ class ITILValidationTemplateTest extends AbstractITILChildTemplate
         // Add a user target
         $validationTemplate->input = [
             'itemtype_target' => 'User',
-            'items_id_target' => 1
+            'items_id_target' => 1,
         ];
 
         $validationTemplate->post_addItem();
@@ -72,7 +72,7 @@ class ITILValidationTemplateTest extends AbstractITILChildTemplate
         // Add a group target
         $validationTemplate->input = [
             'itemtype_target' => 'Group',
-            'items_id_target' => 1
+            'items_id_target' => 1,
         ];
 
         $validationTemplate->post_addItem();
@@ -88,7 +88,7 @@ class ITILValidationTemplateTest extends AbstractITILChildTemplate
         $validationTemplate->input = [
             'itemtype_target' => 'User',
             'items_id_target' => [1, 2, 3, 4],
-            'groups_id' => 1
+            'groups_id' => 1,
         ];
 
         $validationTemplate->post_addItem();

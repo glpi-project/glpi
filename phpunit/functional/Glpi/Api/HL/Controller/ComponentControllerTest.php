@@ -66,7 +66,7 @@ class ComponentControllerTest extends \HLAPITestCase
         $types = [
             'Battery', 'Camera', 'Case', 'Controller', 'Drive', 'Firmware', 'GenericDevice', 'GraphicCard',
             'HardDrive', 'Memory', 'NetworkCard', 'PCIDevice', 'PowerSupply', 'Processor', 'Sensor', 'SIMCard',
-            'SoundCard', 'Systemboard'
+            'SoundCard', 'Systemboard',
         ];
 
         foreach ($types as $type) {

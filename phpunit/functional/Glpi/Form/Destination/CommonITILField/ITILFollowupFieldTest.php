@@ -39,7 +39,6 @@ use Glpi\Form\AnswersHandler\AnswersHandler;
 use Glpi\Form\Destination\CommonITILField\ITILFollowupField;
 use Glpi\Form\Destination\CommonITILField\ITILFollowupFieldConfig;
 use Glpi\Form\Destination\CommonITILField\ITILFollowupFieldStrategy;
-use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\Form;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;

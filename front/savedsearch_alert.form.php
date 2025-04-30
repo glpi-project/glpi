@@ -64,7 +64,7 @@ if (isset($_POST["add"])) {
         }
     }
     Html::back();
-} else if (isset($_POST["purge"])) {
+} elseif (isset($_POST["purge"])) {
     $alert->check($_POST["id"], PURGE);
 
     if ($alert->delete($_POST, 1)) {
@@ -80,7 +80,7 @@ if (isset($_POST["add"])) {
     $search = new SavedSearch();
     $search->getFromDB($alert->fields['savedsearches_id']);
     Html::redirect(Toolbox::getItemTypeFormURL('SavedSearch') . '?id=' . $alert->fields['savedsearches_id']);
-} else if (isset($_POST["update"])) {
+} elseif (isset($_POST["update"])) {
     $alert->check($_POST["id"], UPDATE);
 
     if ($alert->update($_POST)) {
@@ -97,6 +97,6 @@ if (isset($_POST["add"])) {
 } else {
     $menu = ["tools", "savedsearch"];
     SavedSearch_Alert::displayFullPageForItem($_GET["id"], $menu, [
-        'savedsearches_id' => $_GET["savedsearches_id"]
+        'savedsearches_id' => $_GET["savedsearches_id"],
     ]);
 }

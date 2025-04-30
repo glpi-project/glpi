@@ -86,16 +86,14 @@ class UserMentionTest extends DbTestCase
                     // No user mention on creation => no observer
                     'add_content'            => <<<HTML
                   <p>ping @tec</p>
-HTML
-               ,
+HTML,
                     'add_expected_observers' => [],
                     'add_expected_notified'  => [],
 
-                     // Added mentions on update => new observers
+                    // Added mentions on update => new observers
                     'update_content'            => <<<HTML
                   <p>ping <span data-user-mention="true" data-user-id="{$tech_id}">@tech</span></p>
-HTML
-               ,
+HTML,
                     'update_expected_observers' => [$tech_id],
                     'update_expected_notified'  => [$tech_id],
                 ];
@@ -107,16 +105,14 @@ HTML
                     // 1 user mention => 1 observer
                     'add_content'            => <<<HTML
                   <p>ping <span data-user-mention="true" data-user-id="{$tech_id}">@tech</span></p>
-HTML
-               ,
+HTML,
                     'add_expected_observers' => [$tech_id],
                     'add_expected_notified'  => [$tech_id],
 
                     // Same mentions on update => mentionned users are not notified
                     'update_content'            => <<<HTML
                   <p>ping <span data-user-mention="true" data-user-id="{$tech_id}">@tech</span></p>
-HTML
-               ,
+HTML,
                     'update_expected_observers' => [],
                     'update_expected_notified'  => [],
                 ];
@@ -129,8 +125,7 @@ HTML
                     'add_content'            => <<<HTML
                   <p>Hi <span data-user-mention="true" data-user-id="{$tech_id}">@tech</span>,</p>
                   <p>I discussed with <span data-user-id="{$normal_id}" data-user-mention="true">@normal</span> about ...</p>
-HTML
-               ,
+HTML,
                     'add_expected_observers' => [$tech_id, $normal_id],
                     'add_expected_notified'  => [$tech_id, $normal_id],
 
@@ -138,8 +133,7 @@ HTML
                     'update_content'            => <<<HTML
                   <p>Hi <span data-user-mention="true" data-user-id="{$tech_id}">@tech</span>,</p>
                   <p> ... </p>
-HTML
-               ,
+HTML,
                     'update_expected_observers' => [],
                     'update_expected_notified'  => [],
                 ];
@@ -155,8 +149,7 @@ HTML
                      <p>Hi <span data-user-mention="true" data-user-id="{$tech_id}">@tech</span>,</p>
                      <br>
                      <p>I discussed with <span data-user-id="{$normal_id}" data-user-mention="true">@normal</span> about ...</p>
-HTML
-                  ,
+HTML,
                         'add_expected_observers' => [$tech_id, $normal_id],
                         'add_expected_notified'  => [$tech_id],
 
@@ -165,8 +158,7 @@ HTML
                      <p>Hi <span data-user-mention="true" data-user-id="{$tech_id}">@tech</span>,</p>
                      <p>I discussed with <span data-user-id="{$normal_id}" data-user-mention="true">@normal</span> about ...</p>
                      <p> ... </p>
-HTML
-                  ,
+HTML,
                         'update_expected_observers' => [],
                         'update_expected_notified'  => [],
                         'is_private'                => true,
@@ -179,16 +171,14 @@ HTML
                     // bad HTML no users are notified
                     'add_content'            => <<<HTML
                   </span></p></div></body></html>
-HTML
-               ,
+HTML,
                     'add_expected_observers' => [],
                     'add_expected_notified'  => [],
 
                     // update bad HTML => no users are notified
                     'update_content'            => <<<HTML
                   </span></p></div></body></html>
-HTML
-               ,
+HTML,
                     'update_expected_observers' => [],
                     'update_expected_notified'  => [],
                 ];
@@ -325,8 +315,7 @@ HTML
             // No user mention on creation => no observer
             'submission_add'            => <<<HTML
             <p>ping @tec</p>
-HTML
-         ,
+HTML,
             'validation_add'            => null,
 
             'add_expected_observers'    => [],
@@ -335,8 +324,7 @@ HTML
             // Added mentions on update (submission) => new observers
             'submission_update'         => <<<HTML
             <p>ping <span data-user-mention="true" data-user-id="{$tech_id}">@tech</span></p>
-HTML
-         ,
+HTML,
             'validation_update'         => null,
 
             'update_expected_observers' => [$tech_id],
@@ -347,8 +335,7 @@ HTML
             // No user mention on creation => no observer
             'submission_add'            => <<<HTML
             <p>ping @tec</p>
-HTML
-         ,
+HTML,
             'validation_add'            => null,
 
             'add_expected_observers'    => [],
@@ -358,8 +345,7 @@ HTML
             'submission_update'         => null,
             'validation_update'         => <<<HTML
             <p>ping <span data-user-mention="true" data-user-id="{$tech_id}">@tech</span></p>
-HTML
-,
+HTML,
 
             'update_expected_observers' => [$tech_id],
             'update_expected_notified'  => [$tech_id],
@@ -369,8 +355,7 @@ HTML
             // 1 user mention => 1 observer
             'submission_add'            => <<<HTML
             <p>ping <span data-user-mention="true" data-user-id="{$tech_id}">@tech</span></p>
-HTML
-         ,
+HTML,
             'validation_add'            => null,
             'add_expected_observers'    => [$tech_id],
             'add_expected_notified'     => [$tech_id],
@@ -378,8 +363,7 @@ HTML
             // Same mentions on update (submission) => mentionned users are not notified
             'submission_update'         => <<<HTML
             <p>ping <span data-user-mention="true" data-user-id="{$tech_id}">@tech</span></p>
-HTML
-         ,
+HTML,
             'validation_update'         => null,
             'update_expected_observers' => [],
             'update_expected_notified'  => [],
@@ -389,8 +373,7 @@ HTML
             // 1 user mention => 1 observer
             'submission_add'            => <<<HTML
             <p>ping <span data-user-mention="true" data-user-id="{$tech_id}">@tech</span></p>
-HTML
-         ,
+HTML,
             'validation_add'            => null,
             'add_expected_observers'    => [$tech_id],
             'add_expected_notified'     => [$tech_id],
@@ -399,8 +382,7 @@ HTML
             'submission_update'         => null,
             'validation_update'         => <<<HTML
             <p>ping <span data-user-mention="true" data-user-id="{$tech_id}">@tech</span></p>
-HTML
-         ,
+HTML,
             'update_expected_observers' => [],
             'update_expected_notified'  => [],
         ];
@@ -409,8 +391,7 @@ HTML
             // No user mention on creation => no observer
             'submission_add'            => <<<HTML
             <p>ping @tec</p>
-HTML
-         ,
+HTML,
             'validation_add'            => null,
 
             'add_expected_observers'    => [],
@@ -419,12 +400,10 @@ HTML
             // Added mentions on update (submission and validation) => new observers
             'submission_update'         => <<<HTML
             <p>ping <span data-user-mention="true" data-user-id="{$tech_id}">@tech</span></p>
-HTML
-         ,
+HTML,
             'validation_update'         => <<<HTML
             <p>I discussed with <span data-user-id="{$normal_id}" data-user-mention="true">@normal</span> about ...</p>
-HTML
-         ,
+HTML,
 
             'update_expected_observers' => [$tech_id, $normal_id],
             'update_expected_notified'  => [$tech_id, $normal_id],
@@ -436,8 +415,7 @@ HTML
             'submission_add'            => <<<HTML
             <p>Hi <span data-user-mention="true" data-user-id="{$tech_id}">@tech</span>,</p>
             <p>I discussed with <span data-user-id="{$normal_id}" data-user-mention="true">@normal</span> about ...</p>
-HTML
-         ,
+HTML,
             'validation_add'            => null,
             'add_expected_observers'    => [$tech_id, $normal_id],
             'add_expected_notified'     => [$tech_id, $normal_id],
@@ -446,8 +424,7 @@ HTML
             'submission_update'            => <<<HTML
             <p>Hi <span data-user-mention="true" data-user-id="{$tech_id}">@tech</span>,</p>
             <p> ... </p>
-HTML
-         ,
+HTML,
             'validation_update'            => null,
             'update_expected_observers'    => [],
             'update_expected_notified'     => [],
@@ -537,7 +514,7 @@ HTML
 
         // Update TicketValidation
         $input = [
-            'id' => $ticket_validation_id
+            'id' => $ticket_validation_id,
         ];
         if ($submission_update !== null) {
             $input['comment_submission'] = $submission_update;

@@ -33,7 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 
 /**
@@ -71,21 +70,21 @@ class OlaLevel_Ticket extends CommonDBTM
                 'glpi_olalevels'  => [
                     'FKEY'   => [
                         static::getTable()   => 'olalevels_id',
-                        'glpi_olalevels'     => 'id'
-                    ]
+                        'glpi_olalevels'     => 'id',
+                    ],
                 ],
                 'glpi_olas'       => [
                     'FKEY'   => [
                         'glpi_olalevels'     => 'olas_id',
-                        'glpi_olas'          => 'id'
-                    ]
-                ]
+                        'glpi_olas'          => 'id',
+                    ],
+                ],
             ],
             'WHERE'        => [
                 static::getTable() . '.tickets_id'  => $ID,
-                'glpi_olas.type'                    => $olaType
+                'glpi_olas.type'                    => $olaType,
             ],
-            'LIMIT'        => 1
+            'LIMIT'        => 1,
         ]);
         if (count($iterator) === 1) {
             $row = $iterator->current();
@@ -116,20 +115,20 @@ class OlaLevel_Ticket extends CommonDBTM
                 'glpi_olalevels'  => [
                     'ON' => [
                         'glpi_olalevels_tickets'   => 'olalevels_id',
-                        'glpi_olalevels'           => 'id'
-                    ]
+                        'glpi_olalevels'           => 'id',
+                    ],
                 ],
                 'glpi_olas'       => [
                     'ON' => [
                         'glpi_olalevels'  => 'olas_id',
-                        'glpi_olas'       => 'id'
-                    ]
-                ]
+                        'glpi_olas'       => 'id',
+                    ],
+                ],
             ],
             'WHERE'     => [
                 'glpi_olalevels_tickets.tickets_id' => $tickets_id,
-                'glpi_olas.type'                    => $olaType
-            ]
+                'glpi_olas.type'                    => $olaType,
+            ],
         ]);
 
         foreach ($iterator as $data) {
@@ -172,26 +171,26 @@ class OlaLevel_Ticket extends CommonDBTM
         $iterator = $DB->request([
             'SELECT'    => [
                 'glpi_olalevels_tickets.*',
-                'glpi_olas.type AS type'
+                'glpi_olas.type AS type',
             ],
             'FROM'      => 'glpi_olalevels_tickets',
             'LEFT JOIN' => [
                 'glpi_olalevels'  => [
                     'ON' => [
                         'glpi_olalevels_tickets'   => 'olalevels_id',
-                        'glpi_olalevels'           => 'id'
-                    ]
+                        'glpi_olalevels'           => 'id',
+                    ],
                 ],
                 'glpi_olas'       => [
                     'ON' => [
                         'glpi_olalevels'  => 'olas_id',
-                        'glpi_olas'       => 'id'
-                    ]
-                ]
+                        'glpi_olas'       => 'id',
+                    ],
+                ],
             ],
             'WHERE'     => [
-                'glpi_olalevels_tickets.date' => ['<', QueryFunction::now()]
-            ]
+                'glpi_olalevels_tickets.date' => ['<', QueryFunction::now()],
+            ],
         ]);
 
         foreach ($iterator as $data) {
@@ -218,12 +217,12 @@ class OlaLevel_Ticket extends CommonDBTM
         $ticket         = new Ticket();
         $olalevelticket = new self();
 
-       // existing ticket and not deleted
+        // existing ticket and not deleted
         if (
             $ticket->getFromDB($data['tickets_id'])
             && !$ticket->isDeleted()
         ) {
-           // search all actors of a ticket
+            // search all actors of a ticket
             foreach ($ticket->getUsers(CommonITILActor::REQUESTER) as $user) {
                 $ticket->fields['_users_id_requester'][] = $user['users_id'];
             }
@@ -250,19 +249,19 @@ class OlaLevel_Ticket extends CommonDBTM
 
             $olalevel = new OlaLevel();
             $ola      = new OLA();
-           // Check if ola datas are OK
+            // Check if ola datas are OK
             [, $olaField] = OLA::getFieldNames($olaType);
             if (($ticket->fields[$olaField] > 0)) {
                 if ($ticket->fields['status'] == CommonITILObject::CLOSED) {
-                   // Drop line when status is closed
+                    // Drop line when status is closed
                     $olalevelticket->delete(['id' => $data['id']]);
-                } else if ($ticket->fields['status'] != CommonITILObject::SOLVED) {
-                   // No execution if ticket has been taken into account
+                } elseif ($ticket->fields['status'] != CommonITILObject::SOLVED) {
+                    // No execution if ticket has been taken into account
                     if (
                         !(($olaType == SLM::TTO)
                         && ($ticket->fields['takeintoaccount_delay_stat'] > 0))
                     ) {
-                       // If status = solved : keep the line in case of solution not validated
+                        // If status = solved : keep the line in case of solution not validated
                         $input = [
                             'id'           => $ticket->getID(),
                             '_auto_update' => true,
@@ -276,13 +275,13 @@ class OlaLevel_Ticket extends CommonDBTM
                             if (count($olalevel->criterias)) {
                                 $doit = $olalevel->checkCriterias($ticket->fields);
                             }
-                           // Process rules
+                            // Process rules
                             if ($doit) {
                                 $input = $olalevel->executeActions($input, [], $ticket->fields);
                             }
                         }
 
-                       // Put next level in todo list
+                        // Put next level in todo list
                         if (
                             $next = $olalevel->getNextOlaLevel(
                                 $ticket->fields[$olaField],
@@ -291,21 +290,21 @@ class OlaLevel_Ticket extends CommonDBTM
                         ) {
                             $ola->addLevelToDo($ticket, $next);
                         }
-                       // Action done : drop the line
+                        // Action done : drop the line
                         $olalevelticket->delete(['id' => $data['id']]);
 
                         $ticket->update($input);
                     } else {
-                       // Drop line
+                        // Drop line
                         $olalevelticket->delete(['id' => $data['id']]);
                     }
                 }
             } else {
-               // Drop line
+                // Drop line
                 $olalevelticket->delete(['id' => $data['id']]);
             }
         } else {
-           // Drop line
+            // Drop line
             $olalevelticket->delete(['id' => $data['id']]);
         }
     }
@@ -331,21 +330,21 @@ class OlaLevel_Ticket extends CommonDBTM
                 'glpi_olalevels'  => [
                     'ON' => [
                         'glpi_olalevels_tickets'   => 'olalevels_id',
-                        'glpi_olalevels'           => 'id'
-                    ]
+                        'glpi_olalevels'           => 'id',
+                    ],
                 ],
                 'glpi_olas'       => [
                     'ON' => [
                         'glpi_olalevels'  => 'olas_id',
-                        'glpi_olas'       => 'id'
-                    ]
-                ]
+                        'glpi_olas'       => 'id',
+                    ],
+                ],
             ],
             'WHERE'     => [
                 'glpi_olalevels_tickets.date'       => ['<', QueryFunction::now()],
                 'glpi_olalevels_tickets.tickets_id' => $tickets_id,
-                'glpi_olas.type'                    => $olaType
-            ]
+                'glpi_olas.type'                    => $olaType,
+            ],
         ];
 
         $last_escalation = -1;

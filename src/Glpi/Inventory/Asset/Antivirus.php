@@ -54,7 +54,7 @@ class Antivirus extends InventoryAsset
             'base_version' => 'signature_version',
             'enabled'      => 'is_active',
             'uptodate'     => 'is_uptodate',
-            'expiration'   => 'date_expiration'
+            'expiration'   => 'date_expiration',
         ];
 
         foreach ($this->data as &$val) {
@@ -75,7 +75,7 @@ class Antivirus extends InventoryAsset
             if (!property_exists($val, 'is_uptodate') || empty($val->is_uptodate)) {
                 $val->is_uptodate = 0;
             } else {
-                $val->is_uptodate = (int)$val->is_uptodate;
+                $val->is_uptodate = (int) $val->is_uptodate;
             }
 
             $val->is_dynamic = 1;
@@ -101,8 +101,8 @@ class Antivirus extends InventoryAsset
             'FROM'   => ItemAntivirus::getTable(),
             'WHERE'  => [
                 'itemtype' => $this->item->getType(),
-                'items_id' => $this->item->fields['id']
-            ]
+                'items_id' => $this->item->fields['id'],
+            ],
         ]);
 
         foreach ($iterator as $data) {
@@ -130,7 +130,7 @@ class Antivirus extends InventoryAsset
                 if ($compare == $arraydb) {
                     $itemAntivirus->getFromDB($keydb);
                     $input = $this->handleInput($val, $itemAntivirus) + [
-                        'id'           => $keydb
+                        'id'           => $keydb,
                     ];
                     $itemAntivirus->update($input);
                     unset($value[$k]);

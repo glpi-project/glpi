@@ -64,7 +64,7 @@ if (isset($_POST["add"])) {
         }
     }
     Html::back();
-} else if (isset($_POST["delete"])) {
+} elseif (isset($_POST["delete"])) {
     $datacenter->check($_POST["id"], DELETE);
     $datacenter->delete($_POST);
 
@@ -77,7 +77,7 @@ if (isset($_POST["add"])) {
         sprintf(__('%s deletes an item'), $_SESSION["glpiname"])
     );
     $datacenter->redirectToList();
-} else if (isset($_POST["restore"])) {
+} elseif (isset($_POST["restore"])) {
     $datacenter->check($_POST["id"], DELETE);
 
     $datacenter->restore($_POST);
@@ -90,7 +90,7 @@ if (isset($_POST["add"])) {
         sprintf(__('%s restores an item'), $_SESSION["glpiname"])
     );
     $datacenter->redirectToList();
-} else if (isset($_POST["purge"])) {
+} elseif (isset($_POST["purge"])) {
     $datacenter->check($_POST["id"], PURGE);
 
     $datacenter->delete($_POST, 1);
@@ -103,7 +103,7 @@ if (isset($_POST["add"])) {
         sprintf(__('%s purges an item'), $_SESSION["glpiname"])
     );
     $datacenter->redirectToList();
-} else if (isset($_POST["update"])) {
+} elseif (isset($_POST["update"])) {
     $datacenter->check($_POST["id"], UPDATE);
 
     $datacenter->update($_POST);
@@ -119,6 +119,6 @@ if (isset($_POST["add"])) {
 } else {
     $menus = ["management", "datacenter"];
     Datacenter::displayFullPageForItem($_GET["id"], $menus, [
-        'formoptions'  => "data-track-changes=true"
+        'formoptions'  => "data-track-changes=true",
     ]);
 }

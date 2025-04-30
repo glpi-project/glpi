@@ -36,7 +36,6 @@ namespace Glpi\Tests;
 
 use CommonDBTM;
 use Glpi\Form\AccessControl\FormAccessControl;
-use Glpi\Form\AccessControl\FormAccessParameters;
 use Glpi\Form\AnswersHandler\AnswersHandler;
 use Glpi\Form\AnswersSet;
 use Glpi\Form\Comment;
@@ -48,9 +47,6 @@ use Glpi\Form\Question;
 use Glpi\Form\Section;
 use Glpi\Form\Tag\Tag;
 use Glpi\Form\FormTranslation;
-use Glpi\Session\SessionInfo;
-use Glpi\Tests\FormBuilder;
-use Profile;
 use RuntimeException;
 use Session;
 use Ticket;
@@ -574,7 +570,7 @@ trait FormTesterTrait
             [
                 'translations' => [
                     'one' => $translation,
-                ]
+                ],
             ],
             ['translations']
         );
@@ -665,7 +661,7 @@ trait FormTesterTrait
             $form = new Form();
             $form->update([
                 'id' => $row['id'],
-                'is_active' => false
+                'is_active' => false,
             ]);
         }
     }

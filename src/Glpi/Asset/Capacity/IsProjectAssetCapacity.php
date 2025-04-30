@@ -61,7 +61,7 @@ class IsProjectAssetCapacity extends AbstractCapacity
     public function getCloneRelations(): array
     {
         return [
-            Item_Project::class
+            Item_Project::class,
         ];
     }
 

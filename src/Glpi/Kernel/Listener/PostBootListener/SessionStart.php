@@ -49,7 +49,8 @@ final class SessionStart implements EventSubscriberInterface
     use KernelListenerTrait;
 
     public function __construct(
-        #[Autowire('%kernel.project_dir%')] string $glpi_root,
+        #[Autowire('%kernel.project_dir%')]
+        string $glpi_root,
         array $plugin_directories = PLUGINS_DIRECTORIES,
     ) {
         $this->glpi_root = $glpi_root;
@@ -100,7 +101,7 @@ final class SessionStart implements EventSubscriberInterface
                 || (
                     \str_starts_with($path, '/ajax/dashboard.php')
                     && \in_array($request->get('action'), ['get_dashboard_items', 'get_card', 'get_cards'], true)
-                    && (bool)$request->get('embed')
+                    && (bool) $request->get('embed')
                 )
             ) {
                 // Embed dashboards will need to act in an isolated session context

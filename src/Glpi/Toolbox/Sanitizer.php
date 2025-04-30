@@ -141,11 +141,11 @@ class Sanitizer
     {
         \Toolbox::deprecated();
 
-       // A value is Html Encoded if it does not contains
-       // - `<`;
-       // - `>`;
-       // - `&` not followed by an HTML entity identifier;
-       // and if it contains any entity used to encode HTML special chars during sanitization process.
+        // A value is Html Encoded if it does not contains
+        // - `<`;
+        // - `>`;
+        // - `&` not followed by an HTML entity identifier;
+        // and if it contains any entity used to encode HTML special chars during sanitization process.
         $special_chars_pattern   = '/(<|>|(&(?!#?[a-z0-9]+;)))/i';
         $sanitized_chars = array_merge(
             array_values(self::CHARS_MAPPING),
@@ -173,7 +173,7 @@ class Sanitizer
 
         $value_length = strlen($value);
 
-       // Search for unprotected control chars `NULL`, `\n`, `\r` and `EOF`.
+        // Search for unprotected control chars `NULL`, `\n`, `\r` and `EOF`.
         $control_chars = ["\x00", "\n", "\r", "\x1a"];
         foreach ($control_chars as $char) {
             $char_length = strlen($char);
@@ -186,7 +186,7 @@ class Sanitizer
             }
         }
 
-       // Search for unprotected quotes.
+        // Search for unprotected quotes.
         $quotes = ["'", '"'];
         foreach ($quotes as $char) {
             $i = 0;
@@ -200,7 +200,7 @@ class Sanitizer
 
         $has_special_chars = false;
 
-       // Search for unprotected backslashes.
+        // Search for unprotected backslashes.
         if (str_contains($value, '\\')) {
             $special_chars = ['\x00', '\n', '\r', "\'", '\"', '\x1a'];
             $backslashes_count = 0;
@@ -209,14 +209,14 @@ class Sanitizer
             while (($i = strpos($value, '\\', $i)) !== false) {
                 $has_special_chars = true;
 
-               // Count successive backslashes.
+                // Count successive backslashes.
                 $backslashes_count = 1;
                 while ($i + 1 <= $value_length && substr($value, $i + 1, 1) == '\\') {
                     $backslashes_count++;
                     $i++;
                 }
 
-               // Check if last backslash is related to an escaped special char.
+                // Check if last backslash is related to an escaped special char.
                 foreach ($special_chars as $char) {
                     $char_length = strlen($char);
                     if ($i + $char_length <= $value_length && substr($value, $i, $char_length) == $char) {
@@ -225,7 +225,7 @@ class Sanitizer
                     }
                 }
 
-               // Backslashes are escaped only if there is odd count of them.
+                // Backslashes are escaped only if there is odd count of them.
                 if ($backslashes_count % 2 === 1) {
                     return false; // Unprotected backslash or quote found
                 }
@@ -472,7 +472,7 @@ class Sanitizer
     {
         \Toolbox::deprecated();
 
-       // stripslashes cannot be used here as it would produce "r" and "n" instead of "\r" and \n".
+        // stripslashes cannot be used here as it would produce "r" and "n" instead of "\r" and \n".
 
         if (!(str_contains($value, '\\') && self::isDbEscaped($value))) {
             // Value is not escaped, do not unescape it.
@@ -498,7 +498,7 @@ class Sanitizer
             }
         }
         if (empty($search)) {
-           // Value does not contains any potentially escaped chars.
+            // Value does not contains any potentially escaped chars.
             return $value;
         }
 

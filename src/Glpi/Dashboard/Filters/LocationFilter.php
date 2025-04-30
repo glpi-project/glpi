@@ -64,7 +64,7 @@ class LocationFilter extends AbstractFilter
 
         if ((int) $value > 0) {
             $criteria["WHERE"] = [
-                "$table.locations_id" => (int) $value
+                "$table.locations_id" => (int) $value,
             ];
         }
 
@@ -80,7 +80,7 @@ class LocationFilter extends AbstractFilter
                 'link'       => 'AND',
                 'field'      => self::getSearchOptionID($table, 'locations_id', 'glpi_locations'),
                 'searchtype' => 'equals',
-                'value'      => (int) $value
+                'value'      => (int) $value,
             ];
         }
 

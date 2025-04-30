@@ -88,7 +88,7 @@ abstract class CommonITILObjectParameters extends AbstractParameters
 
         $fields = $commonitil->fields;
 
-       // Base values from ticket property
+        // Base values from ticket property
         $values = [
             'id'        => $fields['id'],
             'ref'       => "#" . $fields['id'],
@@ -104,19 +104,19 @@ abstract class CommonITILObjectParameters extends AbstractParameters
             'priority'  => $commonitil::getPriorityName($fields['priority']),
         ];
 
-       // Add ticket's entity
+        // Add ticket's entity
         if ($entity = Entity::getById($fields['entities_id'])) {
             $entity_parameters = new EntityParameters();
             $values['entity'] = $entity_parameters->getValues($entity);
         }
 
-       // Add ticket's category
+        // Add ticket's category
         if ($itilcategory = ITILCategory::getById($fields['itilcategories_id'])) {
             $itilcategory_parameters = new ITILCategoryParameters();
             $values['itilcategory'] = $itilcategory_parameters->getValues($itilcategory);
         }
 
-       // Add requesters / observers / assigned data
+        // Add requesters / observers / assigned data
         $commonitil->loadActors();
 
         $values['requesters'] = [

@@ -46,6 +46,5 @@ class RouteVersion
         public string $deprecated = '',
         /** @var string $removed The API version this route is removed in */
         public string $removed = ''
-    ) {
-    }
+    ) {}
 }

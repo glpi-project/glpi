@@ -51,7 +51,7 @@ if (isset($_POST['id'])) {
         $stencil->check($_POST['id'], PURGE);
         $stencil->delete($_POST, true);
     }
-} else if (isset($_POST['itemtype'])) {
+} elseif (isset($_POST['itemtype'])) {
     // This code block retrieves an item based on the itemtype and items_id parameters.
     // The itemtype and items_id parameters are necessary because the Stencil class targets multiple objects of different types
     $item = getItemForItemtype($_POST['itemtype']);

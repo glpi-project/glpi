@@ -52,7 +52,7 @@ foreach ($iterator as $notification) {
         'SELECT' => ['id', 'items_id'],
         'FROM'   => 'glpi_notificationtargets',
         'WHERE'  => [
-            'notifications_id' => $notification['id']
+            'notifications_id' => $notification['id'],
         ],
     ]);
     $targets = [];

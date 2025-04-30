@@ -143,7 +143,7 @@ class AssetModelTest extends DbTestCase
             [
                 'name'        => 'Test asset 1',
                 'entities_id' => $root_entity_id,
-                $model_fkey   => $model_1->getID()
+                $model_fkey   => $model_1->getID(),
             ]
         );
         $asset_2 = $this->createItem(
@@ -151,7 +151,7 @@ class AssetModelTest extends DbTestCase
             [
                 'name'        => 'Test asset 2',
                 'entities_id' => $root_entity_id,
-                $model_fkey   => $model_2->getID()
+                $model_fkey   => $model_2->getID(),
             ]
         );
         $asset_3 = $this->createItem(
@@ -159,7 +159,7 @@ class AssetModelTest extends DbTestCase
             [
                 'name'        => 'Test asset 3',
                 'entities_id' => $root_entity_id,
-                $model_fkey   => $model_3->getID()
+                $model_fkey   => $model_3->getID(),
             ]
         );
 

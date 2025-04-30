@@ -73,7 +73,7 @@ final class TilesManager
         // Remove unavailables tiles
         $available_forms = array_filter(
             $tiles,
-            fn (TileInterface $tile): bool => $tile->isAvailable($session_info),
+            fn(TileInterface $tile): bool => $tile->isAvailable($session_info),
         );
 
         return array_values($available_forms);

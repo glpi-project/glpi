@@ -85,8 +85,8 @@ class UnmanagedTest extends AbstractInventoryAsset
                     "action": "netdiscovery",
                     "jobid": 189,
                     "itemtype": "Unmanaged"
-                }'
-            ]
+                }',
+            ],
         ];
     }
 
@@ -138,7 +138,7 @@ class UnmanagedTest extends AbstractInventoryAsset
             'tag'       => 'sub',
             'agenttypes_id' => 1, //Core
             'itemtype' => 'Computer', //Core
-            'items_id' =>  0 //Core
+            'items_id' =>  0, //Core
         ]);
 
         $this->assertGreaterThan(0, $agent_id);
@@ -150,7 +150,7 @@ class UnmanagedTest extends AbstractInventoryAsset
             'entities_id'  => 0,
             'completename' => 'Root entitiy > Entity A',
             'level'        => 2,
-            'tag'          => 'entA'
+            'tag'          => 'entA',
         ]);
         $this->assertGreaterThan(0, $entities_id_a);
 
@@ -159,7 +159,7 @@ class UnmanagedTest extends AbstractInventoryAsset
             'entities_id'  => 0,
             'completename' => 'Root entitiy > Entity B',
             'level'        => 2,
-            'tag'          => 'sub'
+            'tag'          => 'sub',
         ]);
         $this->assertGreaterThan(0, $entities_id_b);
 
@@ -170,7 +170,7 @@ class UnmanagedTest extends AbstractInventoryAsset
             'name'      => 'entity rule 1',
             'match'     => 'AND',
             'sub_type'  => 'RuleImportEntity',
-            'ranking'   => 1
+            'ranking'   => 1,
         ];
         $rule1_id = $rule->add($input);
         $this->assertGreaterThan(0, $rule1_id);
@@ -181,7 +181,7 @@ class UnmanagedTest extends AbstractInventoryAsset
             'rules_id'  => $rule1_id,
             'criteria'  => "tag",
             'pattern'   => "/(.*)/",
-            'condition' => \RuleImportEntity::REGEX_MATCH
+            'condition' => \RuleImportEntity::REGEX_MATCH,
         ];
         $this->assertGreaterThan(0, $rulecriteria->add($input));
 
@@ -189,7 +189,7 @@ class UnmanagedTest extends AbstractInventoryAsset
             'rules_id'  => $rule1_id,
             'criteria'  => "itemtype",
             'pattern'   => "Unmanaged",
-            'condition' => \RuleImportEntity::PATTERN_IS
+            'condition' => \RuleImportEntity::PATTERN_IS,
         ];
         $this->assertGreaterThan(0, $rulecriteria->add($input));
 
@@ -199,7 +199,7 @@ class UnmanagedTest extends AbstractInventoryAsset
             'rules_id'    => $rule1_id,
             'action_type' => 'regex_result',
             'field'       => '_affect_entity_by_tag',
-            'value'       => '#0'
+            'value'       => '#0',
         ];
         $this->assertGreaterThan(0, $ruleaction->add($input));
 
@@ -210,7 +210,7 @@ class UnmanagedTest extends AbstractInventoryAsset
         $conf = new \Glpi\Inventory\Conf();
         $this->assertTrue(
             $conf->saveConf([
-                'import_unmanaged' => 0
+                'import_unmanaged' => 0,
             ])
         );
         $this->logout();
@@ -224,7 +224,7 @@ class UnmanagedTest extends AbstractInventoryAsset
         $conf = new \Glpi\Inventory\Conf();
         $this->assertTrue(
             $conf->saveConf([
-                'import_unmanaged' => 1
+                'import_unmanaged' => 1,
             ])
         );
         $this->logout();
@@ -264,7 +264,7 @@ class UnmanagedTest extends AbstractInventoryAsset
         //update computer to add lock on serial
         $this->assertTrue($unmanaged->update([
             'id' => $unmanaged->fields['id'],
-            'users_id' => getItemByTypeName('User', 'glpi', true)
+            'users_id' => getItemByTypeName('User', 'glpi', true),
         ]));
 
         //get lockedfield field
@@ -572,14 +572,14 @@ class UnmanagedTest extends AbstractInventoryAsset
         //create states to use
         $state = new \State();
         $inv_states_id = $state->add([
-            'name' => 'In use'
+            'name' => 'In use',
         ]);
         $this->assertGreaterThan(0, $inv_states_id);
 
         \Config::setConfigurationValues(
             'inventory',
             [
-                'states_id_default' => $inv_states_id
+                'states_id_default' => $inv_states_id,
             ]
         );
 

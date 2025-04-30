@@ -105,7 +105,7 @@ class TicketParameters extends CommonITILObjectParameters
         $values['tto'] = $fields['time_to_own'];
         $values['ttr'] = $fields['time_to_resolve'];
 
-       // Add ticket's SLA / OLA
+        // Add ticket's SLA / OLA
         $sla_parameters = new SLAParameters();
         if ($sla = SLA::getById($fields['slas_id_tto'])) {
             $values['sla_tto'] = $sla_parameters->getValues($sla);
@@ -121,19 +121,19 @@ class TicketParameters extends CommonITILObjectParameters
             $values['ola_ttr'] = $ola_parameters->getValues($ola);
         }
 
-       // Add ticket's request type
+        // Add ticket's request type
         if ($requesttype = RequestType::getById($fields['requesttypes_id'])) {
             $requesttype_parameters = new RequestTypeParameters();
             $values['requesttype'] = $requesttype_parameters->getValues($requesttype);
         }
 
-       // Add location
+        // Add location
         if ($location = Location::getById($fields['locations_id'])) {
             $location_parameters = new LocationParameters();
             $values['location'] = $location_parameters->getValues($location);
         }
 
-       // Add KBs
+        // Add KBs
         $kbis = KnowbaseItem_Item::getItems($ticket);
         $values['knowbaseitems'] = [];
         foreach ($kbis as $data) {
@@ -143,7 +143,7 @@ class TicketParameters extends CommonITILObjectParameters
             }
         }
 
-       // Add assets
+        // Add assets
         $values['assets'] = [];
         $items_ticket = Item_Ticket::getItemsAssociatedTo($ticket::getType(), $fields['id']);
         foreach ($items_ticket as $item_ticket) {

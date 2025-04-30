@@ -43,14 +43,14 @@ if ($DB->fieldExists(\Unmanaged::getTable(), 'domains_id')) {
     $iterator = $DB->request([
         'SELECT' => ['id', 'domains_id'],
         'FROM'   => \Unmanaged::getTable(),
-        'WHERE'  => ['domains_id' => ['>', 0]]
+        'WHERE'  => ['domains_id' => ['>', 0]],
     ]);
     if (count($iterator)) {
         foreach ($iterator as $row) {
             $DB->insert("glpi_domains_items", [
                 'domains_id'   => $row['domains_id'],
                 'itemtype'     => 'Unmanaged',
-                'items_id'     => $row['id']
+                'items_id'     => $row['id'],
             ]);
         }
     }

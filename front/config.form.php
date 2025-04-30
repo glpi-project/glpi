@@ -81,5 +81,5 @@ if (!empty($_POST['reset_translation_cache'])) {
 }
 
 Config::displayFullPageForItem($_POST['id'], ["config", "config"], [
-    'formoptions'  => "data-track-changes=true"
+    'formoptions'  => "data-track-changes=true",
 ]);

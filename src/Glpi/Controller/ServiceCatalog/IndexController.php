@@ -81,8 +81,7 @@ final class IndexController extends AbstractController
             'title' => __("New ticket"),
             'menu'  => $this->interface == "central"
                 ? ["helpdesk", ServiceCatalog::class]
-                : ["create_ticket"]
-            ,
+                : ["create_ticket"],
             'items' => $items,
             'sort_strategies' => SortStrategyEnum::getAvailableStrategies(),
             'default_sort_strategy' => SortStrategyEnum::getDefault()->value,

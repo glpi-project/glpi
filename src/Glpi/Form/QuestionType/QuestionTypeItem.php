@@ -45,7 +45,6 @@ use Glpi\Form\Export\Context\DatabaseMapper;
 use Glpi\Form\Export\Serializer\DynamicExportDataField;
 use Glpi\Form\Export\Specification\DataRequirementSpecification;
 use Glpi\Form\Migration\FormQuestionDataConverterInterface;
-use Glpi\Form\Condition\ConditionHandler\ConditionHandlerInterface;
 use Glpi\Form\Condition\ConditionHandler\ItemConditionHandler;
 use Glpi\Form\Condition\UsedAsCriteriaInterface;
 use Glpi\Form\Question;
@@ -129,7 +128,7 @@ class QuestionTypeItem extends AbstractQuestionType implements FormQuestionDataC
             ),
             __('Management') => $CFG_GLPI['management_types'],
             __('Tools') => $CFG_GLPI['tools_types'],
-            __('Administration') => $CFG_GLPI['admin_types']
+            __('Administration') => $CFG_GLPI['admin_types'],
         ];
     }
 

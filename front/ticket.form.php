@@ -53,11 +53,11 @@ if (!isset($_GET['id'])) {
 $date_fields = [
     'date',
     'due_date',
-    'time_to_own'
+    'time_to_own',
 ];
 
 foreach ($date_fields as $date_field) {
-   //handle not clean dates...
+    //handle not clean dates...
     if (
         isset($_POST["_$date_field"])
         && isset($_POST[$date_field])
@@ -83,22 +83,22 @@ if (isset($_POST["add"])) {
         }
     }
     Html::back();
-} else if (isset($_POST['update'])) {
+} elseif (isset($_POST['update'])) {
     if (!$track::canUpdate()) {
         throw new AccessDeniedHttpException();
     }
     $track->update($_POST);
 
     if (isset($_POST['kb_linked_id'])) {
-       //if solution should be linked to selected KB entry
+        //if solution should be linked to selected KB entry
         $params = [
             'knowbaseitems_id' => $_POST['kb_linked_id'],
             'itemtype'         => $track->getType(),
-            'items_id'         => $track->getID()
+            'items_id'         => $track->getID(),
         ];
         $existing = $DB->request([
             'FROM' => 'glpi_knowbaseitems_items',
-            'WHERE' => $params
+            'WHERE' => $params,
         ]);
         if ($existing->numrows() == 0) {
             $kb_item_item = new KnowbaseItem_Item();
@@ -117,7 +117,7 @@ if (isset($_POST["add"])) {
 
     if ($track->can($_POST["id"], READ)) {
         $toadd = '';
-       // Copy solution to KB redirect to KB
+        // Copy solution to KB redirect to KB
         if (isset($_POST['_sol_to_kb']) && $_POST['_sol_to_kb']) {
             $toadd = "&_sol_to_kb=1";
         }
@@ -129,7 +129,7 @@ if (isset($_POST["add"])) {
         ERROR
     );
     Html::redirect($CFG_GLPI["root_doc"] . "/front/ticket.php");
-} else if (isset($_POST['delete'])) {
+} elseif (isset($_POST['delete'])) {
     $track->check($_POST['id'], DELETE);
     if ($track->delete($_POST)) {
         Event::log(
@@ -142,7 +142,7 @@ if (isset($_POST["add"])) {
         );
     }
     $track->redirectToList();
-} else if (isset($_POST['purge'])) {
+} elseif (isset($_POST['purge'])) {
     $track->check($_POST['id'], PURGE);
     if ($track->delete($_POST, 1)) {
         Event::log(
@@ -155,7 +155,7 @@ if (isset($_POST["add"])) {
         );
     }
     $track->redirectToList();
-} else if (isset($_POST["restore"])) {
+} elseif (isset($_POST["restore"])) {
     $track->check($_POST['id'], DELETE);
     if ($track->restore($_POST)) {
         Event::log(
@@ -168,7 +168,7 @@ if (isset($_POST["add"])) {
         );
     }
     Html::back();
-} else if (isset($_POST['sla_delete'])) {
+} elseif (isset($_POST['sla_delete'])) {
     $track->check($_POST["id"], UPDATE);
 
     $track->deleteLevelAgreement("SLA", $_POST["id"], $_POST['type'], $_POST['delete_date']);
@@ -182,7 +182,7 @@ if (isset($_POST["add"])) {
     );
 
     Html::redirect(Ticket::getFormURLWithID($_POST["id"]));
-} else if (isset($_POST['ola_delete'])) {
+} elseif (isset($_POST['ola_delete'])) {
     $track->check($_POST["id"], UPDATE);
 
     $track->deleteLevelAgreement("OLA", $_POST["id"], $_POST['type'], $_POST['delete_date']);
@@ -196,7 +196,7 @@ if (isset($_POST["add"])) {
     );
 
     Html::redirect(Ticket::getFormURLWithID($_POST["id"]));
-} else if (isset($_POST['addme_as_actor'])) {
+} elseif (isset($_POST['addme_as_actor'])) {
     $id = (int) $_POST['id'];
     $track->check($id, READ);
     $input = array_merge($track->fields, [
@@ -205,7 +205,7 @@ if (isset($_POST["add"])) {
             '_type' => "user",
             'users_id' => Session::getLoginUserID(),
             'use_notification' => 1,
-        ]
+        ],
     ]);
     $track->update($input);
     Event::log(
@@ -217,15 +217,15 @@ if (isset($_POST["add"])) {
         sprintf(__('%s adds an actor'), $_SESSION["glpiname"])
     );
     Html::redirect(Ticket::getFormURLWithID($id));
-} else if (isset($_POST['delete_document'])) {
-    $track->getFromDB((int)$_POST['tickets_id']);
+} elseif (isset($_POST['delete_document'])) {
+    $track->getFromDB((int) $_POST['tickets_id']);
     $doc = new Document();
-    $doc->getFromDB((int)$_POST['documents_id']);
+    $doc->getFromDB((int) $_POST['documents_id']);
     if ($doc->can($doc->getID(), UPDATE)) {
         $document_item = new Document_Item();
         $found_document_items = $document_item->find([
             $track->getAssociatedDocumentsCriteria(),
-            'documents_id' => $doc->getID()
+            'documents_id' => $doc->getID(),
         ]);
         foreach ($found_document_items as $item) {
             $document_item->delete($item, true);
@@ -234,7 +234,7 @@ if (isset($_POST["add"])) {
     Html::back();
 }
 
-$id = (int)$_GET['id'];
+$id = (int) $_GET['id'];
 if ($id > 0) {
     $available_options = ['_openfollowup'];
     $options = [];

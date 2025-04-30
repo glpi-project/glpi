@@ -57,7 +57,7 @@ final class EngineVisibilityOutput implements JsonSerializable
     {
         $visible = array_filter(
             $this->sections_visibility,
-            fn ($is_visible): bool => $is_visible
+            fn($is_visible): bool => $is_visible
         );
         return count($visible);
     }

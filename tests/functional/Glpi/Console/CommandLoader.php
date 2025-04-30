@@ -192,7 +192,7 @@ PHP,
                     'inc' => [
                         // Not a command case
                         'misc.class.php' => '<?php class PluginMiscMisc {}',
-                    ]
+                    ],
                 ],
             ],
             'tests' => [
@@ -249,11 +249,11 @@ PHP,
                             'inc' => [
                                 // Not a command case
                                 'something.class.php' => '<?php class PluginRandomSomething {}',
-                            ]
+                            ],
                         ],
                     ],
                 ],
-            ]
+            ],
         ];
         vfsStream::setup('glpi', null, $structure);
 

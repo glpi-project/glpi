@@ -257,7 +257,7 @@ class HasRemoteManagementCapacityTest extends DbTestCase
     public static function provideIsUsed(): iterable
     {
         yield [
-            'target_classname' => Item_RemoteManagement::class
+            'target_classname' => Item_RemoteManagement::class,
         ];
     }
 
@@ -265,7 +265,7 @@ class HasRemoteManagementCapacityTest extends DbTestCase
     {
         yield [
             'target_classname' => Item_RemoteManagement::class,
-            'expected' => '%d remote management items attached to %d assets'
+            'expected' => '%d remote management items attached to %d assets',
         ];
     }
 }

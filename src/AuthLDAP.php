@@ -152,7 +152,7 @@ class AuthLDAP extends CommonDBTM
         '1.0' => '1.0',
         '1.1' => '1.1',
         '1.2' => '1.2',
-        '1.3' => '1.3'
+        '1.3' => '1.3',
     ];
 
     // From CommonDBTM
@@ -416,7 +416,7 @@ class AuthLDAP extends CommonDBTM
                             'authldaps_id' => $_REQUEST['authldaps_id'],
                             'entities_id'  => $entity,
                             'is_recursive' => $is_recursive,
-                            'type'         => $input['ldap_import_type'][$id]
+                            'type'         => $input['ldap_import_type'][$id],
                         ];
                         if (self::ldapImportGroup($group_dn, $options)) {
                             $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
@@ -425,7 +425,7 @@ class AuthLDAP extends CommonDBTM
                             $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION, $group_dn));
                         }
                     }
-                   // Clean history as id does not correspond to group
+                    // Clean history as id does not correspond to group
                     $_SESSION['glpimassiveactionselected'] = [];
                 }
                 return;
@@ -441,7 +441,7 @@ class AuthLDAP extends CommonDBTM
                     if (
                         self::ldapImportUserByServerId(
                             ['method' => self::IDENTIFIER_LOGIN,
-                                'value'  => $id
+                                'value'  => $id,
                             ],
                             (int) $_REQUEST['mode'],
                             $_REQUEST['authldaps_id'],
@@ -503,13 +503,13 @@ class AuthLDAP extends CommonDBTM
             TemplateRenderer::getInstance()->display('pages/setup/ldap/form.html.twig', [
                 'item' => $this,
                 'params' => $options,
-                'hidden_fields' => $hidden_fields
+                'hidden_fields' => $hidden_fields,
             ]);
         } else {
             $twig_params = [
                 'missing_ext' => sprintf(__('%s extension is missing'), 'LDAP'),
                 'impossible_to_use_ldap' => __('Impossible to use LDAP as external source of connection'),
-                'support_promote_message' => GLPINetwork::getSupportPromoteMessage()
+                'support_promote_message' => GLPINetwork::getSupportPromoteMessage(),
             ];
             // language=Twig
             echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
@@ -540,7 +540,7 @@ TWIG, $twig_params);
             'params' => [
                 'formfooter' => false,
                 'candel' => false, // No deletion outside the main tab
-            ]
+            ],
         ]);
     }
 
@@ -562,9 +562,9 @@ TWIG, $twig_params);
         $iterator = $DB->request([
             'FROM'   => 'glpi_authldapreplicates',
             'WHERE'  => [
-                'authldaps_id' => $ID
+                'authldaps_id' => $ID,
             ],
-            'ORDER'  => ['name']
+            'ORDER'  => ['name'],
         ]);
 
         if (count($iterator) > 0) {
@@ -623,7 +623,7 @@ TWIG, ['authldaps_id' => $ID]);
                 ],
                 'formatters' => [
                     'timeout' => 'integer',
-                    'test' => 'raw_html'
+                    'test' => 'raw_html',
                 ],
                 'entries' => $entries,
                 'total_number' => count($entries),
@@ -632,8 +632,8 @@ TWIG, ['authldaps_id' => $ID]);
                 'massiveactionparams' => [
                     'num_displayed' => count($entries),
                     'container'     => 'massAuthLdapReplicate' . mt_rand(),
-                    'item'          => $this
-                ]
+                    'item'          => $this,
+                ],
             ]);
         }
     }
@@ -673,7 +673,7 @@ TWIG, ['authldaps_id' => $ID]);
         $tmp = [
             self::GROUP_SEARCH_USER    => __('In users'),
             self::GROUP_SEARCH_GROUP   => __('In groups'),
-            self::GROUP_SEARCH_BOTH    => __('In users and groups')
+            self::GROUP_SEARCH_BOTH    => __('In users and groups'),
         ];
 
         if (is_null($val)) {
@@ -694,7 +694,7 @@ TWIG, ['authldaps_id' => $ID]);
             'params' => [
                 'formfooter' => false,
                 'candel' => false, // No deletion outside the main tab
-            ]
+            ],
         ]);
     }
 
@@ -810,7 +810,7 @@ TWIG, ['authldaps_id' => $ID]);
                 'begin_date_field'          => __('Valid since'),
                 'end_date_field'            => __('Valid until'),
                 'responsible_field'         => __('Supervisor'),
-            ]
+            ],
         ]);
     }
 
@@ -831,7 +831,7 @@ TWIG, ['authldaps_id' => $ID]);
 
         $tab[] = [
             'id'                 => 'common',
-            'name'               => static::getTypeName(1)
+            'name'               => static::getTypeName(1),
         ];
 
         $tab[] = [
@@ -840,7 +840,7 @@ TWIG, ['authldaps_id' => $ID]);
             'field'              => 'name',
             'name'               => __('Name'),
             'datatype'           => 'itemlink',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -849,7 +849,7 @@ TWIG, ['authldaps_id' => $ID]);
             'field'              => 'id',
             'name'               => __('ID'),
             'datatype'           => 'number',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -857,7 +857,7 @@ TWIG, ['authldaps_id' => $ID]);
             'table'              => static::getTable(),
             'field'              => 'host',
             'name'               => __('Server'),
-            'datatype'           => 'string'
+            'datatype'           => 'string',
         ];
 
         $tab[] = [
@@ -865,7 +865,7 @@ TWIG, ['authldaps_id' => $ID]);
             'table'              => static::getTable(),
             'field'              => 'port',
             'name'               => _n('Port', 'Ports', 1),
-            'datatype'           => 'integer'
+            'datatype'           => 'integer',
         ];
 
         $tab[] = [
@@ -873,7 +873,7 @@ TWIG, ['authldaps_id' => $ID]);
             'table'              => static::getTable(),
             'field'              => 'basedn',
             'name'               => __('BaseDN'),
-            'datatype'           => 'string'
+            'datatype'           => 'string',
         ];
 
         $tab[] = [
@@ -881,7 +881,7 @@ TWIG, ['authldaps_id' => $ID]);
             'table'              => static::getTable(),
             'field'              => 'condition',
             'name'               => __('Connection filter'),
-            'datatype'           => 'text'
+            'datatype'           => 'text',
         ];
 
         $tab[] = [
@@ -890,7 +890,7 @@ TWIG, ['authldaps_id' => $ID]);
             'field'              => 'is_default',
             'name'               => __('Default server'),
             'datatype'           => 'bool',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -899,7 +899,7 @@ TWIG, ['authldaps_id' => $ID]);
             'field'              => 'login_field',
             'name'               => __('Login field'),
             'massiveaction'      => false,
-            'datatype'           => 'string'
+            'datatype'           => 'string',
         ];
 
         $tab[] = [
@@ -908,7 +908,7 @@ TWIG, ['authldaps_id' => $ID]);
             'field'              => 'realname_field',
             'name'               => __('Surname'),
             'massiveaction'      => false,
-            'datatype'           => 'string'
+            'datatype'           => 'string',
         ];
 
         $tab[] = [
@@ -917,7 +917,7 @@ TWIG, ['authldaps_id' => $ID]);
             'field'              => 'firstname_field',
             'name'               => __('First name'),
             'massiveaction'      => false,
-            'datatype'           => 'string'
+            'datatype'           => 'string',
         ];
 
         $tab[] = [
@@ -926,7 +926,7 @@ TWIG, ['authldaps_id' => $ID]);
             'field'              => 'phone_field',
             'name'               =>  _x('ldap', 'Phone'),
             'massiveaction'      => false,
-            'datatype'           => 'string'
+            'datatype'           => 'string',
         ];
 
         $tab[] = [
@@ -935,7 +935,7 @@ TWIG, ['authldaps_id' => $ID]);
             'field'              => 'phone2_field',
             'name'               => __('Phone 2'),
             'massiveaction'      => false,
-            'datatype'           => 'string'
+            'datatype'           => 'string',
         ];
 
         $tab[] = [
@@ -944,7 +944,7 @@ TWIG, ['authldaps_id' => $ID]);
             'field'              => 'mobile_field',
             'name'               => __('Mobile phone'),
             'massiveaction'      => false,
-            'datatype'           => 'string'
+            'datatype'           => 'string',
         ];
 
         $tab[] = [
@@ -953,7 +953,7 @@ TWIG, ['authldaps_id' => $ID]);
             'field'              => 'title_field',
             'name'               => _x('person', 'Title'),
             'massiveaction'      => false,
-            'datatype'           => 'string'
+            'datatype'           => 'string',
         ];
 
         $tab[] = [
@@ -962,7 +962,7 @@ TWIG, ['authldaps_id' => $ID]);
             'field'              => 'category_field',
             'name'               => _n('Category', 'Categories', 1),
             'massiveaction'      => false,
-            'datatype'           => 'string'
+            'datatype'           => 'string',
         ];
 
         $tab[] = [
@@ -970,7 +970,7 @@ TWIG, ['authldaps_id' => $ID]);
             'table'              => static::getTable(),
             'field'              => 'comment',
             'name'               => __('Comments'),
-            'datatype'           => 'text'
+            'datatype'           => 'text',
         ];
 
         $tab[] = [
@@ -979,7 +979,7 @@ TWIG, ['authldaps_id' => $ID]);
             'field'              => 'email1_field',
             'name'               => _n('Email', 'Emails', 1),
             'massiveaction'      => false,
-            'datatype'           => 'string'
+            'datatype'           => 'string',
         ];
 
         $tab[] = [
@@ -988,7 +988,7 @@ TWIG, ['authldaps_id' => $ID]);
             'field'              => 'email2_field',
             'name'               => sprintf(__('%1$s %2$s'), _n('Email', 'Emails', 1), '2'),
             'massiveaction'      => false,
-            'datatype'           => 'string'
+            'datatype'           => 'string',
         ];
 
         $tab[] = [
@@ -997,7 +997,7 @@ TWIG, ['authldaps_id' => $ID]);
             'field'              => 'email3_field',
             'name'               => sprintf(__('%1$s %2$s'), _n('Email', 'Emails', 1), '3'),
             'massiveaction'      => false,
-            'datatype'           => 'string'
+            'datatype'           => 'string',
         ];
 
         $tab[] = [
@@ -1006,7 +1006,7 @@ TWIG, ['authldaps_id' => $ID]);
             'field'              => 'email4_field',
             'name'               => sprintf(__('%1$s %2$s'), _n('Email', 'Emails', 1), '4'),
             'massiveaction'      => false,
-            'datatype'           => 'string'
+            'datatype'           => 'string',
         ];
 
         $tab[] = [
@@ -1015,7 +1015,7 @@ TWIG, ['authldaps_id' => $ID]);
             'field'              => 'use_dn',
             'name'               => __('Use DN in the search'),
             'datatype'           => 'bool',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -1024,7 +1024,7 @@ TWIG, ['authldaps_id' => $ID]);
             'field'              => 'date_mod',
             'name'               => __('Last update'),
             'datatype'           => 'datetime',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -1033,7 +1033,7 @@ TWIG, ['authldaps_id' => $ID]);
             'field'              => 'date_creation',
             'name'               => __('Creation date'),
             'datatype'           => 'datetime',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -1042,7 +1042,7 @@ TWIG, ['authldaps_id' => $ID]);
             'field'              => 'language_field',
             'name'               => __('Language'),
             'massiveaction'      => false,
-            'datatype'           => 'string'
+            'datatype'           => 'string',
         ];
 
         $tab[] = [
@@ -1051,7 +1051,7 @@ TWIG, ['authldaps_id' => $ID]);
             'field'              => 'group_field',
             'name'               => __('User attribute containing its groups'),
             'massiveaction'      => false,
-            'datatype'           => 'string'
+            'datatype'           => 'string',
         ];
 
         $tab[] = [
@@ -1060,7 +1060,7 @@ TWIG, ['authldaps_id' => $ID]);
             'field'              => 'group_condition',
             'name'               => __('Filter to search in groups'),
             'massiveaction'      => false,
-            'datatype'           => 'text'
+            'datatype'           => 'text',
         ];
 
         $tab[] = [
@@ -1069,7 +1069,7 @@ TWIG, ['authldaps_id' => $ID]);
             'field'              => 'group_member_field',
             'name'               => __('Group attribute containing its users'),
             'massiveaction'      => false,
-            'datatype'           => 'string'
+            'datatype'           => 'string',
         ];
 
         $tab[] = [
@@ -1078,7 +1078,7 @@ TWIG, ['authldaps_id' => $ID]);
             'field'              => 'group_search_type',
             'datatype'           => 'specific',
             'name'               => __('Search type'),
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -1086,7 +1086,7 @@ TWIG, ['authldaps_id' => $ID]);
             'table'              => static::getTable(),
             'field'              => 'is_active',
             'name'               => __('Active'),
-            'datatype'           => 'bool'
+            'datatype'           => 'bool',
         ];
 
         $tab[] = [
@@ -1095,7 +1095,7 @@ TWIG, ['authldaps_id' => $ID]);
             'field'              => 'sync_field',
             'name'               => __('Synchronization field'),
             'massiveaction'      => false,
-            'datatype'           => 'string'
+            'datatype'           => 'string',
         ];
 
         $tab[] = [
@@ -1104,7 +1104,7 @@ TWIG, ['authldaps_id' => $ID]);
             'field'              => 'responsible_field',
             'name'               => __('Supervisor'),
             'massiveaction'      => false,
-            'datatype'           => 'string'
+            'datatype'           => 'string',
         ];
 
         $tab[] = [
@@ -1125,7 +1125,7 @@ TWIG, ['authldaps_id' => $ID]);
             'datatype'           => 'number',
             'unit'               => 'second',
             'toadd'              => [
-                '0'                  => __('No timeout')
+                '0'                  => __('No timeout'),
             ],
         ];
 
@@ -1135,7 +1135,7 @@ TWIG, ['authldaps_id' => $ID]);
             'field'              => 'begin_date_field',
             'name'               => __('Valid since'),
             'massiveaction'      => false,
-            'datatype'           => 'string'
+            'datatype'           => 'string',
         ];
 
         $tab[] = [
@@ -1144,7 +1144,7 @@ TWIG, ['authldaps_id' => $ID]);
             'field'              => 'end_date_field',
             'name'               => __('Valid until'),
             'massiveaction'      => false,
-            'datatype'           => 'string'
+            'datatype'           => 'string',
         ];
 
         return $tab;
@@ -1171,7 +1171,7 @@ TWIG, ['authldaps_id' => $ID]);
                     'BaseDN'            => 'basedn',
                     'Connection filter' => 'condition',
                     'RootDN'            => 'rootdn',
-                    'Use TLS'           => 'use_tls'
+                    'Use TLS'           => 'use_tls',
                 ];
                 $msg   = '';
                 $first = true;
@@ -1187,7 +1187,7 @@ TWIG, ['authldaps_id' => $ID]);
 
         return [
             'label' => self::getTypeName(Session::getPluralNumber()),
-            'content' => $content
+            'content' => $content,
         ];
     }
 
@@ -1345,19 +1345,19 @@ TWIG, ['authldaps_id' => $ID]);
         $config_ldap = new self();
         $res         = $config_ldap->getFromDB($auths_id);
 
-       // we prevent some delay...
+        // we prevent some delay...
         if (!$res) {
             return false;
         }
 
-       //Test connection to a replicate
+        //Test connection to a replicate
         if ($replicate_id !== -1) {
             $replicate = new AuthLdapReplicate();
             $replicate->getFromDB($replicate_id);
             $host = $replicate->fields["host"];
             $port = $replicate->fields["port"];
         } else {
-           //Test connection to a master ldap server
+            //Test connection to a master ldap server
             $host = $config_ldap->fields['host'];
             $port = $config_ldap->fields['port'];
         }
@@ -1410,12 +1410,12 @@ TWIG, ['authldaps_id' => $ID]);
         if (@fsockopen($host, $port_num, $errno, $errstr, 5)) {
             return [
                 'success' => true,
-                'message' => sprintf(__('Connection to %s on port %s succeeded'), $host, $port_num)
+                'message' => sprintf(__('Connection to %s on port %s succeeded'), $host, $port_num),
             ];
         } else {
             return [
                 'success' => false,
-                'message' => sprintf(__('%s (ERR: %s) to %s on port %s'), $errstr, $errno, $host, $port_num)
+                'message' => sprintf(__('%s (ERR: %s) to %s on port %s'), $errstr, $errno, $host, $port_num),
             ];
         }
     }
@@ -1432,12 +1432,12 @@ TWIG, ['authldaps_id' => $ID]);
         if (!empty($this->fields['basedn'])) {
             return [
                 'success' => true,
-                'message' => sprintf(__('Base DN "%s" is configured'), $this->fields['basedn'])
+                'message' => sprintf(__('Base DN "%s" is configured'), $this->fields['basedn']),
             ];
         } else {
             return [
                 'success' => false,
-                'message' => __('Base DN is not configured')
+                'message' => __('Base DN is not configured'),
             ];
         }
     }
@@ -1454,12 +1454,12 @@ TWIG, ['authldaps_id' => $ID]);
         if (@ldap_connect($this->fields['host'], $this->fields['port'])) {
             return [
                 'success' => true,
-                'message' => __('LDAP URI check succeeded')
+                'message' => __('LDAP URI check succeeded'),
             ];
         } else {
             return [
                 'success' => false,
-                'message' => sprintf(__('LDAP URI was not parseable (%s:%s)'), $this->fields['host'], $this->fields['port'])
+                'message' => sprintf(__('LDAP URI was not parseable (%s:%s)'), $this->fields['host'], $this->fields['port']),
             ];
         }
     }
@@ -1492,18 +1492,18 @@ TWIG, ['authldaps_id' => $ID]);
                 $connection = $connection_result;
                 return [
                     'success' => true,
-                    'message' => __('Authentication succeeded')
+                    'message' => __('Authentication succeeded'),
                 ];
             } else {
                 return [
                     'success' => false,
-                    'message' => sprintf(__('Authentication failed: %s(%s)'), self::$last_error, self::$last_errno)
+                    'message' => sprintf(__('Authentication failed: %s(%s)'), self::$last_error, self::$last_errno),
                 ];
             }
         } else {
             return [
                 'success' => true,
-                'message' => __('Bind user / password authentication is disabled.')
+                'message' => __('Bind user / password authentication is disabled.'),
             ];
         }
     }
@@ -1547,24 +1547,24 @@ TWIG, ['authldaps_id' => $ID]);
                 if ($info['count'] > 0) {
                     return [
                         'success' => true,
-                        'message' => sprintf(__('Search succeeded (%d entries found)'), $info['count'])
+                        'message' => sprintf(__('Search succeeded (%d entries found)'), $info['count']),
                     ];
                 } else {
                     return [
                         'success' => false,
-                        'message' => sprintf(__('Search failed: %s(%s)'), ldap_error($connection), ldap_errno($connection))
+                        'message' => sprintf(__('Search failed: %s(%s)'), ldap_error($connection), ldap_errno($connection)),
                     ];
                 }
             } else {
                 return [
                     'success' => false,
-                    'message' => sprintf(__('Search failed: %s(%s)'), ldap_error($connection), ldap_errno($connection))
+                    'message' => sprintf(__('Search failed: %s(%s)'), ldap_error($connection), ldap_errno($connection)),
                 ];
             }
         } else {
             return [
                 'success' => false,
-                'message' => sprintf(__('Search failed: %s(%s)'), ldap_error($connection), ldap_errno($connection))
+                'message' => sprintf(__('Search failed: %s(%s)'), ldap_error($connection), ldap_errno($connection)),
             ];
         }
     }
@@ -1638,7 +1638,7 @@ TWIG, $twig_params);
         $entries = [];
         foreach ($ldap_users as $userinfos) {
             $entry = [
-                'id' => $userinfos['uid']
+                'id' => $userinfos['uid'],
             ];
             if ($config_ldap->isSyncFieldEnabled()) {
                 $entry['sync_field'] = $userinfos['uid'];
@@ -1679,7 +1679,7 @@ TWIG, $twig_params);
             'columns' => $columns,
             'formatters' => [
                 'user' => 'raw_html',
-                'date_mod' => 'datetime'
+                'date_mod' => 'datetime',
             ],
             'entries' => $entries,
             'total_number' => $total_results,
@@ -1695,9 +1695,9 @@ TWIG, $twig_params);
                     'massive_action_fields' => [
                         'authldaps_id',
                         'mode',
-                    ]
+                    ],
                 ],
-            ]
+            ],
         ]);
         echo "</div>";
     }
@@ -1739,9 +1739,9 @@ TWIG, $twig_params);
                         'iscritical' => true,
                         'value'     => [
                             'size'   => $config_ldap->fields['pagesize'],
-                            'cookie' => $cookie
-                        ]
-                    ]
+                            'cookie' => $cookie,
+                        ],
+                    ],
                 ];
                 $sr = @ldap_search($ds, $values['basedn'], $filter, $attrs, 0, -1, -1, LDAP_DEREF_NEVER, $controls);
                 if (
@@ -1783,19 +1783,19 @@ TWIG, $twig_params);
             }
 
             if (in_array(ldap_errno($ds), [4,11])) {
-               // openldap return 4 for Size limit exceeded
+                // openldap return 4 for Size limit exceeded
                 $limitexceeded = true;
             }
 
             $info = self::get_entries_clean($ds, $sr);
             if (in_array(ldap_errno($ds), [4,11])) {
-               // openldap return 4 for Size limit exceeded
+                // openldap return 4 for Size limit exceeded
                 $limitexceeded = true;
             }
 
             $count += $info['count'];
-           //If page results are enabled and the number of results is greater than the maximum allowed
-           //warn user that limit is exceeded and stop search
+            //If page results are enabled and the number of results is greater than the maximum allowed
+            //warn user that limit is exceeded and stop search
             if (
                 self::isLdapPageSizeAvailable($config_ldap)
                 && $config_ldap->fields['ldap_maxlimit']
@@ -1813,9 +1813,9 @@ TWIG, $twig_params);
                     $uid = self::getFieldValue($info[$ligne], $field_for_sync);
 
                     if ($login_field != $field_for_sync && !isset($info[$ligne][$login_field])) {
-                         trigger_error("Missing field $login_field for LDAP entry $field_for_sync $uid", E_USER_WARNING);
-                         //Login field may be missing... Skip the user
-                         continue;
+                        trigger_error("Missing field $login_field for LDAP entry $field_for_sync $uid", E_USER_WARNING);
+                        //Login field may be missing... Skip the user
+                        continue;
                     }
 
                     if (isset($info[$ligne]['modifytimestamp'])) {
@@ -1830,14 +1830,14 @@ TWIG, $twig_params);
                     $user_infos[$uid]["user_dn"] = $info[$ligne]['dn'];
                     $user_infos[$uid][$field_for_sync] = $uid;
                     if ($config_ldap->isSyncFieldEnabled()) {
-                          $user_infos[$uid][$login_field] = $info[$ligne][$login_field][0];
+                        $user_infos[$uid][$login_field] = $info[$ligne][$login_field][0];
                     }
 
                     if ($values['mode'] == self::ACTION_IMPORT) {
-                         //If ldap add
-                         $ldap_users[$uid] = $uid;
+                        //If ldap add
+                        $ldap_users[$uid] = $uid;
                     } else {
-                       //If ldap synchronisation
+                        //If ldap synchronisation
                         if (isset($info[$ligne]['modifytimestamp'])) {
                             $ldap_users[$uid] = self::ldapStamp2UnixStamp(
                                 $info[$ligne]['modifytimestamp'][0],
@@ -1891,16 +1891,16 @@ TWIG, $twig_params);
         ];
 
         foreach ($options as $option => $value) {
-           // this test break mode detection - if ($value != '') {
+            // this test break mode detection - if ($value != '') {
             $values[$option] = $value;
-           //}
+            //}
         }
 
         $ldap_users    = [];
         $user_infos    = [];
         $limitexceeded = false;
 
-       // we prevent some delay...
+        // we prevent some delay...
         if (!$res) {
             return false;
         }
@@ -1911,14 +1911,14 @@ TWIG, $twig_params);
         $field_for_sync = $config_ldap->getLdapIdentifierToUse();
         $field_for_db   = $config_ldap->getDatabaseIdentifierToUse();
         if ($ds) {
-           //Search for ldap login AND modifyTimestamp,
-           //which indicates the last update of the object in directory
+            //Search for ldap login AND modifyTimestamp,
+            //which indicates the last update of the object in directory
             $attrs = [$config_ldap->fields['login_field'], "modifyTimestamp"];
             if ($field_for_sync !== $config_ldap->fields['login_field']) {
                 $attrs[] = $field_for_sync;
             }
 
-           // Try a search to find the DN
+            // Try a search to find the DN
             if ($values['ldap_filter'] === '') {
                 $filter = "(" . $field_for_sync . "=*)";
                 if (!empty($config_ldap->fields['condition'])) {
@@ -1956,13 +1956,13 @@ TWIG, $twig_params);
 
         $select = [
             'FROM'   => User::getTable(),
-            'ORDER'  => ['name ' . $values['order']]
+            'ORDER'  => ['name ' . $values['order']],
         ];
 
         if ($values['mode'] !== self::ACTION_IMPORT) {
             $select['WHERE'] = [
                 'authtype'  => [-1, Auth::NOT_YET_AUTHENTIFIED, Auth::LDAP, Auth::EXTERNAL, Auth::CAS],
-                'auths_id'  => $options['authldaps_id']
+                'auths_id'  => $options['authldaps_id'],
             ];
         }
 
@@ -1971,22 +1971,22 @@ TWIG, $twig_params);
         foreach ($iterator as $user) {
             $tmpuser = new User();
 
-           //Ldap add : fill the array with the login of the user
+            //Ldap add : fill the array with the login of the user
             if ($values['mode'] === self::ACTION_IMPORT) {
                 $glpi_users[$user['name']] = $user['name'];
             } else {
-               //Ldap synchronisation : look if the user exists in the directory
-               //and compares the modifications dates (ldap and glpi db)
+                //Ldap synchronisation : look if the user exists in the directory
+                //and compares the modifications dates (ldap and glpi db)
                 $userfound = self::dnExistsInLdap($user_infos, $user['user_dn']);
                 if (!empty($ldap_users[$user[$field_for_db]]) || $userfound) {
-                   // userfound seems that user dn is present in GLPI DB but do not correspond to an GLPI user
-                   // -> renaming case
+                    // userfound seems that user dn is present in GLPI DB but do not correspond to an GLPI user
+                    // -> renaming case
                     if ($userfound) {
                         //Get user in DB with this dn
                         if (!$tmpuser->getFromDBByDn($user['user_dn'])) {
-                          //This should never happened
-                          //If a user_dn is present more than one time in database
-                          //Just skip user synchronization to avoid errors
+                            //This should never happened
+                            //If a user_dn is present more than one time in database
+                            //Just skip user synchronization to avoid errors
                             continue;
                         }
                         $glpi_users[] = ['id'         => $user['id'],
@@ -1994,22 +1994,22 @@ TWIG, $twig_params);
                             $field_for_sync => ($userfound[$config_ldap->fields['sync_field']] ?? 'NULL'),
                             'timestamp'  => $user_infos[$userfound[$field_for_sync]]['timestamp'],
                             'date_sync'  => $tmpuser->fields['date_sync'],
-                            'dn'         => $user['user_dn']
+                            'dn'         => $user['user_dn'],
                         ];
-                    } else if (
+                    } elseif (
                         ($values['mode'] === self::ACTION_ALL)
                           || (($ldap_users[$user[$field_for_db]] - strtotime($user['date_sync'])) > 0)
                     ) {
-                       //If entry was modified or if script should synchronize all the users
+                        //If entry was modified or if script should synchronize all the users
                         $glpi_users[] = ['id'         => $user['id'],
                             'user'       => $user['name'],
                             $field_for_sync => $user['sync_field'],
                             'timestamp'  => $user_infos[$user[$field_for_db]]['timestamp'],
                             'date_sync'  => $user['date_sync'],
-                            'dn'         => $user['user_dn']
+                            'dn'         => $user['user_dn'],
                         ];
                     }
-                } else if (
+                } elseif (
                     ($values['mode'] === self::ACTION_ALL)
                         && !$limitexceeded
                 ) {
@@ -2017,9 +2017,9 @@ TWIG, $twig_params);
 
                     if ($user['auths_id'] === $options['authldaps_id']) {
                         if (!$userfound && (int) $user['is_deleted_ldap'] === 0) {
-                             // If user is marked as coming from LDAP, but is not present in it anymore
-                             User::manageDeletedUserInLdap($user['id']);
-                             $results[self::USER_DELETED_LDAP]++;
+                            // If user is marked as coming from LDAP, but is not present in it anymore
+                            User::manageDeletedUserInLdap($user['id']);
+                            $results[self::USER_DELETED_LDAP]++;
                         } elseif ($userfound && (int) $user['is_deleted_ldap'] === 1) {
                             // User is marked as coming from LDAP, but was previously deleted
                             User::manageRestoredUserInLdap($user['id']);
@@ -2041,7 +2041,7 @@ TWIG, $twig_params);
                 if (!$tmpuser->getFromDBByDn($user_infos[$user]["user_dn"])) {
                     $entry  = ["user"      => $user_infos[$user][$config_ldap->fields['login_field']],
                         "timestamp" => $user_infos[$user]["timestamp"],
-                        "date_sync" => Dropdown::EMPTY_VALUE
+                        "date_sync" => Dropdown::EMPTY_VALUE,
                     ];
                     if ($config_ldap->isSyncFieldEnabled()) {
                         $entry[$field_for_sync] = $user_infos[$user][$field_for_sync];
@@ -2135,16 +2135,16 @@ TWIG, $twig_params);
             $group_cell = '';
             $group_cell .= Html::hidden("dn[$dn_index]", [
                 'value'                 => $group_dn,
-                'data-glpicore-ma-tags' => 'common'
+                'data-glpicore-ma-tags' => 'common',
             ]);
             $group_cell .= Html::hidden("ldap_import_type[$dn_index]", [
                 'value'                 => $search_type,
-                'data-glpicore-ma-tags' => 'common'
+                'data-glpicore-ma-tags' => 'common',
             ]);
             if (Session::isMultiEntitiesMode()) {
                 $group_cell .= Html::hidden("ldap_import_recursive[$dn_index]", [
                     'value'                 => 0,
-                    'data-glpicore-ma-tags' => 'common'
+                    'data-glpicore-ma-tags' => 'common',
                 ]);
             }
             $group_cell .= htmlescape($group);
@@ -2175,11 +2175,11 @@ TWIG, $twig_params);
             $columns['entity'] = __('Destination entity');
 
             $chk_all_child_entities = Html::getCheckbox([
-                'criterion' => ['tag_for_massive' => 'select_item_child_entities']
+                'criterion' => ['tag_for_massive' => 'select_item_child_entities'],
             ]);
             $columns['child_entities'] = [
                 'label' => $chk_all_child_entities . __s('Child entities'),
-                'raw_header' => true
+                'raw_header' => true,
             ];
         }
 
@@ -2193,7 +2193,7 @@ TWIG, $twig_params);
             'formatters' => [
                 'group' => 'raw_html', // Raw because there are some hidden inputs added here. The Group itself is pre-sanitized.
                 'entity' => 'raw_html', // Select HTML element
-                'child_entities' => 'raw_html' // Checkbox HTML element
+                'child_entities' => 'raw_html', // Checkbox HTML element
             ],
             'entries' => $entries,
             'total_number' => $total_results,
@@ -2203,7 +2203,7 @@ TWIG, $twig_params);
                 'num_displayed' => count($entries),
                 'container'     => 'mass' . self::class . mt_rand(),
                 'specific_actions' => [
-                    __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'import_group' => _sx('button', 'Import')
+                    __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'import_group' => _sx('button', 'Import'),
                 ],
                 'extraparams' => [
                     'authldaps_id' => $_REQUEST['authldaps_id'],
@@ -2212,10 +2212,10 @@ TWIG, $twig_params);
                         'dn',
                         'ldap_import_type',
                         'ldap_import_entities',
-                        'ldap_import_recursive'
-                    ]
-                ]
-            ]
+                        'ldap_import_recursive',
+                    ],
+                ],
+            ],
         ]);
 
         echo "</div>";
@@ -2298,21 +2298,21 @@ TWIG, $twig_params);
             if (!empty($infos)) {
                 $glpi_groups = [];
 
-               //Get all groups from GLPI DB for the current entity and the subentities
+                //Get all groups from GLPI DB for the current entity and the subentities
                 $iterator = $DB->request([
                     'SELECT' => ['ldap_group_dn','ldap_value'],
                     'FROM'   => 'glpi_groups',
-                    'WHERE'  => getEntitiesRestrictCriteria('glpi_groups')
+                    'WHERE'  => getEntitiesRestrictCriteria('glpi_groups'),
                 ]);
 
-               //If the group exists in DB -> unset it from the LDAP groups
+                //If the group exists in DB -> unset it from the LDAP groups
                 foreach ($iterator as $group) {
-                      //use DN for next step
-                      //depending on the type of search when groups are imported
-                      //the DN may be in two separate fields
+                    //use DN for next step
+                    //depending on the type of search when groups are imported
+                    //the DN may be in two separate fields
                     if (!empty($group["ldap_group_dn"])) {
                         $glpi_groups[$group["ldap_group_dn"]] = 1;
-                    } else if (!empty($group["ldap_value"])) {
+                    } elseif (!empty($group["ldap_value"])) {
                         $glpi_groups[$group["ldap_value"]] = 1;
                     }
                 }
@@ -2398,7 +2398,7 @@ TWIG, $twig_params);
         /** @var \DBmysql $DB */
         global $DB;
 
-       //First look for groups in group objects
+        //First look for groups in group objects
         $extra_attribute = ($search_in_groups ? "cn" : $config_ldap->fields["group_field"]);
         $attrs           = ["dn", $extra_attribute];
 
@@ -2421,9 +2421,9 @@ TWIG, $twig_params);
                         'iscritical' => true,
                         'value'     => [
                             'size'   => $config_ldap->fields['pagesize'],
-                            'cookie' => $cookie
-                        ]
-                    ]
+                            'cookie' => $cookie,
+                        ],
+                    ],
                 ];
                 $sr = @ldap_search($ldap_connection, $config_ldap->fields['basedn'], $filter, $attrs, 0, -1, -1, LDAP_DEREF_NEVER, $controls);
                 if (
@@ -2489,11 +2489,11 @@ TWIG, $twig_params);
 
             for ($ligne = 0; $ligne < $infos["count"]; $ligne++) {
                 if ($search_in_groups) {
-                   // No cn : not a real object
+                    // No cn : not a real object
                     if (isset($infos[$ligne]["cn"][0])) {
-                         $groups[$infos[$ligne]["dn"]] = (["cn" => $infos[$ligne]["cn"][0],
-                             "search_type" => "groups"
-                         ]);
+                        $groups[$infos[$ligne]["dn"]] = (["cn" => $infos[$ligne]["cn"][0],
+                            "search_type" => "groups",
+                        ]);
                     }
                 } else {
                     if (isset($infos[$ligne][$extra_attribute])) {
@@ -2516,13 +2516,13 @@ TWIG, $twig_params);
                                     'SELECT' => ['ldap_value'],
                                     'FROM'   => 'glpi_groups',
                                     'WHERE'  => [
-                                        'ldap_group_dn' => $ou
-                                    ]
+                                        'ldap_group_dn' => $ou,
+                                    ],
                                 ]);
                                 foreach ($iterator as $group) {
-                                     $groups[$group['ldap_value']] = ["cn"          => $group['ldap_value'],
-                                         "search_type" => "users"
-                                     ];
+                                    $groups[$group['ldap_value']] = ["cn"          => $group['ldap_value'],
+                                        "search_type" => "users",
+                                    ];
                                 }
                             }
                         } else {
@@ -2536,7 +2536,7 @@ TWIG, $twig_params);
                                     $infos[$ligne][$extra_attribute][$ligne_extra]
                                 ),
                                     "search_type"
-                                         => "users"
+                                         => "users",
                                 ];
                             }
                         }
@@ -2561,9 +2561,9 @@ TWIG, $twig_params);
     {
         $authldap = new AuthLDAP();
 
-       //Get the LDAP server from which the user has been imported
+        //Get the LDAP server from which the user has been imported
         if ($authldap->getFromDB($user->fields['auths_id'])) {
-           // clean ldap fields if asked by admin
+            // clean ldap fields if asked by admin
             if ($clean_ldap_fields) {
                 $user->update([
                     'id'         => $user->fields['id'],
@@ -2583,7 +2583,7 @@ TWIG, $twig_params);
                     'method'             => self::IDENTIFIER_LOGIN,
                     'value'              => $user->fields[$user_field],
                     'identifier_field'   => $id_field,
-                    'user_field'         => $user_field
+                    'user_field'         => $user_field,
                 ],
                 true,
                 $user->fields["auths_id"],
@@ -2617,7 +2617,7 @@ TWIG, $twig_params);
         $res         = $config_ldap->getFromDB($ldap_server);
         $input = [];
 
-       // we prevent some delay...
+        // we prevent some delay...
         if (!$res) {
             return false;
         }
@@ -2630,7 +2630,7 @@ TWIG, $twig_params);
         }
 
         $search_parameters = [];
-       //Connect to the directory
+        //Connect to the directory
         if (
             isset(self::$conn_cache[$ldap_server])
             // check that connection is still alive
@@ -2650,7 +2650,7 @@ TWIG, $twig_params);
                                        = $config_ldap->fields['email1_field'];
             }
 
-           //Get the user's dn & login
+            //Get the user's dn & login
             $attribs = ['basedn'            => $config_ldap->fields['basedn'],
                 'login_field'       => $search_parameters['fields'][$search_parameters['method']],
                 'search_parameters' => $search_parameters,
@@ -2672,7 +2672,7 @@ TWIG, $twig_params);
 
                     $login   = self::getFieldValue($infos, $search_parameters['fields'][$search_parameters['method']]);
 
-                   //Get information from LDAP
+                    //Get information from LDAP
                     if (
                         $user->getFromLDAP(
                             $ds,
@@ -2686,26 +2686,26 @@ TWIG, $twig_params);
                         $searched_user = new User();
                         $user_found = false;
                         if ($login === null || !($user_found = $searched_user->getFromDBbySyncField($login))) {
-                         //In case user id has changed : get id by dn (Used to check if restoration is needed)
+                            //In case user id has changed : get id by dn (Used to check if restoration is needed)
                             $user_found = $searched_user->getFromDBbyDn($user_dn);
                         }
                         if ($user_found && $searched_user->fields['is_deleted_ldap'] && $searched_user->fields['user_dn']) {
                             User::manageRestoredUserInLdap($searched_user->fields['id']);
                             return ['action' => self::USER_RESTORED_LDAP,
-                                'id' => $searched_user->fields['id']
+                                'id' => $searched_user->fields['id'],
                             ];
                         }
 
-                      // Add the auth method
-                      // Force date sync
+                        // Add the auth method
+                        // Force date sync
                         $user->fields["date_sync"] = $_SESSION["glpi_currenttime"];
                         $user->fields['is_deleted_ldap'] = 0;
 
-                      //Save information in database !
+                        //Save information in database !
                         $input = $user->fields;
 
-                      //clean picture from input
-                      // (picture managed in User::post_addItem and prepareInputForUpdate)
+                        //clean picture from input
+                        // (picture managed in User::post_addItem and prepareInputForUpdate)
                         unset($input['picture']);
 
                         if ($action === self::ACTION_IMPORT) {
@@ -2718,12 +2718,12 @@ TWIG, $twig_params);
 
                             $user->fields["id"] = $user->add($input);
                             return ['action' => self::USER_IMPORTED,
-                                'id'     => $user->fields["id"]
+                                'id'     => $user->fields["id"],
                             ];
                         }
-                       // Get the ID by user name
+                        // Get the ID by user name
                         if (!($id = User::getIdByfield($params['user_field'], $login))) {
-                           //In case user id as changed : get id by dn
+                            //In case user id as changed : get id by dn
                             $id = User::getIdByfield('user_dn', $user_dn);
                         }
                         $input['id'] = $id;
@@ -2733,7 +2733,7 @@ TWIG, $twig_params);
                         }
                         $user->update($input);
                         return ['action' => self::USER_SYNCHRONIZED,
-                            'id'     => $input['id']
+                            'id'     => $input['id'],
                         ];
                     }
                     return false;
@@ -2742,7 +2742,7 @@ TWIG, $twig_params);
                     $users_id = User::getIdByField($params['user_field'], $params['value']);
                     User::manageDeletedUserInLdap($users_id);
                     return ['action' => self::USER_DELETED_LDAP,
-                        'id'     => $users_id
+                        'id'     => $users_id,
                     ];
                 }
             } catch (\RuntimeException $e) {
@@ -2785,14 +2785,14 @@ TWIG, $twig_params);
                 return $group->add(["name"          => $group_infos["cn"][0],
                     "ldap_group_dn" => $group_infos["dn"],
                     "entities_id"   => $options['entities_id'],
-                    "is_recursive"  => $options['is_recursive']
+                    "is_recursive"  => $options['is_recursive'],
                 ]);
             }
             return $group->add(["name"         => $group_infos["cn"][0],
                 "ldap_field"   => $config_ldap->fields["group_field"],
                 "ldap_value"   => $group_infos["dn"],
                 "entities_id"  => $options['entities_id'],
-                "is_recursive" => $options['is_recursive']
+                "is_recursive" => $options['is_recursive'],
             ]);
         }
         return false;
@@ -3032,7 +3032,7 @@ TWIG, $twig_params);
             );
         }
 
-       //If connection is not successful on this directory, try replicates (if replicates exists)
+        //If connection is not successful on this directory, try replicates (if replicates exists)
         if (
             !$ds
             && ($ldap_method['id'] > 0)
@@ -3052,26 +3052,26 @@ TWIG, $twig_params);
                     $ldap_method['tls_version'] ?? ''
                 );
 
-               // Test with login and password of the user
+                // Test with login and password of the user
                 if (
                     !$ds
                     && !empty($login)
                     && (bool) $ldap_method['use_bind']
                 ) {
-                     $ds = self::connectToServer(
-                         $replicate["host"],
-                         $replicate["port"],
-                         $login,
-                         $password,
-                         $ldap_method['use_tls'],
-                         $ldap_method['deref_option'],
-                         $ldap_method['tls_certfile'] ?? '',
-                         $ldap_method['tls_keyfile'] ?? '',
-                         $ldap_method['use_bind'],
-                         $ldap_method['timeout'],
-                         $ldap_method['tls_version'] ?? '',
-                         true // silent bind error when trying to bind with user login/password
-                     );
+                    $ds = self::connectToServer(
+                        $replicate["host"],
+                        $replicate["port"],
+                        $login,
+                        $password,
+                        $ldap_method['use_tls'],
+                        $ldap_method['deref_option'],
+                        $ldap_method['tls_certfile'] ?? '',
+                        $ldap_method['tls_keyfile'] ?? '',
+                        $ldap_method['use_bind'],
+                        $ldap_method['timeout'],
+                        $ldap_method['tls_version'] ?? '',
+                        true // silent bind error when trying to bind with user login/password
+                    );
                 }
                 if ($ds) {
                     return $ds;
@@ -3180,7 +3180,7 @@ TWIG, $twig_params);
 
         if ($user_dn) {
             $auth->auth_succeded            = true;
-           // try by login+auth_id and next by dn
+            // try by login+auth_id and next by dn
             if (
                 $auth->user->getFromDBbyNameAndAuth($login, Auth::LDAP, $ldap_method['id'])
                 || $auth->user->getFromDBbyDn($user_dn)
@@ -3189,8 +3189,8 @@ TWIG, $twig_params);
                 $auth->user->fields['name'] = $login;
                 $auth->user_present         = true;
                 $auth->user_dn              = $user_dn;
-            } else if ($user_sync !== null && $auth->user->getFromDBbySyncField($user_sync)) {
-               //user login/dn have changed
+            } elseif ($user_sync !== null && $auth->user->getFromDBbySyncField($user_sync)) {
+                //user login/dn have changed
                 $auth->user->fields['name']      = $login;
                 $auth->user->fields['user_dn']   = $user_dn;
                 $auth->user_present              = true;
@@ -3229,17 +3229,17 @@ TWIG, $twig_params);
         /** @var \DBmysql $DB */
         global $DB;
 
-       //If no specific source is given, test all ldap directories
+        //If no specific source is given, test all ldap directories
         if ($auths_id <= 0) {
             $user_found = false;
 
             $ldap_methods = $auth->authtypes["ldap"];
 
-           // Sort servers to first try on known servers for given login.
-           // It is necessary to still necessary to try to connect on all servers to handle following cases:
-           //  - there are multiple users having same login on different LDAP servers,
-           //  - a user has been migrated from a LDAP server to another one, but GLPI is not yet aware of this.
-           // Caveat: if user uses a wrong password, a login attempt will still be done on all active LDAP servers.
+            // Sort servers to first try on known servers for given login.
+            // It is necessary to still necessary to try to connect on all servers to handle following cases:
+            //  - there are multiple users having same login on different LDAP servers,
+            //  - a user has been migrated from a LDAP server to another one, but GLPI is not yet aware of this.
+            // Caveat: if user uses a wrong password, a login attempt will still be done on all active LDAP servers.
             $known_servers = $DB->request(
                 [
                     'SELECT' => 'auths_id',
@@ -3286,9 +3286,9 @@ TWIG, $twig_params);
             }
 
             $auth->user_found = $user_found;
-        } else if (array_key_exists($auths_id, $auth->authtypes["ldap"])) {
-           // Check if the ldap server indicated as the last good one still exists !
-           //A specific ldap directory is given, test it and only this one !
+        } elseif (array_key_exists($auths_id, $auth->authtypes["ldap"])) {
+            // Check if the ldap server indicated as the last good one still exists !
+            //A specific ldap directory is given, test it and only this one !
             $auth = self::ldapAuth(
                 $auth,
                 $login,
@@ -3351,7 +3351,7 @@ TWIG, $twig_params);
             if ($info) {
                 $ret = [
                     'dn'        => $values['user_dn'],
-                    $login_attr => $info[$login_attr][0]
+                    $login_attr => $info[$login_attr][0],
                 ];
                 if ($sync_attr !== null && isset($info[0][$sync_attr])) {
                     $ret['sync_field'] = self::getFieldValue($info[0], $sync_attr);
@@ -3360,7 +3360,7 @@ TWIG, $twig_params);
             }
         }
 
-       // Try a search to find the DN
+        // Try a search to find the DN
         $filter_value = $values['user_params']['value'];
         if ($values['login_field'] === 'objectguid' && self::isValidGuid($filter_value)) {
             $filter_value = self::guidToHex($filter_value);
@@ -3399,7 +3399,7 @@ TWIG, $twig_params);
         if (is_array($info) && ($info['count'] === 1)) {
             $ret = [
                 'dn'        => $info[0]['dn'],
-                $login_attr => $info[0][$login_attr][0]
+                $login_attr => $info[0][$login_attr][0],
             ];
             if ($sync_attr !== null && isset($info[0][$sync_attr])) {
                 $ret['sync_field'] = self::getFieldValue($info[0], $sync_attr);
@@ -3668,7 +3668,7 @@ TWIG, $twig_params);
 
         TemplateRenderer::getInstance()->display('pages/admin/ldap.group_criteria.html.twig', [
             'has_multiple_servers' => self::getNumberOfServers() > 1,
-            'authldap'             => $authldap
+            'authldap'             => $authldap,
         ]);
     }
 
@@ -3704,14 +3704,14 @@ TWIG, $twig_params);
                     $end   = 0;
                     if (($length = strlen($value)) > 0) {
                         if ($value[0] === '^') {
-                             $begin = 1;
+                            $begin = 1;
                         }
                         if ($value[$length - 1] === '$') {
                             $end = 1;
                         }
                     }
                     if ($begin || $end) {
-                     // no Toolbox::substr, to be consistent with strlen result
+                        // no Toolbox::substr, to be consistent with strlen result
                         $value = substr($value, $begin, $length - $end - $begin);
                     }
                     $filter .= '(' . $authldap->fields[$criteria] . '=' . ($begin ? '' : '*') . $value . ($end ? '' : '*') . ')';
@@ -3900,10 +3900,10 @@ TWIG, $twig_params);
                     'email1_field' => ['<>', ''],
                     'email2_field' => ['<>', ''],
                     'email3_field' => ['<>', ''],
-                    'email4_field' => ['<>', '']
-                ]
+                    'email4_field' => ['<>', ''],
+                ],
             ],
-            'ORDER'  => ['is_default DESC']
+            'ORDER'  => ['is_default DESC'],
         ]);
         foreach ($iterator as $data) {
             $ldaps[] = $data['id'];
@@ -4008,13 +4008,13 @@ TWIG, $twig_params);
         $criteria = [
             'SELECT' => ['id', 'host', 'port'],
             'FROM'   => 'glpi_authldapreplicates',
-            'WHERE'  => ['authldaps_id' => $master_id]
+            'WHERE'  => ['authldaps_id' => $master_id],
         ];
         foreach ($DB->request($criteria) as $replicate) {
             $replicates[] = [
                 "id"   => $replicate["id"],
                 "host" => $replicate["host"],
-                "port" => $replicate["port"]
+                "port" => $replicate["port"],
             ];
         }
         return $replicates;
@@ -4077,7 +4077,7 @@ TWIG, $twig_params);
             'glpi_users',
             [
                 'auths_id'  => $this->getID(),
-                'NOT'       => ['sync_field' => null]
+                'NOT'       => ['sync_field' => null],
             ]
         );
         return $count > 0;
@@ -4327,7 +4327,7 @@ TWIG, $twig_params);
             // See https://learn.microsoft.com/en-us/windows/win32/sysinfo/converting-a-time-t-value-to-a-file-time?redirectedfrom=MSDN
             $time = intval($date) / (10000000) - 11644473600;
             return $time > 0 ? date('Y-m-d H:i:s', $time) : '';
-        } else if (preg_match('/^(\d{14})\.0Z$/', $date, $matches)) {
+        } elseif (preg_match('/^(\d{14})\.0Z$/', $date, $matches)) {
             // Ymdhis.0Z LDAP timestamps
             $date = DateTime::createFromFormat('YmdHis', $matches[1]);
             return $date ? $date->format('Y-m-d H:i:s') : '';
@@ -4363,7 +4363,7 @@ TWIG, $twig_params);
                 $auth = new self();
                 $auth->update([
                     'id' => $default['id'],
-                    'is_default' => 0
+                    'is_default' => 0,
                 ]);
             }
 
@@ -4373,7 +4373,7 @@ TWIG, $twig_params);
                 $auth = new AuthMail();
                 $auth->update([
                     'id' => $default['id'],
-                    'is_default' => 0
+                    'is_default' => 0,
                 ]);
             }
         }

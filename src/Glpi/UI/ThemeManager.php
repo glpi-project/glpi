@@ -108,7 +108,7 @@ class ThemeManager
             // Cannot use GLOB_BRACE on some platforms (like the docker environment used for tests)
             $patterns = [
                 '*.css',
-                '*.scss'
+                '*.scss',
             ];
             /**
              * PHP glob function calls libc glob which won't be aware of streams like vfsStream

@@ -41,7 +41,7 @@ use Glpi\ContentTemplates\TemplateManager;
  **/
 class ITILSolution extends CommonDBChild
 {
-   // From CommonDBTM
+    // From CommonDBTM
     public $dohistory                   = true;
     private $item                       = null;
 
@@ -93,7 +93,7 @@ class ITILSolution extends CommonDBChild
 
     public static function canUpdate(): bool
     {
-       //always true, will rely on ITILSolution::canUpdateItem
+        //always true, will rely on ITILSolution::canUpdateItem
         return true;
     }
 
@@ -104,7 +104,7 @@ class ITILSolution extends CommonDBChild
 
     public static function canCreate(): bool
     {
-       //always true, will rely on ITILSolution::canCreateItem
+        //always true, will rely on ITILSolution::canCreateItem
         return true;
     }
 
@@ -173,8 +173,8 @@ class ITILSolution extends CommonDBChild
             [
                 'WHERE' => [
                     'itemtype'  => $itemtype,
-                    'items_id'  => $items_id
-                ]
+                    'items_id'  => $items_id,
+                ],
             ]
         );
     }
@@ -230,7 +230,7 @@ class ITILSolution extends CommonDBChild
         }
 
         if (!$this->item->isStatusComputationBlocked($input)) {
-        // check itil object is not already solved
+            // check itil object is not already solved
             if (in_array($this->item->fields["status"], $this->item->getSolvedStatusArray())) {
                 Session::addMessageAfterRedirect(
                     __s("The item is already solved, did anyone pushed a solution before you?"),
@@ -267,15 +267,15 @@ class ITILSolution extends CommonDBChild
             $input['status'] = $status;
         }
 
-       // Render twig content, needed for massives action where we the content
-       // can't be rendered directly in the form
+        // Render twig content, needed for massives action where we the content
+        // can't be rendered directly in the form
         if (($input['_render_twig'] ?? false) && isset($input['content'])) {
             $html = TemplateManager::renderContentForCommonITIL(
                 $this->item,
                 $input['content']
             );
 
-           // Invalid template
+            // Invalid template
             if ($html === null) {
                 return false;
             }
@@ -289,8 +289,8 @@ class ITILSolution extends CommonDBChild
     public function post_addItem()
     {
 
-       //adding a solution mean the ITIL object is now solved
-       //and maybe closed (according to entitiy configuration)
+        //adding a solution mean the ITIL object is now solved
+        //and maybe closed (according to entitiy configuration)
         if ($this->item == null) {
             $this->item = new $this->fields['itemtype']();
             $this->item->getFromDB($this->fields['items_id']);
@@ -312,7 +312,7 @@ class ITILSolution extends CommonDBChild
         if (!isset($this->input['_linked_ticket'])) {
             $status = $item::SOLVED;
 
-           //handle autoclose, for tickets only
+            //handle autoclose, for tickets only
             if ($item->getType() == Ticket::getType()) {
                 $autoclosedelay =  Entity::getUsedConfig(
                     'autoclose_delay',
@@ -323,13 +323,13 @@ class ITILSolution extends CommonDBChild
 
                 // 0 = immediately or ticket status CLOSED force status
                 if ($autoclosedelay == 0 || $this->item->fields["status"] == $this->item::CLOSED) {
-                     $status = $item::CLOSED;
+                    $status = $item::CLOSED;
                 }
             }
 
             $this->item->update([
                 'id'     => $this->item->getID(),
-                'status' => $status
+                'status' => $status,
             ]);
         }
 
@@ -387,7 +387,7 @@ class ITILSolution extends CommonDBChild
                 $value = $values[$field];
                 $statuses = self::getStatuses();
 
-                return (isset($statuses[$value]) ? $statuses[$value] : $value);
+                return ($statuses[$value] ?? $value);
             case 'itemtype':
                 if (in_array($values['itemtype'], ['Ticket', 'Change', 'Problem'])) {
                     return $values['itemtype']::getTypeName(1);
@@ -452,7 +452,7 @@ class ITILSolution extends CommonDBChild
 
         $tab[] = [
             'id'                 => 'common',
-            'name'               => __('Characteristics')
+            'name'               => __('Characteristics'),
         ];
 
         $tab[] = [
@@ -479,7 +479,7 @@ class ITILSolution extends CommonDBChild
             'field'              => 'name',
             'name'               => User::getTypeName(1),
             'datatype'           => 'dropdown',
-            'right'              => 'all'
+            'right'              => 'all',
         ];
 
         $tab[] = [

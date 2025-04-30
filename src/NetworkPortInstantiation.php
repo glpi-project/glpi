@@ -34,7 +34,6 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
-use Glpi\DBAL\QueryUnion;
 use Glpi\Socket;
 use Glpi\Toolbox\ArrayPathAccessor;
 
@@ -56,15 +55,15 @@ use Glpi\Toolbox\ArrayPathAccessor;
  **/
 class NetworkPortInstantiation extends CommonDBChild
 {
-   // From CommonDBTM
+    // From CommonDBTM
     public $auto_message_on_action   = false;
 
-   // From CommonDBChild
+    // From CommonDBChild
     public static $itemtype       = 'NetworkPort';
     public static $items_id       = 'networkports_id';
     public $dohistory             = false;
 
-   // Instantiation properties
+    // Instantiation properties
     public $canHaveVLAN           = true;
     public $canHaveVirtualPort    = true;
     public $haveMAC               = true;
@@ -170,7 +169,7 @@ class NetworkPortInstantiation extends CommonDBChild
         $iterator = $DB->request([
             'SELECT' => 'id',
             'FROM'   => NetworkPort::getTable(),
-            'WHERE'  => ['mac' => $relation]
+            'WHERE'  => ['mac' => $relation],
         ]);
 
         foreach ($iterator as $element) {
@@ -216,12 +215,12 @@ class NetworkPortInstantiation extends CommonDBChild
         }
 
         if (count($macs_with_items)) {
-           // Get the first item that is matching entity
+            // Get the first item that is matching entity
             foreach ($macs_with_items as $items) {
                 foreach ($items as $item) {
                     if ($item->getEntityID() == $entity) {
                         $result = ["id"       => $item->getID(),
-                            "itemtype" => $item->getType()
+                            "itemtype" => $item->getType(),
                         ];
                         unset($macs_with_items);
                         return $result;
@@ -277,21 +276,21 @@ class NetworkPortInstantiation extends CommonDBChild
                 $criteria = [
                     'SELECT'    => [
                         'link.id AS link_id',
-                        'device.designation AS name'
+                        'device.designation AS name',
                     ],
                     'FROM'      => 'glpi_devicenetworkcards AS device',
                     'INNER JOIN' => [
                         'glpi_items_devicenetworkcards AS link'   => [
                             'ON' => [
                                 'link'   => 'devicenetworkcards_id',
-                                'device' => 'id'
-                            ]
-                        ]
+                                'device' => 'id',
+                            ],
+                        ],
                     ],
                     'WHERE'     => [
                         'link.items_id'   => $lastItem->getID(),
-                        'link.itemtype'   => $lastItem::class
-                    ]
+                        'link.itemtype'   => $lastItem::class,
+                    ],
                 ];
 
                 // $deviceFields contains the list of fields to update
@@ -304,8 +303,8 @@ class NetworkPortInstantiation extends CommonDBChild
                 $iterator = $DB->request($criteria);
 
                 foreach ($iterator as $available_device) {
-                     $linkid               = $available_device['link_id'];
-                     $device_names[$linkid] = $available_device['name'];
+                    $linkid               = $available_device['link_id'];
+                    $device_names[$linkid] = $available_device['name'];
                     if (isset($available_device['mac'])) {
                         $device_names[$linkid] = sprintf(
                             __('%1$s - %2$s'),
@@ -329,7 +328,7 @@ class NetworkPortInstantiation extends CommonDBChild
         $twig_params = [
             'device_attributes' => $device_attributes,
             'device_names'      => $device_names,
-            'alert'             => $alert
+            'alert'             => $alert,
         ];
         // language=Twig
         echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
@@ -481,15 +480,15 @@ TWIG, $twig_params);
                 'SELECT' => [
                     'port.id',
                     'port.name',
-                    'port.mac'
+                    'port.mac',
                 ],
                 'FROM'   => 'glpi_networkports AS port',
                 'WHERE'  => [
                     'items_id'           => $lastItem->getID(),
                     'itemtype'           => $lastItem->getType(),
-                    'instantiation_type' => $netport_type
+                    'instantiation_type' => $netport_type,
                 ],
-                'ORDER'  => ['logical_number', 'name']
+                'ORDER'  => ['logical_number', 'name'],
             ]);
 
             if (count($iterator)) {
@@ -497,10 +496,10 @@ TWIG, $twig_params);
                     [$netport_type, 'getTypeName'],
                     count($iterator)
                 );
-                 $possible_ports[$array_element_name] = [];
+                $possible_ports[$array_element_name] = [];
 
                 foreach ($iterator as $portEntry) {
-                     $macAddresses[$portEntry['id']] = $portEntry['mac'];
+                    $macAddresses[$portEntry['id']] = $portEntry['mac'];
                     if (!empty($portEntry['mac'])) {
                         $portEntry['name'] = sprintf(
                             __('%1$s - %2$s'),
@@ -508,7 +507,7 @@ TWIG, $twig_params);
                             $portEntry['mac']
                         );
                     }
-                     $possible_ports[$array_element_name][$portEntry['id']] = $portEntry['name'];
+                    $possible_ports[$array_element_name][$portEntry['id']] = $portEntry['name'];
                 }
             }
         }
@@ -564,9 +563,7 @@ TWIG, $twig_params);
      * @param array $tab
      * @param array $joinparams
      **/
-    public static function getSearchOptionsToAddForInstantiation(array &$tab, array $joinparams)
-    {
-    }
+    public static function getSearchOptionsToAddForInstantiation(array &$tab, array $joinparams) {}
 
 
     /**
@@ -597,13 +594,13 @@ TWIG, $twig_params);
             if ($device2->can($device2->fields["id"], READ)) {
                 echo $oppositePort->getLink();
                 if ($device1->fields["entities_id"] !== $device2->fields["entities_id"]) {
-                     echo "<br>(" . htmlescape(Dropdown::getDropdownName(
-                         "glpi_entities",
-                         $device2->getEntityID()
-                     )) . ")";
+                    echo "<br>(" . htmlescape(Dropdown::getDropdownName(
+                        "glpi_entities",
+                        $device2->getEntityID()
+                    )) . ")";
                 }
 
-               // write rights on dev1 + READ on dev2 OR READ on dev1 + write rights on dev2
+                // write rights on dev1 + READ on dev2 OR READ on dev1 + write rights on dev2
                 if (
                     $canedit
                     || $device2->canEdit($device2->fields["id"])
@@ -642,7 +639,7 @@ TWIG, $twig_params);
                             $ID,
                             ['name'        => 'NetworkPortConnect_networkports_id_2',
                                 'entity'      => $device1->fields["entities_id"],
-                                'entity_sons' => $device1->isRecursive()
+                                'entity_sons' => $device1->isRecursive(),
                             ]
                         );
                     } else {
@@ -688,7 +685,7 @@ TWIG, $twig_params);
             }
         }
 
-       // Manage entity_sons
+        // Manage entity_sons
         if (!($p['entity'] < 0) && $p['entity_sons']) {
             if (is_array($p['entity'])) {
                 echo "entity_sons options is not available with entity option as array";
@@ -705,7 +702,7 @@ TWIG, $twig_params);
             'networkports_id'    => $ID,
             'comments'           => $p['comments'],
             'myname'             => $p['name'],
-            'instantiation_type' => get_called_class()
+            'instantiation_type' => get_called_class(),
         ];
 
         Ajax::updateItemOnSelectEvent(

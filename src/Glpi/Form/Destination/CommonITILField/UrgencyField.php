@@ -185,13 +185,13 @@ final class UrgencyField extends AbstractConfigField implements DestinationField
         // Get the urgency levels
         $urgency_levels = array_combine(
             range(1, 5),
-            array_map(fn ($urgency) => CommonITILObject::getUrgencyName($urgency), range(1, 5))
+            array_map(fn($urgency) => CommonITILObject::getUrgencyName($urgency), range(1, 5))
         );
 
         // Filter out the urgency levels that are not enabled
         $urgency_levels = array_filter(
             $urgency_levels,
-            fn ($key) => (($CFG_GLPI['urgency_mask'] & (1 << $key)) > 0),
+            fn($key) => (($CFG_GLPI['urgency_mask'] & (1 << $key)) > 0),
             ARRAY_FILTER_USE_KEY
         );
 

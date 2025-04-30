@@ -69,7 +69,7 @@ class ProcessSoftwareCategoryRulesCommand extends AbstractCommand
         ];
         if (!$input->getOption('all')) {
             $query['WHERE'] = [
-                'softwarecategories_id' => 0
+                'softwarecategories_id' => 0,
             ];
         }
 
@@ -102,7 +102,7 @@ class ProcessSoftwareCategoryRulesCommand extends AbstractCommand
                     $progress_bar,
                     OutputInterface::VERBOSITY_NORMAL
                 );
-                 continue;
+                continue;
             }
 
             $rule_collection = new \RuleSoftwareCategoryCollection();

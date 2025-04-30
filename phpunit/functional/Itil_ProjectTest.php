@@ -55,7 +55,7 @@ class Itil_ProjectTest extends DbTestCase
 
         $this->assertGreaterThan(
             0,
-            (int)$project->add([
+            (int) $project->add([
                 'name' => 'Some project',
             ])
         );
@@ -67,7 +67,7 @@ class Itil_ProjectTest extends DbTestCase
 
             $this->assertGreaterThan(
                 0,
-                (int)$item->add([
+                (int) $item->add([
                     'name'    => 'ITIL item ' . $itemtype,
                     'content' => 'ITIL item ' . $itemtype,
                 ])
@@ -77,7 +77,7 @@ class Itil_ProjectTest extends DbTestCase
             // Item should be linkable to a project
             $this->assertGreaterThan(
                 0,
-                (int)$itil_project->add([
+                (int) $itil_project->add([
                     'itemtype'    => $itemtype,
                     'items_id'    => $item->fields['id'],
                     'projects_id' => $baseProjectId,
@@ -94,14 +94,14 @@ class Itil_ProjectTest extends DbTestCase
 
         //add a task
         $ptask = new \ProjectTask();
-        $ptid = (int)$ptask->add([
+        $ptid = (int) $ptask->add([
             'name' => 'Task for test project Clone',
-            'projects_id' => $baseProjectId
+            'projects_id' => $baseProjectId,
         ]);
         $this->assertGreaterThan(0, $ptid);
 
         // Clone project should clone its links to ITIL items and task
-        $cloneProjectId = (int)$project->add([
+        $cloneProjectId = (int) $project->add([
             'name'   => 'Some project clone',
             '_oldID' => $baseProjectId,
         ]);

@@ -51,10 +51,10 @@ function update0900to0901()
 
     $migration->setVersion('0.90.1');
 
-   // Add missing fill in 0.90 empty version
+    // Add missing fill in 0.90 empty version
     $migration->addField("glpi_entities", 'inquest_duration', "integer", ['value' => 0]);
 
-   // ************ Keep it at the end **************
+    // ************ Keep it at the end **************
     $migration->executeMigration();
 
     return $updateresult;

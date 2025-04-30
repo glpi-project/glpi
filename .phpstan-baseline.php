@@ -272,12 +272,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Auth.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\=\\=\\= between \'external\' and \'external\' will always evaluate to true\\.$#',
-	'identifier' => 'identical.alwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Auth.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
 	'identifier' => 'function.alreadyNarrowedType',
 	'count' => 3,
@@ -1598,54 +1592,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Api/APIRest.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
-	'identifier' => 'function.alreadyNarrowedType',
-	'count' => 3,
-	'path' => __DIR__ . '/src/Glpi/Api/Deprecated/ComputerAntivirus.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
-	'identifier' => 'function.alreadyNarrowedType',
-	'count' => 3,
-	'path' => __DIR__ . '/src/Glpi/Api/Deprecated/ComputerVirtualMachine.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
-	'identifier' => 'function.alreadyNarrowedType',
-	'count' => 3,
-	'path' => __DIR__ . '/src/Glpi/Api/Deprecated/Computer_Item.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
-	'identifier' => 'function.alreadyNarrowedType',
-	'count' => 3,
-	'path' => __DIR__ . '/src/Glpi/Api/Deprecated/Computer_SoftwareLicense.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
-	'identifier' => 'function.alreadyNarrowedType',
-	'count' => 3,
-	'path' => __DIR__ . '/src/Glpi/Api/Deprecated/Computer_SoftwareVersion.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
-	'identifier' => 'function.alreadyNarrowedType',
-	'count' => 3,
-	'path' => __DIR__ . '/src/Glpi/Api/Deprecated/Netpoint.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
-	'identifier' => 'function.alreadyNarrowedType',
-	'count' => 3,
-	'path' => __DIR__ . '/src/Glpi/Api/Deprecated/Pdu_Plug.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
-	'identifier' => 'function.alreadyNarrowedType',
-	'count' => 3,
-	'path' => __DIR__ . '/src/Glpi/Api/Deprecated/TicketFollowup.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Api\\\\HL\\\\Controller\\\\CoreController\\:\\:authorize\\(\\) should return Glpi\\\\Http\\\\Response but returns Psr\\\\Http\\\\Message\\\\ResponseInterface\\.$#',
 	'identifier' => 'return.type',
 	'count' => 1,
@@ -2606,12 +2552,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Search/Output/Pdf.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Negated boolean expression is always true\\.$#',
-	'identifier' => 'booleanNot.alwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Search/Output/Spreadsheet.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Call to function is_string\\(\\) with string will always evaluate to true\\.$#',
 	'identifier' => 'function.alreadyNarrowedType',
 	'count' => 2,
@@ -2740,12 +2680,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Strict comparison using \\!\\=\\= between int\\|string and null will always evaluate to true\\.$#',
 	'identifier' => 'notIdentical.alwaysTrue',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\=\\=\\= between \'Problem\' and \'Problem\' will always evaluate to true\\.$#',
-	'identifier' => 'identical.alwaysTrue',
 	'count' => 2,
 	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
 ];
@@ -3042,12 +2976,6 @@ $ignoreErrors[] = [
 	'identifier' => 'parameter.defaultValue',
 	'count' => 1,
 	'path' => __DIR__ . '/src/ITILValidationTemplate.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^If condition is always true\\.$#',
-	'identifier' => 'if.alwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Impact.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Right side of \\|\\| is always true\\.$#',
@@ -4708,12 +4636,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^If condition is always true\\.$#',
 	'identifier' => 'if.alwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Toolbox.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Instanceof between CommonDBTM and CommonDBTM will always evaluate to true\\.$#',
-	'identifier' => 'instanceof.alwaysTrue',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Toolbox.php',
 ];

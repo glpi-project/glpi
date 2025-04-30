@@ -94,7 +94,7 @@ final class ServiceCatalogManagerTest extends \DbTestCase
             new FormAccessParameters(Session::getCurrentSessionInfo())
         );
         $forms = self::$manager->getItems($item_request)['items'];
-        $forms_names = array_map(fn (Form $form) => $form->fields['name'], $forms);
+        $forms_names = array_map(fn(Form $form) => $form->fields['name'], $forms);
 
         // Assert: only active forms must be found.
         $this->assertEquals([
@@ -123,7 +123,7 @@ final class ServiceCatalogManagerTest extends \DbTestCase
             new FormAccessParameters(Session::getCurrentSessionInfo())
         );
         $forms = self::$manager->getItems($item_request)['items'];
-        $forms_names = array_map(fn (Form $form) => $form->fields['name'], $forms);
+        $forms_names = array_map(fn(Form $form) => $form->fields['name'], $forms);
 
         // Assert: pinned forms must be displayed first
         $this->assertEquals([
@@ -159,7 +159,7 @@ final class ServiceCatalogManagerTest extends \DbTestCase
             new FormAccessParameters(Session::getCurrentSessionInfo())
         );
         $forms = self::$manager->getItems($item_request)['items'];
-        $forms_names = array_map(fn (ServiceCatalogItemInterface $item) => $item->getServiceCatalogItemTitle(), $forms);
+        $forms_names = array_map(fn(ServiceCatalogItemInterface $item) => $item->getServiceCatalogItemTitle(), $forms);
 
         // Assert: forms must be ordered by name
         $this->assertEquals([
@@ -194,7 +194,7 @@ final class ServiceCatalogManagerTest extends \DbTestCase
             new FormAccessParameters(Session::getCurrentSessionInfo())
         );
         $forms = self::$manager->getItems($item_request)['items'];
-        $forms_names = array_map(fn (ServiceCatalogItemInterface $item) => $item->getServiceCatalogItemTitle(), $forms);
+        $forms_names = array_map(fn(ServiceCatalogItemInterface $item) => $item->getServiceCatalogItemTitle(), $forms);
 
         // Assert: pinned forms must be displayed first, then forms are ordered by name
         $this->assertEquals([
@@ -229,7 +229,7 @@ final class ServiceCatalogManagerTest extends \DbTestCase
             new FormAccessParameters(Session::getCurrentSessionInfo())
         );
         $forms = self::$manager->getItems($item_request)['items'];
-        $forms_names = array_map(fn (Form $form) => $form->fields['name'], $forms);
+        $forms_names = array_map(fn(Form $form) => $form->fields['name'], $forms);
 
         // Assert: our form must be found
         $this->assertEquals(["Form with active policy"], $forms_names);
@@ -249,7 +249,7 @@ final class ServiceCatalogManagerTest extends \DbTestCase
             new FormAccessParameters(Session::getCurrentSessionInfo())
         );
         $forms = self::$manager->getItems($item_request)['items'];
-        $forms_names = array_map(fn (Form $form) => $form->fields['name'], $forms);
+        $forms_names = array_map(fn(Form $form) => $form->fields['name'], $forms);
 
         // Assert: our form must not be found
         $this->assertEquals([], $forms_names);
@@ -276,7 +276,7 @@ final class ServiceCatalogManagerTest extends \DbTestCase
             new FormAccessParameters(Session::getCurrentSessionInfo())
         );
         $forms = self::$manager->getItems($item_request)['items'];
-        $forms_names = array_map(fn (Form $form) => $form->fields['name'], $forms);
+        $forms_names = array_map(fn(Form $form) => $form->fields['name'], $forms);
 
         // Assert: our form must not be found
         $this->assertEquals([], $forms_names);
@@ -443,7 +443,7 @@ final class ServiceCatalogManagerTest extends \DbTestCase
         $forms = self::$manager->getItems($item_request)['items'];
 
         // Assert: only the expected forms must be found
-        $forms_names = array_map(fn (Form $form) => $form->fields['name'], $forms);
+        $forms_names = array_map(fn(Form $form) => $form->fields['name'], $forms);
         $this->assertEquals($expected_forms_names, $forms_names);
     }
 
@@ -475,7 +475,7 @@ final class ServiceCatalogManagerTest extends \DbTestCase
         $forms = self::$manager->getItems($item_request)['items'];
 
         // Assert: only the forms visible from the test entity should be found
-        $forms_names = array_map(fn (Form $form) => $form->fields['name'], $forms);
+        $forms_names = array_map(fn(Form $form) => $form->fields['name'], $forms);
         $this->assertEquals([
             "Root + recursive",
             "Test entity",
@@ -508,7 +508,7 @@ final class ServiceCatalogManagerTest extends \DbTestCase
         );
         $items = self::$manager->getItems($item_request)['items'];
         $items_names = array_map(
-            fn (ServiceCatalogItemInterface $item) => $item->getServiceCatalogItemTitle(),
+            fn(ServiceCatalogItemInterface $item) => $item->getServiceCatalogItemTitle(),
             $items
         );
 
@@ -549,7 +549,7 @@ final class ServiceCatalogManagerTest extends \DbTestCase
         );
         $items = self::$manager->getItems($item_request)['items'];
         $items_names = array_map(
-            fn (ServiceCatalogItemInterface $item) => $item->getServiceCatalogItemTitle(),
+            fn(ServiceCatalogItemInterface $item) => $item->getServiceCatalogItemTitle(),
             $items
         );
 
@@ -588,7 +588,7 @@ final class ServiceCatalogManagerTest extends \DbTestCase
         );
         $items = self::$manager->getItems($item_request)['items'];
         $items_names = array_map(
-            fn (ServiceCatalogItemInterface $item) => $item->getServiceCatalogItemTitle(),
+            fn(ServiceCatalogItemInterface $item) => $item->getServiceCatalogItemTitle(),
             $items
         );
 
@@ -634,7 +634,7 @@ final class ServiceCatalogManagerTest extends \DbTestCase
         );
         $items = self::$manager->getItems($item_request)['items'];
         $items_names = array_map(
-            fn (ServiceCatalogItemInterface $item) => $item->getServiceCatalogItemTitle(),
+            fn(ServiceCatalogItemInterface $item) => $item->getServiceCatalogItemTitle(),
             $items
         );
 
@@ -687,7 +687,7 @@ final class ServiceCatalogManagerTest extends \DbTestCase
         );
         $items = self::$manager->getItems($item_request)['items'];
         $items_names = array_map(
-            fn (ServiceCatalogItemInterface $item) => $item->getServiceCatalogItemTitle(),
+            fn(ServiceCatalogItemInterface $item) => $item->getServiceCatalogItemTitle(),
             $items
         );
 
@@ -707,7 +707,7 @@ final class ServiceCatalogManagerTest extends \DbTestCase
         );
         $items = self::$manager->getItems($item_request)['items'];
         $items_names = array_map(
-            fn (ServiceCatalogItemInterface $item) => $item->getServiceCatalogItemTitle(),
+            fn(ServiceCatalogItemInterface $item) => $item->getServiceCatalogItemTitle(),
             $items
         );
 
@@ -760,7 +760,7 @@ final class ServiceCatalogManagerTest extends \DbTestCase
         );
         $items = self::$manager->getItems($item_request)['items'];
         $items_names = array_map(
-            fn (ServiceCatalogItemInterface $item) => $item->getServiceCatalogItemTitle(),
+            fn(ServiceCatalogItemInterface $item) => $item->getServiceCatalogItemTitle(),
             $items
         );
 
@@ -778,7 +778,7 @@ final class ServiceCatalogManagerTest extends \DbTestCase
         );
         $items = self::$manager->getItems($item_request)['items'];
         $items_names = array_map(
-            fn (ServiceCatalogItemInterface $item) => $item->getServiceCatalogItemTitle(),
+            fn(ServiceCatalogItemInterface $item) => $item->getServiceCatalogItemTitle(),
             $items
         );
 
@@ -796,7 +796,7 @@ final class ServiceCatalogManagerTest extends \DbTestCase
         );
         $items = self::$manager->getItems($item_request)['items'];
         $items_names = array_map(
-            fn (ServiceCatalogItemInterface $item) => $item->getServiceCatalogItemTitle(),
+            fn(ServiceCatalogItemInterface $item) => $item->getServiceCatalogItemTitle(),
             $items
         );
 
@@ -814,7 +814,7 @@ final class ServiceCatalogManagerTest extends \DbTestCase
         );
         $items = self::$manager->getItems($item_request)['items'];
         $items_names = array_map(
-            fn (ServiceCatalogItemInterface $item) => $item->getServiceCatalogItemTitle(),
+            fn(ServiceCatalogItemInterface $item) => $item->getServiceCatalogItemTitle(),
             $items
         );
 
@@ -867,7 +867,7 @@ final class ServiceCatalogManagerTest extends \DbTestCase
 
         // Get the names in order
         $items_names = array_map(
-            fn ($item) => $item->getServiceCatalogItemTitle(),
+            fn($item) => $item->getServiceCatalogItemTitle(),
             array_values($kb_items)
         );
 
@@ -929,7 +929,7 @@ final class ServiceCatalogManagerTest extends \DbTestCase
         $kbs = self::$manager->getItems($item_request)['items'];
 
         // Assert: only the kb visible from the test entity should be found
-        $kb_names = array_map(fn (KnowbaseItem $kb) => $kb->fields['name'], $kbs);
+        $kb_names = array_map(fn(KnowbaseItem $kb) => $kb->fields['name'], $kbs);
         $this->assertEquals([
             "KB root + recursive",
             "KB test entity",
@@ -962,7 +962,7 @@ final class ServiceCatalogManagerTest extends \DbTestCase
         );
         $items = self::$manager->getItems($item_request)['items'];
         $items_names = array_map(
-            fn (ServiceCatalogItemInterface $item) => $item->getServiceCatalogItemTitle(),
+            fn(ServiceCatalogItemInterface $item) => $item->getServiceCatalogItemTitle(),
             $items
         );
 

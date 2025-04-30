@@ -46,7 +46,7 @@ class ITILCategoryParametersTest extends AbstractParameters
 
         $this->createItem('ITILCategory', [
             'name'        => 'itilcategory_testGetValues',
-            'entities_id' => $test_entity_id
+            'entities_id' => $test_entity_id,
         ]);
 
         $parameters = new ITILCategoryParameters();

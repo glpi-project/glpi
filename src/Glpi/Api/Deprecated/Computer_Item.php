@@ -85,6 +85,6 @@ class Computer_Item implements DeprecatedInterface
          ->updateSearchOptionsUids($soptions)
          ->updateSearchOptionsTables($soptions);
 
-         return $soptions;
+        return $soptions;
     }
 }

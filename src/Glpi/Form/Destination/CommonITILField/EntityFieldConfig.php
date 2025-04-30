@@ -52,8 +52,7 @@ final class EntityFieldConfig implements
         private EntityFieldStrategy $strategy,
         private ?int $specific_question_id = null,
         private ?int $specific_entity_id = null,
-    ) {
-    }
+    ) {}
 
     #[Override]
     public static function jsonDeserialize(array $data): self

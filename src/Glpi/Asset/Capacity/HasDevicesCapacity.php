@@ -99,7 +99,7 @@ class HasDevicesCapacity extends AbstractCapacity
             $iterator = $DB->request([
                 'SELECT'   => ['items_id'],
                 'DISTINCT' => true,
-                'FROM'     => $item_device_class::getTable()
+                'FROM'     => $item_device_class::getTable(),
             ]);
             foreach ($iterator as $row) {
                 $assets_ids[] = $row['items_id'];

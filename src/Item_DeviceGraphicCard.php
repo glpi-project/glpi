@@ -59,7 +59,7 @@ class Item_DeviceGraphicCard extends Item_Devices
             'otherserial' => parent::getSpecificities('otherserial'),
             'locations_id' => parent::getSpecificities('locations_id'),
             'states_id' => parent::getSpecificities('states_id'),
-            'busID'  => parent::getSpecificities('busID')
+            'busID'  => parent::getSpecificities('busID'),
         ];
     }
 
@@ -67,7 +67,7 @@ class Item_DeviceGraphicCard extends Item_Devices
     {
         return [
             'serial' => 'equal',
-            'busID' => 'equal'
+            'busID' => 'equal',
         ];
     }
 }

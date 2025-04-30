@@ -240,8 +240,8 @@ TWIG, $twig_params);
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
                 'container'     => 'mass' . self::class . mt_rand(),
-                'specific_actions' => ['purge' => _x('button', 'Delete permanently')]
-            ]
+                'specific_actions' => ['purge' => _x('button', 'Delete permanently')],
+            ],
         ]);
     }
 
@@ -270,7 +270,7 @@ TWIG, $twig_params);
         $iterator = $DB->request([
             'SELECT'          => [
                 "$selfTable.id AS linkid",
-                "$projectTable.*"
+                "$projectTable.*",
             ],
             'DISTINCT'        => true,
             'FROM'            => $selfTable,
@@ -355,7 +355,7 @@ TWIG, $twig_params);
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
                 'container'     => 'mass' . self::class . mt_rand(),
-            ]
+            ],
         ]);
     }
 }

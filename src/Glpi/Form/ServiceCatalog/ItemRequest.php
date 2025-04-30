@@ -48,8 +48,7 @@ final class ItemRequest
         public int $page = 1,
         public int $items_per_page = ServiceCatalogManager::ITEMS_PER_PAGE,
         public SortStrategyEnum $sort_strategy = SortStrategyEnum::POPULARITY
-    ) {
-    }
+    ) {}
 
     public function getFormAccessParameters(): FormAccessParameters
     {

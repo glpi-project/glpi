@@ -118,8 +118,8 @@ final class AllowListDropdown extends AbstractRightsDropdown
                     'id' => new QuerySubQuery([
                         'SELECT' => 'users_id',
                         'FROM'   => Group_User::getTable(),
-                        'WHERE'  => ['groups_id' => array_values($groups)]
-                    ])
+                        'WHERE'  => ['groups_id' => array_values($groups)],
+                    ]),
                 ];
             }
 
@@ -129,8 +129,8 @@ final class AllowListDropdown extends AbstractRightsDropdown
                     'id' => new QuerySubQuery([
                         'SELECT' => 'users_id',
                         'FROM'   => Profile_User::getTable(),
-                        'WHERE'  => ['profiles_id' => array_values($profiles)]
-                    ])
+                        'WHERE'  => ['profiles_id' => array_values($profiles)],
+                    ]),
                 ];
             }
 

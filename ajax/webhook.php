@@ -55,6 +55,7 @@ switch ($action) {
         } else {
             throw new NotFoundHttpException();
         }
+        // no break
     case 'get_events_from_itemtype':
         echo Dropdown::showFromArray(
             "event",
@@ -77,7 +78,7 @@ switch ($action) {
                 }
             }
             echo Dropdown::showFromArray('items_id', $values, [
-                'display' => false
+                'display' => false,
             ]);
         } else {
             if (!empty($_POST['itemtype'])) {
@@ -85,7 +86,7 @@ switch ($action) {
                     $_POST['itemtype'],
                     [
                         'name' => 'items_id',
-                        'display' => false
+                        'display' => false,
                     ]
                 );
             } else {
@@ -94,7 +95,7 @@ switch ($action) {
                     [],
                     [
                         'display' => false,
-                        'display_emptychoice' => true
+                        'display_emptychoice' => true,
                     ]
                 );
             }

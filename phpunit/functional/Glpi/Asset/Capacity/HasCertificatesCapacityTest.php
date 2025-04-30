@@ -235,7 +235,7 @@ class HasCertificatesCapacityTest extends DbTestCase
     {
         yield [
             'target_classname' => Certificate::class,
-            'relation_classname' => Certificate_Item::class
+            'relation_classname' => Certificate_Item::class,
         ];
     }
 
@@ -244,7 +244,7 @@ class HasCertificatesCapacityTest extends DbTestCase
         yield [
             'target_classname' => Certificate::class,
             'relation_classname' => Certificate_Item::class,
-            'expected' => '%d certificates attached to %d assets'
+            'expected' => '%d certificates attached to %d assets',
         ];
     }
 }

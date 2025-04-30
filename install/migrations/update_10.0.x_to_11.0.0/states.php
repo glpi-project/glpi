@@ -62,7 +62,7 @@ if (!$DB->tableExists('glpi_dropdownvisibilities')) {
         'appliance',
         'databaseinstance',
         'cable',
-        'unmanaged'
+        'unmanaged',
     ];
 
     $query = "CREATE TABLE `glpi_dropdownvisibilities` (

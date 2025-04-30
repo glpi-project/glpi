@@ -120,16 +120,16 @@ abstract class CommonDBVisible extends CommonDBTM
      **/
     public function haveVisibilityAccess()
     {
-       // Author
+        // Author
         if ($this->fields['users_id'] == Session::getLoginUserID()) {
             return true;
         }
-       // Users
+        // Users
         if (isset($this->users[Session::getLoginUserID()])) {
             return true;
         }
 
-       // Groups
+        // Groups
         if (
             count($this->groups)
             && isset($_SESSION["glpigroups"]) && count($_SESSION["glpigroups"])
@@ -137,11 +137,11 @@ abstract class CommonDBVisible extends CommonDBTM
             foreach ($this->groups as $data) {
                 foreach ($data as $group) {
                     if (in_array($group['groups_id'], $_SESSION["glpigroups"])) {
-                      // All the group
+                        // All the group
                         if ($group['no_entity_restriction']) {
-                             return true;
+                            return true;
                         }
-                      // Restrict to entities
+                        // Restrict to entities
                         if (Session::haveAccessToEntity($group['entities_id'], $group['is_recursive'])) {
                             return true;
                         }
@@ -150,7 +150,7 @@ abstract class CommonDBVisible extends CommonDBTM
             }
         }
 
-       // Entities
+        // Entities
         if (
             count($this->entities)
             && isset($_SESSION["glpiactiveentities"]) && count($_SESSION["glpiactiveentities"])
@@ -164,7 +164,7 @@ abstract class CommonDBVisible extends CommonDBTM
             }
         }
 
-       // Profiles
+        // Profiles
         if (
             count($this->profiles)
             && isset($_SESSION["glpiactiveprofile"])
@@ -213,7 +213,7 @@ abstract class CommonDBVisible extends CommonDBTM
      **/
     public function showVisibility()
     {
-        $ID      = (int)$this->fields['id'];
+        $ID      = (int) $this->fields['id'];
         $canedit = $this->canEdit($ID);
         $rand    = mt_rand();
         $nb      = $this->countVisibilities();
@@ -236,7 +236,7 @@ abstract class CommonDBVisible extends CommonDBTM
                     'itemtype' => static::class . '_User',
                     'id' => $data['id'],
                     'type' => User::getTypeName(1),
-                    'recipient' => htmlescape(getUserName($data['users_id']))
+                    'recipient' => htmlescape(getUserName($data['users_id'])),
                 ];
             }
         }
@@ -273,7 +273,7 @@ abstract class CommonDBVisible extends CommonDBTM
                     'itemtype' => static::class . '_Group',
                     'id' => $data['id'],
                     'type' => Group::getTypeName(1),
-                    'recipient' => $recipient
+                    'recipient' => $recipient,
                 ];
             }
         }
@@ -298,7 +298,7 @@ abstract class CommonDBVisible extends CommonDBTM
                     'itemtype' => 'Entity_' . static::class,
                     'id' => $data['id'],
                     'type' => Entity::getTypeName(1),
-                    'recipient' => $recipient
+                    'recipient' => $recipient,
                 ];
             }
         }
@@ -335,7 +335,7 @@ abstract class CommonDBVisible extends CommonDBTM
                     'itemtype' => static::class === KnowbaseItem::class ? (static::class . '_Profile') : ('Profile_' . static::class),
                     'id' => $data['id'],
                     'type' => Profile::getTypeName(1),
-                    'recipient' => $recipient
+                    'recipient' => $recipient,
                 ];
             }
         }
@@ -345,7 +345,7 @@ abstract class CommonDBVisible extends CommonDBTM
         $massiveactionparams = [
             'num_displayed' => count($entries),
             'container' => 'mass' . static::class . $rand,
-            'specific_actions' => ['delete' => _x('button', 'Delete permanently')]
+            'specific_actions' => ['delete' => _x('button', 'Delete permanently')],
         ];
         if ($this->fields['users_id'] !== Session::getLoginUserID()) {
             $massiveactionparams['confirm'] = __('Caution! You are not the author of this item. Deleting targets can result in loss of access.');
@@ -358,16 +358,16 @@ abstract class CommonDBVisible extends CommonDBTM
             'nosort' => true,
             'columns' => [
                 'type' => _n('Type', 'Types', 1),
-                'recipient' => _n('Recipient', 'Recipients', 1)
+                'recipient' => _n('Recipient', 'Recipients', 1),
             ],
             'formatters' => [
-                'recipient' => 'raw_html'
+                'recipient' => 'raw_html',
             ],
             'entries' => $entries,
             'total_number' => count($entries),
             'filtered_number' => count($entries),
             'showmassiveactions' => $canedit,
-            'massiveactionparams' => $massiveactionparams
+            'massiveactionparams' => $massiveactionparams,
         ]);
 
         return true;

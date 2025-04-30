@@ -173,7 +173,7 @@ final class LogViewer extends CommonGLPI
             [
                 $full ? $CFG_GLPI['root_doc'] : '',
                 'front',
-                'logviewer.php'
+                'logviewer.php',
             ]
         );
     }

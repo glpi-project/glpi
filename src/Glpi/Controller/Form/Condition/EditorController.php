@@ -45,8 +45,7 @@ final class EditorController extends AbstractController
 {
     public function __construct(
         private EditorManager $editor_manager,
-    ) {
-    }
+    ) {}
 
     #[Route(
         "/Form/Condition/Editor",

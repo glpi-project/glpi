@@ -45,9 +45,7 @@ use Override;
 
 abstract class AbstractQuestionType implements QuestionTypeInterface
 {
-    public function __construct()
-    {
-    }
+    public function __construct() {}
 
     #[Override]
     public function formatDefaultValueForDB(mixed $value): ?string
