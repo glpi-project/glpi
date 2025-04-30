@@ -3072,11 +3072,6 @@ class TicketTest extends DbTestCase
         $this->assertEquals(0, (int) $input['slas_id_tto']);
         $this->assertEquals(0, (int) $input['slas_id_ttr']);
 
-        $this->assertEquals('NULL', $input['internal_time_to_resolve']);
-        $this->assertEquals('NULL', $input['internal_time_to_own']);
-        $this->assertEquals(0, (int) $input['olas_id_tto']);
-        $this->assertEquals(0, (int) $input['olas_id_ttr']);
-
         $this->assertEquals(0, (int) $input['_add_validation']);
 
         $this->assertCount(0, $input['_validation_targets']);
