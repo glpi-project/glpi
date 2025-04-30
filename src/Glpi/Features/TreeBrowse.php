@@ -167,7 +167,7 @@ JAVASCRIPT;
             });
 
 JAVASCRIPT;
-            echo "<div id='tree_browse'>
+            echo "<div id='tree_browse' data-testid='tree-browse'>
             <div class='browser_tree d-flex flex-column'>
                 <input type='text' class='browser_tree_search' placeholder='" . __s("Search…") . "' id='browser_tree_search'>
                 <div id='tree_category' class='browser-tree-container'></div>

@@ -549,3 +549,7 @@ Cypress.Commands.add('closeAccordionItem', (container_label, item_label) => {
         .click()
     ;
 });
+
+Cypress.Commands.add('updateTestUserSettings', (settings) => {
+    return cy.updateWithAPI('User/7', settings);
+});
