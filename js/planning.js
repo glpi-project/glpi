@@ -92,7 +92,6 @@ var GLPIPlanning  = {
             timeZone:    'UTC',
             theme:       true,
             weekNumbers: options.full_view ? true : false,
-            defaultView: options.default_view,
             timeFormat:  'H:mm',
             eventLimit:  true, // show 'more' button when too mmany events
             minTime:     CFG_GLPI.planning_begin,
@@ -457,28 +456,6 @@ var GLPIPlanning  = {
                 // set end of day markers for timeline
                 GLPIPlanning.setEndofDays(info.view);
             },
-            events: {
-                url:  `${CFG_GLPI.root_doc}/ajax/planning.php`,
-                type: 'POST',
-                extraParams: function() {
-                    var view_name = GLPIPlanning.calendar
-                        ? GLPIPlanning.calendar.state.viewType
-                        : options.default_view;
-                    return {
-                        'action': 'get_events',
-                        'view_name': view_name
-                    };
-                },
-                success: function(data) {
-                    if (!options.full_view && data.length == 0) {
-                        GLPIPlanning.calendar.setOption('height', 0);
-                    }
-                },
-                failure: function(error) {
-                    console.error('there was an error while fetching events!', error);
-                }
-            },
-
             // EDIT EVENTS
             eventResize: function(info) {
                 var event        = info.event;
@@ -612,24 +589,19 @@ var GLPIPlanning  = {
                         title: __('Add an event'),
                         bs_focus: false
                     });
-                    // Save the original datesRender function which is overwritten by selectable
-                    const originalDatesRender = GLPIPlanning.calendar.getOption('datesRender');
-                    GLPIPlanning.calendar.setOption('selectable', false);
-                    window.setTimeout(function() {
-                        GLPIPlanning.calendar.setOption('selectable', true);
-                        originalDatesRender(info); //Restore datesRender
-                    }, 500);
                 }
 
                 GLPIPlanning.calendar.unselect();
             }
         });
 
-        // Load the last known view only if it is valid (else load default view)
-        const view = this.calendar.isValidViewType(options.default_view) ?
-            options.default_view :
-            default_options.default_view;
-        this.calendar.changeView(view);
+        // if current view is not valid eg: related plugin not loaded fallback to default view
+        if (!this.calendar.isValidViewType(options.default_view)) {
+            this.calendar.changeView(default_options.default_view);
+        } else {
+            // else use the one passed in options
+            this.calendar.changeView(options.default_view);
+        }
 
         $('.planning_on_central a')
             .mousedown(function() {
@@ -649,6 +621,30 @@ var GLPIPlanning  = {
 
         //window.calendar = calendar; // Required as object is not accessible by forms callback
         GLPIPlanning.calendar.render();
+
+        // IMPORTANT: This event source was moved here, after the calendar's render() call,
+        // to prevent an automatic AJAX request to the events URL during FullCalendar's initialization.
+        // And another one during the calendar's changeView() call.
+        // By adding it manually after rendering, only one call is done.
+        this.calendar.addEventSource({
+            url: `${CFG_GLPI.root_doc}/ajax/planning.php`,
+            type: 'POST',
+            extraParams: function () {
+                var view_name =  GLPIPlanning.calendar.state.viewType;
+                return {
+                    'action': 'get_events',
+                    'view_name': view_name
+                };
+            },
+            success: function (data) {
+                if (!options.full_view && data.length === 0) {
+                    GLPIPlanning.calendar.setOption('height', 0);
+                }
+            },
+            failure: function (error) {
+                console.error('there was an error while fetching events!', error);
+            }
+        });
 
         // attach the date picker to planning
         GLPIPlanning.initFCDatePicker();
