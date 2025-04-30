@@ -83,8 +83,8 @@ if (!$DB->tableExists('glpi_forms_forms')) {
             `description` longtext,
             `forms_categories_id` int {$default_key_sign} NOT NULL DEFAULT '0',
             `usage_count` int unsigned NOT NULL DEFAULT '0',
-            `visibility_strategy` varchar(30) NOT NULL DEFAULT '',
-            `conditions` JSON NOT NULL,
+            `submit_button_visibility_strategy` varchar(30) NOT NULL DEFAULT '',
+            `submit_button_conditions` JSON NOT NULL,
             `date_mod` timestamp NULL DEFAULT NULL,
             `date_creation` timestamp NULL DEFAULT NULL,
             PRIMARY KEY (`id`),
@@ -334,10 +334,10 @@ if (!$DB->fieldExists('glpi_forms_forms', 'uuid')) {
     );
 }
 
-if (!$DB->fieldExists('glpi_forms_forms', 'visiblity_strategy')) {
+if (!$DB->fieldExists('glpi_forms_forms', 'submit_button_visibility_strategy')) {
     $migration->addField(
         'glpi_forms_forms',
-        'visibility_strategy',
+        'submit_button_visibility_strategy',
         "varchar(30) NOT NULL DEFAULT ''",
         [
             'after' => 'usage_count',
@@ -345,10 +345,10 @@ if (!$DB->fieldExists('glpi_forms_forms', 'visiblity_strategy')) {
     );
 }
 
-if (!$DB->fieldExists('glpi_forms_forms', 'conditions')) {
+if (!$DB->fieldExists('glpi_forms_forms', 'submit_button_conditions')) {
     $migration->addField(
         'glpi_forms_forms',
-        'conditions',
+        'submit_button_conditions',
         "JSON NOT NULL",
         [
             'after' => 'visibility_strategy',

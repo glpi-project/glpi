@@ -310,8 +310,8 @@ final class Form extends CommonDBTM implements
         }
 
         // JSON fields must have a value when created to prevent SQL errors
-        if (!isset($input['conditions'])) {
-            $input['conditions'] = json_encode([]);
+        if (!isset($input['submit_button_conditions'])) {
+            $input['submit_button_conditions'] = json_encode([]);
         }
 
         $input = $this->prepareInput($input);
@@ -333,8 +333,8 @@ final class Form extends CommonDBTM implements
     private function prepareInput($input): array
     {
         if (isset($input['_conditions'])) {
-            $input['conditions'] = json_encode($input['_conditions']);
-            unset($input['_conditions']);
+            $input['submit_button_conditions'] = json_encode($input['_conditions']);
+            unset($input['_submit_button_conditions']);
         }
 
         return $input;
@@ -455,6 +455,16 @@ final class Form extends CommonDBTM implements
         );
 
         return array_merge($handlers, ...$sections_handlers);
+    }
+
+    protected function getVisibilityStrategyFieldName(): string
+    {
+        return 'submit_button_visibility_strategy';
+    }
+
+    protected function getConditionsFieldName(): string
+    {
+        return 'submit_button_conditions';
     }
 
     public static function getAdditionalMenuLinks(): array

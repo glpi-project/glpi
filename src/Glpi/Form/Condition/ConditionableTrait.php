@@ -38,14 +38,27 @@ use JsonException;
 
 trait ConditionableTrait
 {
+    /**
+     * Get the field name used for conditions
+     * Can be overridden in the class using this trait
+     *
+     * @return string
+     */
+    protected function getConditionsFieldName(): string
+    {
+        return 'conditions';
+    }
+
     /** @return ConditionData[] */
     public function getConfiguredConditionsData(): array
     {
         parent::post_getFromDB();
 
+        $field_name = $this->getConditionsFieldName();
+
         try {
             $raw_data = json_decode(
-                json       : $this->fields['conditions'],
+                json       : $this->fields[$field_name] ?? '{}',
                 associative: true,
                 flags      : JSON_THROW_ON_ERROR,
             );

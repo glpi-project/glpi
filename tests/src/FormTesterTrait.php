@@ -159,8 +159,8 @@ trait FormTesterTrait
                 $builder->getSubmitButtonVisibility()['conditions']
             );
             $this->updateItem(Form::class, $form->getID(), [
-                'visibility_strategy' => $builder->getSubmitButtonVisibility()['strategy'],
-                'conditions'          => $form_conditions,
+                'submit_button_visibility_strategy' => $builder->getSubmitButtonVisibility()['strategy'],
+                'submit_button_conditions'          => $form_conditions,
             ], ['conditions']);
         }
 
