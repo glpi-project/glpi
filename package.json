@@ -64,7 +64,7 @@
         "select2": "^4.0.13",
         "spectrum-colorpicker2": "^2.0.10",
         "spin.js": "^4.1.2",
-        "swagger-ui-dist": "^5.20.2",
+        "swagger-ui-dist": "^5.21.0",
         "tinycolor2": "^1.6.0",
         "tinymce": "^7.7.2",
         "tinymce-i18n": "^25.3.17",
