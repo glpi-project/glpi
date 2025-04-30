@@ -106,7 +106,7 @@
         "atoum/atoum": "dev-main#e43a6a84809635cf5dcdf80bf3c773e7cf1d5a04",
         "atoum/stubs": "dev-master#fb8890f347a7ecf1e3cf2b5a139a8b038359a6ab",
         "friendsofphp/php-cs-fixer": "^3.75",
-        "friendsoftwig/twigcs": "^6.4",
+        "friendsoftwig/twigcs": "^6.5",
         "glpi-project/tools": "^0.7",
         "mikey179/vfsstream": "^1.6",
         "nikic/php-parser": "^5.4",
