@@ -510,10 +510,6 @@ class Group_User extends CommonDBRelation
                     'label' => __('Delegatee'),
                     'filter_formatter' => 'yesno',
                 ],
-                'delegatee' => [
-                    'label' => __('Delegatee'),
-                    'filter_formatter' => 'yesno',
-                ],
                 'is_active' => [
                     'label' => __('Active'),
                     'filter_formatter' => 'yesno',
