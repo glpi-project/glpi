@@ -40,52 +40,19 @@ updates:
           - "*"
 
 
-  # Update development dependencies on future release branch (main).
-  # The future branch may permit to use higher versions than the current release branch
-  # due to changes in PHP/node version support.
+  # Update production and development dependencies on future release branch (main).
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
       interval: "monthly"
-    allow:
-      - dependency-type: "development"
     open-pull-requests-limit: 100
     target-branch: "main"
     versioning-strategy: "increase"
     rebase-strategy: "disabled"
     groups:
+      # dev-dependencies group first, to be sure that they will not be included in the following groups
       dev-dependencies:
-        patterns:
-          - "*"
-
-  - package-ecosystem: "composer"
-    directory: "/"
-    schedule:
-      interval: "monthly"
-    allow:
-      - dependency-type: "development"
-    open-pull-requests-limit: 100
-    target-branch: "main"
-    versioning-strategy: "increase"
-    rebase-strategy: "disabled"
-    groups:
-      dev-dependencies:
-        patterns:
-          - "*"
-
-
-  # Update production dependencies on future release branch (main).
-  - package-ecosystem: "npm"
-    directory: "/"
-    schedule:
-      interval: "monthly"
-    allow:
-      - dependency-type: "production"
-    open-pull-requests-limit: 100
-    target-branch: "main"
-    versioning-strategy: "increase"
-    rebase-strategy: "disabled"
-    groups:
+        dependency-type: "development"
       cytoscape:
         patterns:
           - "cytoscape"
@@ -107,13 +74,14 @@ updates:
     directory: "/"
     schedule:
       interval: "monthly"
-    allow:
-      - dependency-type: "production"
     open-pull-requests-limit: 100
     target-branch: "main"
     versioning-strategy: "increase"
     rebase-strategy: "disabled"
     groups:
+      # dev-dependencies group first, to be sure that they will not be included in the following groups
+      dev-dependencies:
+        dependency-type: "development"
       guzzlehttp:
         patterns:
           - "guzzlehttp/*"
