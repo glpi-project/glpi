@@ -61,7 +61,7 @@ Handle only linked ola, not ola ttr and tto defined using datetime fields
 
 {% set ticket_has_associated_ttr_sla = false %}
 {% set ticket_has_associated_tto_sla = false %}
-{% set associated_slas = item.getAssociatedSlas() %}
+{% set associated_slas = item.getSlasData() %}
 
 {% for sla in associated_slas %}
     {% if sla.type == constant('SLM::TTO') %}
@@ -85,11 +85,11 @@ Handle only linked ola, not ola ttr and tto defined using datetime fields
             {% set display_datetime_field  = field_options.fields_template is not defined or not field_options.fields_template.isHiddenField('time_to_own') %}
             {% set display_associatedsla_field = field_options.fields_template is not defined or not field_options.fields_template.isHiddenField('slas_id_tto') %}
 
-            {# debug - force display #}
-            {% set display_datetime_field  = true %}
-            {% set display_associatedsla_field = true %}
+            {# @todo cleanup debug - force display #}
+{#            {% set display_datetime_field  = true %}#}
+{#            {% set display_associatedsla_field = true %}#}
 
-            {% set _fieldname = 'time_to_own' %}
+{#            {% set _fieldname = 'time_to_own' %}#}
             <td class="right pe-2 align-middle border-0">{{ __('TTO') }}</td>
             <td class="d-flex ms-n2 border-0 py-0">
 
@@ -102,7 +102,14 @@ Handle only linked ola, not ola ttr and tto defined using datetime fields
 
                 {# datetime field #}
                 {% if display_datetime_field %}
-                    {{ fields.DatetimeLaField('time_to_own', item.fields['time_to_own'], __('TTO'), {'rand': _rand}) }}
+                    {{ fields.DatetimeLaField(
+                        'time_to_own',
+                        item.fields['time_to_own'],
+                        __('TTO'),
+                        {
+                            'rand': _rand,
+                            'disabled': not can_assign_sla_ola
+                        }) }}
                 {% endif %}
 
                 {# no linked tto : display add button + hidden dropdown #}
@@ -140,9 +147,9 @@ Handle only linked ola, not ola ttr and tto defined using datetime fields
             {% endif %}
             {% set _rand = random() %}
 
-            {# @todo supprimer forcage de debug #}
-            {% set display_datetime_field      = true %}
-            {% set display_associatedsla_field = true %}
+            {# @todo cleanup supprimer forcage de debug #}
+{#            {% set display_datetime_field      = true %}#}
+{#            {% set display_associatedsla_field = true %}#}
 
             <td class="right pe-2 align-middle border-0">{{ _label }}</td>
             <td class="d-flex ms-n2 border-0 py-0">
@@ -171,11 +178,11 @@ Handle only linked ola, not ola ttr and tto defined using datetime fields
         <tr>
             {% set display_datetime_field  = field_options.fields_template is not defined or not field_options.fields_template.isHiddenField('time_to_resolve') %}
             {% set display_associatedsla_field = field_options.fields_template is not defined or not field_options.fields_template.isHiddenField('slas_id_ttr') %}
-            {# debug - force display #}
-            {% set display_datetime_field  = true %}
-            {% set display_associatedsla_field = true %}
+            {# @todo cleanup - debug - force display #}
+{#            {% set display_datetime_field  = true %}#}
+{#            {% set display_associatedsla_field = true %}#}
 
-            {% set _fieldname = 'time_to_resolve' %}
+{#            {% set _fieldname = 'time_to_resolve' %}#}
             <td class="right pe-2 align-middle border-0">{{ __('TTR') }}</td>
             <td class="d-flex ms-n2 border-0 py-0">
 
@@ -187,7 +194,14 @@ Handle only linked ola, not ola ttr and tto defined using datetime fields
 
                 {# datetime field #}
                 {% if display_datetime_field %}
-                    {{ fields.DatetimeLaField('time_to_resolve', item.fields['time_to_resolve'], __('TTR'), {'rand': _rand}) }}
+                    {{ fields.DatetimeLaField(
+                        'time_to_resolve',
+                        item.fields['time_to_resolve'],
+                        __('TTR'),
+                        {
+                            'rand': _rand,
+                            'disabled': not can_assign_sla_ola
+                        }) }}
                 {% endif %}
 
                 {# no linked ttr : display add button + hidden dropdown #}

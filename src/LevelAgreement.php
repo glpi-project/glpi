@@ -567,7 +567,7 @@ TWIG, $twig_params);
                 'glpi_tickets' => [
                     'FKEY'   => [
                         static::getTable()   => 'id',
-                        'glpi_tickets'       => $field // sla_id_ttr | sla_id_tto
+                        'glpi_tickets'       => $field, // sla_id_ttr | sla_id_tto
                     ],
                 ],
             ],
