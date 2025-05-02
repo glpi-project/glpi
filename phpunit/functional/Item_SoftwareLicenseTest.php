@@ -380,7 +380,7 @@ class Item_SoftwareLicenseTest extends DbTestCase
             [
                 'action' => 'add_item',
                 'action_name' => 'Add an item',
-                'items' => ['SoftwareLicense' => [$license_id => 'on']]
+                'items' => ['SoftwareLicense' => [$license_id => 'on']],
             ],
             [],
             'process'
@@ -416,7 +416,7 @@ class Item_SoftwareLicenseTest extends DbTestCase
             [
                 'action' => 'add_item',
                 'action_name' => 'Add an item',
-                'items' => ['SoftwareLicense' => [$license2_id => 'on']]
+                'items' => ['SoftwareLicense' => [$license2_id => 'on']],
             ],
             [],
             'process'
@@ -474,7 +474,7 @@ class Item_SoftwareLicenseTest extends DbTestCase
                 'action_name' => 'Add an item',
                 'items' => ['SoftwareLicense' => [$license_id => 'on']],
                 'items_id' => $user->getID(),
-                'itemtype' => 'User'
+                'itemtype' => 'User',
             ],
             [],
             'process'
@@ -499,7 +499,7 @@ class Item_SoftwareLicenseTest extends DbTestCase
                 'action_name' => 'Add an item',
                 'items' => ['SoftwareLicense' => [$license_id => 'on']],
                 'items_id' => $user2_id,
-                'itemtype' => 'User'
+                'itemtype' => 'User',
             ],
             [],
             'process'
@@ -528,7 +528,7 @@ class Item_SoftwareLicenseTest extends DbTestCase
                 'action_name' => 'Add an item',
                 'items' => ['SoftwareLicense' => [$license2_id => 'on']],
                 'items_id' => $user->getID(),
-                'itemtype' => 'User'
+                'itemtype' => 'User',
             ],
             [],
             'process'
@@ -543,7 +543,7 @@ class Item_SoftwareLicenseTest extends DbTestCase
                 'action_name' => 'Add an item',
                 'items' => ['SoftwareLicense' => [$license2_id => 'on']],
                 'items_id' => $user2_id,
-                'itemtype' => 'User'
+                'itemtype' => 'User',
             ],
             [],
             'process'
