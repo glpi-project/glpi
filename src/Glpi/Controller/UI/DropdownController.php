@@ -25,7 +25,7 @@ class DropdownController extends AbstractController
             'itemtype'  => $itemtype,
             'fieldname' => $fieldName,
             'selected_value' => $selectedValue,
-//            'label' => $label,
+            //            'label' => $label,
             // @todo il faut passer une option pour ne pas avoir un field horizontal (
             'options' => [
                 'full_width' => true,
