@@ -46,6 +46,31 @@ class OLATest extends DbTestCase
     const OLA_TTO_DELAY = [90, 'minute'];
     const OLA_TTR_DELAY = [2, 'day'];
 
+    public function testGetOLAData()
+    {
+        // arrange
+        $ticket = $this->createItem(Ticket::class, $this->getValidTicketData());
+        ['ola' => $ola_tto1, 'slm' => $slm, 'group' => $group] = $this->createOLA(ola_type: SLM::TTO);
+        ['ola' => $ola_tto2] = $this->createOLA(ola_type: SLM::TTO, group: $group, slm: $slm);
+        ['ola' => $ola_ttr] = $this->createOLA(ola_type: SLM::TTR, group: $group, slm: $slm);
+
+        $association_data = [
+            'items_id' => $ticket->getID(),
+            'itemtype' => $ticket::class,
+        ];
+
+        // act - create associations
+        $this->createItem(\Item_Ola::class, ['olas_id' => $ola_tto1->getID()] + $association_data);
+        $this->createItem(\Item_Ola::class, ['olas_id' => $ola_tto2->getID()] + $association_data);
+        $this->createItem(\Item_Ola::class, ['olas_id' => $ola_ttr->getID()] + $association_data);
+
+        // assert - check if the ticket has the 3 OLA associated
+        $this->assertCount(3, $ticket->getOlasData(), 'Expected 3 OLA associated with ticket, but found different results');
+        $this->assertCount(2, $ticket->getOlasTTOData(), 'Expected 2 OLA TTO associated with ticket, but found different results'); // @todoseb cleanup
+        $this->assertCount(1, $ticket->getOlasTTRData(), 'Expected 1 OLA TTR associated with ticket, but found different results'); // @todoseb cleanup
+    }
+
+
     public function testAssociateSingleOlaWithCreatedTicket(): void
     {
         // arrange
@@ -56,7 +81,7 @@ class OLATest extends DbTestCase
         $ticket = $this->createItem(Ticket::class, ['_la_update' => true, '_olas_id' => [$ola->getID()],] + $this->getValidTicketData());
 
         // assert
-        $fetched_olas = array_column($ticket->getAssociatedOlas(), 'id');
+        $fetched_olas = array_column($ticket->getOlasData(), 'id');
         $this->assertEqualsCanonicalizing([$ola->getID()], $fetched_olas, 'Expected exactly 1 OLA associated with ticket, but found different results');
     }
 
@@ -73,7 +98,7 @@ class OLATest extends DbTestCase
         $ticket = $this->createItem(Ticket::class, ['_la_update' => true, '_olas_id' => $olas_ids,] + $this->getValidTicketData());
 
         // assert
-        $fetched_olas = array_column($ticket->getAssociatedOlas(), 'id');
+        $fetched_olas = array_column($ticket->getOlasData(), 'id');
         $this->assertEqualsCanonicalizing($olas_ids, $fetched_olas, 'Expected OLAs associated with ticket don\'t match the expected IDs');
     }
 
@@ -88,7 +113,7 @@ class OLATest extends DbTestCase
         $this->updateItem(Ticket::class, $ticket->getID(), ['_la_update' => true, '_olas_id' => [$ola->getID()] ]);
 
         // assert
-        $fetched_olas = array_column($ticket->getAssociatedOlas(), 'id');
+        $fetched_olas = array_column($ticket->getOlasData(), 'id');
         $this->assertEqualsCanonicalizing([$ola->getID()], $fetched_olas, 'Expected exactly 1 OLA associated with ticket, but found different results');
     }
 
@@ -106,7 +131,7 @@ class OLATest extends DbTestCase
         $this->updateItem(Ticket::class, $ticket->getID(), ['_la_update' => true, '_olas_id' => $olas_ids ]);
 
         // assert
-        $fetched_olas = array_column($ticket->getAssociatedOlas(), 'id');
+        $fetched_olas = array_column($ticket->getOlasData(), 'id');
         $this->assertEqualsCanonicalizing($olas_ids, $fetched_olas, 'Expected exactly 1 OLA associated with ticket, but found different results');
     }
 
@@ -125,7 +150,7 @@ class OLATest extends DbTestCase
         $this->updateItem(Ticket::class, $ticket->getID(), ['name' => $ticket->fields['name']]);
 
         // assert
-        $fetched_olas = array_column($ticket->getAssociatedOlas(), 'id');
+        $fetched_olas = array_column($ticket->getOlasData(), 'id');
         $this->assertEqualsCanonicalizing([$ola->getID()], $fetched_olas, 'Expected exactly 1 OLA associated with ticket, but found different results');
     }
 
@@ -148,7 +173,7 @@ class OLATest extends DbTestCase
         $this->updateItem(Ticket::class, $ticket->getID(), ['_la_update' => true, '_olas_id' => $updated_olas_ids ]);
 
         // assert
-        $fetched_olas = array_column($ticket->getAssociatedOlas(), 'id');
+        $fetched_olas = array_column($ticket->getOlasData(), 'id');
         $this->assertEqualsCanonicalizing($updated_olas_ids, $fetched_olas, 'Expected exactly 1 OLA associated with ticket, but found different results');
     }
 
@@ -167,7 +192,7 @@ class OLATest extends DbTestCase
         $this->updateItem(Ticket::class, $ticket->getID(), ['_la_update' => true, '_olas_id' => [$ola->getID(), $ola->getID()] ]);
 
         // assert
-        $fetched_olas = array_column($ticket->getAssociatedOlas(), 'id');
+        $fetched_olas = array_column($ticket->getOlasData(), 'id');
         $this->assertEqualsCanonicalizing([$ola->getID()], $fetched_olas, 'Expected exactly 1 OLA associated with ticket, but found different results');
     }
 
@@ -189,7 +214,7 @@ class OLATest extends DbTestCase
         );
 
         // assert
-        $fetched_olas = array_column($ticket->getAssociatedOlas(), 'id');
+        $fetched_olas = array_column($ticket->getOlasData(), 'id');
         $this->assertEqualsCanonicalizing([$ola_tto->getID(), $ola_ttr->getID()], $fetched_olas, 'Unexpected OLA associated with ticket');
     }
 
@@ -213,7 +238,7 @@ class OLATest extends DbTestCase
         );
 
         // assert
-        $fetched_olas = array_column($ticket->getAssociatedOlas(), 'id');
+        $fetched_olas = array_column($ticket->getOlasData(), 'id');
         $this->assertEqualsCanonicalizing([$ola_tto->getID(), $ola_ttr->getID()], $fetched_olas, 'Unexpected OLA associated with ticket');
     }
 
@@ -292,7 +317,7 @@ class OLATest extends DbTestCase
         $this->assertEquals($due_time_datetime->format('Y-m-d H:i:s'), $item_ola->fields['due_time']);
 
         // test using getAssociatedOlas()
-        $ola = $ticket->getAssociatedOlas()[0];
+        $ola = $ticket->getOlasData()[0];
         $this->assertEquals($start_time_datetime->format('Y-m-d H:i:s'), $ola['start_time']);
         $this->assertEquals($due_time_datetime->format('Y-m-d H:i:s'), $ola['due_time']);
     }
@@ -320,7 +345,7 @@ class OLATest extends DbTestCase
         $this->assertEquals($due_time_datetime->format('Y-m-d H:i:s'), $item_ola->fields['due_time']);
 
         // test using getAssociatedOlas()
-        $ola = $ticket->getAssociatedOlas()[0];
+        $ola = $ticket->getOlasData()[0];
         $this->assertEquals($start_time_datetime->format('Y-m-d H:i:s'), $ola['start_time']);
         $this->assertEquals($due_time_datetime->format('Y-m-d H:i:s'), $ola['due_time']);
     }
