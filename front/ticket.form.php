@@ -226,7 +226,7 @@ elseif (isset($_POST['update'])) {
     );
     Html::redirect(Ticket::getFormURLWithID($id));
 } elseif (isset($_POST['delete_document'])) {
-    $ticket->getFromDB((int)$_POST['tickets_id']);
+    $ticket->getFromDB((int) $_POST['tickets_id']);
     $doc = new Document();
     $doc->getFromDB((int) $_POST['documents_id']);
     if ($doc->can($doc->getID(), UPDATE)) {
