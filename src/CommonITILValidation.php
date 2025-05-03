@@ -963,10 +963,8 @@ abstract class CommonITILValidation extends CommonDBChild
 
     /**
      * Print the validation list into item
-     *
-     * @param CommonDBTM $item
      **/
-    public function showSummary(CommonDBTM $item)
+    private function showSummary(CommonITILObject $item): void
     {
         /**
          * @var array $CFG_GLPI
@@ -984,12 +982,10 @@ abstract class CommonITILValidation extends CommonDBChild
                 )
             )
         ) {
-            return false;
+            return;
         }
 
-        /** @var CommonITILObject $item */
         $tID    = $item->fields['id'];
-
         $tmp    = [static::$items_id => $tID];
         $rand   = mt_rand();
 

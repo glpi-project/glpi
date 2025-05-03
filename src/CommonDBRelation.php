@@ -1906,6 +1906,8 @@ abstract class CommonDBRelation extends CommonDBConnexity
      * @param integer    $limit Limit of results. If 0, no limit.
      * @param array      $order The order for the results where the first element is the column name that will be sorted and the second element is the direction of the sorting (ASC or DESC)
      *
+     * The returned data contains the fields of the linked items, plus a reference to the linktable ($this) : 'linkid'
+     *
      * @return DBmysqlIterator
      */
     public static function getListForItem(CommonDBTM $item, int $start = 0, int $limit = 0, array $order = [])

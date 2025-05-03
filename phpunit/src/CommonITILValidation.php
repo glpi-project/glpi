@@ -48,6 +48,9 @@ abstract class CommonITILValidation extends DbTestCase
         return preg_replace('/Test$/', '', substr(strrchr($test_class, '\\'), 1));
     }
 
+    /**
+     * @return class-string<\CommonITILObject>
+     */
     protected function getITILObjectClass(): string
     {
         $tested_class = $this->getTestedClass();
@@ -750,6 +753,7 @@ abstract class CommonITILValidation extends DbTestCase
 
     public function testCreateValidation()
     {
+        /** @var \CommonITILValidation $validation_class */
         $validation_class = $this->getTestedClass();
         $validation = new $validation_class();
 

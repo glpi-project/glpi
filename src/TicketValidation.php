@@ -49,8 +49,6 @@ class TicketValidation extends CommonITILValidation
     public const VALIDATEREQUEST             = 4096;
     public const VALIDATEINCIDENT            = 8192;
 
-
-
     public static function getCreateRights()
     {
         return [static::CREATEREQUEST, static::CREATEINCIDENT];
@@ -65,7 +63,6 @@ class TicketValidation extends CommonITILValidation
     {
         return [static::VALIDATEREQUEST, static::VALIDATEINCIDENT];
     }
-
 
     /**
      * @since 0.85
