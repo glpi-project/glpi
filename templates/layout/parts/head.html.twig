@@ -44,10 +44,7 @@
     {% endif %}
 >
 <head>
-   <title>
-       {% if title is defined %}{{ title }} -{% endif %}
-       {{ config('app_name') }}
-   </title>
+   <title>{% if title is defined %}{{ title }} - {% endif %}{{ config('app_name') }}</title>
 
    <meta charset="utf-8" />
 
