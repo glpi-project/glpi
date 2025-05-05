@@ -91,7 +91,7 @@ class ImportMapGenerator
      */
     public static function getInstance(): ImportMapGenerator
     {
-        global $CFG_GLPI;
+        global $CFG_GLPI, $GLPI_CACHE;
 
         if (self::$instance === null) {
             self::$instance = new self($CFG_GLPI['root_doc'], GLPI_ROOT, $GLPI_CACHE);

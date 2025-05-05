@@ -264,26 +264,8 @@ class ImportMapGeneratorTest extends GLPITestCase
      */
     public function testRegisterModulesPath()
     {
-        // Set up virtual file system with plugins having various module files
-        $root = vfsStream::setup('glpi', null, [
-            'plugins' => [
-                'myplugin' => [
-                    'public' => [
-                        'lib' => [
-                            'should-not-be-included.js' => '// This should not be included',
-                        ],
-                        'build' => [
-                            'plugin-build.js' => '// Plugin built file',
-                        ],
-                        'js' => [
-                            'modules' => [
-                                'CustomModule.js' => '// Plugin JS content',
-                            ],
-                        ],
-                    ],
-                ],
-            ],
-        ]);
+        // Set up virtual file system
+        $root = $this->setupBasicVirtualFilesystem();
 
         // Create generator with mocked dependencies
         $generator = $this->createMockGenerator(vfsStream::url('glpi'));
@@ -291,6 +273,8 @@ class ImportMapGeneratorTest extends GLPITestCase
         // Register specific module paths
         $generator->registerModulesPath('myplugin', 'public/js/modules');
         $generator->registerModulesPath('myplugin', 'public/build');
+        $generator->registerModulesPath('myotherplugin', 'public/build');
+        $generator->registerModulesPath('myotherplugin', 'public/lib');
 
         // Generate the import map
         $import_map = $generator->generate();
@@ -298,9 +282,12 @@ class ImportMapGeneratorTest extends GLPITestCase
         // Verify that only registered paths are included
         $this->assertArrayHasKey('myplugin/CustomModule', $import_map['imports'], 'Module from registered path should be included');
         $this->assertArrayHasKey('myplugin/plugin-build', $import_map['imports'], 'Plugin build file should be included');
+        $this->assertArrayHasKey('myotherplugin/component/other-build', $import_map['imports'], 'Another plugin build file should be included');
+        $this->assertArrayHasKey('myotherplugin/other-lib', $import_map['imports'], 'Another plugin module should be included');
 
         // Verify that unregistered paths are not included
         $this->assertArrayNotHasKey('myplugin/should-not-be-included', $import_map['imports'], 'Files outside registered paths should not be included');
+        $this->assertArrayNotHasKey('myotherplugin/CustomModule', $import_map['imports'], 'Files outside registered paths should not be included');
     }
 
     /**
