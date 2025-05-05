@@ -89,13 +89,17 @@
                     />
 
                     <span class="me-2 value-operator-selector">
+                        {% set value_op = '' %}
+                        {% if condition.getValueOperator() is not null %}
+                            {% set value_op = condition.getValueOperator().value %}
+                        {% endif %}
                         {% do call('Dropdown::showFromArray', [
                             '_conditions[' ~ loop.index0 ~ '][value_operator]',
                             manager.getValueOperatorDropdownValues(
                                 condition.getItemUuid()
                             ),
                             {
-                                'value': condition.getValueOperator().value,
+                                'value': value_op,
                                 'aria_label' : __('Value operator'),
                                 'add_data_attributes': {
                                     'glpi-conditions-editor-value-operator': '',
