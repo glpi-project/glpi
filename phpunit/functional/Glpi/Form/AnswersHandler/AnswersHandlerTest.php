@@ -164,6 +164,65 @@ class AnswersHandlerTest extends DbTestCase
         );
     }
 
+    public function testValidateAnswers(): void
+    {
+        self::login();
+
+        // Create a form with both mandatory and optional questions
+        $builder = new FormBuilder("Validation Test Form");
+        $builder
+            ->addQuestion("Mandatory Name", QuestionTypeShortText::class, is_mandatory: true)
+            ->addQuestion("Mandatory Email", QuestionTypeEmail::class, is_mandatory: true)
+            ->addQuestion("Optional Comment", QuestionTypeLongText::class, is_mandatory: false)
+        ;
+        $form = self::createForm($builder);
+
+        // Get handler instance
+        $handler = AnswersHandler::getInstance();
+
+        // Test 1: All mandatory fields are filled - should be valid
+        $complete_answers = [
+            self::getQuestionId($form, "Mandatory Name") => "John Doe",
+            self::getQuestionId($form, "Mandatory Email") => "john.doe@example.com",
+            self::getQuestionId($form, "Optional Comment") => "This is an optional comment",
+        ];
+        $result = $handler->validateAnswers($form, $complete_answers);
+        $this->assertTrue($result->isValid(), "Validation should pass when all mandatory fields are filled");
+        $this->assertCount(0, $result->getErrors(), "There should be no errors when all mandatory fields are filled");
+
+        // Test 2: Missing one mandatory field - should be invalid
+        $missing_name_answers = [
+            self::getQuestionId($form, "Mandatory Email") => "john.doe@example.com",
+            self::getQuestionId($form, "Optional Comment") => "This is an optional comment",
+        ];
+        $result = $handler->validateAnswers($form, $missing_name_answers);
+        $this->assertFalse($result->isValid(), "Validation should fail when a mandatory field is missing");
+        $this->assertCount(1, $result->getErrors(), "There should be one error when one mandatory field is missing");
+
+        // Test 3: Missing all mandatory fields - should be invalid with multiple errors
+        $only_optional_answers = [
+            self::getQuestionId($form, "Optional Comment") => "This is an optional comment",
+        ];
+        $result = $handler->validateAnswers($form, $only_optional_answers);
+        $this->assertFalse($result->isValid(), "Validation should fail when all mandatory fields are missing");
+        $this->assertCount(2, $result->getErrors(), "There should be two errors when both mandatory fields are missing");
+
+        // Test 4: Empty answers - should be invalid with multiple errors
+        $empty_answers = [];
+        $result = $handler->validateAnswers($form, $empty_answers);
+        $this->assertFalse($result->isValid(), "Validation should fail when answers are empty");
+        $this->assertCount(2, $result->getErrors(), "There should be two errors when answers are empty");
+
+        // Test 5: Empty string in mandatory field - should be invalid
+        $empty_string_answers = [
+            self::getQuestionId($form, "Mandatory Name") => "",
+            self::getQuestionId($form, "Mandatory Email") => "john.doe@example.com",
+        ];
+        $result = $handler->validateAnswers($form, $empty_string_answers);
+        $this->assertFalse($result->isValid(), "Validation should fail when a mandatory field contains an empty string");
+        $this->assertCount(1, $result->getErrors(), "There should be one error when a mandatory field contains an empty string");
+    }
+
     private function validateAnswers(
         Form $form,
         array $answers,

@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -40,38 +39,37 @@ use Glpi\Controller\Form\Utils\CanCheckAccessPolicies;
 use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
 use Glpi\Form\AnswersHandler\AnswersHandler;
-use Glpi\Form\AnswersSet;
-use Glpi\Form\DelegationData;
 use Glpi\Form\EndUserInputNameProvider;
 use Glpi\Form\Form;
+use Glpi\Form\Section;
+use Glpi\Form\ValidationResult;
 use Glpi\Http\Firewall;
 use Glpi\Security\Attribute\SecurityStrategy;
-use Session;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-final class SubmitAnswerController extends AbstractController
+final class ValidateAnswerController extends AbstractController
 {
     use CanCheckAccessPolicies;
 
     #[SecurityStrategy(Firewall::STRATEGY_NO_CHECK)] // Some forms can be accessed anonymously
     #[Route(
-        "/Form/SubmitAnswers",
-        name: "glpi_form_submit_answers",
+        "/Form/ValidateAnswers",
+        name: "glpi_form_validate_answers",
         methods: "POST"
     )]
     public function __invoke(Request $request): Response
     {
         $form = $this->loadSubmittedForm($request);
+        $section = $this->loadSubmittedSection($request);
         $this->checkFormAccessPolicies($form, $request);
 
-        $answers = $this->saveSubmittedAnswers($form, $request);
-        $links = $answers->getLinksToCreatedItems();
-
+        $validation_result = $this->checkSubmittedAnswersValidation($section, $request);
         return new JsonResponse([
-            'links_to_created_items' => $links,
+            'success' => $validation_result->isValid(),
+            'errors' => $validation_result->getErrors(),
         ]);
     }
 
@@ -90,39 +88,34 @@ final class SubmitAnswerController extends AbstractController
         return $form;
     }
 
-    private function saveSubmittedAnswers(
-        Form $form,
+    private function loadSubmittedSection(Request $request): Section
+    {
+        $section_uuid = $request->request->getString("section_uuid");
+        if (!$section_uuid) {
+            throw new BadRequestHttpException();
+        }
+
+        $section = Section::getByUuid($section_uuid);
+        if (!$section) {
+            throw new NotFoundHttpException();
+        }
+
+        return $section;
+    }
+
+    private function checkSubmittedAnswersValidation(
+        Form|Section $questions_container,
         Request $request
-    ): AnswersSet {
+    ): ValidationResult {
         $post = $request->request->all();
         $provider = new EndUserInputNameProvider();
 
-        $delegation = new DelegationData(
-            $request->request->getInt('delegation_users_id', 0) ?: null,
-            $request->request->getBoolean('delegation_use_notification', false) ?: null,
-            $request->request->getString('delegation_alternative_email', '') ?: null
-        );
-        $answers    = $provider->getAnswers($post);
-        $files      = $provider->getFiles($post, $answers);
+        $answers = $provider->getAnswers($post);
         if (empty($answers)) {
             throw new BadRequestHttpException();
         }
 
         $handler = AnswersHandler::getInstance();
-
-        // Check if answers are valid
-        if (!$handler->validateAnswers($form, $answers)->isValid()) {
-            throw new BadRequestHttpException();
-        }
-
-        $answers = $handler->saveAnswers(
-            $form,
-            $answers,
-            Session::getLoginUserID(),
-            $files,
-            $delegation
-        );
-
-        return $answers;
+        return $handler->validateAnswers($questions_container, $answers);
     }
 }
