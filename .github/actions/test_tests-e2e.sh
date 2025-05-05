@@ -8,4 +8,4 @@ export CYPRESS_BASE_URL="http://localhost:80"
 node_modules/.bin/cypress install
 
 # Run Cypress tests
-node_modules/.bin/cypress run --project tests --spec tests/cypress/e2e/ITILObject/massive_actions.cy.js
+node_modules/.bin/cypress run --project tests
