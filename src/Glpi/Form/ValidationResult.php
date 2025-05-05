@@ -84,7 +84,8 @@ class ValidationResult
     /**
      * Add an error to the list
      *
-     * @param array $error Error details
+     * @param Question $question The question associated with the error
+     * @param string   $message  The error message
      * @return void
      */
     public function addError(Question $question, string $message): void
