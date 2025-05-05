@@ -78,7 +78,7 @@
                   </td>
 
                   {% for col_name, column in columns %}
-                     {% set content = row['columns'][col_name] %}
+                     {% set content = row['columns'][col_name] ?? false %}
                      <td>
                         {% if content is iterable and content['checked'] is defined %}
                            {% if content['readonly'] is not defined %}

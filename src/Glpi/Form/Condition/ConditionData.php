@@ -79,7 +79,7 @@ final class ConditionData implements JsonSerializable
 
     public function getValueOperator(): ?ValueOperator
     {
-        // No follback here as an empty value is valid if the condition is not
+        // No fallback here as an empty value is valid if the condition is not
         // fully specified yet.
         return ValueOperator::tryFrom($this->value_operator ?? "");
     }

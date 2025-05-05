@@ -31,7 +31,7 @@
  #}
 
 <!DOCTYPE html>
-<html lang="{{ lang }}"
+<html lang="{{ lang ?? 'en' }}"
     {% if session('glpihighcontrast_css') %}
         data-high-contrast="1"
     {% endif %}
@@ -44,7 +44,7 @@
     {% endif %}
 >
 <head>
-   <title>{{ title }} - {{ config('app_name') }}</title>
+   <title>{% if title is defined %}{{ title }} - {% endif %}{{ config('app_name') }}</title>
 
    <meta charset="utf-8" />
 
