@@ -1202,7 +1202,8 @@ class GLPIDashboard {
                 .html(style)
                 .appendTo("head");
         } else {
-            cell_height = 60;
+            // apply new height to gridstack
+            this.grid.cellHeight(60);
         }
     }
 
