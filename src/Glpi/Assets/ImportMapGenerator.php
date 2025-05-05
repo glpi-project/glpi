@@ -94,7 +94,7 @@ class ImportMapGenerator
         global $CFG_GLPI;
 
         if (self::$instance === null) {
-            self::$instance = new self($CFG_GLPI['root_doc'], GLPI_ROOT, null);
+            self::$instance = new self($CFG_GLPI['root_doc'], GLPI_ROOT, $GLPI_CACHE);
         }
 
         return self::$instance;
@@ -193,6 +193,8 @@ class ImportMapGenerator
                                 $full_path,
                                 $plugin_key . '/'
                             );
+                        } else {
+                            trigger_error(sprintf('`%s` is not a valid directory.', $full_path), E_USER_WARNING);
                         }
                     }
 
