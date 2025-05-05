@@ -70,7 +70,7 @@ const component_context = import.meta.webpackContext('.', {
 });
 
 // TODO: CFG_GLPI is undefined sometimes, find out why.
-if (CFG_GLPI !== undefined) {
+if (typeof CFG_GLPI !== "undefined") {
     /* global __webpack_public_path__ */
     // eslint-disable-next-line no-global-assign
     __webpack_public_path__ = CFG_GLPI.root_doc + __webpack_public_path__;
