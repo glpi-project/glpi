@@ -132,14 +132,7 @@ describe('Form rendering', () => {
             // Try to submit first section, should fail since we didn't answer
             // the mandatory question
             cy.findByRole('button', {name: 'Continue'}).click();
-            // Wait to be sure that the current state will not be used a false
-            // positive to pass the following assertions in case the current
-            // section was not yet updated by the JS logic.
-            // This would not be needed if we could detect and wait for the "Please
-            // fill this input" popup from the browser but it doesn't seem
-            // supported by cypress.
-            // eslint-disable-next-line cypress/no-unnecessary-waiting
-            cy.wait(600);
+            checkMandatoryQuestion('First question');
             cy.findByRole('heading', {name: 'First section'}).should('be.visible');
             cy.findByRole('heading', {name: 'Second section'}).should('not.exist');
 
@@ -152,14 +145,7 @@ describe('Form rendering', () => {
             // Try to submit the final section, should fail since we didn't answer
             // the mandatory question
             cy.findByRole('button', {name: 'Submit'}).click();
-            // Wait to be sure that the current state will not be used a false
-            // positive to pass the following assertions in case the current
-            // section was not yet updated by the JS logic.
-            // This would not be needed if we could detect and wait for the "Please
-            // fill this input" popup from the browser but it doesn't seem
-            // supported by cypress.
-            // eslint-disable-next-line cypress/no-unnecessary-waiting
-            cy.wait(600);
+            checkMandatoryQuestion('Second question');
             cy.findByRole('heading', {name: 'Second section'}).should('be.visible');
             cy.findByText('Form submitted').should('not.be.visible');
 
@@ -196,4 +182,18 @@ function addQuestionAndGetUuuid(name, type = null, subtype = null) {
     cy.findByRole('alert').should('contain.text', "UUID copied successfully to clipboard.");
     cy.findByRole('button', {'name': "Close"}).click();
     cy.findByRole('alert').should('not.exist');
+}
+
+function checkMandatoryQuestion(name) {
+    cy.findByRole('textbox', { name })
+        .should('have.attr', 'aria-invalid', 'true')
+        .should('have.attr', 'aria-errormessage')
+    ;
+    getAriaErrorMessageElement(cy.findByRole('textbox', { name }))
+        .should('contain.text', 'This field is mandatory')
+    ;
+}
+
+function getAriaErrorMessageElement(element) {
+    return element.invoke('attr', 'aria-errormessage').then((id) => cy.get(`#${id}`));
 }
