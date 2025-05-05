@@ -56,11 +56,11 @@
                 data-glpi-form-renderer-form-header
             >
                 <h1 class="form-title mb-2" aria-label="{{ __('Form title') }}">
-                    {{ translate_item_key(form, constant(get_class(form) ~ '::TRANSLATION_KEY_NAME')) }}
+                    {{ translate_item_key(form, constant('TRANSLATION_KEY_NAME', form)) }}
                 </h1>
 
                 <div class="text-muted form-description" aria-label="{{ __('Form description') }}" role="note">
-                    {{ translate_item_key(form, constant(get_class(form) ~ '::TRANSLATION_KEY_HEADER'))|safe_html }}
+                    {{ translate_item_key(form, constant('TRANSLATION_KEY_HEADER', form))|safe_html }}
                 </div>
             </div>
 
@@ -100,11 +100,11 @@
                         <div class="card-body">
                             {% if not is_single_section_form %}
                                 <h2 class="mb-1 {{ not section.fields.name ? "text-muted" : "" }}">
-                                {{ translate_item_key(section, constant(get_class(section) ~ '::TRANSLATION_KEY_NAME'))|default(__('Untitled section')) }}
+                                {{ translate_item_key(section, constant('TRANSLATION_KEY_NAME', section))|default(__('Untitled section')) }}
                             </h2>
 
                                 <div class="text-muted section-description mb-3">
-                                    {{ translate_item_key(section, constant(get_class(section) ~ '::TRANSLATION_KEY_DESCRIPTION'))|safe_html }}
+                                    {{ translate_item_key(section, constant('TRANSLATION_KEY_DESCRIPTION', section))|safe_html }}
                                 </div>
                             {% endif %}
 
@@ -167,7 +167,7 @@
                                                 {% endif %}
                                             >
                                                 <h3 class="mb-2 {{ not form_block.fields.name ? "text-muted" : "" }}">
-                                                    {{ translate_item_key(form_block, constant(get_class(form_block) ~ '::TRANSLATION_KEY_NAME'))|default(__('Untitled question')) }}
+                                                    {{ translate_item_key(form_block, constant('TRANSLATION_KEY_NAME', form_block))|default(__('Untitled question')) }}
                                                     {% if form_block.fields.is_mandatory ?? false %}
                                                         <span class="text-danger">*</span>
                                                     {% endif %}
@@ -180,7 +180,7 @@
                                                 {% endif %}
 
                                                 <div class="text-muted block-description">
-                                                    {{ translate_item_key(form_block, constant(get_class(form_block) ~ '::TRANSLATION_KEY_DESCRIPTION'))|safe_html }}
+                                                    {{ translate_item_key(form_block, constant('TRANSLATION_KEY_DESCRIPTION', form_block))|safe_html }}
                                                 </div>
                                             </section>
                                         {% endif %}
