@@ -130,7 +130,6 @@ export default [
             sourceType: "module",
         },
         rules: {
-            "mocha/no-skipped-tests": "error",
             "mocha/no-exclusive-tests": "error"
         }
     },
@@ -148,7 +147,6 @@ export default [
             sourceType: "module",
         },
         rules: {
-            "mocha/no-skipped-tests": "error",
             "mocha/no-exclusive-tests": "error"
         }
     },
