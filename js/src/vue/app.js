@@ -69,9 +69,12 @@ const component_context = import.meta.webpackContext('.', {
     chunkName: '/vue-sfc/[request]'
 });
 
-/* global __webpack_public_path__ */
-// eslint-disable-next-line no-global-assign
-__webpack_public_path__ = CFG_GLPI.root_doc + __webpack_public_path__;
+// TODO: CFG_GLPI is undefined sometimes, find out why.
+if (CFG_GLPI !== undefined) {
+    /* global __webpack_public_path__ */
+    // eslint-disable-next-line no-global-assign
+    __webpack_public_path__ = CFG_GLPI.root_doc + __webpack_public_path__;
+}
 
 const components = {};
 component_context.keys().forEach((f) => {
