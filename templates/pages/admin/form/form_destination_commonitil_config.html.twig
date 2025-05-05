@@ -327,7 +327,7 @@
 
                 {% if fields is not empty %}
                     <section class="accordion-item border-bottom">
-                        <h2 class="accordion-header" id="heading-item-{{ rand }}-{{ loop.index }}">
+                        <div class="accordion-header" id="heading-item-{{ rand }}-{{ loop.index }}">
                             <button
                                 class="accordion-button collapsed"
                                 type="button"
@@ -337,10 +337,10 @@
                                 aria-controls="item-{{ rand }}-{{ loop.index }}"
                                 aria-label="{{ category.label }}"
                             >
-                                <i class="{{ category.icon }} me-1 item-icon"></i>
+                                <i class="{{ category.icon }} item-icon"></i>
                                 <span class="item-title">{{ category.label }}</span>
                             </button>
-                        </h2>
+                        </div>
                         <section
                             id="item-{{ rand }}-{{ loop.index }}"
                             class="accordion-collapse collapse"

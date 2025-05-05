@@ -98,7 +98,7 @@
                 <button class="accordion-button collapsed d-flex align-self-center" type="button"
                         data-bs-toggle="collapse" data-bs-target="#{{ id }}"
                         aria-expanded="false" aria-controls="{{ id }}">
-                    <i class="ti ti-notes me-1"></i>
+                    <i class="ti ti-notes"></i>
                     {% set title = '#' ~ note['id'] ~ ' - ' ~ note['date_creation']|formatted_datetime %}
                     {% if note['date_mod'] != note['date_creation'] %}
                         {% set title = title ~ ' (' ~ __('Last update on %s')|format(note['date_mod']|formatted_datetime) ~ ')' %}
