@@ -56,7 +56,7 @@ use Toolbox;
 
 class Grid
 {
-    protected $cell_margin     = 6;
+    protected $cell_margin     = 3;
     protected $grid_cols       = 26;
     protected $grid_rows       = 24;
     protected $current         = "";

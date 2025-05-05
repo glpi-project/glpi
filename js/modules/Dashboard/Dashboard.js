@@ -1180,9 +1180,7 @@ class GLPIDashboard {
     generateCss() {
         const dash_width    = Math.floor(this.element.width());
         const cell_length   = (dash_width - 1) / this.cols;
-        let cell_height   = cell_length;
         const cell_fullsize = (dash_width / this.cols);
-        const width_percent = 100 / this.cols;
 
         let style = " \
       "+this.elem_id+" .cell-add { \
@@ -1193,19 +1191,6 @@ class GLPIDashboard {
          background-size: "+cell_length+"px "+cell_fullsize+"px; \
          bottom: "+cell_fullsize+"px; \
       }";
-
-        for (let i = 0; i < this.cols; i++) {
-            const left  = i * width_percent;
-            const width = (i+1) * width_percent;
-
-            style+= this.elem_id+" .grid-stack > .grid-stack-item[gs-x='"+i+"'] { \
-            left: "+left+"%; \
-         } \
-         "+this.elem_id+" .grid-stack > .grid-stack-item[gs-w='"+(i+1)+"'] { \
-            min-width: "+width_percent+"%; \
-            width: "+width+"%; \
-         }";
-        }
 
         // remove old inline styles
         $("#gs_inline_css_"+this.rand).remove();
@@ -1219,9 +1204,6 @@ class GLPIDashboard {
         } else {
             cell_height = 60;
         }
-
-        // apply new height to gridstack
-        this.grid.cellHeight(cell_height);
     }
 
     /**

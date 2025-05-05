@@ -105,14 +105,6 @@
 }
 
 .grid-stack {
-    .grid-stack-item {
-        .grid-stack-item-content,
-        .placeholder-content {
-            left: 0;
-            right: 0;
-        }
-    }
-
     .grid-stack-placeholder > .placeholder-content {
         border: 1px dashed #bcbf33;
         background-color: rgba(229, 245, 105, 50%);

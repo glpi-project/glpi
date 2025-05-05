@@ -31,7 +31,6 @@
  * ---------------------------------------------------------------------
  */
 
-$item_margin: 3px;
 $toolbar_height: 40px;
 $filter_height: 62px;
 $break_phones: 700px;
@@ -636,11 +635,6 @@ $break_tablet: 1400px;
                         opacity: 1;
                     }
                 }
-            }
-
-            .placeholder-content {
-                left: $item_margin;
-                right: $item_margin;
             }
 
             .loading-card {
