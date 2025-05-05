@@ -1953,6 +1953,8 @@ JS
             $active ? __s('Rule is active') : __s('Rule is inactive'),
         );
 
+        $data['rank'] = '<span class="badge">' . $this->fields["ranking"] . '</span>';
+
         if ($display_entity) {
             $entname = htmlescape(Dropdown::getDropdownName('glpi_entities', $this->fields['entities_id']));
             if ($this->maybeRecursive() && $this->fields['is_recursive']) {

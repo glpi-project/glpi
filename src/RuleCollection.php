@@ -553,6 +553,7 @@ TWIG, $twig_params);
         if ($display_entities) {
             $columns['entities_id'] = Entity::getTypeName(1);
         }
+        $columns['rank'] = __('Position');
         $columns['sort'] = '';
 
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
@@ -566,6 +567,7 @@ TWIG, $twig_params);
             'super_header' => $this->getTitle(),
             'columns' => $columns,
             'formatters' => [
+                'rank' => 'raw_html',
                 'name' => 'raw_html',
                 'criteria' => 'raw_html',
                 'actions' => 'raw_html',
