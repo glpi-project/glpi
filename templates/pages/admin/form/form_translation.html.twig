@@ -40,7 +40,7 @@
     <input type="hidden" name="translations[{{ rand }}][key]" value="{{ handler.getKey() }}" />
 
     <div class="d-flex align-items-center">
-        {% if translation.isPossiblyObsolete() %}
+        {% if translation and translation.isPossiblyObsolete() %}
             <i
                 class="ti ti-alert-circle text-warning me-1"
                 aria-hidden="true"
@@ -50,10 +50,14 @@
             ></i>
         {% endif %}
 
+        {% set current_translation = '' %}
+        {% if translation %}
+            {% set current_translation = translation.getTranslation() %}
+        {% endif %}
         {% if handler.isRichText() %}
             {{ fields.textareaField(
                 'translations[%s][translations][one]'|format(rand),
-                translation.getTranslation(),
+                current_translation,
                 '',
                 {
                     'no_label'       : true,
@@ -72,7 +76,7 @@
                 name="translations[{{ rand }}][translations][one]"
                 class="form-control"
                 placeholder="{{ __('Enter translation') }}"
-                value="{{ translation.getTranslation() }}"
+                value="{{ current_translation }}"
                 aria-label="{{ __('Enter translation') }}"
             />
         {% endif %}

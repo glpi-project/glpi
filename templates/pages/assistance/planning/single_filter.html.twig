@@ -73,7 +73,7 @@
                             </a>
                         </li>
                         <li class="dropdown-item">
-                            <a target="_blank" href="webcal://{{ url.host }}:{{ url.port }}{{ url.path }}{{ export_url }}">
+                            <a target="_blank" href="webcal://{{ url.host }}:{{ url.port }}{{ url.path ?? '' }}{{ export_url }}">
                                 {{ _x('button', 'Export') }} - {{ __('Webcal') }}
                             </a>
                         </li>
@@ -92,7 +92,7 @@
             </div>
         {% endif %}
     </span>
-    {% if caldav_item_url is not empty and filter_data.type == 'group_users' %}
+    {% if (caldav_item_url ?? '') is not empty and filter_data.type == 'group_users' %}
         <ul class="group_listofusers filters">
             {% for user_key, user_data in filter_data.users %}
                 {% do call('Planning::showSingleLinePlanningFilter', [user_key, user_data, {

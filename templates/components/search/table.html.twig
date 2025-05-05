@@ -55,7 +55,7 @@
             {% endif %}
 
             {% set sorts = data['search']['sort'] %}
-
+            {% if search_was_executed %}
             {% for col in data['data']['cols'] %}
                {# construct header link (for sorting) #}
                {% set linkto = '' %}
@@ -94,6 +94,7 @@
                   {% endif %}
                </th>
             {% endfor %}
+            {% endif %}
 
             {# display itemtype in AllAssets #}
             {% if union_search_type[itemtype] is defined %}

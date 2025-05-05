@@ -1774,7 +1774,7 @@ TWIG, $twig_params);
                     <table class="table table-sm">
                         <tr><th>{{ title }}</th></tr>
                         {% for data in iterator %}
-                            {% set name = data['transname'] is not empty ? data['transname'] : data['name'] %}
+                            {% set name = (data['transname'] ?? '') is not empty ? data['transname'] : data['name'] %}
                             <tr>
                                 <td class="text-start">
                                     <div class="kb">

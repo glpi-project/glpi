@@ -47,6 +47,7 @@
 {# Preference form = My Settings page #}
 {% set is_preference_form = is_preference_form|default(false) %}
 {% set target = path(is_preference_form ? '/front/preference.php' : '/front/user.form.php') %}
+{% set higher_rights = higher_rights|default(false) %}
 
 <div class="asset">
     <form id="main-form" name="asset_form" method="post" action="{{ target }}" enctype="multipart/form-data" data-submit-once>
@@ -254,7 +255,7 @@
                                 {{ fields.textField('phone2', item.fields['phone2'], __('Phone 2')) }}
                             {% endif %}
 
-                            {% if not item.isNewItem() and (caneditpassword or is_preference_form) %}
+                            {% if not item.isNewItem() and ((caneditpassword ?? false) or is_preference_form) %}
                                 {{ fields.smallTitle(__('Passwords and access keys')) }}
                                 {{ fields.passwordField('api_token', item.fields['api_token'], __('API token'), {
                                     can_regenerate: true,
