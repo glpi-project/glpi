@@ -35,16 +35,15 @@
 namespace tests\units;
 
 use DbTestCase;
-use OLA;
+use Glpi\PHPUnit\Tests\Glpi\ITILTrait;
+use Glpi\PHPUnit\Tests\Glpi\SLMTrait;
 use SLM;
 use Ticket;
 
 class OLATest extends DbTestCase
 {
-    // default delay for tto & ttr ola
-    // see @\LevelAgreement::getDefinitionTimeValues() for available unit values
-    const OLA_TTO_DELAY = [90, 'minute'];
-    const OLA_TTR_DELAY = [2, 'day'];
+    use SLMTrait;
+    use ITILTrait;
 
     public function testGetOLAData()
     {
@@ -289,7 +288,6 @@ class OLATest extends DbTestCase
     // @todoseb test à la modification d'un OLA ?
     // @todoseb tests global, ajoute, suppression, reajout
     // @todoseb tests sur getAssociatedSlas() - ailleurs
-    // @todoseb tests avec des OLA assignées par rule
 
     /**
      * - start_time is set at the moment the Ola is assigned to the ticket
@@ -350,177 +348,7 @@ class OLATest extends DbTestCase
         $this->assertEquals($due_time_datetime->format('Y-m-d H:i:s'), $ola['due_time']);
     }
 
-    /**
-     * @todoseb déplacer
-     * @todo missing fields for form submission (_actors, kb_linked_id, etc, @see front/ticket.form.php, Ticket::post_updateItem, etc)
-     */
-    private function getValidTicketData(): array
-    {
-        return [
-//            'id' => 0,
-//            'entities_id' => 0,
-            'name' => 'ticket name ' . time(),
-//            'date' => null,
-//            'closedate' => null,
-//            'solvedate' => null,
-//            'takeintoaccountdate' => null,
-//            'date_mod' => null,
-//            'users_id_lastupdater' => 0,
-//            'status' => 1,
-//            'users_id_recipient' => 0,
-//            'requesttypes_id' => 0,
-            'content' => 'Ticket Example content',
-//            'urgency' => 1,
-//            'impact' => 1,
-//            'priority' => 1,
-//            'itilcategories_id' => 0,
-//            'type' => 1,
-//            'global_validation' => 1,
-//            'slas_id_ttr' => 0,
-//            'slas_id_tto' => 0,
-//            'slalevels_id_ttr' => 0,
-//            'time_to_resolve' => null,
-//            'time_to_own' => null,
-//            'begin_waiting_date' => null,
-//            'sla_waiting_duration' => 0,
-//            'waiting_duration' => 0,
-//            'close_delay_stat' => 0,
-//            'solve_delay_stat' => 0,
-//            'takeintoaccount_delay_stat' => 0,
-//            'actiontime' => 0,
-//            'is_deleted' => 0,
-//            'locations_id' => 0,
-//            'validation_percent' => 0,
-//            'date_creation' => null,
-//            'tickettemplates_id' => 0,
-//            'externalid' => null,
-        ];
-    }
 
-    /**
-     * @param array $data
-     * @param int $ola_type
-     * @param \Group|null $group
-     * @param \SLM|null $slm
-     *
-     * @return array{ola: OLA, slm: SLM, group: \Group}
-     */
-    private function createOLA(array $data = [], int $ola_type = \SLM::TTO, ?\Group $group = null, ?\SLM $slm = null): array
-    {
-        assert(in_array($ola_type, array_keys(OLA::getTypes())));
-        $slm = $slm ?? $this->createSLM();
-        $group = $group ?? $this->createGroup();
-
-        [$amount, $unit] = match ($ola_type) {
-            SLM::TTO => self::OLA_TTO_DELAY,
-            SLM::TTR => self::OLA_TTR_DELAY,
-        };
-
-        $ola = $this->createItem(
-            Ola::class,
-            $data + [
-            //                'id' => 0,
-                'name' => 'OLA ' . time(),
-            //                'entities_id' => 0,
-                'is_recursive' => 1, // @todoseb voir avec quelqu'un le fonctionnement de l'entité 0 et de la récursivité. car la requete Item_Ola::getListForItem() dans \Ticket::getAssociatedOlas attend soit de la récursivité, soit une entité != 0
-                'type' => $ola_type,
-                'comment' => 'OLA comment ' . time(),
-                'number_time' => $amount,
-                'definition_time' => $unit,
-            //                'use_ticket_calendar' => 0,
-            //                'calendars_id' => 0,
-            //                'date_mod' => null,
-            //                'end_of_working_day' => 0,
-            //                'date_creation' => null,
-                'slms_id' => $slm->getID(),
-                'groups_id' => $group->getID(),
-            ]
-        );
-
-        return ['ola' => $ola, 'slm' => $slm, 'group' => $group];
-    }
-
-    private function createSLM(array $data = [], ?\Calendar $calendar = null): SLM
-    {
-        $calendar = $calendar ?? $this->createCalendar();
-
-        return $this->createItem(
-            SLM::class,
-            $data + [
-                'id' => 0,
-                'name' => 'SLM name ' . time(),
-            //                'entities_id' => 0,
-            //                'is_recursive' => 0,
-                'comment' => 'Slm comment text',
-            //                'use_ticket_calendar' => 0,
-                'calendars_id' => $calendar->getID(),
-            //                'date_mod' => null,
-            //                'date_creation' => null,
-            ]
-        );
-    }
-
-    private function createGroup(): \Group
-    {
-        return $this->createItem(\Group::class, [
-//            'id' => 0,
-//            'entities_id' => 0,
-//            'is_recursive' => 0,
-            'name' => 'Group name ' . time(),
-//            'code' => null,
-            'comment' => 'Group comment text ' . time(),
-//            'ldap_field' => null,
-//            'ldap_value' => null,
-//            'ldap_group_dn' => null,
-//            'date_mod' => null,
-//            'groups_id' => 0,
-//            'completename' => null,
-//            'level' => 0,
-//            'ancestors_cache' => null,
-//            'sons_cache' => null,
-//            'is_requester' => 1,
-//            'is_watcher' => 1,
-//            'is_assign' => 1,
-//            'is_task' => 1,
-//            'is_notify' => 1,
-//            'is_itemgroup' => 1,
-//            'is_usergroup' => 1,
-//            'is_manager' => 1,
-//            'date_creation' => null,
-//            'recursive_membership' => 0,
-//            '2fa_enforced' => 0,
-        ]);
-    }
-
-    /**
-     * Calendar with today & tomorrow set a working day (9:00 to 19:00)
-     */
-    private function createCalendar(): \Calendar
-    {
-        $calendar = $this->createItem(\Calendar::class, ['name' => 'Test Calendar ' . time()]);
-        // today
-        $this->createItem(
-            \CalendarSegment::class,
-            [
-                'calendars_id' => $calendar->getID(),
-                'day'          => (int)date('w'),
-                'begin'        => '09:00:00',
-                'end'          => '19:00:00'
-            ]
-        );
-        // tomorrow
-        $this->createItem(
-            \CalendarSegment::class,
-            [
-                'calendars_id' => $calendar->getID(),
-                'day'          => (int)date('w') === 6 ? 0 : (int)date('w') + 1, // day of the week number
-                'begin'        => '09:00:00',
-                'end'          => '19:00:00'
-            ]
-        );
-
-        return $calendar;
-    }
 
     /**
      * Set $_SESSION['glpi_currenttime'] with current day + $time param and return the related DateTime

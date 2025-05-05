@@ -76,6 +76,7 @@ trait SLMTrait
                 'number_time' => $amount,
                 'definition_time' => $unit,
                 'slms_id' => $slm->getID(),
+                'groups_id' => $group->getID(),
             ]
         );
 
