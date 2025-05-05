@@ -35,6 +35,7 @@
 namespace tests\units;
 
 use DbTestCase;
+use DomainRecord;
 
 /* Test for inc/software.class.php */
 
@@ -42,8 +43,36 @@ class DomainRecordTest extends DbTestCase
 {
     public function testCanViewUnattached()
     {
+        /** @var \DBmysql $DB */
+        global $DB;
         $this->login();
-        $record = $this->createItem('DomainRecord', ['name' => 'unattached']);
+        $record = new DomainRecord();
+        // Unattached records are not allowed to be created anymore but may still exist in the DB. For the test, we need to directly add one to the DB.
+        $DB->insert(
+            'glpi_domainrecords',
+            [
+                'name' => __FUNCTION__,
+                'entities_id' => $this->getTestRootEntity(true),
+                'ttl' => 3600,
+            ]
+        );
+        $this->assertTrue($record->getFromDB($DB->insertId()));
+
         $this->assertTrue($record->canViewItem());
+    }
+
+    public function testPrepareInput()
+    {
+        $this->login();
+        $record = new DomainRecord();
+        $this->assertFalse($record->prepareInputForAdd([]));
+        $this->hasSessionMessages(ERROR, ['A domain is required']);
+
+        $created_record = $this->createItem('DomainRecord', ['domains_id' => 1]);
+        $this->assertEmpty($record->prepareInputForUpdate([]));
+        $this->assertFalse($record->prepareInputForUpdate(['domains_id' => 0]));
+        $this->hasSessionMessages(ERROR, ['A domain is required']);
+        $this->assertFalse($record->prepareInputForUpdate(['domains_id' => '']));
+        $this->hasSessionMessages(ERROR, ['A domain is required']);
     }
 }
