@@ -1320,6 +1320,46 @@ JS);
     }
 
     /**
+     * add data for node tooltip
+     *
+     * @param CommonDBTM $item
+     * @return array
+     */
+    private static function addTooltip(CommonDBTM $item): array
+    {
+        $type = "";
+        if (class_exists($item::class . "Type")) {
+            $tabletype = getTableForItemType($item::class . "Type");
+            $typefield = getForeignKeyFieldForTable($tabletype);
+            $types_id = $item->fields[$typefield];
+            $type = Dropdown::getDropdownName($tabletype, $types_id);
+        }
+        $states_id = "";
+        if (isset($item->fields['states_id'])) {
+            $states_id = Dropdown::getDropdownName("glpi_states", $item->fields['states_id']);
+        }
+        $infocom = new Infocom();
+        $businesscriticities_id = "";
+        if ($infocom->getFromDBforDevice($item::class, $item->getID())) {
+            $businesscriticities_id
+                = Dropdown::getDropdownName(
+                    'glpi_businesscriticities',
+                    $infocom->fields['businesscriticities_id']
+                );
+        }
+        $tooltip = [__("Name") => $item->getFriendlyName(),
+            _n("Type", "Types", 1) => $type,
+            __("Status") => $states_id,
+            _n("Business criticity", "Business criticities", 1) => $businesscriticities_id
+        ];
+        if (isset($item->fields['comment'])) {
+            $tooltip[__("Comments")] = $item->fields['comment'];
+        }
+
+        return $tooltip;
+    }
+
+    /**
      * Add a node to the node list if missing
      *
      * @param array      $nodes  Nodes of the graph
@@ -1346,6 +1386,8 @@ JS);
             'label'       => $item->getFriendlyName(),
             'image'       => self::getImpactIcon($item::class, $item->getID()),
             'ITILObjects' => $item->getITILTickets(true),
+            'itemtype'    => $item::getTypeName(),
+            'tooltip'     => self::addTooltip($item),
         ];
 
         // Only set GOTO link if the user have READ rights
