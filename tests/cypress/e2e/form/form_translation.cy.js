@@ -71,8 +71,7 @@ function checkTranslations(title, description) {
 }
 
 function changeUserLanguage(language) {
-    cy.updateWithAPI('User', {
-        'id': 7, // E2E user ID
+    cy.updateTestUserSettings({
         'language': language
     });
 
@@ -102,8 +101,7 @@ describe('Edit form translations', () => {
 
     afterEach(() => {
         // Make sure the user language is reset to default
-        cy.updateWithAPI('User', {
-            'id': 7, // E2E user ID
+        cy.updateTestUserSettings({
             'language': null
         });
     });
@@ -281,8 +279,7 @@ describe('Edit form translations', () => {
 
         // Modify the default values of the form
         cy.get('@form_id').then((form_id) => {
-            cy.updateWithAPI('Glpi\\Form\\Form', {
-                'id': form_id,
+            cy.updateWithAPI('Glpi\\Form\\Form', form_id, {
                 'name': 'Tests form translations updated',
             });
         });

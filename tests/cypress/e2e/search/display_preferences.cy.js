@@ -38,6 +38,19 @@ describe('Display preferences', () => {
             'name': 'Open ticket',
             'content': 'Open ticket',
         });
+
+        // Make sure "pending reason" search option doens't exist as it will be
+        // created by these tests.
+        cy.searchWithAPI("DisplayPreference", [{
+            link: "AND",
+            field: 4, // Search option ID
+            searchtype: "equals",
+            value: 400, // Pending reason search option ID
+        }]).then((data) => {
+            for (const row of data) {
+                cy.deleteWithAPI("DisplayPreference", row[2]);
+            }
+        });
     });
 
     it('can add a column to the global view', () => {

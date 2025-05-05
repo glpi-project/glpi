@@ -6665,7 +6665,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             ], [
                 'profiles_id' => self::PROFILE_SUPER_ADMIN,
                 'name' => 'search_config',
-                'rights' => DisplayPreference::PERSONAL | DisplayPreference::GENERAL,
+                'rights' => READ | UPDATE | CREATE | PURGE | DisplayPreference::PERSONAL | DisplayPreference::GENERAL,
             ], [
                 'profiles_id' => self::PROFILE_OBSERVER,
                 'name' => 'location',

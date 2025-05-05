@@ -763,4 +763,37 @@ class DisplayPreference extends CommonDBTM
         }
         return true;
     }
+
+    #[Override]
+    public function rawSearchOptions()
+    {
+        $search_options = parent::rawSearchOptions();
+
+        $search_options[] = [
+            'id'            => '2',
+            'table'         => $this->getTable(),
+            'field'         => 'id',
+            'name'          => __('ID'),
+            'massiveaction' => false,
+            'datatype'      => 'number',
+        ];
+        $search_options[] = [
+            'id'            => '3',
+            'table'         => $this->getTable(),
+            'field'         => 'itemtype',
+            'name'          => __('Itemtype'),
+            'massiveaction' => false,
+            'datatype'      => 'string',
+        ];
+        $search_options[] = [
+            'id'            => '4',
+            'table'         => $this->getTable(),
+            'field'         => 'num',
+            'name'          => __('Search option ID'),
+            'massiveaction' => false,
+            'datatype'      => 'number',
+        ];
+
+        return $search_options;
+    }
 }
