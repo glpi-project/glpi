@@ -191,6 +191,7 @@ class FirewallTest extends \DbTestCase
                 '/front/locale.php',
                 '/front/login.php',
                 '/front/logout.php',
+                '/front/initpassword.php',
                 '/front/lostpassword.php',
                 '/front/updatepassword.php',
             ];
