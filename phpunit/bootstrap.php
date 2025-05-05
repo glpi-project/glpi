@@ -62,8 +62,8 @@ require_once dirname(__DIR__) . '/vendor/autoload.php';
 $kernel = new Kernel(Environment::TESTING->value);
 $kernel->boot();
 
-if (!file_exists(GLPI_CONFIG_DIR . '/config_db.php')) {
-    echo("\nConfiguration file for tests not found\n\nrun: php bin/console database:install --env=testing ...\n\n");
+if (!file_exists($path = GLPI_CONFIG_DIR . '/config_db.php')) {
+    echo("\nConfiguration file for tests not found in \"$path\"\n\nrun: php bin/console database:install --env=testing ...\n\n");
     exit(1);
 }
 if (Update::isUpdateMandatory()) {
@@ -83,6 +83,7 @@ if (file_exists(GLPI_CONFIG_DIR . DIRECTORY_SEPARATOR . CacheManager::CONFIG_FIL
 
 # TODO: register a proper PSR4 autoloader for these files.
 include_once __DIR__ . '/GLPITestCase.php';
+include_once __DIR__ . '/GLPIWebTestCase.php';
 include_once __DIR__ . '/DbTestCase.php';
 include_once __DIR__ . '/CsvTestCase.php';
 include_once __DIR__ . '/APIBaseClass.php';
