@@ -76,6 +76,7 @@ class FirewallTest extends \DbTestCase
                     'lostpassword.php' => '',
                     'planning.php' => '',
                     'tracking.injector.php' => '',
+                    'initpassword.php' => '',
                     'updatepassword.php' => '',
                 ],
                 'marketplace' => [
