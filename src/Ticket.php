@@ -5600,17 +5600,19 @@ JAVASCRIPT;
 
         // add SLA/OLA (for business rules)
         if (!$this->isNewItem()) {
+            // sla
             foreach ([SLM::TTR, SLM::TTO] as $slmType) {
                 [$dateField, $slaField] = SLA::getFieldNames($slmType);
                 if (!isset($input[$slaField]) && isset($this->fields[$slaField]) && $this->fields[$slaField] > 0) {
                     $input[$slaField] = $this->fields[$slaField];
                 }
-                [$dateField, $olaField] = OLA::getFieldNames($slmType);
-                if (!isset($input[$olaField]) && isset($this->fields[$olaField]) && $this->fields[$olaField] > 0) {
-                    $input[$olaField] = $this->fields[$olaField];
-                }
             }
         }
+
+        // ola - currently associated ola
+        // if $input_['_olas_id'] + _la_update is set, we are updating/adding ola, we use this fields, this is the data that will be associated with ticket (if the update does not fail)
+        // otherwise, use the current associated ola data
+        $input['_olas_id_rule_criteria'] = isset($input['_la_update']) ? $input['_olas_id'] : array_column($this->getOlasData(), 'id');
     }
 
     /**
@@ -6259,6 +6261,7 @@ JAVASCRIPT;
         // No manual SLA / OLA and due date defined : reset auto SLA / OLA
         foreach ([SLM::TTR, SLM::TTO] as $slmType) {
             $this->slaAffect($slmType, $input, $manual_slas_id);
+            // ola creation is done with updateOLAs(), which is triggered on post_Update / post_Add (this is needed because ITIL Object need to exist)
             //            $this->olaAffect($slmType, $input, $manual_olas_id); // @todoseb cleanup : remplacé par updateOLAs()
         }
     }
@@ -6442,31 +6445,35 @@ JAVASCRIPT;
     public function getOlasData(): array
     {
         if (!isset($this->associatedOlas)) {
-            $ola_data = [];
-            $items_ola = new Item_Ola();
-            //            $items_ola->getFromDBByCrit(['itemtype' => static::class, 'items_id' => $this->getID()]
-            $olas = iterator_to_array(Item_Ola::getListForItem($this));
+            if ($this->isNewItem()) {
+                $this->associatedOlas = [];
+            } else {
+                $ola_data = [];
+                $items_ola = new Item_Ola();
+                //            $items_ola->getFromDBByCrit(['itemtype' => static::class, 'items_id' => $this->getID()]
+                $olas = iterator_to_array(Item_Ola::getListForItem($this));
 
-            // merge data from ola dans items_ola
-            foreach ($olas as $ola) {
-                $_ola = new OLA();
+                // merge data from ola dans items_ola
+                foreach ($olas as $ola) {
+                    $_ola = new OLA();
 
-                $_data = $ola;
-                if (!$items_ola->getFromDB($_data['linkid'])) {
-                    throw new LogicException('Associated referenced OLA not found'); // probably never happend
+                    $_data = $ola;
+                    if (!$items_ola->getFromDB($_data['linkid'])) {
+                        throw new LogicException('Associated referenced OLA not found'); // probably never happend
+                    }
+                    $_data += $items_ola->fields;
+
+                    // additionnal datas
+                    $_data['class'] = OLA::class; // SLA::class
+                    $_data['item'] = $this; // object, not just fields, functions used in template
+                    $_data['nextaction'] = $_ola->getNextActionForTicket($this, $_data['type']);
+                    $_data['level'] = $_ola->getLevelFromAction($_data['nextaction']);
+
+                    $ola_data[] = $_data;
                 }
-                $_data += $items_ola->fields;
 
-                // additionnal datas
-                $_data['class'] = OLA::class; // SLA::class
-                $_data['item'] = $this; // object, not just fields, functions used in template
-                $_data['nextaction'] = $_ola->getNextActionForTicket($this, $_data['type']);
-                $_data['level'] = $_ola->getLevelFromAction($_data['nextaction']);
-
-                $ola_data[] = $_data;
+                $this->associatedOlas = $ola_data;
             }
-
-            $this->associatedOlas = $ola_data;
         }
 
         return $this->associatedOlas;
