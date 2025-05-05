@@ -87,11 +87,7 @@ class ImportMapGeneratorTest extends GLPITestCase
             ],
             'plugins' => [
                 'myplugin' => [
-                    'js' => [
-                        'modules' => [
-                            'CustomModule.js' => '// Plugin JS content',
-                        ],
-                    ],
+
                     'public' => [
                         'lib' => [
                             'plugin-lib.js' => '// Plugin library',
@@ -99,16 +95,16 @@ class ImportMapGeneratorTest extends GLPITestCase
                         'build' => [
                             'plugin-build.js' => '// Plugin built file',
                         ],
+                        'js' => [
+                            'modules' => [
+                                'CustomModule.js' => '// Plugin JS content',
+                            ],
+                        ],
                     ],
                 ],
             ],
             'marketplace' => [
                 'myotherplugin' => [
-                    'js' => [
-                        'modules' => [
-                            'AnotherModule.js' => '// Another plugin JS content',
-                        ],
-                    ],
                     'public' => [
                         'lib' => [
                             'other-lib.js' => '// Another plugin library',
@@ -116,6 +112,11 @@ class ImportMapGeneratorTest extends GLPITestCase
                         'build' => [
                             'component' => [
                                 'other-build.js' => '// Another plugin built file',
+                            ],
+                        ],
+                        'js' => [
+                            'modules' => [
+                                'CustomModule.js' => '// Plugin JS content',
                             ],
                         ],
                     ],
@@ -194,16 +195,6 @@ class ImportMapGeneratorTest extends GLPITestCase
         $this->assertArrayHasKey('assets/module1', $import_map['imports']);
         $this->assertArrayHasKey('assets/module2', $import_map['imports']);
 
-        // Check for plugin modules in js/modules
-        $this->assertArrayHasKey('myplugin/CustomModule', $import_map['imports']);
-        $this->assertArrayHasKey('myotherplugin/AnotherModule', $import_map['imports']);
-
-        // Check for plugin modules in public/lib and public/build
-        $this->assertArrayHasKey('myplugin/plugin-lib', $import_map['imports']);
-        $this->assertArrayHasKey('myplugin/plugin-build', $import_map['imports']);
-        $this->assertArrayHasKey('myotherplugin/other-lib', $import_map['imports']);
-        $this->assertArrayHasKey('myotherplugin/component/other-build', $import_map['imports']);
-
         // Verify all URLs have version parameters
         foreach ($import_map['imports'] as $module_name => $url) {
             $this->assertStringContainsString('?v=', $url, "URL for $module_name should include a version parameter");
@@ -217,10 +208,6 @@ class ImportMapGeneratorTest extends GLPITestCase
         $this->assertStringContainsString(
             self::ROOT_URL . '/public/lib/vendor1/library1.js',
             $import_map['imports']['vendor1/library1']
-        );
-        $this->assertStringContainsString(
-            self::ROOT_URL . '/plugins/myplugin/public/lib/plugin-lib.js',
-            $import_map['imports']['myplugin/plugin-lib']
         );
     }
 
@@ -270,5 +257,79 @@ class ImportMapGeneratorTest extends GLPITestCase
             $reverted_version,
             'Version parameter should be the same when content is identical'
         );
+    }
+
+    /**
+     * Test the registerModulesPath method for plugin-specific module paths
+     */
+    public function testRegisterModulesPath()
+    {
+        // Set up virtual file system with plugins having various module files
+        $root = vfsStream::setup('glpi', null, [
+            'plugins' => [
+                'myplugin' => [
+                    'public' => [
+                        'lib' => [
+                            'should-not-be-included.js' => '// This should not be included',
+                        ],
+                        'build' => [
+                            'plugin-build.js' => '// Plugin built file',
+                        ],
+                        'js' => [
+                            'modules' => [
+                                'CustomModule.js' => '// Plugin JS content',
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ]);
+
+        // Create generator with mocked dependencies
+        $generator = $this->createMockGenerator(vfsStream::url('glpi'));
+
+        // Register specific module paths
+        $generator->registerModulesPath('myplugin', 'public/js/modules');
+        $generator->registerModulesPath('myplugin', 'public/build');
+
+        // Generate the import map
+        $import_map = $generator->generate();
+
+        // Verify that only registered paths are included
+        $this->assertArrayHasKey('myplugin/CustomModule', $import_map['imports'], 'Module from registered path should be included');
+        $this->assertArrayHasKey('myplugin/plugin-build', $import_map['imports'], 'Plugin build file should be included');
+
+        // Verify that unregistered paths are not included
+        $this->assertArrayNotHasKey('myplugin/should-not-be-included', $import_map['imports'], 'Files outside registered paths should not be included');
+    }
+
+    /**
+     * Test for getInstance singleton method
+     */
+    public function testGetInstance()
+    {
+        // Get reflection access to static instance property
+        $reflection = new \ReflectionClass(ImportMapGenerator::class);
+        $instance_property = $reflection->getProperty('instance');
+        $instance_property->setAccessible(true);
+
+        // Reset singleton instance
+        $instance_property->setValue(null, null);
+
+        // Define globals needed for getInstance
+        global $CFG_GLPI;
+        $original_cfg = $CFG_GLPI ?? [];
+        $CFG_GLPI['root_doc'] = '/glpi';
+
+        // Test that getInstance returns an instance
+        $instance = ImportMapGenerator::getInstance();
+        $this->assertInstanceOf(ImportMapGenerator::class, $instance);
+
+        // Test that getInstance returns the same instance on subsequent calls
+        $another_instance = ImportMapGenerator::getInstance();
+        $this->assertSame($instance, $another_instance);
+
+        // Restore original globals
+        $CFG_GLPI = $original_cfg;
     }
 }

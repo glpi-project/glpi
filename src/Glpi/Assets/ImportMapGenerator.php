@@ -49,6 +49,11 @@ use Symfony\Component\Filesystem\Path;
 class ImportMapGenerator
 {
     /**
+     * @var ImportMapGenerator|null
+     */
+    private static $instance = null;
+
+    /**
      * @var string
      */
     private $root_doc;
@@ -64,6 +69,11 @@ class ImportMapGenerator
     private $cache;
 
     /**
+     * @var array<string, array<string>> Dictionary of plugin module paths by plugin key
+     */
+    private $registered_plugin_modules = [];
+
+    /**
      * @param string $root_doc Root document URL path
      * @param CacheInterface|null $cache Optional cache instance
      */
@@ -72,6 +82,38 @@ class ImportMapGenerator
         $this->root_doc  = $root_doc;
         $this->glpi_root = $glpi_root;
         $this->cache     = $cache;
+    }
+
+    /**
+     * Get the singleton instance of the generator
+     *
+     * @return ImportMapGenerator
+     */
+    public static function getInstance(): ImportMapGenerator
+    {
+        global $CFG_GLPI;
+
+        if (self::$instance === null) {
+            self::$instance = new self($CFG_GLPI['root_doc'], GLPI_ROOT, null);
+        }
+
+        return self::$instance;
+    }
+
+    /**
+     * Register a module path for a specific plugin
+     *
+     * @param string $plugin_key The plugin key
+     * @param string $path The path relative to the plugin directory
+     * @return void
+     */
+    public function registerModulesPath(string $plugin_key, string $path): void
+    {
+        if (!isset($this->registered_plugin_modules[$plugin_key])) {
+            $this->registered_plugin_modules[$plugin_key] = [];
+        }
+
+        $this->registered_plugin_modules[$plugin_key][] = $path;
     }
 
     /**
@@ -95,45 +137,74 @@ class ImportMapGenerator
     public function generate(): array
     {
         $should_use_cache = $this->cache !== null && !Environment::get()->shouldExpectResourcesToChange();
-
-        if ($should_use_cache) {
-            $cached_map = $this->cache->get('js_import_map');
-            if ($cached_map !== null) {
-                return $cached_map;
-            }
-        }
-
         $import_map = [
             'imports' => [],
         ];
 
-        // Scan GLPI core directories
-        $this->addModulesToImportMap($import_map, $this->glpi_root . '/js/modules');
-        $this->addModulesToImportMap($import_map, $this->glpi_root . '/public/lib');
-        $this->addModulesToImportMap($import_map, $this->glpi_root . '/public/build');
+        // Try to get GLPI core modules from cache first
+        $core_cache_key = 'js_import_map_core';
+        $core_modules = [];
 
-        // Scan plugin directories
-        foreach ($this->getPluginDirList() as $plugin_dir) {
-            // Check all the possible module directories for plugins
-            $plugin_module_dirs = [
-                $plugin_dir . '/js/modules',
-                $plugin_dir . '/public/lib',
-                $plugin_dir . '/public/build',
-            ];
+        if ($should_use_cache) {
+            $core_modules = $this->cache->get($core_cache_key);
+        }
 
-            foreach ($plugin_module_dirs as $module_dir) {
-                if (is_dir($module_dir)) {
-                    $this->addModulesToImportMap(
-                        $import_map,
-                        $module_dir,
-                        Path::getFilenameWithoutExtension($plugin_dir) . '/'
-                    );
-                }
+        if (!$core_modules) {
+            // Scan GLPI core directories
+            $core_modules = ['imports' => []];
+            $this->addModulesToImportMap($core_modules, $this->glpi_root . '/js/modules');
+            $this->addModulesToImportMap($core_modules, $this->glpi_root . '/public/js/modules');
+            $this->addModulesToImportMap($core_modules, $this->glpi_root . '/public/lib');
+            $this->addModulesToImportMap($core_modules, $this->glpi_root . '/public/build');
+
+            // Cache core modules
+            if ($should_use_cache) {
+                $this->cache->set($core_cache_key, $core_modules);
             }
         }
 
-        if ($should_use_cache) {
-            $this->cache->set('js_import_map', $import_map);
+        // Add core modules to the import map
+        $import_map['imports'] = array_merge($import_map['imports'], $core_modules['imports']);
+
+        // Process plugin modules
+        foreach ($this->getPluginDirList() as $plugin_dir) {
+            $plugin_key = Path::getFilenameWithoutExtension($plugin_dir);
+
+            if (
+                isset($this->registered_plugin_modules[$plugin_key])
+                && !empty($this->registered_plugin_modules[$plugin_key])
+            ) {
+                $plugin_cache_key = 'js_import_map_plugin_' . $plugin_key;
+                $plugin_modules = null;
+
+                // Try to get plugin modules from cache
+                if ($should_use_cache) {
+                    $plugin_modules = $this->cache->get($plugin_cache_key);
+                }
+
+                if (!$plugin_modules) {
+                    $plugin_modules = ['imports' => []];
+
+                    foreach ($this->registered_plugin_modules[$plugin_key] as $module_path) {
+                        $full_path = $plugin_dir . '/' . ltrim($module_path, '/');
+                        if (is_dir($full_path)) {
+                            $this->addModulesToImportMap(
+                                $plugin_modules,
+                                $full_path,
+                                $plugin_key . '/'
+                            );
+                        }
+                    }
+
+                    // Cache plugin modules
+                    if ($should_use_cache) {
+                        $this->cache->set($plugin_cache_key, $plugin_modules);
+                    }
+                }
+
+                // Add plugin modules to the import map
+                $import_map['imports'] = array_merge($import_map['imports'], $plugin_modules['imports']);
+            }
         }
 
         return $import_map;
