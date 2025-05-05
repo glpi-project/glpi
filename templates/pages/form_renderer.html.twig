@@ -221,6 +221,9 @@
                     data-glpi-form-renderer-action="submit"
                     class="btn btn-primary pointer-events-none {{ not is_single_section_form ? "d-none" : "" }} d-flex align-items-end"
                     disabled
+                    {% if not visibility_engine_output.isFormVisible() %}
+                        data-glpi-form-renderer-hidden-by-condition
+                    {% endif %}
                 >
                     <i class="ti ti-check me-2"></i>
                     {{ __("Submit") }}

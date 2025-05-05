@@ -38,9 +38,21 @@ trait ConditionableVisibilityTrait
 {
     use ConditionableTrait;
 
+    /**
+     * Get the field name used for visibility strategy
+     * Classes using this trait can override this method to customize the field name
+     *
+     * @return string
+     */
+    protected function getVisibilityStrategyFieldName(): string
+    {
+        return 'visibility_strategy';
+    }
+
     public function getConfiguredVisibilityStrategy(): VisibilityStrategy
     {
-        $strategy_value = $this->fields['visibility_strategy'] ?? "";
+        $field_name = $this->getVisibilityStrategyFieldName();
+        $strategy_value = $this->fields[$field_name] ?? "";
         $strategy = VisibilityStrategy::tryFrom($strategy_value);
         return $strategy ?? VisibilityStrategy::ALWAYS_VISIBLE;
     }

@@ -3,11 +3,14 @@
     "forms": [
         {
             "id": 1,
+            "uuid": "form-1",
             "name": "My valid form",
             "illustration": "report-issue",
             "entity_name": "E2ETestEntity",
             "is_recursive": false,
             "is_active": false,
+            "submit_button_visibility_strategy": "always_visible",
+            "submit_button_conditions": [],
             "sections": [
                 {
                     "id": 1,
@@ -53,11 +56,14 @@
         },
         {
             "id": 2,
+            "uuid": "form-2",
             "name": "My invalid form",
             "illustration": "report-issue",
             "entity_name": "Missing entity",
             "is_recursive": false,
             "is_active": false,
+            "submit_button_visibility_strategy": "always_visible",
+            "submit_button_conditions": [],
             "sections": [
                 {
                     "id": 2,

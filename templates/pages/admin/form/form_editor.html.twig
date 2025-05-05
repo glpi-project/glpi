@@ -207,6 +207,11 @@
             </button>
         </div>
 
+        {# Visibility dropdown #}
+        {{ include('pages/admin/form/submit_button_conditional_visibility_dropdown.html.twig', {
+            'item'      : item,
+        }, with_context = false) }}
+
         {# Move to trashbin form action #}
         {% if item.canDelete() %}
             {# Hidden if the item is still in draft mode #}
@@ -285,6 +290,9 @@
 
     {# Form id #}
     <input type="hidden" name="id" value="{{ item.fields.id }}">
+
+    {# Form uuid #}
+    <input type="hidden" name="uuid" value="{{ item.fields.uuid }}">
 
     {# Special inputs to indicate that missing sections and question must be deleted #}
     <input type="hidden" name="_delete_missing_questions" value="1">

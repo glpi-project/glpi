@@ -32,11 +32,11 @@
 
 {% extends "pages/admin/form/condition_configuration.html.twig" %}
 
-{# Compute strategy, with a fallback to "Always visible" for new questions #}
+{# Compute strategy, with a fallback to "Always visible" #}
 {% if item is null %}
-    {% set question_strategy = enum('Glpi\\Form\\Condition\\VisibilityStrategy').ALWAYS_VISIBLE %}
+    {% set submit_button_strategy = enum('Glpi\\Form\\Condition\\VisibilityStrategy').ALWAYS_VISIBLE %}
 {% else %}
-    {% set question_strategy = item.getConfiguredVisibilityStrategy() %}
+    {% set submit_button_strategy = item.getConfiguredVisibilityStrategy() %}
 {% endif %}
 
 {% block conditions_editor %}
@@ -45,39 +45,26 @@
 
     <div
         data-glpi-form-editor-visibility-dropdown-container
-
-        {% set hide = question_strategy == enum('Glpi\\Form\\Condition\\VisibilityStrategy').ALWAYS_VISIBLE %}
-        {% set force_show = force_show|default(false) %}
-        class="btn-group {{ (hide and not force_show) ? 'd-none' : '' }}"
-
-        {# May be displayed on section, comment and question #}
-        {# We can't use instanceOf here as `item` may be null #}
-        {% if type == "Glpi\\Form\\Question" %}
-            data-glpi-form-editor-question-extra-details
-        {% elseif type == "Glpi\\Form\\Section" %}
-            data-glpi-form-editor-section-extra-details
-        {% elseif type == "Glpi\\Form\\Comment" %}
-            data-glpi-form-editor-comment-extra-details
-        {% endif %}
+        class="btn-group me-2"
     >
         <button
             title="{{ __('Configure visibility') }}"
             data-bs-toggle="dropdown"
             data-bs-auto-close="outside"
-            class="dropdown-toggle btn btn-outline-secondary btn-sm px-2"
+            class="dropdown-toggle btn btn-outline-secondary px-2"
             data-bs-placement="top"
             type="button"
             data-glpi-form-editor-visibility-dropdown
         >
             {% for strategy in enum_cases('Glpi\\Form\\Condition\\VisibilityStrategy') %}
-                {% set is_visible = question_strategy == strategy %}
+                {% set is_visible = submit_button_strategy == strategy %}
                 {% set display_class = is_visible ? 'd-flex' : 'd-none' %}
                 <div
                     class="{{ display_class }} align-items-center"
                     data-glpi-editor-visibility-badge="{{ strategy.value }}"
                 >
                     <i class="{{ strategy.getIcon() }} me-1"></i>
-                    <span>{{ strategy.getLabel() }}</span>
+                    <span>{{ __("Submit button visibility") }}</span>
                 </div>
             {% endfor %}
         </button>
@@ -93,8 +80,8 @@
 
                     {# Parent properties #}
                     {% set strategies = 'Glpi\\Form\\Condition\\VisibilityStrategy' %}
-                    {% set selected_strategy = question_strategy %}
-                    {% set strategy_input_name = "visibility_strategy" %}
+                    {% set selected_strategy = submit_button_strategy %}
+                    {% set strategy_input_name = "submit_button_visibility_strategy" %}
                     {% set conditions = item is not null ? item.getConfiguredConditionsData() : [] %}
                     {{ parent() }}
                 </div>
