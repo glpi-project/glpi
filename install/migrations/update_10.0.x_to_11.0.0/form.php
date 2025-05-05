@@ -350,7 +350,7 @@ if (!$DB->fieldExists('glpi_forms_forms', 'submit_button_conditions')) {
         'submit_button_conditions',
         "JSON NOT NULL",
         [
-            'after' => 'visibility_strategy',
+            'after' => 'submit_button_visibility_strategy',
         ]
     );
 }
