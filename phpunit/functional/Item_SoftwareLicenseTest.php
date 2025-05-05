@@ -139,14 +139,14 @@ class Item_SoftwareLicenseTest extends DbTestCase
             'itemtype' => 'Computer',
             'softwarelicenses_id' => $lic->fields['id'],
         ];
-        $this->createItem(Item_SoftwareLicense::class, $input)->getID();
+        $this->createItem(Item_SoftwareLicense::class, $input);
 
         $input = [
             'items_id' => $computer2->fields['id'],
             'itemtype' => 'Computer',
             'softwarelicenses_id' => $lic->fields['id'],
         ];
-        $this->createItem(Item_SoftwareLicense::class, $input)->getID();
+        $this->createItem(Item_SoftwareLicense::class, $input);
 
         $lic = getItemByTypeName('SoftwareLicense', '_test_softlic_4');
         //License is valid: the number of affectations doesn't exceed declared number
@@ -157,7 +157,7 @@ class Item_SoftwareLicenseTest extends DbTestCase
             'itemtype' => 'Computer',
             'softwarelicenses_id' => $lic->fields['id'],
         ];
-        $this->createItem(Item_SoftwareLicense::class, $input)->getID();
+        $this->createItem(Item_SoftwareLicense::class, $input);
 
         $lic = getItemByTypeName('SoftwareLicense', '_test_softlic_4');
         //Number of affectations exceed the number declared in the license
@@ -332,7 +332,7 @@ class Item_SoftwareLicenseTest extends DbTestCase
             'softwarelicenses_id' => $license_id,
             'items_id' => $computer2->getID(),
             'itemtype' => 'Computer',
-        ])->getID();
+        ]);
 
         // Cleanup
         $user_license = new \SoftwareLicense_User();

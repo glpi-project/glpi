@@ -345,7 +345,6 @@ class SoftwareLicenseTest extends DbTestCase
             'name' => 'Test software for counting consistency',
             'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
         ])->getID();
-        $this->assertGreaterThan(0, (int) $software_id);
 
         // Create a license
         $license_id = $this->createItem(\SoftwareLicense::class, [
@@ -354,7 +353,6 @@ class SoftwareLicenseTest extends DbTestCase
             'number' => 5,
             'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
         ])->getID();
-        $this->assertGreaterThan(0, (int) $license_id);
 
         $item_license_table = new \Item_SoftwareLicense();
         $item_license_table->deleteByCriteria(['softwarelicenses_id' => $license_id], true);
@@ -374,7 +372,6 @@ class SoftwareLicenseTest extends DbTestCase
             'items_id' => $computer->getID(),
             'itemtype' => 'Computer',
         ])->getID();
-        $this->assertGreaterThan(0, (int) $item_license_id);
 
         $items_after_computer = \Item_SoftwareLicense::countForLicense($license_id);
         $users_after_computer = \SoftwareLicense_User::countForLicense($license_id);
@@ -389,7 +386,6 @@ class SoftwareLicenseTest extends DbTestCase
             'softwarelicenses_id' => $license_id,
             'users_id' => $user->getID(),
         ])->getID();
-        $this->assertGreaterThan(0, (int) $user_license_id);
 
         $items_after_user = \Item_SoftwareLicense::countForLicense($license_id);
         $users_after_user = \SoftwareLicense_User::countForLicense($license_id);
@@ -411,7 +407,6 @@ class SoftwareLicenseTest extends DbTestCase
                     'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
                 ]
             )->getID();
-            $this->assertGreaterThan(0, (int) $user_id);
             $user_ids[] = $user_id;
 
             $this->createItem(\SoftwareLicense_User::class, [
@@ -434,7 +429,7 @@ class SoftwareLicenseTest extends DbTestCase
                 'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
             ]
         )->getID();
-        $this->assertGreaterThan(0, (int) $user_id);
+
         $user_ids[] = $user_id;
 
         $this->createItem(\SoftwareLicense_User::class, [
