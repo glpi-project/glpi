@@ -166,9 +166,6 @@ class GLPIDashboard {
         // see https://github.com/gridstack/gridstack.js/issues/1229
         this.grid.setStatic(true);
 
-        // generate the css based on the grid width
-        this.generateCss();
-
         // set the width of the select box to match the selected option
         this.resizeSelect();
 
@@ -295,8 +292,6 @@ class GLPIDashboard {
 
             window.clearTimeout(debounce);
             debounce = window.setTimeout(() => {
-                this.generateCss();
-
                 // fit again numbers
                 this.fitNumbers();
             }, 200);
@@ -1177,35 +1172,6 @@ class GLPIDashboard {
         }, 10);
     }
 
-    generateCss() {
-        const dash_width    = Math.floor(this.element.width());
-        const cell_length   = (dash_width - 1) / this.cols;
-        const cell_fullsize = (dash_width / this.cols);
-
-        let style = " \
-      "+this.elem_id+" .cell-add { \
-         width: "+cell_length+"px; \
-         height: "+cell_fullsize+"px; \
-      } \
-      "+this.elem_id+" .grid-guide { \
-         background-size: "+cell_length+"px "+cell_fullsize+"px; \
-         bottom: "+cell_fullsize+"px; \
-      }";
-
-        // remove old inline styles
-        $("#gs_inline_css_"+this.rand).remove();
-
-        // add new style
-        if (dash_width > 700) {
-            $("<style id='gs_inline_css_"+this.rand+"'></style>")
-                .prop("type", "text/css")
-                .html(style)
-                .appendTo("head");
-        } else {
-            // apply new height to gridstack
-            this.grid.cellHeight(60);
-        }
-    }
 
     /**
      * init filters of the dashboard

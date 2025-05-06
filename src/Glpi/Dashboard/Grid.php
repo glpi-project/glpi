@@ -462,12 +462,12 @@ TWIG, $params);
                 <span class='glpi_logo'></span>
                 {{ toolbars|raw }}
                 {{ filters|raw }}
-                {{ grid_guide|raw }}
                 <div class="grid-stack grid-stack-{{ grid_cols }}"
-                    id="grid-stack-{{ rand }}"
-                    gs-column="{{ grid_cols }}"
-                    gs-min-row="{{ grid_rows }}"
-                    style="width: 100%">
+                id="grid-stack-{{ rand }}"
+                gs-column="{{ grid_cols }}"
+                gs-min-row="{{ grid_rows }}"
+                style="width: 100%">
+                    {{ grid_guide|raw }}
                     {{ gridstack_items|raw }}
                 </div>
             </div>

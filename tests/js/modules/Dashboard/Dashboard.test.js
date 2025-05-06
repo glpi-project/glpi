@@ -38,7 +38,6 @@ import {jest} from '@jest/globals';
 describe('Dashboard', () => {
     beforeAll(() => {
         // Make backups of some methods on the prototype we will mock by default because they are called from the constructor
-        GLPIDashboard.prototype._generateCss = GLPIDashboard.prototype.generateCss;
         GLPIDashboard.prototype._refreshDashboard = GLPIDashboard.prototype.refreshDashboard;
     });
     beforeEach(() => {
@@ -48,7 +47,6 @@ describe('Dashboard', () => {
         window.AjaxMock.end();
 
         // Mock some instance methods we don't want to test but are called from the constructor
-        GLPIDashboard.prototype.generateCss = jest.fn().mockImplementation(() => {});
         GLPIDashboard.prototype.refreshDashboard = jest.fn().mockImplementation(() => {});
 
         // Mock GridStack
@@ -1335,51 +1333,6 @@ describe('Dashboard', () => {
         expect($('.grid-stack-item > *:not(.empty-card)').length).toBe(2);
     });
 
-    test('generateCss', () => {
-        let dashboard = new GLPIDashboard({
-            'rand': '12345',
-            'cols': 10
-        });
-        // Restore the original function (must be done per-object after constructor)
-        dashboard.generateCss = GLPIDashboard.prototype._generateCss;
-        $('#dashboard-12345').width('1000px');
-        dashboard.grid.cellHeight = jest.fn().mockImplementation(() => {});
-        dashboard.generateCss();
-        expect(dashboard.grid.cellHeight).toHaveBeenCalledWith(99.9);
-        let head_html = $('head').html();
-        expect(head_html).toMatch(/^<style id="gs_inline_css_12345"/i);
-        expect(head_html).toMatch(/#dashboard-12345 .cell-add\s*{\s*width: 99.9px;\s*height: 100px;\s*}/i);
-        expect(head_html).toMatch(/#dashboard-12345 .grid-guide\s*{\s*background-size: 99.9px 100px;\s*bottom: 100px;\s*}/i);
-        expect(head_html).toMatch(/#dashboard-12345 .grid-stack > .grid-stack-item\[gs-w='6']\s*{\s*min-width: 10%;\s*width: 60%;\s*}/i);
-        expect(head_html).toMatch(/#dashboard-12345 .grid-stack > .grid-stack-item\[gs-x='6']\s*{\s*left: 60%;\s*}/i);
-
-        dashboard = new GLPIDashboard({
-            'rand': '12345',
-            'cols': 15
-        });
-        dashboard.generateCss = GLPIDashboard.prototype._generateCss;
-        $('#dashboard-12345').width('750px');
-        dashboard.grid.cellHeight = jest.fn().mockImplementation(() => {});
-        dashboard.generateCss();
-        expect(dashboard.grid.cellHeight).toHaveBeenCalledWith(49.93333333333333);
-        head_html = $('head').html();
-        expect(head_html).toMatch(/^<style id="gs_inline_css_12345"/i);
-        expect(head_html).toMatch(/#dashboard-12345 .cell-add\s*{\s*width: 49.93333333333333px;\s*height: 50px;\s*}/i);
-        expect(head_html).toMatch(/#dashboard-12345 .grid-guide\s*{\s*background-size: 49.93333333333333px 50px;\s*bottom: 50px;\s*}/i);
-        expect(head_html).toMatch(/#dashboard-12345 .grid-stack > .grid-stack-item\[gs-w='6']\s*{\s*min-width: 6.666666666666667%;\s*width: 40%;\s*}/i);
-        expect(head_html).toMatch(/#dashboard-12345 .grid-stack > .grid-stack-item\[gs-x='6']\s*{\s*left: 40%;\s*}/i);
-
-        dashboard = new GLPIDashboard({
-            'rand': '12345',
-            'cols': 10
-        });
-        dashboard.generateCss = GLPIDashboard.prototype._generateCss;
-        $('#dashboard-12345').width('500px');
-        dashboard.grid.cellHeight = jest.fn().mockImplementation(() => {});
-        dashboard.generateCss();
-        expect(dashboard.grid.cellHeight).toHaveBeenCalledWith(60);
-    });
-
     test('initFilters', async () => {
         const dashboard = new GLPIDashboard({'rand': '12345'});
         dashboard.getFiltersFromDB = jest.fn().mockImplementation(() => {
@@ -1818,23 +1771,19 @@ describe('Dashboard', () => {
 
     test('Update CSS and Fit Numbers on Resize', () => {
         const dashboard = new GLPIDashboard({'rand': '12345'});
-        dashboard.generateCss = jest.fn().mockImplementation(() => {});
         dashboard.fitNumbers = jest.fn().mockImplementation(() => {});
         jest.useFakeTimers();
         $(window).trigger('resize');
         jest.advanceTimersByTime(250);
-        expect(dashboard.generateCss).toHaveBeenCalled();
         expect(dashboard.fitNumbers).toHaveBeenCalled();
     });
 
     test('Do not Update CSS and Fit Numbers on Propagated Resize', () => {
         const dashboard = new GLPIDashboard({'rand': '12345'});
-        dashboard.generateCss = jest.fn().mockImplementation(() => {});
         dashboard.fitNumbers = jest.fn().mockImplementation(() => {});
         jest.useFakeTimers();
         $('body').trigger('resize');
         jest.advanceTimersByTime(250);
-        expect(dashboard.generateCss).not.toHaveBeenCalled();
         expect(dashboard.fitNumbers).not.toHaveBeenCalled();
     });
 
