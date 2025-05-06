@@ -159,8 +159,7 @@ $break_s_screen: 1400px;
                 backdrop-filter: blur(2px);
                 background-color: rgba(0, 0, 0, 50%);
 
-                i.fas,
-                i.fa-solid {
+                .spinner-border {
                     position: absolute;
                     top: 50%;
                     left: calc(50% - 1.5rem);

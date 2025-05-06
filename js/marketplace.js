@@ -54,7 +54,7 @@ $(document).ready(function() {
 
         icon
             .removeClass()
-            .addClass('fas fa-spinner fa-spin');
+            .addClass('spinner-border');
 
         const executeAction = function () {
             if (action === 'download_plugin'
@@ -155,7 +155,7 @@ var filterPluginList = function(page, force) {
     }
 
     plugins_list
-        .append("<div class='loading-plugins'><i class='fas fa-spinner fa-pulse'></i></div>");
+        .append("<div class='loading-plugins'><div class='spinner-border'></div></div>");
     pagination.find('li.current').removeClass('current');
 
     var jqxhr = $.get(ajax_url, {
@@ -192,13 +192,13 @@ var refreshPlugins = function(page, force) {
     var icon = $('.marketplace:visible .refresh-plugin-list');
 
     icon
-        .removeClass('fa-sync-alt')
-        .addClass('fa-spinner fa-spin');
+        .removeClass('ti ti-refresh')
+        .addClass('spinner-border spinner-border-sm');
 
     $.when(filterPluginList(page, force)).then(function() {
         icon
-            .removeClass('fa-spinner fa-spin')
-            .addClass('fa-sync-alt');
+            .removeClass('spinner-border spinner-border-sm')
+            .addClass('ti ti-refresh');
         current_page = page;
 
         addTooltips();
