@@ -91,4 +91,24 @@
     [data-glpi-form-renderer-hidden-by-condition] {
         display: none !important;
     }
+
+    .input-group {
+        > div:not(.d-none) {
+            &:has(> span.select2-container) {
+                &:not(:first-child) {
+                    .select2-selection {
+                        border-top-left-radius: 0 !important;
+                        border-bottom-left-radius: 0 !important;
+                    }
+                }
+
+                &:not(:last-of-type) {
+                    .select2-selection {
+                        border-top-right-radius: 0 !important;
+                        border-bottom-right-radius: 0 !important;
+                    }
+                }
+            }
+        }
+    }
 }

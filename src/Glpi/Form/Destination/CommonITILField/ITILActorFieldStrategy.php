@@ -38,6 +38,7 @@ namespace Glpi\Form\Destination\CommonITILField;
 use Glpi\Form\AnswersSet;
 use Group;
 use Session;
+use Ticket;
 use User;
 
 enum ITILActorFieldStrategy: string
@@ -69,41 +70,44 @@ enum ITILActorFieldStrategy: string
         };
     }
 
-    public function getITILActorsIDs(
+    public function getITILActors(
         ITILActorField $itil_actor_field,
         ITILActorFieldConfig $config,
         AnswersSet $answers_set
     ): ?array {
         return match ($this) {
             self::FROM_TEMPLATE          => null,
-            self::FORM_FILLER            => $this->getActorsIdsFromCurrentUser(),
-            self::FORM_FILLER_SUPERVISOR => $this->getActorsIdsFromSupervisorOfCurrentUser(),
-            self::SPECIFIC_VALUES        => $config->getSpecificITILActorsIds(),
-            self::SPECIFIC_ANSWERS       => $this->getActorsIdsForSpecificAnswers(
+            self::FORM_FILLER            => $this->getActorsFromCurrentUser($answers_set),
+            self::FORM_FILLER_SUPERVISOR => $this->getActorsFromSupervisorOfCurrentUser($answers_set),
+            self::SPECIFIC_VALUES        => $this->getActorsFromSpecificValues(
+                $config->getSpecificITILActorsIds(),
+                $itil_actor_field
+            ),
+            self::SPECIFIC_ANSWERS       => $this->getActorsForSpecificAnswers(
                 $config->getSpecificQuestionIds(),
                 $itil_actor_field,
                 $answers_set,
             ),
-            self::LAST_VALID_ANSWER      => $this->getActorsIdsForLastValidAnswer(
+            self::LAST_VALID_ANSWER      => $this->getActorsForLastValidAnswer(
                 $itil_actor_field,
                 $answers_set,
             ),
-            self::USER_FROM_OBJECT_ANSWER => $this->getActorsIdsFromObjectAnswers(
+            self::USER_FROM_OBJECT_ANSWER => $this->getActorsFromObjectAnswers(
                 $config->getSpecificQuestionIds(),
                 $answers_set,
                 User::getForeignKeyField()
             ),
-            self::TECH_USER_FROM_OBJECT_ANSWER => $this->getActorsIdsFromObjectAnswers(
+            self::TECH_USER_FROM_OBJECT_ANSWER => $this->getActorsFromObjectAnswers(
                 $config->getSpecificQuestionIds(),
                 $answers_set,
                 User::getForeignKeyField() . '_tech'
             ),
-            self::GROUP_FROM_OBJECT_ANSWER => $this->getActorsIdsFromObjectAnswers(
+            self::GROUP_FROM_OBJECT_ANSWER => $this->getActorsFromObjectAnswers(
                 $config->getSpecificQuestionIds(),
                 $answers_set,
                 Group::getForeignKeyField()
             ),
-            self::TECH_GROUP_FROM_OBJECT_ANSWER => $this->getActorsIdsFromObjectAnswers(
+            self::TECH_GROUP_FROM_OBJECT_ANSWER => $this->getActorsFromObjectAnswers(
                 $config->getSpecificQuestionIds(),
                 $answers_set,
                 Group::getForeignKeyField() . '_tech'
@@ -111,21 +115,36 @@ enum ITILActorFieldStrategy: string
         };
     }
 
-    private function getActorsIdsFromCurrentUser(): ?array
+    private function getActorsFromCurrentUser(AnswersSet $answers_set): ?array
     {
-        $users_id = Session::getLoginUserID();
-        if (!is_numeric($users_id)) {
+        $user_id = Session::getLoginUserID();
+        if (!is_numeric($user_id)) {
             return null;
         }
 
-        return [
-            User::class => [(int) $users_id],
-        ];
+        $delegation = $answers_set->getDelegation();
+        if (Ticket::canDelegateeCreateTicket($delegation->users_id ?? $user_id)) {
+            return [
+                [
+                    'itemtype' => User::class,
+                    'items_id' => $delegation->users_id ?? $user_id,
+                    'use_notification' => $delegation->use_notification ?? 0,
+                    'alternative_email' => $delegation->alternative_email ?? '',
+                ],
+            ];
+        } else {
+            return [
+                [
+                    'itemtype' => User::class,
+                    'items_id' => $user_id,
+                ],
+            ];
+        }
     }
 
-    private function getActorsIdsFromSupervisorOfCurrentUser(): ?array
+    private function getActorsFromSupervisorOfCurrentUser(AnswersSet $answers_set): ?array
     {
-        $users_id = Session::getLoginUserID();
+        $users_id = $answers_set->getDelegation()->users_id ?? Session::getLoginUserID();
         if (!is_numeric($users_id)) {
             return null;
         }
@@ -139,11 +158,42 @@ enum ITILActorFieldStrategy: string
         }
 
         return [
-            User::class => [(int) $supervisor_id],
+            [
+                'itemtype' => User::class,
+                'items_id' => (int) $supervisor_id,
+            ],
         ];
     }
 
-    private function getActorsIdsForSpecificAnswers(
+    private function getActorsFromSpecificValues(
+        ?array $itil_actors_ids,
+        ITILActorField $itil_actor_field
+    ): ?array {
+        if (empty($itil_actors_ids)) {
+            return null;
+        }
+
+        $actors = [];
+        foreach ($itil_actors_ids as $itemtype => $ids) {
+            foreach ($ids as $id) {
+                if (
+                    !in_array($itemtype, $itil_actor_field->getAllowedActorTypes())
+                    || !is_numeric($id)
+                ) {
+                    continue;
+                }
+
+                $actors[] = [
+                    'itemtype' => $itemtype,
+                    'items_id' => (int) $id,
+                ];
+            }
+        }
+
+        return $actors;
+    }
+
+    private function getActorsForSpecificAnswers(
         ?array $question_ids,
         ITILActorField $itil_actor_field,
         AnswersSet $answers_set,
@@ -153,7 +203,7 @@ enum ITILActorFieldStrategy: string
         }
 
         return array_reduce($question_ids, function ($carry, $question_id) use ($itil_actor_field, $answers_set) {
-            $actors_ids = $this->getActorsIdsForSpecificAnswer(
+            $actors_ids = $this->getActorsForSpecificAnswer(
                 $question_id,
                 $itil_actor_field,
                 $answers_set
@@ -167,7 +217,7 @@ enum ITILActorFieldStrategy: string
         }, []);
     }
 
-    private function getActorsIdsForSpecificAnswer(
+    private function getActorsForSpecificAnswer(
         ?int $question_id,
         ITILActorField $itil_actor_field,
         AnswersSet $answers_set,
@@ -191,12 +241,15 @@ enum ITILActorFieldStrategy: string
                 return $carry;
             }
 
-            $carry[$value['itemtype']][] = (int) $value['items_id'];
+            $carry[] = [
+                'itemtype' => $value['itemtype'],
+                'items_id' => (int) $value['items_id'],
+            ];
             return $carry;
         }, []);
     }
 
-    private function getActorsIdsForLastValidAnswer(
+    private function getActorsForLastValidAnswer(
         ITILActorField $itil_actor_field,
         AnswersSet $answers_set,
     ): ?array {
@@ -209,14 +262,14 @@ enum ITILActorFieldStrategy: string
         }
 
         $answer = end($valid_answers);
-        return $this->getActorsIdsForSpecificAnswer(
+        return $this->getActorsForSpecificAnswer(
             $answer->getQuestionId(),
             $itil_actor_field,
             $answers_set
         );
     }
 
-    private function getActorsIdsFromObjectAnswers(
+    private function getActorsFromObjectAnswers(
         ?array $question_ids,
         AnswersSet $answers_set,
         string $fk_field
@@ -226,7 +279,7 @@ enum ITILActorFieldStrategy: string
         }
 
         return array_reduce($question_ids, function ($carry, $question_id) use ($answers_set, $fk_field) {
-            $actors_ids = $this->getActorsIdsFromObjectAnswer(
+            $actors_ids = $this->getActorsFromObjectAnswer(
                 $question_id,
                 $answers_set,
                 $fk_field
@@ -240,7 +293,7 @@ enum ITILActorFieldStrategy: string
         }, []);
     }
 
-    private function getActorsIdsFromObjectAnswer(
+    private function getActorsFromObjectAnswer(
         ?int $question_id,
         AnswersSet $answers_set,
         string $fk_field
@@ -276,8 +329,10 @@ enum ITILActorFieldStrategy: string
             $actors_ids = [$actors_ids];
         }
 
-        return [
-            getItemtypeForForeignKeyField(str_replace('_tech', '', $fk_field)) => $actors_ids,
-        ];
+        $itemtype = getItemtypeForForeignKeyField(str_replace('_tech', '', $fk_field));
+        return array_map(fn($actor_id) => [
+            'itemtype' => $itemtype,
+            'items_id' => (int) $actor_id,
+        ], $actors_ids);
     }
 }

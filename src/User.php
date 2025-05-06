@@ -3654,6 +3654,76 @@ HTML;
 
 
     /**
+     * Get all groups where the current user have delegating.
+     *
+     * @since 0.83
+     *
+     * @param integer|string $entities_id ID of the entity to restrict
+     *
+     * @return integer[]
+     */
+    public static function getDelegateGroupsForUser($entities_id = '')
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        $iterator = $DB->request([
+            'SELECT'          => 'glpi_groups_users.groups_id',
+            'DISTINCT'        => true,
+            'FROM'            => 'glpi_groups_users',
+            'INNER JOIN'      => [
+                'glpi_groups'  => [
+                    'FKEY'   => [
+                        'glpi_groups_users'  => 'groups_id',
+                        'glpi_groups'        => 'id',
+                    ],
+                ],
+            ],
+            'WHERE'           => [
+                'glpi_groups_users.users_id'        => Session::getLoginUserID(),
+                'glpi_groups_users.is_userdelegate' => 1,
+            ] + getEntitiesRestrictCriteria('glpi_groups', '', $entities_id, 1),
+        ]);
+
+        $groups = [];
+        foreach ($iterator as $data) {
+            $groups[$data['groups_id']] = $data['groups_id'];
+        }
+        return $groups;
+    }
+
+    /**
+     * Get all users from groups where the current user have delegating, plus the current user.
+     *
+     * @param integer|string $entities_id ID of the entity to restrict
+     *
+     * @return array<int, string> Array of user IDs mapped to their friendly names, sorted alphabetically, with "Myself" first.
+     */
+    public static function getUsersFromDelegatedGroups($entities_id = ''): array
+    {
+        $groups_ids = self::getDelegateGroupsForUser($entities_id);
+        $users_data = [];
+        foreach ($groups_ids as $groups_id) {
+            $users_data = array_merge($users_data, Group_User::getGroupUsers($groups_id));
+        }
+
+        // Get unique user IDs from the collected data
+        $user_ids = array_unique(array_column($users_data, 'id'));
+
+        $formatted_users = [];
+        foreach ($user_ids as $user_id) {
+            // Avoid adding the current user if they are in the delegated groups, will be added later
+            if ($user_id !== Session::getLoginUserID()) {
+                $formatted_users[$user_id] = User::getFriendlyNameById($user_id);
+            }
+        }
+
+        uasort($formatted_users, 'strcasecmp');
+
+        return [Session::getLoginUserID() => __('Myself')] + $formatted_users;
+    }
+
+    /**
      * Execute the query to select box with all glpi users where select key = name
      *
      * Internaly used by showGroup_Users, dropdownUsers and ajax/getDropdownUsers.php
@@ -3707,6 +3777,42 @@ HTML;
 
             case "id":
                 $WHERE = ['glpi_users.id' => Session::getLoginUserID()];
+                break;
+
+            case "delegate":
+                $groups = self::getDelegateGroupsForUser($entity_restrict);
+                $users  = [];
+                if (count($groups)) {
+                    $iterator = $DB->request([
+                        'SELECT'    => 'glpi_users.id',
+                        'FROM'      => 'glpi_groups_users',
+                        'LEFT JOIN' => [
+                            'glpi_users'   => [
+                                'FKEY'   => [
+                                    'glpi_groups_users'  => 'users_id',
+                                    'glpi_users'         => 'id',
+                                ],
+                            ],
+                        ],
+                        'WHERE'     => [
+                            'glpi_groups_users.groups_id' => $groups,
+                            'glpi_groups_users.users_id'  => ['<>', Session::getLoginUserID()],
+                        ],
+                    ]);
+                    foreach ($iterator as $data) {
+                        $users[$data["id"]] = $data["id"];
+                    }
+                }
+                // Add me to users list for central
+                if (Session::getCurrentInterface() == 'central') {
+                    $users[Session::getLoginUserID()] = Session::getLoginUserID();
+                }
+
+                if (count($users)) {
+                    $WHERE = ['glpi_users.id' => $users];
+                } else {
+                    $WHERE = ['0'];
+                }
                 break;
 
             case "groups":
