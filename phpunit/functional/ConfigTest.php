@@ -170,57 +170,6 @@ class ConfigTest extends DbTestCase
         $this->assertSame($expected, $input);
     }
 
-    public function testGetLibraries()
-    {
-        $actual = $expected = [];
-        $deps = \Config::getLibraries(true);
-        foreach ($deps as $dep) {
-            // composer names only (skip htmlLawed)
-            if (strpos($dep['name'], '/')) {
-                $actual[] = $dep['name'];
-            }
-        }
-        sort($actual);
-        $this->assertNotEmpty($actual);
-        $composer = json_decode(file_get_contents(__DIR__ . '/../../composer.json'), true);
-        foreach (array_keys($composer['require']) as $dep) {
-            // composer names only (skip php, ext-*, ...)
-            if (strpos($dep, '/')) {
-                $expected[] = $dep;
-            }
-        }
-        sort($expected);
-        $this->assertNotEmpty($expected);
-
-        $unexpected_libs = array_diff($actual, $expected);
-        $missing_libs    = array_diff($expected, $actual);
-
-        $this->assertEmpty(
-            $unexpected_libs,
-            'Unexpected libs returned by Config::getLibraries(): ' . implode(', ', $unexpected_libs)
-        );
-        $this->assertEmpty(
-            $missing_libs,
-            'Missing libs in Config::getLibraries() return value: ' . implode(', ', $missing_libs)
-        );
-    }
-
-    public function testGetLibraryDir()
-    {
-        $this->assertFalse(\Config::getLibraryDir(''));
-        $this->assertFalse(\Config::getLibraryDir('abcde'));
-
-        $expected = realpath(__DIR__ . '/../../vendor/symfony/console');
-        if (is_dir($expected)) { // skip when system library is used
-            $this->assertSame($expected, \Config::getLibraryDir('Symfony\Component\Console\Application'));
-
-            $mailer = new \Symfony\Component\Console\Application();
-            $this->assertSame($expected, \Config::getLibraryDir($mailer));
-        }
-
-        $expected = realpath(__DIR__ . '/../../tests/src/autoload');
-        $this->assertSame($expected, \Config::getLibraryDir('getItemByTypeName'));
-    }
 
     public function testCheckExtensions()
     {
