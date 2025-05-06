@@ -395,7 +395,7 @@ class SoftwareLicenseTest extends DbTestCase
         $this->assertEquals($users_after_computer + 1, $users_after_user);
         $this->assertEquals($total_after_computer + 1, $total_after_user);
 
-        // Initialiser le tableau user_ids avant de l'utiliser
+        // Initialise the user_ids array before using it
         $user_ids = [];
 
         for ($i = 1; $i <= 3; $i++) {
