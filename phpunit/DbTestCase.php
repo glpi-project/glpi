@@ -72,7 +72,7 @@ class DbTestCase extends \GLPITestCase
      *
      * @return \Auth
      */
-    protected function login(
+    protected function realLogin(
         string $user_name = TU_USER,
         string $user_pass = TU_PASS,
         bool $noauto = true,
@@ -83,6 +83,33 @@ class DbTestCase extends \GLPITestCase
 
         $auth = new Auth();
         $this->assertEquals($expected, $auth->login($user_name, $user_pass, $noauto));
+
+        return $auth;
+    }
+
+    /**
+     * "Fake" login process (for performances reason), if you need a real login
+     * use the realLogin() method instead.
+     *
+     * The rule engine will not be executed.
+     *
+     * A session will be loaded for the supplied user without checking if his
+     * account is valid.
+     *
+     * The "user_pass" parameter is no longer used but was not removed to
+     * avoid needing to update all the occurences in existings tests.
+     */
+    protected function login(
+        string $user_name = TU_USER,
+        string $user_pass = "",
+    ): \Auth {
+        \Session::destroy();
+        \Session::start();
+
+        $auth = new Auth();
+        $auth->user = getItemByTypeName(User::class, $user_name);
+        $auth->auth_succeded = true;
+        Session::init($auth);
 
         return $auth;
     }

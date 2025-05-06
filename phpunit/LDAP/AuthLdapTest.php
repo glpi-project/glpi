@@ -1226,7 +1226,7 @@ class AuthLDAPTest extends DbTestCase
     public function testLdapAuth()
     {
         //try to log in from a user that does not exist yet
-        $auth = $this->login('brazil6', 'password', false);
+        $auth = $this->realLogin('brazil6', 'password', false);
 
         $user = new \User();
         $user->getFromDBbyName('brazil6');
@@ -1266,7 +1266,7 @@ class AuthLDAPTest extends DbTestCase
         $this->assertSame('brazil7', $user->fields['name']);
         $this->assertSame('uid=brazil7,ou=people,ou=R&D,dc=glpi,dc=org', $user->fields['user_dn']);
 
-        $auth = $this->login('brazil7', 'password', false, true);
+        $auth = $this->realLogin('brazil7', 'password', false, true);
 
         $this->assertTrue($auth->user_present);
         $this->assertSame($user->fields['user_dn'], $auth->user_dn);
@@ -1283,8 +1283,8 @@ class AuthLDAPTest extends DbTestCase
             )
         );
 
-        $this->login('brazil7', 'password', false, false);
-        $auth = $this->login('brazil7test', 'password', false);
+        $this->realLogin('brazil7', 'password', false, false);
+        $auth = $this->realLogin('brazil7test', 'password', false);
 
         //reset entry before any test can fail
         $this->assertTrue(
@@ -1322,7 +1322,7 @@ class AuthLDAPTest extends DbTestCase
             (int) $user->add($dup)
         );
 
-        $auth = $this->login('brazil6', 'password', false);
+        $auth = $this->realLogin('brazil6', 'password', false);
         $this->assertSame($aid, $auth->user->fields['auths_id']);
         $this->assertSame('brazil6', $auth->user->fields['name']);
         $this->assertSame('uid=brazil6,ou=people,ou=R&D,dc=glpi,dc=org', $auth->user->fields['user_dn']);
@@ -2305,7 +2305,7 @@ class AuthLDAPTest extends DbTestCase
         ]);
 
         // login the user to force a real synchronisation and get it's glpi id
-        $this->login('brazil6', 'password', false);
+        $this->realLogin('brazil6', 'password', false);
         $users_id = \User::getIdByName('brazil6');
         $this->assertGreaterThan(0, $users_id);
         // check the user got the entity/profiles assigned
@@ -2389,7 +2389,7 @@ class AuthLDAPTest extends DbTestCase
         ])->getID();
 
         // login the user to force a real synchronisation and get it's glpi id
-        $this->login('brazil6', 'password', false);
+        $this->realLogin('brazil6', 'password', false);
         $users_id = \User::getIdByName('brazil6');
         $this->assertGreaterThan(0, $users_id);
 
@@ -2408,7 +2408,7 @@ class AuthLDAPTest extends DbTestCase
         ]);
 
         // Login
-        $this->login('brazil6', 'password', false);
+        $this->realLogin('brazil6', 'password', false);
         $users_id = \User::getIdByName('brazil6');
         $this->assertGreaterThan(0, $users_id);
 
@@ -2452,7 +2452,7 @@ class AuthLDAPTest extends DbTestCase
         ]);
 
         // Login
-        $this->login('brazil6', 'password', false);
+        $this->realLogin('brazil6', 'password', false);
         $users_id = \User::getIdByName('brazil6');
         $this->assertGreaterThan(0, $users_id);
 
@@ -2493,7 +2493,7 @@ class AuthLDAPTest extends DbTestCase
         $this->createRule($builder);
 
         // login the user to force a real synchronisation (and creation into DB)
-        $this->login('brazil7', 'password', false);
+        $this->realLogin('brazil7', 'password', false);
         $users_id = \User::getIdByName('brazil7');
 
         // Add group to user
@@ -2510,7 +2510,7 @@ class AuthLDAPTest extends DbTestCase
         $this->assertCount(0, $rights);
 
         // Log in again to trigger rule
-        $this->login('brazil7', 'password', false);
+        $this->realLogin('brazil7', 'password', false);
 
         // Check that the correct profile was set
         $rights = (new Profile_User())->find([
@@ -2525,7 +2525,7 @@ class AuthLDAPTest extends DbTestCase
     public function testLdapUnavailable()
     {
         //Import user that doesn't exist yet
-        $auth = $this->login('brazil5', 'password', false);
+        $auth = $this->realLogin('brazil5', 'password', false);
 
         $user = new \User();
         $user->getFromDBbyName('brazil5');
@@ -2551,7 +2551,7 @@ class AuthLDAPTest extends DbTestCase
             ])
         );
 
-        $this->login('brazil5', 'password', false, false);
+        $this->realLogin('brazil5', 'password', false, false);
         $this->hasPhpLogRecordThatContains(
             "Unable to bind to LDAP server `openldap:1234` with RDN `cn=Manager,dc=glpi,dc=org`\nerror: Can't contact LDAP server (-1)",
             LogLevel::WARNING
@@ -2588,7 +2588,7 @@ class AuthLDAPTest extends DbTestCase
         );
 
         //Import user that doesn't exist yet
-        $auth = $this->login('logintest', 'password');
+        $auth = $this->realLogin('logintest', 'password');
 
         $user = new \User();
         $user->getFromDBbyName('logintest');
@@ -2665,7 +2665,7 @@ class AuthLDAPTest extends DbTestCase
             'value'       => '1', // Reject
         ]);
         // login the user to force synchronisation
-        $this->login('brazil6', 'password', false, false);
+        $this->realLogin('brazil6', 'password', false, false);
 
         // Check title not created
         $ut = new UserTitle();

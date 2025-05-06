@@ -111,7 +111,7 @@ class RuleRightTest extends DbTestCase
         ]);
 
         // login the user to force a real synchronisation and get it's glpi id
-        $this->login(TU_USER, TU_PASS, false);
+        $this->realLogin(TU_USER, TU_PASS, false);
         $users_id = \User::getIdByName(TU_USER);
         $this->assertGreaterThan(0, $users_id);
 
@@ -126,7 +126,7 @@ class RuleRightTest extends DbTestCase
             'value'       => -1, // Full structure
         ]);
 
-        $this->login(TU_USER, TU_PASS, false);
+        $this->realLogin(TU_USER, TU_PASS, false);
         $user->getFromDB($users_id);
         $this->assertEquals(null, $user->fields['entities_id']);
 
@@ -159,7 +159,7 @@ class RuleRightTest extends DbTestCase
         \SingletonRuleList::getInstance("RuleRight", 0)->list = [];
 
         // login again
-        $this->login(TU_USER, TU_PASS, false);
+        $this->realLogin(TU_USER, TU_PASS, false);
 
         // check the user got the entity/profiles assigned
         $pu = \Profile_User::getForUser($users_id, true);
@@ -188,7 +188,7 @@ class RuleRightTest extends DbTestCase
         ];
 
         $user = new \User();
-        $this->login();
+        $this->realLogin();
         $users_id = $user->add($testuser);
         $this->assertGreaterThan(0, $users_id);
 
@@ -202,7 +202,7 @@ class RuleRightTest extends DbTestCase
         $this->assertEquals(1, $right['is_default_profile']);
 
         // Log in to force rules right processing
-        $this->login($testuser['name'], $testuser['password'], false);
+        $this->realLogin($testuser['name'], $testuser['password'], false);
 
         // Get rights again, should not have changed
         $pu = \Profile_User::getForUser($users_id, true);
@@ -210,7 +210,7 @@ class RuleRightTest extends DbTestCase
         $right2 = array_pop($pu);
         $this->assertEquals($right, $right2);
 
-        $this->login();
+        $this->realLogin();
         // Change the $right profile, since this is the default profile it should
         // be fixed on next login
         $pu = new \Profile_User();
@@ -223,7 +223,7 @@ class RuleRightTest extends DbTestCase
         $this->assertEquals(1, $pu->fields['is_default_profile']);
         $this->assertEquals(1, $pu->fields['is_dynamic']);
 
-        $this->login($testuser['name'], $testuser['password'], false);
+        $this->realLogin($testuser['name'], $testuser['password'], false);
         $pu = \Profile_User::getForUser($users_id, true);
         $this->assertCount(1, $pu);
         $right3 = array_pop($pu);
@@ -232,9 +232,6 @@ class RuleRightTest extends DbTestCase
         unset($right['id']);
         unset($right3['id']);
         $this->assertEquals($right, $right3);
-
-        // Clean session
-        $this->login();
     }
 
     public function testDenyLogin()
@@ -273,7 +270,7 @@ class RuleRightTest extends DbTestCase
             ])
         );
 
-        $this->login(TU_USER, TU_PASS, true, false);
+        $this->realLogin(TU_USER, TU_PASS, true, false);
         $events = getAllDataFromTable('glpi_events', [
             'service' => 'login',
             'type' => 'system',
@@ -321,7 +318,7 @@ class RuleRightTest extends DbTestCase
         $this->assertEquals(null, $user->getField('language'));
 
         // login
-        $this->login(TU_USER, TU_PASS);
+        $this->realLogin(TU_USER, TU_PASS);
 
         // language from rule
         $user->getFromDBByName(TU_USER);
