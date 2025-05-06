@@ -65,8 +65,14 @@ class HLAPITestCase extends \DbTestCase
         return parent::login($user_name, $user_pass, $noauto, $expected);
     }
 
-    public function login(string $user_name = TU_USER, string $user_pass = TU_PASS, bool $noauto = true, bool $expected = true): \Auth
-    {
+    #[Override]
+    public function login(
+        string $user_name = TU_USER,
+        string $user_pass = TU_PASS,
+        bool $noauto = true,
+        bool $expected = true,
+        bool $use_cache = true,
+    ): \Auth {
         $request = new Request('POST', '/token', [
             'Content-Type' => 'application/json',
         ], json_encode([

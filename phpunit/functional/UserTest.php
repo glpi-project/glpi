@@ -1856,7 +1856,7 @@ class UserTest extends \DbTestCase
 
         // logout/login and check prefs
         $this->logOut();
-        $this->login('for preferences', 'for preferences');
+        $this->login('for preferences', 'for preferences', use_cache: false);
         $this->assertEquals(0, $_SESSION['glpishow_count_on_tabs']);
         $this->assertEquals($itil_layout_1, $_SESSION['glpiitil_layout']);
 
@@ -1880,7 +1880,7 @@ class UserTest extends \DbTestCase
 
         // logout/login and check prefs
         $this->logOut();
-        $this->login('for preferences', 'for preferences');
+        $this->login('for preferences', 'for preferences', use_cache: false);
         $this->assertEquals(1, $_SESSION['glpishow_count_on_tabs']);
         $this->assertEquals($itil_layout_2, $_SESSION['glpiitil_layout']);
 

@@ -47,6 +47,8 @@ class DbTestCase extends \GLPITestCase
      */
     private $is_asset_autoloader_registered = false;
 
+    private static $sessions = [];
+
     public function setUp(): void
     {
         global $DB;
@@ -60,7 +62,6 @@ class DbTestCase extends \GLPITestCase
         $DB->rollback();
         parent::tearDown();
     }
-
 
     /**
      * Connect (using the test user per default)
@@ -76,13 +77,35 @@ class DbTestCase extends \GLPITestCase
         string $user_name = TU_USER,
         string $user_pass = TU_PASS,
         bool $noauto = true,
-        bool $expected = true
+        bool $expected = true,
+        bool $use_cache = true,
     ): \Auth {
         \Session::destroy();
         \Session::start();
 
-        $auth = new Auth();
-        $this->assertEquals($expected, $auth->login($user_name, $user_pass, $noauto));
+        if ($use_cache && isset(self::$sessions[$user_name])) {
+            // Unless requested otherwise, we will only load each session once.
+            // This prevent wasting test execution time loading the same session
+            // again and again.
+            // Since the database is reset between each tests, this is not an issue
+            // (i.e. the session will always be the same starting from a clean plate).
+            // The only time where this cache must be disabled is if you modify
+            // some general config and parameters during a test and want to logout / login
+            // to confirm that these parameters have been changed.
+            $_SESSION = self::$sessions[$user_name];
+            $auth = new Auth();
+            $auth->auth_succeded = true;
+            $auth->user = getItemByTypeName(User::class, $user_name);
+        } else {
+            $auth = new Auth();
+            $this->assertEquals($expected, $auth->login($user_name, $user_pass, $noauto));
+
+            // Do not override cache in this case as the expected session data
+            // will no longer match the "clean" session from an unmodifed database.
+            if ($use_cache) {
+                self::$sessions[$user_name] = $_SESSION;
+            }
+        }
 
         return $auth;
     }
