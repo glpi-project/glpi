@@ -231,6 +231,7 @@ final class Firewall
             '/front/locale.php' => self::STRATEGY_NO_CHECK, // locales must be accessible also on public pages
             '/front/login.php' => self::STRATEGY_NO_CHECK,
             '/front/logout.php' => self::STRATEGY_NO_CHECK,
+            '/front/initpassword.php' => self::STRATEGY_NO_CHECK,
             '/front/lostpassword.php' => self::STRATEGY_NO_CHECK,
             '/front/updatepassword.php' => self::STRATEGY_NO_CHECK,
             '/install/' => self::STRATEGY_NO_CHECK, // No check during install/update
