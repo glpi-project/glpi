@@ -94,17 +94,6 @@ Requirements:
    {%- endfor -%}
 {% endset %}
 
-{% set lib_info %}
-   {%- for dep in call('Config::getLibraries') -%}
-      {% set path = call('Config::getLibraryDir', [dep['check']]) %}
-      {%- if path -%}
-         {{ "\n" ~ dep['name'] }} version {{ dep['version'] }} in {{ path }}
-      {%- else -%}
-         {{ "\n" ~ dep['name'] }} not found
-      {%- endif -%}
-   {%- endfor -%}
-{% endset %}
-
 {% set locale_info %}
    {%- for file in locales_overrides -%}
       {{ "\n" ~ file }}
@@ -115,7 +104,6 @@ Requirements:
    {{ _self.sysinfo_section('GLPI information', glpi_info) }}
    {{ _self.sysinfo_section('Server', server_info, true) }}
    {{ _self.sysinfo_section('GLPI constants', constants_info, true) }}
-   {{ _self.sysinfo_section('Libraries', lib_info, true) }}
    {% for info_obj in system_info_objs %}
       {% set info = call([info_obj, 'getSystemInformation']) %}
       {% if info['label'] is not empty and info['content'] is not empty %}

@@ -395,6 +395,8 @@ The present file will list all changes made to the project; according to the
 - `ComputerVirtualMachine::showForComputer()`
 - `Config::detectRootDoc()`
 - `Config::getCurrentDBVersion()`
+- `Config::getLibraries()`
+- `Config::getLibraryDir()`
 - `Config::showDebug()`
 - `Config::showLibrariesInformation()`
 - `Config::validatePassword()`
