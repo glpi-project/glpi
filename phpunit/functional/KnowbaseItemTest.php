@@ -944,7 +944,7 @@ HTML,
     {
         global $DB;
 
-        $this->login('glpi', 'glpi');
+        $this->login('glpi', 'glpi', use_cache: false);
 
         // Removing existing data
         $DB->delete(\KnowbaseItem::getTable(), [1]);
@@ -1154,7 +1154,7 @@ HTML,
         yield ['articles' => ['FAQ 1', 'FAQ 2', 'FAQ 3', 'FAQ 4', 'FAQ 5', 'FAQ 6', 'FAQ 7', 'FAQ 8', 'FAQ 9', 'FAQ 10', 'FAQ 11']];
 
         // Check articles visible for "post-only" user
-        $this->login('post-only', 'postonly');
+        $this->login('post-only', 'postonly', use_cache: false);
         yield ['articles' => ['FAQ 1', 'FAQ 3', 'FAQ 5', 'FAQ 7', 'FAQ 8', 'FAQ 9', 'FAQ 10']];
         $this->setEntity("FAQ 1 entity", true);
         yield ['articles' => ['FAQ 1', 'FAQ 5', 'FAQ 7', 'FAQ 8', 'FAQ 10']];
@@ -1164,7 +1164,7 @@ HTML,
         yield ['articles' => ['FAQ 1', 'FAQ 5', 'FAQ 7', 'FAQ 10']];
 
         // Check articles visible for "tech" user
-        $this->login('tech', 'tech');
+        $this->login('tech', 'tech', use_cache: false);
         yield ['articles' => ['FAQ 2', 'FAQ 4', 'FAQ 6', 'FAQ 7', 'FAQ 8', 'FAQ 9', 'FAQ 10']];
         $this->setEntity("FAQ 1 entity", true);
         yield ['articles' => ['FAQ 2', 'FAQ 6', 'FAQ 7', 'FAQ 8', 'FAQ 10']];
@@ -1404,7 +1404,7 @@ HTML,
         ]);
 
         // Check articles visible for "tech" user
-        $this->login('tech', 'tech');
+        $this->login('tech', 'tech', use_cache: false);
         yield [
             'articles' => [
                 'FAQ 2', 'KB 2', 'KB 3', 'KB 4', 'KB 6', 'KB 7', 'KB 8', 'KB 9',
@@ -1421,7 +1421,7 @@ HTML,
         ];
 
         // Last test, admin should see all articles
-        $this->login('glpi', 'glpi');
+        $this->login('glpi', 'glpi', use_cache: false);
         yield [
             'articles' => [
                 'FAQ 1', 'FAQ 2', 'FAQ 3', 'KB 1', 'KB 2', 'KB 3', 'KB 4',

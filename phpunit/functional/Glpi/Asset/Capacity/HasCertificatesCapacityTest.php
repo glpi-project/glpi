@@ -85,7 +85,7 @@ class HasCertificatesCapacityTest extends DbTestCase
             $classname_3 => true,
         ];
 
-        $this->login(); // must be logged in to have class in Certificate::getTypes()
+        $this->login(use_cache: false); // must be logged in to have class in Certificate::getTypes()
         foreach ($has_certificates_mapping as $classname => $has_certificates) {
             // Check that the class is globally registered
             if ($has_certificates) {

@@ -115,7 +115,7 @@ class Item_DeviceSimcardTest extends DbTestCase
         );
 
         // Profile changed then login
-        $this->login();
+        $this->login(use_cache: false);
         //reset rights. Done here so ACLs are reset even if tests fails.
         $DB->update(
             'glpi_profilerights',

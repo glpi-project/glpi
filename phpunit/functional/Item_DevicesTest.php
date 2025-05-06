@@ -51,7 +51,7 @@ class Item_DevicesTest extends DbTestCase
 
         $this->initAssetDefinition(capacities: [new Capacity(name: HasDevicesCapacity::class)]);
 
-        $this->login(); // tab will be available only if corresponding right is available in the current session
+        $this->login(use_cache: false); // tab will be available only if corresponding right is available in the current session
 
         foreach ($CFG_GLPI['itemdevices_types'] as $itemtype) {
             $item = $this->createItem(

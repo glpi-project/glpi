@@ -970,7 +970,7 @@ class CommonDBTMTest extends DbTestCase
         $this->assertTrue($user->getFromDB($user->fields['id']));
         $this->assertSame('Europe/Paris', $user->fields['timezone']);
 
-        $this->login('glpi', 'glpi');
+        $this->login('glpi', 'glpi', use_cache: false);
         $this->assertTrue($comp->getFromDB($cid));
         $this->assertMatchesRegularExpression('/2019-03-04 1[12]:00:00/', $comp->fields['date_creation']);
     }

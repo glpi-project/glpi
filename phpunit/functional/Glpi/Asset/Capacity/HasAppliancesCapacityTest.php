@@ -87,7 +87,7 @@ class HasAppliancesCapacityTest extends DbTestCase
 
         foreach ($has_capacity_mapping as $classname => $has_capacity) {
             // Check that the class is globally registered
-            $this->login(); // must be logged in to have class in Appliance::getTypes()
+            $this->login(use_cache: false); // must be logged in to have class in Appliance::getTypes()
             if ($has_capacity) {
                 $this->assertContains($classname, $CFG_GLPI['appliance_types']);
                 $this->assertContains($classname, Appliance::getTypes());
@@ -98,7 +98,7 @@ class HasAppliancesCapacityTest extends DbTestCase
 
             // Check that the corresponding tab is present on items
             $item = $this->createItem($classname, ['name' => __FUNCTION__, 'entities_id' => $root_entity_id]);
-            $this->login(); // must be logged in to get tabs list
+            $this->login(use_cache: false); // must be logged in to get tabs list
             if ($has_capacity) {
                 $this->assertArrayHasKey('Appliance_Item$1', $item->defineAllTabs());
             } else {

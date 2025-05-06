@@ -50,7 +50,7 @@ class ItemVirtualMachineTest extends DbTestCase
 
         $this->initAssetDefinition(capacities: [new Capacity(name: HasVirtualMachineCapacity::class)]);
 
-        $this->login(); // tab will be available only if corresponding right is available in the current session
+        $this->login(use_cache: false); // tab will be available only if corresponding right is available in the current session
 
         foreach ($CFG_GLPI['itemvirtualmachines_types'] as $itemtype) {
             $item = $this->createItem(

@@ -392,7 +392,7 @@ class ServerTest extends DbTestCase
             $login = $row['login'];
             $pass = $row['pass'];
 
-            $this->login($login, $pass);
+            $this->login($login, $pass, use_cache: false);
 
             $server = $this->getServerInstance('PROPFIND', $path);
             $server->httpRequest->addHeader('Authorization', 'Basic ' . base64_encode($login . ':' . $pass));

@@ -72,7 +72,7 @@ class DropdownDefinitionManagerTest extends DbTestCase
 
         \Dropdown::resetItemtypesStaticCache();
 
-        $this->login();
+        $this->login(use_cache: false);
         $dropdowns = \Dropdown::getStandardDropdownItemTypes();
         $has_dropdown = false;
         foreach ($dropdowns as $items) {

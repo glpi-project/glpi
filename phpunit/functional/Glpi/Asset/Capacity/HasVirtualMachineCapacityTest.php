@@ -94,7 +94,7 @@ class HasVirtualMachineCapacityTest extends DbTestCase
 
             // Check that the corresponding tab is present on items
             $item = $this->createItem($classname, ['name' => __FUNCTION__, 'entities_id' => $root_entity_id]);
-            $this->login(); // must be logged in to get tabs list
+            $this->login(use_cache: false); // must be logged in to get tabs list
             if ($has_capacity) {
                 $this->assertArrayHasKey('ItemVirtualMachine$1', $item->defineAllTabs());
             } else {

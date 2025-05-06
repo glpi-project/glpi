@@ -457,7 +457,7 @@ class ITILTemplateTest extends DbTestCase
         //   check if category has precedence
         $entity_tpl_id = $this->createTemplate($itiltype);
         //login as admin to change entity conf
-        $this->login();
+        $this->login(use_cache: false);
         $entity = getItemByTypeName('Entity', '_test_child_1');
         $this->assertTrue($entity->update(['id' => $entity->fields['id'], $field => $entity_tpl_id]));
 

@@ -50,7 +50,7 @@ class Item_ProcessTest extends DbTestCase
 
         $this->initAssetDefinition(capacities: [new Capacity(name: IsInventoriableCapacity::class)]);
 
-        $this->login(); // tab will be available only if corresponding right is available in the current session
+        $this->login(use_cache: false); // tab will be available only if corresponding right is available in the current session
 
         foreach ($CFG_GLPI['process_types'] as $itemtype) {
             $item = $this->createItem(

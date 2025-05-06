@@ -48,8 +48,9 @@ final class HomePageTabsTest extends DbTestCase
     public function testDefaultTabs(): void
     {
         // Arrange: create a new user without reminders / rssfeeds
+        $login = 'tmp_user_' . mt_rand();
         $this->createItem(User::class, [
-            'name'          => 'tmp_user',
+            'name'          => $login,
             'password'      => 'tmp_user',
             'password2'     => 'tmp_user',
             '_profiles_id'  => getItemByTypeName(Profile::class, 'Self-Service', true),
@@ -58,7 +59,7 @@ final class HomePageTabsTest extends DbTestCase
         ], ['password', 'password2']);
 
         // Act: get tabs names
-        $this->login('tmp_user', 'tmp_user');
+        $this->login($login, 'tmp_user');
         $tabs = $this->getHomeTabsNames();
 
         // Assert: the reminder and rss tabs should not be displayed as there is no data.
@@ -71,8 +72,9 @@ final class HomePageTabsTest extends DbTestCase
     public function testPublicReminderTabIsAddedWhenReminderExists(): void
     {
         // Arrange: create a new user and one public reminder
+        $login = 'tmp_user_' . mt_rand();
         $user = $this->createItem(User::class, [
-            'name'          => 'tmp_user',
+            'name'          => $login,
             'password'      => 'tmp_user',
             'password2'     => 'tmp_user',
             '_profiles_id'  => getItemByTypeName(Profile::class, 'Self-Service', true),
@@ -88,7 +90,7 @@ final class HomePageTabsTest extends DbTestCase
         ]);
 
         // Act: get tabs names
-        $this->login('tmp_user', 'tmp_user');
+        $this->login($login, 'tmp_user');
         $tabs = $this->getHomeTabsNames();
 
         // Assert: the reminder and rss tabs should not be displayed as there is no data.
@@ -102,15 +104,16 @@ final class HomePageTabsTest extends DbTestCase
     public function testRssFeedsTabIsAddedWhenRssFeedsExists(): void
     {
         // Arrange: create a new user and one public reminder
+        $login = 'tmp_user_' . mt_rand();
         $user = $this->createItem(User::class, [
-            'name'          => 'tmp_user',
+            'name'          => $login,
             'password'      => 'tmp_user',
             'password2'     => 'tmp_user',
             '_profiles_id'  => getItemByTypeName(Profile::class, 'Self-Service', true),
             '_entities_id'  => $this->getTestRootEntity(true),
             '_is_recursive' => true,
         ], ['password', 'password2']);
-        $this->login('tmp_user', 'tmp_user'); // Need to be logged in to create the RSS feed
+        $this->login($login, 'tmp_user'); // Need to be logged in to create the RSS feed
         $reminder = $this->createItem(RSSFeed::class, [
             'name' => 'My feed',
             'url'  => 'https://fake-rss.localhost.com/feed',

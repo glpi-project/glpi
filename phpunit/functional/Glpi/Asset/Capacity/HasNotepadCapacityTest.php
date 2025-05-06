@@ -96,7 +96,7 @@ class HasNotepadCapacityTest extends DbTestCase
         foreach ($has_notepad_mapping as $classname => $has_notepad) {
             // Check that the corresponding tab is present on items
             $item = $this->createItem($classname, ['name' => __FUNCTION__, 'entities_id' => $root_entity_id]);
-            $this->login(); // must be logged in to get tabs list
+            $this->login(use_cache: false); // must be logged in to get tabs list
             if ($has_notepad) {
                 $this->assertArrayHasKey('Notepad$1', $item->defineAllTabs());
             } else {
@@ -252,7 +252,7 @@ class HasNotepadCapacityTest extends DbTestCase
         ];
 
         // By default, no rights are enabled on Notepad
-        $this->login();
+        $this->login(use_cache: false);
         $this->assertArrayNotHasKey('Notepad$1', $item->defineAllTabs());
         $this->assertFalse((new Notepad())->can(-1, CREATE, $new_notepad_input));
         $this->assertFalse((new Notepad())->can($notepad_1->getID(), UPDATE));
@@ -265,7 +265,7 @@ class HasNotepadCapacityTest extends DbTestCase
             ],
         ]);
         $this->assertTrue($updated);
-        $this->login();
+        $this->login(use_cache: false);
         $this->assertArrayHasKey('Notepad$1', $item->defineAllTabs());
         $this->assertFalse((new Notepad())->can(-1, CREATE, $new_notepad_input));
         $this->assertFalse((new Notepad())->can($notepad_1->getID(), UPDATE));
@@ -278,7 +278,7 @@ class HasNotepadCapacityTest extends DbTestCase
             ],
         ]);
         $this->assertTrue($updated);
-        $this->login();
+        $this->login(use_cache: false);
         $this->assertArrayNotHasKey('Notepad$1', $item->defineAllTabs());
         $this->assertTrue((new Notepad())->can(-1, CREATE, $new_notepad_input));
         $this->assertTrue((new Notepad())->can($notepad_1->getID(), UPDATE));

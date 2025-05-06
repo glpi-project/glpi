@@ -189,7 +189,7 @@ class CommonITILTaskTest extends DbTestCase
                     'name'          => $task_class::$rightname,
                 ]
             );
-            $this->login();
+            $this->login(use_cache: false);
             $task_item->fields = $task_input + [$itil_fkey  => $my_item->getID()];
             $this->assertFalse($task_item->canCreateItem());
 
@@ -204,7 +204,7 @@ class CommonITILTaskTest extends DbTestCase
                     'name'          => $task_class::$rightname,
                 ]
             );
-            $this->login();
+            $this->login(use_cache: false);
             $task_item->fields = $task_input + [$itil_fkey  => $my_item->getID()];
             $this->assertTrue($task_item->canCreateItem());
             $task_item->fields = $task_input + [$itil_fkey  => $tech_item->getID()];
@@ -284,7 +284,7 @@ class CommonITILTaskTest extends DbTestCase
                     'name' => $task_class::$rightname,
                 ]
             );
-            $this->login();
+            $this->login(use_cache: false);
             $task_item->fields = $task_input + [$itil_fkey => $my_item->getID()];
             $this->assertFalse($task_item->canCreateItem());
 
@@ -299,7 +299,7 @@ class CommonITILTaskTest extends DbTestCase
                     'name' => $task_class::$rightname,
                 ]
             );
-            $this->login();
+            $this->login(use_cache: false);
             $task_item->fields = $task_input + [$itil_fkey => $my_item->getID()];
             $this->assertTrue($task_item->canCreateItem());
             $task_item->fields = $task_input + [$itil_fkey => $tech_item->getID()];
@@ -390,7 +390,7 @@ class CommonITILTaskTest extends DbTestCase
                     'name' => $task_class::$rightname,
                 ]
             );
-            $this->login();
+            $this->login(use_cache: false);
             $task_item->fields = $task_input + [$itil_fkey => $my_item->getID()];
             $this->assertFalse($task_item->canCreateItem());
 
@@ -405,7 +405,7 @@ class CommonITILTaskTest extends DbTestCase
                     'name' => $task_class::$rightname,
                 ]
             );
-            $this->login();
+            $this->login(use_cache: false);
             $task_item->fields = $task_input + [$itil_fkey => $my_item->getID()];
             $this->assertTrue($task_item->canCreateItem());
             $task_item->fields = $task_input + [$itil_fkey => $tech_item->getID()];
@@ -472,7 +472,7 @@ class CommonITILTaskTest extends DbTestCase
                     'name' => $task_class::$rightname,
                 ]
             );
-            $this->login();
+            $this->login(use_cache: false);
             $this->assertFalse($my_task->canUpdateItem());
             $this->assertFalse($tech_task->canUpdateItem());
 
@@ -487,7 +487,7 @@ class CommonITILTaskTest extends DbTestCase
                     'name' => $task_class::$rightname,
                 ]
             );
-            $this->login();
+            $this->login(use_cache: false);
             $this->assertTrue($my_task->canUpdateItem());
             $this->assertFalse($tech_task->canUpdateItem());
         }
