@@ -2675,6 +2675,12 @@ JAVASCRIPT;
                     $entities[] = (int) $value;
                 }
             }
+
+            if (empty($entities)) {
+                // Fall back to user's active entities if the entity array is empty after decoding
+                $entities = $_SESSION['glpiactiveentities'];
+            }
+
             $post["entity_restrict"] = Session::getMatchingActiveEntities($entities);
         }
 
