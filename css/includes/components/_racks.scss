@@ -145,7 +145,7 @@ ul.indexes {
         content: "\2b";
         left: 45%;
         color: grey;
-        top: 1px;
+        top: 3px;
         font: var(--fa-font-solid);
         font-size: 1em;
         position: absolute;
@@ -198,8 +198,8 @@ ul.indexes {
             float: left;
 
             &::after {
-                left: calc(50% - 4px);
-                top: calc(50% - 0.5em - 4px);
+                left: calc(50% - 5px);
+                top: calc(50% - 6px);
             }
         }
     }
@@ -422,7 +422,7 @@ ul.indexes {
 .grid-rack {
     width: 217px;
     background:
-        var(--tblr-body-bg) repeating-linear-gradient(
+        var(--tblr-bg-surface) repeating-linear-gradient(
             transparent,
             transparent 21px,
             var(--tblr-bg-surface-tertiary) 21px,
