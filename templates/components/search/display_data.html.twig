@@ -41,7 +41,7 @@
 
 {# Remove namespace separators for use in HTML attributes #}
 {% set normalized_itemtype = itemtype|replace({'\\': ''}) %}
-{% set as_map = data['search']['as_map'] == 1 %}
+{% set as_map = (data['search']['as_map'] ?? false) == 1 %}
 
 <div
     class="card search-card"
@@ -70,18 +70,18 @@
           data-start="{{ start }}" data-count="{{ count }}" data-limit="{{ limit }}" data-submit-once
           class="masssearchform">
 
-        {% if data['search']['as_map'] == 0 %}
+        {% if not as_map %}
             {{ include('components/search/table.html.twig') }}
         {% elseif count > 0 %}
             {{ include('components/search/map.html.twig') }}
         {% endif %}
         {% if count > 0 %}
-            {% if data['display_type'] != constant('Search::GLOBAL_SEARCH') and data['search']['as_map'] == 0 %}
+            {% if data['display_type'] != constant('Search::GLOBAL_SEARCH') and not as_map %}
                 <div class="card-footer search-footer {{ not user_pref('search_pagination_on_top') ? "d-block" : "d-block d-xxl-none" }}">
                     {{ include('components/pager.html.twig') }}
                 </div>
             {% endif %}
-        {% elseif data['search']['as_map'] == 1 %}
+        {% elseif as_map %}
             {% if search_error %}
                 {{ alerts.alert_danger(__('An error occured during the search'), __('Consider changing the search criteria or adjusting the displayed columns.')) }}
             {% else %}
@@ -93,7 +93,7 @@
 {% if not is_ajax %}
    </div>
 
-   {% if data['search']['as_map'] == 0 %}
+   {% if not as_map %}
       <script>
           window.initFluidSearch{{ rand }}  = () => {
              const allowed_forced_params = ['hide_controls', 'usesession', 'forcetoview', 'criteria'];
