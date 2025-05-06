@@ -100,9 +100,10 @@
             contentType: false, // Needed when using FormData object
         }).done(function() {
             glpi_toast_info("{{ __("Filter saved") }}");
-
+    {% if delete_action_id is defined %}
             // Show delete button if it wasn't already enabled
             $("#{{ delete_action_id }}").removeClass('d-none');
+    {% endif %}
 
             // Add badge to menu to hint that a filter have been set
             const tab = $("a.nav-link[href*='CriteriaFilter']");

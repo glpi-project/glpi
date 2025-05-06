@@ -152,7 +152,7 @@
 
 {% macro color(name, value, options = {}) %}
     {% set options = {
-        id: name ~ '_' ~ options.rand
+        id: name ~ '_' ~ (options.rand ?? random()),
     }|merge(options) %}
 
     {{ _self.input(name, value, options|merge({

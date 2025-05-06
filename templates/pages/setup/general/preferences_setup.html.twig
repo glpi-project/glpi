@@ -390,11 +390,11 @@
 
    {% if call('\\Glpi\\Dashboard\\Grid::canViewOneDashboard') %}
       {{ fields.smallTitle(__('Dashboards'), call('Glpi\\Dashboard\\Dashboard::getIcon'), '', 'section-dashboards') }}
-      {% macro dropdownDashboard(name, config, context = 'core', disabled_option = false) %}
+      {% macro dropdownDashboard(name, config, thecontext = "core", disabled_option = false) %}
          {% do call('\\Glpi\\Dashboard\\Grid::dropdownDashboard', [name, {
             value: config[name],
             display_emptychoice: true,
-            context: context
+            context: thecontext
          }, disabled_option]) %}
       {% endmacro %}
 

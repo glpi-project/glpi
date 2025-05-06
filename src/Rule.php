@@ -3000,6 +3000,8 @@ JS
                 'name' => $name,
                 'description' => $rule->fields["description"],
                 'is_active'   => Dropdown::getYesNo($rule->fields["is_active"]),
+                'itemtype' => $rule::class,
+                'id' => $rule->fields["id"],
             ];
         }
 

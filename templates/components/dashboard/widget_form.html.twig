@@ -96,7 +96,7 @@
       ) }}
    </div>
 
-   {% set palette_displayed = edit and widget_def['haspalette'] %}
+   {% set palette_displayed = edit and (widget_def['haspalette'] ?? false) %}
    {% set palette_disabled  = use_gradient %}
    {% set palettes = call("Glpi\\Dashboard\\Palette::getAllPalettes") %}
     <div class="palette_field" {% if not palette_displayed %}style="display: none;"{% endif %}>

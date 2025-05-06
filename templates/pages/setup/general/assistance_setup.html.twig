@@ -54,11 +54,11 @@
    })) }}
    {% set planning_end_field %}
       <span class="mx-1">-></span>
-      {{ fields.dropdownHoursField(planning_end, config['planning_end'], '', field_options|merge({
+      {{ fields.dropdownHoursField('planning_end', config['planning_end'], '', field_options|merge({
          no_label: true
       })) }}
    {% endset %}
-   {{ fields.dropdownHoursField(planning_begin, config['planning_begin'], __('Limit of the schedules for planning'), field_options|merge({
+   {{ fields.dropdownHoursField('planning_begin', config['planning_begin'], __('Limit of the schedules for planning'), field_options|merge({
       add_field_html: planning_end_field
    })) }}
 
