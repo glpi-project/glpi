@@ -949,7 +949,7 @@ class CommonDBTMTest extends DbTestCase
         $this->assertGreaterThan(0, count($DB->getTimezones()));
 
         //login with default TZ
-        $this->login();
+        $this->realLogin();
         //add a Computer with creation and update dates
         $comp = new \Computer();
         $cid = $comp->add([
@@ -970,7 +970,7 @@ class CommonDBTMTest extends DbTestCase
         $this->assertTrue($user->getFromDB($user->fields['id']));
         $this->assertSame('Europe/Paris', $user->fields['timezone']);
 
-        $this->login('glpi', 'glpi');
+        $this->realLogin('glpi', 'glpi');
         $this->assertTrue($comp->getFromDB($cid));
         $this->assertMatchesRegularExpression('/2019-03-04 1[12]:00:00/', $comp->fields['date_creation']);
     }
