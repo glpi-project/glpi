@@ -54,6 +54,78 @@ class DisplayPreference extends CommonDBTM
     public const PERSONAL = 1024;
     public const GENERAL  = 2048;
 
+    public static function canCrud(): bool
+    {
+        return Session::haveRightsOr(
+            static::$rightname,
+            [DisplayPreference::PERSONAL | DisplayPreference::GENERAL],
+        );
+    }
+
+    public function canCrudItem(): bool
+    {
+        if (Session::haveRight(static::$rightname, DisplayPreference::GENERAL)) {
+            return true;
+        }
+
+        if (
+            Session::haveRight(static::$rightname, DisplayPreference::PERSONAL)
+            && $this->fields['users_id'] == Session::getLoginUserID()
+        ) {
+            return true;
+        }
+
+        return false;
+    }
+
+    #[Override]
+    public static function canCreate(): bool
+    {
+        return static::canCrud();
+    }
+
+    #[Override]
+    public static function canView(): bool
+    {
+        return static::canCrud();
+    }
+
+    #[Override]
+    public static function canUpdate(): bool
+    {
+        return static::canCrud();
+    }
+
+    #[Override]
+    public static function canPurge(): bool
+    {
+        return static::canCrud();
+    }
+
+    #[Override]
+    public function canCreateItem(): bool
+    {
+        return $this->canCrudItem();
+    }
+
+    #[Override]
+    public function canViewItem(): bool
+    {
+        return $this->canCrudItem();
+    }
+
+    #[Override]
+    public function canUpdateItem(): bool
+    {
+        return $this->canCrudItem();
+    }
+
+    #[Override]
+    public function canPurgeItem(): bool
+    {
+        return $this->canCrudItem();
+    }
+
     public static function getTypeName($nb = 0)
     {
         return __('Search result display');
