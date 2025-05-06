@@ -79,7 +79,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
 
     /// Common fields used for all profiles type
-    public static $common_fields  = ['id', 'interface', 'is_default', 'name'];
+    public static $common_fields  = ['id', 'interface', 'is_default', 'name', '2fa_enforced'];
 
     public $dohistory             = true;
 
