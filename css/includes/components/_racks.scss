@@ -105,14 +105,6 @@
 }
 
 .grid-stack {
-    .grid-stack-item {
-        .grid-stack-item-content,
-        .placeholder-content {
-            left: 0;
-            right: 0;
-        }
-    }
-
     .grid-stack-placeholder > .placeholder-content {
         border: 1px dashed #bcbf33;
         background-color: rgba(229, 245, 105, 50%);
@@ -153,7 +145,7 @@ ul.indexes {
         content: "\2b";
         left: 45%;
         color: grey;
-        top: 1px;
+        top: 3px;
         font: var(--fa-font-solid);
         font-size: 1em;
         position: absolute;
@@ -206,8 +198,8 @@ ul.indexes {
             float: left;
 
             &::after {
-                left: calc(50% - 4px);
-                top: calc(50% - 0.5em - 4px);
+                left: calc(50% - 5px);
+                top: calc(50% - 6px);
             }
         }
     }
@@ -430,7 +422,7 @@ ul.indexes {
 .grid-rack {
     width: 217px;
     background:
-        var(--tblr-body-bg) repeating-linear-gradient(
+        var(--tblr-bg-surface) repeating-linear-gradient(
             transparent,
             transparent 21px,
             var(--tblr-bg-surface-tertiary) 21px,
