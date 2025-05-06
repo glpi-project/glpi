@@ -46,7 +46,7 @@ export class TeamBadgeProvider {
          * The size in pixels for the team badges
          * @type {number}
          */
-        this.team_image_size = 22;
+        this.team_image_size = 26;
         this.max_team_images = max_team_images;
         this.display_initials = display_initials;
 
@@ -97,16 +97,16 @@ export class TeamBadgeProvider {
         // Pictures from groups, supplier, contact
         switch (itemtype) {
             case 'Group':
-                this.badges[itemtype][items_id] = this.generateOtherBadge(team_member, 'fa-users');
+                this.badges[itemtype][items_id] = this.generateOtherBadge(team_member, 'ti ti-users-group');
                 break;
             case 'Supplier':
-                this.badges[itemtype][items_id] = this.generateOtherBadge(team_member, 'fa-briefcase');
+                this.badges[itemtype][items_id] = this.generateOtherBadge(team_member, 'ti ti-truck-loading');
                 break;
             case 'Contact':
-                this.badges[itemtype][items_id] = this.generateOtherBadge(team_member, 'fa-user');
+                this.badges[itemtype][items_id] = this.generateOtherBadge(team_member, 'ti ti-user');
                 break;
             default:
-                this.badges[itemtype][items_id] = this.generateOtherBadge(team_member, 'fa-user');
+                this.badges[itemtype][items_id] = this.generateOtherBadge(team_member, 'ti ti-user');
         }
         return this.badges[itemtype][items_id];
     }
@@ -232,9 +232,8 @@ export class TeamBadgeProvider {
         const name = team_member['name'].replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 
         return `
-            <span class='fa-stack fa-lg' style='font-size: ${(this.team_image_size / 2)}px'>
-                <i class='fas fa-circle fa-stack-2x' style="color: ${bg_color}" title="${team_member['name']}"></i>
-                <i class='fas ${icon} fa-stack-1x' title="${name}" data-bs-toggle='tooltip' data-bs-placement='top'></i>
+            <span class="badge badge-pill" style="background-color: ${bg_color}; font-size: ${(this.team_image_size / 2)}px; height: 26px">
+                <i class='${icon}' title="${name}" data-bs-toggle='tooltip' data-bs-placement='top'></i>
             </span>
         `;
     }
