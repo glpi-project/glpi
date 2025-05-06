@@ -783,7 +783,7 @@ class DisplayPreference extends CommonDBTM
             'field'         => 'itemtype',
             'name'          => __('Itemtype'),
             'massiveaction' => false,
-            'datatype'      => 'string',
+            'datatype'      => 'itemtypename',
         ];
         $search_options[] = [
             'id'            => '4',
