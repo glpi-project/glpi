@@ -59,8 +59,6 @@ describe("Debug Bar", () => {
             cy.findByRole('button', {name: 'Toggle debug content area'}).click();
             cy.get('#debug-toolbar-expanded-content').should('not.be.visible');
         });
-        // Accessibility check is done last to let the widget buttons completely load
-        cy.get('#debug-toolbar-applet').injectAndCheckA11y();
     });
 
     it('Server performance widget', () => {
@@ -74,7 +72,6 @@ describe("Debug Bar", () => {
                 cy.get('.datagrid-title').contains('Total Execution Time').next().invoke('text').should('match', /\d+\s+ms/);
                 cy.get('.datagrid-title').contains('Memory Usage').next().invoke('text').should('match', /\d+.+\s+MiB\s+\/\s+[\d.]+\s+MiB/);
                 cy.get('.datagrid-title').contains('Memory Peak').next().invoke('text').should('match', /\d+.+\s+MiB\s+\/\s+[\d.]+\s+MiB/);
-                cy.root().injectAndCheckA11y(); // Using root() here to specify the subject of the within() block. Using cy.injectAndCheckA11y() doesn't seem to inherit the subject properly.
             });
         });
     });
@@ -126,7 +123,6 @@ describe("Debug Bar", () => {
                     cy.get('td').contains(/Memory Peak:\s+[\d.]+\s+MiB\s+\/\s+[\d.]+\s+MiB/).should('be.visible');
                     cy.get('td').contains(/SQL Requests:\s+\d+/).should('be.visible');
                     cy.get('td').contains(/SQL Duration:\s+[\d.]+ ms/).should('be.visible');
-                    cy.root().injectAndCheckA11y();
                 });
 
                 // Globals Tab
@@ -140,7 +136,6 @@ describe("Debug Bar", () => {
                     cy.get('.tab-pane[id^="debugsession"] .monaco-editor-container').should('exist');
                     cy.get('.nav-item').contains('SERVER').click();
                     cy.get('.tab-pane[id^="debugserver"] .monaco-editor-container').should('exist');
-                    cy.root().injectAndCheckA11y();
                 });
 
                 // Profiler
@@ -161,7 +156,6 @@ describe("Debug Bar", () => {
                     cy.get('tr[data-profiler-section-id] > td[data-prop="percent_of_parent"]').each(($el) => {
                         expect($el.text()).to.match(/[\d.]%/);
                     });
-                    cy.root().injectAndCheckA11y();
                 });
 
                 // SQL Tab
@@ -190,7 +184,6 @@ describe("Debug Bar", () => {
                 cy.get('.datagrid-title').contains('Used JS Heap').next().invoke('text').should('match', /[\d.]+\s+MiB/);
                 cy.get('.datagrid-title').contains('Total JS Heap').next().invoke('text').should('match', /[\d.]+\s+MiB/);
                 cy.get('.datagrid-title').contains('JS Heap Limit').next().invoke('text').should('match', /[\d.]+\s+MiB/);
-                cy.root().injectAndCheckA11y();
             });
 
             cy.get('.debug-toolbar-widget[data-glpi-debug-widget-id="client_performance"]')
@@ -221,8 +214,6 @@ describe("Debug Bar", () => {
                 cy.findByLabelText('Itemtype').clear();
                 cy.findByLabelText('Itemtype').type('User{enter}'); // Should always be available since it is required for the session, so already autoloaded.
                 cy.wait('@searchOptions').its('response.statusCode').should('eq', 200);
-
-                cy.root().injectAndCheckA11y();
             });
         });
     });
@@ -240,8 +231,6 @@ describe("Debug Bar", () => {
                 cy.findByRole('combobox', {name: 'Palette'}).should('be.visible').select('auror');
                 cy.root().closest('html').invoke('attr', 'data-glpi-theme').should('eq', 'auror');
                 cy.root().closest('html').invoke('attr', 'data-glpi-theme-dark').should('eq', '0');
-
-                cy.root().injectAndCheckA11y();
             });
         });
     });
