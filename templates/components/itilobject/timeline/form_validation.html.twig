@@ -54,7 +54,7 @@
                 </div>
             </div>
          {% endif %}
-         {% if entry_i['comment_validation']|length %}
+         {% if entry_i['comment_validation'] is defined and entry_i['comment_validation']|length %}
             <div class='alert alert-info mt-2'>
                 <div class='d-flex'>
                     <div><i class='ti ti-quote me-2'></i></div>
