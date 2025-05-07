@@ -30,7 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
-describe('Display preferences', () => {
+describe('Display preferences', { retries: {runMode: 0, openMode: 0} }, () => {
     before(() => {
         // Create at least one ticket as we will be displaying the ticket list
         // to validate that the right columns are displayed
