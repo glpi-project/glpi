@@ -110,7 +110,7 @@ for (const test of tests) {
 
             // Need the JS controller to be ready
             // eslint-disable-next-line cypress/no-unnecessary-waiting
-            cy.wait(1000);
+            cy.wait(1200);
 
             // html5sortable add the wrong "option" role, we must remove it
             cy.window().then((win) => {
