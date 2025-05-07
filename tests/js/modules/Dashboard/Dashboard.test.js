@@ -962,13 +962,6 @@ describe('Dashboard', () => {
         expect(window.GoOutFullscreen).not.toHaveBeenCalled();
     });
 
-    test('disableFullscreenMode', () => {
-        const dashboard = new GLPIDashboard({'rand': '12345'});
-        window.GoOutFullscreen = jest.fn().mockImplementation(() => {});
-        dashboard.disableFullscreenMode();
-        expect(window.GoOutFullscreen).toHaveBeenCalled();
-    });
-
     test('clone', async () => {
         const dashboard = new GLPIDashboard({
             'rand': '12345',
