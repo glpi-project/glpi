@@ -37,11 +37,11 @@ namespace Glpi\Application\View\Extension;
 
 use DBmysql;
 use Entity;
+use Glpi\Application\ImportMapGenerator;
+use Glpi\Cache\CacheManager;
 use Glpi\Toolbox\FrontEnd;
 use Glpi\UI\Theme;
 use Glpi\UI\ThemeManager;
-use Glpi\Assets\ImportMapGenerator;
-use Glpi\Cache\CacheManager;
 use Html;
 use Plugin;
 use Session;

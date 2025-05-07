@@ -32,9 +32,8 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Assets;
+namespace Glpi\Application;
 
-use Glpi\Application\Environment;
 use Plugin;
 use Psr\SimpleCache\CacheInterface;
 use RecursiveDirectoryIterator;

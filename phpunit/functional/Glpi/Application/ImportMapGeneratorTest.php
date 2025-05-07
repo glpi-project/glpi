@@ -32,9 +32,9 @@
  * ---------------------------------------------------------------------
  */
 
-namespace tests\units\Glpi\Assets;
+namespace tests\units\Glpi\Application;
 
-use Glpi\Assets\ImportMapGenerator;
+use Glpi\Application\ImportMapGenerator;
 use GLPITestCase;
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\MockObject\MockObject;
