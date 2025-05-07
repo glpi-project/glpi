@@ -287,6 +287,16 @@ class ImportMapGeneratorTest extends GLPITestCase
 
         // Verify that unregistered paths are not included
         $this->assertArrayNotHasKey('myotherplugin/js/modules/CustomModule', $import_map['imports'], 'Files outside registered paths should not be included');
+
+        // Verify URL paths are correct
+        $this->assertStringContainsString(
+            self::ROOT_URL . '/plugins/myplugin/js/modules/CustomModule.js',
+            $import_map['imports']['myplugin/js/modules/CustomModule']
+        );
+        $this->assertStringContainsString(
+            self::ROOT_URL . '/plugins/myotherplugin/lib/other-lib.js',
+            $import_map['imports']['myotherplugin/lib/other-lib']
+        );
     }
 
     /**

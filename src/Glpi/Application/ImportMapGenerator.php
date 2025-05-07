@@ -242,11 +242,10 @@ class ImportMapGenerator
                 $file_path = $file->getPathname();
 
                 // Make the path relative and remove the `public/` prefix
-                $relative_path = Path::makeRelative($file_path, $this->glpi_root);
-                if ($plugin_key === null) {
-                    $relative_path = preg_replace('~^public/~', '', $relative_path);
-                } else {
-                    $relative_path = preg_replace('~^(plugins/' . $plugin_key . '/)public/~', '$1', $relative_path);
+                $relative_path = Path::makeRelative($file_path, $base_path);
+                $relative_path = preg_replace('~^public/~', '', $relative_path);
+                if ($plugin_key !== null) {
+                    $relative_path = sprintf('plugins/%s/', $plugin_key) . $relative_path;
                 }
 
                 // Calculate module name with context - remove the `public/` prefix - preserve following directory structure
