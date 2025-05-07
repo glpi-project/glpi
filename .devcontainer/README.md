@@ -7,7 +7,8 @@ The docker devcontainers are meant to be used by VSCode or in a Github Codespace
 By default, the following ports are exposed:
  - `8080` for the GLPI web server,
  - `8025` for the Mailpit web server,
- - `8090` for the Adminer web server.
+ - `8090` for the Adminer web server,
+ - `9637` for the webpack dev server.
 
 You can customize these ports by creating a `.devcontainer/docker-compose.override.yaml` file.
 
@@ -16,6 +17,7 @@ services:
   app:
     ports: !override
       - "9000:80"
+      - "9001:9637"
   mailpit:
     ports: !override
       - "9025:8025"

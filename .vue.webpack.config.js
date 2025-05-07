@@ -64,6 +64,14 @@ const config = {
 
         entrypoints: true,
         timings: true,
+    },
+    devServer: {
+        hot: true,
+        liveReload: false,
+        port: 9637,
+        devMiddleware: {
+            writeToDisk: true,
+        },
     }
 };
 
