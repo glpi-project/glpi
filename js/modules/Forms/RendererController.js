@@ -146,13 +146,15 @@ export class GlpiFormRendererController
             dataType: 'json',
         });
 
-        // Remove previous error messages
+        // Remove previous error messages and aria attributes
         $(this.#target)
             .find(".invalid-tooltip")
             .remove();
         $(this.#target)
             .find(".is-invalid")
-            .removeClass("is-invalid");
+            .removeClass("is-invalid")
+            .removeAttr("aria-invalid")
+            .removeAttr("aria-errormessage");
 
         if (response.success === false) {
             Object.values(response.errors).forEach(error => {
@@ -161,13 +163,13 @@ export class GlpiFormRendererController
                 if (!question.length) {
                     return;
                 }
-                
+
                 // Find the input field within the question
                 const inputField = question.find('input:not([data-uploader-name]), select, textarea');
                 if (!inputField.length) {
                     return;
                 }
-                
+
                 // Generate a unique ID for the error message
                 const errorId = `error-${error.question_id}`;
 
