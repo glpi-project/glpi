@@ -61,7 +61,7 @@ class AnswersHandlerTest extends DbTestCase
 
     public function testSaveAnswers(): void
     {
-        self::login();
+        $this->login();
         $users_id = getItemByTypeName(User::class, TU_USER, true);
 
         // Fist form
