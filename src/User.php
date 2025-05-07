@@ -848,6 +848,8 @@ class User extends CommonDBTM
 
         if (!isset($input["entities_id"])) {
             $input["entities_id"] = 0;
+        } elseif ($input["entities_id"] == -1) {
+            $input["entities_id"] = 'NULL';
         }
 
         if (!isset($input["profiles_id"])) {
