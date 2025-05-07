@@ -88,12 +88,16 @@ final class AnswersHandler
         Form|Section $questions_container,
         array $answers
     ): ValidationResult {
+        $form = ($questions_container instanceof Section) ? $questions_container->getItem() : $questions_container;
         $result = new ValidationResult();
+        $engine = new Engine($form, new EngineInput($answers));
+        $visibility = $engine->computeVisibility();
 
-        // Check if mandatory questions are answered
+        // Retrieve visible mandatory questions
         $mandatory_questions = array_filter(
             $questions_container->getQuestions(),
-            static fn($question) => $question->fields['is_mandatory']
+            fn($question) => $question->fields['is_mandatory']
+                && $visibility->isQuestionVisible($question->getID())
         );
 
         foreach ($mandatory_questions as $question) {
