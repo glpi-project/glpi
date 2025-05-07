@@ -136,7 +136,7 @@ class KnowbaseItem_KnowbaseItemCategory extends CommonDBRelation
             $action_prefix = __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR;
 
             $actions[$action_prefix . 'add']
-            = "<i class='ma-icon fas fa-book'></i>" .
+            = "<i class='ma-icon ti ti-book'></i>" .
               _sx('button', 'Link knowledgebase article');
         }
 

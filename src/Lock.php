@@ -1072,7 +1072,7 @@ TWIG, $twig_params);
             // language=Twig
             echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
                 <div>
-                    <i class='fas fa-level-up-alt fa-flip-horizontal fs-2 mx-2'></i>
+                    <i class='ti ti-corner-left-up mx-3'></i>
                     <a onclick="if ( markCheckboxes('lock_form') ) return false;" href='#'>{{ check_all_msg }}</a>
                     <span>/</span>
                     <a onclick="if ( unMarkCheckboxes('lock_form') ) return false;" href='#'>{{ uncheck_all_msg }}</a>

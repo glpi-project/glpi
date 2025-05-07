@@ -893,7 +893,7 @@ class Domain extends CommonDBTM
 
     public static function getIcon()
     {
-        return "fas fa-globe-americas";
+        return "ti ti-world-www";
     }
 
     public function post_updateItem($history = true)

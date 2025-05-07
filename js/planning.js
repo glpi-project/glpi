@@ -158,7 +158,7 @@ var GLPIPlanning  = {
                 }
                 $(info.el)
                     .find('.fc-cell-text')
-                    .prepend(`<i class="fas fa-${icon}"></i>&nbsp;`);
+                    .prepend(`<i class="ti ti-${icon}"></i>&nbsp;`);
 
                 if (info.resource._resource.extendedProps.itemtype == 'Group_User') {
                     info.el.style.backgroundColor = 'lightgray';
@@ -278,10 +278,10 @@ var GLPIPlanning  = {
                     // create new one
                     var actions = '';
                     if (options.can_create) {
-                        actions += `<li class="clone-event"><i class="far fa-clone"></i>${__("Clone")}</li>`;
+                        actions += `<li class="clone-event"><i class="ti ti-copy"></i>${__("Clone")}</li>`;
                     }
                     if (options.can_delete) {
-                        actions += `<li class="delete-event"><i class="fas fa-trash"></i>${__("Delete")}</li>`;
+                        actions += `<li class="delete-event"><i class="ti ti-trash"></i>${__("Delete")}</li>`;
                     }
                     if (actions == '') {
                         return;
@@ -360,7 +360,7 @@ var GLPIPlanning  = {
                         } else {
                             glpi_html_dialog({
                                 title: __("Make a choice"),
-                                body: `${__("Delete the whole serie of the recurrent event")}<br>${ 
+                                body: `${__("Delete the whole serie of the recurrent event")}<br>${
                                     __("or just add an exception by deleting this instance?")}`,
                                 buttons: [{
                                     label: __("Serie"),
@@ -392,9 +392,9 @@ var GLPIPlanning  = {
                 // attach button (planning and refresh) in planning header
                 $(`#${GLPIPlanning.dom_id} .fc-toolbar .fc-center h2`)
                     .after(
-                        $('<i id="refresh_planning" class="fa fa-sync pointer"></i>')
+                        $('<i id="refresh_planning" class="ti ti-refresh pointer"></i>')
                     ).after(
-                        $('<div id="planning_datepicker"><a data-toggle><i class="far fa-calendar-alt fa-lg pointer"></i></a>')
+                        $('<div id="planning_datepicker"><a data-toggle><i class="ti ti-calendar pointer"></i></a>')
                     );
 
                 // specific process for full list

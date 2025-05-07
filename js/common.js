@@ -922,46 +922,46 @@ var templateItilStatus = function(option) {
     var classes = "";
     switch (parseInt(status)) {
         case 1 :
-            classes = 'new fas fa-circle';
+            classes = 'new ti ti-circle-filled';
             break;
         case 2 :
-            classes = 'assigned far fa-circle';
+            classes = 'assigned ti ti-circle';
             break;
         case 3 :
-            classes = 'planned far fa-calendar';
+            classes = 'planned ti ti-calendar';
             break;
         case 4 :
-            classes = 'waiting fas fa-circle';
+            classes = 'waiting ti ti-circle-filled';
             break;
         case 5 :
-            classes = 'solved far fa-circle';
+            classes = 'solved ti ti-circle';
             break;
         case 6 :
-            classes = 'closed fas fa-circle';
+            classes = 'closed ti ti-circle-filled';
             break;
         case 7:
-            classes = 'accepted fas fa-check-circle';
+            classes = 'accepted ti ti-circle-check-filled';
             break;
         case 8 :
-            classes = 'observe fas fa-eye';
+            classes = 'observe ti ti-eye';
             break;
         case 9 :
-            classes = 'eval far fa-circle';
+            classes = 'eval ti ti-circle';
             break;
         case 10 :
-            classes = 'approval fas fa-question-circle';
+            classes = 'approval ti ti-help-circle';
             break;
         case 11 :
-            classes = 'test fas fa-question-circle';
+            classes = 'test ti ti-help-circle';
             break;
         case 12 :
-            classes = 'qualif far fa-circle';
+            classes = 'qualif ti ti-circle';
             break;
         case 13 :
-            classes = 'refused far fa-times-circle';
+            classes = 'refused ti ti-circle-x';
             break;
         case 14 :
-            classes = 'canceled fas fa-ban';
+            classes = 'canceled ti ti-ban';
             break;
     }
 
@@ -979,13 +979,13 @@ var templateValidation = function(option) {
     var classes = "";
     switch (parseInt(status)) {
         case 2 : // WAITING
-            classes = 'waiting far fa-clock';
+            classes = 'waiting ti ti-clock';
             break;
         case 3 : // ACCEPTED
-            classes = 'accepted fas fa-check';
+            classes = 'accepted ti ti-circle-check-filled';
             break;
         case 4 : // REFUSED
-            classes = 'refused fas fa-times';
+            classes = 'refused ti ti-circle-x';
             break;
     }
 
@@ -1003,7 +1003,7 @@ var templateItilPriority = function(option) {
     var color_badge = "";
 
     if (priority_color.length > 0) {
-        color_badge += `<i class='fas fa-circle' style='color: ${priority_color}'></i>`;
+        color_badge += `<i class='ti ti-circle-filled' style='color: ${priority_color}'></i>`;
     }
 
     return $(`<span>${color_badge}&nbsp;${option.text}</span>`);
@@ -1596,19 +1596,19 @@ function initSortableTable(element_id) {
         const current_sort = element.data('sort');
         element.data('sort', column_index);
         const current_order = element.data('order');
-        const new_order = current_sort === column_index && current_order === 'asc' ? 'desc' : 'asc';
+        const new_order = current_sort === column_index && current_order === 'up' ? 'down' : 'up';
         element.data('order', new_order);
         const sortable_header = element.find('thead').first();
         const col = sortable_header.find('th').eq(column_index);
         // Remove all sort icon classes
-        sortable_header.find('th i[class*="fa-sort"]').removeClass('fa-sort fa-sort-asc fa-sort-desc');
+        sortable_header.find('th i[class*="ti ti-caret"]').removeClass('ti-caret-down-filled ti-caret-up-filled');
 
         const sort_icon = col.find('i');
         if (sort_icon.length === 0) {
             // Add sort icon
-            col.eq(0).append(`<i class="fas fa-sort-${new_order}"></i>`);
+            col.eq(0).append(`<i class="ti ti-caret-${new_order}-filled"></i>`);
         } else {
-            sort_icon.addClass(new_order === 'asc' ? 'fa-sort-asc' : 'fa-sort-desc');
+            sort_icon.addClass(new_order === 'up' ? 'ti-caret-up-filled' : 'ti-caret-down-filled');
         }
 
         const rows = element.find('tbody tr');
@@ -1633,7 +1633,7 @@ function initSortableTable(element_id) {
             if (a_value === b_value) {
                 return 0;
             }
-            if (new_order === 'asc') {
+            if (new_order === 'up') {
                 return a_value < b_value ? -1 : 1;
             }
             return a_value > b_value ? -1 : 1;

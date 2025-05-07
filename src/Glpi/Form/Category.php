@@ -59,7 +59,7 @@ final class Category extends CommonTreeDropdown implements ServiceCatalogComposi
     #[Override]
     public static function getIcon(): string
     {
-        return "ti ti-folder";
+        return "ti ti-tags";
     }
 
     #[Override]

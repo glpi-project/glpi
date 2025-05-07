@@ -475,7 +475,7 @@ class Telemetry extends CommonGLPI
             sprintf(
                 "<a href='" . GLPI_TELEMETRY_URI . "/reference?showmodal&uuid=" .
                 self::getRegistrationUuid() . "' class='btn btn-sm btn-info' target='_blank'>
-               <i class='fas fa-pen-alt me-1'></i>
+               <i class='ti ti-writing-sign me-1'></i>
                %1\$s
             </a>",
                 __('the registration form')

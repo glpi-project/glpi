@@ -1646,9 +1646,13 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
 
         if ($disabled) {
             $warning = __s('Notifications must be enabled to activate mentions.');
-            echo "<span class='form-help ms-2' data-bs-toggle='popover' data-bs-placement='top' data-bs-html='true' data-bs-content='" . $warning . "'>";
-            echo "<i class='fas fa-exclamation-triangle text-danger'></i>";
-            echo "</span>";
+            echo "<span class='form-help ms-2'
+                  data-bs-toggle='popover'
+                  data-bs-placement='top'
+                  data-bs-html='true'
+                  data-bs-content='" . $warning . "'>
+                ?
+            </span>";
         }
 
         echo "</td></tr>";

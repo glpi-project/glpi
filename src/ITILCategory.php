@@ -533,4 +533,9 @@ class ITILCategory extends CommonTreeDropdown
     {
         return [];
     }
+
+    public static function getIcon()
+    {
+        return "ti ti-tags";
+    }
 }

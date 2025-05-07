@@ -1900,7 +1900,7 @@ TWIG, $twig_params);
                 $content .= reset($typematches)['name'] . '&nbsp;';
             }
             if (array_key_exists('is_milestone', $item) && $item['is_milestone']) {
-                $content .= "&nbsp;<i class='fas fa-map-signs' title='" . __s('Milestone') . "'></i>&nbsp;";
+                $content .= "&nbsp;<i class='ti ti-directions-filled' title='" . __s('Milestone') . "'></i>&nbsp;";
             }
             if (isset($item['_steps']) && count($item['_steps'])) {
                 $done = count(array_filter($item['_steps'], static fn($step) => (int) $step['percent_done'] === 100));

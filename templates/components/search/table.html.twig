@@ -87,7 +87,7 @@
 
                <th data-searchopt-id="{{ col['id'] }}" {% if not can_sort %}data-nosort="true"{% endif %} data-sort-order="{{ sort_order }}"
                   {% if sort_num is not empty %}data-sort-num="{{ sort_num - 1 }}"{% endif %}>
-                  {% set sort_icon = sort_order == 'ASC' ? 'fas fa-sort-up' : (sort_order == 'DESC' ? 'fas fa-sort-down' : '') %}
+                  {% set sort_icon = sort_order == 'ASC' ? 'ti ti-caret-down-filled' : (sort_order == 'DESC' ? 'ti ti-caret-up-filled' : '') %}
                   {{ col_name }}
                   {% if can_sort %}
                      <span class="sort-indicator"><i class="{{ sort_icon }}"></i><span class="sort-num">{{ sorts|length > 1 ? sort_num : '' }}</span></span>

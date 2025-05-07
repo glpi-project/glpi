@@ -196,7 +196,7 @@ class Peripheral extends CommonDBTM
             Asset_PeripheralAsset::getMassiveActionsForItemtype($actions, __CLASS__, 0, $checkitem);
             $actions += [
                 'Item_SoftwareLicense' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add'
-               => "<i class='ma-icon fas fa-key'></i>" .
+               => "<i class='ti ti-key'></i>" .
                   _sx('button', 'Add a license'),
             ];
             KnowbaseItem_Item::getMassiveActionsForItemtype($actions, __CLASS__, 0, $checkitem);

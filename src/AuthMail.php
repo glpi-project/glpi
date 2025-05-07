@@ -403,7 +403,7 @@ TWIG, $twig_params);
 
     public static function getIcon()
     {
-        return "far fa-envelope";
+        return "ti ti-mail";
     }
 
     /**

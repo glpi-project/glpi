@@ -177,6 +177,6 @@ class DeviceDrive extends CommonDevice
 
     public static function getIcon()
     {
-        return "far fa-hdd";
+        return "ti ti-server-2";
     }
 }

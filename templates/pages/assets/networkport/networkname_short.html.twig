@@ -39,7 +39,7 @@
         {% set info_url = item.isNewItem() ? 'NetworkName'|itemtype_search_path : item.getLinkURL() %}
         {% set info_label = item.isNewItem() ? __('Show %s')|format('NetworkName'|itemtype_name(get_plural_number())) : item.getName() %}
         <a role="button" class="btn btn-outline-secondary p-2" title="{{ info_label }}" href="{{ info_url }}">
-            <i class="fas fa-info"></i>
+            <i class="ti ti-info-circle"></i>
         </a>
         {% if not item.isNewItem() %}
             <button type="button" name="unaffect_networkname" class="btn btn-outline-secondary p-2" title="{{ __('Dissociate') }}">

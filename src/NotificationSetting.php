@@ -138,6 +138,6 @@ abstract class NotificationSetting extends CommonDBTM
 
     public static function getIcon()
     {
-        return "fas fa-bell";
+        return "ti ti-bell";
     }
 }

@@ -46,6 +46,6 @@ class Filesystem extends CommonDropdown
 
     public static function getIcon()
     {
-        return "far fa-folder";
+        return "ti ti-folder";
     }
 }

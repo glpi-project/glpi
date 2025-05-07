@@ -2996,7 +2996,7 @@ HTML;
                                                          = "<i class='ti ti-shield-minus'></i>" .
                                                            __s('Dissociate from a profile');
             $actions['Group_User' . MassiveAction::CLASS_ACTION_SEPARATOR . 'change_group_user']
-                                                         = "<i class='fas fa-users-cog'></i>" .
+                                                         = "<i class='ti ti-users-group'></i>" .
                                                            __s("Move to group");
             $actions["{$prefix}delete_emails"] = __s("Delete associated emails");
         }
@@ -3006,7 +3006,7 @@ HTML;
                                                       _sx('button', 'Change the authentication method');
             $actions[$prefix . 'force_user_ldap_update'] = "<i class='ti ti-refresh'></i>" .
                                                       __s('Force synchronization');
-            $actions[$prefix . 'clean_ldap_fields'] = "<i class='fas fa-broom'></i>" .
+            $actions[$prefix . 'clean_ldap_fields'] = "<i class='ti ti-recycle'></i>" .
                                                     __s('Clean LDAP fields and force synchronisation');
             $actions[$prefix . 'disable_2fa']           = "<i class='ti ti-shield-off'></i>" .
                                                       __s('Disable 2FA');

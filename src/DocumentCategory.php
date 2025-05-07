@@ -90,6 +90,6 @@ class DocumentCategory extends CommonTreeDropdown
 
     public static function getIcon()
     {
-        return "fas fa-tags";
+        return "ti ti-tags";
     }
 }

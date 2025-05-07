@@ -102,7 +102,7 @@ class BlacklistedMailContent extends CommonDropdown
 
     public static function getIcon()
     {
-        return "fas fa-envelope-square";
+        return "ti ti-mail-x";
     }
 
     public function getCloneRelations(): array

@@ -235,6 +235,6 @@ class DocumentType extends CommonDropdown
 
     public static function getIcon()
     {
-        return "far fa-file";
+        return "ti ti-file";
     }
 }

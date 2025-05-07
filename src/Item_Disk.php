@@ -59,7 +59,7 @@ class Item_Disk extends CommonDBChild
 
     public static function getIcon()
     {
-        return 'far fa-hdd';
+        return 'ti ti-server-2';
     }
 
     public function post_getEmpty()
@@ -266,7 +266,7 @@ class Item_Disk extends CommonDBChild
 TWIG, $twig_params);
 
                 $encryption_label = Html::showTooltip($encryptionTooltip, [
-                    'awesome-class' => "fas fa-lock",
+                    'awesome-class' => "ti ti-lock-password",
                     'display' => false,
                 ]);
             }

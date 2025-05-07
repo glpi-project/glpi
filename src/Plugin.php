@@ -2805,7 +2805,7 @@ TWIG;
             = "<i class='ti ti-toggle-left-filled'></i>" .
             __s('Disable');
             $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'clean']
-            = "<i class='fas fa-broom'></i>" .
+            = "<i class='ti ti-recycle'></i>" .
             __s('Clean');
         }
 

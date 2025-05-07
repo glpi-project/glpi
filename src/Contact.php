@@ -518,6 +518,6 @@ HTML;
 
     public static function getIcon()
     {
-        return "fas fa-user-tie";
+        return "ti ti-address-book";
     }
 }

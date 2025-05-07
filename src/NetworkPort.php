@@ -1832,6 +1832,6 @@ class NetworkPort extends CommonDBChild
 
     public static function getIcon()
     {
-        return "fas fa-ethernet";
+        return "ti ti-network";
     }
 }

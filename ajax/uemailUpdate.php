@@ -78,7 +78,7 @@ if (
     $switch_name = $_POST['field'] . '[use_notification][]';
     echo "<div class='my-1 d-flex align-items-center'>
          <label  for='email_fup_check'>
-            <i class='far fa-envelope me-1'></i>
+            <i class='ti ti-mail me-1'></i>
             " . __s('Email followup') . "
          </label>
          <div class='ms-2'>

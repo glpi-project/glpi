@@ -709,6 +709,6 @@ class Calendar extends CommonDropdown
 
     public static function getIcon()
     {
-        return "far fa-calendar-alt";
+        return "ti ti-calendar";
     }
 }
