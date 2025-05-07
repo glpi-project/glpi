@@ -38,7 +38,6 @@ namespace Glpi\Application\View\Extension;
 use DBmysql;
 use Entity;
 use Glpi\Application\ImportMapGenerator;
-use Glpi\Cache\CacheManager;
 use Glpi\Toolbox\FrontEnd;
 use Glpi\UI\Theme;
 use Glpi\UI\ThemeManager;
@@ -278,16 +277,7 @@ JAVASCRIPT;
      */
     public function importmap(): string
     {
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
-
-        $generator = new ImportMapGenerator(
-            $CFG_GLPI['root_doc'],
-            GLPI_ROOT,
-            (new CacheManager())->getCoreCacheInstance()
-        );
-
-        $import_map = $generator->generate();
+        $import_map = ImportMapGenerator::getInstance()->generate();
 
         return '<script type="importmap">' . json_encode(
             $import_map,
