@@ -34,7 +34,7 @@
 
 {% if get_current_user() is not null %}
     {# @var selected_user \User #}
-    {% if selected_user is empty %}
+    {% if selected_user is not defined or selected_user is empty %}
         {% set selected_user = get_current_user() %}
     {% endif %}
 
