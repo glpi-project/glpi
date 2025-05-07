@@ -41,7 +41,7 @@ module.exports = defineConfig({
         baseUrl: "http://localhost:80",
         experimentalMemoryManagement: true,
         retries: {
-            runMode: 3,
+            runMode: 0,
         },
         setupNodeEvents(on) {
             // implement node event listeners here
