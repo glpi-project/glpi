@@ -189,11 +189,11 @@ class ImportMapGeneratorTest extends GLPITestCase
         $this->assertArrayHasKey('js/modules/Utils/HelperFunctions', $import_map['imports']);
 
         // Check for core modules in public/lib and public/build
-        $this->assertArrayHasKey('public/lib/vendor1/library1', $import_map['imports']);
-        $this->assertArrayHasKey('public/lib/vendor2/library2', $import_map['imports']);
-        $this->assertArrayHasKey('public/build/compiled', $import_map['imports']);
-        $this->assertArrayHasKey('public/build/assets/module1', $import_map['imports']);
-        $this->assertArrayHasKey('public/build/assets/module2', $import_map['imports']);
+        $this->assertArrayHasKey('lib/vendor1/library1', $import_map['imports']);
+        $this->assertArrayHasKey('lib/vendor2/library2', $import_map['imports']);
+        $this->assertArrayHasKey('build/compiled', $import_map['imports']);
+        $this->assertArrayHasKey('build/assets/module1', $import_map['imports']);
+        $this->assertArrayHasKey('build/assets/module2', $import_map['imports']);
 
         // Verify all URLs have version parameters
         foreach ($import_map['imports'] as $module_name => $url) {
@@ -206,8 +206,8 @@ class ImportMapGeneratorTest extends GLPITestCase
             $import_map['imports']['js/modules/Forms/GlpiFormConditionEditorController']
         );
         $this->assertStringContainsString(
-            self::ROOT_URL . '/public/lib/vendor1/library1.js',
-            $import_map['imports']['public/lib/vendor1/library1']
+            self::ROOT_URL . '/lib/vendor1/library1.js',
+            $import_map['imports']['lib/vendor1/library1']
         );
     }
 
@@ -217,7 +217,7 @@ class ImportMapGeneratorTest extends GLPITestCase
     public function testVersionParameterChangesWhenFileContentChanges()
     {
         // Set up basic virtual filesystem with a test module
-        $root = vfsStream::setup('glpi', null, [
+        vfsStream::setup('glpi', null, [
             'js' => [
                 'modules' => [
                     'TestModule.js' => '// Initial content',
@@ -280,13 +280,13 @@ class ImportMapGeneratorTest extends GLPITestCase
         $import_map = $generator->generate();
 
         // Verify that only registered paths are included
-        $this->assertArrayHasKey('myplugin/public/js/modules/CustomModule', $import_map['imports'], 'Module from registered path should be included');
-        $this->assertArrayHasKey('myplugin/public/build/plugin-build', $import_map['imports'], 'Plugin build file should be included');
-        $this->assertArrayHasKey('myotherplugin/public/build/component/other-build', $import_map['imports'], 'Another plugin build file should be included');
-        $this->assertArrayHasKey('myotherplugin/public/lib/other-lib', $import_map['imports'], 'Another plugin module should be included');
+        $this->assertArrayHasKey('myplugin/js/modules/CustomModule', $import_map['imports'], 'Module from registered path should be included');
+        $this->assertArrayHasKey('myplugin/build/plugin-build', $import_map['imports'], 'Plugin build file should be included');
+        $this->assertArrayHasKey('myotherplugin/build/component/other-build', $import_map['imports'], 'Another plugin build file should be included');
+        $this->assertArrayHasKey('myotherplugin/lib/other-lib', $import_map['imports'], 'Another plugin module should be included');
 
         // Verify that unregistered paths are not included
-        $this->assertArrayNotHasKey('myotherplugin/public/js/modules/CustomModule', $import_map['imports'], 'Files outside registered paths should not be included');
+        $this->assertArrayNotHasKey('myotherplugin/js/modules/CustomModule', $import_map['imports'], 'Files outside registered paths should not be included');
     }
 
     /**

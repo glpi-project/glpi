@@ -241,11 +241,19 @@ class ImportMapGenerator
         foreach ($iterator as $file) {
             if ($file->isFile() && $file->getExtension() === 'js') {
                 $file_path = $file->getPathname();
-                $relative_path = Path::makeRelative($file_path, $this->glpi_root);
 
-                // Calculate module name with context - preserve directory structure
+                // Make the path relative and remove the `public/` prefix
+                $relative_path = Path::makeRelative($file_path, $this->glpi_root);
+                if ($plugin_key === null) {
+                    $relative_path = preg_replace('~^public/~', '', $relative_path);
+                } else {
+                    $relative_path = preg_replace('~^(plugins/' . $plugin_key . '/)public/~', '$1', $relative_path);
+                }
+
+                // Calculate module name with context - remove the `public/` prefix - preserve following directory structure
                 $module_path = Path::makeRelative($file_path, $base_path);
-                $module_name = preg_replace('/\.js$/', '', $module_path);
+                $module_name = preg_replace('~^public/~', '', $module_path);
+                $module_name = preg_replace('~\.js$~', '', $module_name);
 
                 // Add plugin prefix for plugin modules
                 if ($plugin_key !== null) {
