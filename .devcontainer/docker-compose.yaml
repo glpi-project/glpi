@@ -10,6 +10,7 @@ services:
       - "..:/var/www/glpi:rw"
     ports:
       - "8080:80"
+      - "9637:9637"
     depends_on:
       - db
     extra_hosts:

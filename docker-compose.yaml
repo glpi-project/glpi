@@ -10,5 +10,6 @@ services:
       - ".:/var/www/glpi:rw"
     ports:
       - "8080:80"
+      - "9637:9637"
     extra_hosts:
       - "host.docker.internal:host-gateway"
