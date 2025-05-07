@@ -158,25 +158,29 @@ export class GlpiFormRendererController
             Object.values(response.errors).forEach(error => {
                 // Highlight the field with error
                 const question = $(`[data-glpi-form-renderer-id="${error.question_id}"][data-glpi-form-renderer-question]`);
-                if (question.length) {
-                    // Find the input field within the question
-                    const inputField = question.find('input:not([data-uploader-name]), select, textarea');
-                    if (inputField.length) {
-                        // Generate a unique ID for the error message
-                        const errorId = `error-${error.question_id}`;
-
-                        // Add validation classes and accessibility attributes
-                        inputField
-                            .addClass('is-invalid')
-                            .attr('aria-invalid', 'true')
-                            .attr('aria-errormessage', errorId);
-
-                        // Add a tooltip with the error message
-                        inputField.parent().append(
-                            `<span id="${errorId}" class="invalid-tooltip">${error.message}</span>`
-                        );
-                    }
+                if (!question.length) {
+                    return;
                 }
+                
+                // Find the input field within the question
+                const inputField = question.find('input:not([data-uploader-name]), select, textarea');
+                if (!inputField.length) {
+                    return;
+                }
+                
+                // Generate a unique ID for the error message
+                const errorId = `error-${error.question_id}`;
+
+                // Add validation classes and accessibility attributes
+                inputField
+                    .addClass('is-invalid')
+                    .attr('aria-invalid', 'true')
+                    .attr('aria-errormessage', errorId);
+
+                // Add a tooltip with the error message
+                inputField.parent().append(
+                    `<span id="${errorId}" class="invalid-tooltip">${error.message}</span>`
+                );
             });
 
             return false;
