@@ -55,10 +55,10 @@ abstract class AbstractDefinitionManager
     abstract public static function getDefinitionClass(): string;
 
     /**
-     * Returns the list of reserved system names
-     * @return array
+     * Returns the regex pattern of reserved system names
+     * @return string
      */
-    abstract public function getReservedSystemNames(): array;
+    abstract public function getReservedSystemNamesPattern(): string;
 
     /**
      * Register the class autoload function.

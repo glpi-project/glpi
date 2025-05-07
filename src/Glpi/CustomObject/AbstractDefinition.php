@@ -213,7 +213,7 @@ abstract class AbstractDefinition extends CommonDBTM
                 'item'                  => $this,
                 'params'                => $options,
                 'has_rights_enabled'    => $this->hasRightsEnabled(),
-                'reserved_system_names' => $definition_manager->getReservedSystemNames(),
+                'reserved_system_names_pattern' => $definition_manager->getReservedSystemNamesPattern(),
                 'existing_system_names' => array_values(array_filter(array_map(
                     static fn(self $definition) => $definition->fields['system_name'],
                     $definition_manager->getDefinitions()
@@ -376,6 +376,45 @@ abstract class AbstractDefinition extends CommonDBTM
             );
             return false;
         }
+
+        if (
+            !is_string($input['system_name'])
+            || preg_match('/^' . self::SYSTEM_NAME_PATTERN . '$/', $input['system_name']) !== 1
+        ) {
+            Session::addMessageAfterRedirect(
+                htmlescape(sprintf(
+                    __('The following field has an incorrect value: "%s".'),
+                    __('System name')
+                )),
+                false,
+                ERROR
+            );
+            return false;
+        } elseif (preg_match(static::getDefinitionManagerClass()::getInstance()->getReservedSystemNamesPattern(), $input['system_name']) === 1) {
+            Session::addMessageAfterRedirect(
+                htmlescape(sprintf(
+                    __('The system name is a reserved name.'),
+                    $input['system_name']
+                )),
+                false,
+                ERROR
+            );
+            return false;
+        } else {
+            $existing_system_names = array_map(static fn($d) => strtolower($d->fields['system_name'] ?? ''), static::getDefinitionManagerClass()::getInstance()->getDefinitions());
+            if (in_array(strtolower($input['system_name']), $existing_system_names, true)) {
+                Session::addMessageAfterRedirect(
+                    htmlescape(sprintf(
+                        __('The system name must be unique.'),
+                        $input['system_name']
+                    )),
+                    false,
+                    ERROR
+                );
+                return false;
+            }
+        }
+
         if (empty($input['label'])) {
             $input['label'] = $input['system_name'];
         }
@@ -445,56 +484,6 @@ abstract class AbstractDefinition extends CommonDBTM
     protected function prepareInput(array $input): array|bool
     {
         $has_errors = false;
-
-        if (array_key_exists('system_name', $input)) {
-            if (
-                !is_string($input['system_name'])
-                || preg_match('/^' . self::SYSTEM_NAME_PATTERN . '$/', $input['system_name']) !== 1
-            ) {
-                Session::addMessageAfterRedirect(
-                    htmlescape(sprintf(
-                        __('The following field has an incorrect value: "%s".'),
-                        __('System name')
-                    )),
-                    false,
-                    ERROR
-                );
-                $has_errors = true;
-            } elseif (in_array($input['system_name'], static::getDefinitionManagerClass()::getInstance()->getReservedSystemNames(), true)) {
-                Session::addMessageAfterRedirect(
-                    htmlescape(sprintf(
-                        __('The system name must not be the reserved word "%s".'),
-                        $input['system_name']
-                    )),
-                    false,
-                    ERROR
-                );
-                $has_errors = true;
-            } elseif (preg_match('/(Model|Type)$/i', $input['system_name']) === 1) {
-                Session::addMessageAfterRedirect(
-                    __s('The system name must not end with the word "Model" or the word "Type".'),
-                    false,
-                    ERROR
-                );
-                $has_errors = true;
-            } else {
-                $existing_system_names = array_map(static fn($d) => strtolower($d->fields['system_name'] ?? ''), static::getDefinitionManagerClass()::getInstance()->getDefinitions());
-                if (
-                    ($this->isNewItem() || ($input['system_name'] !== $this->fields['system_name']))
-                    && in_array(strtolower($input['system_name']), $existing_system_names, true)
-                ) {
-                    Session::addMessageAfterRedirect(
-                        htmlescape(sprintf(
-                            __('The system name must be unique.'),
-                            $input['system_name']
-                        )),
-                        false,
-                        ERROR
-                    );
-                    $has_errors = true;
-                }
-            }
-        }
 
         if (array_key_exists('profiles', $input)) {
             if (!$this->validateProfileArray($input['profiles'])) {
