@@ -146,15 +146,15 @@ export class GlpiFormRendererController
             dataType: 'json',
         });
 
-        if (response.success === false) {
-            // Remove previous error messages
-            $(this.#target)
-                .find(".invalid-tooltip")
-                .remove();
-            $(this.#target)
-                .find(".is-invalid")
-                .removeClass("is-invalid");
+        // Remove previous error messages
+        $(this.#target)
+            .find(".invalid-tooltip")
+            .remove();
+        $(this.#target)
+            .find(".is-invalid")
+            .removeClass("is-invalid");
 
+        if (response.success === false) {
             Object.values(response.errors).forEach(error => {
                 // Highlight the field with error
                 const question = $(`[data-glpi-form-renderer-id="${error.question_id}"][data-glpi-form-renderer-question]`);
