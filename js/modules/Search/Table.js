@@ -33,7 +33,7 @@
 
 /* global bootstrap, validateFormWithBootstrap, displaySessionMessages */
 
-import GenericView from './GenericView.js';
+import GenericView from 'Search/GenericView';
 
 // Explicitly bind to window so Jest tests work properly
 window.GLPI = window.GLPI || {};

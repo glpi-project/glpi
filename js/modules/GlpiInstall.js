@@ -32,7 +32,7 @@
 
 /* global getAjaxCsrfToken */
 
-import { ProgressIndicator } from './ProgressIndicator.js';
+import { ProgressIndicator } from 'ProgressIndicator';
 
 export function init_database(progress_key)
 {

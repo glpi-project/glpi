@@ -30,7 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
-import '../../../lib/tablericons-definitions.js';
+import 'tablericons-definitions';
 
 /**
  * Web icon selector component.
