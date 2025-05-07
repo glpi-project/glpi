@@ -1382,7 +1382,7 @@ HTML;
                     'ApplianceEnvironment' => null,
                 ],
                 DeviceCamera::getTypeName(1) => [
-                    'Resolution'     => null,
+                    'ImageResolution' => null,
                     'ImageFormat'  => null,
                 ],
                 __('Others') => [

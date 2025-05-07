@@ -36,7 +36,6 @@ namespace tests\units\Glpi\Dropdown;
 
 use DbTestCase;
 use Glpi\Dropdown\DropdownDefinition;
-use Glpi\Dropdown\DropdownDefinitionManager;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Profile;
 
@@ -239,7 +238,131 @@ class DropdownDefinitionTest extends DbTestCase
             }
         }
 
-        foreach (DropdownDefinitionManager::getInstance()->getReservedSystemNames() as $system_name) {
+        // Extracted from Dropdown::getStandardDropdownItemTypes()
+        $reserved_names = [
+            'Location',
+            'State',
+            'Manufacturer',
+            'Blacklist',
+            'BlacklistedMailContent',
+            'DefaultFilter',
+            'ITILCategory',
+            'TaskCategory',
+            'TaskTemplate',
+            'SolutionType',
+            'SolutionTemplate',
+            'ITILValidationTemplate',
+            'RequestType',
+            'ITILFollowupTemplate',
+            'ProjectState',
+            'ProjectType',
+            'ProjectTaskType',
+            'ProjectTaskTemplate',
+            'PlanningExternalEventTemplate',
+            'PlanningEventCategory',
+            'PendingReason',
+            'ComputerType',
+            'NetworkEquipmentType',
+            'PrinterType',
+            'MonitorType',
+            'PeripheralType',
+            'PhoneType',
+            'SoftwareLicenseType',
+            'CartridgeItemType',
+            'ConsumableItemType',
+            'ContractType',
+            'ContactType',
+            'DeviceGenericType',
+            'DeviceSensorType',
+            'DeviceMemoryType',
+            'SupplierType',
+            'InterfaceType',
+            'DeviceCaseType',
+            'PhonePowerSupply',
+            'Filesystem',
+            'CertificateType',
+            'BudgetType',
+            'DeviceSimcardType',
+            'LineType',
+            'RackType',
+            'PDUType',
+            'PassiveDCEquipmentType',
+            'ClusterType',
+            'DatabaseInstanceType',
+            'ComputerModel',
+            'NetworkEquipmentModel',
+            'PrinterModel',
+            'MonitorModel',
+            'PeripheralModel',
+            'PhoneModel',
+            'DeviceCameraModel',
+            'DeviceCaseModel',
+            'DeviceControlModel',
+            'DeviceDriveModel',
+            'DeviceGenericModel',
+            'DeviceGraphicCardModel',
+            'DeviceHardDriveModel',
+            'DeviceMemoryModel',
+            'DeviceMotherboardModel',
+            'DeviceNetworkCardModel',
+            'DevicePciModel',
+            'DevicePowerSupplyModel',
+            'DeviceProcessorModel',
+            'DeviceSoundCardModel',
+            'DeviceSensorModel',
+            'RackModel',
+            'EnclosureModel',
+            'PDUModel',
+            'PassiveDCEquipmentModel',
+            'VirtualMachineType',
+            'VirtualMachineSystem',
+            'VirtualMachineState',
+            'DocumentCategory',
+            'DocumentType',
+            'BusinessCriticity',
+            'DatabaseInstanceCategory',
+            'KnowbaseItemCategory',
+            'Calendar',
+            'Holiday',
+            'OperatingSystem',
+            'OperatingSystemVersion',
+            'OperatingSystemServicePack',
+            'OperatingSystemArchitecture',
+            'OperatingSystemEdition',
+            'OperatingSystemKernel',
+            'OperatingSystemKernelVersion',
+            'AutoUpdateSystem',
+            'NetworkInterface',
+            'Network',
+            'NetworkPortType',
+            'Vlan',
+            'LineOperator',
+            'DomainType',
+            'DomainRelation',
+            'DomainRecordType',
+            'NetworkPortFiberchannelType',
+            'CableType',
+            'CableStrand',
+            'IPNetwork',
+            'FQDN',
+            'WifiNetwork',
+            'NetworkName',
+            'SoftwareCategory',
+            'UserTitle',
+            'UserCategory',
+            'RuleRightParameter',
+            'Fieldblacklist',
+            'SsoVariable',
+            'Plug',
+            'ApplianceType',
+            'ApplianceEnvironment',
+            'ImageResolution',
+            'ImageFormat',
+            'USBVendor',
+            'PCIVendor',
+            'WebhookCategory',
+        ];
+        foreach ($reserved_names as $system_name) {
             // System name must not be a reserved name
             yield [
                 'input'    => [
@@ -248,7 +371,7 @@ class DropdownDefinitionTest extends DbTestCase
                 'output'   => false,
                 'messages' => [
                     ERROR => [
-                        sprintf('The system name must not be the reserved word &quot;%s&quot;.', $system_name),
+                        'The system name is a reserved name.',
                     ],
                 ],
             ];
@@ -320,19 +443,20 @@ class DropdownDefinitionTest extends DbTestCase
             ],
         ];
 
-        // System name must not end with `Model` suffix
+        // System name can end with `Model` suffix
         yield [
             'input'    => [
                 'system_name' => 'TestDropdownModel',
             ],
-            'output'   => false,
-            'messages' => [
-                ERROR => [
-                    'The system name must not end with the word &quot;Model&quot; or the word &quot;Type&quot;.',
-                ],
+            'output'   => [
+                'system_name'  => 'TestDropdownModel',
+                'label'        => 'TestDropdownModel',
+                'profiles'     => '[]',
+                'translations' => '[]',
             ],
+            'messages' => [],
         ];
-        // but system name can contains `Model`
+        // and can contain `Model`
         yield [
             'input'    => [
                 'system_name' => 'TestDropdownModeling',
@@ -346,19 +470,20 @@ class DropdownDefinitionTest extends DbTestCase
             'messages' => [],
         ];
 
-        // System name must not end with `Type` suffix
+        // System name can end with `Type` suffix
         yield [
             'input'    => [
                 'system_name' => 'TestDropdownType',
             ],
-            'output'   => false,
-            'messages' => [
-                ERROR => [
-                    'The system name must not end with the word &quot;Model&quot; or the word &quot;Type&quot;.',
-                ],
+            'output'   => [
+                'system_name'  => 'TestDropdownType',
+                'label'        => 'TestDropdownType',
+                'profiles'     => '[]',
+                'translations' => '[]',
             ],
+            'messages' => [],
         ];
-        // but system name can contains `Type`
+        // and can contain `Type`
         yield [
             'input'    => [
                 'system_name' => 'TestDropdownTyped',

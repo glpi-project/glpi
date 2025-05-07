@@ -266,6 +266,16 @@ TWIG, $twig_params);
             }
         }
         $input = $this->managePictures($input);
+
+        if (\array_key_exists('system_name', $input) && preg_match('/(Model|Type)$/i', $input['system_name']) === 1) {
+            Session::addMessageAfterRedirect(
+                __s('The system name must not end with the word "Model" or the word "Type".'),
+                false,
+                ERROR
+            );
+            return false;
+        }
+
         return parent::prepareInputForAdd($input);
     }
 

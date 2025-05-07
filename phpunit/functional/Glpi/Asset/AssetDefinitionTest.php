@@ -37,7 +37,6 @@ namespace tests\units\Glpi\Asset;
 use Computer;
 use DbTestCase;
 use Glpi\Asset\AssetDefinition;
-use Glpi\Asset\AssetDefinitionManager;
 use Glpi\Asset\Capacity;
 use Glpi\Asset\Capacity\HasDocumentsCapacity;
 use Glpi\Asset\Capacity\HasInfocomCapacity;
@@ -299,7 +298,24 @@ class AssetDefinitionTest extends DbTestCase
             }
         }
 
-        foreach (AssetDefinitionManager::getInstance()->getReservedSystemNames() as $system_name) {
+        $reserved_names = [
+            'Computer',
+            'Monitor',
+            'Software',
+            'NetworkEquipment',
+            'Peripheral',
+            'Printer',
+            'Cartridge',
+            'Consumable',
+            'Phone',
+            'Rack',
+            'Enclosure',
+            'PDU',
+            'PassiveDCEquipment',
+            'Unmanaged',
+            'Cable',
+        ];
+        foreach ($reserved_names as $system_name) {
             // System name must not be a reserved name
             yield [
                 'input'    => [
@@ -308,7 +324,7 @@ class AssetDefinitionTest extends DbTestCase
                 'output'   => false,
                 'messages' => [
                     ERROR => [
-                        sprintf('The system name must not be the reserved word &quot;%s&quot;.', $system_name),
+                        'The system name is a reserved name.',
                     ],
                 ],
             ];
