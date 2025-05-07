@@ -157,7 +157,7 @@ describe('Form rendering', () => {
         });
     });
 
-    it.only('Mandatory question alert is correctly removed when value is set and go to next section', () => {
+    it('Mandatory question alert is correctly removed when value is set and go to next section', () => {
         // Set up a form with two sections, each with a mandatory question
         cy.createWithAPI('Glpi\\Form\\Form', {
             'name': 'Test mandatory questions',
