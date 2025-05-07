@@ -253,7 +253,7 @@ class GLPIDashboard {
             if (!document.webkitIsFullScreen
                 && !document.mozFullScreen
                 && !document.msFullscreenElement) {
-                this.disableFullscreenMode();
+                this.removeFullscreenModeClass();
             }
         });
 
@@ -941,8 +941,7 @@ class GLPIDashboard {
     toggleFullscreenMode(fs_ctrl) {
         const fs_enabled = !fs_ctrl.hasClass('active');
 
-        this.element.toggleClass('fullscreen')
-            .find('.night-mode').toggle(fs_enabled);
+        this.element.toggleClass('fullscreen');
         fs_ctrl.toggleClass('active');
 
         // desactivate edit mode
@@ -958,13 +957,10 @@ class GLPIDashboard {
         }
     }
 
-    disableFullscreenMode() {
+    removeFullscreenModeClass() {
         this.element
             .removeClass('fullscreen')
-            .find('.night-mode').hide().end()
             .find('.toggle-fullscreen').removeClass('active');
-
-        GoOutFullscreen();
     }
 
     /**
