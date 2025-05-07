@@ -104,7 +104,7 @@ abstract class AbstractQuestionTypeSelectable extends AbstractQuestionType imple
     {
         // language=Twig
         $js = <<<TWIG
-            import("{{ js_path('js/modules/Forms/QuestionSelectable.js') }}").then((m) => {
+            import("js/modules/Forms/QuestionSelectable").then((m) => {
                 {% if question is not null %}
                     const container = $('div[data-glpi-form-editor-selectable-question-options="{{ rand }}"]');
                     container.data(

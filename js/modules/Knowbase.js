@@ -98,7 +98,7 @@ class Knowbase {
     }
 
     #showRevisionComparison(kb_item_id, old_id, new_id) {
-        // We will need the public/lib/jquery-prettytextdiff.js script to display the differences once the data is retrieved
+        // We will need the lib/jquery-prettytextdiff.js script to display the differences once the data is retrieved
         // from the server. We can load the library (if it isn't already and the data at the same time and await both promises.
         // The dynamic import will not load the library again if it is already loaded, it will simply resolve immediately.
 

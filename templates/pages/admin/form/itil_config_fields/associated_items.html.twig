@@ -156,7 +156,7 @@
 </div>
 
 <script>
-    import("{{ js_path('js/modules/Forms/FieldDestinationAssociatedItem.js') }}").then((m) => {
+    import("js/modules/Forms/FieldDestinationAssociatedItem").then((m) => {
         new m.GlpiFormFieldDestinationAssociatedItem(
             $('[data-glpi-associated-items-specific-values-extra-field="{{ rand }}"]'),
             '{{ specific_values_extra_field.input_name ~ "[itemtype][]" }}',

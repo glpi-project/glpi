@@ -111,9 +111,7 @@
     <script>
 
         (async function() {
-            const module = await import(
-                "{{ js_path('js/modules/Forms/ServiceCatalogController.js') }}"
-            );
+            const module = await import("js/modules/Forms/ServiceCatalogController");
             const icons = {};
             {% for key, icon in icons %}
                 icons["{{ key|escape('js') }}"] = "{{ icon|escape('js') }}";

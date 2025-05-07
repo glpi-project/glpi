@@ -40,8 +40,8 @@ module.exports = {
             moduleDirectories: ['js/modules', 'tests/js/modules', 'node_modules'],
             moduleFileExtensions: ['js'],
             moduleNameMapper: {
-                '^/js/modules/(.*)$': '<rootDir>/../../js/modules/$1',
-                '/lib/tablericons-definitions.js$': '<rootDir>/../../public/lib/tablericons-definitions.js',
+                '^js/modules/(.*)$': '<rootDir>/../../js/modules/$1',
+                '^lib/(.*)$': '<rootDir>/../../public/lib/$1',
             },
             transform: {},
             transformIgnorePatterns: [

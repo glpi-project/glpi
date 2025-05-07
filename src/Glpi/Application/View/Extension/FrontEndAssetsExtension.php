@@ -37,6 +37,7 @@ namespace Glpi\Application\View\Extension;
 
 use DBmysql;
 use Entity;
+use Glpi\Application\ImportMapGenerator;
 use Glpi\Toolbox\FrontEnd;
 use Glpi\UI\Theme;
 use Glpi\UI\ThemeManager;
@@ -71,6 +72,7 @@ class FrontEndAssetsExtension extends AbstractExtension
             new TwigFunction('custom_css', [$this, 'customCss'], ['is_safe' => ['html']]),
             new TwigFunction('locales_js', [$this, 'localesJs'], ['is_safe' => ['html']]),
             new TwigFunction('current_theme', [$this, 'currentTheme']),
+            new TwigFunction('importmap', [$this, 'importmap'], ['is_safe' => ['html']]),
         ];
     }
 
@@ -266,5 +268,20 @@ JAVASCRIPT;
         }
 
         return Html::scriptBlock($script);
+    }
+
+    /**
+     * Generate an import map for JavaScript modules
+     *
+     * @return string HTML script tag containing the import map
+     */
+    public function importmap(): string
+    {
+        $import_map = ImportMapGenerator::getInstance()->generate();
+
+        return '<script type="importmap">' . json_encode(
+            $import_map,
+            JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP
+        ) . '</script>';
     }
 }
