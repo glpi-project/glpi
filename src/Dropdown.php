@@ -3183,7 +3183,7 @@ JAVASCRIPT;
                 ];
 
                 if (
-                    $_SESSION['glpiis_ids_visible'] && (int) $post['searchText'] == $post['searchText']
+                    $_SESSION['glpiis_ids_visible'] && preg_match('/^\d+$/', $post['searchText']) === 1
                 ) {
                     $orwhere[$table . '.' . $item::getIndexName()] = ['LIKE', "{$post['searchText']}%"];
                 }
