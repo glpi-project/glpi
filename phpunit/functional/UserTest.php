@@ -413,6 +413,13 @@ class UserTest extends \DbTestCase
             'profiles_id'          => 0,
         ];
         $this->assertSame($expected, $user->prepareInputForAdd($input));
+
+        // Full structure as default entity
+        $input['entities_id'] = -1;
+        $user_id = $user->add($input);
+        $this->assertGreaterThan(0, $user_id);
+        $this->assertTrue($user->getFromDB($user_id));
+        $this->assertSame(null, $user->fields['entities_id']);
     }
 
     public function testPrepareInputForAddPdfFont(): void
