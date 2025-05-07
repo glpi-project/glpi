@@ -67,7 +67,11 @@ describe('Display preferences', () => {
         cy.reload();
 
         // Make sure the column was added to the ticket list (still as admin)
-        cy.findByRole('columnheader', {'name': 'Pending reason'}).should('be.visible');
+        cy.findByRole('columnheader', {
+            name: 'Pending reason',
+            // The column header might be out of screen if too many display pref are used.
+            force: true,
+        }).should('be.visible');
 
         // Switch to helpdesk and make sure the column was not added
         cy.changeProfile('Self-Service', true);
