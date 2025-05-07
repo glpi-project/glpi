@@ -31,7 +31,7 @@
  * ---------------------------------------------------------------------
  */
 
-import Screenshot  from 'Screenshot/Screenshot';
+import Screenshot  from 'js/modules/Screenshot/Screenshot';
 
 if (Screenshot.isSupported()) {
     $('.document_item .upload-from-section').removeClass('d-none');

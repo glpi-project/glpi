@@ -30,7 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
-import { GlpiFormEditorConvertedExtractedDefaultValue, DATATYPE } from "Forms/EditorConvertedExtractedDefaultValue";
+import { GlpiFormEditorConvertedExtractedDefaultValue, DATATYPE } from "js/modules/Forms/EditorConvertedExtractedDefaultValue";
 
 /**
  * Represents a converted extracted default value for selectable fields (dropdowns, checkboxes, etc.)

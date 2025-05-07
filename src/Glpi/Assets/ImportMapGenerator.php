@@ -155,10 +155,10 @@ class ImportMapGenerator
         if (!$core_modules) {
             // Scan GLPI core directories
             $core_modules = ['imports' => []];
-            $this->addModulesToImportMap($core_modules, $this->glpi_root . '/js/modules');
-            $this->addModulesToImportMap($core_modules, $this->glpi_root . '/public/js/modules');
-            $this->addModulesToImportMap($core_modules, $this->glpi_root . '/public/lib');
-            $this->addModulesToImportMap($core_modules, $this->glpi_root . '/public/build');
+            $this->addModulesToImportMap($core_modules, $this->glpi_root . '/js/modules', $this->glpi_root);
+            $this->addModulesToImportMap($core_modules, $this->glpi_root . '/public/js/modules', $this->glpi_root);
+            $this->addModulesToImportMap($core_modules, $this->glpi_root . '/public/lib', $this->glpi_root);
+            $this->addModulesToImportMap($core_modules, $this->glpi_root . '/public/build', $this->glpi_root);
 
             // Cache core modules
             if ($should_use_cache) {
@@ -194,7 +194,8 @@ class ImportMapGenerator
                             $this->addModulesToImportMap(
                                 $plugin_modules,
                                 $full_path,
-                                $plugin_key . '/'
+                                $plugin_dir,
+                                $plugin_key
                             );
                         } else {
                             trigger_error(sprintf('`%s` is not a valid directory.', $full_path), E_USER_WARNING);
@@ -220,10 +221,15 @@ class ImportMapGenerator
      *
      * @param array{imports: array<string, string>} $import_map Reference to the import map array
      * @param string $dir Directory to scan
-     * @param string $path_prefix Path prefix to use for the module names
+     * @param string $base_path Base path for generating relative paths
+     * @param string|null $plugin_key Plugin key for module prefixing (null for core modules)
      */
-    private function addModulesToImportMap(array &$import_map, string $dir, string $path_prefix = ""): void
-    {
+    private function addModulesToImportMap(
+        array &$import_map,
+        string $dir,
+        string $base_path,
+        ?string $plugin_key = null
+    ): void {
         if (!is_dir($dir)) {
             return;
         }
@@ -237,18 +243,20 @@ class ImportMapGenerator
                 $file_path = $file->getPathname();
                 $relative_path = Path::makeRelative($file_path, $this->glpi_root);
 
-                // Calculate module name - remove module base dir and extension
-                $module_path = Path::makeRelative($file_path, $dir);
+                // Calculate module name with context - preserve directory structure
+                $module_path = Path::makeRelative($file_path, $base_path);
                 $module_name = preg_replace('/\.js$/', '', $module_path);
 
                 // Add plugin prefix for plugin modules
-                $import_key = $path_prefix . $module_name;
+                if ($plugin_key !== null) {
+                    $module_name = $plugin_key . '/' . $module_name;
+                }
 
                 // Generate version parameter
                 $version_param = $this->generateVersionParam($file_path);
 
                 // Add to import map
-                $import_map['imports'][$import_key] = $this->root_doc . '/' . $relative_path . '?v=' . $version_param;
+                $import_map['imports'][$module_name] = $this->root_doc . '/' . $relative_path . '?v=' . $version_param;
             }
         }
     }

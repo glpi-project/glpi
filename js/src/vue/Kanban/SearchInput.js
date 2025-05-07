@@ -33,7 +33,7 @@
 
 /* global escapeMarkupText */
 
-import SearchTokenizer from "SearchTokenizer/SearchTokenizer";
+import SearchTokenizer from "./SearchTokenizer.js";
 
 /**
  * @typedef SearchInputOptions

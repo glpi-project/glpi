@@ -31,8 +31,8 @@
  * ---------------------------------------------------------------------
  */
 
-import SearchToken from "SearchTokenizer/SearchToken";
-import SearchTokenizerResult from "SearchTokenizer/SearchTokenizerResult";
+import SearchToken from "./SearchToken.js";
+import SearchTokenizerResult from "./SearchTokenizerResult.js";
 
 /**
  * Inspired by/rebuilt from https://github.com/tatsuya/search-text-tokenizer
