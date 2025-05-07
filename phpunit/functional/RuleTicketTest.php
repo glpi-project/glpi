@@ -46,11 +46,11 @@ use RuleAction;
 use Ticket_Contract;
 
 // Force import because of autoloader not working
-require_once __DIR__ . '/../abstracts/RuleCommonITILObject.php';
+require_once __DIR__ . '/../abstracts/RuleCommonITILObjectTest.php';
 
 /* Test for inc/ruleticket.class.php */
 
-class RuleTicketTest extends RuleCommonITILObject
+class RuleTicketTest extends RuleCommonITILObjectTest
 {
     public function testGetCriteria()
     {

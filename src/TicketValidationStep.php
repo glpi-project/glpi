@@ -32,8 +32,13 @@
  * ---------------------------------------------------------------------
  */
 
-namespace tests\units;
+final class TicketValidationStep extends ITIL_ValidationStep
+{
+    public static $rightname = 'ticketvalidation';
+    public static string $validation_classname = TicketValidation::class;
 
-use Glpi\PHPUnit\Tests\CommonITILValidationTest;
-
-class ChangeValidationTest extends CommonITILValidationTest {}
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Ticket approval step', 'Ticket approval steps', $nb);
+    }
+}

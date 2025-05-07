@@ -541,6 +541,20 @@
                           {% elseif field is same as 'last_boot' and item.isField('is_dynamic') and item.fields['is_dynamic'] %}
                               {# display last_boot data only if item is dynamic and have field #}
                               {{ fields.htmlField('last_boot', item.fields['last_boot']|formatted_datetime(true), __('Last boot date')) }}
+                          {% elseif field is same as 'minimal_required_validation_percent' %}
+                              {{ fields.numberField('minimal_required_validation_percent',
+                                  item.fields['minimal_required_validation_percent'],
+                                  __('Minimum validation required (%)'),
+                                  {
+                                      'min': 0,
+                                      'max': 100,
+                                      'step': 1,
+                                      'rand': rand,
+                                      'required': true,
+                                      'label_class': 'col-6',
+                                      'input_class': 'col-6',
+                                      'field_class': 'full-width',
+                                  }|merge(specific_field_options)) }}
                           {% elseif field in custom_fields|keys %}
                               {{ custom_fields[field].getFieldType().getFormInput(field, item.fields[field])|raw }}
                           {% endif %}

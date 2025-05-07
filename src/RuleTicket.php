@@ -294,10 +294,12 @@ class RuleTicket extends RuleCommonITILObject
 
         $actions                                              = parent::getActions();
 
+        // set a ticket type
         $actions['type']['name']                              = _n('Type', 'Types', 1);
         $actions['type']['table']                             = 'glpi_tickets';
         $actions['type']['type']                              = 'dropdown_tickettype';
 
+        // assign a projet
         $actions['assign_project']['name']                  = Project::getTypeName(1);
         $actions['assign_project']['type']                  = 'dropdown';
         $actions['assign_project']['table']                 = 'glpi_projects';
@@ -305,6 +307,7 @@ class RuleTicket extends RuleCommonITILObject
         $actions['assign_project']['force_actions']         = ['assign','regex_result', 'append'];
         $actions['assign_project']['appendto']              = '_projects_id';
 
+        // assign sla ttr
         $actions['slas_id_ttr']['table']                      = 'glpi_slas';
         $actions['slas_id_ttr']['field']                      = 'name';
         $actions['slas_id_ttr']['name']                       = sprintf(
@@ -316,10 +319,12 @@ class RuleTicket extends RuleCommonITILObject
         $actions['slas_id_ttr']['type']                       = 'dropdown';
         $actions['slas_id_ttr']['condition']                  = ['glpi_slas.type' => SLM::TTR];
 
+        // empty ttr
         $actions['time_to_resolve']['name']                   = __('Time to resolve');
         $actions['time_to_resolve']['type']                   = 'yesno';
         $actions['time_to_resolve']['force_actions']          = ['delete'];
 
+        // assign (existing) sla tto
         $actions['slas_id_tto']['table']                      = 'glpi_slas';
         $actions['slas_id_tto']['field']                      = 'name';
         $actions['slas_id_tto']['name']                       = sprintf(
@@ -331,10 +336,12 @@ class RuleTicket extends RuleCommonITILObject
         $actions['slas_id_tto']['type']                       = 'dropdown';
         $actions['slas_id_tto']['condition']                  = ['glpi_slas.type' => SLM::TTO];
 
+        // empty sla tto
         $actions['time_to_own']['name']                       = __('Time to own');
         $actions['time_to_own']['type']                       = 'yesno';
         $actions['time_to_own']['force_actions']              = ['delete'];
 
+        // assign (existing) ola ttr
         $actions['olas_id_ttr']['table']                      = 'glpi_olas';
         $actions['olas_id_ttr']['field']                      = 'name';
         $actions['olas_id_ttr']['name']                       = sprintf(
@@ -346,10 +353,12 @@ class RuleTicket extends RuleCommonITILObject
         $actions['olas_id_ttr']['type']                       = 'dropdown';
         $actions['olas_id_ttr']['condition']                  = ['glpi_olas.type' => SLM::TTR];
 
+        // empty ola ttr
         $actions['internal_time_to_resolve']['name']          = __('Internal time to resolve');
         $actions['internal_time_to_resolve']['type']          = 'yesno';
         $actions['internal_time_to_resolve']['force_actions'] = ['delete'];
 
+        // assign (existing) ola tto
         $actions['olas_id_tto']['table']                      = 'glpi_olas';
         $actions['olas_id_tto']['field']                      = 'name';
         $actions['olas_id_tto']['name']                       = sprintf(
@@ -361,15 +370,18 @@ class RuleTicket extends RuleCommonITILObject
         $actions['olas_id_tto']['type']                       = 'dropdown';
         $actions['olas_id_tto']['condition']                  = ['glpi_olas.type' => SLM::TTO];
 
+        // set ola tto value
         $actions['internal_time_to_own']['name']              = __('Internal Time to own');
         $actions['internal_time_to_own']['type']              = 'yesno';
         $actions['internal_time_to_own']['force_actions']     = ['delete'];
 
+        // assign a location
         $actions['locations_id']['name']                            = Location::getTypeName(1);
         $actions['locations_id']['type']                            = 'dropdown';
         $actions['locations_id']['table']                           = 'glpi_locations';
         $actions['locations_id']['force_actions']                   = ['assign', 'fromuser', 'fromitem'];
 
+        // assign a contract
         $actions['assign_contract']['name']                  = Contract::getTypeName(1);
         $actions['assign_contract']['type']                  = 'dropdown';
         $actions['assign_contract']['table']                 = 'glpi_contracts';

@@ -30,7 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
-describe('Validation configuration', () => {
+describe('Approval configuration', () => {
     beforeEach(() => {
         cy.login();
         cy.changeProfile('Super-Admin');
@@ -56,23 +56,23 @@ describe('Validation configuration', () => {
 
         cy.get('@form_id').then((form_id) => {
             cy.createWithAPI('User', {
-                'name': `Validation configuration test user - ${form_id}`,
+                'name': `Approval configuration test user - ${form_id}`,
             });
 
             cy.createWithAPI('Group', {
-                'name': `Validation configuration test group - ${form_id}`,
+                'name': `Approval configuration test group - ${form_id}`,
             });
         });
     });
 
     it('can use all possibles configuration options', () => {
-        cy.findByRole('region', {'name': "Validation configuration"}).as("config");
+        cy.findByRole('region', {'name': "Approval configuration"}).as("config");
         cy.get('@config').getDropdownByLabelText('Select strategy...').as("validation_dropdown");
 
         // Default value
         cy.get('@validation_dropdown').should(
             'have.text',
-            'No validation'
+            'No approval'
         );
 
         // Make sure hidden dropdowns are not displayed
@@ -83,15 +83,15 @@ describe('Validation configuration', () => {
         cy.get('@validation_dropdown').selectDropdownValue('Specific actors');
         cy.get('@config').getDropdownByLabelText('Select actors...').as('specific_actors_dropdown');
         cy.get('@form_id').then((form_id) => {
-            cy.get('@specific_actors_dropdown').selectDropdownValue(`Validation configuration test user - ${form_id}`);
-            cy.get('@specific_actors_dropdown').selectDropdownValue(`Validation configuration test group - ${form_id}`);
+            cy.get('@specific_actors_dropdown').selectDropdownValue(`Approval configuration test user - ${form_id}`);
+            cy.get('@specific_actors_dropdown').selectDropdownValue(`Approval configuration test group - ${form_id}`);
 
             cy.findByRole('button', {'name': 'Update item'}).click();
             cy.checkAndCloseAlert('Item successfully updated');
             cy.get('@validation_dropdown').should('have.text', 'Specific actors');
             cy.get('@specific_actors_dropdown').should(
                 'have.text',
-                `×Validation configuration test user - ${form_id}×Validation configuration test group - ${form_id}`
+                `×Approval configuration test user - ${form_id}×Approval configuration test group - ${form_id}`
             );
         });
 
@@ -112,7 +112,7 @@ describe('Validation configuration', () => {
 
     it('can create ticket using a specific question answer', () => {
         // Switch to "Answer from specific questions"
-        cy.findByRole('region', {'name': "Validation configuration"}).as("config");
+        cy.findByRole('region', {'name': "Approval configuration"}).as("config");
         cy.get('@config').getDropdownByLabelText('Select strategy...').selectDropdownValue('Answer from specific questions');
         cy.get('@config').getDropdownByLabelText('Select questions...').as('specific_answers_dropdown');
         cy.get('@specific_answers_dropdown').selectDropdownValue('My User question');
@@ -130,8 +130,8 @@ describe('Validation configuration', () => {
 
         // Fill form
         cy.get('@form_id').then((form_id) => {
-            cy.getDropdownByLabelText("My Assignee question").selectDropdownValue(`Validation configuration test group - ${form_id}`);
-            cy.getDropdownByLabelText("My User question").selectDropdownValue(`Validation configuration test user - ${form_id}`);
+            cy.getDropdownByLabelText("My Assignee question").selectDropdownValue(`Approval configuration test group - ${form_id}`);
+            cy.getDropdownByLabelText("My User question").selectDropdownValue(`Approval configuration test user - ${form_id}`);
         });
         cy.findByRole('button', {'name': 'Submit'}).click();
         cy.findByRole('link', {'name': 'My test form'}).click();
@@ -139,7 +139,7 @@ describe('Validation configuration', () => {
         // Check ticket values
         cy.findAllByRole('region', {'name': "Ticket"}).eq(1).contains('Waiting for approval');
         cy.get('@form_id').then((form_id) => {
-            cy.findByRole('link', {'name': `Validation configuration test user - ${form_id}`}).should('exist');
+            cy.findByRole('link', {'name': `Approval configuration test user - ${form_id}`}).should('exist');
         });
 
         // Others possibles configurations are tested directly by the backend.

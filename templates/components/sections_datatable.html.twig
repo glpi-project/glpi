@@ -1,0 +1,130 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2025 Teclib' and contributors.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% extends 'components/datatable.html.twig' %}
+{% import 'components/form/fields_macros.html.twig' as macro %}
+
+{% block datatable_entries %}
+    {% for step in validationsteps %}
+        {% if step.entries|length > 0 %}
+            {# edit button #}
+            {% set edit_step_button %}
+                {{ step.edit_link_js.js|raw }}
+                <a href=""
+                   role="button"
+                   title="{{ __('Edit validation step') }}"
+                   data-bs-toggle='modal'
+                   data-bs-target="#{{ step.edit_link_js.target }}"
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                         class="icon icon-tabler icons-tabler-outline icon-tabler-edit">
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                        <path d="M7 7h-1a2 2 0 0 0 -2 2v9a2 2 0 0 0 2 2h9a2 2 0 0 0 2 -2v-1"/>
+                        <path d="M20.385 6.585a2.1 2.1 0 0 0 -2.97 -2.97l-8.415 8.385v3h3l8.385 -8.415z"/>
+                        <path d="M16 5l3 3"/>
+                    </svg>
+                    <span class='sr-only'>{{ __('Edit validation step') }}</span>
+                </a>
+            {% endset %}
+
+            {% set icon %}
+                {% if step.validationstep.status.accepted %}
+                    <span class="text-green" data-bs-toogle="tooltip" title="{{ __("Approval step accepted") }}">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                             class="icon icon-tabler icons-tabler-outline icon-tabler-check">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                            <path d="M5 12l5 5l10 -10"/>
+                        </svg>
+                    </span>
+                {% elseif step.validationstep.status.refused %}
+                    <span class="text-red" data-bs-toggle="tooltip" title="{{ __("Approval step refused") }}">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                             class="icon icon-tabler icons-tabler-outline icon-tabler-ban">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                            <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"/>
+                            <path d="M5.7 5.7l12.6 12.6"/>
+                        </svg>
+                    </span>
+                {% elseif step.validationstep.status.waiting %}
+                    <span class="text-yellow" data-bs-toggle="tooltip" title="{{ __("Approval step pending") }}">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                             class="icon icon-tabler icons-tabler-outline icon-tabler-clock">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                            <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0"/>
+                            <path d="M12 7v5l3 3"/>
+                        </svg>
+                    </span>
+                {% endif %}
+            {% endset %}
+
+            {% set progressbar %}
+                <div class="progress-stacked position-relative" data-bs-toggle="tooltip"
+                     title="{{ __('Progress: %1$s%% of %2$s%% required')|format(step.validationstep.achievement.accepted, step.validationstep.minimal_required_validation_percent) }}">
+                    {# accepted #}
+                    {{ macro.stacked_progressbar(step.validationstep.achievement.accepted) }}
+                    {# waiting #}
+                    {{ macro.stacked_progressbar(step.validationstep.achievement.waiting, 'bg-yellow', true) }}
+                    {# refused #}
+                    {{ macro.stacked_progressbar(step.validationstep.achievement.refused, 'bg-red') }}
+                    {# threshold  #}
+                    {# sligly move the indicator on edge case (0|100) to be visible #}
+                    {% if step.validationstep.minimal_required_validation_percent == 0 %}
+                        <div class="threshold-indicator" style="position: absolute; width: 5px; height: 100%; background-color: black; left: 0; top: 0; z-index: 10;"></div>
+                    {% elseif step.validationstep.minimal_required_validation_percent == 100 %}
+                        <div class="threshold-indicator" style="position: absolute; width: 5px; height: 100%; background-color: black; right: 0; top: 0; z-index: 10;"></div>
+                    {% else %}
+                        <div class="threshold-indicator" style="position: absolute; width: 3px; height: 100%; background-color: black; left: {{ step.validationstep.minimal_required_validation_percent }}%; top: 0; z-index: 10;"></div>
+                    {% endif %}
+                </div>
+            {% endset %}
+
+            <thead>
+                <tr>
+                    <th colspan="{{ total_cols }}">
+                        <div class="d-flex align-items-center gap-2 mx-auto" style="max-width: 650px;">
+                            <div class="flex-shrink-0"><strong>{{ step.validationstep.name }}</strong></div>
+                            <div class="flex-shrink-0"> {{ icon|raw }} </div>
+                            <div class="flex-grow-1"> {{ progressbar|raw }} </div>
+                            <div class="flex-shrink-0"> {{ edit_step_button|raw }} </div>
+                        </div>
+                    </th>
+                </tr>
+            </thead>
+
+            {{ include('components/datatable/entries.html.twig', {'entries': step.entries}) }}
+        {% endif %}
+    {% endfor %}
+{% endblock %}

@@ -326,7 +326,7 @@ class Provider
 
             case 'waiting_validation':
                 $params['icon']  = "ti ti-eye";
-                $params['label'] = __("Tickets waiting for validation");
+                $params['label'] = __("Tickets waiting for approval");
                 $search_criteria = [
                     [
                         'field'      => 55,

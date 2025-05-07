@@ -60,7 +60,7 @@ final class ValidationField extends AbstractConfigField implements DestinationFi
     #[Override]
     public function getLabel(): string
     {
-        return _n('Validation', 'Validations', 1);
+        return _n('Approval', 'Approvals', 1);
     }
 
     #[Override]

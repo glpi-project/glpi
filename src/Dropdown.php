@@ -1232,6 +1232,7 @@ HTML;
                     'PlanningEventCategory' => null,
                     'PendingReason' => null,
                     Category::class => null,
+                    ValidationStep::class => null,
                 ],
 
                 _n('Type', 'Types', Session::getPluralNumber()) => [
