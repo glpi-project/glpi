@@ -6,7 +6,7 @@
     import { Rights } from "./Rights.js";
     import Column from "./Column.vue";
     import {computed, nextTick, onMounted, ref, watch} from "vue";
-    import SearchInput from "../../../modules/SearchTokenizer/SearchInput.js";
+    import SearchInput from "./SearchInput.js";
     import {TeamBadgeProvider} from "./TeamBadgeProvider.js";
 
     const props = defineProps({
