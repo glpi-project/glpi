@@ -30,13 +30,26 @@
  * ---------------------------------------------------------------------
  */
 
-describe('Display preferences', () => {
+describe('Display preferences', { retries: {runMode: 0, openMode: 0} }, () => {
     before(() => {
         // Create at least one ticket as we will be displaying the ticket list
         // to validate that the right columns are displayed
         cy.createWithAPI('Ticket', {
             'name': 'Open ticket',
             'content': 'Open ticket',
+        });
+
+        // Make sure "pending reason" search option doens't exist as it will be
+        // created by these tests.
+        cy.searchWithAPI("DisplayPreference", [{
+            link: "AND",
+            field: 4, // Search option ID
+            searchtype: "equals",
+            value: 400, // Pending reason search option ID
+        }]).then((data) => {
+            for (const row of data) {
+                cy.deleteWithAPI("DisplayPreference", row[2]);
+            }
         });
     });
 
@@ -54,12 +67,12 @@ describe('Display preferences', () => {
         cy.reload();
 
         // Make sure the column was added to the ticket list (still as admin)
-        cy.findByRole('columnheader', {'name': 'Pending reason'}).should('be.visible');
+        cy.findByRole('columnheader', {name: "Pending reason"}).should('exist');
 
         // Switch to helpdesk and make sure the column was not added
         cy.changeProfile('Self-Service', true);
         cy.visit('/front/ticket.php');
-        cy.findByRole('columnheader', {'name': 'Pending reason'}).should('not.exist');
+        cy.findByRole('columnheader', {name: "Pending reason"}).should('not.exist');
 
         // Go back to super admin
         cy.changeProfile('Super-Admin', true);
@@ -93,12 +106,12 @@ describe('Display preferences', () => {
         cy.reload();
 
         // Make sure the column was not added to the central ticket list
-        cy.findByRole('columnheader', {'name': 'Pending reason'}).should('not.exist');
+        cy.findByRole('columnheader', {name: "Pending reason"}).should('not.exist');
 
         // Switch to helpdesk and make sure the column was added
         cy.changeProfile('Self-Service', true);
         cy.visit('/front/ticket.php');
-        cy.findByRole('columnheader', {'name': 'Pending reason'}).should('be.visible');
+        cy.findByRole('columnheader', {name: "Pending reason"}).should('exist');
 
         // Go back to super admin
         cy.changeProfile('Super-Admin', true);

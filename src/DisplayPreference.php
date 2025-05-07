@@ -54,6 +54,78 @@ class DisplayPreference extends CommonDBTM
     public const PERSONAL = 1024;
     public const GENERAL  = 2048;
 
+    public static function canCrud(): bool
+    {
+        return Session::haveRightsOr(
+            static::$rightname,
+            [DisplayPreference::PERSONAL | DisplayPreference::GENERAL],
+        );
+    }
+
+    public function canCrudItem(): bool
+    {
+        if (Session::haveRight(static::$rightname, DisplayPreference::GENERAL)) {
+            return true;
+        }
+
+        if (
+            Session::haveRight(static::$rightname, DisplayPreference::PERSONAL)
+            && $this->fields['users_id'] == Session::getLoginUserID()
+        ) {
+            return true;
+        }
+
+        return false;
+    }
+
+    #[Override]
+    public static function canCreate(): bool
+    {
+        return static::canCrud();
+    }
+
+    #[Override]
+    public static function canView(): bool
+    {
+        return static::canCrud();
+    }
+
+    #[Override]
+    public static function canUpdate(): bool
+    {
+        return static::canCrud();
+    }
+
+    #[Override]
+    public static function canPurge(): bool
+    {
+        return static::canCrud();
+    }
+
+    #[Override]
+    public function canCreateItem(): bool
+    {
+        return $this->canCrudItem();
+    }
+
+    #[Override]
+    public function canViewItem(): bool
+    {
+        return $this->canCrudItem();
+    }
+
+    #[Override]
+    public function canUpdateItem(): bool
+    {
+        return $this->canCrudItem();
+    }
+
+    #[Override]
+    public function canPurgeItem(): bool
+    {
+        return $this->canCrudItem();
+    }
+
     public static function getTypeName($nb = 0)
     {
         return __('Search result display');
@@ -762,5 +834,38 @@ class DisplayPreference extends CommonDBTM
             }
         }
         return true;
+    }
+
+    #[Override]
+    public function rawSearchOptions()
+    {
+        $search_options = parent::rawSearchOptions();
+
+        $search_options[] = [
+            'id'            => '2',
+            'table'         => $this->getTable(),
+            'field'         => 'id',
+            'name'          => __('ID'),
+            'massiveaction' => false,
+            'datatype'      => 'number',
+        ];
+        $search_options[] = [
+            'id'            => '3',
+            'table'         => $this->getTable(),
+            'field'         => 'itemtype',
+            'name'          => __('Itemtype'),
+            'massiveaction' => false,
+            'datatype'      => 'itemtypename',
+        ];
+        $search_options[] = [
+            'id'            => '4',
+            'table'         => $this->getTable(),
+            'field'         => 'num',
+            'name'          => __('Search option ID'),
+            'massiveaction' => false,
+            'datatype'      => 'number',
+        ];
+
+        return $search_options;
     }
 }
