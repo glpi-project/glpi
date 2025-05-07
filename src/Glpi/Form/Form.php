@@ -472,7 +472,7 @@ final class Form extends CommonDBTM implements
         $links = [];
 
         if (self::canCreate()) {
-            $links['view_form_categories'] = Category::getSearchURL();
+            $links['view_form_categories'] = Category::getSearchURL(false);
             $links['import_forms'] = '/Form/Import';
         }
 
