@@ -37,7 +37,7 @@ namespace Glpi\Form;
 /**
  * Class for handling form validation results
  */
-class ValidationResult
+final class ValidationResult
 {
     /**
      * @var bool Indicates if the validation is successful
