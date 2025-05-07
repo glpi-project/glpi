@@ -156,6 +156,71 @@ describe('Form rendering', () => {
             cy.findByText('Form submitted').should('be.visible');
         });
     });
+
+    it.only('Mandatory question alert is correctly removed when value is set and go to next section', () => {
+        // Set up a form with two sections, each with a mandatory question
+        cy.createWithAPI('Glpi\\Form\\Form', {
+            'name': 'Test mandatory questions',
+        }).as('form_id');
+        cy.get('@form_id').then((form_id) => {
+            // Add mandatory question to default section
+            cy.addQuestionToDefaultSectionWithAPI(
+                form_id,
+                'First question',
+                'Glpi\\Form\\QuestionType\\QuestionTypeShortText',
+                0,
+                null,
+                null,
+                null,
+                true // Mandatory
+            );
+
+            // Add second section
+            cy.createWithAPI('Glpi\\Form\\Section', {
+                'name': 'Second section',
+                'rank': 1,
+                'forms_forms_id': form_id,
+            }).as('second_section_id');
+
+            cy.get('@second_section_id').then((second_section_id) => {
+                // Add mandatory question to second section
+                cy.createWithAPI('Glpi\\Form\\Question', {
+                    'name': 'Second question',
+                    'type': 'Glpi\\Form\\QuestionType\\QuestionTypeShortText',
+                    'vertical_rank': 1,
+                    'forms_sections_id': second_section_id,
+                    'is_mandatory' : true,
+                }).as('second_section_id');
+            });
+
+            // Preview form
+            cy.login();
+            cy.visit(`/Form/Render/${form_id}`);
+
+            // Try to submit first section, should fail since we didn't answer
+            // the mandatory question
+            cy.findByRole('button', {name: 'Continue'}).click();
+            checkMandatoryQuestion('First question');
+            cy.findByRole('heading', {name: 'First section'}).should('be.visible');
+            cy.findByRole('heading', {name: 'Second section'}).should('not.exist');
+
+            // Submit again with a value
+            cy.findByRole('textbox', {name: 'First question'}).type("test");
+            cy.findByRole('button', {name: 'Continue'}).click();
+            cy.findByRole('heading', {name: 'Second section'}).should('be.visible');
+            cy.findByRole('heading', {name: 'First section'}).should('not.exist');
+
+            // Go back to first section
+            cy.findByRole('button', {name: 'Back'}).click();
+            cy.findByRole('heading', {name: 'First section'}).should('be.visible');
+
+            // Check that the error message isn't displayed anymore
+            getAriaErrorMessageElement(cy.findByRole('textbox', {name: 'First question'}))
+                .should('not.exist');
+            cy.findByRole('textbox', {name: 'First question'}).should('not.have.attr', 'aria-invalid');
+            cy.findByRole('textbox', {name: 'First question'}).should('not.have.attr', 'aria-errormessage');
+        });
+    });
 });
 
 function addQuestionAndGetUuuid(name, type = null, subtype = null) {

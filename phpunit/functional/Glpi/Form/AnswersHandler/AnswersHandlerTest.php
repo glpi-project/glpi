@@ -42,6 +42,7 @@ use Glpi\Form\Condition\CreationStrategy;
 use Glpi\Form\Condition\LogicOperator;
 use Glpi\Form\Condition\Type;
 use Glpi\Form\Condition\ValueOperator;
+use Glpi\Form\Condition\VisibilityStrategy;
 use Glpi\Form\Destination\FormDestinationChange;
 use Glpi\Form\Destination\FormDestinationProblem;
 use Glpi\Form\Destination\FormDestinationTicket;
@@ -221,6 +222,58 @@ class AnswersHandlerTest extends DbTestCase
         $result = $handler->validateAnswers($form, $empty_string_answers);
         $this->assertFalse($result->isValid(), "Validation should fail when a mandatory field contains an empty string");
         $this->assertCount(1, $result->getErrors(), "There should be one error when a mandatory field contains an empty string");
+    }
+
+    public function testValidateAnswersWithConditions(): void
+    {
+        self::login();
+
+        // Create a form with conditional questions
+        $builder = new FormBuilder("Conditional Validation Test Form");
+        $builder
+            ->addQuestion("Main Question", QuestionTypeShortText::class, is_mandatory: true)
+            ->addQuestion("Conditional Question", QuestionTypeShortText::class, is_mandatory: true)
+            ->setQuestionVisibility(
+                "Conditional Question",
+                VisibilityStrategy::VISIBLE_IF,
+                [
+                    [
+                        'logic_operator' => LogicOperator::AND,
+                        'item_name'      => "Main Question",
+                        'item_type'      => Type::QUESTION,
+                        'value_operator' => ValueOperator::EQUALS,
+                        'value'          => "Show Conditional",
+                    ],
+                ]
+            )
+        ;
+        $form = self::createForm($builder);
+
+        // Get handler instance
+        $handler = AnswersHandler::getInstance();
+
+        // Test 1: Conditional question is shown - should be valid
+        $conditional_answers = [
+            self::getQuestionId($form, "Main Question") => "Show Conditional",
+            self::getQuestionId($form, "Conditional Question") => "This is a conditional answer",
+        ];
+        $result = $handler->validateAnswers($form, $conditional_answers);
+        $this->assertTrue($result->isValid(), "Validation should pass when the conditional question is shown and filled");
+
+        // Test 2: Conditional question is not shown - should be valid
+        $non_conditional_answers = [
+            self::getQuestionId($form, "Main Question") => "Do not show"
+        ];
+        $result = $handler->validateAnswers($form, $non_conditional_answers);
+        $this->assertTrue($result->isValid(), "Validation should pass when the conditional question is not shown");
+
+        // Test 3: Conditional question is shown but not filled - should be invalid
+        $missing_conditional_answers = [
+            self::getQuestionId($form, "Main Question") => "Show Conditional",
+            self::getQuestionId($form, "Conditional Question") => "",
+        ];
+        $result = $handler->validateAnswers($form, $missing_conditional_answers);
+        $this->assertFalse($result->isValid(), "Validation should fail when the conditional question is shown but not filled");
     }
 
     private function validateAnswers(
