@@ -8,8 +8,8 @@
 # DOMBRE Julien <moyo@indepnet.net>, 2025
 # Jokin Zengotitabengoa <jzengotitabengoa@olabide.com>, 2025
 # Gorka Olalde Mendia <gorka.olalde@alumni.mondragon.edu>, 2025
-# Alexander Gabilondo <alexgabi@disroot.org>, 2025
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2025
+# Alexander Gabilondo <alexgabi@disroot.org>, 2025
 # 
 #, fuzzy
 msgid ""
@@ -18,7 +18,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-04-24 08:02+0000\n"
 "PO-Revision-Date: 2022-09-16 06:53+0000\n"
-"Last-Translator: alexandre delaunay <delaunay.alexandre@gmail.com>, 2025\n"
+"Last-Translator: Alexander Gabilondo <alexgabi@disroot.org>, 2025\n"
 "Language-Team: Basque (Spain) (https://app.transifex.com/glpi/teams/1637/eu_ES/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -19262,31 +19262,31 @@ msgstr ""
 
 #: src/Glpi/System/Requirement/DirectoryWriteAccess.php:83
 msgid "Permissions for pictures files"
-msgstr ""
+msgstr "Irudi-fitxategien baimenak"
 
 #: src/Glpi/System/Requirement/DirectoryWriteAccess.php:80
 msgid "Permissions for plugins document files"
-msgstr ""
+msgstr "Plugin-dokumentuen fitxategien baimenak"
 
 #: src/Glpi/System/Requirement/DirectoryWriteAccess.php:86
 msgid "Permissions for rss files"
-msgstr ""
+msgstr "rss fitxategien baimenak"
 
 #: src/Glpi/System/Requirement/DirectoryWriteAccess.php:89
 msgid "Permissions for session files"
-msgstr ""
+msgstr "Saio-fitxategien baimenak"
 
 #: src/Glpi/System/Requirement/DirectoryWriteAccess.php:62
 msgid "Permissions for setting files"
-msgstr ""
+msgstr "Ezarpen-fitxategien baimenak"
 
 #: src/Glpi/System/Requirement/DirectoryWriteAccess.php:95
 msgid "Permissions for temporary files"
-msgstr ""
+msgstr "Behin-behineko fitxategien baimenak"
 
 #: src/Glpi/System/Requirement/DirectoryWriteAccess.php:98
 msgid "Permissions for upload files"
-msgstr ""
+msgstr "Igotzeko fitxategien baimenak"
 
 #: src/RSSFeed.php:60
 msgid "Personal RSS feed"
@@ -19346,8 +19346,8 @@ msgstr[0] "Telefono modeloak"
 #: src/PhonePowerSupply.php:44
 msgid "Phone power supply type"
 msgid_plural "Phone power supply types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Telefono-hornidura mota"
+msgstr[1] "Telefono-hornidura motak"
 
 #: src/Rule.php:427 src/PhoneType.php:41
 msgid "Phone type"
@@ -19356,7 +19356,7 @@ msgstr[0] "Telefono motak"
 
 #: src/Glpi/Inventory/Asset/Cartridge.php:148
 msgid "Photo"
-msgstr ""
+msgstr "Argazkia"
 
 #: src/Glpi/Inventory/Asset/Cartridge.php:64
 msgid "Photoconductor"
@@ -19390,8 +19390,8 @@ msgstr ""
 #: src/CommonDropdown.php:197 src/User.php:3631 src/User.php:6147
 msgid "Picture"
 msgid_plural "Pictures"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Irudia"
+msgstr[1] "Irudiak"
 
 #: src/Glpi/Dashboard/Widget.php:72
 msgid "Pie"
@@ -19404,7 +19404,7 @@ msgstr ""
 
 #: templates/layout/parts/saved_searches.html.twig
 msgid "Pin this panel for the current page"
-msgstr ""
+msgstr "Finkatu panel hau uneko orrialdean"
 
 #: templates/pages/admin/form/service_catalog_tab.html.twig
 msgid "Pin to top of the service catalog"
@@ -19490,7 +19490,7 @@ msgstr "Planifikazioaren hasiera data"
 
 #: templates/pages/setup/general/assistance_setup.html.twig
 msgid "Planning work days"
-msgstr ""
+msgstr "Lan-egunen planifikatzea"
 
 #: templates/pages/assistance/planning/filters.html.twig
 msgid "Plannings"

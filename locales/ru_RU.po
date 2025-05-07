@@ -40,7 +40,6 @@
 # Nick Pryazhnikov, 2025
 # Валерий Г, 2025
 # Mikhail Degterev <mikhail.degterev@gmail.com>, 2025
-# Гайткулов Николай Валентинович <kvozar@ya.ru>, 2025
 # DRTC AO, 2025
 # Denis Zykin, 2025
 # Александр Петренко, 2025
@@ -48,6 +47,7 @@
 # Vitaliy Zhukov <DragonZX@yandex.ru>, 2025
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2025
 # leruetkins, 2025
+# Гайткулов Николай Валентинович <kvozar@ya.ru>, 2025
 # 
 #, fuzzy
 msgid ""
@@ -56,7 +56,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-04-24 08:02+0000\n"
 "PO-Revision-Date: 2022-09-16 06:53+0000\n"
-"Last-Translator: leruetkins, 2025\n"
+"Last-Translator: Гайткулов Николай Валентинович <kvozar@ya.ru>, 2025\n"
 "Language-Team: Russian (Russia) (https://app.transifex.com/glpi/teams/1637/ru_RU/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1063,10 +1063,10 @@ msgstr ""
 #, php-format
 msgid "%d element"
 msgid_plural "%d elements"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "%d элемент"
+msgstr[1] "%d элемента"
+msgstr[2] "%d элементов"
+msgstr[3] "%d элементов"
 
 #: src/Entity.php:2536 src/PlanningRecall.php:308
 #: src/CommonITILRecurrent.php:256 src/Dropdown.php:2565
@@ -1186,12 +1186,12 @@ msgstr "%d%%"
 #: src/Glpi/Migration/AbstractPluginMigration.php:339
 #, php-format
 msgid "%s \"%s\" (%d) has been created."
-msgstr ""
+msgstr "%s \"%s\" (%d) создано."
 
 #: src/Glpi/Migration/AbstractPluginMigration.php:311
 #, php-format
 msgid "%s \"%s\" (%d) has been updated."
-msgstr ""
+msgstr "%s \"%s\" (%d) обновлено."
 
 #: src/Glpi/Migration/AbstractPluginMigration.php:284
 #, php-format
@@ -1460,7 +1460,7 @@ msgstr "%s связал объект и лицензию"
 #: templates/pages/assistance/planning/single_filter.html.twig
 #, php-format
 msgid "%s color"
-msgstr ""
+msgstr "%s цвет"
 
 #. TRANS: %s is the user login
 #: front/asset/asset_peripheralasset.form.php:57
@@ -1656,7 +1656,7 @@ msgstr[3] "%s элементов"
 #: src/Glpi/Console/Assets/PurgeSoftwareCommand.php:70
 #, php-format
 msgid "%s item(s) removed from the database."
-msgstr ""
+msgstr "%s элемент(ов) удален(о) из базы данных."
 
 #: templates/pages/setup/crontask/statistics.html.twig
 #, php-format
@@ -4057,7 +4057,7 @@ msgstr "Произошла ошибка во время инициализаци
 #: src/Glpi/Console/Database/UpdateCommand.php:241
 #, php-format
 msgid "An error occurred during the database update. The error was: %s"
-msgstr ""
+msgstr "Во время обновления базы данных произошла ошибка. Ошибка была: %s"
 
 #: src/Update.php:266
 #, php-format
@@ -5682,17 +5682,17 @@ msgstr "Ошибка массовых изменений"
 #: resources/.illustrations_translations.php:20
 msgctxt "Icon"
 msgid "Business Intelligence and Reporting 1"
-msgstr ""
+msgstr "Бизнес-аналитика и отчетность 1"
 
 #: resources/.illustrations_translations.php:21
 msgctxt "Icon"
 msgid "Business Intelligence and Reporting 2"
-msgstr ""
+msgstr "Бизнес-аналитика и отчетность 2"
 
 #: resources/.illustrations_translations.php:22
 msgctxt "Icon"
 msgid "Business Intelligence and Reporting 3"
-msgstr ""
+msgstr "Бизнес-аналитика и отчетность 3"
 
 #: templates/components/infocom.html.twig src/BusinessCriticity.php:45
 #: src/Infocom.php:1717 src/Infocom.php:1986
@@ -6169,7 +6169,7 @@ msgstr "Обозначения"
 #: resources/.illustrations_translations.php:27
 msgctxt "Icon"
 msgid "Car"
-msgstr ""
+msgstr "Машина"
 
 #: src/CartridgeItem.php:253 src/Printer.php:586
 #: src/Glpi/Inventory/Asset/Cartridge.php:57 src/Profile.php:2296
@@ -6292,6 +6292,8 @@ msgid ""
 "Caution! You are not the author of this item. Deleting targets can result in"
 " loss of access."
 msgstr ""
+"Осторожно! Вы не являетесь автором этого материала. Удаление целей может "
+"привести к потере доступа."
 
 #: install/update.php:149
 #, php-format
@@ -10721,6 +10723,8 @@ msgid ""
 "Enable \"Impact analysis\" tab and the assets can also be displayed in the "
 "impact tab of other asset types"
 msgstr ""
+"Включите вкладку «Анализ воздействия», и активы также могут отображаться на "
+"вкладке «Воздействие» для других типов активов"
 
 #: templates/pages/admin/entity/custom_ui.html.twig
 msgid "Enable CSS customization"
@@ -13679,6 +13683,8 @@ msgid ""
 "If you see this page when the installation has already been done, it means "
 "that the GLPI database configuration file has been removed or corrupted."
 msgstr ""
+"Если вы видите эту страницу после завершения установки, это означает, что "
+"файл конфигурации базы данных GLPI был удалён или повреждён."
 
 #: src/PendingReason.php:275
 #, php-format
@@ -14906,6 +14912,8 @@ msgid ""
 "It can be personalized, but some words are reserved such as classes from "
 "GLPI like Computer, Monitor, etc."
 msgstr ""
+"Его можно персонализировать, но некоторые слова зарезервированы, например, "
+"классы из GLPI, такие как «Компьютер», «Монитор» и т. д."
 
 #: templates/pages/admin/inventory/upload_form.html.twig
 msgid ""
@@ -27912,7 +27920,7 @@ msgstr "Уникальный номер (UUID)"
 
 #: js/modules/Forms/EditorController.js:2490
 msgid "UUID copied successfully to clipboard."
-msgstr ""
+msgstr "UUID успешно скопирован в буфер обмена."
 
 #: src/User.php:869
 msgid "Unable to add. The user already exists."
@@ -27931,6 +27939,8 @@ msgid ""
 "Unable to configure notifications: please configure at least one "
 "notification type using the above configuration."
 msgstr ""
+"Невозможно настроить уведомления: пожалуйста, настройте хотя бы один тип "
+"уведомлений с помощью описанной выше конфигурации."
 
 #: src/Glpi/Console/AbstractCommand.php:116
 msgid "Unable to connect to database."
@@ -28554,12 +28564,12 @@ msgstr "Обновление (автор)"
 #: resources/.illustrations_translations.php:86
 msgctxt "Icon"
 msgid "Update 1"
-msgstr ""
+msgstr "Обновление 1"
 
 #: resources/.illustrations_translations.php:87
 msgctxt "Icon"
 msgid "Update 2"
-msgstr ""
+msgstr "Обновление 2"
 
 #: templates/components/plugin_update_modal.html.twig
 msgctxt "button"
@@ -29250,7 +29260,7 @@ msgstr[3] "VLAN'ы"
 #: resources/.illustrations_translations.php:90
 msgctxt "Icon"
 msgid "VPN"
-msgstr ""
+msgstr "ВПН"
 
 #: src/SoftwareLicense.php:410 src/SoftwareLicense.php:706
 msgid "Valid"
@@ -29659,7 +29669,7 @@ msgstr[3] "Системы виртуализации"
 #: resources/.illustrations_translations.php:89
 msgctxt "Icon"
 msgid "Virus"
-msgstr ""
+msgstr "Вирус"
 
 #: templates/pages/tools/savedsearch/form.html.twig
 #: templates/pages/tools/reminder.html.twig src/State.php:72 src/State.php:374
@@ -29869,6 +29879,8 @@ msgid ""
 "We need this information to send the inventory file in the correct inventory"
 " engine of the GLPI framework."
 msgstr ""
+"Нам нужна эта информация, чтобы отправить файл инвентаризации в "
+"соответствующий модуль инвентаризации в рамках GLPI."
 
 #: src/Glpi/Console/Traits/TelemetryActivationTrait.php:100
 #: src/Telemetry.php:455
@@ -30542,6 +30554,9 @@ msgid ""
 "You have defined conditions for all the items below. This may be dangerous, "
 "please make sure that in every situation at least one item will be created."
 msgstr ""
+"Вы определили условия для всех перечисленных ниже элементов. Это может быть "
+"опасно, поэтому убедитесь, что в каждой ситуации будет создан хотя бы один "
+"элемент."
 
 #: src/Central.php:585
 #, php-format
@@ -31463,7 +31478,7 @@ msgstr "ватт"
 #: resources/.illustrations_translations.php:116
 msgctxt "Icon"
 msgid "webinar"
-msgstr ""
+msgstr "вебинар"
 
 #: src/RuleMailCollector.php:193
 msgid "with email response"
@@ -31480,7 +31495,7 @@ msgstr "без ответа на email"
 #: resources/.illustrations_translations.php:117
 msgctxt "Icon"
 msgid "world"
-msgstr ""
+msgstr "мир"
 
 #: templates/pages/setup/authentication/other_ext_setup.html.twig
 #: src/Auth.php:1272 src/Auth.php:1292

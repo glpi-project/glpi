@@ -9,8 +9,8 @@
 # meira <meira@ariel.muni.il>, 2025
 # Александр Гейбух, 2025
 # DOMBRE Julien <moyo@indepnet.net>, 2025
-# Rothmann Ehud, 2025
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2025
+# Rothmann Ehud, 2025
 # 
 #, fuzzy
 msgid ""
@@ -19,7 +19,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-04-24 08:02+0000\n"
 "PO-Revision-Date: 2022-09-16 06:53+0000\n"
-"Last-Translator: alexandre delaunay <delaunay.alexandre@gmail.com>, 2025\n"
+"Last-Translator: Rothmann Ehud, 2025\n"
 "Language-Team: Hebrew (Israel) (https://app.transifex.com/glpi/teams/1637/he_IL/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -3008,7 +3008,7 @@ msgstr "הוסף הערה"
 
 #: templates/pages/admin/form/form_toolbar.html.twig
 msgid "Add a question"
-msgstr ""
+msgstr "הוסף שאלה"
 
 #: templates/components/form/item_remotemanagement_list.html.twig
 msgid "Add a remote management"
@@ -3016,11 +3016,11 @@ msgstr "הוסף ניהול מרחוק"
 
 #: templates/pages/admin/form/form_toolbar.html.twig
 msgid "Add a section"
-msgstr ""
+msgstr "הוסף מקטע"
 
 #: templates/pages/admin/form/form_horizontal_block_toolbar.html.twig
 msgid "Add a slot"
-msgstr ""
+msgstr "הוסף חריץ"
 
 #: src/CommonITILObject.php:7423
 msgctxt "button"
@@ -3357,7 +3357,7 @@ msgstr "כתובת לשימוש מאת עבור הודעות דוא\"ל שנשל
 
 #: src/IPNetwork.php:183 src/IPNetwork.php:277
 msgid "Addressable network"
-msgstr ""
+msgstr "Addressable network"
 
 #: src/Glpi/Form/QuestionType/QuestionTypeItem.php:132 src/Profile.php:177
 #: src/Profile.php:1980 src/Profile.php:2987
@@ -3481,11 +3481,11 @@ msgstr[2] "סוגי סוכנים"
 
 #: src/NetworkPort.php:763
 msgid "Aggregated port"
-msgstr ""
+msgstr "יציאה מצטברת"
 
 #: src/NetworkPortAggregate.php:46
 msgid "Aggregation port"
-msgstr ""
+msgstr "יציאת צבירה"
 
 #: src/NotificationTargetCertificate.php:49
 msgid "Alarm on expired certificate"
@@ -3565,11 +3565,11 @@ msgstr "התראה על קריאות שלא נפתרו מתאריך"
 #: templates/pages/assets/networkport/form.html.twig src/Location.php:65
 #: src/Dropdown.php:784 src/NetworkPort.php:1647
 msgid "Alias"
-msgstr ""
+msgstr "כינוי"
 
 #: src/NetworkPortAlias.php:45
 msgid "Alias port"
-msgstr ""
+msgstr "כינוי יציאה"
 
 #: templates/components/datatable.html.twig
 #: templates/pages/setup/general/general_setup.html.twig
@@ -3625,7 +3625,7 @@ msgstr "כל הפריטים"
 
 #: src/Glpi/Form/Condition/ValueOperator.php:71
 msgid "All items of itemtype"
-msgstr ""
+msgstr "כל הפריטים מסוג itemtype"
 
 #: templates/pages/admin/customobjects/main.html.twig
 msgid "All items that are using this definition will be deleted."
@@ -3735,11 +3735,11 @@ msgstr "אפשר הורדת גרסת GLPI במידת הצורך"
 
 #: src/Glpi/Asset/CustomFieldType/TextType.php:51
 msgid "Allow images"
-msgstr ""
+msgstr "אפשר תמונות"
 
 #: src/Glpi/Form/QuestionType/AbstractQuestionTypeActors.php:375
 msgid "Allow multiple actors"
-msgstr ""
+msgstr "אפשר מספר שחקנים"
 
 #: src/Glpi/Form/QuestionType/QuestionTypeUserDevice.php:178
 msgid "Allow multiple devices"
@@ -3786,9 +3786,9 @@ msgstr "אפשר לשלוח סטטיסטיקות שימוש לשירות טלמ�
 #: src/ITILTemplate.php:182
 msgid "Allowed status"
 msgid_plural "Allowed statuses"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "סטטוס מורשה"
+msgstr[1] "סטטוסים מורשים"
+msgstr[2] "סטטוסים מורשים"
 
 #: src/Glpi/Marketplace/View.php:430
 msgid "Alpha ASC"
@@ -4056,7 +4056,7 @@ msgstr "אבחון"
 
 #: src/Change.php:537
 msgid "Analysis impact"
-msgstr ""
+msgstr "ניתוח ההשפעה"
 
 #: src/Glpi/Form/Condition/LogicOperator.php:45
 msgid "And"
@@ -4069,7 +4069,7 @@ msgstr "ואחזר את המפתח שלך כדי להדביק אותו למטה"
 #: js/modules/Form/WebIconSelector.js:128
 msgctxt "icons"
 msgid "Animals"
-msgstr ""
+msgstr "Animals"
 
 #: templates/pages/admin/entity/assistance.html.twig
 msgid "Anonymize support agents"
@@ -4194,17 +4194,17 @@ msgstr "מכשירים"
 #: src/Glpi/Console/Migration/AppliancesPluginToCoreCommand.php:197
 #, php-format
 msgid "Appliances plugin field \"%s\" is missing."
-msgstr ""
+msgstr "שדה תוסף מכשיר \"%s\" לא נמצא."
 
 #: src/Glpi/Console/Migration/AppliancesPluginToCoreCommand.php:189
 #, php-format
 msgid "Appliances plugin table \"%s\" is missing."
-msgstr ""
+msgstr "טבל מכשיר תוסף \"%s\" לא נמצא."
 
 #: resources/.illustrations_translations.php:4
 msgctxt "Icon"
 msgid "Application"
-msgstr ""
+msgstr "אפליקציה"
 
 #: templates/pages/setup/apiclient.html.twig src/APIClient.php:168
 msgid "Application token"
@@ -4269,7 +4269,7 @@ msgstr "בקשת אישור"
 #: src/CommonITILValidation.php:395 src/CommonITILValidation.php:550
 #, php-format
 msgid "Approval request sent to %s"
-msgstr ""
+msgstr "בקשת אישור נשלחה ל %s"
 
 #: phpunit/functional/RuleTest.php:368
 msgid "Approval request to requester group manager"
@@ -4358,9 +4358,9 @@ msgstr "אפריל"
 #: src/Software.php:583
 msgid "Architecture"
 msgid_plural "Architectures"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "ארכיטקטורה"
+msgstr[1] "ארכיטקטורות"
+msgstr[2] "ארכיטקטורות"
 
 #: src/MassiveAction.php:1278
 msgid "Are you sure you want to add this item to transfer list?"
@@ -4377,7 +4377,7 @@ msgstr "האם אתה בטוח שאתה רוצה לנקות את הקובץ הז
 #: js/modules/Dashboard/Dashboard.js:996
 #, javascript-format
 msgid "Are you sure you want to delete the dashboard %s ?"
-msgstr ""
+msgstr "האם אתה בטוח שברצונך למחוק את לוח המחוונים %s ?"
 
 #: templates/pages/admin/logs_list.html.twig
 #: templates/pages/admin/log_viewer.html.twig
@@ -4414,12 +4414,12 @@ msgstr "איזור"
 #: resources/.illustrations_translations.php:28
 msgctxt "Icon"
 msgid "Area chart"
-msgstr ""
+msgstr "תרשים שטחים"
 
 #: js/modules/Form/WebIconSelector.js:129
 msgctxt "icons"
 msgid "Arrows"
-msgstr ""
+msgstr "חצים"
 
 #: templates/generic_show_form.html.twig
 #: templates/pages/tools/project_task.html.twig
@@ -4483,14 +4483,14 @@ msgstr[2] "נכסים"
 
 #: templates/components/form/pictures.html.twig
 msgid "Asset URL"
-msgstr ""
+msgstr "כתובת אתר של הנכס"
 
 #: src/Glpi/Asset/AssetDefinition.php:89
 msgid "Asset definition"
 msgid_plural "Asset definitions"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "הגדרת נכס"
+msgstr[1] "הגדרות נכסים"
+msgstr[2] "הגדרות נכסים"
 
 #: templates/components/infocom.html.twig
 msgid "Asset lifecycle"
@@ -4499,7 +4499,7 @@ msgstr "מחזור חיים של נכס"
 #: resources/.illustrations_translations.php:10
 msgctxt "Icon"
 msgid "Asset lost"
-msgstr ""
+msgstr "נכס שאבד"
 
 #: src/Glpi/CustomObject/AbstractDefinition.php:319
 #: src/Glpi/CustomObject/AbstractDefinition.php:352
@@ -4508,7 +4508,7 @@ msgstr "שם נכס"
 
 #: templates/pages/admin/customobjects/translations.html.twig
 msgid "Asset name / Field"
-msgstr ""
+msgstr "שם הנכס / שדה"
 
 #: install/migrations/update_9.4.x_to_9.5.0/dashboards.php:177
 #: src/Webhook.php:437 src/Glpi/Form/QuestionType/QuestionTypeItem.php:113
@@ -4547,19 +4547,19 @@ msgstr "הקצה את הערך מביטוי רגולרי"
 
 #: src/RuleAsset.php:230
 msgid "Assign user from email"
-msgstr ""
+msgstr "הקצאת משתמש מהאימייל"
 
 #: src/RuleAsset.php:226
 msgid "Assign user from name"
-msgstr ""
+msgstr "הקצאת משתמש משם"
 
 #: src/RuleAsset.php:234
 msgid "Assign user from registration number"
-msgstr ""
+msgstr "הקצאת משתמש ממספר רישום"
 
 #: src/RuleAsset.php:238
 msgid "Assign user from sync field"
-msgstr ""
+msgstr "הקצאת משתמש משדה הסנכרון"
 
 #: src/RuleAction.php:395
 msgid "Assign: equipment by IP address"
@@ -4821,7 +4821,7 @@ msgstr "קיים ערך שגוי לפחות בשדה אחד"
 
 #: src/Glpi/Form/Condition/ValueOperator.php:70
 msgid "At least one item of itemtype"
-msgstr ""
+msgstr "לפחות פריט אחד מסוג itemtype"
 
 #: src/CommonITILObject.php:3683
 msgctxt "impact"
@@ -4886,7 +4886,7 @@ msgstr "אימות מול שרת דואר"
 
 #: templates/pages/setup/authentication/setup.html.twig
 msgid "Authentication setup"
-msgstr ""
+msgstr "הגדרת אימות"
 
 #: src/RuleRight.php:189
 msgid "Authentication type"
@@ -4906,7 +4906,7 @@ msgstr[2] "הרשאות"
 
 #: templates/pages/setup/oauthclient.html.twig
 msgid "Authorization code"
-msgstr ""
+msgstr "קוד אישור"
 
 #: src/CommonGLPI.php:1270
 msgid "Authorization error"
@@ -4921,7 +4921,7 @@ msgstr "ההרשאה נכשלה עם שגיאה:%s"
 
 #: src/Glpi/Inventory/Conf.php:396
 msgid "Authorization header"
-msgstr ""
+msgstr "כותרת הרשאה"
 
 #: src/Dropdown.php:1361 src/Profile.php:1044 src/Profile.php:3067
 #: src/RuleRightCollection.php:54
@@ -4935,14 +4935,14 @@ msgstr "אשר את ההשאלה"
 
 #: templates/pages/setup/oauthclient.html.twig
 msgid "Authorized redirect URIs"
-msgstr ""
+msgstr "כתובות URI מורשות להפניה מחדש"
 
 #: src/ValidatorSubstitute.php:42
 msgid "Authorized substitute"
 msgid_plural "Authorized substitutes"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "תחליף מורשה"
+msgstr[1] "תחליפים מורשים"
+msgstr[2] "תחליפים מורשים"
 
 #: src/DocumentType.php:52 src/DocumentType.php:112
 msgid "Authorized upload"
@@ -4963,7 +4963,7 @@ msgstr "חיבור אוטומטי"
 
 #: templates/pages/admin/form/form_destination_commonitil_config.html.twig
 msgid "Auto config"
-msgstr ""
+msgstr "תצורה אוטומטית"
 
 #: src/Auth.php:692
 msgid "Auto login disabled"
@@ -4971,7 +4971,7 @@ msgstr "חיבור אוטומטי אינו מאופשר"
 
 #: src/NotificationTargetCommonITILObject.php:2148
 msgid "Auto resolution deadline"
-msgstr ""
+msgstr "מועד אחרון לפתרון אוטומטי"
 
 #: src/RuleMailCollector.php:94
 msgid "Auto-Submitted email header"
@@ -5057,7 +5057,7 @@ msgstr "תדירות מעקב אוטומטית"
 
 #: src/PendingReason.php:81
 msgid "Automatic follow-up/solution frequency"
-msgstr ""
+msgstr "תדירות מעקב/פתרון אוטומטית"
 
 #: src/PendingReasonCron.php:197
 msgid "Automatic followups / resolution"
@@ -5079,9 +5079,9 @@ msgstr "טיהור אוטומטי של כרטיסים סגורים לאחר"
 #: src/ITILReminder.php:46
 msgid "Automatic reminder"
 msgid_plural "Automatic reminders"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "תזכורת אוטומטית"
+msgstr[1] "תזכורות אוטומטיות"
+msgstr[2] "תזכורות אוטומטיות"
 
 #: src/OlaLevel.php:83
 msgid "Automatic reminders of OLA"
@@ -5135,12 +5135,12 @@ msgstr "מחושב אוטומטי"
 
 #: templates/pages/setup/mailcollector/setup_form.html.twig
 msgid "Automatically create user from email"
-msgstr ""
+msgstr "צור משתמש אוטומטית מהאימייל"
 
 #: src/NotificationTemplate.php:253
 #, php-format
 msgid "Automatically generated by %s"
-msgstr ""
+msgstr "נוצר אוטומטית על ידי %s"
 
 #: src/Migration.php:892
 #, php-format
@@ -5227,7 +5227,7 @@ msgstr "חזרה"
 
 #: templates/pages/tools/search_knowbaseitem.html.twig
 msgid "Back to results"
-msgstr ""
+msgstr "חזרה לתוצאות"
 
 #: src/Consumable.php:208 src/Consumable.php:674
 msgid "Back to stock"
@@ -5256,20 +5256,20 @@ msgstr "תמונת רקע (שרטוט)"
 #: resources/.illustrations_translations.php:17
 msgctxt "Icon"
 msgid "Backup and restoration 1"
-msgstr ""
+msgstr "גיבוי ושחזור 1"
 
 #: resources/.illustrations_translations.php:18
 msgctxt "Icon"
 msgid "Backup and restoration 2"
-msgstr ""
+msgstr "גיבוי ושחזור 2"
 
 #: templates/pages/2fa/2fa_request.html.twig
 msgid "Backup code"
-msgstr ""
+msgstr "קוד גיבוי"
 
 #: templates/pages/2fa/2fa_status.html.twig
 msgid "Backup codes (This is the only time these will be shown)"
-msgstr ""
+msgstr "קודי גיבוי (זוהי הפעם היחידה שבה הם יוצגו)"
 
 #: templates/components/itilobject/fields_panel.html.twig src/Change.php:567
 #: src/NotificationTargetChange.php:282
@@ -5283,12 +5283,12 @@ msgstr "מזהה שדה בקריטריון חיפוש שגוי"
 #: js/modules/Form/WebIconSelector.js:130
 msgctxt "icons"
 msgid "Badges"
-msgstr ""
+msgstr "תגים"
 
 #: resources/.illustrations_translations.php:19
 msgctxt "Icon"
 msgid "Bank"
-msgstr ""
+msgstr "בנק"
 
 #: src/Glpi/Dashboard/Widget.php:120
 msgid "Bars"
@@ -5297,7 +5297,7 @@ msgstr "סורגים"
 #: resources/.illustrations_translations.php:29
 msgctxt "Icon"
 msgid "Bars chart"
-msgstr ""
+msgstr "גרף עמודות"
 
 #: templates/pages/setup/ldap/form.html.twig
 #: templates/pages/admin/ldap.user_criteria.html.twig
@@ -5314,13 +5314,13 @@ msgstr "מבוסס על הפריט ואז על הקטגוריה"
 
 #: src/Glpi/Inventory/Conf.php:402
 msgid "Basic Authentication"
-msgstr ""
+msgstr "אימות בסיסי"
 
 #: src/Glpi/Inventory/Conf.php:1157
 msgid ""
 "Basic Authentication is active. The login and/or password fields are "
 "missing."
-msgstr ""
+msgstr "אימות בסיסי פעיל. שדות ההתחברות ו/או הסיסמה חסרים."
 
 #: src/DeviceBattery.php:42
 msgid "Battery"
@@ -5344,7 +5344,7 @@ msgstr "היזהר: לא קיים ערך ברירת מחדל"
 #. TRANS: short for : To be in charge of a ticket
 #: src/Ticket.php:5286
 msgid "Be in charge"
-msgstr ""
+msgstr "להיות אחראי"
 
 #: src/Rule.php:634
 msgid "Before"
@@ -5378,6 +5378,8 @@ msgid ""
 "Besides, if you appreciate GLPI and its community, please take a minute to "
 "reference your organization by filling %1$s"
 msgstr ""
+"חוץ מזה, אם אתם מעריכים את GLPI ואת הקהילה שלה, אנא קחו רגע להתייחס לארגון "
+"שלכם על ידי מילוי %1$s"
 
 #: src/Glpi/Marketplace/View.php:455
 msgid "Best notes"
@@ -5389,15 +5391,15 @@ msgstr "מספר גדול"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "Binary log GTID:"
-msgstr ""
+msgstr "יומן בינארי GTID:"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "Binary log file:"
-msgstr ""
+msgstr "קובץ יומן בינארי:"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "Binary log position:"
-msgstr ""
+msgstr "מיקום יומן בינארי:"
 
 #: templates/pages/setup/ldap/user_config_form.html.twig
 msgid "Binding to the LDAP directory"
@@ -5421,7 +5423,7 @@ msgstr "הדפסות שחור לבן"
 
 #: templates/components/printer_graph_buttons.html.twig
 msgid "Black and white pages"
-msgstr ""
+msgstr "דפי שחור לבן"
 
 #: src/Blacklist.php:109
 msgid "Blacklist"
@@ -5454,7 +5456,7 @@ msgstr "תכנית"
 #: resources/.illustrations_translations.php:23
 msgctxt "Icon"
 msgid "Bookmark"
-msgstr ""
+msgstr "סימניה"
 
 #: src/PDU_Rack.php:654
 msgid "Bottom"
@@ -5462,11 +5464,11 @@ msgstr "תחתית"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Bottom left"
-msgstr ""
+msgstr "למטה משמאל"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Bottom right"
-msgstr ""
+msgstr "למטה מימין"
 
 #: templates/generic_show_form.html.twig src/Peripheral.php:340
 #: src/Phone.php:401
@@ -5485,16 +5487,16 @@ msgstr "עיון"
 
 #: src/Glpi/Helpdesk/DefaultDataManager.php:93
 msgid "Browse help articles"
-msgstr ""
+msgstr "עיין במאמרי עזרה"
 
 #: resources/.illustrations_translations.php:24
 msgctxt "Icon"
 msgid "Browse help articles"
-msgstr ""
+msgstr "עיין במאמרי עזרה"
 
 #: src/NotificationAjaxSetting.php:45
 msgid "Browser notifications configuration"
-msgstr ""
+msgstr "הגדרת התראות דפדפן"
 
 #: src/Budget.php:67
 msgid "Budget"
@@ -5513,7 +5515,7 @@ msgstr[2] "סוגי תקציב"
 #: resources/.illustrations_translations.php:25
 msgctxt "Icon"
 msgid "Building"
-msgstr ""
+msgstr "בניין"
 
 #: src/NotificationTargetTicket.php:609 src/NotificationTargetTicket.php:664
 #: src/Location.php:100 src/Location.php:219 src/Location.php:271
@@ -5523,7 +5525,7 @@ msgstr "מספר בניין"
 #: js/modules/Form/WebIconSelector.js:132
 msgctxt "icons"
 msgid "Buildings"
-msgstr ""
+msgstr "בניינים"
 
 #: templates/pages/admin/ldap.groups.html.twig
 msgid "Bulk import groups from a LDAP directory"
@@ -5544,17 +5546,17 @@ msgstr "שגיאה בעדכון המוני"
 #: resources/.illustrations_translations.php:20
 msgctxt "Icon"
 msgid "Business Intelligence and Reporting 1"
-msgstr ""
+msgstr "בינה עסקית ודיווח 1"
 
 #: resources/.illustrations_translations.php:21
 msgctxt "Icon"
 msgid "Business Intelligence and Reporting 2"
-msgstr ""
+msgstr "בינה עסקית ודיווח 2"
 
 #: resources/.illustrations_translations.php:22
 msgctxt "Icon"
 msgid "Business Intelligence and Reporting 3"
-msgstr ""
+msgstr "בינה עסקית ודיווח 3"
 
 #: templates/components/infocom.html.twig src/BusinessCriticity.php:45
 #: src/Infocom.php:1717 src/Infocom.php:1986
@@ -5575,20 +5577,20 @@ msgstr "כללים עסקיים לנכסים"
 
 #: src/RuleChange.php:43 src/RuleChangeCollection.php:44 src/Profile.php:3009
 msgid "Business rules for changes"
-msgstr ""
+msgstr "כללי עסק לשינויים"
 
 #: src/Profile.php:1067
 msgid "Business rules for changes (entity)"
-msgstr ""
+msgstr "כללים עסקיים לשינויים (ישות)"
 
 #: src/RuleProblem.php:43 src/RuleProblemCollection.php:44
 #: src/Profile.php:3024
 msgid "Business rules for problems"
-msgstr ""
+msgstr "כללי עסקים לבעיות"
 
 #: src/Profile.php:1070
 msgid "Business rules for problems (entity)"
-msgstr ""
+msgstr "כללי עסקיים לבעיות (ישות)"
 
 #: phpunit/functional/RuleTest.php:162 src/RuleTicket.php:43
 #: src/Profile.php:2994 src/RuleTicketCollection.php:44
@@ -5668,7 +5670,7 @@ msgstr "לפי קריאות"
 #, php-format
 msgid ""
 "By uninstalling the \"%s\" plugin you will lose all the data of the plugin."
-msgstr ""
+msgstr "על ידי הסרת התוסף  \"%s\" תאבד את כל הנתונים של התוסף.."
 
 #: src/Report.php:84
 msgid "By year"
@@ -5684,7 +5686,7 @@ msgstr "שרת CAS"
 
 #: templates/pages/setup/authentication/other_ext_setup.html.twig
 msgid "CAS Version"
-msgstr ""
+msgstr "גירסת CAS"
 
 #: templates/pages/setup/authentication/other_ext_setup.html.twig
 msgid "CAS authentication"
@@ -5696,15 +5698,15 @@ msgstr "ממשק פקודות טקסט"
 
 #: src/Item_Process.php:156
 msgid "CPU Usage"
-msgstr ""
+msgstr "שימוש במעבד"
 
 #: templates/pages/setup/webhook/webhook_security.html.twig
 msgid "CRA Challenge"
-msgstr ""
+msgstr "אתגר CRA"
 
 #: templates/pages/setup/webhook/webhook_security.html.twig
 msgid "CRA result"
-msgstr ""
+msgstr "תוצאת CRA"
 
 #: templates/pages/setup/notification/template.html.twig
 msgid "CSS"
@@ -5761,49 +5763,53 @@ msgstr "תצורת המטמון נשמרה בהצלחה."
 
 #: src/Glpi/Console/Cache/ConfigureCommand.php:82
 msgid "Cache context (i.e. 'core' or 'plugin:plugin_name')"
-msgstr ""
+msgstr "הקשר מטמון (i.e. 'core' or 'plugin:plugin_name')"
 
 #: src/Glpi/Console/Cache/DebugCommand.php:66
 msgid "Cache context to clear (i.e. 'core' or 'plugin:plugin_name')."
-msgstr ""
+msgstr "הקשר מטמון לניקוי (i.e. 'core' or 'plugin:plugin_name')."
 
 #: src/Glpi/Console/Cache/ClearCommand.php:73
 msgid ""
 "Cache context to clear (i.e. 'core' or 'plugin:plugin_name'). All contexts "
 "are cleared by default."
 msgstr ""
+"הקשר מטמון לניקוי (i.e. 'core' or 'plugin:plugin_name'). All ההקשרים מנוקים "
+"כברירת מחדל."
 
 #: src/Glpi/Console/Cache/DebugCommand.php:88
 #, php-format
 msgid "Cache key \"%s\" is not set."
-msgstr ""
+msgstr "מפתח מטמון \"%s\" לא מוגדר."
 
 #: src/Glpi/Console/Cache/DebugCommand.php:90
 #, php-format
 msgid "Cache key \"%s\" value:"
-msgstr ""
+msgstr "מפתח מטמון \"%s\" ערך:"
 
 #: src/Glpi/Console/Cache/DebugCommand.php:59
 msgid "Cache key to debug."
-msgstr ""
+msgstr "מפתח מטמון לאיתור באגים."
 
 #: src/Glpi/Console/Cache/ConfigureCommand.php:122
 msgid ""
 "Cache namespace can be use to ensure either separation or sharing of "
 "multiple GLPI instances data on same cache system."
 msgstr ""
+"ניתן להשתמש במרחב שמות מטמון כדי להבטיח הפרדה או שיתוף של נתוני מופעי GLPI "
+"מרובים באותה מערכת מטמון."
 
 #: src/Glpi/Console/Cache/ConfigureCommand.php:90
 msgid "Cache system DSN"
-msgstr ""
+msgstr "DSN של מערכת המטמון"
 
 #: templates/pages/assistance/planning/single_filter.html.twig
 msgid "CalDAV URL has been copied to clipboard"
-msgstr ""
+msgstr "כתובת ה-URL של CalDAV הועתקה ללוח"
 
 #: src/Planning.php:132
 msgid "CalDAV browser interface"
-msgstr ""
+msgstr "ממשק הדפדפן CalDAV"
 
 #: templates/pages/tools/reminder.html.twig
 #: templates/pages/assistance/planning/external_event.html.twig
@@ -5825,7 +5831,7 @@ msgstr "לוח שנה"
 #: src/Glpi/CalDAV/Backend/Calendar.php:128
 #, php-format
 msgid "Calendar of %s"
-msgstr ""
+msgstr "לוח שנה של %s"
 
 #: src/SLM.php:172
 msgid "Calendar of the ticket"
@@ -5834,15 +5840,15 @@ msgstr "יומן של אירוע"
 #: templates/pages/setup/notification/mailing_setting.html.twig
 msgctxt "oauth"
 msgid "Callback URL"
-msgstr ""
+msgstr "כתובת URL להתקשרות חוזרת"
 
 #: templates/pages/management/line.html.twig src/Line.php:237
 msgid "Caller name"
-msgstr ""
+msgstr "שם המתקשר"
 
 #: templates/pages/management/line.html.twig src/Line.php:229
 msgid "Caller number"
-msgstr ""
+msgstr "טלפון המתקשר"
 
 #: src/DeviceCamera.php:42
 msgid "Camera"
@@ -5853,11 +5859,11 @@ msgstr[2] "מצלמות"
 
 #: src/Glpi/Asset/Capacity/IsProjectAssetCapacity.php:58
 msgid "Can be associated to a project"
-msgstr ""
+msgstr "ניתן לשייך לפרויקט"
 
 #: src/Glpi/Asset/Capacity/HasPeripheralAssetsCapacity.php:58
 msgid "Can be connected to external peripherals or monitors"
-msgstr ""
+msgstr "ניתן לחבר לציוד היקפי חיצוני או צגים"
 
 #: src/Group.php:452
 msgid "Can be in charge of a task"
@@ -5865,7 +5871,7 @@ msgstr "יכול להיות אחראי על משימה"
 
 #: src/Glpi/Asset/Capacity/IsRackableCapacity.php:58
 msgid "Can be inserted in a datacenter rack"
-msgstr ""
+msgstr "ניתן להכניס למדף של מרכז נתונים"
 
 #: templates/pages/admin/group.html.twig src/Group.php:400
 msgid "Can be manager"
@@ -5873,13 +5879,13 @@ msgstr "יכול להיות מנהל"
 
 #: templates/pages/admin/group.html.twig src/Group.php:408
 msgid "Can be notified"
-msgstr ""
+msgstr "ניתן לקבל הודעה"
 
 #: src/Glpi/Asset/Capacity/HasAppliancesCapacity.php:59
 msgid ""
 "Can be part of an appliance. An appliance is a virtual object that groups "
 "several assets"
-msgstr ""
+msgstr "יכול להיות חלק ממכשיר. מכשיר הוא אובייקט וירטואלי שמקבץ מספר נכסים."
 
 #: templates/pages/admin/group.html.twig src/Group.php:416 src/Group.php:424
 msgid "Can contain"
@@ -5891,13 +5897,15 @@ msgstr "לא ניתן להוסיף טווח מקביל לתקופה שכבר ק�
 
 #: templates/pages/admin/form/import/step2_preview.html.twig
 msgid "Can't be imported"
-msgstr ""
+msgstr "לא ניתן לייבא"
 
 #: src/Profile.php:432
 msgid ""
 "Can't change the interface on this profile as it is the only remaining "
 "profile with rights to modify profiles with this interface."
 msgstr ""
+"לא ניתן לשנות את הממשק בפרופיל זה מכיוון שזהו הפרופיל היחיד שנותר עם הרשאות "
+"לשנות פרופילים באמצעות ממשק זה."
 
 #: templates/install/step3.html.twig
 msgid "Can't connect to the database"
@@ -5909,22 +5917,24 @@ msgstr "אין התחברות לבסיס הנתונים."
 
 #: src/CronTask.php:934
 msgid "Can't get DB lock"
-msgstr ""
+msgstr "לא ניתן לקבל נעילת מסד נתונים"
 
 #: src/Profile.php:422
 msgid ""
 "Can't remove update right on this profile as it is the only remaining "
 "profile with this right."
 msgstr ""
+"לא ניתן להסיר את הרשאת העדכון בפרופיל הזה מכיוון שזהו הפרופיל היחיד שנותר עם"
+" הרשאה זו."
 
 #: src/User.php:1314
 msgid ""
 "Can't set user as inactive as it is the only remaining super administrator."
-msgstr ""
+msgstr "לא ניתן להגדיר את המשתמש כלא פעיל מכיוון שהוא מנהל-העל היחיד שנותר."
 
 #: src/CronTask.php:910 src/CronTask.php:922
 msgid "Can't start"
-msgstr ""
+msgstr "לא ניתן להתחיל"
 
 #: templates/components/form/basic_inputs_macros.html.twig
 #: templates/components/plugin_update_modal.html.twig
@@ -5953,7 +5963,7 @@ msgstr "בטל את בקשת האישור ל %s"
 
 #: templates/components/itilobject/footer.html.twig
 msgid "Cancel ticket"
-msgstr ""
+msgstr "ביטול כרטיס"
 
 #: src/Change.php:723
 msgctxt "status"
@@ -5962,15 +5972,15 @@ msgstr "בוטל"
 
 #: src/ValidatorSubstitute.php:156
 msgid "Cannot change the validation delegator"
-msgstr ""
+msgstr "לא ניתן לשנות את גורם האימות"
 
 #: src/Glpi/Marketplace/Controller.php:181
 msgid "Cannot find the specified version of the plugin."
-msgstr ""
+msgstr "לא ניתן למצוא את הגרסה שצוינה של התוסף."
 
 #: src/Glpi/Console/Diagnostic/CheckSourceCodeIntegrityCommand.php:137
 msgid "Cannot generate a diff on a development version."
-msgstr ""
+msgstr "לא ניתן ליצור הבדל בגרסת פיתוח."
 
 #: src/CommonDBConnexity.php:323
 #, php-format
@@ -5984,11 +5994,11 @@ msgstr ""
 
 #: templates/components/form/header_content.html.twig
 msgid "Can՛t change this attribute. It՛s inherited from its parent."
-msgstr ""
+msgstr "לא ניתן לשנות את המאפיין הזה. הוא עבר בירושה מהאב שלו."
 
 #: src/Glpi/Asset/AssetDefinition.php:112
 msgid "Capacities"
-msgstr ""
+msgstr "קיבולות"
 
 #: src/Item_DeviceHardDrive.php:51 src/Item_DeviceHardDrive.php:52
 #: src/DeviceBattery.php:57 src/DeviceBattery.php:81 src/DeviceBattery.php:121
@@ -6012,7 +6022,7 @@ msgstr "צבע"
 #: resources/.illustrations_translations.php:27
 msgctxt "Icon"
 msgid "Car"
-msgstr ""
+msgstr "רכב"
 
 #: src/CartridgeItem.php:253 src/Printer.php:586
 #: src/Glpi/Inventory/Asset/Cartridge.php:57 src/Profile.php:2296
@@ -6108,11 +6118,11 @@ msgstr "תגובה בקטגוריה"
 
 #: src/RuleSoftwareCategory.php:75 src/RuleDictionnarySoftware.php:79
 msgid "Category from inventory tool"
-msgstr ""
+msgstr "קטגוריה מכלי המלאי"
 
 #: src/NotificationTargetCommonITILObject.php:2076
 msgid "Category id"
-msgstr ""
+msgstr "מזהה קטגוריה"
 
 #: src/Stat.php:1816
 msgid "Category tree"
@@ -6121,13 +6131,13 @@ msgstr "עץ קטגוריה"
 #: templates/components/itilobject/fields_panel.html.twig
 #: src/NotificationTargetProblem.php:202 src/Problem.php:508
 msgid "Causes"
-msgstr ""
+msgstr "גורמים"
 
 #: src/CommonDBVisible.php:351
 msgid ""
 "Caution! You are not the author of this item. Deleting targets can result in"
 " loss of access."
-msgstr ""
+msgstr "זהירות! אינך המחבר של פריט זה. מחיקת יעדים עלולה לגרום לאובדן גישה."
 
 #: install/update.php:149
 #, php-format
@@ -6140,15 +6150,15 @@ msgstr "זהירות: הינך הולך להסיר כותרת אשר בשימו�
 
 #: templates/pages/management/dcroom.html.twig
 msgid "Cell height"
-msgstr ""
+msgstr "גובה התא"
 
 #: templates/pages/management/dcroom.html.twig
 msgid "Cell width"
-msgstr ""
+msgstr "רוחב התא"
 
 #: install/migrations/update_9.4.x_to_9.5.0/dashboards.php:39
 msgid "Central"
-msgstr ""
+msgstr "מרכזי"
 
 #: src/Certificate.php:72
 msgid "Certificate"
@@ -6180,7 +6190,7 @@ msgstr[2] "סוגי תעודות"
 
 #: src/NotificationTargetCertificate.php:143
 msgid "Certificates list (deprecated; contains only one element)"
-msgstr ""
+msgstr "רשימת אישורים (הוצא משימוש; מכילה אלמנט אחד בלבד)"
 
 #: templates/pages/setup/webhook/webhook_security.html.twig
 msgid ""
@@ -6188,6 +6198,8 @@ msgid ""
 "the target server before any data is sent from GLPI. This uses the shared "
 "secret that was generated in the above section."
 msgstr ""
+"ניתן להשתמש באימות אתגר-תגובה כדי לאמת את זהות שרת היעד לפני שנשלחים נתונים "
+"כלשהם מ-GLPI. פעולה זו משתמשת בסוד המשותף שנוצר בסעיף לעיל."
 
 #: src/Webhook.php:1049
 msgid ""
@@ -6197,7 +6209,7 @@ msgstr ""
 
 #: src/Webhook.php:1044
 msgid "Challenge–response authentication validated"
-msgstr ""
+msgstr "Challenge–response אימות אושר"
 
 #: src/NotificationTargetTicket.php:740 src/NotificationTargetTicket.php:756
 #: src/NotificationTargetProject.php:792 src/NotificationTargetProject.php:810
@@ -6217,7 +6229,7 @@ msgstr ""
 
 #: phpunit/functional/LogTest.php:467 src/Log.php:1243
 msgid "Change a component"
-msgstr ""
+msgstr "שנה רכיב"
 
 #: templates/pages/setup/general/logs_setup.html.twig
 msgid "Change all"
@@ -6226,13 +6238,13 @@ msgstr "שנה הכל"
 #: src/ChangeValidation.php:50
 msgid "Change approval"
 msgid_plural "Change approvals"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "אישור שינוי"
+msgstr[1] "אישורי שינויים"
+msgstr[2] "אישורי שינויים"
 
 #: src/SavedSearch.php:96
 msgid "Change count method"
-msgstr ""
+msgstr "שיטת ספירת שינויים"
 
 #: src/Change_Item.php:53
 msgid "Change item"
@@ -6243,7 +6255,7 @@ msgstr[2] "שנה פריטים"
 
 #: templates/layout/parts/user_header.html.twig
 msgid "Change mode"
-msgstr ""
+msgstr "שינוי מצב"
 
 #: templates/pages/setup/authentication/sync.html.twig
 msgid "Change of the authentication method"
@@ -6256,23 +6268,23 @@ msgstr ""
 
 #: templates/pages/admin/user/user.html.twig
 msgid "Change password"
-msgstr ""
+msgstr "שנה סיסמה"
 
 #: src/Glpi/Console/Security/ChangekeyCommand.php:58
 msgid "Change password storage key and update values in database."
-msgstr ""
+msgstr "שינוי מפתח אחסון סיסמה ועדכון ערכים במסד הנתונים."
 
 #: templates/pages/admin/user/user_picture_field.html.twig
 msgid "Change picture"
-msgstr ""
+msgstr "שנה תמונה"
 
 #: templates/layout/parts/profile_selector.html.twig
 msgid "Change profile"
-msgstr ""
+msgstr "שנה פרופיל"
 
 #: src/NotificationTargetChange.php:62
 msgid "Change solved"
-msgstr ""
+msgstr "שינוי נפתר"
 
 #: src/ChangeTask.php:40
 msgid "Change task"
@@ -6283,7 +6295,7 @@ msgstr[2] "שנה משימות"
 
 #: src/CommonITILTask.php:1832
 msgid "Change tasks to do"
-msgstr ""
+msgstr "שינוי משימות לביצוע"
 
 #: src/ChangeTemplate.php:47
 msgid "Change template"
@@ -6311,15 +6323,15 @@ msgstr "שנה מראה"
 
 #: templates/components/form/header_content.html.twig
 msgid "Change visibility in child entities."
-msgstr ""
+msgstr "שינוי נראות בישויות צאצא."
 
 #: js/modules/Knowbase.js:132
 msgid "Changed"
-msgstr ""
+msgstr "שונה"
 
 #: src/Glpi/Marketplace/View.php:583
 msgid "Changelog"
-msgstr ""
+msgstr "יומן שינויים"
 
 #: js/impact.js:2565
 msgid "Changes"
@@ -6327,11 +6339,11 @@ msgstr "שינויים"
 
 #: src/Change.php:1179 src/Change.php:1228
 msgid "Changes on pending status"
-msgstr ""
+msgstr "שינויים במצב ממתין"
 
 #: src/Change.php:1195 src/Change.php:1244
 msgid "Changes to be processed"
-msgstr ""
+msgstr "שינויים שיש לעבד"
 
 #: src/Entity.php:785 src/Contract.php:472 src/Budget.php:166
 #: src/PassiveDCEquipment.php:90 src/Stat.php:1839
@@ -6362,11 +6374,11 @@ msgstr "מאפיינים"
 #: js/modules/Form/WebIconSelector.js:133
 msgctxt "icons"
 msgid "Charts"
-msgstr ""
+msgstr "תרשימים"
 
 #: src/Glpi/Console/Diagnostic/CheckSourceCodeIntegrityCommand.php:73
 msgid "Check GLPI source code file integrity."
-msgstr ""
+msgstr "בדוק את שלמות קובץ קוד המקור של GLPI."
 
 #: templates/components/datatable.html.twig
 msgid "Check all"
@@ -6374,12 +6386,12 @@ msgstr "סמן הכל"
 
 #: templates/components/search/table.html.twig
 msgid "Check all as"
-msgstr ""
+msgstr "סמן הכל כ"
 
 #: src/Glpi/Marketplace/Controller.php:402
 #: src/Glpi/Marketplace/NotificationTargetController.php:62
 msgid "Check all plugin updates"
-msgstr ""
+msgstr "בדוק את כל עדכוני התוספים"
 
 #: templates/pages/setup/notification/mailing_setting.html.twig
 msgid "Check certificate"
@@ -6387,12 +6399,12 @@ msgstr "בדוק תעודה"
 
 #: src/Glpi/Console/Diagnostic/CheckHtmlEncodingCommand.php:103
 msgid "Check for badly HTML encoded content in database."
-msgstr ""
+msgstr "בדוק אם יש תוכן מקודד HTML שגוי במסד הנתונים."
 
 #: src/Glpi/Console/Database/CheckSchemaIntegrityCommand.php:88
 msgid ""
 "Check for schema differences between current database and installation file."
-msgstr ""
+msgstr "בדוק אם יש תוכן מקודד HTML שגוי במסד."
 
 #: templates/pages/setup/general/systeminfo_form.html.twig
 msgid "Check if a new version is available"
@@ -7107,7 +7119,7 @@ msgstr[2] "מחשבים"
 
 #: src/ItemVirtualMachine.php:488
 msgid "Computer UUID"
-msgstr ""
+msgstr "UUID של המחשב"
 
 #: templates/pages/admin/inventory/agent.html.twig src/Agent.php:193
 msgid "Computer inventory"
@@ -7143,11 +7155,11 @@ msgstr "תנאי"
 
 #: templates/pages/admin/form/conditional_visibility_dropdown.html.twig
 msgid "Conditional visibility"
-msgstr ""
+msgstr "נראות מותנית"
 
 #: templates/pages/admin/form/form_destination_actions.html.twig
 msgid "Conditions"
-msgstr ""
+msgstr "תנאים"
 
 #: src/Glpi/Inventory/Conf.php:308
 msgid "Configuration"
@@ -7155,7 +7167,7 @@ msgstr "קונפיגורציה"
 
 #: src/Toolbox.php:2179
 msgid "Configuration defaults defined."
-msgstr ""
+msgstr "ברירות מחדל של תצורה מוגדרות."
 
 #: src/Glpi/Console/Application.php:188
 msgid "Configuration directory to use. Deprecated option"
@@ -7219,7 +7231,7 @@ msgstr "אשר"
 #: templates/pages/admin/user/change_other_password.html.twig
 #: src/Glpi/Console/User/AbstractUserCommand.php:64
 msgid "Confirm password"
-msgstr ""
+msgstr "אשר סיסמה"
 
 #: templates/components/itilobject/timeline/form_task_main_form.html.twig
 msgid "Confirm the deletion of planning?"
@@ -7282,11 +7294,11 @@ msgstr[2] "חיבורים"
 
 #: src/NetworkPortDialup.php:46
 msgid "Connection by dial line - Dialup Port"
-msgstr ""
+msgstr "חיבור באמצעות קו חיוג - יציאת חיוג"
 
 #: src/NotificationTargetMailCollector.php:80 src/MailCollector.php:411
 msgid "Connection errors"
-msgstr ""
+msgstr "שגיאות חיבור"
 
 #: src/User.php:5309
 msgid "Connection failed"
@@ -7325,7 +7337,7 @@ msgstr "מקרא חיבורים"
 #: resources/.illustrations_translations.php:35
 msgctxt "Icon"
 msgid "Connectivity issue"
-msgstr ""
+msgstr "בעיית קישוריות"
 
 #: templates/components/search/table.html.twig
 #: templates/components/search/display_data.html.twig
@@ -7965,11 +7977,11 @@ msgstr "סף מצב קריטי"
 
 #: templates/layout/parts/profile_selector.html.twig
 msgid "Ctrl + Alt + E"
-msgstr ""
+msgstr "Ctrl + Alt + E"
 
 #: templates/layout/parts/goto_button.html.twig
 msgid "Ctrl+Alt+G"
-msgstr ""
+msgstr "Ctrl+Alt+G"
 
 #: js/modules/Form/WebIconSelector.js:136
 msgctxt "icons"
@@ -7978,7 +7990,7 @@ msgstr ""
 
 #: src/Glpi/Console/Database/UpdateCommand.php:181
 msgid "Current"
-msgstr ""
+msgstr "נוכחי"
 
 #: src/Glpi/Console/Database/UpdateCommand.php:173
 #, php-format
@@ -8001,11 +8013,11 @@ msgstr ""
 
 #: src/Glpi/Form/QuestionType/QuestionTypeDateTime.php:136
 msgid "Current date"
-msgstr ""
+msgstr "תאריך נוכחי"
 
 #: src/Glpi/Form/QuestionType/QuestionTypeDateTime.php:138
 msgid "Current date and time"
-msgstr ""
+msgstr "תאריך ושעה נוכחיים"
 
 #: templates/pages/management/document.html.twig
 msgid "Current file"
@@ -8014,19 +8026,19 @@ msgstr "קובץ נוכחי"
 #: phpunit/functional/TaskTemplateTest.php:120 src/TaskTemplate.php:195
 #: src/TaskTemplate.php:226 src/TaskTemplate.php:254 src/User.php:4157
 msgid "Current logged-in user"
-msgstr ""
+msgstr "משתמש מחובר נוכחי"
 
 #: templates/components/search/controls.html.twig
 msgid "Current page"
-msgstr ""
+msgstr "דף נוכחי"
 
 #: src/Dropdown.php:2759
 msgid "Current page as Office Open XML (.xlsx)"
-msgstr ""
+msgstr "הדף הנוכחי כקובץ Office Open XML (.xlsx)"
 
 #: src/Dropdown.php:2758
 msgid "Current page as Open Document format (.ods)"
-msgstr ""
+msgstr "הדף הנוכחי בפורמט מסמך פתוח (.ods)"
 
 #: src/Dropdown.php:2757
 msgid "Current page in CSV"
@@ -8034,82 +8046,82 @@ msgstr "ייצא עמוד נוכחי ב-CSV"
 
 #: src/Dropdown.php:2755
 msgid "Current page in landscape PDF"
-msgstr ""
+msgstr "העמוד הנוכחי בפורמט PDF אופקי"
 
 #: src/Dropdown.php:2756
 msgid "Current page in portrait PDF"
-msgstr ""
+msgstr "העמוד הנוכחי בפורמט PDF אנכי"
 
 #: templates/password_form.html.twig
 msgid "Current password"
-msgstr ""
+msgstr "סיסמא נוכחית"
 
 #: src/Glpi/Form/QuestionType/QuestionTypeDateTime.php:137
 msgid "Current time"
-msgstr ""
+msgstr "זמן נוכחי"
 
 #: src/Glpi/Console/Rules/ReplayDictionnaryRulesCommand.php:68
 msgid "Currently only available for Software dictionary."
-msgstr ""
+msgstr "זמין כרגע רק עבור מילון תוכנה."
 
 #: templates/pages/admin/entity/custom_ui.html.twig
 msgid "Custom CSS is disabled"
-msgstr ""
+msgstr "CSS מותאם אישית מושבת"
 
 #: src/Profile.php:1398
 msgid "Custom asset"
 msgid_plural "Custom assets"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "נכס מותאם אישית"
+msgstr[1] "נכסים מותאמים אישית"
+msgstr[2] "נכסים מותאמים אישית"
 
 #: src/Dropdown.php:1393 src/Dropdown.php:1395
 msgid "Custom dropdowns"
-msgstr ""
+msgstr "תפריטים נפתחים מותאמים אישית"
 
 #: src/Glpi/Asset/CustomFieldDefinition.php:54 src/Glpi/Asset/Asset.php:313
 msgid "Custom field"
 msgid_plural "Custom fields"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "שדה מותאם אישית"
+msgstr[1] "שדות מותאמים אישית"
+msgstr[2] "שדות מותאמים אישית"
 
 #: src/Webhook.php:760
 msgid "Custom header"
 msgid_plural "Custom headers"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "כותרת מותאמת אישית"
+msgstr[1] "כותרות מותאמות אישית"
+msgstr[2] "כותרות מותאמות אישית"
 
 #: templates/pages/admin/helpdesk_home_custom_scene_config.html.twig
 msgid "Custom illustration"
-msgstr ""
+msgstr "איור בהתאמה אישית"
 
 #: templates/pages/admin/helpdesk_home_custom_scene_config.html.twig
 msgid "Custom illustration preview and selection"
-msgstr ""
+msgstr "תצוגה מקדימה ובחירה של איור מותאם אישית"
 
 #: templates/pages/admin/helpdesk_home_custom_scene_config.html.twig
 msgid "Custom illustrations"
-msgstr ""
+msgstr "איורים בהתאמה אישית"
 
 #: templates/components/printer_graph_buttons.html.twig
 msgid "Custom range"
-msgstr ""
+msgstr "טווח מותאם אישית"
 
 #: src/Glpi/Inventory/Asset/Cartridge.php:72 src/Printer_CartridgeInfo.php:218
 msgid "Cyan"
-msgstr ""
+msgstr "ציאן"
 
 #: src/Profile_User.php:190 src/Profile_User.php:362 src/UserEmail.php:226
 #: src/Glpi/Search/Provider/SQLProvider.php:5280
 #: src/Glpi/Search/Provider/SQLProvider.php:5327
 msgid "D"
-msgstr ""
+msgstr "D"
 
 #: src/Profile_User.php:216
 msgid "D=Dynamic, R=Recursive"
-msgstr ""
+msgstr "D=Dynamic, R=Recursive"
 
 #: src/Glpi/System/Requirement/DbConfiguration.php:55
 msgid "DB configuration"
@@ -8167,13 +8179,13 @@ msgstr "לוח מחוונים"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Dashboards"
-msgstr ""
+msgstr "לוחות מחוונים"
 
 #: templates/components/dashboard/widget_form.html.twig
 #: templates/pages/management/domainrecord.html.twig
 #: src/DomainRecordType.php:380 src/DomainRecord.php:126
 msgid "Data"
-msgstr ""
+msgstr "נתונים"
 
 #. TRANS: Test of comment for translation (mark : //TRANS)
 #: src/Datacenter.php:52 src/Datacenter.php:147
@@ -8186,19 +8198,19 @@ msgstr[2] "חדרי מחשוב"
 #: templates/generic_show_form.html.twig src/Cable.php:380 src/Cable.php:395
 #: src/Datacenter.php:158
 msgid "Data center position"
-msgstr ""
+msgstr "מיקום מרכז הנתונים"
 
 #: resources/.illustrations_translations.php:40
 msgctxt "Icon"
 msgid "Data export"
-msgstr ""
+msgstr "ייצוא נתונים"
 
 #. TRANS: %s is the table or item to migrate
 #: install/migrations/update_9.1.x_to_9.2.0.php:1211
 #: install/migrations/update_0.90.x_to_9.1.0.php:853 src/Migration.php:948
 #, php-format
 msgid "Data migration - %s"
-msgstr ""
+msgstr "העברת נתונים - %s"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig src/Database.php:54
 msgid "Database"
@@ -8315,7 +8327,7 @@ msgstr ""
 
 #: src/Glpi/Console/Database/AbstractConfigureCommand.php:154
 msgid "Database name:"
-msgstr ""
+msgstr "שם מסד נתונים:"
 
 #: src/Glpi/Console/Database/AbstractConfigureCommand.php:118
 msgid "Database password"
@@ -8339,11 +8351,11 @@ msgstr ""
 #: src/Glpi/Console/Database/UpdateCommand.php:339
 #: src/Glpi/Console/Database/CheckSchemaIntegrityCommand.php:220
 msgid "Database schema is OK."
-msgstr ""
+msgstr "סכמת מסד הנתונים תקינה."
 
 #: src/Toolbox.php:2092
 msgid "Database structure created."
-msgstr ""
+msgstr "נוצר מבנה מסד נתונים."
 
 #: src/Glpi/System/Requirement/DatabaseTablesEngine.php:50
 msgid "Database tables engine"
@@ -8735,7 +8747,7 @@ msgstr ""
 
 #: src/NetworkEquipmentModelStencil.php:55
 msgid "Define port data in image"
-msgstr ""
+msgstr "הגדרת נתוני פורט בתמונה"
 
 #: templates/pages/admin/helpdesk_home_config_for_empty_entity.html.twig
 msgid "Define tiles for this entity from scratch"
@@ -8743,7 +8755,7 @@ msgstr ""
 
 #: templates/stencil/editor.html.twig
 msgid "Define zone in image"
-msgstr ""
+msgstr "הגדרת אזור בתמונה"
 
 #: src/Toolbox.php:2145
 msgid "Defining configuration defaults…"
@@ -9008,7 +9020,7 @@ msgstr "אין אפשרות למחוק"
 #: resources/.illustrations_translations.php:41
 msgctxt "Icon"
 msgid "Delivery"
-msgstr ""
+msgstr "משלוח"
 
 #: templates/components/infocom.html.twig
 #: templates/pages/admin/entity/assets.html.twig src/Entity.php:1423
@@ -9023,16 +9035,16 @@ msgstr "תעודת משלוח"
 
 #: templates/pages/oauth/authorize.html.twig
 msgid "Deny"
-msgstr ""
+msgstr "דחיה"
 
 #: src/RuleRight.php:330
 msgid "Deny login"
-msgstr ""
+msgstr "דחה כניסה"
 
 #: resources/.illustrations_translations.php:81
 msgctxt "Icon"
 msgid "Deploy a software"
-msgstr ""
+msgstr "פריסת תוכנה"
 
 #: templates/components/itilobject/fields_panel.html.twig src/Change.php:557
 #: src/NotificationTargetChange.php:281
@@ -9110,12 +9122,12 @@ msgstr ""
 #: resources/.illustrations_translations.php:7
 msgctxt "Icon"
 msgid "Desktop 1"
-msgstr ""
+msgstr "שולחן עבודה 1"
 
 #: resources/.illustrations_translations.php:8
 msgctxt "Icon"
 msgid "Desktop 2"
-msgstr ""
+msgstr "שולחן עבודה 2"
 
 #: templates/pages/admin/form/form_destination_commonitil_config.html.twig
 msgid "Destination fields accordion"
@@ -9144,7 +9156,7 @@ msgstr "מפתח"
 #: js/modules/Form/WebIconSelector.js:139
 msgctxt "icons"
 msgid "Development"
-msgstr ""
+msgstr "פיתוח"
 
 #: templates/pages/admin/inventory/agent.html.twig src/PCIVendor.php:61
 #: src/PCIVendor.php:83 src/USBVendor.php:61 src/USBVendor.php:83
@@ -9217,9 +9229,9 @@ msgstr[2] "דגמים של דיסקים קשיחים"
 #: src/DeviceHardDriveType.php:40
 msgid "Device hard drive type"
 msgid_plural "Device hard drive types"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "סוג כונן קשיח של התקן"
+msgstr[1] "סוגי כוננים קשיחים של התקנים"
+msgstr[2] "סוגי כוננים קשיחים של התקנים"
 
 #: src/Agent.php:130 src/Agent.php:324
 msgid "Device id"
@@ -9635,7 +9647,7 @@ msgstr ""
 
 #: src/Glpi/Console/Application.php:175
 msgid "Do not ask any interactive question"
-msgstr ""
+msgstr "אל תשאלו שאלות אינטראקטיביות"
 
 #: src/RuleAction.php:400
 msgid "Do not calculate"
@@ -9958,11 +9970,11 @@ msgstr ""
 
 #: templates/pages/admin/log_viewer.html.twig
 msgid "Download file"
-msgstr ""
+msgstr "הורד קובץ"
 
 #: src/Glpi/Console/Marketplace/DownloadCommand.php:53
 msgid "Download plugin from the GLPI marketplace"
-msgstr ""
+msgstr "הורד את התוסף משוק GLPI"
 
 #: src/User.php:2666
 msgid "Download user VCard"
@@ -9970,11 +9982,11 @@ msgstr "הורד VCard משתמש"
 
 #: js/impact.js:2420
 msgid "Draw a line between two assets to add an impact relation"
-msgstr ""
+msgstr "שרטטו קו בין שני נכסים כדי להוסיף קשר השפעה"
 
 #: js/impact.js:2435
 msgid "Draw a square containing the assets you wish to group"
-msgstr ""
+msgstr "צייר ריבוע המכיל את הנכסים שברצונך לקבץ"
 
 #: src/DeviceDrive.php:43
 msgid "Drive"
@@ -10036,7 +10048,7 @@ msgstr ""
 
 #: templates/pages/admin/form/form_question.html.twig
 msgid "Duplicate question"
-msgstr ""
+msgstr "שאלה כפולה"
 
 #: templates/pages/admin/form/form_section.html.twig
 msgid "Duplicate section"
@@ -10672,15 +10684,15 @@ msgstr ""
 #: templates/pages/2fa/2fa_config.html.twig
 #: templates/pages/setup/general/security_setup.html.twig
 msgid "Enforce 2FA"
-msgstr ""
+msgstr "אכיפת 2FA"
 
 #: src/Glpi/System/RequirementsManager.php:193
 msgid "Enhance PHP engine performances."
-msgstr ""
+msgstr "שיפור ביצועי מנוע PHP."
 
 #: src/Glpi/System/RequirementsManager.php:172
 msgid "Enhance security on images validation."
-msgstr ""
+msgstr "שיפור האבטחה באימות תמונות."
 
 #: src/Glpi/System/Requirement/SessionsSecurityConfiguration.php:47
 msgid "Ensure security is enforced on session cookies."
@@ -11385,7 +11397,7 @@ msgstr ""
 
 #: src/UploadHandler.php:418
 msgid "Failed to resize image"
-msgstr ""
+msgstr "שינוי גודל התמונה נכשל"
 
 #: src/Glpi/Controller/CommonAjaxController.php:285
 msgid "Failed to restore item"
@@ -11752,7 +11764,7 @@ msgstr ""
 #: install/migrations/update_9.4.0_to_9.4.1.php:97
 #: install/migrations/update_9.4.2_to_9.4.3.php:57
 msgid "Fix URL of images in ITIL tasks, followups and solutions."
-msgstr ""
+msgstr "תקן את כתובת ה-URL של תמונות במשימות ITIL, מעקבים ופתרונות."
 
 #: src/Glpi/Console/Diagnostic/CheckHtmlEncodingCommand.php:109
 msgid "Fix detected issues"
@@ -12670,15 +12682,15 @@ msgstr ""
 #: src/NotificationTargetPlanningRecall.php:57
 #: src/Glpi/Features/PlanningEvent.php:1058
 msgid "Guests"
-msgstr ""
+msgstr "אורחים"
 
 #: templates/components/form/flags.html.twig src/Monitor.php:423
 msgid "HDMI"
-msgstr ""
+msgstr "HDMI"
 
 #: templates/pages/setup/notification/queued_notification.html.twig
 msgid "HTML"
-msgstr ""
+msgstr "HTML"
 
 #: src/Glpi/Console/Diagnostic/CheckHtmlEncodingCommand.php:165
 msgid "HTML encoding has been fixed."
@@ -13625,7 +13637,7 @@ msgstr ""
 
 #: src/Glpi/Form/Migration/FormMigration.php:403
 msgid "Importing questions..."
-msgstr ""
+msgstr "מייבא שאלות..."
 
 #: src/Glpi/Console/Migration/RacksPluginToCoreCommand.php:1139
 #, php-format
@@ -15215,11 +15227,11 @@ msgstr ""
 
 #: src/NotificationTargetCommonITILObject.php:1954 src/Notepad.php:295
 msgid "Last updater"
-msgstr ""
+msgstr "מעדכן אחרון"
 
 #: templates/components/printer_graph_buttons.html.twig
 msgid "Last year"
-msgstr ""
+msgstr "שנה אחרונה"
 
 #: src/NotificationTargetObjectLock.php:65
 msgid "Lastname of locking user"
@@ -15261,7 +15273,7 @@ msgstr "כרטיסים מאוחרים"
 
 #: src/Glpi/Marketplace/View.php:1167
 msgid "Later"
-msgstr ""
+msgstr "מאוחר יותר"
 
 #: src/ITILFollowup.php:784 src/CommonITILTask.php:1190
 #: src/CommonITILObject.php:4724
@@ -15745,7 +15757,7 @@ msgstr ""
 
 #: src/Location.php:210 src/Location.php:389
 msgid "Location alias"
-msgstr ""
+msgstr "מיקום כינוי"
 
 #: src/Location.php:201 src/Location.php:381 src/RuleTicket.php:286
 msgid "Location code"
@@ -16482,7 +16494,7 @@ msgstr ""
 
 #: src/NetworkPort.php:939
 msgid "Mbps"
-msgstr ""
+msgstr "Mbps"
 
 #: templates/pages/assets/rack.html.twig
 msgid "Measured power (in watts)"
@@ -16491,7 +16503,7 @@ msgstr ""
 #: js/modules/Form/WebIconSelector.js:156
 msgctxt "icons"
 msgid "Media"
-msgstr ""
+msgstr "מדיה"
 
 #: src/Glpi/Urgency.php:51
 msgid "Medium"
@@ -17522,7 +17534,7 @@ msgstr ""
 
 #: templates/pages/admin/form/form_question.html.twig
 msgid "New question"
-msgstr ""
+msgstr "שאלה חדשה"
 
 #: src/Appliance_Item_Relation.php:230 src/Appliance_Item_Relation.php:231
 msgid "New relation"
@@ -18869,7 +18881,7 @@ msgstr ""
 #: templates/pages/setup/externallink.html.twig
 #: templates/pages/setup/manuallink.html.twig
 msgid "Open in a new window"
-msgstr ""
+msgstr "פתח בחלון חדש"
 
 #: js/impact.js:1375
 msgid "Open this element in a new tab"
@@ -18877,7 +18889,7 @@ msgstr ""
 
 #: templates/pages/setup/ldap/form.html.twig
 msgid "OpenLDAP"
-msgstr ""
+msgstr "OpenLDAP"
 
 #: src/Stat.php:550 src/Glpi/Stat/Data/Sglobal/StatDataSatisfaction.php:56
 #: src/Glpi/Stat/Data/Graph/StatDataSatisfactionSurvey.php:53
@@ -20536,7 +20548,7 @@ msgstr ""
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "Primary"
-msgstr ""
+msgstr "ראשי"
 
 #: templates/pages/setup/general/dbreplica_setup.html.twig
 msgid "Primary binary log file:"
@@ -21031,41 +21043,41 @@ msgstr[2] ""
 #: src/Glpi/Form/Question.php:76
 msgid "Question"
 msgid_plural "Questions"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "שאלה"
+msgstr[1] "שאלות"
+msgstr[2] "שאלות"
 
 #: resources/.illustrations_translations.php:69
 msgctxt "Icon"
 msgid "Question"
-msgstr ""
+msgstr "שאלה"
 
 #: templates/pages/admin/form/form_question.html.twig
 #: src/Glpi/Form/Question.php:130
 msgid "Question description"
-msgstr ""
+msgstr "תיאור השאלה"
 
 #: templates/pages/admin/form/form_question.html.twig
 msgid "Question details"
-msgstr ""
+msgstr "פרטי השאלה"
 
 #: templates/pages/admin/form/form_question.html.twig
 #: src/Glpi/Form/Question.php:121
 msgid "Question name"
-msgstr ""
+msgstr "שם השאלה"
 
 #: templates/pages/admin/form/form_question.html.twig
 msgid "Question sub type"
-msgstr ""
+msgstr "תת-סוג שאלה"
 
 #: templates/pages/admin/form/form_question.html.twig
 msgid "Question type"
-msgstr ""
+msgstr "סוג השאלה"
 
 #: src/Glpi/Form/Tag/QuestionTagProvider.php:79
 #, php-format
 msgid "Question: %s"
-msgstr ""
+msgstr "שאלה: %s"
 
 #: templates/pages/helpdesk/index.html.twig
 msgid "Quick Access"
@@ -22083,7 +22095,7 @@ msgstr ""
 
 #: js/impact.js:2563
 msgid "Requests"
-msgstr ""
+msgstr "בקשות"
 
 #: templates/install/blocks/requirements_table.html.twig
 #: src/Glpi/Console/System/CheckRequirementsCommand.php:93
@@ -22114,7 +22126,7 @@ msgstr ""
 
 #: src/Glpi/System/RequirementsManager.php:108
 msgid "Required for images handling."
-msgstr ""
+msgstr "נדרש לטיפול בתמונות."
 
 #: src/Glpi/System/RequirementsManager.php:113
 msgid "Required for internationalization."
@@ -22840,7 +22852,7 @@ msgstr ""
 
 #: src/Stat.php:2017 src/Glpi/Dashboard/Widget.php:667
 msgid "Save as image"
-msgstr ""
+msgstr "שמור כתמונה"
 
 #: templates/pages/admin/form/access_control.html.twig
 #: templates/pages/admin/form/service_catalog_tab.html.twig
@@ -23250,7 +23262,7 @@ msgstr ""
 #: src/Glpi/Form/Destination/CommonITILField/EntityField.php:97
 #: src/Glpi/Form/Destination/CommonITILField/RequestTypeField.php:96
 msgid "Select a question..."
-msgstr ""
+msgstr "בחר שאלה..."
 
 #: src/Glpi/Form/Destination/CommonITILField/RequestSourceField.php:81
 msgid "Select a request source..."
@@ -23361,7 +23373,7 @@ msgstr ""
 #: src/Glpi/Form/Destination/CommonITILField/ITILActorField.php:117
 #: src/Glpi/Form/Destination/CommonITILField/ValidationField.php:112
 msgid "Select questions..."
-msgstr ""
+msgstr "בחר שאלות..."
 
 #: templates/pages/assistance/stats/title.html.twig
 msgid "Select statistics to be displayed"
@@ -25520,6 +25532,8 @@ msgid ""
 "The current access policy allows unauthenticated access to this form, but "
 "this question type will be hidden to unauthenticated users."
 msgstr ""
+"מדיניות הגישה הנוכחית מאפשרת גישה לטופס זה למשתמשים לא מאומתים, אך סוג שאלה "
+"זה יוסתר בפני משתמשים לא מאומתים."
 
 #: src/Glpi/System/Requirement/DatabaseTablesEngine.php:65
 #, php-format
@@ -25597,7 +25611,7 @@ msgstr ""
 
 #: src/User.php:1085
 msgid "The file is not an image file."
-msgstr ""
+msgstr "הקובץ אינו קובץ תמונה."
 
 #: src/User.php:1068
 msgid "The file is valid. Upload is successful."
@@ -25883,7 +25897,7 @@ msgstr "הקובץ שהועלה חורג ממגבלת גודל הקובץ שפו
 
 #: src/Entity.php:488
 msgid "The uploaded file must be a valid image."
-msgstr ""
+msgstr "הקובץ שהועלה חייב להיות תמונה תקפה."
 
 #: src/UploadHandler.php:373
 msgid "The uploaded file was only partially uploaded"
@@ -26029,6 +26043,8 @@ msgid ""
 "This form contains question types that are not allowed for unauthenticated "
 "access. These questions will be hidden from unauthenticated users."
 msgstr ""
+"טופס זה מכיל סוגי שאלות שאינן מותרות לגישה לא מאומתת. שאלות אלו יוסתרו "
+"ממשתמשים לא מאומתים."
 
 #: src/Glpi/Form/Destination/FormDestinationManager.php:135
 msgid "This form is invalid, it must create at least one item."
@@ -26442,11 +26458,11 @@ msgstr ""
 
 #: src/Glpi/Form/Destination/CommonITILField/Category.php:50
 msgid "Timeline"
-msgstr ""
+msgstr "לוח זמנים"
 
 #: js/reservations.js:128
 msgid "Timeline Week"
-msgstr ""
+msgstr "לוח זמנים שבועי"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Timeline date display"
@@ -30147,7 +30163,7 @@ msgstr ""
 
 #: src/Item_Rack.php:291
 msgid "images"
-msgstr ""
+msgstr "תמונות"
 
 #: resources/.illustrations_translations.php:109
 msgctxt "Icon"
@@ -30446,7 +30462,7 @@ msgstr "תוסף ההפעלה אינו מותקן."
 #: resources/.illustrations_translations.php:113
 msgctxt "Icon"
 msgid "settings"
-msgstr ""
+msgstr "הגדרות"
 
 #: resources/.illustrations_translations.php:112
 msgctxt "Icon"

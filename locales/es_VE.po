@@ -7,8 +7,8 @@
 # DOMBRE Julien <moyo@indepnet.net>, 2024
 # 5b63a00e0726b96d7ef35c99d5553cd0_b787b5f <8bb2d0f7e8927228f17fba8639d787be_31711>, 2025
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2025
-# Francisco Bolivar, 2025
 # Cédric Anne, 2025
+# Francisco Bolivar, 2025
 # 
 #, fuzzy
 msgid ""
@@ -17,7 +17,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-04-24 08:02+0000\n"
 "PO-Revision-Date: 2022-09-16 06:53+0000\n"
-"Last-Translator: Cédric Anne, 2025\n"
+"Last-Translator: Francisco Bolivar, 2025\n"
 "Language-Team: Spanish (Venezuela) (https://app.transifex.com/glpi/teams/1637/es_VE/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -3034,7 +3034,7 @@ msgstr "Añadir una nota"
 
 #: templates/pages/admin/form/form_toolbar.html.twig
 msgid "Add a question"
-msgstr ""
+msgstr "Agregar una pregunta"
 
 #: templates/components/form/item_remotemanagement_list.html.twig
 msgid "Add a remote management"
@@ -3042,11 +3042,11 @@ msgstr "Agregar una gestión remota"
 
 #: templates/pages/admin/form/form_toolbar.html.twig
 msgid "Add a section"
-msgstr ""
+msgstr "Agregar sección"
 
 #: templates/pages/admin/form/form_horizontal_block_toolbar.html.twig
 msgid "Add a slot"
-msgstr ""
+msgstr "Añadir una ranura"
 
 #: src/CommonITILObject.php:7423
 msgctxt "button"
@@ -3250,7 +3250,7 @@ msgstr "Agregar varios puertos"
 
 #: templates/pages/assets/socket_short_form.html.twig
 msgid "Add several sockets"
-msgstr "Añadir varios enchufes"
+msgstr "Añadir varias tomas"
 
 #: templates/pages/setup/general/logs_setup.html.twig
 #: phpunit/functional/LogTest.php:483
@@ -3653,7 +3653,7 @@ msgstr "Todos los elementos"
 
 #: src/Glpi/Form/Condition/ValueOperator.php:71
 msgid "All items of itemtype"
-msgstr ""
+msgstr "Todos los elementos del tipo de elemento"
 
 #: templates/pages/admin/customobjects/main.html.twig
 msgid "All items that are using this definition will be deleted."
@@ -3763,7 +3763,7 @@ msgstr "Permitir descargar la versión GLPI si es necesario"
 
 #: src/Glpi/Asset/CustomFieldType/TextType.php:51
 msgid "Allow images"
-msgstr ""
+msgstr "Permitir imágenes"
 
 #: src/Glpi/Form/QuestionType/AbstractQuestionTypeActors.php:375
 msgid "Allow multiple actors"
@@ -4242,7 +4242,7 @@ msgstr "Falta la tabla \"%s\" del complemento de aplicaciones."
 #: resources/.illustrations_translations.php:4
 msgctxt "Icon"
 msgid "Application"
-msgstr ""
+msgstr "Aplicación"
 
 #: templates/pages/setup/apiclient.html.twig src/APIClient.php:168
 msgid "Application token"
@@ -4457,7 +4457,7 @@ msgstr "Area"
 #: resources/.illustrations_translations.php:28
 msgctxt "Icon"
 msgid "Area chart"
-msgstr ""
+msgstr "Gráfico de áreas"
 
 #: js/modules/Form/WebIconSelector.js:129
 msgctxt "icons"
@@ -4864,7 +4864,7 @@ msgstr "Al menos un campo posee un valor incorrecto"
 
 #: src/Glpi/Form/Condition/ValueOperator.php:70
 msgid "At least one item of itemtype"
-msgstr ""
+msgstr "Al menos un elemento del tipo de elemento"
 
 #: src/CommonITILObject.php:3683
 msgctxt "impact"
@@ -5335,7 +5335,7 @@ msgstr "Insignias"
 #: resources/.illustrations_translations.php:19
 msgctxt "Icon"
 msgid "Bank"
-msgstr ""
+msgstr "Banco"
 
 #: src/Glpi/Dashboard/Widget.php:120
 msgid "Bars"
@@ -5344,7 +5344,7 @@ msgstr "Barras"
 #: resources/.illustrations_translations.php:29
 msgctxt "Icon"
 msgid "Bars chart"
-msgstr ""
+msgstr "Gráfico de barras"
 
 #: templates/pages/setup/ldap/form.html.twig
 #: templates/pages/admin/ldap.user_criteria.html.twig
@@ -5507,7 +5507,7 @@ msgstr "Plano"
 #: resources/.illustrations_translations.php:23
 msgctxt "Icon"
 msgid "Bookmark"
-msgstr ""
+msgstr "Marcador"
 
 #: src/PDU_Rack.php:654
 msgid "Bottom"
@@ -5566,7 +5566,7 @@ msgstr[2] "Tipos de presupuesto"
 #: resources/.illustrations_translations.php:25
 msgctxt "Icon"
 msgid "Building"
-msgstr ""
+msgstr "Edificio"
 
 #: src/NotificationTargetTicket.php:609 src/NotificationTargetTicket.php:664
 #: src/Location.php:100 src/Location.php:219 src/Location.php:271
@@ -6083,7 +6083,7 @@ msgstr "Subtítulo"
 #: resources/.illustrations_translations.php:27
 msgctxt "Icon"
 msgid "Car"
-msgstr ""
+msgstr "Auto"
 
 #: src/CartridgeItem.php:253 src/Printer.php:586
 #: src/Glpi/Inventory/Asset/Cartridge.php:57 src/Profile.php:2296
@@ -6694,7 +6694,7 @@ msgstr "Limpiar archivos temporales creados a partir de inventarios"
 
 #: src/Glpi/Form/Migration/FormMigration.php:545
 msgid "Cleaning imported data..."
-msgstr ""
+msgstr "Limpiando datos importados..."
 
 #: src/Glpi/Inventory/Asset/Cartridge.php:62
 msgid "Cleaning kit"
@@ -6890,7 +6890,7 @@ msgstr "Cierre del problema"
 #: resources/.illustrations_translations.php:33
 msgctxt "Icon"
 msgid "Cloud"
-msgstr ""
+msgstr "Nube"
 
 #: resources/.illustrations_translations.php:34
 msgctxt "Icon"
@@ -7508,12 +7508,12 @@ msgstr "¡Contacte a su administrador de GLPI!"
 #: resources/.illustrations_translations.php:36
 msgctxt "Icon"
 msgid "Container"
-msgstr ""
+msgstr "Contenedor"
 
 #: resources/.illustrations_translations.php:37
 msgctxt "Icon"
 msgid "Containers"
-msgstr ""
+msgstr "Contenedores"
 
 #: phpunit/functional/Glpi/Form/Condition/EditorManagerTest.php:344
 #: src/Glpi/Form/Condition/ValueOperator.php:62
@@ -8134,7 +8134,7 @@ msgstr "Archivo actual"
 #: phpunit/functional/TaskTemplateTest.php:120 src/TaskTemplate.php:195
 #: src/TaskTemplate.php:226 src/TaskTemplate.php:254 src/User.php:4157
 msgid "Current logged-in user"
-msgstr ""
+msgstr "Usuario actualmente conectado"
 
 #: templates/components/search/controls.html.twig
 msgid "Current page"
@@ -8203,15 +8203,15 @@ msgstr[2] "Encabezados personalizados"
 
 #: templates/pages/admin/helpdesk_home_custom_scene_config.html.twig
 msgid "Custom illustration"
-msgstr ""
+msgstr "Ilustración personalizada"
 
 #: templates/pages/admin/helpdesk_home_custom_scene_config.html.twig
 msgid "Custom illustration preview and selection"
-msgstr ""
+msgstr "Vista previa y selección de ilustraciones personalizadas"
 
 #: templates/pages/admin/helpdesk_home_custom_scene_config.html.twig
 msgid "Custom illustrations"
-msgstr ""
+msgstr "Ilustraciones personalizadas"
 
 #: templates/components/printer_graph_buttons.html.twig
 msgid "Custom range"
@@ -8734,11 +8734,11 @@ msgstr "Asunto predeterminado de los documentos relacionados con los casos"
 
 #: templates/pages/admin/helpdesk_home_custom_scene_config.html.twig
 msgid "Default illustration"
-msgstr ""
+msgstr "Ilustración predeterminada"
 
 #: templates/pages/admin/helpdesk_home_custom_scene_config.html.twig
 msgid "Default illustration preview"
-msgstr ""
+msgstr "Vista previa de la ilustración predeterminada"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Default language"
@@ -9148,7 +9148,7 @@ msgstr "No se permite eliminar"
 #: resources/.illustrations_translations.php:41
 msgctxt "Icon"
 msgid "Delivery"
-msgstr ""
+msgstr "Entrega"
 
 #: templates/components/infocom.html.twig
 #: templates/pages/admin/entity/assets.html.twig src/Entity.php:1423
@@ -10068,7 +10068,7 @@ msgstr "Rosquilla"
 #: resources/.illustrations_translations.php:30
 msgctxt "Icon"
 msgid "Donut chart"
-msgstr ""
+msgstr "Gráfico de anillos"
 
 #: templates/pages/assets/rack.html.twig
 msgid "Door orientation in room"
@@ -11005,7 +11005,7 @@ msgstr "Error / Para limpiar"
 #: resources/.illustrations_translations.php:42
 msgctxt "Icon"
 msgid "Error 404"
-msgstr ""
+msgstr "Error 404"
 
 #: src/CronTask.php:892
 #, php-format
@@ -11478,7 +11478,7 @@ msgstr "FQDN no debe estar vacío"
 #: resources/.illustrations_translations.php:43
 msgctxt "Icon"
 msgid "Factory"
-msgstr ""
+msgstr "Fábrica"
 
 #: src/Auth.php:1150
 #, php-format
@@ -11889,7 +11889,7 @@ msgstr "Estado finalizado"
 #: resources/.illustrations_translations.php:45
 msgctxt "Icon"
 msgid "Firewall"
-msgstr ""
+msgstr "Cortafuegos"
 
 #: src/NetworkEquipment.php:435 src/Phone.php:417 src/DeviceFirmware.php:42
 msgid "Firmware"
@@ -11984,7 +11984,7 @@ msgstr "Corrección de errores"
 
 #: src/Glpi/Form/Migration/FormMigration.php:603
 msgid "Fixing forms layouts..."
-msgstr ""
+msgstr "Arreglando diseños de formularios..."
 
 #: templates/components/form/header_content.html.twig
 msgid "Flag change forbidden. Linked items found."
@@ -12006,7 +12006,7 @@ msgstr "Longitud focal"
 #: resources/.illustrations_translations.php:47
 msgctxt "Icon"
 msgid "Folder"
-msgstr ""
+msgstr "Carpeta"
 
 #: templates/pages/setup/mailcollector/setup_form.html.twig
 msgid "Folders setup"
@@ -12548,7 +12548,7 @@ msgstr "Gbps"
 #: resources/.illustrations_translations.php:48
 msgctxt "Icon"
 msgid "Gear"
-msgstr ""
+msgstr "Engranaje"
 
 #: js/modules/Form/WebIconSelector.js:147
 msgctxt "icons"
@@ -13523,6 +13523,8 @@ msgid ""
 "If you see this page when the installation has already been done, it means "
 "that the GLPI database configuration file has been removed or corrupted."
 msgstr ""
+"Si ve esta página cuando ya se realizó la instalación, significa que el "
+"archivo de configuración de la base de datos GLPI se ha eliminado o dañado."
 
 #: src/PendingReason.php:275
 #, php-format
@@ -14124,11 +14126,11 @@ msgstr "Herencia de la entidad padre"
 
 #: templates/pages/admin/helpdesk_home_custom_scene_config.html.twig
 msgid "Inherited from parent entity"
-msgstr ""
+msgstr "Heredado de la entidad principal"
 
 #: templates/pages/admin/helpdesk_home_custom_scene_config.html.twig
 msgid "Inherited illustration preview"
-msgstr ""
+msgstr "Vista previa de la ilustración heredada"
 
 #: src/Entity.php:1908
 msgid "Inherits configuration from the parent entity"
@@ -14702,7 +14704,7 @@ msgstr "No es igual a"
 
 #: src/Glpi/Form/Condition/ValueOperator.php:69
 msgid "Is not of itemtype"
-msgstr ""
+msgstr "No es de tipo elemento"
 
 #: phpunit/functional/Glpi/Form/Condition/EditorManagerTest.php:347
 #: phpunit/functional/Glpi/Form/Condition/EditorManagerTest.php:357
@@ -14710,11 +14712,11 @@ msgstr ""
 #: phpunit/functional/Glpi/Form/Condition/EditorManagerTest.php:426
 #: src/Glpi/Form/Condition/ValueOperator.php:76
 msgid "Is not visible"
-msgstr ""
+msgstr "No es visible"
 
 #: src/Glpi/Form/Condition/ValueOperator.php:68
 msgid "Is of itemtype"
-msgstr ""
+msgstr "Es de tipo elemento"
 
 #: src/Database.php:197 src/Database.php:306
 msgid "Is on backup"
@@ -14738,7 +14740,7 @@ msgstr "Esta actualizado"
 #: phpunit/functional/Glpi/Form/Condition/EditorManagerTest.php:425
 #: src/Glpi/Form/Condition/ValueOperator.php:75
 msgid "Is visible"
-msgstr ""
+msgstr "Es visible"
 
 #: templates/pages/admin/customobjects/main.html.twig
 msgid ""
@@ -15592,11 +15594,11 @@ msgstr "Izquierda"
 
 #: templates/pages/admin/helpdesk_home_custom_scene_config.html.twig
 msgid "Left side"
-msgstr ""
+msgstr "Lado izquierdo"
 
 #: templates/pages/admin/helpdesk_home_custom_scene_config.html.twig
 msgid "Left side configuration"
-msgstr ""
+msgstr "Configuración del lado izquierdo"
 
 #: templates/pages/setup/general/api_setup.html.twig
 msgid "Legacy API"
@@ -15605,7 +15607,7 @@ msgstr "API tradicional"
 #: resources/.illustrations_translations.php:53
 msgctxt "Icon"
 msgid "Legal"
-msgstr ""
+msgstr "Legal"
 
 #: src/DeviceCamera.php:76 src/DeviceCamera.php:127
 msgid "Lensfacing"
@@ -15703,7 +15705,7 @@ msgstr[2] "Líneas"
 #: resources/.illustrations_translations.php:31
 msgctxt "Icon"
 msgid "Line chart"
-msgstr ""
+msgstr "Gráfico de líneas"
 
 #: src/Item_Line.php:47
 msgid "Line item"
@@ -16032,12 +16034,12 @@ msgstr[2] "Lugares"
 #: resources/.illustrations_translations.php:55
 msgctxt "Icon"
 msgid "Location 1"
-msgstr ""
+msgstr "Ubicación 1"
 
 #: resources/.illustrations_translations.php:56
 msgctxt "Icon"
 msgid "Location 2"
-msgstr ""
+msgstr "Ubicación 2"
 
 #: src/Location.php:210 src/Location.php:389
 msgid "Location alias"
@@ -16332,7 +16334,7 @@ msgstr "Dirección MAC por defecto"
 
 #: templates/maintenance.html.twig
 msgid "MAINTENANCE MODE"
-msgstr ""
+msgstr "MODO DE MANTENIMIENTO"
 
 #: src/DeviceProcessor.php:56 src/DeviceProcessor.php:59
 #: src/DeviceProcessor.php:63 src/DeviceProcessor.php:66
@@ -17182,7 +17184,7 @@ msgstr "Teléfono celular"
 #: resources/.illustrations_translations.php:58
 msgctxt "Icon"
 msgid "Mobility"
-msgstr ""
+msgstr "Movilidad"
 
 #: templates/pages/setup/notification/notification_notificationtemplate.html.twig
 #: src/QueuedNotification.php:380
@@ -17933,7 +17935,7 @@ msgstr "Nueva versión para complemento %s: %s"
 #: resources/.illustrations_translations.php:64
 msgctxt "Icon"
 msgid "Newspaper"
-msgstr ""
+msgstr "Periódico"
 
 #: templates/components/pager.html.twig
 #: templates/pages/assistance/stats/single_item_pager.html.twig
@@ -20209,7 +20211,7 @@ msgstr "Tarta"
 #: resources/.illustrations_translations.php:32
 msgctxt "Icon"
 msgid "Pie chart"
-msgstr ""
+msgstr "Gráfico circular"
 
 #: templates/layout/parts/saved_searches.html.twig
 msgid "Pin this panel for the current page"
@@ -21371,7 +21373,7 @@ msgstr "Purgar borradores de formularios antiguos"
 
 #: src/Software.php:1158
 msgid "Purge software with no version that are deleted."
-msgstr ""
+msgstr "Purgar el software sin versión que se haya eliminado."
 
 #: templates/pages/admin/entity/assistance.html.twig
 msgid "Purge ticket action is disabled."
@@ -22812,7 +22814,7 @@ msgstr[2] "Revisiones"
 
 #: src/Glpi/Asset/CustomFieldType/TextType.php:50
 msgid "Rich text"
-msgstr ""
+msgstr "Texto enriquecido"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Rich text field layout"
@@ -22824,11 +22826,11 @@ msgstr "Derecha"
 
 #: templates/pages/admin/helpdesk_home_custom_scene_config.html.twig
 msgid "Right side"
-msgstr ""
+msgstr "Lado derecho"
 
 #: templates/pages/admin/helpdesk_home_custom_scene_config.html.twig
 msgid "Right side configuration"
-msgstr ""
+msgstr "Configuración del lado derecho"
 
 #: src/NotificationTargetTicket.php:604 src/NotificationTargetTicket.php:663
 #: src/Location.php:105 src/Location.php:228 src/Location.php:279
@@ -23266,7 +23268,7 @@ msgstr "Guardar busqueda actual"
 
 #: templates/pages/admin/helpdesk_home_custom_scene_config.html.twig
 msgid "Save custom illustrations settings"
-msgstr ""
+msgstr "Guardar la configuración de ilustraciones personalizadas"
 
 #: templates/password_form.html.twig
 msgid "Save new password"
@@ -23415,7 +23417,7 @@ msgstr "Buscar formularios..."
 
 #: templates/pages/helpdesk/index.html.twig
 msgid "Search for knowledge base entries or forms"
-msgstr "Buscar entradas o formularios en la base de conocimientos"
+msgstr "Buscar entradas en la base de conocimientos o formularios"
 
 #: ajax/savedsearch.php:47
 msgid "Search has been saved"
@@ -24240,7 +24242,7 @@ msgstr "Bandeja de entrada compartida"
 #: resources/.illustrations_translations.php:44
 msgctxt "Icon"
 msgid "Sheet file"
-msgstr ""
+msgstr "Archivo de hojas"
 
 #: src/Glpi/Form/QuestionType/QuestionTypeCategory.php:104
 msgid "Short answer"
@@ -24625,6 +24627,8 @@ msgstr "Casos resueltos"
 #: templates/components/itilobject/footer.html.twig
 msgid "Some actions are unavailable due to missing required fields."
 msgstr ""
+"Algunas acciones no están disponibles debido a que faltan campos "
+"obligatorios."
 
 #: src/Glpi/Console/Migration/UnsignedKeysCommand.php:256
 #, php-format
@@ -25826,6 +25830,8 @@ msgid ""
 "The \"%s\" destination field configuration of the form \"%s\" cannot be "
 "imported."
 msgstr ""
+"La configuración del campo de destino \"%s\" del formulario \"%s\" no se "
+"puede importar."
 
 #: templates/pages/setup/general/performance.html.twig
 #, php-format
@@ -25863,7 +25869,7 @@ msgstr ""
 
 #: templates/install/install.install_required.html.twig
 msgid "The GLPI database must be configured and installed."
-msgstr ""
+msgstr "La base de datos GLPI debe estar configurada e instalada."
 
 #: templates/pages/setup/authentication.html.twig
 msgid "The LDAP extension of your PHP parser isn’t installed"
@@ -26117,7 +26123,7 @@ msgstr "El siguiente campo tiene un valor incorrecto: \"%s\"."
 
 #: templates/pages/admin/helpdesk_home_custom_scene_config.html.twig
 msgid "The following illustration from the parent entity will be used:"
-msgstr ""
+msgstr "Se utilizará la siguiente ilustración de la entidad principal:"
 
 #: templates/pages/admin/helpdesk_home_config_for_empty_entity.html.twig
 msgid "The following tiles from the parent entity will be used:"
@@ -26394,7 +26400,7 @@ msgstr ""
 
 #: src/Entity.php:488
 msgid "The uploaded file must be a valid image."
-msgstr ""
+msgstr "El archivo cargado debe ser una imagen válida."
 
 #: src/UploadHandler.php:373
 msgid "The uploaded file was only partially uploaded"
@@ -27712,7 +27718,7 @@ msgstr "No se puede copiar %s \"%s\"."
 
 #: js/common.js:1513
 msgid "Unable to copy to clipboard (insecure context)."
-msgstr ""
+msgstr "No se puede copiar al portapapeles (contexto inseguro)."
 
 #: src/Glpi/Console/Migration/DomainsPluginToCoreCommand.php:329
 #: src/Glpi/Console/Migration/DatabasesPluginToCoreCommand.php:266
@@ -28311,12 +28317,12 @@ msgstr "Actualizar (autor)"
 #: resources/.illustrations_translations.php:86
 msgctxt "Icon"
 msgid "Update 1"
-msgstr ""
+msgstr "Actualización 1"
 
 #: resources/.illustrations_translations.php:87
 msgctxt "Icon"
 msgid "Update 2"
-msgstr ""
+msgstr "Actualización 2"
 
 #: templates/components/plugin_update_modal.html.twig
 msgctxt "button"
@@ -28925,7 +28931,7 @@ msgstr "Usuario del equipo de proyecto"
 #: resources/.illustrations_translations.php:88
 msgctxt "Icon"
 msgid "User offboarding"
-msgstr ""
+msgstr "Salida de usuarios"
 
 #: src/Glpi/Asset/Asset_PeripheralAsset.php:145 src/Computer.php:315
 msgid ""
@@ -29399,7 +29405,7 @@ msgstr[2] "Sistemas de virtualización"
 #: resources/.illustrations_translations.php:89
 msgctxt "Icon"
 msgid "Virus"
-msgstr ""
+msgstr "Virus"
 
 #: templates/pages/tools/savedsearch/form.html.twig
 #: templates/pages/tools/reminder.html.twig src/State.php:72 src/State.php:374
@@ -29723,7 +29729,7 @@ msgstr "Oeste"
 #: resources/.illustrations_translations.php:92
 msgctxt "Icon"
 msgid "Wharehouse"
-msgstr ""
+msgstr "Depósito"
 
 #: templates/pages/tools/project.html.twig
 msgid ""
@@ -30594,12 +30600,12 @@ msgstr "y/o"
 #: resources/.illustrations_translations.php:93
 msgctxt "Icon"
 msgid "application-altenative"
-msgstr ""
+msgstr "aplicación-alternativa"
 
 #: resources/.illustrations_translations.php:94
 msgctxt "Icon"
 msgid "application-edit"
-msgstr ""
+msgstr "aplicación-editar"
 
 #: src/Item_Rack.php:830
 msgid "asset front side"
@@ -30634,32 +30640,32 @@ msgstr "imposible conectarse a la base de datos"
 #: resources/.illustrations_translations.php:95
 msgctxt "Icon"
 msgid "chart-multiple"
-msgstr ""
+msgstr "gráfico-múltiple"
 
 #: resources/.illustrations_translations.php:96
 msgctxt "Icon"
 msgid "chart-search"
-msgstr ""
+msgstr "gráficos-búsqueda"
 
 #: resources/.illustrations_translations.php:97
 msgctxt "Icon"
 msgid "chat-1"
-msgstr ""
+msgstr "chat-1"
 
 #: resources/.illustrations_translations.php:98
 msgctxt "Icon"
 msgid "chat-2"
-msgstr ""
+msgstr "chat-2"
 
 #: resources/.illustrations_translations.php:99
 msgctxt "Icon"
 msgid "cloud-network-1"
-msgstr ""
+msgstr "red-en-la-nube-1"
 
 #: resources/.illustrations_translations.php:100
 msgctxt "Icon"
 msgid "cloud-network-2"
-msgstr ""
+msgstr "red-en-la-nube-2"
 
 #: src/DCRoom.php:444
 #, php-format
@@ -30684,7 +30690,7 @@ msgstr "actual"
 #: resources/.illustrations_translations.php:101
 msgctxt "Icon"
 msgid "database"
-msgstr ""
+msgstr "base de datos"
 
 #: templates/pages/admin/logs_list.html.twig
 #: templates/pages/admin/log_viewer.html.twig
@@ -30710,7 +30716,7 @@ msgstr "no existe"
 #: resources/.illustrations_translations.php:102
 msgctxt "Icon"
 msgid "download"
-msgstr ""
+msgstr "descargar"
 
 #: src/Glpi/Api/API.php:2192
 msgid "email parameter missing"
@@ -30760,7 +30766,7 @@ msgstr "estructura completa"
 #: resources/.illustrations_translations.php:108
 msgctxt "Icon"
 msgid "gear-hand"
-msgstr ""
+msgstr "mano de engranaje"
 
 #: templates/components/dashboard/widget_form.html.twig
 msgid "generate a palette from the background color"
@@ -30789,22 +30795,22 @@ msgstr "grupo"
 #: resources/.illustrations_translations.php:103
 msgctxt "Icon"
 msgid "group-alternative-1"
-msgstr ""
+msgstr "grupo-alternativo-1"
 
 #: resources/.illustrations_translations.php:104
 msgctxt "Icon"
 msgid "group-alternative-2"
-msgstr ""
+msgstr "grupo-alternativo-2"
 
 #: resources/.illustrations_translations.php:105
 msgctxt "Icon"
 msgid "group-web"
-msgstr ""
+msgstr "grupo-web"
 
 #: resources/.illustrations_translations.php:106
 msgctxt "Icon"
 msgid "helpdesk"
-msgstr ""
+msgstr "mesa de ayuda"
 
 #: front/itiltemplatefield.form.php:72
 msgid "hidden"
@@ -30813,7 +30819,7 @@ msgstr "oculto"
 #: resources/.illustrations_translations.php:107
 msgctxt "Icon"
 msgid "hierarchy"
-msgstr ""
+msgstr "jerarquía"
 
 #: src/Item_Rack.php:291
 msgid "images"
@@ -30822,7 +30828,7 @@ msgstr "imágenes"
 #: resources/.illustrations_translations.php:109
 msgctxt "Icon"
 msgid "inbox"
-msgstr ""
+msgstr "bandeja de entrada"
 
 #: src/Glpi/Inventory/MainAsset/NetworkEquipment.php:110
 #: src/Glpi/Inventory/MainAsset/NetworkEquipment.php:169
@@ -30981,7 +30987,7 @@ msgstr "no bajo"
 #: resources/.illustrations_translations.php:110
 msgctxt "Icon"
 msgid "notes"
-msgstr ""
+msgstr "notas"
 
 #: src/Central.php:582
 msgid "notification"
@@ -31045,7 +31051,7 @@ msgstr "predefinido"
 #: resources/.illustrations_translations.php:111
 msgctxt "Icon"
 msgid "presentation"
-msgstr ""
+msgstr "presentación"
 
 #: templates/layout/parts/saved_searches_list.html.twig
 msgid "private"
@@ -31122,17 +31128,17 @@ msgstr "la extensión de sesión no está instalada."
 #: resources/.illustrations_translations.php:113
 msgctxt "Icon"
 msgid "settings"
-msgstr ""
+msgstr "ajustes"
 
 #: resources/.illustrations_translations.php:112
 msgctxt "Icon"
 msgid "settings-search"
-msgstr ""
+msgstr "configuración-búsqueda"
 
 #: resources/.illustrations_translations.php:114
 msgctxt "Icon"
 msgid "shaking-hands"
-msgstr ""
+msgstr "apretón de manos"
 
 #: src/KnowbaseItem_Revision.php:158
 msgid "show"
@@ -31195,7 +31201,7 @@ msgstr "el uso del recurso initSession con las credenciales está desactivado"
 #: resources/.illustrations_translations.php:115
 msgctxt "Icon"
 msgid "user-laptop"
-msgstr ""
+msgstr "usuario-portátil"
 
 #: src/CommonItilObject_Item.php:814
 msgid "version"
@@ -31209,7 +31215,7 @@ msgstr "vatios"
 #: resources/.illustrations_translations.php:116
 msgctxt "Icon"
 msgid "webinar"
-msgstr ""
+msgstr "seminario web"
 
 #: src/RuleMailCollector.php:193
 msgid "with email response"
@@ -31226,7 +31232,7 @@ msgstr "sin respuesta de correo"
 #: resources/.illustrations_translations.php:117
 msgctxt "Icon"
 msgid "world"
-msgstr ""
+msgstr "mundo"
 
 #: templates/pages/setup/authentication/other_ext_setup.html.twig
 #: src/Auth.php:1272 src/Auth.php:1292

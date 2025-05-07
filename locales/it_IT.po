@@ -12,9 +12,9 @@
 # DOMBRE Julien <moyo@indepnet.net>, 2025
 # Pierfrancesco Passerini <p.passerini@gmail.com>, 2025
 # Marco Arrigoni <arri89@hotmail.it>, 2025
-# Davide <spam@habilitas.it>, 2025
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2025
 # Cédric Anne, 2025
+# Davide <spam@habilitas.it>, 2025
 # 
 #, fuzzy
 msgid ""
@@ -23,7 +23,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-04-24 08:02+0000\n"
 "PO-Revision-Date: 2022-09-16 06:53+0000\n"
-"Last-Translator: Cédric Anne, 2025\n"
+"Last-Translator: Davide <spam@habilitas.it>, 2025\n"
 "Language-Team: Italian (Italy) (https://app.transifex.com/glpi/teams/1637/it_IT/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -33,7 +33,7 @@ msgstr ""
 
 #: templates/pages/admin/form/service_catalog_tab.html.twig
 msgid " Active"
-msgstr ""
+msgstr "Attivo"
 
 #: templates/pages/setup/general/performance.html.twig
 #, php-format
@@ -59,7 +59,7 @@ msgstr "\"session.auto_start\" dev'essere impostato su off."
 #: src/Glpi/Asset/Capacity/HasDevicesCapacity.php:83
 #, php-format
 msgid "%1$d components attached to %2$d assets"
-msgstr ""
+msgstr "%1$d componenti collegate a %2$dasset "
 
 #: src/DatabaseInstance.php:467
 #, php-format
@@ -223,7 +223,7 @@ msgstr "%1$s (%2$s)"
 #: src/Log.php:809
 #, php-format
 msgid "%1$s (Status %2$s -> %3$s)"
-msgstr ""
+msgstr "%1$s (Stato %2$s -> %3$s)"
 
 #: ajax/dropdownValidator.php:104
 #, php-format

@@ -25,7 +25,6 @@
 # Łukasz Milata <drupter@gmail.com>, 2024
 # Andrii Solianyk, 2024
 # edasmax <edasmax@gmail.com>, 2025
-# Andrzej Pietryga <andrzej@tryga.pl>, 2025
 # Radek_P, 2025
 # Przemysław Piskozub <przemyslaw.piskozub@gmail.com>, 2025
 # DOMBRE Julien <moyo@indepnet.net>, 2025
@@ -35,6 +34,7 @@
 # 755b53b8defa5252602576c1e1f602ce_2928438, 2025
 # Jan Kowalski <wireks@gmail.com>, 2025
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2025
+# Andrzej Pietryga <andrzej@tryga.pl>, 2025
 # 
 #, fuzzy
 msgid ""
@@ -43,7 +43,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-04-24 08:02+0000\n"
 "PO-Revision-Date: 2022-09-16 06:53+0000\n"
-"Last-Translator: alexandre delaunay <delaunay.alexandre@gmail.com>, 2025\n"
+"Last-Translator: Andrzej Pietryga <andrzej@tryga.pl>, 2025\n"
 "Language-Team: Polish (Poland) (https://app.transifex.com/glpi/teams/1637/pl_PL/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -3028,7 +3028,7 @@ msgstr "Dodaj alias sieci"
 #: src/CommonDBChild.php:868
 #, php-format
 msgid "Add a new %s"
-msgstr ""
+msgstr "Dodaj nowe %s"
 
 #: src/Rule.php:1072
 msgid "Add a new action"
@@ -4572,7 +4572,7 @@ msgid_plural "Assets"
 msgstr[0] "Składnik"
 msgstr[1] "Aktywów"
 msgstr[2] "Aktywa"
-msgstr[3] "Aktywa"
+msgstr[3] "Zasoby"
 
 #: templates/components/form/pictures.html.twig
 msgid "Asset URL"
@@ -8331,7 +8331,7 @@ msgstr "DEBUG"
 
 #: templates/components/search/query_builder/sort/criteria.html.twig
 msgid "DESC"
-msgstr ""
+msgstr "Malejąco"
 
 #: templates/pages/management/certificate.html.twig src/Certificate.php:240
 msgid "DNS name"
@@ -10711,11 +10711,11 @@ msgstr "Włącz autoodświeżanie"
 
 #: src/NotificationAjaxSetting.php:50
 msgid "Enable browser notifications"
-msgstr ""
+msgstr "Włącz powiadomienia w przeglądarce"
 
 #: src/NotificationMailingSetting.php:52
 msgid "Enable email notifications"
-msgstr ""
+msgstr "Włącz powiadomienia email"
 
 #: src/Glpi/System/RequirementsManager.php:182
 msgid "Enable email sending using SSL/TLS."
@@ -12404,7 +12404,7 @@ msgstr "Poprzedni realizator odpowiedzialny za zgłoszenie"
 #: templates/pages/self-service/service_catalog.html.twig
 #: templates/pages/helpdesk/search.html.twig
 msgid "Forms"
-msgstr ""
+msgstr "Formularze"
 
 #: src/Glpi/Console/Security/ChangekeyCommand.php:74
 #, php-format
@@ -18258,7 +18258,7 @@ msgstr ""
 
 #: templates/components/helpdesk_forms/service_catalog_items.html.twig
 msgid "No forms found"
-msgstr ""
+msgstr "Nie znaleziono formularzy"
 
 #: src/Cartridge.php:308
 msgid "No free cartridge"
@@ -18381,7 +18381,7 @@ msgstr "Brak ograniczeń"
 #: src/CartridgeItem_PrinterModel.php:190
 #: js/modules/Form/GeolocationField.js:87
 msgid "No results found"
-msgstr ""
+msgstr "Nie znaleziono wyników"
 
 #: src/KnowbaseItem_Revision.php:134
 msgid "No revisions"
@@ -24843,11 +24843,11 @@ msgstr ""
 #: templates/components/search/query_builder/sort/main.html.twig
 #: templates/components/search/controls.html.twig
 msgid "Sort"
-msgstr ""
+msgstr "Sortuj"
 
 #: templates/pages/self-service/service_catalog.html.twig
 msgid "Sort by"
-msgstr ""
+msgstr "Sortuj przez"
 
 #: templates/pages/admin/logs_list.html.twig
 msgid "Sort by date"
@@ -24863,12 +24863,12 @@ msgstr ""
 
 #: templates/pages/self-service/service_catalog.html.twig
 msgid "Sort by: "
-msgstr ""
+msgstr "Sortuj przez:"
 
 #: src/Glpi/Search/Output/HTMLSearchOutput.php:187
 #, php-format
 msgid "Sorted by %s"
-msgstr ""
+msgstr "Sortuj wg %s"
 
 #: templates/pages/setup/notification/ajax_setting.html.twig
 msgid "Sound"
@@ -25527,7 +25527,7 @@ msgstr ""
 #: src/Glpi/CustomObject/AbstractDefinition.php:457
 #: src/Glpi/CustomObject/AbstractDefinition.php:722
 msgid "System name"
-msgstr ""
+msgstr "Nazwa systemu"
 
 #: templates/components/infocom.html.twig
 msgid "TCO (value + tracking cost)"
@@ -27512,7 +27512,7 @@ msgid_plural "Translations"
 msgstr[0] "Przekład"
 msgstr[1] "Przekładów"
 msgstr[2] "Przekłady"
-msgstr[3] "Przekłady"
+msgstr[3] "Tłumaczenia"
 
 #: templates/pages/setup/general/performance.html.twig
 msgid "Translation cache"
