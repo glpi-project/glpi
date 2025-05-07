@@ -1921,203 +1921,203 @@ class DropdownTest extends DbTestCase
         );
     }
 
-   /**
-    * Test getDropdownValue with empty entity_restrict JSON array
-    *
-    * @covers ::getDropdownValue
-    */
-   public function testGetDropdownValueWithEmptyEntityRestrictArray()
-   {
-      $this->login();
+    /**
+     * Test getDropdownValue with empty entity_restrict JSON array
+     *
+     * @covers ::getDropdownValue
+     */
+    public function testGetDropdownValueWithEmptyEntityRestrictArray()
+    {
+        $this->login();
 
-      // Create a test entity
-      $entity_id = $this->createItem(
-        \Entity::class,
+        // Create a test entity
+        $entity_id = $this->createItem(
+            \Entity::class,
             [
-            'name'        => 'Test Entity for dropdown',
-            'entities_id' => 0,
-        ]
-      )->getID();
+                'name'        => 'Test Entity for dropdown',
+                'entities_id' => 0,
+            ]
+        )->getID();
 
-      // Create a ticket template in the root entity
-      $root_tpl_id = $this->createItem(
-         \TicketTemplate::class,
-         [
-            'name'        => 'Root template',
-            'entities_id' => 0,
-         ]
-      )->getID();
+        // Create a ticket template in the root entity
+        $root_tpl_id = $this->createItem(
+            \TicketTemplate::class,
+            [
+                'name'        => 'Root template',
+                'entities_id' => 0,
+            ]
+        )->getID();
 
-      // Create a ticket template in the test entity
-      $entity_tpl_id = $this->createItem(
-         \TicketTemplate::class,
-         [
-            'name'        => 'Entity template',
-            'entities_id' => $entity_id,
-         ]
-      )->getID();
+        // Create a ticket template in the test entity
+        $entity_tpl_id = $this->createItem(
+            \TicketTemplate::class,
+            [
+                'name'        => 'Entity template',
+                'entities_id' => $entity_id,
+            ]
+        )->getID();
 
-      // Save current active entities
-      $backup_entities = $_SESSION['glpiactiveentities'];
+        // Save current active entities
+        $backup_entities = $_SESSION['glpiactiveentities'];
 
-      // Test case 1: Empty entity_restrict JSON array with only root entity active
-      $_SESSION['glpiactiveentities'] = [0];
+        // Test case 1: Empty entity_restrict JSON array with only root entity active
+        $_SESSION['glpiactiveentities'] = [0];
 
-      $params = [
-         'itemtype'        => 'TicketTemplate',
-         'entity_restrict' => '[]', // Empty JSON array
-         '_idor_token'     => Session::getNewIDORToken('TicketTemplate')
-      ];
+        $params = [
+            'itemtype'        => 'TicketTemplate',
+            'entity_restrict' => '[]', // Empty JSON array
+            '_idor_token'     => Session::getNewIDORToken('TicketTemplate'),
+        ];
 
-      $results = \Dropdown::getDropdownValue($params, false);
+        $results = \Dropdown::getDropdownValue($params, false);
 
-      // Verify we get the template from the active entity (root)
-      $found_root_template = false;
-      foreach ($results['results'] as $result) {
-         if (isset($result['id']) && $result['id'] == $root_tpl_id) {
-            $found_root_template = true;
-            break;
-         } else if (isset($result['children'])) {
-            foreach ($result['children'] as $child) {
-               if ($child['id'] == $root_tpl_id) {
-                  $found_root_template = true;
-                  break;
-               }
+        // Verify we get the template from the active entity (root)
+        $found_root_template = false;
+        foreach ($results['results'] as $result) {
+            if (isset($result['id']) && $result['id'] == $root_tpl_id) {
+                $found_root_template = true;
+                break;
+            } elseif (isset($result['children'])) {
+                foreach ($result['children'] as $child) {
+                    if ($child['id'] == $root_tpl_id) {
+                        $found_root_template = true;
+                        break;
+                    }
+                }
             }
-         }
-      }
-      $this->assertTrue($found_root_template, 'Root template should be in results with empty entity_restrict');
+        }
+        $this->assertTrue($found_root_template, 'Root template should be in results with empty entity_restrict');
 
-      // Test case 2: Empty entity_restrict JSON array with both entities active
-      $_SESSION['glpiactiveentities'] = [0, $entity_id];
+        // Test case 2: Empty entity_restrict JSON array with both entities active
+        $_SESSION['glpiactiveentities'] = [0, $entity_id];
 
-      $params = [
-         'itemtype'        => 'TicketTemplate',
-         'entity_restrict' => '[]', // Empty JSON array
-         '_idor_token'     => Session::getNewIDORToken('TicketTemplate')
-      ];
+        $params = [
+            'itemtype'        => 'TicketTemplate',
+            'entity_restrict' => '[]', // Empty JSON array
+            '_idor_token'     => Session::getNewIDORToken('TicketTemplate'),
+        ];
 
-      $results = \Dropdown::getDropdownValue($params, false);
+        $results = \Dropdown::getDropdownValue($params, false);
 
-      // Verify we get templates from both active entities
-      $found_root_template = false;
-      $found_entity_template = false;
-      foreach ($results['results'] as $result) {
-         if (isset($result['children'])) {
-            foreach ($result['children'] as $child) {
-               if ($child['id'] == $entity_tpl_id) {
-                  $found_entity_template = true;
-               }
-               if ($child['id'] == $root_tpl_id) {
-                  $found_root_template = true;
-               }
+        // Verify we get templates from both active entities
+        $found_root_template = false;
+        $found_entity_template = false;
+        foreach ($results['results'] as $result) {
+            if (isset($result['children'])) {
+                foreach ($result['children'] as $child) {
+                    if ($child['id'] == $entity_tpl_id) {
+                        $found_entity_template = true;
+                    }
+                    if ($child['id'] == $root_tpl_id) {
+                        $found_root_template = true;
+                    }
+                }
             }
-         }
-      }
+        }
 
-      $this->assertTrue($found_root_template, 'Root template should be in results with empty entity_restrict');
-      $this->assertTrue($found_entity_template, 'Entity template should be in results with empty entity_restrict');
+        $this->assertTrue($found_root_template, 'Root template should be in results with empty entity_restrict');
+        $this->assertTrue($found_entity_template, 'Entity template should be in results with empty entity_restrict');
 
-      // Test case 3: Compare with explicit entity_restrict
-      $params = [
-         'itemtype'        => 'TicketTemplate',
-         'entity_restrict' => $_SESSION['glpiactiveentities'],
-         '_idor_token'     => Session::getNewIDORToken('TicketTemplate', ['entity_restrict' => $_SESSION['glpiactiveentities']])
-      ];
+        // Test case 3: Compare with explicit entity_restrict
+        $params = [
+            'itemtype'        => 'TicketTemplate',
+            'entity_restrict' => $_SESSION['glpiactiveentities'],
+            '_idor_token'     => Session::getNewIDORToken('TicketTemplate', ['entity_restrict' => $_SESSION['glpiactiveentities']]),
+        ];
 
-      $explicit_results = \Dropdown::getDropdownValue($params, false);
+        $explicit_results = \Dropdown::getDropdownValue($params, false);
 
-      // Both results should be equivalent
-      $this->assertEquals($explicit_results['results'], $results['results']);
+        // Both results should be equivalent
+        $this->assertEquals($explicit_results['results'], $results['results']);
 
-      // Restore original active entities
-      $_SESSION['glpiactiveentities'] = $backup_entities;
-   }
+        // Restore original active entities
+        $_SESSION['glpiactiveentities'] = $backup_entities;
+    }
 
-   /**
-    * Test getDropdownValue with entity_restrict parameter handling
-    *
-    * @covers ::getDropdownValue
-    */
-   public function testGetDropdownValueEntityRestrictHandling()
-   {
-      $this->login();
+    /**
+     * Test getDropdownValue with entity_restrict parameter handling
+     *
+     * @covers ::getDropdownValue
+     */
+    public function testGetDropdownValueEntityRestrictHandling()
+    {
+        $this->login();
 
-      // Create two test entities
-      $entity1_id = $this->createItem(
-         \Entity::class,
-         [
-            'name'        => 'Test Entity 1',
-            'entities_id' => 0,
-         ]
-      )->getID();
+        // Create two test entities
+        $entity1_id = $this->createItem(
+            \Entity::class,
+            [
+                'name'        => 'Test Entity 1',
+                'entities_id' => 0,
+            ]
+        )->getID();
 
-      $entity2_id = $this->createItem(
-         \Entity::class,
-         [
-            'name'        => 'Test Entity 2',
-            'entities_id' => 0,
-         ]
-      )->getID();
+        $entity2_id = $this->createItem(
+            \Entity::class,
+            [
+                'name'        => 'Test Entity 2',
+                'entities_id' => 0,
+            ]
+        )->getID();
 
-      // Create ticket templates in each entity
-      $tpl1_id = $this->createItem(
-         \TicketTemplate::class,
-         [
-            'name'        => 'Template in entity 1',
-            'entities_id' => $entity1_id,
-         ]
-      )->getID();
+        // Create ticket templates in each entity
+        $tpl1_id = $this->createItem(
+            \TicketTemplate::class,
+            [
+                'name'        => 'Template in entity 1',
+                'entities_id' => $entity1_id,
+            ]
+        )->getID();
 
-      $tpl2_id = $this->createItem(
-         \TicketTemplate::class,
-         [
-            'name'        => 'Template in entity 2',
-            'entities_id' => $entity2_id,
-         ]
-      )->getID();
+        $tpl2_id = $this->createItem(
+            \TicketTemplate::class,
+            [
+                'name'        => 'Template in entity 2',
+                'entities_id' => $entity2_id,
+            ]
+        )->getID();
 
-      // Save current active entities
-      $backup_entities = $_SESSION['glpiactiveentities'];
+        // Save current active entities
+        $backup_entities = $_SESSION['glpiactiveentities'];
 
-      // Set active entities to include both test entities
-      $_SESSION['glpiactiveentities'] = [0, $entity1_id, $entity2_id];
+        // Set active entities to include both test entities
+        $_SESSION['glpiactiveentities'] = [0, $entity1_id, $entity2_id];
 
-      $params = [
-         'itemtype'        => 'TicketTemplate',
-         'entity_restrict' => 'default',
-         '_idor_token'     => Session::getNewIDORToken('TicketTemplate')
-      ];
+        $params = [
+            'itemtype'        => 'TicketTemplate',
+            'entity_restrict' => 'default',
+            '_idor_token'     => Session::getNewIDORToken('TicketTemplate'),
+        ];
 
-      $results = \Dropdown::getDropdownValue($params, false);
+        $results = \Dropdown::getDropdownValue($params, false);
 
-      $found_tpl1 = false;
-      $found_tpl2 = false;
+        $found_tpl1 = false;
+        $found_tpl2 = false;
 
-      foreach ($results['results'] as $result) {
-         if (isset($result['id']) && $result['id'] == $tpl1_id) {
-            $found_tpl1 = true;
-         }
-         if (isset($result['id']) && $result['id'] == $tpl2_id) {
-            $found_tpl2 = true;
-         }
-
-         if (isset($result['children'])) {
-            foreach ($result['children'] as $child) {
-               if ($child['id'] == $tpl1_id) {
-                  $found_tpl1 = true;
-               }
-               if ($child['id'] == $tpl2_id) {
-                  $found_tpl2 = true;
-               }
+        foreach ($results['results'] as $result) {
+            if (isset($result['id']) && $result['id'] == $tpl1_id) {
+                $found_tpl1 = true;
             }
-         }
-      }
+            if (isset($result['id']) && $result['id'] == $tpl2_id) {
+                $found_tpl2 = true;
+            }
 
-      $this->assertTrue($found_tpl1);
-      $this->assertTrue($found_tpl2);
+            if (isset($result['children'])) {
+                foreach ($result['children'] as $child) {
+                    if ($child['id'] == $tpl1_id) {
+                        $found_tpl1 = true;
+                    }
+                    if ($child['id'] == $tpl2_id) {
+                        $found_tpl2 = true;
+                    }
+                }
+            }
+        }
 
-      // Restore original active entities
-      $_SESSION['glpiactiveentities'] = $backup_entities;
-   }
+        $this->assertTrue($found_tpl1);
+        $this->assertTrue($found_tpl2);
+
+        // Restore original active entities
+        $_SESSION['glpiactiveentities'] = $backup_entities;
+    }
 }
