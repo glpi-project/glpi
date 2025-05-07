@@ -30,11 +30,9 @@
  * ---------------------------------------------------------------------
  */
 
-
-export class GlpiFormConditionEditorController
-{
+export class BaseConditionEditorController {
     /**
-     * Target containerthat will display the condition editor
+     * Target container that will display the condition editor
      * @type {HTMLElement}
      */
     #container;
@@ -63,8 +61,10 @@ export class GlpiFormConditionEditorController
     /** @type {?string} */
     #item_type;
 
-    constructor(container, item_uuid, item_type, forms_sections, form_questions, form_comments)
-    {
+    /** @type {string} */
+    #editorEndpoint;
+
+    constructor(container, item_uuid, item_type, forms_sections, form_questions, form_comments, editorEndpoint) {
         this.#container = container;
         if (this.#container.dataset.glpiConditionsEditorContainer === undefined) {
             console.error(this.#container); // Help debugging by printing the node.
@@ -74,6 +74,9 @@ export class GlpiFormConditionEditorController
         // Load item on which the condition will be defined
         this.#item_uuid = item_uuid;
         this.#item_type = item_type;
+
+        // Set the editor endpoint URL
+        this.#editorEndpoint = editorEndpoint;
 
         // Load form sections
         this.#form_sections = forms_sections;
@@ -94,8 +97,7 @@ export class GlpiFormConditionEditorController
         }
     }
 
-    async renderEditor()
-    {
+    async renderEditor() {
         const data = this.#computeData();
         await this.#doRenderEditor(data);
     }
@@ -104,8 +106,7 @@ export class GlpiFormConditionEditorController
      * In a dynamic environement such as the form editor, it might be necessary
      * to redefine the known list of available sections.
      */
-    setFormSections(form_sections)
-    {
+    setFormSections(form_sections) {
         this.#form_sections = form_sections;
     }
 
@@ -113,8 +114,7 @@ export class GlpiFormConditionEditorController
      * In a dynamic environement such as the form editor, it might be necessary
      * to redefine the known list of available questions.
      */
-    setFormQuestions(form_questions)
-    {
+    setFormQuestions(form_questions) {
         this.#form_questions = form_questions;
     }
 
@@ -122,14 +122,12 @@ export class GlpiFormConditionEditorController
      * In a dynamic environement such as the form editor, it might be necessary
      * to redefine the known list of available comments.
      */
-    setFormComments(form_comments)
-    {
+    setFormComments(form_comments) {
         this.#form_comments = form_comments;
     }
 
-    async #doRenderEditor(data)
-    {
-        const url = `${CFG_GLPI.root_doc}/Form/Condition/Editor`;
+    async #doRenderEditor(data) {
+        const url = this.#editorEndpoint;
         const content = await $.post(url, {
             form_data: data,
         });
@@ -138,8 +136,7 @@ export class GlpiFormConditionEditorController
         $(this.#container.querySelector('[data-glpi-conditions-editor]')).html(content);
     }
 
-    #initEventHandlers()
-    {
+    #initEventHandlers() {
         // Handle add and delete conditions
         this.#container.addEventListener('click', (e) => {
             const target = e.target;
@@ -195,15 +192,13 @@ export class GlpiFormConditionEditorController
         }
     }
 
-    async #addNewEmptyCondition()
-    {
+    async #addNewEmptyCondition() {
         const data = this.#computeData();
         data.conditions.push({'item': ''});
         await this.#doRenderEditor(data);
     }
 
-    async #deleteCondition(condition_index)
-    {
+    async #deleteCondition(condition_index) {
         const data = this.#computeData();
         data.conditions = data.conditions.filter((_condition, index) => {
             return index != condition_index;
@@ -211,8 +206,7 @@ export class GlpiFormConditionEditorController
         await this.#doRenderEditor(data);
     }
 
-    #computeData()
-    {
+    #computeData() {
         return {
             sections: this.#form_sections,
             questions: this.#form_questions,
@@ -223,8 +217,7 @@ export class GlpiFormConditionEditorController
         };
     }
 
-    #computeDefinedConditions()
-    {
+    #computeDefinedConditions() {
         const conditions_data = [];
         const conditions = this.#container.querySelectorAll(
             '[data-glpi-conditions-editor-condition]'

@@ -103,6 +103,14 @@
                     {% set question_strategy = question.getConfiguredVisibilityStrategy() %}
                 {% endif %}
 
+                <div class="ms-auto"></div>
+
+                {# Validation dropdown #}
+                {{ include('pages/admin/form/conditional_validation_dropdown.html.twig', {
+                    'item': question,
+                    'type': "Glpi\\Form\\Question",
+                }, with_context = false) }}
+
                 {# Visibility dropdown #}
                 {{ include('pages/admin/form/conditional_visibility_dropdown.html.twig', {
                     'item': question,
@@ -150,6 +158,16 @@
                             >
                                 <i class="ti ti-eye-cog me-2"></i>
                                 <span>{{ __("Configure visibility") }}</span>
+                            </button>
+                        </li>
+                        <li>
+                            <button
+                                type="button"
+                                class="dropdown-item"
+                                data-glpi-form-editor-on-click="show-validation-dropdown"
+                            >
+                                <i class="ti ti-checks me-2"></i>
+                                <span>{{ __("Configure validation") }}</span>
                             </button>
                         </li>
                         <li>

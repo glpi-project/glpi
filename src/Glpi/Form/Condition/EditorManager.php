@@ -178,6 +178,16 @@ final class EditorManager
         return $dropdown_values;
     }
 
+    public function getValueOperatorForValidationDropdownValues(string $uuid): array
+    {
+        // Filter the value operators to only keep the ones that can be used for validation
+        return array_filter(
+            $this->getValueOperatorDropdownValues($uuid),
+            fn(string $key): bool => ValueOperator::from($key)->canBeUsedForValidation(),
+            ARRAY_FILTER_USE_KEY,
+        );
+    }
+
     public function getLogicOperatorDropdownValues(): array
     {
         return LogicOperator::getDropdownValues();

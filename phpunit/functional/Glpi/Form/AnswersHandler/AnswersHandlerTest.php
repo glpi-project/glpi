@@ -41,6 +41,7 @@ use Glpi\Form\AnswersHandler\AnswersHandler;
 use Glpi\Form\Condition\CreationStrategy;
 use Glpi\Form\Condition\LogicOperator;
 use Glpi\Form\Condition\Type;
+use Glpi\Form\Condition\ValidationStrategy;
 use Glpi\Form\Condition\ValueOperator;
 use Glpi\Form\Condition\VisibilityStrategy;
 use Glpi\Form\Destination\FormDestinationChange;
@@ -54,6 +55,7 @@ use Glpi\Form\QuestionType\QuestionTypeLongText;
 use Glpi\Form\QuestionType\QuestionTypeNumber;
 use Glpi\Form\QuestionType\QuestionTypeShortText;
 use Glpi\Tests\FormTesterTrait;
+use PHPUnit\Framework\Attributes\DataProvider;
 use User;
 
 class AnswersHandlerTest extends DbTestCase
@@ -165,115 +167,271 @@ class AnswersHandlerTest extends DbTestCase
         );
     }
 
-    public function testValidateAnswers(): void
+    public static function provideTestValidateAnswers(): iterable
     {
-        self::login();
+        // Basic mandatory form builder
+        $mandatory_form_builder = (new FormBuilder("Validation Test Form"))
+                ->addQuestion("Mandatory Name", QuestionTypeShortText::class, is_mandatory: true)
+                ->addQuestion("Mandatory Email", QuestionTypeEmail::class, is_mandatory: true)
+                ->addQuestion("Optional Comment", QuestionTypeLongText::class, is_mandatory: false);
 
-        // Create a form with both mandatory and optional questions
-        $builder = new FormBuilder("Validation Test Form");
-        $builder
-            ->addQuestion("Mandatory Name", QuestionTypeShortText::class, is_mandatory: true)
-            ->addQuestion("Mandatory Email", QuestionTypeEmail::class, is_mandatory: true)
-            ->addQuestion("Optional Comment", QuestionTypeLongText::class, is_mandatory: false)
-        ;
-        $form = self::createForm($builder);
-
-        // Get handler instance
-        $handler = AnswersHandler::getInstance();
-
-        // Test 1: All mandatory fields are filled - should be valid
-        $complete_answers = [
-            self::getQuestionId($form, "Mandatory Name") => "John Doe",
-            self::getQuestionId($form, "Mandatory Email") => "john.doe@example.com",
-            self::getQuestionId($form, "Optional Comment") => "This is an optional comment",
+        yield 'All mandatory fields are filled - should be valid' => [
+            'builder' => $mandatory_form_builder,
+            'answers' => [
+                'Mandatory Name' => 'John Doe',
+                'Mandatory Email' => 'john.doe@example.com',
+                'Optional Comment' => 'This is an optional comment',
+            ],
+            'expectedIsValid' => true,
+            'expectedErrors' => [],
         ];
-        $result = $handler->validateAnswers($form, $complete_answers);
-        $this->assertTrue($result->isValid(), "Validation should pass when all mandatory fields are filled");
-        $this->assertCount(0, $result->getErrors(), "There should be no errors when all mandatory fields are filled");
 
-        // Test 2: Missing one mandatory field - should be invalid
-        $missing_name_answers = [
-            self::getQuestionId($form, "Mandatory Email") => "john.doe@example.com",
-            self::getQuestionId($form, "Optional Comment") => "This is an optional comment",
+        yield 'Missing one mandatory field - should be invalid' => [
+            'builder' => $mandatory_form_builder,
+            'answers' => [
+                'Mandatory Email' => 'john.doe@example.com',
+                'Optional Comment' => 'This is an optional comment',
+            ],
+            'expectedIsValid' => false,
+            'expectedErrors' => [
+                'Mandatory Name' => 'This field is mandatory',
+            ],
         ];
-        $result = $handler->validateAnswers($form, $missing_name_answers);
-        $this->assertFalse($result->isValid(), "Validation should fail when a mandatory field is missing");
-        $this->assertCount(1, $result->getErrors(), "There should be one error when one mandatory field is missing");
 
-        // Test 3: Missing all mandatory fields - should be invalid with multiple errors
-        $only_optional_answers = [
-            self::getQuestionId($form, "Optional Comment") => "This is an optional comment",
+        yield 'Missing all mandatory fields - should be invalid' => [
+            'builder' => $mandatory_form_builder,
+            'answers' => [
+                'Optional Comment' => 'This is an optional comment',
+            ],
+            'expectedIsValid' => false,
+            'expectedErrors' => [
+                'Mandatory Name' => 'This field is mandatory',
+                'Mandatory Email' => 'This field is mandatory',
+            ],
         ];
-        $result = $handler->validateAnswers($form, $only_optional_answers);
-        $this->assertFalse($result->isValid(), "Validation should fail when all mandatory fields are missing");
-        $this->assertCount(2, $result->getErrors(), "There should be two errors when both mandatory fields are missing");
 
-        // Test 4: Empty answers - should be invalid with multiple errors
-        $empty_answers = [];
-        $result = $handler->validateAnswers($form, $empty_answers);
-        $this->assertFalse($result->isValid(), "Validation should fail when answers are empty");
-        $this->assertCount(2, $result->getErrors(), "There should be two errors when answers are empty");
-
-        // Test 5: Empty string in mandatory field - should be invalid
-        $empty_string_answers = [
-            self::getQuestionId($form, "Mandatory Name") => "",
-            self::getQuestionId($form, "Mandatory Email") => "john.doe@example.com",
+        yield 'Empty answers - should be invalid with multiple errors' => [
+            'builder' => $mandatory_form_builder,
+            'answers' => [],
+            'expectedIsValid' => false,
+            'expectedErrors' => [
+                'Mandatory Name' => 'This field is mandatory',
+                'Mandatory Email' => 'This field is mandatory',
+            ],
         ];
-        $result = $handler->validateAnswers($form, $empty_string_answers);
-        $this->assertFalse($result->isValid(), "Validation should fail when a mandatory field contains an empty string");
-        $this->assertCount(1, $result->getErrors(), "There should be one error when a mandatory field contains an empty string");
+
+        yield 'Empty string in mandatory field - should be invalid' => [
+            'builder' => $mandatory_form_builder,
+            'answers' => [
+                'Mandatory Name' => '',
+                'Mandatory Email' => 'john.doe@example.com',
+            ],
+            'expectedIsValid' => false,
+            'expectedErrors' => [
+                'Mandatory Name' => 'This field is mandatory',
+            ],
+        ];
+
+        // Conditonnal validation form builder
+        $validation_conditional_form_builder = (new FormBuilder("Conditional Validation Test Form"))
+            ->addQuestion("Main Question", QuestionTypeShortText::class, is_mandatory: true)
+            ->addQuestion("Conditional Question", QuestionTypeShortText::class, is_mandatory: true);
+        $validation_conditional_form_builder->setQuestionValidation(
+            "Conditional Question",
+            ValidationStrategy::VALID_IF,
+            [
+                [
+                    'logic_operator' => LogicOperator::AND,
+                    'item_name'      => "Conditional Question",
+                    'item_type'      => Type::QUESTION,
+                    'value_operator' => ValueOperator::MATCH_REGEX,
+                    'value'          => "/^Conditional Validation$/",
+                ],
+            ]
+        );
+
+        yield 'Validation condition met - should be valid' => [
+            'builder' => $validation_conditional_form_builder,
+            'answers' => [
+                'Main Question'        => 'Show Conditional',
+                'Conditional Question' => 'Conditional Validation',
+            ],
+            'expectedIsValid' => true,
+            'expectedErrors' => [],
+        ];
+
+        yield 'Validation condition not met - should be invalid' => [
+            'builder' => $validation_conditional_form_builder,
+            'answers' => [
+                'Main Question'        => 'Show Conditional',
+                'Conditional Question' => 'Invalid answer',
+            ],
+            'expectedIsValid' => false,
+            'expectedErrors' => [
+                'Conditional Question' => 'The value must match the requested format',
+            ],
+        ];
+
+        yield 'Empty answer in conditional question - should be invalid' => [
+            'builder' => $validation_conditional_form_builder,
+            'answers' => [
+                'Main Question'        => 'Show Conditional',
+                'Conditional Question' => '',
+            ],
+            'expectedIsValid' => false,
+            'expectedErrors' => [
+                'Conditional Question' => 'This field is mandatory',
+            ],
+        ];
+
+        // Conditional visibility form builder
+        $visibility_conditional_form_builder = (new FormBuilder("Conditional Validation Test Form"))
+            ->addQuestion("Main Question", QuestionTypeShortText::class, is_mandatory: true)
+            ->addQuestion("Conditional Question", QuestionTypeShortText::class, is_mandatory: true);
+        $visibility_conditional_form_builder->setQuestionVisibility(
+            "Conditional Question",
+            VisibilityStrategy::VISIBLE_IF,
+            [
+                [
+                    'logic_operator' => LogicOperator::AND,
+                    'item_name'      => "Main Question",
+                    'item_type'      => Type::QUESTION,
+                    'value_operator' => ValueOperator::EQUALS,
+                    'value'          => "Show Conditional",
+                ],
+            ]
+        );
+
+        yield 'Conditional question shown and filled - should be valid' => [
+            'builder' => $visibility_conditional_form_builder,
+            'answers' => [
+                'Main Question' => 'Show Conditional',
+                'Conditional Question' => 'This is a conditional answer',
+            ],
+            'expectedIsValid' => true,
+            'expectedErrors' => [],
+        ];
+
+        yield 'Conditional question not shown - should be valid' => [
+            'builder' => $visibility_conditional_form_builder,
+            'answers' => [
+                'Main Question' => 'Do not show',
+            ],
+            'expectedIsValid' => true,
+            'expectedErrors' => [],
+        ];
+
+        yield 'Conditional question shown but not filled - should be invalid' => [
+            'builder' => $visibility_conditional_form_builder,
+            'answers' => [
+                'Main Question' => 'Show Conditional',
+                'Conditional Question' => '',
+            ],
+            'expectedIsValid' => false,
+            'expectedErrors' => [
+                'Conditional Question' => 'This field is mandatory',
+            ],
+        ];
+
+        // Both validation and visibility form builder
+        $both_conditional_form_builder = (new FormBuilder("Both Conditional Validation Test Form"))
+            ->addQuestion("Main Question", QuestionTypeShortText::class, is_mandatory: true)
+            ->addQuestion("Conditional Question", QuestionTypeShortText::class, is_mandatory: true);
+        $both_conditional_form_builder->setQuestionVisibility(
+            "Conditional Question",
+            VisibilityStrategy::VISIBLE_IF,
+            [
+                [
+                    'logic_operator' => LogicOperator::AND,
+                    'item_name'      => "Main Question",
+                    'item_type'      => Type::QUESTION,
+                    'value_operator' => ValueOperator::EQUALS,
+                    'value'          => "Show Conditional",
+                ],
+            ]
+        );
+        $both_conditional_form_builder->setQuestionValidation(
+            "Conditional Question",
+            ValidationStrategy::VALID_IF,
+            [
+                [
+                    'logic_operator' => LogicOperator::AND,
+                    'item_name'      => "Conditional Question",
+                    'item_type'      => Type::QUESTION,
+                    'value_operator' => ValueOperator::MATCH_REGEX,
+                    'value'          => "/^Both Conditional Validation$/",
+                ],
+            ]
+        );
+
+        yield 'Conditional question shown and validation condition met - should be valid' => [
+            'builder' => $both_conditional_form_builder,
+            'answers' => [
+                'Main Question'        => 'Show Conditional',
+                'Conditional Question' => 'Both Conditional Validation',
+            ],
+            'expectedIsValid' => true,
+            'expectedErrors' => [],
+        ];
+
+        yield 'Conditional question shown but validation condition not met - should be invalid' => [
+            'builder' => $both_conditional_form_builder,
+            'answers' => [
+                'Main Question'        => 'Show Conditional',
+                'Conditional Question' => 'Invalid answer',
+            ],
+            'expectedIsValid' => false,
+            'expectedErrors' => [
+                'Conditional Question' => 'The value must match the requested format',
+            ],
+        ];
+
+        yield 'Conditional question not shown and not filled - should be valid' => [
+            'builder' => $both_conditional_form_builder,
+            'answers' => [
+                'Main Question' => 'Do not show',
+            ],
+            'expectedIsValid' => true,
+            'expectedErrors' => [],
+        ];
     }
 
-    public function testValidateAnswersWithConditions(): void
-    {
+    #[DataProvider('provideTestValidateAnswers')]
+    public function testValidateAnswers(
+        FormBuilder $builder,
+        array $answers,
+        bool $expectedIsValid,
+        array $expectedErrors
+    ): void {
         self::login();
 
-        // Create a form with conditional questions
-        $builder = new FormBuilder("Conditional Validation Test Form");
-        $builder
-            ->addQuestion("Main Question", QuestionTypeShortText::class, is_mandatory: true)
-            ->addQuestion("Conditional Question", QuestionTypeShortText::class, is_mandatory: true)
-            ->setQuestionVisibility(
-                "Conditional Question",
-                VisibilityStrategy::VISIBLE_IF,
-                [
-                    [
-                        'logic_operator' => LogicOperator::AND,
-                        'item_name'      => "Main Question",
-                        'item_type'      => Type::QUESTION,
-                        'value_operator' => ValueOperator::EQUALS,
-                        'value'          => "Show Conditional",
-                    ],
-                ]
-            )
-        ;
         $form = self::createForm($builder);
-
-        // Get handler instance
         $handler = AnswersHandler::getInstance();
 
-        // Test 1: Conditional question is shown - should be valid
-        $conditional_answers = [
-            self::getQuestionId($form, "Main Question") => "Show Conditional",
-            self::getQuestionId($form, "Conditional Question") => "This is a conditional answer",
-        ];
-        $result = $handler->validateAnswers($form, $conditional_answers);
-        $this->assertTrue($result->isValid(), "Validation should pass when the conditional question is shown and filled");
+        // Convert answer keys from question names to question IDs
+        $mapped_answers = [];
+        foreach ($answers as $question_name => $answer) {
+            $question_id = self::getQuestionId($form, $question_name);
+            $mapped_answers[$question_id] = $answer;
+        }
+        $result = $handler->validateAnswers($form, $mapped_answers);
 
-        // Test 2: Conditional question is not shown - should be valid
-        $non_conditional_answers = [
-            self::getQuestionId($form, "Main Question") => "Do not show",
-        ];
-        $result = $handler->validateAnswers($form, $non_conditional_answers);
-        $this->assertTrue($result->isValid(), "Validation should pass when the conditional question is not shown");
+        $this->assertEquals($expectedIsValid, $result->isValid(), "Validation result should match expected value");
+        $this->assertCount(count($expectedErrors), $result->getErrors(), "Number of errors should match expected value");
 
-        // Test 3: Conditional question is shown but not filled - should be invalid
-        $missing_conditional_answers = [
-            self::getQuestionId($form, "Main Question") => "Show Conditional",
-            self::getQuestionId($form, "Conditional Question") => "",
-        ];
-        $result = $handler->validateAnswers($form, $missing_conditional_answers);
-        $this->assertFalse($result->isValid(), "Validation should fail when the conditional question is shown but not filled");
+        // Convert expected errors to expected format
+        $currentErrors = $result->getErrors();
+        foreach ($expectedErrors as $name => $error) {
+            $this->assertContains(
+                [
+                    'question_id'   => self::getQuestionId($form, $name),
+                    'question_name' => $name,
+                    'message'       => $error,
+                ],
+                $currentErrors,
+                "Expected error message should be present in the result"
+            );
+        }
     }
 
     private function validateAnswers(

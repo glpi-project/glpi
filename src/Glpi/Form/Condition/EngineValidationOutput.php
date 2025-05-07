@@ -34,48 +34,46 @@
 
 namespace Glpi\Form\Condition;
 
-use JsonException;
+use JsonSerializable;
+use Override;
 
-use function Safe\json_decode;
-
-trait ConditionableTrait
+final class EngineValidationOutput implements JsonSerializable
 {
+    /** @var array<int, ConditionData[]> */
+    private array $questions_validation = [];
+
+    #[Override]
+    public function jsonSerialize(): array
+    {
+        return [
+            'questions_validation' => $this->questions_validation,
+        ];
+    }
+
+    public function setQuestionValidation(int $question_id, array $not_met_conditions): void
+    {
+        $this->questions_validation[$question_id] = $not_met_conditions;
+    }
+
     /**
-     * Get the field name used for conditions
-     * Can be overridden in the class using this trait
-     *
-     * @return string
+     * @param int $question_id
+     * @return ConditionData[]
      */
-    protected function getConditionsFieldName(): string
+    public function getQuestionValidation(int $question_id): array
     {
-        return 'conditions';
-    }
-
-    /** @return ConditionData[] */
-    public function getConfiguredConditionsData(): array
-    {
-        return $this->getConditionsData($this->getConditionsFieldName());
-    }
-
-    /** @return ConditionData[] */
-    private function getConditionsData(string $field_name): array
-    {
-        parent::post_getFromDB();
-
-        try {
-            $raw_data = json_decode(
-                json       : $this->fields[$field_name] ?? '{}',
-                associative: true,
-                flags      : JSON_THROW_ON_ERROR,
-            );
-        } catch (JsonException $e) {
-            $raw_data = [];
+        if (!isset($this->questions_validation[$question_id])) {
+            return [];
         }
 
-        $form_data = new FormData([
-            'conditions' => $raw_data,
-        ]);
+        return $this->questions_validation[$question_id];
+    }
 
-        return $form_data->getConditionsData();
+    public function isQuestionValid(int $question_id): bool
+    {
+        if (!isset($this->questions_validation[$question_id])) {
+            return false;
+        }
+
+        return empty($this->questions_validation[$question_id]);
     }
 }

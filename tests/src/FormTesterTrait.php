@@ -228,6 +228,50 @@ trait FormTesterTrait
             ], ['conditions']);
         }
 
+        // Add validation conditions on questions
+        foreach ($builder->getQuestionValidation() as $name => $params) {
+            // Find the correct question
+            $id = $this->getQuestionId($form, $name);
+
+            $params['conditions'] = array_map(function ($condition) use ($form) {
+                // Find the correct UUID
+                if ($condition['item_type'] == Type::QUESTION) {
+                    $item = Question::getById($this->getQuestionId(
+                        $form,
+                        $condition['item_name']
+                    ));
+                } else {
+                    throw new RuntimeException("Unknown type");
+                }
+                $item_uuid = $item->fields['uuid'];
+
+                return [
+                    'item'           => $condition['item_type']->value . "-" . $item_uuid,
+                    'item_type'      => $condition['item_type'],
+                    'item_uuid'      => $item_uuid,
+                    'value'          => $condition['value'],
+                    'value_operator' => $condition['value_operator']->value,
+                    'logic_operator' => $condition['logic_operator']->value,
+                ];
+            }, $params['conditions']);
+
+            // Add validation strategy
+            if (isset($params['validation_strategy'])) {
+                // Update item with validation strategy
+                $this->updateItem(Question::class, $id, [
+                    'validation_strategy' => $params['validation_strategy'],
+                ]);
+            }
+
+            // Update item with conditions
+            if (isset($params['conditions'])) {
+                // Update item with conditions
+                $this->updateItem(Question::class, $id, [
+                    'validation_conditions' => json_encode($params['conditions']),
+                ], ['validation_conditions']);
+            }
+        }
+
         // Add visibility conditions on comments
         foreach ($builder->getCommentVisibility() as $name => $params) {
             // Find the correct comment

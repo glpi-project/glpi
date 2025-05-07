@@ -37,6 +37,8 @@ namespace Glpi\Form\Condition;
 use JsonSerializable;
 use Override;
 
+use function Safe\json_encode;
+
 final class ConditionData implements JsonSerializable
 {
     public function __construct(
@@ -82,6 +84,16 @@ final class ConditionData implements JsonSerializable
         // No fallback here as an empty value is valid if the condition is not
         // fully specified yet.
         return ValueOperator::tryFrom($this->value_operator ?? "");
+    }
+
+    /**
+     * Compute the UUID of the condition.
+     *
+     * @return string
+     */
+    public function getUuid(): string
+    {
+        return md5(json_encode($this->jsonSerialize()));
     }
 
     #[Override]
