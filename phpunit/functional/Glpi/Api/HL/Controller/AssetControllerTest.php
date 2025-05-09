@@ -34,6 +34,7 @@
 
 namespace tests\units\Glpi\Api\HL\Controller;
 
+use Glpi\Asset\Asset;
 use Glpi\Http\Request;
 use PHPUnit\Framework\Attributes\DataProvider;
 
@@ -43,6 +44,9 @@ class AssetControllerTest extends \HLAPITestCase
     {
         global $CFG_GLPI;
         $types = $CFG_GLPI['asset_types'];
+
+        // Ignore custom assets
+        $types = array_filter($types, static fn($t) => !is_subclass_of($t, Asset::class));
 
         $this->login();
         $this->api->call(new Request('GET', '/Assets'), function ($call) use ($types) {
