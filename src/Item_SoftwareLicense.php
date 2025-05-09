@@ -143,12 +143,41 @@ class Item_SoftwareLicense extends CommonDBRelation
             case 'add_item':
                 /** @var array $CFG_GLPI */
                 global $CFG_GLPI;
+
+                $additionaltypes = [User::class];
+                $can_add_user = true;
+
+                if (isset($input['items']) && isset($input['items']['SoftwareLicense'])) {
+                    $license_ids = array_values($input['items']['SoftwareLicense']);
+
+                    foreach ($license_ids as $license_id) {
+                        $license = new SoftwareLicense();
+                        if ($license->getFromDB($license_id)) {
+                            $number = Item_SoftwareLicense::countForLicense($license_id);
+                            $number += SoftwareLicense_User::countForLicense($license_id);
+
+                            if (
+                                $license->getField('number') != -1
+                                && $number >= $license->getField('number')
+                                && !$license->getField('allow_overquota')
+                            ) {
+                                $can_add_user = false;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                if (!$can_add_user) {
+                    $additionaltypes = [];
+                }
+
                 echo "<table class='tab_cadre_fixe'>";
                 echo "<tr class='tab_bg_2 center'>";
                 echo "<td>";
                 $rand = Dropdown::showItemTypes(
                     'itemtype',
-                    array_merge($CFG_GLPI['software_types'], [User::class]),
+                    array_merge($CFG_GLPI['software_types'], $additionaltypes),
                     [
                         'width'                 => 'unset',
                     ]
@@ -255,15 +284,43 @@ class Item_SoftwareLicense extends CommonDBRelation
             case 'add_item':
                 $item_licence = new Item_SoftwareLicense();
                 $input = $ma->getInput();
+
                 foreach ($ids as $id) {
-                    $input = [
-                        'softwarelicenses_id'   => $id,
-                        'items_id'        => $input['items_id'],
-                        'itemtype'        => $input['itemtype'],
-                    ];
-                    if ($item_licence->can(-1, UPDATE, $input)) {
-                        if ($item_licence->add($input)) {
-                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                    $license = new SoftwareLicense();
+                    if ($license->getFromDB($id)) {
+                        $number = Item_SoftwareLicense::countForLicense($license->getID());
+                        $number += SoftwareLicense_User::countForLicense($license->getID());
+
+                        if ($input['itemtype'] == User::class) {
+                            $item_licence = new SoftwareLicense_User();
+                            if (
+                                $license->getField('number') != -1 &&
+                                $number >= $license->getField('number') &&
+                                !$license->getField('allow_overquota')
+                            ) {
+                                $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                                $ma->addMessage(sprintf(__('Maximum number of items reached for license "%s".'), $license->getName()));
+                                continue;
+                            }
+
+                            $input_data = [
+                                'softwarelicenses_id'   => $id,
+                                'users_id'             => $input['items_id'],
+                            ];
+                        } else {
+                            $input_data = [
+                                'softwarelicenses_id'   => $id,
+                                'items_id'        => $input['items_id'],
+                                'itemtype'        => $input['itemtype'],
+                            ];
+                        }
+
+                        if ($item_licence->can(-1, UPDATE, $input_data)) {
+                            if ($item_licence->add($input_data)) {
+                                $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                            } else {
+                                $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                            }
                         } else {
                             $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
                         }

@@ -48,6 +48,10 @@ class SoftwareLicense_User extends CommonDBRelation
     public static $itemtype_2 = 'SoftwareLicense';
     public static $items_id_2 = 'softwarelicenses_id';
 
+    public static $checkItem_1_Rights = self::DONT_CHECK_ITEM_RIGHTS;
+
+    public static $checkItem_2_Rights = self::HAVE_SAME_RIGHT_ON_ITEM;
+
     public static function getTypeName($nb = 0)
     {
         return SoftwareLicense::getTypeName($nb);
