@@ -46,7 +46,7 @@ class AssetControllerTest extends \HLAPITestCase
         $types = $CFG_GLPI['asset_types'];
 
         // Ignore custom assets
-        $types = array_filter($types, static fn ($t) => !($t instanceof Asset));
+        $types = array_filter($types, static fn($t) => !($t instanceof Asset));
 
         $this->login();
         $this->api->call(new Request('GET', '/Assets'), function ($call) use ($types) {

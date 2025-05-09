@@ -47,7 +47,7 @@ class CustomAssetControllerTest extends HLAPITestCase
     {
         $definitions = AssetDefinitionManager::getInstance()->getDefinitions();
         $this->assertNotEmpty($definitions);
-        $types = array_map(static fn ($d) => $d->fields['system_name'], $definitions);
+        $types = array_map(static fn($d) => $d->fields['system_name'], $definitions);
 
         $this->login();
         $this->api->call(new Request('GET', '/Assets/Custom'), function ($call) use ($types) {

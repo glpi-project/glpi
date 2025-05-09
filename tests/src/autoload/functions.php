@@ -689,7 +689,7 @@ function loadDataset()
                 'icon' => 'ti ti-test-pipe',
                 'label' => 'Test01',
                 'is_active' => 1,
-                'profiles' => ['4' => ALLSTANDARDRIGHT | READ_ASSIGNED | UPDATE_ASSIGNED | READ_OWNED | UPDATE_OWNED]
+                'profiles' => ['4' => ALLSTANDARDRIGHT | READ_ASSIGNED | UPDATE_ASSIGNED | READ_OWNED | UPDATE_OWNED],
             ],
         ],
         'Glpi\\Asset\\CustomFieldDefinition' => [
@@ -698,21 +698,21 @@ function loadDataset()
                 'assets_assetdefinitions_id' => 'Test01',
                 'label' => 'Test String',
                 'type' => 'Glpi\\Asset\\CustomFieldType\\StringType',
-                'field_options' => '{"full_width":"0","readonly":"0","required":"0"}'
+                'field_options' => '{"full_width":"0","readonly":"0","required":"0"}',
             ],
         ],
         'Glpi\\CustomAsset\\Test01' => [
             [
                 'name' => 'TestA',
                 'entities_id' => '_test_root_entity',
-                'custom_teststring' => 'Test String A'
+                'custom_teststring' => 'Test String A',
             ],
             [
                 'name' => 'TestB',
                 'entities_id' => '_test_root_entity',
-                'custom_teststring' => 'Test String B'
+                'custom_teststring' => 'Test String B',
             ],
-        ]
+        ],
     ];
 
     // To bypass various right checks
