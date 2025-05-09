@@ -901,6 +901,12 @@ class DropdownTest extends DbTestCase
                     'count'     => 1,
                 ],
             ],
+            // This test verifies the behavior of searches by ID when $_SESSION['glpiis_ids_visible'] is true.
+            // Specifically, it checks that a WHERE clause is applied on the index name ("id")
+            // when 'searchText' contains only numeric characters (one or more), with no other characters.
+            // This condition is evaluated in two contexts: when the related object is either a CommonDropdown or a CommonTreeDropdown.
+            // Therefore, we cover both cases by testing with TaskCategory (CommonTreeDropdown) and ComputerModel (CommonDropdown).
+            // Additionally, we use both string and integer values for 'searchText' to ensure proper handling and to validate the regex used in preg_match.
             [
                 'params' => [
                     'display_emptychoice' => 0,
@@ -1013,7 +1019,6 @@ class DropdownTest extends DbTestCase
                     'count'     => 1
                 ]
             ]
-
         ];
     }
 
