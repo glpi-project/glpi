@@ -570,10 +570,10 @@ class SoftwareLicense extends CommonTreeDropdown
             'massiveaction'      => false,
             'computation'        => '(' .
                 '(SELECT COUNT(*) FROM ' . Item_SoftwareLicense::getTable() .
-                ' WHERE softwarelicenses_id = ' . static::getTable() . '.id AND is_deleted = 0)' .
+                ' WHERE softwarelicenses_id = TABLE.id AND is_deleted = 0)' .
                 ' + ' .
                 '(SELECT COUNT(*) FROM ' . SoftwareLicense_User::getTable() .
-                ' WHERE softwarelicenses_id = ' . static::getTable() . '.id)' .
+                ' WHERE softwarelicenses_id = TABLE.id)' .
                 ')',
             'computationgroupby' => true,
             'computationtype' => 'count',
