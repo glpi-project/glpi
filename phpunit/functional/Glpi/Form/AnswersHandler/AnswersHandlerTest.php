@@ -262,7 +262,7 @@ class AnswersHandlerTest extends DbTestCase
 
         // Test 2: Conditional question is not shown - should be valid
         $non_conditional_answers = [
-            self::getQuestionId($form, "Main Question") => "Do not show"
+            self::getQuestionId($form, "Main Question") => "Do not show",
         ];
         $result = $handler->validateAnswers($form, $non_conditional_answers);
         $this->assertTrue($result->isValid(), "Validation should pass when the conditional question is not shown");
