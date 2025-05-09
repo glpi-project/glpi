@@ -4571,9 +4571,10 @@ final class SQLProvider implements SearchProviderInterface
                 $sopt["joinparams"]
             );
 
+            $ref_table = $m_itemtype::getTable() . self::getMetaTableUniqueSuffix($m_itemtype::getTable(), $m_itemtype);
             $FROM .= \Search::addLeftJoin(
                 $m_itemtype,
-                $m_itemtype::getTable(),
+                $ref_table,
                 $already_link_tables,
                 $sopt["table"],
                 $sopt["linkfield"],

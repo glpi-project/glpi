@@ -50,6 +50,7 @@ use Glpi\Asset\Capacity\HasNetworkPortCapacity;
 use Glpi\Asset\Capacity\HasNotepadCapacity;
 use Glpi\Asset\Capacity\IsProjectAssetCapacity;
 use Glpi\Asset\Capacity\IsReservableCapacity;
+use Glpi\DBAL\QueryExpression;
 use Glpi\Dropdown\DropdownDefinition;
 use Glpi\Migration\GenericobjectPluginMigration;
 use Glpi\Migration\PluginMigrationResult;
@@ -93,6 +94,8 @@ class GenericobjectPluginMigrationTest extends DbTestCase
         global $DB;
 
         parent::setUp();
+
+        $DB->delete(AssetDefinition::getTable(), [new QueryExpression('true')]);
 
         // Load it inside the test DB transaction to not have to clean it manually
         $queries = $DB->getQueriesFromFile(sprintf('%s/tests/fixtures/genericobject-migration/glpi-data.sql', GLPI_ROOT));
@@ -859,6 +862,7 @@ class GenericobjectPluginMigrationTest extends DbTestCase
                 }
             }
         }
+
         $this->assertEquals(
             \count($expected_items),
             \countElementsInTable($class::getTable(), $class::getSystemSqlCriteria())
