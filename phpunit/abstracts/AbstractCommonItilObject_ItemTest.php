@@ -1,5 +1,6 @@
 <?php
 
+namespace tests\units\Glpi\ContentTemplates\Parameters;
 /**
  * ---------------------------------------------------------------------
  *
@@ -8,7 +9,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,23 +33,17 @@
  * ---------------------------------------------------------------------
  */
 
-/**
- * Change_Item Class
- *
- * Relation between Changes and Items
- **/
-class Change_Item extends CommonItilObject_Item
+namespace tests\units;
+
+abstract class AbstractCommonItilObject_ItemTest extends \DbTestCase
 {
-    // From CommonDBRelation
-    public static $itemtype_1          = 'Change';
-    public static $items_id_1          = 'changes_id';
-
-    public static $itemtype_2          = 'itemtype';
-    public static $items_id_2          = 'items_id';
-    public static $checkItem_2_Rights  = self::DONT_CHECK_ITEM_RIGHTS;
-
-    public static function getTypeName($nb = 0)
+    /**
+     * Return the name of the Rule class this test class tests
+     * @return string
+     */
+    protected function getTestedClass(): string
     {
-        return _n('Change item', 'Change items', $nb);
+        $test_class = static::class;
+        return preg_replace('/Test$/', '', substr(strrchr($test_class, '\\'), 1));
     }
 }
