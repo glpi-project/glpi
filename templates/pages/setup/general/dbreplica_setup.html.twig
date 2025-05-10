@@ -73,7 +73,7 @@
    <div class="col-5">
         <div class="accordion" id="accordion-primary">
             <div class="accordion-item">
-                <h2 class="accordion-header" id="heading-primary">
+                <div class="accordion-header" id="heading-primary">
                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-primary" aria-expanded="false" aria-controls="collapse-primary">
                     <h3>
                         <span class="status status-{{ primary_ok ? 'green' : primary_unknown ? 'muted' : 'red' }}">
@@ -90,7 +90,7 @@
                         {% endif %}
                     </h3>
                     </button>
-                </h2>
+                </div>
                 <div id="collapse-primary" class="accordion-collapse collapse" aria-labelledby="heading-primary" data-bs-parent="#accordion-primary">
                     <div class="accordion-body">
                     {% if primary_unknown %}
@@ -139,7 +139,7 @@
         <div class="accordion mb-2"
              id="accordion-replica{{ replica_num }}">
             <div class="accordion-item">
-                <h2 class="accordion-header" id="heading-replica{{ replica_num }}">
+                <div class="accordion-header" id="heading-replica{{ replica_num }}">
 
                     <button class="accordion-button collapsed" type="button"
                             data-bs-toggle="collapse" data-bs-target="#collapse-replica{{ replica_num }}"
@@ -159,7 +159,7 @@
                         {% endif %}
                     </h3>
                     </button>
-                </h2>
+                </div>
                 <div id="collapse-replica{{ replica_num }}" class="accordion-collapse collapse" aria-labelledby="heading-replica{{ replica_num }}" data-bs-parent="#accordion-replica{{ replica_num }}">
                     <div class="accordion-body">
                     {% if replica_unkown %}
