@@ -56,7 +56,7 @@
 <script>
    $(function(){
       // Create Kanban
-      window.Vue.createApp(window.Vue.components['Kanban/Kanban'].component, {
+      window.Vue.createApp(window.Vue.components['Kanban/KanbanApp'].component, {
           element_id: '{{ kanban_id|default('kanban') }}',
           rights: {{ rights|json_encode|raw }},
           supported_itemtypes: {{ supported_itemtypes|json_encode|raw }},
