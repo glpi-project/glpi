@@ -336,15 +336,11 @@ class ProfileTest extends DbTestCase
                 foreach ($groups as $group => $rights) {
                     $previous_right = null;
                     foreach ($rights as $right) {
-                        if (empty($right['field'])) {
-                            echo 'A right is missing a field name. Please check that the class has the rightname property set or the right is otherwise defined with the field property in the array';
-                            if ($previous_right) {
-                                echo 'The previous right was: ' . print_r($previous_right, true) . " in ${$interface}/${$form}/${$group}";
-                            } else {
-                                echo "The right was the first one in ${$interface}/${$form}/${$group}";
-                            }
-                            continue;
-                        }
+                        $failure_message = 'A right is missing a field name. Please check that the class has the rightname property set or the right is otherwise defined with the field property in the array.';
+                        $locator_message = $previous_right ?
+                            "The previous right was: " . print_r($previous_right, true) . " in {$interface}/{$form}/{$group}" :
+                            "The right was the first one in {$interface}/{$form}/{$group}";
+                        $this->assertNotEmpty($right['field'], $failure_message . ' ' . $locator_message);
                         $search_opt_matches = array_filter($search_opts, static function ($opt) use ($right) {
                             return array_key_exists('rightname', $opt) && $opt['rightname'] === $right['field'];
                         });
@@ -358,9 +354,6 @@ class ProfileTest extends DbTestCase
         }
 
         $failures = array_unique($failures);
-        if (count($failures)) {
-            echo sprintf('The following rights do not have a search option: %s', implode(', ', $failures));
-        }
-        $this->assertEmpty($failures);
+        $this->assertEmpty($failures, sprintf('The following rights do not have a search option: %s', implode(', ', $failures)));
     }
 }
