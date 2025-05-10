@@ -42,6 +42,7 @@ use Glpi\Form\Form;
 use Glpi\Helpdesk\Tile\LinkableToTilesInterface;
 use Glpi\Helpdesk\Tile\TilesManager;
 use Glpi\RichText\UserMention;
+use Glpi\Search\SearchOption;
 use Glpi\Toolbox\ArrayNormalizer;
 
 /**
@@ -3744,6 +3745,24 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
                 'condition'          => ['NEWTABLE.name' => Form::$rightname],
             ],
         ];
+
+        // Add custom asset definition rights
+        foreach (AssetDefinitionManager::getInstance()->getDefinitions(true) as $definition) {
+            $asset = $definition->getAssetClassName();
+            $tab[] = [
+                'id'                 => SearchOption::generateAProbablyUniqueId($asset),
+                'table'              => 'glpi_profilerights',
+                'field'              => 'rights',
+                'name'               => $asset::getTypeName(1),
+                'datatype'           => 'right',
+                'rightclass'         => $asset,
+                'rightname'          => $asset::$rightname,
+                'joinparams'         => [
+                    'jointype'           => 'child',
+                    'condition'          => ['NEWTABLE.name' => $asset::$rightname],
+                ],
+            ];
+        }
 
         return $tab;
     }
