@@ -859,8 +859,12 @@ class GenericobjectPluginMigrationTest extends DbTestCase
                 }
             }
         }
+
+        $preexisting_counts = [
+            AssetDefinition::class => 1,
+        ];
         $this->assertEquals(
-            \count($expected_items),
+            \count($expected_items) + $preexisting_counts[$class] ?? 0,
             \countElementsInTable($class::getTable(), $class::getSystemSqlCriteria())
         );
     }
