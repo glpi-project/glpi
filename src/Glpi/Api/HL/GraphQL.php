@@ -36,6 +36,7 @@
 namespace Glpi\Api\HL;
 
 use Glpi\Http\Request;
+use GraphQL\Error\Error;
 use GraphQL\Type\Definition\ResolveInfo;
 use GraphQL\Utils\BuildSchema;
 
@@ -55,6 +56,7 @@ final class GraphQL
         $query = (string) $request->getBody();
         $generator = new GraphQLGenerator($api_version);
         $schema_str = $generator->getSchema();
+
         try {
             $result = \GraphQL\GraphQL::executeQuery(
                 schema: BuildSchema::build($schema_str),
@@ -75,10 +77,17 @@ final class GraphQL
                         $completed_schema = self::expandSchemaFromRequestedFields($schema, $field_selection, null, $api_version);
 
                         if (isset($args['id'])) {
-                            $result = json_decode(Search::getOneBySchema($completed_schema, ['id' => $args['id']], [])->getBody(), true);
-                            return [$result];
+                            $result = Search::getOneBySchema($completed_schema, ['id' => $args['id']], []);
+                            if ($result->getStatusCode() !== 200) {
+                                throw new Error($result->getBody());
+                            }
+                            return [json_decode($result->getBody(), true)];
                         }
-                        return json_decode(Search::searchBySchema($completed_schema, $args)->getBody(), true);
+                        $result = Search::searchBySchema($completed_schema, $args);
+                        if ($result->getStatusCode() !== 200) {
+                            throw new Error($result->getBody());
+                        }
+                        return json_decode($result->getBody(), true);
                     }
 
                     return $source[$info->fieldName] ?? null;
