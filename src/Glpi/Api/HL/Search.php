@@ -114,8 +114,9 @@ final class Search
                 $message .= ' ' . __('For more information, check the GLPI logs.');
             }
             throw new APIException(
-                message: 'A SQL error occurred while trying to get data from the database',
-                user_message: $message
+                message: 'A SQL error occured while trying to get data from the database',
+                user_message: $message,
+                code: 500,
             );
         }
     }
@@ -492,7 +493,11 @@ final class Search
                 $direction = strtoupper($sort_parts[1] ?? 'ASC') === 'DESC' ? 'DESC' : 'ASC';
                 // Verify the property is valid
                 if (!isset($this->flattened_properties[$property])) {
-                    throw new APIException('Invalid property for sorting: ' . $property, 'Invalid property for sorting: ' . $property);
+                    throw new APIException(
+                        message: 'Invalid property for sorting: ' . $property,
+                        user_message: 'Invalid property for sorting: ' . $property,
+                        code: 400
+                    );
                 }
                 $sql_field = $this->getSQLFieldForProperty($property);
                 $orderby[] = "{$sql_field} {$direction}";
@@ -539,12 +544,16 @@ final class Search
      * If the schema has a read right condition, add it to the criteria.
      * @param array $criteria The current criteria. Will be modified in-place.
      * @return void
+     * @throws RightConditionNotMetException If the read condition check returns false indicating we know the user cannot view any of the resources without needing to check the database.
      */
     private function addReadRestrictCriteria(array &$criteria): void
     {
         $read_right_criteria = $this->schema['x-rights-conditions']['read'] ?? [];
         if (is_callable($read_right_criteria)) {
             $read_right_criteria = $read_right_criteria();
+        }
+        if ($read_right_criteria === false) {
+            throw new RightConditionNotMetException();
         }
         if (!empty($read_right_criteria)) {
             $join_types = ['LEFT JOIN', 'INNER JOIN', 'RIGHT JOIN'];
@@ -652,30 +661,38 @@ final class Search
 
         $criteria['FROM'] = $this->getFrom($criteria);
 
-        if ($this->union_search_mode) {
-            unset($criteria['LEFT JOIN'], $criteria['INNER JOIN'], $criteria['RIGHT JOIN'], $criteria['WHERE']);
-        } else {
-            $this->addReadRestrictCriteria($criteria);
-        }
-
-        if ($this->union_search_mode) {
-            $criteria['SELECT'] = ['_.id'];
-            $criteria['SELECT'][] = '_itemtype';
-            $criteria['GROUPBY'] = ['_itemtype', '_.id'];
-        } else {
-            $criteria['SELECT'][] = '_.id';
-            foreach (array_keys($this->joins) as $join_alias) {
-                $s = $this->getSelectCriteriaForProperty($this->getPrimaryKeyPropertyForJoin($join_alias), true);
-                if ($s !== null) {
-                    $criteria['SELECT'][] = $s;
-                }
+        try {
+            if ($this->union_search_mode) {
+                unset($criteria['LEFT JOIN'], $criteria['INNER JOIN'], $criteria['RIGHT JOIN'], $criteria['WHERE']);
+            } else {
+                $this->addReadRestrictCriteria($criteria);
             }
-            $criteria['GROUPBY'] = ['_.id'];
-        }
 
-        // request just to get the ids/union itemtypes
-        $iterator = $this->db_read->request($criteria);
-        $this->validateIterator($iterator);
+            if ($this->union_search_mode) {
+                $criteria['SELECT'] = ['_.id'];
+                $criteria['SELECT'][] = '_itemtype';
+                $criteria['GROUPBY'] = ['_itemtype', '_.id'];
+            } else {
+                $criteria['SELECT'][] = '_.id';
+                foreach (array_keys($this->joins) as $join_alias) {
+                    $s = $this->getSelectCriteriaForProperty($this->getPrimaryKeyPropertyForJoin($join_alias), true);
+                    if ($s !== null) {
+                        $criteria['SELECT'][] = $s;
+                    }
+                }
+                $criteria['GROUPBY'] = ['_.id'];
+            }
+
+            // request just to get the ids/union itemtypes
+            $iterator = $this->db_read->request($criteria);
+            $this->validateIterator($iterator);
+        } catch (RightConditionNotMetException) {
+            // The read restrict check seems to have returned false indicating that we already know the user cannot view any of these resources
+            /** @var \DBmysql $DB */
+            global $DB;
+            $iterator = new \DBmysqlIterator($DB);
+            // No validation done because we know the inner result isn't a mysqli result
+        }
 
         if ($this->union_search_mode) {
             // group by _itemtype
@@ -1210,10 +1227,14 @@ final class Search
         } catch (RSQLException $e) {
             return new JSONResponse(AbstractController::getErrorResponseBody(AbstractController::ERROR_INVALID_PARAMETER, $e->getMessage(), $e->getDetails()), 400);
         } catch (APIException $e) {
-            return new JSONResponse(AbstractController::getErrorResponseBody(AbstractController::ERROR_GENERIC, $e->getUserMessage(), $e->getDetails()));
+            return new JSONResponse(AbstractController::getErrorResponseBody(AbstractController::ERROR_GENERIC, $e->getUserMessage(), $e->getDetails()), $e->getCode() ?: 400);
         } catch (\Throwable $e) {
             $message = (new APIException())->getUserMessage();
-            return new JSONResponse(AbstractController::getErrorResponseBody(AbstractController::ERROR_GENERIC, $e->getMessage()));
+            $detail = null;
+            if ($_SESSION['glpi_use_mode'] === \Session::DEBUG_MODE) {
+                $detail = $e->getMessage();
+            }
+            return new JSONResponse(AbstractController::getErrorResponseBody(AbstractController::ERROR_GENERIC, $message, $detail), 500);
         }
         $has_more = $results['start'] + $results['limit'] < $results['total'];
         $end = max(0, ($results['start'] + $results['limit'] - 1));
@@ -1358,10 +1379,10 @@ final class Search
         } catch (RSQLException $e) {
             return new JSONResponse(AbstractController::getErrorResponseBody(AbstractController::ERROR_INVALID_PARAMETER, $e->getUserMessage()), 400);
         } catch (APIException $e) {
-            return new JSONResponse(AbstractController::getErrorResponseBody(AbstractController::ERROR_GENERIC, $e->getUserMessage()));
+            return new JSONResponse(AbstractController::getErrorResponseBody(AbstractController::ERROR_GENERIC, $e->getUserMessage()), $e->getCode() ?: 400);
         } catch (\Throwable $e) {
             $message = (new APIException())->getUserMessage();
-            return new JSONResponse(AbstractController::getErrorResponseBody(AbstractController::ERROR_GENERIC, $message));
+            return new JSONResponse(AbstractController::getErrorResponseBody(AbstractController::ERROR_GENERIC, $message), 500);
         }
         if (count($results['results']) === 0) {
             return AbstractController::getNotFoundErrorResponse();

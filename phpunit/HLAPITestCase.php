@@ -77,7 +77,7 @@ class HLAPITestCase extends \DbTestCase
             'client_secret' => TU_OAUTH_CLIENT_SECRET,
             'username' => $user_name,
             'password' => $user_pass,
-            'scope' => '',
+            'scope' => 'api',
         ]));
         $this->api->call($request, function ($call) {
             /** @var \HLAPICallAsserter $call */

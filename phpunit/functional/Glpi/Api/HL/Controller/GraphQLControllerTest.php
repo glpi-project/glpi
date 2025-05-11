@@ -232,6 +232,55 @@ GRAPHQL);
         });
     }
 
+    public function testGetDirectlyWithoutRight()
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        $this->assertTrue($DB->insert('glpi_tickets', [
+            'name' => __FUNCTION__,
+            'content' => __FUNCTION__,
+            'entities_id' => $this->getTestRootEntity(true),
+        ]));
+        $tickets_id = $DB->insertId();
+
+        $this->loginWeb();
+        $this->api->getRouter()->registerAuthMiddleware(new InternalAuthMiddleware());
+
+        $_SESSION['glpi_use_mode'] = 2;
+
+        // Can see no tickets
+        $_SESSION['glpiactiveprofile']['ticket'] = 0;
+        $this->api->call(new Request('POST', '/GraphQL', [], 'query { Ticket { id name } }'), function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->status(fn($status) => $this->assertEquals(200, $status))
+                ->jsonContent(function ($content) {
+                    $this->assertEmpty($content['data']['Ticket']);
+                });
+        });
+
+        // Can only see my own tickets
+        $_SESSION['glpiactiveprofile']['ticket'] = READ;
+
+        $this->api->call(new Request('POST', '/GraphQL', [], 'query { Ticket { id name } }'), function ($call) use ($tickets_id) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->status(fn($status) => $this->assertEquals(200, $status))
+                ->jsonContent(function ($content) use ($tickets_id) {
+                    $this->assertNotContains($tickets_id, array_column($content['data']['Ticket'], 'id'));
+                });
+        });
+        $this->api->call(new Request('POST', '/GraphQL', [], 'query { Ticket(id: ' . $tickets_id . ') { id name } }'), function ($call) {
+            /** @var \HLAPICallAsserter $call */
+            $call->response
+                ->status(fn($status) => $this->assertEquals(200, $status))
+                ->jsonContent(function ($content) {
+                    $this->assertEmpty($content['data']['Ticket']);
+                });
+        });
+    }
+
     public function testGetTicketIndirectlyWithoutRight()
     {
         /** @var \DBmysql $DB */
