@@ -78,13 +78,13 @@ class Ticket extends CommonITILObject
     // Demand type
     public const DEMAND_TYPE   = 2;
 
-    const READGROUP        =   2048;
-    const READASSIGN       =   4096;
-    const ASSIGN           =   8192;
-    const STEAL            =  16384;
-    const OWN              =  32768;
-    const CHANGEPRIORITY   =  65536;
-    const READNEWTICKET    = 262144;
+    public const READGROUP        =   2048;
+    public const READASSIGN       =   4096;
+    public const ASSIGN           =   8192;
+    public const STEAL            =  16384;
+    public const OWN              =  32768;
+    public const CHANGEPRIORITY   =  65536;
+    public const READNEWTICKET    = 262144;
 
     #[Override]
     public static function supportHelpdeskDisplayPreferences(): bool
@@ -4832,7 +4832,7 @@ JAVASCRIPT;
         }
 
         $options = [
-            'metacriteria' => []
+            'metacriteria' => [],
         ];
 
         switch (get_class($item)) {

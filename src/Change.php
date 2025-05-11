@@ -835,7 +835,7 @@ class Change extends CommonITILObject
         }
 
         $options = [
-            'metacriteria' => []
+            'metacriteria' => [],
         ];
 
         switch (get_class($item)) {

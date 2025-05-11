@@ -34,7 +34,4 @@
 
 namespace tests\units;
 
-class Item_TicketRecurrentTest extends AbstractCommonItilObject_ItemTest
-{
-
-}
+class Item_TicketRecurrentTest extends AbstractCommonItilObject_ItemTest {}

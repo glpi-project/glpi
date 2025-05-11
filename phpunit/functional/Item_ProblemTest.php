@@ -34,7 +34,4 @@
 
 namespace tests\units;
 
-class Item_ProblemTest extends AbstractCommonItilObject_ItemTest
-{
-
-}
+class Item_ProblemTest extends AbstractCommonItilObject_ItemTest {}
