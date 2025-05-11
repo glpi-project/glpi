@@ -78,8 +78,6 @@ class Ticket extends CommonITILObject
     // Demand type
     public const DEMAND_TYPE   = 2;
 
-    public const READMY           =      1;
-    public const READALL          =   1024;
     public const READGROUP        =   2048;
     public const READASSIGN       =   4096;
     public const ASSIGN           =   8192;
