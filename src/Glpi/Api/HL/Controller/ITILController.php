@@ -38,7 +38,9 @@ namespace Glpi\Api\HL\Controller;
 use Calendar;
 use Change;
 use ChangeTemplate;
+use ChangeValidation;
 use CommonDBTM;
+use CommonITILActor;
 use CommonITILObject;
 use Entity;
 use Glpi\Api\HL\Doc as Doc;
@@ -54,8 +56,10 @@ use Group;
 use PlanningEventCategory;
 use PlanningExternalEventTemplate;
 use Problem;
+use Session;
 use Ticket;
 use TicketTemplate;
+use TicketValidation;
 use User;
 
 use function Safe\json_decode;
@@ -203,6 +207,138 @@ final class ITILController extends AbstractController
         foreach ($itil_types as $itil_type) {
             $schemas[$itil_type] = $base_schema;
             $schemas[$itil_type]['x-version-introduced'] = '2.0';
+
+            $schemas[$itil_type]['x-rights-conditions'] = [
+                'read' => static function () use ($itil_type) {
+                    if (Session::haveRight($itil_type::$rightname, CommonITILObject::READALL)) {
+                        return true; // Can see all. No extra SQL conditions needed.
+                    }
+
+                    if ($itil_type !== Ticket::class) {
+                        if (Session::haveRight($itil_type::$rightname, CommonITILObject::READMY)) {
+                            $item = new $itil_type();
+                            $group_table = $item->grouplinkclass::getTable();
+                            $user_table = $item->userlinkclass::getTable();
+                            $criteria = [
+                                'LEFT JOIN' => [
+                                    $user_table => [
+                                        'ON' => [
+                                            $user_table => $itil_type::getForeignKeyField(),
+                                            '_' => 'id',
+                                        ],
+                                    ],
+                                ],
+                                'WHERE' => [
+                                    'OR' => [
+                                        '_.users_id_recipient' => Session::getLoginUserID(),
+                                        $user_table . '.users_id' => Session::getLoginUserID(),
+                                    ],
+                                ],
+                            ];
+
+                            if (!empty($_SESSION['glpigroups'])) {
+                                $criteria['LEFT JOIN'][$group_table] = [
+                                    'ON' => [
+                                        $group_table => $itil_type::getForeignKeyField(),
+                                        '_' => 'id',
+                                    ],
+                                ];
+                                $criteria['WHERE']['OR'][$group_table . '.groups_id'] = $_SESSION['glpigroups'];
+                            }
+                            return $criteria;
+                        }
+                    } else {
+                        // Tickets have expanded permissions
+                        $criteria = [
+                            'LEFT JOIN' => [
+                                'glpi_tickets_users' => [
+                                    'ON' => [
+                                        'glpi_tickets_users' => Ticket::getForeignKeyField(),
+                                        '_' => 'id',
+                                    ],
+                                ],
+                                'glpi_groups_tickets' => [
+                                    'ON' => [
+                                        'glpi_groups_tickets' => Ticket::getForeignKeyField(),
+                                        '_' => 'id',
+                                    ],
+                                ],
+                            ],
+                            'WHERE' => ['OR' => []],
+                        ];
+                        if (Session::haveRight(Ticket::$rightname, CommonITILObject::READMY)) {
+                            // Permission to see tickets as direct requester, observer or writer
+                            $criteria['WHERE']['OR'][] = [
+                                '_.users_id_recipient' => Session::getLoginUserID(),
+                                [
+                                    'AND' => [
+                                        'glpi_tickets_users' . '.users_id' => Session::getLoginUserID(),
+                                        'glpi_tickets_users' . '.type' => [CommonITILActor::REQUESTER, CommonITILActor::OBSERVER],
+                                    ],
+                                ],
+                            ];
+                        }
+                        if (!empty($_SESSION['glpigroups']) && Session::haveRight(Ticket::$rightname, Ticket::READGROUP)) {
+                            // Permission to see tickets as requester or observer group member
+                            $criteria['WHERE']['OR'][] = [
+                                'AND' => [
+                                    'glpi_groups_tickets.groups_id' => $_SESSION['glpigroups'],
+                                    'glpi_groups_tickets.type' => [CommonITILActor::REQUESTER, CommonITILActor::OBSERVER],
+                                ],
+                            ];
+                        }
+
+                        if (Session::haveRight(Ticket::$rightname, Ticket::OWN) || Session::haveRight(Ticket::$rightname, Ticket::READASSIGN)) {
+                            $criteria['WHERE']['OR'][] = [
+                                'AND' => [
+                                    'glpi_tickets_users' . '.users_id' => Session::getLoginUserID(),
+                                    'glpi_tickets_users' . '.type' => CommonITILActor::ASSIGN,
+                                ],
+                            ];
+                        }
+                        if (Session::haveRight(Ticket::$rightname, Ticket::READASSIGN)) {
+                            $criteria['WHERE']['OR'][] = [
+                                'AND' => [
+                                    'glpi_groups_tickets.groups_id' => $_SESSION['glpigroups'],
+                                    'glpi_groups_tickets.type' => CommonITILActor::ASSIGN,
+                                ],
+                            ];
+                        }
+                        if (Session::haveRight(Ticket::$rightname, Ticket::READNEWTICKET)) {
+                            $criteria['WHERE']['OR'][] = [
+                                '_.status' => CommonITILObject::INCOMING,
+                            ];
+                        }
+
+                        if (
+                            Session::haveRightsOr(
+                                'ticketvalidation',
+                                [\TicketValidation::VALIDATEINCIDENT,
+                                    \TicketValidation::VALIDATEREQUEST,
+                                ]
+                            )
+                        ) {
+                            $criteria['OR'][] = [
+                                'AND' => [
+                                    "glpi_ticketvalidations.itemtype_target" => User::class,
+                                    "glpi_ticketvalidations.items_id_target" => Session::getLoginUserID(),
+                                ],
+                            ];
+                            if (count($_SESSION['glpigroups'])) {
+                                $criteria['OR'][] = [
+                                    'AND' => [
+                                        "glpi_ticketvalidations.itemtype_target" => Group::class,
+                                        "glpi_ticketvalidations.items_id_target" => $_SESSION['glpigroups'],
+                                    ],
+                                ];
+                            }
+                        }
+                        return empty($criteria['WHERE']['OR']) ? false : $criteria;
+                    }
+                    return false; // Cannot see anything.
+                },
+            ];
+
             if ($itil_type === Ticket::class) {
                 $schemas[$itil_type]['properties']['type'] = [
                     'type' => Doc\Schema::TYPE_INTEGER,
@@ -471,12 +607,36 @@ final class ITILController extends AbstractController
 
         $schemas['TicketValidation'] = $base_validation_schema;
         $schemas['TicketValidation']['x-version-introduced'] = '2.0';
-        $schemas['TicketValidation']['x-itemtype'] = \TicketValidation::class;
+        $schemas['TicketValidation']['x-itemtype'] = TicketValidation::class;
+        $schemas['TicketValidation']['x-rights-conditions'] = [
+            'read' => static function () {
+                return Session::haveRightsOr(
+                    TicketValidation::$rightname,
+                    array_merge(
+                        TicketValidation::getCreateRights(),
+                        TicketValidation::getValidateRights(),
+                        TicketValidation::getPurgeRights()
+                    )
+                );
+            },
+        ];
         $schemas['TicketValidation']['properties'][Ticket::getForeignKeyField()] = ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64];
 
         $schemas['ChangeValidation'] = $base_validation_schema;
         $schemas['ChangeValidation']['x-version-introduced'] = '2.0';
-        $schemas['ChangeValidation']['x-itemtype'] = \ChangeValidation::class;
+        $schemas['ChangeValidation']['x-itemtype'] = ChangeValidation::class;
+        $schemas['ChangeValidation']['x-rights-conditions'] = [
+            'read' => static function () {
+                return Session::haveRightsOr(
+                    ChangeValidation::$rightname,
+                    array_merge(
+                        ChangeValidation::getCreateRights(),
+                        ChangeValidation::getValidateRights(),
+                        ChangeValidation::getPurgeRights()
+                    )
+                );
+            },
+        ];
         $schemas['ChangeValidation']['properties'][Change::getForeignKeyField()] = ['type' => Doc\Schema::TYPE_INTEGER, 'format' => Doc\Schema::FORMAT_INTEGER_INT64];
 
         $schemas['RecurringTicket'] = [

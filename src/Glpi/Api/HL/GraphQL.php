@@ -58,6 +58,7 @@ final class GraphQL
         $query = (string) $request->getBody();
         $generator = new GraphQLGenerator($api_version);
         $schema_str = $generator->getSchema();
+
         try {
             $result = \GraphQL\GraphQL::executeQuery(
                 schema: BuildSchema::build($schema_str),
