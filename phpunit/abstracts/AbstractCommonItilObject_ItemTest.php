@@ -1,6 +1,5 @@
 <?php
 
-namespace tests\units\Glpi\ContentTemplates\Parameters;
 /**
  * ---------------------------------------------------------------------
  *
@@ -35,15 +34,137 @@ namespace tests\units\Glpi\ContentTemplates\Parameters;
 
 namespace tests\units;
 
+use CommonITILObject;
+use CommonItilObject_Item;
+use Computer;
+use User;
+
 abstract class AbstractCommonItilObject_ItemTest extends \DbTestCase
 {
     /**
      * Return the name of the Rule class this test class tests
-     * @return string
+     * @return class-string<CommonItilObject_Item>
      */
     protected function getTestedClass(): string
     {
         $test_class = static::class;
         return preg_replace('/Test$/', '', substr(strrchr($test_class, '\\'), 1));
+    }
+
+    public function testGetTabNameForItemITIL(): void
+    {
+        $this->login();
+        $itil_itemtype = $this->getTestedClass()::$itemtype_1;
+        $link = new ($this->getTestedClass())();
+
+        $itil_item = $this->createItem($itil_itemtype, [
+            'name' => __FUNCTION__,
+            'content' => 'test',
+            'entities_id' => $this->getTestRootEntity(true),
+        ], ['content']);
+
+        $this->createItem($this->getTestedClass(), [
+            $itil_itemtype::getForeignKeyField() => $itil_item->getID(),
+            'itemtype' => Computer::class,
+            'items_id' => getItemByTypeName(Computer::class, '_test_pc01', true),
+        ]);
+        $this->assertEquals(
+            '<span class="d-flex align-items-center"><i class="ti ti-package me-2"></i>Items <span class="badge glpi-badge">1</span></span>',
+            $link->getTabNameForItem($itil_item),
+        );
+
+        $this->createItem($this->getTestedClass(), [
+            $itil_itemtype::getForeignKeyField() => $itil_item->getID(),
+            'itemtype' => Computer::class,
+            'items_id' => getItemByTypeName(Computer::class, '_test_pc02', true),
+        ]);
+        $this->assertEquals(
+            '<span class="d-flex align-items-center"><i class="ti ti-package me-2"></i>Items <span class="badge glpi-badge">2</span></span>',
+            $link->getTabNameForItem($itil_item),
+        );
+    }
+
+    public function testGetTabNameForItemUser(): void
+    {
+        if (!is_subclass_of($this->getTestedClass()::$itemtype_1, CommonITILObject::class)) {
+            $this->markTestSkipped('This test is only for ITIL items');
+        }
+        $this->login();
+        $itil_itemtype = $this->getTestedClass()::$itemtype_1;
+        $link = new ($this->getTestedClass())();
+
+        $user = getItemByTypeName(User::class, TU_USER);
+        $tab_label = $link->getTabNameForItem($user);
+        $this->assertStringContainsString(
+            $itil_itemtype::getTypeName(\Session::getPluralNumber()),
+            $tab_label,
+        );
+        // Extract count from the inside the .badge element in the label
+        $original_tab_count = (int) preg_replace(
+            '/.*<span class="badge glpi-badge">(\d+)<\/span>.*/',
+            '$1',
+            $tab_label,
+        );
+
+        $this->createItem($itil_itemtype, [
+            'name' => __FUNCTION__,
+            'content' => 'test',
+            'entities_id' => $this->getTestRootEntity(true),
+            '_users_id_assign' => $user->getID(),
+        ], ['content']);
+        $this->assertEquals(
+            $original_tab_count + 1,
+            (int) preg_replace(
+                '/.*<span class="badge glpi-badge">(\d+)<\/span>.*/',
+                '$1',
+                $link->getTabNameForItem($user),
+            ),
+        );
+
+        $this->createItem($itil_itemtype, [
+            'name' => __FUNCTION__,
+            'content' => 'test',
+            'entities_id' => $this->getTestRootEntity(true),
+            '_users_id_assign' => 0,
+            '_users_id_requester' => $user->getID(),
+        ], ['content']);
+        $this->assertEquals(
+            $original_tab_count + 2,
+            (int) preg_replace(
+                '/.*<span class="badge glpi-badge">(\d+)<\/span>.*/',
+                '$1',
+                $link->getTabNameForItem($user),
+            ),
+        );
+    }
+
+    public function getGetTabNameForItemAsset(): void
+    {
+        $this->login();
+        $itil_itemtype = $this->getTestedClass()::$itemtype_1;
+        $link = new ($this->getTestedClass())();
+
+
+        $computer = $this->createItem(Computer::class, [
+            'name' => __FUNCTION__,
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+
+        // Link new computer with a new ITIL
+        $this->createItem($itil_itemtype, [
+            'name' => __FUNCTION__,
+            'content' => 'test',
+            'entities_id' => $this->getTestRootEntity(true),
+            'items_id' => [Computer::class => [$computer->getID()]],
+        ], ['content', 'items_id']);
+
+        $this->assertEquals(
+            1,
+            (int) preg_replace(
+                '/.*<span class="badge glpi-badge">(\d+)<\/span>.*/',
+                '$1',
+                $link->getTabNameForItem($computer),
+            ),
+        );
     }
 }
