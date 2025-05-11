@@ -232,7 +232,7 @@ GRAPHQL);
         });
     }
 
-    public function testGetTicketDirectlyWithoutRight()
+    public function testGetDirectlyWithoutRight()
     {
         /** @var \DBmysql $DB */
         global $DB;

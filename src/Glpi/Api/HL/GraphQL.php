@@ -104,6 +104,10 @@ final class GraphQL
     {
         $is_schema_array = array_key_exists('items', $schema) && !array_key_exists('properties', $schema);
         $itemtype = self::getSchemaItemtype($schema, $api_version);
+        if (is_subclass_of($itemtype, \CommonDBTM::class) && !$itemtype::canView()) {
+            // Cannot view this itemtype so we shouldn't expand it further
+            return $schema;
+        }
         if ($is_schema_array) {
             $properties = $schema['items']['properties'];
         } else {
