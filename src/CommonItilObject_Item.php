@@ -132,13 +132,17 @@ abstract class CommonItilObject_Item extends CommonDBRelation
                     'WHERE' => [
                         static::$items_id_1 => $input[static::$items_id_1],
                         static::$itemtype_2   => $input[static::$itemtype_2],
-                        static::$items_id_2   => $input[static::$items_id_2]
+                        static::$items_id_2   => $input[static::$items_id_2],
                     ],
-                    'LIMIT' => 1
+                    'LIMIT' => 1,
                 ]
             ) > 0
         ) {
             return false;
+        }
+
+        if (!is_subclass_of(static::$itemtype_1, CommonITILObject::class)) {
+            return parent::prepareInputForAdd($input);
         }
 
         /** @var CommonITILObject $itil */
@@ -362,11 +366,11 @@ abstract class CommonItilObject_Item extends CommonDBRelation
     /**
      * Print the HTML array for Items linked to a ITIL object
      *
-     * @param CommonITILObject $obj
+     * @param CommonITILObject|TicketRecurrent $obj
      *
      * @return bool|void
      **/
-    protected static function showForObject(CommonITILObject $obj)
+    protected static function showForObject(CommonITILObject|TicketRecurrent $obj)
     {
         if (!($obj instanceof static::$itemtype_1)) {
             return false;
@@ -614,7 +618,7 @@ TWIG, $twig_params);
             'FROM'   => $link_table,
             'WHERE'  => [
                 $item->getForeignKeyField()   => $item->fields['id'],
-            ]
+            ],
         ])->current();
         return $result['cpt'] ?? 0;
     }
@@ -662,7 +666,7 @@ TWIG, $twig_params);
                     'searchtype' => 'equals',
                     'value'    => $item->getID(),
                     'link'     => 'AND',
-                ]
+                ],
             ],
             'reset'    => 'reset',
         ];
