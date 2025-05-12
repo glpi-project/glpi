@@ -63,7 +63,6 @@
     // Optionnal constants
     if ($random_val([false, true]) === true) {
         define('GLPI_FORCE_MAIL', 'example@glpi-project.org');
-        define('GLPI_LOG_LVL', 'DEBUG');
     }
 
     // Other constants
@@ -76,6 +75,7 @@
     define('GLPI_DISALLOWED_UPLOADS_PATTERN', $random_val(['', '/\.(php\d*|phar)$/i']));
     define('GLPI_ENVIRONMENT_TYPE', $random_val(['development', 'testing', 'staging', 'production']));
     define('GLPI_INSTALL_MODE', $random_val(['GIT', 'TARBALL']));
+    define('GLPI_LOG_LVL', $random_val(['emergency', 'alert', 'critical', 'error', 'warning', 'notice', 'info', 'debug']));
     define('GLPI_MARKETPLACE_ALLOW_OVERRIDE', $random_val([false, true]));
     define('GLPI_MARKETPLACE_ENABLE', $random_val([0, 1, 2, 3]));
     define('GLPI_MARKETPLACE_MANUAL_DOWNLOADS', $random_val([false, true]));

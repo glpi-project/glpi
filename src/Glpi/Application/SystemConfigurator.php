@@ -39,6 +39,7 @@ use Glpi\Log\AccessLogHandler;
 use Glpi\Log\ErrorLogHandler;
 use Monolog\Logger;
 use Psr\Log\LoggerInterface;
+use Psr\Log\LogLevel;
 
 final class SystemConfigurator
 {
@@ -145,6 +146,7 @@ final class SystemConfigurator
 
                 // Constants dedicated to developers
                 'GLPI_DISABLE_ONLY_FULL_GROUP_BY_SQL_MODE' => '1', // '1' to disable ONLY_FULL_GROUP_BY 'sql_mode'
+                'GLPI_LOG_LVL'                             => LogLevel::WARNING,
                 'GLPI_STRICT_ENV'                          => false, // `true` to make environment more strict (strict variables in twig templates, etc)
 
                 // Other constants

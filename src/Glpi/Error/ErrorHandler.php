@@ -236,8 +236,7 @@ final class ErrorHandler extends BaseErrorHandler
         $reporting_level = E_ALL;
 
         // Compute max error level that should be reported
-        $env_psr_level = Environment::get()->getLogLevel();
-        $env_report_value = self::PSR_ERROR_LEVEL_VALUES[$env_psr_level];
+        $env_report_value = self::PSR_ERROR_LEVEL_VALUES[GLPI_LOG_LVL];
 
         foreach (self::ERROR_LEVEL_MAP as $value => $log_level) {
             $psr_level_value = self::PSR_ERROR_LEVEL_VALUES[$log_level];
