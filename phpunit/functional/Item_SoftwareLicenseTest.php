@@ -333,16 +333,6 @@ class Item_SoftwareLicenseTest extends DbTestCase
             'items_id' => $computer2->getID(),
             'itemtype' => 'Computer',
         ]);
-
-        // Cleanup
-        $user_license = new \SoftwareLicense_User();
-        $user_license->delete(['id' => $user_license_id]);
-
-        $item_license = new Item_SoftwareLicense();
-        $item_license->delete(['id' => $item_license_id]);
-
-        $software = new \Software();
-        $software->delete(['id' => $software_id]);
     }
 
     /**
