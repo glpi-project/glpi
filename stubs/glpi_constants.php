@@ -91,4 +91,5 @@
     define('GLPI_USER_AGENT_EXTRA_COMMENTS', $random_val(['', 'app-version:5']));
     define('GLPI_WEBHOOK_ALLOW_RESPONSE_SAVING', $random_val([false, true]));
     define('PLUGINS_DIRECTORIES', [dirname(__FILE__, 2) . '/plugins', dirname(__FILE__, 2) . '/marketplace']);
+    define('SKIP_UPDATES', $random_val([false, true]));
 })();

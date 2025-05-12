@@ -59,6 +59,7 @@ parameters:
         - GLPI_VAR_DIR
         - GLPI_WEBHOOK_ALLOW_RESPONSE_SAVING
         - PLUGINS_DIRECTORIES
+        - SKIP_UPDATES
         - TU_USER
     ignoreErrors:
         - '~Instantiated class XHProfRuns_Default not found~'

@@ -544,7 +544,7 @@ class Update
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        if (defined('SKIP_UPDATES')) {
+        if (SKIP_UPDATES) {
             // If `SKIP_UPDATES`, bugfixes update are not mandatory.
             $installed_intermediate_version = VersionParser::getIntermediateVersion($CFG_GLPI['version'] ?? '0.0.0-dev');
             $defined_intermediate_version   = VersionParser::getIntermediateVersion(GLPI_VERSION);

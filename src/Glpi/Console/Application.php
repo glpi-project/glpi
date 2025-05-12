@@ -252,7 +252,7 @@ class Application extends BaseApplication
 
         if (
             $is_db_available
-            && defined('SKIP_UPDATES')
+            && SKIP_UPDATES
             && (!($command instanceof GlpiCommandInterface) || $command->requiresUpToDateDb())
             && !Update::isDbUpToDate()
         ) {

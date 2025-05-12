@@ -148,6 +148,7 @@ final class SystemConfigurator
                 'GLPI_DISABLE_ONLY_FULL_GROUP_BY_SQL_MODE' => '1', // '1' to disable ONLY_FULL_GROUP_BY 'sql_mode'
                 'GLPI_LOG_LVL'                             => LogLevel::WARNING,
                 'GLPI_STRICT_ENV'                          => false, // `true` to make environment more strict (strict variables in twig templates, etc)
+                'SKIP_UPDATES'                             => false, // `true` to bypass minor versions DB updates
 
                 // Other constants
                 'GLPI_AJAX_DASHBOARD'         => '1', // 1 for "multi ajax mode" 0 for "single ajax mode" (see Glpi\Dashboard\Grid::getCards)
