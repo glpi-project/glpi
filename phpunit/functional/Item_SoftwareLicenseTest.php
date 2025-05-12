@@ -419,18 +419,6 @@ class Item_SoftwareLicenseTest extends DbTestCase
 
         // Verify that the form contains essential elements
         $this->assertStringContainsString('Computer</option>', $html2, 'Computer option should be available');
-
-        // Cleanup
-        $item_license = new Item_SoftwareLicense();
-        $item_license->delete(['id' => $item_license_id]);
-        $item_license->delete(['id' => $item_license2_id]);
-
-        $license = new \SoftwareLicense();
-        $license->delete(['id' => $license_id]);
-        $license->delete(['id' => $license2_id]);
-
-        $software = new \Software();
-        $software->delete(['id' => $software_id]);
     }
 
     /**
