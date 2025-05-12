@@ -3312,7 +3312,7 @@ HTML;
 
         echo "<tr class='tab_bg_1'><th colspan='4'>" . _n('Software', 'Software', Session::getPluralNumber()) . "</th></tr>";
         echo "<tr class='tab_bg_1'><td class='center'>" .
-           __("Installation/update/uninstallation of software on items") . "</td><td>";
+           __("Installation/uninstallation of software on items") . "</td><td>";
         self::showLogsInterval(
             'purge_item_software_install',
             $CFG_GLPI["purge_item_software_install"]
