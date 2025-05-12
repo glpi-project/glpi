@@ -74,8 +74,7 @@ final class ChangeProfileController extends AbstractController
             $redirect = $request->getBasePath() . $route;
         } else {
             $redirect = Html::getBackUrl();
-            $has_query_string = parse_url($redirect, PHP_URL_QUERY) !== null;
-            $separator = $has_query_string ? "&" : "?";
+            $separator = str_contains($redirect, '?') ? "&" : "?";
             $redirect = $redirect . $separator . '_redirected_from_profile_selector=true';
         }
 
