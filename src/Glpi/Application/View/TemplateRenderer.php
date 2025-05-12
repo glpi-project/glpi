@@ -34,6 +34,9 @@
 
 namespace Glpi\Application\View;
 
+use AlisQI\TwigQI\Extension as TwigIQExtension;
+use AlisQI\TwigQI\Logger\TriggerErrorLogger;
+use Glpi\Application\Environment as GLPIEnvironment;
 use Glpi\Application\View\Extension\ConfigExtension;
 use Glpi\Application\View\Extension\DataHelpersExtension;
 use Glpi\Application\View\Extension\DocumentExtension;
@@ -52,7 +55,7 @@ use Glpi\Debug\Profiler;
 use Glpi\Kernel\Kernel;
 use Plugin;
 use Session;
-use Twig\Environment;
+use Twig\Environment as TwigEnvironment;
 use Twig\Extension\DebugExtension;
 use Twig\Extra\String\StringExtension;
 use Twig\Loader\FilesystemLoader;
@@ -62,7 +65,7 @@ use Twig\Loader\FilesystemLoader;
  */
 class TemplateRenderer
 {
-    private Environment $environment;
+    private TwigEnvironment $environment;
 
     public function __construct(string $rootdir = GLPI_ROOT, ?string $cachedir = null)
     {
@@ -80,10 +83,11 @@ class TemplateRenderer
             $loader->addPath(Plugin::getPhpDir($plugin_key . '/templates'), $plugin_key);
         }
 
-        $glpi_environment = \Glpi\Application\Environment::get();
+        $glpi_environment = GLPIEnvironment::get();
         $env_params = [
             'debug' => $glpi_environment->shouldEnableExtraDevAndDebugTools() || ($_SESSION['glpi_use_mode'] ?? null) === Session::DEBUG_MODE,
             'auto_reload' => $glpi_environment->shouldExpectResourcesToChange(),
+            'strict_variables' => GLPI_STRICT_ENV,
         ];
 
         $tpl_cachedir = $cachedir . '/templates';
@@ -96,7 +100,7 @@ class TemplateRenderer
             $env_params['cache'] = $tpl_cachedir;
         }
 
-        $this->environment = new Environment(
+        $this->environment = new TwigEnvironment(
             $loader,
             $env_params
         );
@@ -118,6 +122,13 @@ class TemplateRenderer
         $this->environment->addExtension(new SearchExtension());
         $this->environment->addExtension(new SessionExtension());
         $this->environment->addExtension(new TeamExtension());
+        if (GLPIEnvironment::get()->shouldEnableExtraDevAndDebugTools() || GLPI_STRICT_ENV) {
+            $this->environment->addExtension(
+                new TwigIQExtension(
+                    new TriggerErrorLogger()
+                )
+            );
+        }
 
         // add superglobals
         $this->environment->addGlobal('_post', $_POST);
@@ -144,9 +155,9 @@ class TemplateRenderer
     /**
      * Return Twig environment used to handle templates.
      *
-     * @return Environment
+     * @return TwigEnvironment
      */
-    public function getEnvironment(): Environment
+    public function getEnvironment(): TwigEnvironment
     {
         return $this->environment;
     }
