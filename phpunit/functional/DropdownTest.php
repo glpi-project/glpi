@@ -901,6 +901,124 @@ class DropdownTest extends DbTestCase
                     'count'     => 1,
                 ],
             ],
+            // This test verifies the behavior of searches by ID when $_SESSION['glpiis_ids_visible'] is true.
+            // Specifically, it checks that a WHERE clause is applied on the index name ("id")
+            // when 'searchText' contains only numeric characters (one or more), with no other characters.
+            // This condition is evaluated in two contexts: when the related object is either a CommonDropdown or a CommonTreeDropdown.
+            // Therefore, we cover both cases by testing with TaskCategory (CommonTreeDropdown) and ComputerModel (CommonDropdown).
+            // Additionally, we use both string and integer values for 'searchText' to ensure proper handling and to validate the regex used in preg_match.
+            [
+                'params' => [
+                    'display_emptychoice' => 0,
+                    'itemtype'            => 'TaskCategory',
+                    'searchText'          => (int) getItemByTypeName(\TaskCategory::class, '_cat_1', true), // search commonTreeDropdown by id as int
+                ],
+                'expected'  => [
+                    'results'   => [
+                        [
+                            'text'   => 'Root entity',
+                            'children' => [
+                                0 => [
+                                    'id'             => getItemByTypeName('TaskCategory', '_cat_1', true),
+                                    'text'           => '_cat_1',
+                                    'level'          => 1,
+                                    'title'          => '_cat_1 - Comment for category _cat_1',
+                                    'selection_text' => '_cat_1',
+                                ],
+                                1 => [
+                                    'id'             => getItemByTypeName('TaskCategory', '_subcat_1', true),
+                                    'text'           => '_subcat_1',
+                                    'level'          => 2,
+                                    'title'          => '_cat_1 > _subcat_1 - Comment for sub-category _subcat_1',
+                                    'selection_text' => '_cat_1 > _subcat_1',
+                                ],
+                                2 => [
+                                    'id'             => getItemByTypeName('TaskCategory', 'R&#38;D', true),
+                                    'text'           => 'R&D',
+                                    'level'          => 2,
+                                    'title'          => '_cat_1 > R&D - Comment for sub-category _subcat_2',
+                                    'selection_text' => '_cat_1 > R&D',
+                                ],
+                            ],
+                            'itemtype' => 'Entity',
+                        ],
+                    ],
+                    'count'     => 3,
+                ],
+            ],
+            [
+                'params' => [
+                    'display_emptychoice' => 0,
+                    'itemtype'            => 'TaskCategory',
+                    'searchText'          => (string) getItemByTypeName(\TaskCategory::class, '_cat_1', true), // search commonTreeDropdown by id as string
+                ],
+                'expected'  => [
+                    'results'   => [
+                        [
+                            'text'   => 'Root entity',
+                            'children' => [
+                                0 => [
+                                    'id'             => getItemByTypeName('TaskCategory', '_cat_1', true),
+                                    'text'           => '_cat_1',
+                                    'level'          => 1,
+                                    'title'          => '_cat_1 - Comment for category _cat_1',
+                                    'selection_text' => '_cat_1',
+                                ],
+                                1 => [
+                                    'id'             => getItemByTypeName('TaskCategory', '_subcat_1', true),
+                                    'text'           => '_subcat_1',
+                                    'level'          => 2,
+                                    'title'          => '_cat_1 > _subcat_1 - Comment for sub-category _subcat_1',
+                                    'selection_text' => '_cat_1 > _subcat_1',
+                                ],
+                                2 => [
+                                    'id'             => getItemByTypeName('TaskCategory', 'R&#38;D', true),
+                                    'text'           => 'R&D',
+                                    'level'          => 2,
+                                    'title'          => '_cat_1 > R&D - Comment for sub-category _subcat_2',
+                                    'selection_text' => '_cat_1 > R&D',
+                                ],
+                            ],
+                            'itemtype' => 'Entity',
+                        ],
+                    ],
+                    'count'     => 3,
+                ],
+            ],
+            [
+                'params' => [
+                    'display_emptychoice' => 0,
+                    'itemtype'            => 'ComputerModel',
+                    'searchText'          => (int) getItemByTypeName('ComputerModel', '_test_computermodel_1', true), // search CommonDropdown by id as int
+                ],
+                'expected'  => [
+                    'results'   => [
+                        [
+                            'id'     => getItemByTypeName('ComputerModel', '_test_computermodel_1', true),
+                            'text'   => '_test_computermodel_1 - CMP_ADEAF5E1',
+                            'title'  => '_test_computermodel_1 - CMP_ADEAF5E1',
+                        ],
+                    ],
+                    'count'     => 1,
+                ],
+            ],
+            [
+                'params' => [
+                    'display_emptychoice' => 0,
+                    'itemtype'            => 'ComputerModel',
+                    'searchText'          => (string) getItemByTypeName('ComputerModel', '_test_computermodel_1', true), // search CommonDropdown by id as string
+                ],
+                'expected'  => [
+                    'results'   => [
+                        [
+                            'id'     => getItemByTypeName('ComputerModel', '_test_computermodel_1', true),
+                            'text'   => '_test_computermodel_1 - CMP_ADEAF5E1',
+                            'title'  => '_test_computermodel_1 - CMP_ADEAF5E1',
+                        ],
+                    ],
+                    'count'     => 1,
+                ],
+            ],
         ];
     }
 
