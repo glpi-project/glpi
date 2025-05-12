@@ -56,6 +56,7 @@ parameters:
         - GLPI_THEMES_DIR
         - GLPI_TMP_DIR
         - GLPI_UPLOAD_DIR
+        - GLPI_USE_CSRF_CHECK
         - GLPI_USER_AGENT_EXTRA_COMMENTS
         - GLPI_VAR_DIR
         - GLPI_WEBHOOK_ALLOW_RESPONSE_SAVING
