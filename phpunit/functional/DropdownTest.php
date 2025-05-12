@@ -2107,7 +2107,7 @@ class DropdownTest extends DbTestCase
         )->getID();
 
         // Set active entities to include both test entities
-        $this->assertTrue(Session::changeActiveEntities(0, false));
+        $this->assertTrue(Session::changeActiveEntities(0, true));
 
         $params = [
             'itemtype'        => 'TicketTemplate',
