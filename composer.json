@@ -94,6 +94,7 @@
         "symfony/serializer": "^7.1",
         "tecnickcom/tc-lib-barcode": "^2.4",
         "tecnickcom/tcpdf": "^6.9",
+        "thecodingmachine/safe": "^3.1",
         "thenetworg/oauth2-azure": "^2.2",
         "twig/markdown-extra": "^3.20",
         "twig/string-extra": "^3.20",
@@ -122,7 +123,8 @@
         "symfony/stopwatch": "^6.4",
         "symfony/twig-bundle": "^6.4",
         "symfony/var-dumper": "^6.4",
-        "symfony/web-profiler-bundle": "^6.4"
+        "symfony/web-profiler-bundle": "^6.4",
+        "thecodingmachine/phpstan-safe-rule": "^1.4"
     },
     "provide": {
         "ext-sodium": "*"
