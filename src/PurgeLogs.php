@@ -97,7 +97,7 @@ class PurgeLogs extends CommonDBTM
                         Log::HISTORY_UNINSTALL_SOFTWARE,
                         Log::HISTORY_ADD_SUBITEM,
                         Log::HISTORY_UPDATE_SUBITEM,
-                        Log::HISTORY_DELETE_SUBITEM
+                        Log::HISTORY_DELETE_SUBITEM,
                     ],
                 ] + $month
             );
