@@ -1957,11 +1957,7 @@ class DropdownTest extends DbTestCase
             ]
         )->getID();
 
-        // Save current active entities
-        $backup_entities = $_SESSION['glpiactiveentities'];
-
-        // Test case 1: Empty entity_restrict JSON array with only root entity active
-        $_SESSION['glpiactiveentities'] = [0];
+        $this->assertTrue(Session::changeActiveEntities(0, false));
 
         $params = [
             'itemtype'        => 'TicketTemplate',
@@ -1989,7 +1985,7 @@ class DropdownTest extends DbTestCase
         $this->assertTrue($found_root_template, 'Root template should be in results with empty entity_restrict');
 
         // Test case 2: Empty entity_restrict JSON array with both entities active
-        $_SESSION['glpiactiveentities'] = [0, $entity_id];
+        $this->assertTrue(Session::changeActiveEntities(0, true));
 
         $params = [
             'itemtype'        => 'TicketTemplate',
@@ -2030,8 +2026,41 @@ class DropdownTest extends DbTestCase
         // Both results should be equivalent
         $this->assertEquals($explicit_results['results'], $results['results']);
 
-        // Restore original active entities
-        $_SESSION['glpiactiveentities'] = $backup_entities;
+        // Test case 4: Empty entity_restrict JSON array with only the sub-entity active
+        $this->assertTrue(Session::changeActiveEntities($entity_id, false));
+
+        $params = [
+            'itemtype'        => 'TicketTemplate',
+            'entity_restrict' => '[]', // Empty JSON array
+            '_idor_token'     => Session::getNewIDORToken('TicketTemplate'),
+        ];
+
+        $results = \Dropdown::getDropdownValue($params, false);
+
+        // Verify we get only the template from the active sub-entity
+        $found_root_template = false;
+        $found_entity_template = false;
+        foreach ($results['results'] as $result) {
+            if (isset($result['id']) && $result['id'] == $root_tpl_id) {
+                $found_root_template = true;
+            } elseif (isset($result['id']) && $result['id'] == $entity_tpl_id) {
+                $found_entity_template = true;
+            } elseif (isset($result['children'])) {
+                foreach ($result['children'] as $child) {
+                    if ($child['id'] == $root_tpl_id) {
+                        $found_root_template = true;
+                    }
+                    if ($child['id'] == $entity_tpl_id) {
+                        $found_entity_template = true;
+                    }
+                }
+            }
+        }
+
+        $this->assertFalse($found_root_template, 'Root template should not be in results when sub-entity is active');
+        $this->assertTrue($found_entity_template, 'Entity template should be in results when sub-entity is active');
+
+        $this->assertTrue(Session::changeActiveEntities(0));
     }
 
     /**
@@ -2077,11 +2106,8 @@ class DropdownTest extends DbTestCase
             ]
         )->getID();
 
-        // Save current active entities
-        $backup_entities = $_SESSION['glpiactiveentities'];
-
         // Set active entities to include both test entities
-        $_SESSION['glpiactiveentities'] = [0, $entity1_id, $entity2_id];
+        $this->assertTrue(Session::changeActiveEntities(0, false));
 
         $params = [
             'itemtype'        => 'TicketTemplate',
@@ -2118,6 +2144,6 @@ class DropdownTest extends DbTestCase
         $this->assertTrue($found_tpl2);
 
         // Restore original active entities
-        $_SESSION['glpiactiveentities'] = $backup_entities;
+        $this->assertTrue(Session::changeActiveEntities(0, false));
     }
 }
