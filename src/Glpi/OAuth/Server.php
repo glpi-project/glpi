@@ -42,9 +42,14 @@ use League\OAuth2\Server\Grant\ClientCredentialsGrant;
 use League\OAuth2\Server\Grant\PasswordGrant;
 use League\OAuth2\Server\Grant\RefreshTokenGrant;
 use League\OAuth2\Server\ResourceServer;
+use RuntimeException;
+use Throwable;
 
 final class Server
 {
+    private const PRIVATE_KEY_PATH = GLPI_CONFIG_DIR . '/oauth.pem';
+    private const PUBLIC_KEY_PATH  = GLPI_CONFIG_DIR . '/oauth.pub';
+
     /**
      * @var ClientRepository
      */
@@ -177,43 +182,84 @@ final class Server
 
     public static function generateKeys(): void
     {
-        $private_key_path = GLPI_CONFIG_DIR . '/oauth.pem';
-        $public_key_path = GLPI_CONFIG_DIR . '/oauth.pub';
-        if (!file_exists($private_key_path) && !file_exists($public_key_path)) {
-            $config = [
-                'digest_alg'       => 'sha512',
-                'private_key_bits' => 2048,
-                'private_key_type' => OPENSSL_KEYTYPE_RSA,
-            ];
-            $success = false;
-            $error = null;
-            $res = openssl_pkey_new($config);
-            if ($res && openssl_pkey_export_to_file($res, $private_key_path)) {
-                // Export public key to the public key file
-                $pubkey = openssl_pkey_get_details($res);
-                if ($pubkey !== false && file_put_contents($public_key_path, $pubkey['key']) === strlen($pubkey['key'])) {
-                    if (chmod($private_key_path, 0o660) && chmod($public_key_path, 0o660)) {
-                        $success = true;
-                    } else {
-                        $error = 'Unable to set permissions on the generated keys';
-                    }
-                } else {
-                    $error = 'Unable to export public key';
-                }
-            } else {
-                $error = 'Unable to generate keys';
-            }
+        if (
+            file_exists(self::PRIVATE_KEY_PATH)
+            && file_exists(self::PUBLIC_KEY_PATH)
+        ) {
+            // Keys are already generated
+            return;
+        }
 
-            if (!$success) {
-                // Key files didn't exist before and an error occured. We should try removing any that were created to be able to retry later
-                if (file_exists($private_key_path)) {
-                    unlink($private_key_path);
-                }
-                if (file_exists($public_key_path)) {
-                    unlink($public_key_path);
-                }
-                throw new \RuntimeException($error);
-            }
+        try {
+            // Reset keys in case of partial data (i.e. only the private or only
+            // the public key exist). Should not be able to happen but let's be
+            // safe.
+            self::deleteKeys();
+
+            // Generate keys
+            self::doGenerateKeys();
+        } catch (Throwable $e) {
+            // Make sure we don't save any partially generated data
+            self::deleteKeys();
+
+            // Propagate exception
+            throw $e;
+        }
+    }
+
+    private static function doGenerateKeys(): void
+    {
+        $config = [
+            'digest_alg'       => 'sha512',
+            'private_key_bits' => 2048,
+            'private_key_type' => OPENSSL_KEYTYPE_RSA,
+        ];
+
+        // Generate key
+        $key = openssl_pkey_new($config);
+        if ($key === false) {
+            $error = openssl_error_string();
+            throw new RuntimeException("Unable to generate keys: $error");
+        }
+
+        // Export private key to file
+        if (!openssl_pkey_export_to_file($key, self::PRIVATE_KEY_PATH)) {
+            $error = openssl_error_string();
+            throw new RuntimeException("Unable to export private key: $error");
+        }
+
+        // Get public key
+        $pubkey = openssl_pkey_get_details($key);
+        if ($pubkey === false) {
+            $error = openssl_error_string();
+            throw new RuntimeException("Unable to get public key details: $error");
+        }
+
+        // Export public key to file
+        $written_bytes = file_put_contents(self::PUBLIC_KEY_PATH, $pubkey['key']);
+        if (
+            $written_bytes === false
+            || $written_bytes !== strlen($pubkey['key'])
+        ) {
+            throw new RuntimeException('Unable to export public key');
+        }
+
+        // Set permisisons to both key files
+        if (
+            !chmod(self::PRIVATE_KEY_PATH, 0o660)
+            || !chmod(self::PUBLIC_KEY_PATH, 0o660)
+        ) {
+            throw new RuntimeException('Unable to set permissions on the generated keys');
+        }
+    }
+
+    private static function deleteKeys(): void
+    {
+        if (file_exists(self::PRIVATE_KEY_PATH)) {
+            unlink(self::PRIVATE_KEY_PATH);
+        }
+        if (file_exists(self::PUBLIC_KEY_PATH)) {
+            unlink(self::PUBLIC_KEY_PATH);
         }
     }
 }
