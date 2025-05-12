@@ -72,6 +72,13 @@ final readonly class AccessErrorListener implements EventSubscriberInterface
 
         $response = null;
 
+        // On profile change, we will redirect the user to the home page in case
+        // of access errors for the current page.
+        $redirect_to_home_on_error = $event->getRequest()
+            ->query
+            ->getBoolean('_redirected_from_profile_selector')
+        ;
+
         if ($throwable instanceof SessionExpiredException) {
             Session::destroy(); // destroy the session to prevent pesistence of unexpected data
 
@@ -84,10 +91,8 @@ final readonly class AccessErrorListener implements EventSubscriberInterface
             );
         } elseif (
             $throwable instanceof AccessDeniedHttpException
-            && ($_SESSION['_redirected_from_profile_selector'] ?? false)
+            && $redirect_to_home_on_error
         ) {
-            unset($_SESSION['_redirected_from_profile_selector']);
-
             $request = $event->getRequest();
             $response = new RedirectResponse(
                 sprintf(
