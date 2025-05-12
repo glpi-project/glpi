@@ -76,12 +76,13 @@ final readonly class CheckCsrfListener implements EventSubscriberInterface
         }
 
         if ($request->isXmlHttpRequest()) {
-            // Keep CSRF token as many AJAX requests may be made at the same time.
-            // This is due to the fact that read operations are often made using POST method (see #277).
-            define('GLPI_KEEP_CSRF_TOKEN', true);
-
             // For AJAX requests, check CSRF token located into "X-Glpi-Csrf-Token" header.
-            Session::checkCSRF(['_glpi_csrf_token' => $request->server->get('HTTP_X_GLPI_CSRF_TOKEN') ?? '']);
+            Session::checkCSRF(
+                ['_glpi_csrf_token' => $request->server->get('HTTP_X_GLPI_CSRF_TOKEN') ?? ''],
+                // Keep CSRF token as many AJAX requests may be made at the same time.
+                // This is due to the fact that read operations are often made using POST method (see #277).
+                preserve_token: true
+            );
         } else {
             Session::checkCSRF($request->request->all());
         }

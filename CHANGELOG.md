@@ -326,7 +326,7 @@ The present file will list all changes made to the project; according to the
 - `Toolbox::stripslashes_deep()`
 
 #### Removed
-- `GLPI_USE_CSRF_CHECK`, `GLPI_USE_IDOR_CHECK`, `GLPI_CSRF_EXPIRES`, `GLPI_CSRF_MAX_TOKENS` and `GLPI_IDOR_EXPIRES` constants.
+- `GLPI_USE_CSRF_CHECK`, `GLPI_USE_IDOR_CHECK`, `GLPI_KEEP_CSRF_TOKEN`, `GLPI_CSRF_EXPIRES`, `GLPI_CSRF_MAX_TOKENS` and `GLPI_IDOR_EXPIRES` constants.
 - `GLPI_DEMO_MODE` constant.
 - `GLPI_DUMP_DIR` constant.
 - `GLPI_SQL_DEBUG` constant.
