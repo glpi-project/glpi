@@ -66,11 +66,14 @@ describe('Item form question type', () => {
         // Click on the itemtype dropdown
         cy.getDropdownByLabelText("Select an itemtype").click();
 
-        // Select the ticket itemtype
-        cy.findByRole("option", { name: "Tickets" }).should('exist').click();
+        // Change the itemtype to Ticket
+        cy.getDropdownByLabelText("Select an item").should('exist').then(() => {
+            // Select the ticket itemtype
+            cy.findByRole("option", { name: "Tickets" }).should('exist').click();
+        }).should('not.exist');
 
         // Wait for the items_id dropdown to be loaded
-        cy.intercept('/ajax/dropdownAllItems.php').as('dropdownAllItems');
+        cy.waitForNetworkIdle(150);
 
         // Click on the items_id dropdown
         cy.getDropdownByLabelText("Select an item").click();
@@ -104,11 +107,14 @@ describe('Item form question type', () => {
         // Click on the itemtype dropdown
         cy.getDropdownByLabelText("Select a dropdown type").click();
 
-        // Select the ITIL category itemtype
-        cy.findByRole("option", { name: "ITIL categories" }).should('exist').click();
+        // Change the itemtype to ITIL categories
+        cy.getDropdownByLabelText("Select a dropdown item").should('exist').then(() => {
+            // Select the ITIL categories itemtype
+            cy.findByRole("option", { name: "ITIL categories" }).should('exist').click();
+        }).should('not.exist');
 
         // Wait for the items_id dropdown to be loaded
-        cy.intercept('/ajax/dropdownAllItems.php').as('dropdownAllItems');
+        cy.waitForNetworkIdle(150);
 
         // Click on the items_id dropdown
         cy.getDropdownByLabelText("Select a dropdown item").click();
