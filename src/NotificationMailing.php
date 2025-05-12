@@ -112,6 +112,7 @@ class NotificationMailing implements NotificationInterface
         $text = __('This is a test email.') . "\n-- \n" . $CFG_GLPI["mailing_signature"];
         $recipient = $CFG_GLPI['admin_email'];
         if (defined('GLPI_FORCE_MAIL')) {
+            Toolbox::deprecated('Usage of the `GLPI_FORCE_MAIL` constant is deprecated. Please use a mail catcher service instead.');
             //force recipient to configured email address
             $recipient = GLPI_FORCE_MAIL;
             //add original email address to message body
