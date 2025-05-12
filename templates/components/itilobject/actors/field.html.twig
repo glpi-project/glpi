@@ -201,6 +201,23 @@
             });
          }
 
+         if (is_selection && itemtype == "Supplier") {
+            const unique_id = "supplier_opt_" + actor_select.attr('data-actor-type') + "Supplier" + items_id;
+            $.ajax({
+               url: '{{ path('/ajax/comments.php') }}',
+               type: 'POST',
+               data: {
+                  'itemtype': 'Supplier',
+                  'value': items_id,
+               }
+            }).then((result) => {
+               if (result) {
+                  actor_select.parent().append('<' + `div id="content${unique_id}" style="display: none;">` + result + '<' + '/div>');
+                  option_element.attr('data-glpi-popover-source', `content${unique_id}`);
+               }
+            });
+         }
+
          // manage ticket information (number of assigned ticket for an actor)
          if (is_selection && itemtype != "Email") {
             var label = '';
@@ -320,6 +337,10 @@
             }
             // prevent closing popover when group card is hover
             if ($('.group-info-card:hover').length > 0) {
+               return false;
+            }
+            // prevent closing popover when supplier card is hover
+            if ($('.supplier-info-card:hover').length > 0) {
                return false;
             }
          });
