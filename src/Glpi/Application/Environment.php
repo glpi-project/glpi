@@ -149,6 +149,7 @@ enum Environment: string
                 ],
             ],
             self::DEVELOPMENT => [
+                'GLPI_STRICT_ENV'                    => true,
                 'GLPI_WEBHOOK_ALLOW_RESPONSE_SAVING' => '1',
             ],
         };
