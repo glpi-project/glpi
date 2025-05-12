@@ -50,6 +50,7 @@ parameters:
         - GLPI_SERVERSIDE_URL_ALLOWLIST
         - GLPI_SESSION_DIR
         - GLPI_STRICT_ENV
+        - GLPI_SYSTEM_CRON
         - GLPI_TELEMETRY_URI
         - GLPI_TEXT_MAXSIZE
         - GLPI_THEMES_DIR

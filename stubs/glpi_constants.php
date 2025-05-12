@@ -86,6 +86,7 @@
     define('GLPI_NETWORK_SERVICES', 'https://services.glpi-network.com');
     define('GLPI_SERVERSIDE_URL_ALLOWLIST', $random_val([[], ['/^.*$/']]));
     define('GLPI_STRICT_ENV', $random_val([false, true]));
+    define('GLPI_SYSTEM_CRON', $random_val([false, true]));
     define('GLPI_TELEMETRY_URI', 'https://telemetry.glpi-project.org');
     define('GLPI_TEXT_MAXSIZE', $random_val([1000, 2000, 3000, 4000]));
     define('GLPI_USER_AGENT_EXTRA_COMMENTS', $random_val(['', 'app-version:5']));

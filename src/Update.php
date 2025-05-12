@@ -246,7 +246,7 @@ class Update
             + $structure_check_weight
             + $post_update_weight
             + $generate_keys_weight;
-        if (defined('GLPI_SYSTEM_CRON')) {
+        if (GLPI_SYSTEM_CRON) {
             $number_of_steps += $cron_config_weight;
         }
 
@@ -344,7 +344,7 @@ class Update
 
         $progress_indicator?->setProgressBarMessage(__('Finalizing the update…'));
 
-        if (defined('GLPI_SYSTEM_CRON')) {
+        if (GLPI_SYSTEM_CRON) {
             // Downstream packages may provide a good system cron
             $DB->update(
                 'glpi_crontasks',

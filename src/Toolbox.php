@@ -2091,7 +2091,7 @@ class Toolbox
         $default_lang_weight = 1;
         $cron_config_weight = 1;
         $number_of_steps += $init_form_weight + $init_rules_weight + $generate_keys_weight + $default_lang_weight;
-        if (defined('GLPI_SYSTEM_CRON')) {
+        if (GLPI_SYSTEM_CRON) {
             $number_of_steps += $cron_config_weight;
         }
 
@@ -2175,7 +2175,7 @@ class Toolbox
         }
         $progress_indicator?->advance($default_lang_weight);
 
-        if (defined('GLPI_SYSTEM_CRON')) {
+        if (GLPI_SYSTEM_CRON) {
             // Downstream packages may provide a good system cron
             $database->update(
                 'glpi_crontasks',
