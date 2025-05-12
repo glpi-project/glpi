@@ -532,21 +532,5 @@ class Item_SoftwareLicenseTest extends DbTestCase
         // The count should be 2
         $count = \SoftwareLicense_User::countForLicense($license2_id);
         $this->assertEquals(2, $count);
-
-        // Cleanup
-        $user_license = new \SoftwareLicense_User();
-        $user_license->deleteByCriteria(['softwarelicenses_id' => $license_id]);
-        $user_license->deleteByCriteria(['softwarelicenses_id' => $license2_id]);
-
-        $license = new \SoftwareLicense();
-        $license->delete(['id' => $license_id]);
-        $license->delete(['id' => $license2_id]);
-
-        $software = new \Software();
-        $software->delete(['id' => $software_id]);
-
-        // Delete the created user
-        $user2 = new \User();
-        $user2->delete(['id' => $user2_id], true);
     }
 }
