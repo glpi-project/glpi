@@ -35,6 +35,7 @@
 namespace Glpi\Application\View;
 
 use AlisQI\TwigQI\Extension;
+use AlisQI\TwigQI\Logger\TriggerErrorLogger;
 use Glpi\Application\View\Extension\ConfigExtension;
 use Glpi\Application\View\Extension\DataHelpersExtension;
 use Glpi\Application\View\Extension\DocumentExtension;
@@ -120,14 +121,12 @@ class TemplateRenderer
         $this->environment->addExtension(new SearchExtension());
         $this->environment->addExtension(new SessionExtension());
         $this->environment->addExtension(new TeamExtension());
-        if (
-            in_array(GLPI_ENVIRONMENT_TYPE, [\Glpi\Application\Environment::DEVELOPMENT->value, \Glpi\Application\Environment::TESTING->value])
-            && defined('GLPI_STRICT_ENV')
-            && GLPI_STRICT_ENV
-        ) {
-            /** @var \Monolog\Logger $PHPLOGGER */
-            global $PHPLOGGER;
-            $this->environment->addExtension(new Extension($PHPLOGGER));
+        if (GLPI_STRICT_ENV) {
+            $this->environment->addExtension(
+                new Extension(
+                    new TriggerErrorLogger()
+                )
+            );
         }
 
         // add superglobals
