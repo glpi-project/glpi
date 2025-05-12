@@ -269,6 +269,7 @@ TWIG, $twig_params);
             'nofilter' => true,
             'columns' => $columns,
             'entries' => $entries,
+            'formatters' => ['value' => 'raw_html'],
             'total_number' => count($entries),
             'filtered_number' => count($entries),
             'showmassiveactions' => $canedit,
