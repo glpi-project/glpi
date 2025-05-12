@@ -190,12 +190,22 @@ final class Server
             return;
         }
 
-        try {
-            // Reset keys in case of partial data (i.e. only the private or only
-            // the public key exist). Should not be able to happen but let's be
-            // safe.
-            self::deleteKeys();
+        // Partial data: unsure how to proceed, let the user review the files.
+        if (
+            file_exists(self::PRIVATE_KEY_PATH)
+            && !file_exists(self::PUBLIC_KEY_PATH)
+        ) {
+            throw new RuntimeException("Mising file: " . self::PUBLIC_KEY_PATH);
+        }
+        if (
+            file_exists(self::PUBLIC_KEY_PATH)
+            && !file_exists(self::PRIVATE_KEY_PATH)
+        ) {
+            throw new RuntimeException("Mising file: " . self::PRIVATE_KEY_PATH);
+        }
 
+        // If we reach this point, both file are missing and must be generated
+        try {
             // Generate keys
             self::doGenerateKeys();
         } catch (Throwable $e) {
