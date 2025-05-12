@@ -940,11 +940,11 @@ class DropdownTest extends DbTestCase
                                     'selection_text' => '_cat_1 > R&D',
                                 ],
                             ],
-                            'itemtype' => 'Entity'
-                        ]
+                            'itemtype' => 'Entity',
+                        ],
                     ],
-                    'count'     => 3
-                ]
+                    'count'     => 3,
+                ],
             ],
             [
                 'params' => [
@@ -979,11 +979,11 @@ class DropdownTest extends DbTestCase
                                     'selection_text' => '_cat_1 > R&D',
                                 ],
                             ],
-                            'itemtype' => 'Entity'
-                        ]
+                            'itemtype' => 'Entity',
+                        ],
                     ],
-                    'count'     => 3
-                ]
+                    'count'     => 3,
+                ],
             ],
             [
                 'params' => [
@@ -997,10 +997,10 @@ class DropdownTest extends DbTestCase
                             'id'     => getItemByTypeName('ComputerModel', '_test_computermodel_1', true),
                             'text'   => '_test_computermodel_1 - CMP_ADEAF5E1',
                             'title'  => '_test_computermodel_1 - CMP_ADEAF5E1',
-                        ]
+                        ],
                     ],
-                    'count'     => 1
-                ]
+                    'count'     => 1,
+                ],
             ],
             [
                 'params' => [
@@ -1014,9 +1014,9 @@ class DropdownTest extends DbTestCase
                             'id'     => getItemByTypeName('ComputerModel', '_test_computermodel_1', true),
                             'text'   => '_test_computermodel_1 - CMP_ADEAF5E1',
                             'title'  => '_test_computermodel_1 - CMP_ADEAF5E1',
-                        ]
+                        ],
                     ],
-                    'count'     => 1
+                    'count'     => 1,
                 ]
             ]
         ];
