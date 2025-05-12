@@ -51,7 +51,7 @@ final class FrontEndAssetsListener implements EventSubscriberInterface
     public function __construct(
         #[Autowire('%kernel.project_dir%')]
         string $glpi_root,
-        array $plugin_directories = PLUGINS_DIRECTORIES,
+        array $plugin_directories = GLPI_PLUGINS_DIRECTORIES,
     ) {
         $this->glpi_root = $glpi_root;
         $this->plugin_directories = $plugin_directories;

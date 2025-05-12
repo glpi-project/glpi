@@ -46,9 +46,11 @@ parameters:
         - GLPI_NETWORK_SERVICES
         - GLPI_PICTURE_DIR
         - GLPI_PLUGIN_DOC_DIR
+        - GLPI_PLUGINS_DIRECTORIES
         - GLPI_RSS_DIR
         - GLPI_SERVERSIDE_URL_ALLOWLIST
         - GLPI_SESSION_DIR
+        - GLPI_SKIP_UPDATES
         - GLPI_STRICT_ENV
         - GLPI_SYSTEM_CRON
         - GLPI_TELEMETRY_URI
@@ -60,8 +62,6 @@ parameters:
         - GLPI_USER_AGENT_EXTRA_COMMENTS
         - GLPI_VAR_DIR
         - GLPI_WEBHOOK_ALLOW_RESPONSE_SAVING
-        - PLUGINS_DIRECTORIES
-        - SKIP_UPDATES
         - TU_USER
     ignoreErrors:
         - '~Instantiated class XHProfRuns_Default not found~'

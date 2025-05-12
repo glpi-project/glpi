@@ -309,7 +309,7 @@ class Controller extends CommonGLPI
 
         // Compute marketplace dir priority
         $marketplace_priority = null;
-        foreach (PLUGINS_DIRECTORIES as $position => $base_dir) {
+        foreach (GLPI_PLUGINS_DIRECTORIES as $position => $base_dir) {
             if (realpath($base_dir) !== false && realpath($base_dir) === realpath(GLPI_MARKETPLACE_DIR)) {
                 $marketplace_priority = -$position;
                 break;
@@ -318,7 +318,7 @@ class Controller extends CommonGLPI
 
         $found_outside_marketplace = false;
         $found_dir_priority        = null;
-        foreach (PLUGINS_DIRECTORIES as $position => $base_dir) {
+        foreach (GLPI_PLUGINS_DIRECTORIES as $position => $base_dir) {
             if (file_exists($base_dir . '/' . $this->plugin_key . '/setup.php')) {
                 $found_outside_marketplace = true;
                 $found_dir_priority = -$position;

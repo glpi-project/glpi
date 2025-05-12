@@ -37,7 +37,7 @@
 {% set is_helpdesk = get_current_interface() == 'helpdesk' %}
 
 <body class="{{ user_pref('fold_menu') and is_vertical ? 'navbar-collapsed' : '' }} {{ is_vertical ? 'vertical-layout' : 'horizontal-layout' }} {{ is_debug_active ? 'debug-active' : '' }} {{ is_helpdesk ? 'helpdesk' : 'central' }}">
-   {% if call('DBConnection::isDbAvailable') and constant('SKIP_UPDATES') is defined and not call('Update::isDbUpToDate') %}
+   {% if call('DBConnection::isDbAvailable') and constant('GLPI_SKIP_UPDATES') is defined and not call('Update::isDbUpToDate') %}
       <div class="banner-need-update">
          {{ __("You are bypassing a needed update") }}
       </div>

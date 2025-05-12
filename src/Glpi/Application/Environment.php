@@ -144,7 +144,7 @@ enum Environment: string
                     // calendar mockups
                     '/^file:\/\/.*\.ics$/',
                 ],
-                'PLUGINS_DIRECTORIES'           => [
+                'GLPI_PLUGINS_DIRECTORIES'      => [
                     $root_dir . '/plugins',
                     $root_dir . '/tests/fixtures/plugins',
                 ],

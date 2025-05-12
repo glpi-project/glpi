@@ -84,13 +84,13 @@
     define('GLPI_NETWORK_REGISTRATION_API_URL', 'https://services.glpi-network.com/api/registration/');
     define('GLPI_NETWORK_MAIL', 'glpi@teclib.com');
     define('GLPI_NETWORK_SERVICES', 'https://services.glpi-network.com');
+    define('GLPI_PLUGINS_DIRECTORIES', [dirname(__FILE__, 2) . '/plugins', dirname(__FILE__, 2) . '/marketplace']);
     define('GLPI_SERVERSIDE_URL_ALLOWLIST', $random_val([[], ['/^.*$/']]));
+    define('GLPI_SKIP_UPDATES', $random_val([false, true]));
     define('GLPI_STRICT_ENV', $random_val([false, true]));
     define('GLPI_SYSTEM_CRON', $random_val([false, true]));
     define('GLPI_TELEMETRY_URI', 'https://telemetry.glpi-project.org');
     define('GLPI_TEXT_MAXSIZE', $random_val([1000, 2000, 3000, 4000]));
     define('GLPI_USER_AGENT_EXTRA_COMMENTS', $random_val(['', 'app-version:5']));
     define('GLPI_WEBHOOK_ALLOW_RESPONSE_SAVING', $random_val([false, true]));
-    define('PLUGINS_DIRECTORIES', [dirname(__FILE__, 2) . '/plugins', dirname(__FILE__, 2) . '/marketplace']);
-    define('SKIP_UPDATES', $random_val([false, true]));
 })();
