@@ -202,7 +202,7 @@ abstract class ITILTemplatePredefinedField extends ITILTemplateField
     /**
      * @since 0.85
      **/
-    public static function getMultiplePredefinedValues()
+    public static function getMultiplePredefinedValues(): array
     {
 
         $itil_class = static::$itiltype;
