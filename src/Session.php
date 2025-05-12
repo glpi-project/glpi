@@ -1724,13 +1724,6 @@ class Session
      **/
     public static function checkCSRF($data, bool $preserve_token = false)
     {
-        if (defined('GLPI_USE_CSRF_CHECK')) {
-            trigger_error(
-                'Definition of "GLPI_USE_CSRF_CHECK" constant is deprecated and is ignore for security reasons.',
-                E_USER_WARNING
-            );
-        }
-
         if (!Session::validateCSRF($data, $preserve_token)) {
             $requested_url = ($_SERVER['REQUEST_URI'] ?? 'Unknown');
             $user_id = self::getLoginUserID() ?? 'Anonymous';

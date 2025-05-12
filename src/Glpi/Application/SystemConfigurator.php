@@ -51,6 +51,9 @@ final class SystemConfigurator
         $this->setSessionConfiguration();
         $this->initLogger();
         $this->registerErrorHandler();
+
+        // Keep it after `registerErrorHandler()` call to be sure that messages are correctly handled.
+        $this->checkForObsoleteConstants();
     }
 
     public function getLogger(): LoggerInterface
@@ -183,6 +186,11 @@ final class SystemConfigurator
             include_once($this->root_dir . '/inc/downstream.php');
         }
 
+        // Handle deprecated/obsolete constants
+        if (defined('PLUGINS_DIRECTORIES') && !defined('GLPI_PLUGINS_DIRECTORIES')) {
+            define('GLPI_PLUGINS_DIRECTORIES', PLUGINS_DIRECTORIES);
+        }
+
         // Configure environment type if not defined by user.
         if (Environment::isSet()) {
             Environment::validate();
@@ -272,5 +280,22 @@ final class SystemConfigurator
     {
         $errorHandler = new ErrorHandler($this->logger);
         $errorHandler::register($errorHandler);
+    }
+
+    private function checkForObsoleteConstants(): void
+    {
+        if (defined('GLPI_USE_CSRF_CHECK')) {
+            trigger_error(
+                'The `GLPI_USE_CSRF_CHECK` constant is now ignored for security reasons.',
+                E_USER_WARNING
+            );
+        }
+
+        if (defined('PLUGINS_DIRECTORIES')) {
+            trigger_error(
+                'The `PLUGINS_DIRECTORIES` constant is deprecated. Use the `GLPI_PLUGINS_DIRECTORIES` constant instead.',
+                E_USER_DEPRECATED
+            );
+        }
     }
 }
