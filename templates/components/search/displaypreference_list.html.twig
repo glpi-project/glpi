@@ -33,7 +33,7 @@
 {% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
 
 {% if preferences|length > 0 %}
-    <div class="m-3">
+    <div class="m-3" id="displayprefences-setup">
         {% if massiveactionparams['specific_actions']|length > 0 %}
             <form id="massDisplayPreference{{ rand }}" method="get" action="{{ path('front/massiveaction.php') }}"
                 data-search-itemtype="DisplayPreference" data-submit-once>
@@ -127,7 +127,7 @@
 
             // (un)toggle all capacities button
             $('#select-all-itemtypes').on('click', function() {
-                var $checkboxes = $('input[type=checkbox]');
+                var $checkboxes = $('#displayprefences-setup input[type=checkbox]');
                 var $checkedCheckboxes = $checkboxes.filter(':checked');
 
                 if ($checkedCheckboxes.length === $checkboxes.length) {
