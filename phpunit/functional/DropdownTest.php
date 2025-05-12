@@ -1017,8 +1017,8 @@ class DropdownTest extends DbTestCase
                         ],
                     ],
                     'count'     => 1,
-                ]
-            ]
+                ],
+            ],
         ];
     }
 
