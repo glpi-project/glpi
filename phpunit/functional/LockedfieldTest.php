@@ -943,7 +943,7 @@ class LockedfieldTest extends DbTestCase
         $excluded = [
             'UserEmail',
             'Group_User',
-            'Profile_User'
+            'Profile_User',
         ];
 
         $global_inventory_type = array_merge(
