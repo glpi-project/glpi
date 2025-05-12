@@ -399,6 +399,7 @@ class NotificationEventMailing extends NotificationEventAbstract
 
                 $recipient = $current->getField('recipient');
                 if (defined('GLPI_FORCE_MAIL')) {
+                    Toolbox::deprecated('Usage of the `GLPI_FORCE_MAIL` constant is deprecated. Please use a mail catcher service instead.');
                     //force recipient to configured email address
                     $recipient = GLPI_FORCE_MAIL;
                     //add original email address to message body

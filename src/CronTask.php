@@ -975,7 +975,7 @@ class CronTask extends CommonDBTM
             }
         }
         if (
-            defined('GLPI_SYSTEM_CRON')
+            GLPI_SYSTEM_CRON
             && ($input['allowmode'] & self::MODE_EXTERNAL)
             && !isset($input['mode'])
         ) {

@@ -59,7 +59,7 @@ function glpi_autoload($classname)
     }
 
     $plugin_path = null;
-    foreach (PLUGINS_DIRECTORIES as $plugins_dir) {
+    foreach (GLPI_PLUGINS_DIRECTORIES as $plugins_dir) {
         $dir_to_check = sprintf('%s/%s', $plugins_dir, $plugin_key);
         if (is_dir($dir_to_check)) {
             $plugin_path = $dir_to_check;

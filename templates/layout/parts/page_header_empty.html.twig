@@ -31,7 +31,7 @@
  #}
 
 <body class="horizontal-layout">
-   {% if call('DBConnection::isDbAvailable') and constant('SKIP_UPDATES') is defined and not call('Update::isDbUpToDate') %}
+   {% if call('DBConnection::isDbAvailable') and constant('GLPI_SKIP_UPDATES') and not call('Update::isDbUpToDate') %}
       <div class="banner-need-update">
          {{ __("You are bypassing a needed update") }}
       </div>

@@ -1688,11 +1688,12 @@ class Session
      *
      * @since 0.83.3
      *
-     * @param array $data $_POST data
+     * @param array $data           $_POST data
+     * @param bool  $preserve_token Whether to preserve token after it has been validated.
      *
      * @return boolean
      **/
-    public static function validateCSRF($data)
+    public static function validateCSRF($data, bool $preserve_token = false)
     {
         Session::cleanCSRFTokens();
 
@@ -1701,7 +1702,7 @@ class Session
         }
         $requestToken = $data['_glpi_csrf_token'];
         if (isset($_SESSION['glpicsrftokens'][$requestToken])) {
-            if (!defined('GLPI_KEEP_CSRF_TOKEN')) { /* When post open a new windows */
+            if (!$preserve_token) {
                 unset($_SESSION['glpicsrftokens'][$requestToken]);
             }
             return true;
@@ -1716,20 +1717,14 @@ class Session
      *
      * @since 0.84.2
      *
-     * @param array $data $_POST data
+     * @param array $data           $_POST data
+     * @param bool  $preserve_token Whether to preserve token after it has been validated.
      *
      * @return void
      **/
-    public static function checkCSRF($data)
+    public static function checkCSRF($data, bool $preserve_token = false)
     {
-        if (defined('GLPI_USE_CSRF_CHECK')) {
-            trigger_error(
-                'Definition of "GLPI_USE_CSRF_CHECK" constant is deprecated and is ignore for security reasons.',
-                E_USER_WARNING
-            );
-        }
-
-        if (!Session::validateCSRF($data)) {
+        if (!Session::validateCSRF($data, $preserve_token)) {
             $requested_url = ($_SERVER['REQUEST_URI'] ?? 'Unknown');
             $user_id = self::getLoginUserID() ?? 'Anonymous';
             Toolbox::logInFile('access-errors', "CSRF check failed for User ID: $user_id at $requested_url\n");

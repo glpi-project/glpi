@@ -133,6 +133,7 @@ enum Environment: string
             self::TESTING     => [
                 'GLPI_CONFIG_DIR'               => $root_dir . '/tests/config',
                 'GLPI_VAR_DIR'                  => $root_dir . '/tests/files',
+                'GLPI_LOG_LVL'                  => LogLevel::DEBUG,
                 'GLPI_STRICT_ENV'               => true,
                 'GLPI_SERVERSIDE_URL_ALLOWLIST' => [
                     // default allowlist entries
@@ -143,27 +144,16 @@ enum Environment: string
                     // calendar mockups
                     '/^file:\/\/.*\.ics$/',
                 ],
-                'PLUGINS_DIRECTORIES'           => [
+                'GLPI_PLUGINS_DIRECTORIES'      => [
                     $root_dir . '/plugins',
                     $root_dir . '/tests/fixtures/plugins',
                 ],
             ],
             self::DEVELOPMENT => [
+                'GLPI_LOG_LVL'                       => LogLevel::DEBUG,
                 'GLPI_STRICT_ENV'                    => true,
                 'GLPI_WEBHOOK_ALLOW_RESPONSE_SAVING' => '1',
             ],
-        };
-    }
-
-    public function getLogLevel(): string
-    {
-        // Do not report debug, info, and notice messages unless in development/testing env.
-        // Notices are errors with no functional impact, so we do not want people to report them as issues.
-        // Suppressing the INFO level will prevent deprecations to be pushed in other environments logs.
-        return match ($this) {
-            default           => LogLevel::WARNING,
-            self::TESTING     => LogLevel::DEBUG,
-            self::DEVELOPMENT => LogLevel::DEBUG,
         };
     }
 

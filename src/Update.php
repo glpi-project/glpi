@@ -246,7 +246,7 @@ class Update
             + $structure_check_weight
             + $post_update_weight
             + $generate_keys_weight;
-        if (defined('GLPI_SYSTEM_CRON')) {
+        if (GLPI_SYSTEM_CRON) {
             $number_of_steps += $cron_config_weight;
         }
 
@@ -344,7 +344,7 @@ class Update
 
         $progress_indicator?->setProgressBarMessage(__('Finalizing the update…'));
 
-        if (defined('GLPI_SYSTEM_CRON')) {
+        if (GLPI_SYSTEM_CRON) {
             // Downstream packages may provide a good system cron
             $DB->update(
                 'glpi_crontasks',
@@ -544,8 +544,8 @@ class Update
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        if (defined('SKIP_UPDATES')) {
-            // If `SKIP_UPDATES`, bugfixes update are not mandatory.
+        if (GLPI_SKIP_UPDATES) {
+            // If `GLPI_SKIP_UPDATES` is set to `true`, bugfixes update are not mandatory.
             $installed_intermediate_version = VersionParser::getIntermediateVersion($CFG_GLPI['version'] ?? '0.0.0-dev');
             $defined_intermediate_version   = VersionParser::getIntermediateVersion(GLPI_VERSION);
             return $installed_intermediate_version !== $defined_intermediate_version;

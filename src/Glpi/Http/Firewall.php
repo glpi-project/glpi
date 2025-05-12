@@ -109,7 +109,7 @@ final class Firewall
     public function __construct(?string $root_dir = null, ?array $plugins_dirs = null)
     {
         $this->root_dir = $root_dir ?? GLPI_ROOT;
-        $this->plugins_dirs = $plugins_dirs ?? PLUGINS_DIRECTORIES;
+        $this->plugins_dirs = $plugins_dirs ?? GLPI_PLUGINS_DIRECTORIES;
     }
 
     /**

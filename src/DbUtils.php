@@ -367,7 +367,7 @@ final class DbUtils
      *
      * @return string
      */
-    public function fixItemtypeCase(string $itemtype, $root_dir = GLPI_ROOT, array $plugins_dirs = PLUGINS_DIRECTORIES)
+    public function fixItemtypeCase(string $itemtype, $root_dir = GLPI_ROOT, array $plugins_dirs = GLPI_PLUGINS_DIRECTORIES)
     {
         /** @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE */
         global $GLPI_CACHE;

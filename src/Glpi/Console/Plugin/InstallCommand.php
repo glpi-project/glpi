@@ -185,7 +185,7 @@ class InstallCommand extends AbstractPluginCommand
 
         // Fetch directory list
         $directories = [];
-        foreach (PLUGINS_DIRECTORIES as $plugins_directory) {
+        foreach (GLPI_PLUGINS_DIRECTORIES as $plugins_directory) {
             $directory_handle  = opendir($plugins_directory);
             while (false !== ($filename = readdir($directory_handle))) {
                 if (
