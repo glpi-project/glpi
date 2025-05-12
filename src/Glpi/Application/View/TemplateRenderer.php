@@ -34,7 +34,7 @@
 
 namespace Glpi\Application\View;
 
-use AlisQI\TwigQI\Extension;
+use AlisQI\TwigQI\Extension as TwigIQExtension;
 use AlisQI\TwigQI\Logger\TriggerErrorLogger;
 use Glpi\Application\Environment as GLPIEnvironment;
 use Glpi\Application\View\Extension\ConfigExtension;
@@ -124,7 +124,7 @@ class TemplateRenderer
         $this->environment->addExtension(new TeamExtension());
         if (GLPIEnvironment::get()->shouldEnableExtraDevAndDebugTools() || GLPI_STRICT_ENV) {
             $this->environment->addExtension(
-                new Extension(
+                new TwigIQExtension(
                     new TriggerErrorLogger()
                 )
             );
