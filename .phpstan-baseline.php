@@ -5972,12 +5972,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/OAuth/Server.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Function openssl_pkey_get_details is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\openssl_pkey_get_details;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
-	'identifier' => 'theCodingMachineSafe.function',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/OAuth/Server.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Function openssl_pkey_new is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\openssl_pkey_new;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
 	'identifier' => 'theCodingMachineSafe.function',
 	'count' => 1,

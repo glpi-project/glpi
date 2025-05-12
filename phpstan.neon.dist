@@ -1,5 +1,7 @@
 includes:
     - .phpstan-baseline.php
+    - .phpstan-baseline.8.2-8.3.php
+    - .phpstan-baseline.8.4.php
 
 parameters:
     level: 4
