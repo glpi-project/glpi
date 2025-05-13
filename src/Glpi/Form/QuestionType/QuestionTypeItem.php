@@ -361,7 +361,10 @@ TWIG;
             throw new InvalidArgumentException();
         }
 
-        return [new ItemConditionHandler($question_config->getItemtype())];
+        return array_merge(
+            parent::getConditionHandlers($question_config),
+            [new ItemConditionHandler($question_config->getItemtype())],
+        );
     }
 
     public function exportDynamicDefaultValue(
