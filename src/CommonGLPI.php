@@ -722,13 +722,13 @@ class CommonGLPI implements CommonGLPIInterface
      * icon to be displayed, unless you manually specify the icon.
      *
      * @param string  $text text to display
-     * @param integer $nb   number of items (default 0)
+     * @param string $badge_content   content of badge (default 0)
      * @param class-string<CommonGLPI>|null $form_itemtype
      * @param string $icon
      *
      *  @return string The tab text (including icon and counter if applicable)
      **/
-    public static function createTabEntry($text, $nb = 0, ?string $form_itemtype = null, string $icon = '')
+    public static function createTabEntry($text, $badge_content = 0, ?string $form_itemtype = null, string $icon = '')
     {
         if ($icon === '') {
             $icon = static::getTabIconClass($form_itemtype);
@@ -738,7 +738,7 @@ class CommonGLPI implements CommonGLPIInterface
         }
 
         $icon_html = $icon !== '' ? sprintf('<i class="%s me-2"></i>', htmlescape($icon)) : '';
-        $counter_html = $nb !== 0 ? sprintf(' <span class="badge glpi-badge">%d</span>', (int) $nb) : '';
+        $counter_html = $badge_content !== 0 ? sprintf(' <span class="badge glpi-badge">%s</span>', $badge_content) : '';
 
         return sprintf(
             '<span class="d-flex align-items-center">%s%s%s</span>',
