@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use function Safe\define;
+
 define('GLPI_ROOT', dirname(__DIR__, 2));
 
 // Current version of GLPI

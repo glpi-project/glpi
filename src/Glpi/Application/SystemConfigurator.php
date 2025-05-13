@@ -41,6 +41,8 @@ use Monolog\Logger;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 
+use function Safe\define;
+
 final class SystemConfigurator
 {
     private LoggerInterface $logger;
