@@ -41,6 +41,7 @@ use ConsumableItem;
 use Dropdown;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\JsonFieldInterface;
+use Glpi\Form\Condition\ConditionHandler\ItemAsTextConditionHandler;
 use Glpi\Form\Export\Context\DatabaseMapper;
 use Glpi\Form\Export\Serializer\DynamicExportDataField;
 use Glpi\Form\Export\Specification\DataRequirementSpecification;
@@ -363,7 +364,10 @@ TWIG;
 
         return array_merge(
             parent::getConditionHandlers($question_config),
-            [new ItemConditionHandler($question_config->getItemtype())],
+            [
+                new ItemConditionHandler($question_config->getItemtype()),
+                new ItemAsTextConditionHandler($question_config->getItemtype()),
+            ],
         );
     }
 
