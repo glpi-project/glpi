@@ -1624,7 +1624,7 @@ class MassiveAction
                                         }
                                         // Case 2: The field is not a foreign key, but the target class supports connexity (relations)
                                         // Use getConnexityItem() to dynamically resolve the related object based on the main itemtype and id (items_id)
-                                    } else if (is_a($item2, CommonDBConnexity::class, true)) {
+                                    } elseif (is_a($item2, CommonDBConnexity::class, true)) {
                                         $related_item = $item2->getConnexityItem($item->getType(), $key);
                                     }
 
