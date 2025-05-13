@@ -1612,7 +1612,7 @@ class MassiveAction
                                 && $item2->isEntityAssign()
                                 && $item->isEntityAssign()
                             ) {
-                                if ($item2->getFromDB($input[$input["field"]])) {
+                                if ($input["field"] == "id" && $item2->getFromDB($input[$input["field"]])) {
                                     if (
                                         isset($item2->fields["entities_id"])
                                         && ($item2->fields["entities_id"] >= 0)
