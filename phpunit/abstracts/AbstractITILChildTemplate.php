@@ -34,10 +34,13 @@
 
 namespace tests\units\Glpi;
 
+use Glpi\PHPUnit\Tests\Glpi\ValidationStepTrait;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 abstract class AbstractITILChildTemplate extends \DbTestCase
 {
+    use ValidationStepTrait;
+
     abstract protected function getInstance(): \AbstractITILChildTemplate;
 
     public function testGetRenderedContent()
@@ -140,7 +143,12 @@ HTML,
         $template_id = $template->add(['content' => 'test']);
         $this->assertGreaterThan(0, $template_id);
 
-        $result = $template->update(['id' => $template_id, 'content' => $content]);
+        $result = $template->update(
+            [
+                'id' => $template_id, 'content' => $content,
+                'validationsteps_id' => $this->getInitialDefaultValidationStep()->getID(),
+            ]
+        );
         $this->assertEquals($is_valid, $result);
         if (!$is_valid) {
             $this->hasSessionMessages(ERROR, [$error]);

@@ -35,9 +35,9 @@
 namespace tests\units;
 
 // Force import because of autoloader not working
-require_once __DIR__ . '/../abstracts/RuleCommonITILObject.php';
+require_once __DIR__ . '/../abstracts/RuleCommonITILObjectTest.php';
 
-class RuleChangeTest extends RuleCommonITILObject
+class RuleChangeTest extends RuleCommonITILObjectTest
 {
     public function testGetCriteria()
     {

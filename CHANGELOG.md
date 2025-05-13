@@ -126,6 +126,7 @@ The present file will list all changes made to the project; according to the
   We added a compatibility layer to handle main usages found in plugins, but we cannot ensure compatibility with all properties and methods that were inherited from `PHPMailer\PHPMailer\PHPMailer`.
 - `CommonGLPI::$othertabs` static property has been made private.
 - `CommonGLPI::createTabEntry()` signature changed.
+- `CommonITILValidation::showSummary()` method has been made private.
 - All types of rules are now sortable and ordered by ranking.
 - Plugins console commands must now use the normalized prefix `plugins:XXX` where `XXX` is the plugin key.
 - GLPI web root is now the `/public` directory and all web request to PHP scripts are proxified by `public/index.php` script.
@@ -386,6 +387,7 @@ The present file will list all changes made to the project; according to the
 - `CommonITILObject::showActorAddFormOnCreate()`
 - `CommonITILValidation::alreadyExists()`
 - `CommonITILValidation::getTicketStatusNumber()`
+- `CommonITILValidation::getValidationStats()`
 - `CommonTreeDropdown::sanitizeSeparatorInCompletename()`
 - `CommonTreeDropdown::unsanitizeSeparatorInCompletename()`
 - `Computer_Item::countForAll()`

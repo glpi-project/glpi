@@ -2126,7 +2126,7 @@ JS
                 'criterion' => _n('Criterion', 'Criteria', 1),
                 'condition' => __('Condition'),
                 'pattern' => __('Reason'),
-                'validation' => _n('Validation', 'Validations', 1),
+                'validation' => _n('Approval', 'Approvals', 1),
             ],
             'entries' => $entries,
             'total_number' => count($entries),
@@ -2138,7 +2138,7 @@ JS
 
         $entries = [
             [
-                'action' => __('Validation'),
+                'action' => __('Approval'),
                 'result' => htmlescape(Dropdown::getYesNo($global_result)),
             ],
         ];
@@ -2630,8 +2630,8 @@ JS
                     $name = Dropdown::getDropdownName('glpi_groups', $value);
                     return $name == '' ? NOT_AVAILABLE : $name;
 
-                case "dropdown_validation_percent":
-                    return Dropdown::getValueWithUnit($value, '%');
+                    //                case "dropdown_validation_percent":
+                    //                    return Dropdown::getValueWithUnit($value, '%');
 
                 case "yesonly":
                 case "yesno":

@@ -1094,3 +1094,22 @@
     }|merge(options) %}
     {{ _self.field(name, field, label, options) }}
 {% endmacro %}
+
+{# Tabler progressbar
+for usage in stacked progressbar
+https://tabler.io/docs/ui/components/progress
+#}
+{% macro stacked_progressbar(achieved, bg_color_class = 'bg-green', stripped = false) %}
+    <div class="progress" style="width: {{ achieved }}%">
+        <div
+                class="progress-bar {% if stripped %}progress-bar-striped progress-bar-animated{% endif %} {{ bg_color_class }}"
+                role="progressbar"
+                aria-valuenow="{{ achieved }}"
+                aria-valuemin="0"
+                aria-valuemax="100"
+                aria-label="{{ achieved }}% Complete"
+        >
+            <span class="visually-hidden">{{ achieved }}% Complete</span>
+        </div>
+    </div>
+{% endmacro %}

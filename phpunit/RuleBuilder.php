@@ -169,16 +169,16 @@ class RuleBuilder
     /**
      * Add criteria
      *
-     * @param string $criteria
+     * @param string $criteria key of an item of Rule::getCriterias()
      * @param int $condition Rule::PATTERN_IS, ...
-     * @param mixed $pattern
+     * @param mixed $pattern value to match
      *
      * @return self
      */
     public function addCriteria(
         string $criteria,
         int $condition,
-        $pattern
+        mixed $pattern
     ): self {
         $this->criteria[] = [
             'criteria'  => $criteria,
@@ -191,8 +191,8 @@ class RuleBuilder
     /**
      * Add action
      *
-     * @param string $action_type
-     * @param string $field
+     * @param string $action_type 'assign', etc
+     * @param string $field key of an item of Rule::getActions()
      * @param mixed $value
      *
      * @return self
