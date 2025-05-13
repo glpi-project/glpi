@@ -1325,7 +1325,7 @@ HTML;
                 [
                     'ITILCategory' => __("Top ticket's categories"),
                     'Entity'       => __("Top ticket's entities"),
-                    'RequestType'  => __("Top ticket's request types"),
+                    'RequestType'  => __("Top ticket's request sources"),
                     'Location'     => __("Top ticket's locations"),
                 ] as $itemtype => $label
             ) {
