@@ -73,8 +73,9 @@ final class ChangeProfileController extends AbstractController
             $route = $go_to_create_ticket ? "/ServiceCatalog" : "/Helpdesk";
             $redirect = $request->getBasePath() . $route;
         } else {
-            $_SESSION['_redirected_from_profile_selector'] = true;
             $redirect = Html::getBackUrl();
+            $separator = str_contains($redirect, '?') ? "&" : "?";
+            $redirect = $redirect . $separator . '_redirected_from_profile_selector=true';
         }
 
         return new RedirectResponse($redirect);
