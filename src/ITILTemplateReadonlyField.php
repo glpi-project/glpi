@@ -48,6 +48,10 @@ abstract class ITILTemplateReadonlyField extends ITILTemplateField
         return _n('Read only field', 'Read only fields', $nb);
     }
 
+    public static function getIcon(): string
+    {
+        return 'ti ti-lock';
+    }
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {

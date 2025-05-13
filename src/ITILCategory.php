@@ -417,7 +417,10 @@ class ITILCategory extends CommonTreeDropdown
     {
         if (Session::haveRight(self::$rightname, READ)) {
             if ($item instanceof ITILTemplate) {
-                $ong[1] = $this::getTypeName(Session::getPluralNumber());
+                $ong[1] = static::createTabEntry(
+                    $this::getTypeName(Session::getPluralNumber()),
+                    icon: static::getIcon(),
+                );
                 return $ong;
             }
         }
