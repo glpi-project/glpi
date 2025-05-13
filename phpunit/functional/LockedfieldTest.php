@@ -964,6 +964,7 @@ class LockedfieldTest extends DbTestCase
                 $this->assertContains(
                     $itemtype,
                     $global_inventory_type,
+                    "Add a clear message here in case of validation failure."
                 );
             }
         }
