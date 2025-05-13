@@ -820,7 +820,6 @@ TWIG, ['title' => $report['title'], 'counts' => $counts]);
 
         $datatable_params = [
             'is_tab' => true,
-            'nopager' => true,
             'nofilter' => true,
             'nosort' => true,
             'super_header' => $super_header,
@@ -1098,7 +1097,6 @@ TWIG, $twig_params);
             if (!isset($datatable_params[$itemtype])) {
                 $datatable_params[$itemtype] = [
                     'is_tab' => true,
-                    'nopager' => true,
                     'nofilter' => true,
                     'nosort' => true,
                     'columns' => $columns,
@@ -1378,7 +1376,6 @@ TWIG, $twig_params);
             if (!isset($datatable_params[$itemtype])) {
                 $datatable_params[$itemtype] = [
                     'is_tab' => true,
-                    'nopager' => true,
                     'nofilter' => true,
                     'nosort' => true,
                     'columns' => $columns,
@@ -1559,7 +1556,6 @@ TWIG, $twig_params);
             if (!isset($datatable_params[$itemtype])) {
                 $datatable_params[$itemtype] = [
                     'is_tab' => true,
-                    'nopager' => true,
                     'nofilter' => true,
                     'nosort' => true,
                     'columns' => $columns,

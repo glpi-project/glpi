@@ -223,7 +223,6 @@ TWIG, $twig_params);
         }
 
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
-            'nopager' => true,
             'is_tab' => true,
             'nofilter' => true,
             'nosort' => true,

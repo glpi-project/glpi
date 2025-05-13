@@ -635,7 +635,6 @@ class Budget extends CommonDropdown
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'is_tab' => true,
             'nofilter' => true,
-            'nopager' => true,
             'super_header' => __('Total spent on the budget'),
             'columns' => $columns,
             'formatters' => $formatters,

@@ -611,7 +611,6 @@ TWIG, ['authldaps_id' => $ID]);
 
             TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
                 'is_tab' => true,
-                'nopager' => true,
                 'nofilter' => true,
                 'nosort' => true,
                 'super_header' => __('List of LDAP directory replicates'),

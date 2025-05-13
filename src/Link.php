@@ -636,7 +636,6 @@ TWIG, $buttons_params);
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'is_tab' => true,
             'nofilter' => true,
-            'nopager' => true,
             'superheader' => '',
             'columns' => [
                 'type' => __('Linked to'),

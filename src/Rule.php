@@ -2120,7 +2120,6 @@ JS
             'is_tab' => true,
             'nofilter' => true,
             'nosort' => true,
-            'nopager' => true,
             'super_header' => __('Result details'),
             'columns' => [
                 'criterion' => _n('Criterion', 'Criteria', 1),
@@ -2190,7 +2189,6 @@ JS
             'is_tab' => true,
             'nofilter' => true,
             'nosort' => true,
-            'nopager' => true,
             'super_header' => __('Rule results'),
             'columns' => [
                 'action' => __('Action'),
@@ -3009,7 +3007,6 @@ JS
             'is_tab' => true,
             'nofilter' => true,
             'nosort' => true,
-            'nopager' => true,
             'columns' => [
                 'name' => $this->getTitle(),
                 'description' => __('Description'),

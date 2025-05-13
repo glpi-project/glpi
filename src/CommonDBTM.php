@@ -5437,7 +5437,6 @@ class CommonDBTM extends CommonGLPI
         $twig_params = [
             'datatable_params' => [
                 'is_tab' => true,
-                'nopager' => true,
                 'nofilter' => true,
                 'nosort' => true,
                 'columns' => $columns,

@@ -1271,7 +1271,6 @@ TWIG, ['msg' => __('Last run list')]);
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'is_tab' => true,
             'nofilter' => true,
-            'nopager' => true,
             'columns' => [
                 'date' => _n('Date', 'Dates', 1),
                 'state' => __('Status'),

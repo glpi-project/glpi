@@ -635,7 +635,6 @@ TWIG, $twig_params);
             'datatable_id' => 'datatable_costs' . $ID . $rand,
             'is_tab' => true,
             'nofilter' => true,
-            'nopager' => true,
             'super_header' => $super_header,
             'columns' => $columns,
             'formatters' => [

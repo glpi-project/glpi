@@ -394,7 +394,6 @@ TWIG, $twig_params);
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'datatable_id' => 'levelagreement' . $instID,
             'is_tab' => true,
-            'nopager' => true,
             'nofilter' => true,
             'nosort' => true,
             'columns' => [
@@ -456,7 +455,6 @@ TWIG, $twig_params);
 
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'is_tab' => true,
-            'nopager' => true,
             'nofilter' => true,
             'nosort' => true,
             'columns' => [
