@@ -935,7 +935,7 @@ class LockedfieldTest extends DbTestCase
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
         foreach ($CFG_GLPI['inventory_lockable_objects'] as $itemtype) {
-            $this->assertTrue($DB->fieldExists($itemtype::getTable(), 'is_dynamic'));
+            $this->assertTrue($DB->fieldExists($itemtype::getTable(), 'is_dynamic'), "$itemtype does not have is_dynamic field");
         }
 
 
@@ -964,7 +964,7 @@ class LockedfieldTest extends DbTestCase
                 $this->assertContains(
                     $itemtype,
                     $global_inventory_type,
-                    "Add a clear message here in case of validation failure."
+                    "$itemtype is not in inventory_lockable_objects or inventory_types"
                 );
             }
         }
