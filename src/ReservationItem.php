@@ -653,7 +653,6 @@ TWIG, $twig_params);
         $columns['calendar'] = __("Booking calendar");
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'is_tab' => true,
-            'nopager' => true,
             'nofilter' => true,
             'nosort' => true,
             'columns' => $columns,

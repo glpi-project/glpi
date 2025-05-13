@@ -657,7 +657,6 @@ TWIG, $twig_params);
         $columns['comment'] = __('Comments');
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'is_tab' => true,
-            'nopager' => true,
             'nofilter' => true,
             'nosort' => true,
             'super_header' => [

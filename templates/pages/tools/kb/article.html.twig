@@ -67,7 +67,6 @@
     {% if attachments|length > 0 %}
         {% include 'components/datatable.html.twig' with {
             is_tab: true,
-            nopager: true,
             nofilter: true,
             columns: {
                 filename: __('File'),

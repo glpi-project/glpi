@@ -42,6 +42,13 @@
 {% set footers = footers|default([]) %}
 {% set showmassiveactions = showmassiveactions|default(false) %}
 
+{# This value should be false by default because paging will no work on usages
+   of this template unless it is explicitly implemented #}
+{% set use_pager = use_pager|default(false) %}
+
+{# nopager is deprecated, use "use_pager" instead #}
+{% set use_pager = nopager is defined ? not nopager : use_pager %}
+
 {% if total_number < 1 and filters|length == 0 %}
     <table id="{{ datatable_id }}" class="table">
         <thead>
@@ -69,7 +76,7 @@
     </table>
 {% else %}
     {% set total_cols = columns|length + (showmassiveactions ? 1 : 0) + ((nofilter ?? false) ? 0 : 1) %}
-    {% if nopager is not defined or not nopager %}
+    {% if use_pager %}
         {{ include('components/pager.html.twig', {
             'count': filtered_number,
             'additional_params': additional_params ~ '&sort=' ~ sort ~ '&order=' ~ order
@@ -218,7 +225,7 @@
                 {% if entries|length > 0 %}
                     {% for entry in entries %}
                         {% set row_massiveactions = entry['showmassiveactions']|default(showmassiveactions) %}
-                        <tr class="{{ row_class|default('') }} {{ entry['row_class']|default('') }}"{% if row_massiveactions %} data-itemtype="{{ entry['itemtype'] }}" data-id="{{ entry['id'] }}"{% endif %}>
+                        <tr class="{{ loop.last ? "border-transparent" : "" }} {{ row_class|default('') }} {{ entry['row_class']|default('') }}"{% if row_massiveactions %} data-itemtype="{{ entry['itemtype'] }}" data-id="{{ entry['id'] }}"{% endif %}>
                             {% if row_massiveactions %}
                                 <td style="width: 10px">
                                     {% if entry['skip_ma'] is not defined or entry['skip_ma'] == false %}
@@ -337,7 +344,7 @@
         </table>
     </div>
 
-    {% if nopager is not defined or not nopager %}
+    {% if use_pager %}
         <div class="ms-auto d-inline-flex align-items-center d-none d-md-block my-2">
             {{ __('Entries to show:') }}
             {% include 'components/dropdown/limit.html.twig' %}

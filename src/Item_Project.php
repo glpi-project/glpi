@@ -363,7 +363,6 @@ class Item_Project extends CommonDBRelation
             'used' => $used,
             'datatable_params' => [
                 'is_tab' => true,
-                'nopager' => true,
                 'nofilter' => true,
                 'nosort' => true,
                 'columns' => $cols['columns'],

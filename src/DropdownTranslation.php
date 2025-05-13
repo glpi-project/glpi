@@ -422,7 +422,6 @@ TWIG, $twig_params);
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'datatable_id' => 'datatable_translations' . $rand,
             'is_tab' => true,
-            'nopager' => true,
             'nofilter' => true,
             'columns' => [
                 'language' => __('Language'),

@@ -296,7 +296,6 @@ TWIG;
 
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'is_tab' => true,
-            'nopager' => true,
             'nofilter' => true,
             'nosort' => true,
             'super_header' => _n('Locked field', 'Locked fields', Session::getPluralNumber()),
@@ -424,7 +423,6 @@ TWIG, $twig_params);
                 ],
             ]);
             $subtable = [
-                'nopager' => true,
                 'nosort' => true,
                 'nofilter' => true,
                 'columns' => [
@@ -467,7 +465,6 @@ TWIG, $twig_params);
             ]);
 
             $subtable = [
-                'nopager' => true,
                 'nosort' => true,
                 'nofilter' => true,
                 'columns' => [
@@ -1033,7 +1030,6 @@ TWIG, $twig_params);
             // Common Params
             $datatable_params['is_tab'] = true;
             $datatable_params['nosort'] = true;
-            $datatable_params['nopager'] = true;
             $datatable_params['nofilter'] = true;
             $datatable_params['total_number'] = count($datatable_params['entries']);
             $datatable_params['filtered_number'] = count($datatable_params['entries']);
@@ -1045,7 +1041,6 @@ TWIG, $twig_params);
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'is_tab' => true,
             'table_class_style' => 'table-sm',
-            'nopager' => true,
             'nofilter' => true,
             'nosort' => true,
             'super_header' => __('Locked items'),

@@ -439,7 +439,7 @@ class DomainRecord extends CommonDBChild
                           action="{{ 'Domain'|itemtype_form_path }}" data-submit-once>
                         {{ inputs.hidden('_glpi_csrf_token', csrf_token()) }}
                         {{ inputs.hidden('domains_id', domains_id) }}
-                        
+
                         <div class="d-flex">
                             {{ fields.dropdownField('DomainRecord', 'domainrecords_id', 0, label, {
                                 'condition': condition
@@ -498,7 +498,6 @@ TWIG, $twig_params);
 
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'is_tab' => true,
-            'nopager' => true,
             'nofilter' => true,
             'columns' => [
                 'type' => _n('Type', 'Types', 1),

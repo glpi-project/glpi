@@ -1069,8 +1069,8 @@ abstract class CommonITILValidation extends CommonDBChild
                 ]);
 
                 $script = <<<HTML
-                    <span class="ti ti-edit" style="cursor:pointer" title="{$edit_title}" 
-                          onclick="viewEditValidation{$item_id}{$row_id}{$rand}();" 
+                    <span class="ti ti-edit" style="cursor:pointer" title="{$edit_title}"
+                          onclick="viewEditValidation{$item_id}{$row_id}{$rand}();"
                           id="viewvalidation{$view_validation_id}{$row_id}{$rand}">
                     </span>
                     <script>
@@ -1109,7 +1109,6 @@ HTML;
 
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'is_tab' => true,
-            'nopager' => true,
             'nofilter' => true,
             'nosort' => true,
             'columns' => [

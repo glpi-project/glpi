@@ -212,7 +212,6 @@ class Group_User extends CommonDBRelation
 
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'is_tab' => true,
-            'nopager' => true,
             'nofilter' => true,
             'columns' => [
                 'group' => Group::getTypeName(1),
@@ -486,7 +485,7 @@ class Group_User extends CommonDBRelation
             'start' => $start,
             'limit' => $_SESSION['glpilist_limit'],
             'is_tab' => true,
-            'nopager' => false,
+            'use_pager' => true,
             'nosort' => true,
             'filters' => $_GET['filters'] ?? [],
             'columns' => [

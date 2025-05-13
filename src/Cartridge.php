@@ -912,7 +912,6 @@ TWIG, ['counts' => $counts, 'highlight' => $highlight]);
 
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'is_tab' => true,
-            'nopager' => true,
             'nofilter' => true,
             'nosort' => true,
             'super_header' => $show_old ? __('Worn cartridges') : __('Used cartridges'),
@@ -1204,7 +1203,6 @@ TWIG, ['printer_id' => $printer->getID()]);
 
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'is_tab' => true,
-            'nopager' => true,
             'nofilter' => true,
             'nosort' => true,
             'super_header' => $old ? __('Worn cartridges') : __('Used cartridges'),

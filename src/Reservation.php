@@ -1100,7 +1100,6 @@ JAVASCRIPT;
         ];
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'is_tab' => true,
-            'nopager' => true,
             'nofilter' => true,
             'nosort' => true,
             'table_class_style' => 'table-hover mb-3',

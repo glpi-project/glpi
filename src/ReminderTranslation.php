@@ -188,7 +188,6 @@ TWIG, $twig_params);
             'datatable_id' => 'translationlist' . $rand,
             'is_tab' => true,
             'nofilter' => true,
-            'nopager' => true,
             'columns' => [
                 'language' => __('Language'),
                 'subject' => __('Subject'),

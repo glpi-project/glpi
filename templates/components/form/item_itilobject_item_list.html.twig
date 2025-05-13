@@ -64,7 +64,6 @@
             'is_raw': superheader_raw|default(false),
         },
         'is_tab': true,
-        'nopager': true,
         'nofilter': true,
         'nosort': true,
         'entries': entries,
@@ -89,7 +88,6 @@
         {% set datatable_params = {
             'super_header': __('%s on linked items')|format(itemtype_1|itemtype_name(number)),
             'is_tab': true,
-            'nopager': true,
             'nofilter': true,
             'nosort': true,
             'entries': entries2,

@@ -385,7 +385,6 @@ TWIG, $twig_params);
             'datatable_id' => 'contractcostlist' . $rand,
             'is_tab' => true,
             'nofilter' => true,
-            'nopager' => true,
             'sort' => $sort,
             'order' => $order,
             'columns' => [
