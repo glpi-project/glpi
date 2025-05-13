@@ -227,10 +227,6 @@ class Update
             $DB->doQuery(sprintf('SET SESSION sql_mode = %s', $DB->quote(implode(',', $sql_mode_flags))));
         }
 
-        // Update process desactivate all plugins
-        $plugin = new Plugin();
-        $plugin->unactivateAll();
-
         $migrations = $this->getMigrationsToDo($current_version, $force_latest);
 
         $number_of_steps = count($migrations);
