@@ -37,6 +37,8 @@ namespace Glpi\Application;
 use Psr\Log\LogLevel;
 use UnexpectedValueException;
 
+use function Safe\define;
+
 enum Environment: string
 {
     /**

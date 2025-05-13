@@ -3722,12 +3722,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Api/HL/Search.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Function define is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\define;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
-	'identifier' => 'theCodingMachineSafe.function',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Application/Environment.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Function preg_replace is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
 	'identifier' => 'theCodingMachineSafe.function',
 	'count' => 3,
@@ -3768,12 +3762,6 @@ $ignoreErrors[] = [
 	'identifier' => 'theCodingMachineSafe.function',
 	'count' => 2,
 	'path' => __DIR__ . '/src/Glpi/Application/ResourcesChecker.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Function define is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\define;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
-	'identifier' => 'theCodingMachineSafe.function',
-	'count' => 3,
-	'path' => __DIR__ . '/src/Glpi/Application/SystemConfigurator.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Function ini_set is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\ini_set;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
@@ -5700,12 +5688,6 @@ $ignoreErrors[] = [
 	'identifier' => 'theCodingMachineSafe.function',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Kernel/Kernel.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Function define is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\define;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
-	'identifier' => 'theCodingMachineSafe.function',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Kernel/Listener/ControllerListener/CheckCsrfListener.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Function ini_set is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\ini_set;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
@@ -10464,12 +10446,6 @@ $ignoreErrors[] = [
 	'identifier' => 'class.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/XHProf.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Function define is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\define;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
-	'identifier' => 'theCodingMachineSafe.function',
-	'count' => 46,
-	'path' => __DIR__ . '/src/autoload/constants.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Function preg_replace is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
