@@ -43,7 +43,13 @@ use League\OAuth2\Server\Grant\PasswordGrant;
 use League\OAuth2\Server\Grant\RefreshTokenGrant;
 use League\OAuth2\Server\ResourceServer;
 use RuntimeException;
+use Safe\Exceptions\FilesystemException;
+use Safe\Exceptions\OpensslException;
 use Throwable;
+
+use function Safe\file_put_contents;
+use function Safe\openssl_pkey_export_to_file;
+use function Safe\openssl_pkey_new;
 
 final class Server
 {
@@ -226,31 +232,33 @@ final class Server
         ];
 
         // Generate key
-        $key = openssl_pkey_new($config);
-        if ($key === false) {
-            $error = openssl_error_string();
-            throw new RuntimeException("Unable to generate keys: $error");
+        try {
+            $key = openssl_pkey_new($config);
+        } catch (OpensslException $e) {
+            throw new RuntimeException("Unable to generate keys: " . $e->getMessage());
         }
 
         // Export private key to file
-        if (!openssl_pkey_export_to_file($key, self::PRIVATE_KEY_PATH)) {
-            $error = openssl_error_string();
-            throw new RuntimeException("Unable to export private key: $error");
+        try {
+            openssl_pkey_export_to_file($key, self::PRIVATE_KEY_PATH);
+        } catch (OpensslException $e) {
+            throw new RuntimeException("Unable to export private key: " . $e->getMessage());
         }
 
         // Get public key
-        $pubkey = openssl_pkey_get_details($key);
+        $pubkey = openssl_pkey_get_details($key); // @phpstan-ignore-line Safe\openssl_pkey_get_details only exists for PHP >= 8.4
         if ($pubkey === false) {
             $error = openssl_error_string();
             throw new RuntimeException("Unable to get public key details: $error");
         }
 
         // Export public key to file
-        $written_bytes = file_put_contents(self::PUBLIC_KEY_PATH, $pubkey['key']);
-        if (
-            $written_bytes === false
-            || $written_bytes !== strlen($pubkey['key'])
-        ) {
+        try {
+            $written_bytes = file_put_contents(self::PUBLIC_KEY_PATH, $pubkey['key']);
+        } catch (FilesystemException $e) {
+            throw new RuntimeException("Unable to export public key: " . $e->getMessage());
+        }
+        if ($written_bytes !== strlen($pubkey['key'])) {
             throw new RuntimeException('Unable to export public key');
         }
 
