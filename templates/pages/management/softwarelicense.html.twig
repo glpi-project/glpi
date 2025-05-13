@@ -111,13 +111,21 @@
    {% set validity_msg = null %}
    {% if item_type == 'SoftwareLicense' %}
       {% set validity_msg %}
+         <div class="d-flex justify-content-around">
          {% if item.fields['is_valid'] %}
-            <span class="green">{{ _x('adjective', 'Valid') }}</span>
-         {% elseif not item.fields['is_valid'] and item.fields['allow_overquota'] %}
-            <span class="green">{{ _x('adjective', 'Valid (Over Quota)') }}</span>
-         {% else %}
-            <span class="red">{{ _x('adjective', 'Invalid') }}</span>
-         {% endif %}
+               <span class="green">{{ _x('adjective', 'Valid') }}</span>
+               <span class="green">{{ _x('adjective', 'Assigned') }} : {{ licences_assigned }} </span>
+               <span class="green">{{ _x('adjective', 'Remaining') }} : {{ item.fields['number'] - licences_assigned }}</span>
+            {% elseif not item.fields['is_valid'] and item.fields['allow_overquota'] %}
+               <span class="green">{{ _x('adjective', 'Valid (Over Quota)') }}</span>
+               <span class="green">{{ _x('adjective', 'Assigned') }} : {{ licences_assigned }} </span>
+               <span class="green">{{ _x('adjective', 'Remaining') }} : {{ item.fields['number'] }}</span>
+            {% else %}
+               <span class="red">{{ _x('adjective', 'Invalid') }}</span>
+               <span class="red">{{ _x('adjective', 'Assigned') }} : {{ licences_assigned }} </span>
+               <span class="red">{{ _x('adjective', 'Remaining') }} : {{ item.fields['number'] - licences_assigned }}</span>
+            {% endif %}
+         </div>
       {% endset %}
    {% endif %}
    {{ fields.dropdownNumberField('number', item.fields['number'], _x('quantity', 'Number'), {
