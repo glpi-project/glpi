@@ -46,6 +46,11 @@ use Glpi\RichText\UserMention;
 
 /**
  * Ticket Class
+ *
+ * Additionnal fields for $input add/update
+ *  - _olas_id : array of olas to associate with the ticket, used only if _la_update field is set
+ *  - _la_update : flag to know if _olas_id field must be handled or not, value ignored, if set _olas_id are handled
+ *  - @todo complete
  **/
 class Ticket extends CommonITILObject
 {
@@ -87,6 +92,8 @@ class Ticket extends CommonITILObject
     public const OWN              =  32768;
     public const CHANGEPRIORITY   =  65536;
     public const READNEWTICKET    = 262144;
+    /** @var array|null cache for $this->getAssociatedOlas() */
+    private array|null $associatedOlas;
 
     #[Override]
     public static function supportHelpdeskDisplayPreferences(): bool
@@ -925,7 +932,10 @@ class Ticket extends CommonITILObject
 
     public function prepareInputForUpdate($input)
     {
+        $this->failsWithOlaRemovedFields($input);
+
         $input = $this->transformActorsInput($input);
+        $input = $this->transformOlasInputForBackwardCompatibility($input);
 
         // Get ticket : need for comparison
         $this->getFromDB($input['id']);
@@ -1270,8 +1280,10 @@ class Ticket extends CommonITILObject
      * Manage OLA level escalation
      *
      * @since 9.1
-     *
+     * @todo why not switch to private visibility ?
      * @param $slas_id
+     *
+     * @return void
      **/
     public function manageOlaLevel($slas_id)
     {
@@ -1376,7 +1388,8 @@ class Ticket extends CommonITILObject
             $donotif = true;
         }
 
-        // Manage SLA / OLA Level : add actions
+        // Update SLA
+        // @todoseb gère juste les association et pas les dates ?
         foreach ([SLM::TTR, SLM::TTO] as $slmType) {
             [$dateField, $slaField] = SLA::getFieldNames($slmType);
             if (
@@ -1385,16 +1398,19 @@ class Ticket extends CommonITILObject
             ) {
                 $this->manageSlaLevel($this->fields[$slaField]);
             }
-
-            [$dateField, $olaField] = OLA::getFieldNames($slmType);
-            if (
-                in_array($olaField, $this->updates)
-                && ($this->fields[$olaField] > 0)
-            ) {
-                $this->manageOlaLevel($this->fields[$olaField]);
-            }
         }
 
+        $this->updateOLAs();
+
+        // @todoseb supprimer commentaires
+
+        //        list($dateField, $olaField) = OLA::getFieldNames($slmType);
+        //        if (
+        //            in_array($olaField, $this->updates)
+        //            && ($this->fields[$olaField] > 0)
+        //        ) {
+        //            $this->manageOlaLevel($this->fields[$olaField]);
+        //        }
         if (count($this->updates)) {
             // Update Ticket Tco
             if (
@@ -1481,11 +1497,15 @@ class Ticket extends CommonITILObject
 
     public function prepareInputForAdd($input)
     {
+        $this->failsWithOlaRemovedFields($input);
+
         // Standard clean datas
         $input =  parent::prepareInputForAdd($input);
         if ($input === false) {
             return false;
         }
+
+        $input = $this->transformOlasInputForBackwardCompatibility($input);
 
         if (!isset($input["requesttypes_id"])) {
             $input["requesttypes_id"] = RequestType::getDefault('helpdesk');
@@ -1715,9 +1735,13 @@ class Ticket extends CommonITILObject
             }
             [$dateField, $olaField] = OLA::getFieldNames($slmType);
             if (isset($this->input[$olaField]) && ($this->input[$olaField] > 0)) {
+                // deprecated, see updateOLAs()
+                throw new \LogicException($olaField . ' is not handled. this Exception should never happend because of transformOlasInputForBackwardCompatibility()');
                 $this->manageOlaLevel($this->input[$olaField]);
             }
         }
+
+        $this->updateOLAs();
 
         // Add project task link if needed
         if (isset($this->input['_projecttasks_id'])) {
@@ -3535,10 +3559,6 @@ JAVASCRIPT;
             'time_to_own'               => 'NULL',
             'slas_id_tto'               => 0,
             'slas_id_ttr'               => 0,
-            'internal_time_to_resolve'  => 'NULL',
-            'internal_time_to_own'      => 'NULL',
-            'olas_id_tto'               => 0,
-            'olas_id_ttr'               => 0,
             '_add_validation'           => 0,
             '_validation_targets'       => [],
             'type'                      => $type,
@@ -3766,8 +3786,11 @@ JAVASCRIPT;
             $canpriority = false;
         }
 
-        $sla = new SLA();
-        $ola = new OLA();
+        $ttr_sla = new SLA();
+        $ttr_sla->getFromDB($this->fields['slas_id_ttr']);
+
+        $tto_sla = new SLA();
+        $tto_sla->getFromDB($this->fields['slas_id_tto']);
 
         if ($this->isNewItem()) {
             $options['_canupdate'] = Session::haveRight('ticket', CREATE);
@@ -3803,8 +3826,8 @@ JAVASCRIPT;
             'itiltemplate'              => $tt,
             'predefined_fields'         => Toolbox::prepareArrayForInput($predefined_fields),
             'item_commonitilobject'     => $item_ticket,
-            'sla'                       => $sla,
-            'ola'                       => $ola,
+            'ttr_sla'                   => $ttr_sla,
+            'tto_sla'                   => $tto_sla,
             'canupdate'                 => $canupdate,
             'can_requester'             => $can_requester,
             'canpriority'               => $canpriority,
@@ -5478,14 +5501,15 @@ JAVASCRIPT;
             $sla_ttr_link = "<a href='" . $sla->getLinkURL() . "'>
                           <i class='ti ti-stopwatch slt' title='" . $sla->getName() . "'></i></a>";
         }
-        if ($ola->getFromDB($this->fields['olas_id_tto'])) {
-            $ola_tto_link = "<a href='" . $ola->getLinkURL() . "'>
-                          <i class='ti ti-stopwatch slt' title='" . $ola->getName() . "'></i></a>";
-        }
-        if ($ola->getFromDB($this->fields['olas_id_ttr'])) {
-            $ola_ttr_link = "<a href='" . $ola->getLinkURL() . "'>
-                          <i class='ti ti-stopwatch slt' title='" . $ola->getName() . "'></i></a>";
-        }
+        // @todoseb
+        //        if ($ola->getFromDB($this->fields['olas_id_tto'])) {
+        //            $ola_tto_link = "<a href='" . $ola->getLinkURL() . "'>
+        //                          <i class='ti ti-stopwatch slt' title='" . $ola->getName() . "'></i></a>";
+        //        }
+        //        if ($ola->getFromDB($this->fields['olas_id_ttr'])) {
+        //            $ola_ttr_link = "<a href='" . $ola->getLinkURL() . "'>
+        //                          <i class='ti ti-stopwatch slt' title='" . $ola->getName() . "'></i></a>";
+        //        }
 
         $dates = [
             $date_creation . '_date_creation' => [
@@ -5555,17 +5579,19 @@ JAVASCRIPT;
 
         // add SLA/OLA (for business rules)
         if (!$this->isNewItem()) {
+            // sla
             foreach ([SLM::TTR, SLM::TTO] as $slmType) {
                 [$dateField, $slaField] = SLA::getFieldNames($slmType);
                 if (!isset($input[$slaField]) && isset($this->fields[$slaField]) && $this->fields[$slaField] > 0) {
                     $input[$slaField] = $this->fields[$slaField];
                 }
-                [$dateField, $olaField] = OLA::getFieldNames($slmType);
-                if (!isset($input[$olaField]) && isset($this->fields[$olaField]) && $this->fields[$olaField] > 0) {
-                    $input[$olaField] = $this->fields[$olaField];
-                }
             }
         }
+
+        // ola - currently associated ola
+        // if $input_['_olas_id'] + _la_update is set, we are updating/adding ola, we use this fields, this is the data that will be associated with ticket (if the update does not fail)
+        // otherwise, use the current associated ola data
+        $input['_olas_id_rule_criteria'] = isset($input['_la_update']) ? $input['_olas_id'] : array_column($this->getOlasData(), 'id');
     }
 
     /**
@@ -6216,14 +6242,14 @@ JAVASCRIPT;
                 unset($input['_users_id_requester_notif']);
             }
         }
-        if (!isset($input['_skip_sla_assign']) || $input['_skip_sla_assign'] === false) {
-            // Manage SLA / OLA asignment
-            // Manual SLA / OLA defined : reset due date
-            // No manual SLA / OLA and due date defined : reset auto SLA / OLA
-            foreach ([SLM::TTR, SLM::TTO] as $slmType) {
-                $this->slaAffect($slmType, $input, $manual_slas_id);
-                $this->olaAffect($slmType, $input, $manual_olas_id);
-            }
+
+        // Manage SLA / OLA asignment
+        // Manual SLA / OLA defined : reset due date
+        // No manual SLA / OLA and due date defined : reset auto SLA / OLA
+        foreach ([SLM::TTR, SLM::TTO] as $slmType) {
+            $this->slaAffect($slmType, $input, $manual_slas_id);
+            // ola creation is done with updateOLAs(), which is triggered on post_Update / post_Add (this is needed because ITIL Object need to exist)
+            //            $this->olaAffect($slmType, $input, $manual_olas_id); // @todoseb cleanup : remplacé par updateOLAs()
         }
     }
 
@@ -6398,5 +6424,213 @@ JAVASCRIPT;
         }
 
         return $options;
+    }
+
+    /**
+     * Ticket Olas data
+     *
+     * Data from ola + item_ola + custom data
+     *
+     * @return array<array{id: int, name: string, entities_id: int, is_recursive: bool, type: int, comment: string, number_time: int, use_ticket_calendar: bool, calendars_id: int, date_mod: string, definition_time: string, end_of_working_day: string, date_creation: string, slms_id: int, due_time: string, class: string, item: Ticket, nextaction: false|OlaLevel_Ticket|SlaLevel_Ticket, level: false|\LevelAgreementLevel}>
+    */
+    public function getOlasData(): array
+    {
+        if (!isset($this->associatedOlas)) {
+            if ($this->isNewItem()) {
+                $this->associatedOlas = [];
+            } else {
+                $ola_data = [];
+                $items_ola = new Item_Ola();
+                //            $items_ola->getFromDBByCrit(['itemtype' => static::class, 'items_id' => $this->getID()]
+                $olas = iterator_to_array(Item_Ola::getListForItem($this));
+
+                // merge data from ola dans items_ola
+                foreach ($olas as $ola) {
+                    $_ola = new OLA();
+
+                    $_data = $ola;
+                    if (!$items_ola->getFromDB($_data['linkid'])) {
+                        throw new LogicException('Associated referenced OLA not found'); // probably never happend
+                    }
+                    $_data += $items_ola->fields;
+
+                    // additionnal datas
+                    $_data['class'] = OLA::class; // SLA::class
+                    $_data['item'] = $this; // object, not just fields, functions used in template
+                    $_data['nextaction'] = $_ola->getNextActionForTicket($this, $_data['type']);
+                    $_data['level'] = $_ola->getLevelFromAction($_data['nextaction']);
+
+                    $ola_data[] = $_data;
+                }
+
+                $this->associatedOlas = $ola_data;
+            }
+        }
+
+        return $this->associatedOlas;
+    }
+
+    public function getOlasTTOData(): array
+    {
+        return array_filter($this->getOlasData(), fn(array $ola) => $ola['type'] === SLM::TTO);
+    }
+
+    public function getOlasTTRData(): array
+    {
+        return array_filter($this->getOlasData(), fn(array $ola) => $ola['type'] === SLM::TTR);
+    }
+
+    /**
+     * Ticket slas
+     *
+     * Slas linked using slas_id_ttr and slas_id_tto
+     * Fields of Sla table + fields added below ('due_time', 'class', 'item', 'nextaction', 'level')
+     *
+     * // @todoseb faire une test
+     *
+     * @return array<array{id: int, name: string, entities_id: int, is_recursive: bool, type: int, comment: string, number_time: int, use_ticket_calendar: bool, calendars_id: int, date_mod: string, definition_time: string, end_of_working_day: string, date_creation: string, slms_id: int, due_time: string, class: string, item: Ticket, nextaction: false|OlaLevel_Ticket|SlaLevel_Ticket, level: false|\LevelAgreementLevel}>
+     */
+    public function getSlasData(): array
+    {
+        $slas = [];
+
+        $ttr = new SLA();
+        if ($ttr->getFromDB($this->fields['slas_id_ttr'])) {
+            $sla = $ttr->fields;
+            // @todoseb remove, for dev
+            // sla db fields : 'id', 'name', 'entities_id', 'is_recursive' , 'type' => int 1,  'comment',  'number_time',  'use_ticket_calendar'
+            // 'calendars_id' , 'date_mod',  'definition_time' ,  'end_of_working_day', 'date_creation',   'slms_id',
+
+            $sla['due_time'] = $this->fields['time_to_resolve'];
+            $sla['class'] = $ttr->getType(); // SLA::class
+            $sla['item'] = $this; // object, not just fields, functions used in template
+            $sla['nextaction'] = $ttr->getNextActionForTicket($this, $sla['type']);
+            $sla['level'] = $ttr->getLevelFromAction($sla['nextaction']);
+
+            $slas[] = $sla;
+        }
+
+        $tto = new SLA();
+        if ($tto->getFromDB($this->fields['slas_id_tto'])) {
+            $sla = $tto->fields;
+            $sla['due_time'] = $this->fields['time_to_own'];
+            $sla['class'] = $tto->getType();
+            $sla['item'] = $this; // object, not just fields, functions used in template
+            $sla['nextaction'] = $ttr->getNextActionForTicket($this, $sla['type']);
+            $sla['level'] = $tto->getLevelFromAction($sla['nextaction']);
+
+            $slas[] = $sla;
+        }
+
+        return $slas;
+    }
+
+    private function updateOLAs(): void
+    {
+        // handle _olas_id fiels only if _la_update is set
+        if (!isset($this->input['_la_update'])) {
+            return;
+        }
+
+        // $this->input['_olas_id'] is an array, form field name is _olas_id[]
+        $request_olas_ids = $this->input['_olas_id'] ?? [];
+        $current_olas_ids = array_column($this->getOlasData(), 'id');
+
+        $items_ola = new Item_Ola();
+        // remove olas no more associated
+        $removed_olas_ids = array_diff($current_olas_ids, $request_olas_ids);
+        foreach ($removed_olas_ids as $olas_id) {
+            // find item_ola id
+            $items_ola->getFromDBByCrit([
+                'items_id' => $this->getID(),
+                'itemtype' => $this->getType(),
+                'olas_id'  => $olas_id,
+            ]);
+
+            if (!$items_ola->delete(['id' => $items_ola->getID()])) {
+                throw new \Exception("Failed to dissociate OLA #$olas_id from ticket #{$this->getID()}");
+            }
+        }
+
+        // add new olas
+        $added_olas_ids = array_unique(array_diff($request_olas_ids, $current_olas_ids));
+        foreach ($added_olas_ids as $olas_id) {
+            if (
+                !$items_ola->add([
+                    'due_time' => null, // @todoseb à calculer ?
+                    //            'end_time' => ,
+                    'items_id' => $this->getID(),
+                    'itemtype' => $this->getType(),
+                    'olas_id' => $olas_id,
+                    //                'start_time' => null, // @todoseb à calculer
+                    //            'waiting_time' ,
+                ])
+            ) {
+                throw new \Exception("Failed to associate OLA #$olas_id to ticket #{$this->getID()}");
+            }
+        }
+
+        //        return;
+        foreach ($added_olas_ids as $olas_id) {
+            $this->manageOlaLevel($olas_id); // @todoseb et pour la suppression ?
+        }
+
+        // invalidate olas cache
+        $this->associatedOlas = null;
+
+        return;
+    }
+
+    /**
+     * Modify input for Ola to allow backword compatibility
+     *
+     * olas_id_tto, olas_id_ttr fields are not used anymore
+     * tickets are still linked to OLA, using item_ola table
+     */
+    private function transformOlasInputForBackwardCompatibility(array $input): array
+    {
+        // no old/deprecated fields, return array unchanged
+        if (!isset($input['olas_id_tto']) && !isset($input['olas_id_ttr'])) {
+            return $input;
+        }
+
+        // old and new fields set at the same time.
+        if (isset($input['_olas_id'])) {
+            // @todoseb maybe not the best bet to throw an execption ...
+            throw new \RuntimeException('Both old and new fields for ola are defined, unexpected situation');
+        }
+
+        // add flag field to mark olas as modified/created
+        $input['_la_update'] = true;
+
+        // remove old fields and add new fields
+        if (isset($input['olas_id_tto'])) {
+            Toolbox::deprecated('Passing  `olas_id_tto` input to ticket is deprecated.' .
+                ' Use `_olas_id` (array) + `_la_update` instead.', version: "11.1");
+            $input['_olas_id'][] = $input['olas_id_tto'];
+            unset($input['olas_id_tto']);
+        }
+        if (isset($input['olas_id_ttr'])) {
+            Toolbox::deprecated('Passing  `olas_id_ttr` input to ticket is deprecated.' .
+                ' Use `_olas_id` (array) + `_la_update` instead.', version: "11.1");
+            $input['_olas_id'][] = $input['olas_id_ttr'];
+            unset($input['olas_id_ttr']);
+        }
+
+        return $input;
+    }
+
+    private function failsWithOlaRemovedFields(array $input): void
+    {
+        $ola_removed_inputs = ['ola_tto_begin_date', 'ola_ttr_begin_date', 'internal_time_to_resolve', 'internal_time_to_own', 'olalevels_id_ttr'];
+        if (!array_intersect($ola_removed_inputs, array_keys($input))) {
+            return;
+        }
+
+        foreach ($ola_removed_inputs as $ola_removed_input) {
+            if (isset($input[$ola_removed_input])) {
+                throw new \RuntimeException('Input field "' . $ola_removed_input . '" is not used anymore, Ola are only associated now, use ["// @todoseb à compléter"] please update your code.');
+            }
+        }
     }
 }

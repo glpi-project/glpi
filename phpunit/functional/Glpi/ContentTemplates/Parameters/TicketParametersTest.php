@@ -42,9 +42,11 @@ class TicketParametersTest extends AbstractParameters
 {
     public function testGetValues(): void
     {
+        // Arrange
         $this->login();
-        $test_entity_id = getItemByTypeName('Entity', '_test_child_2', true);
 
+        $test_entity_id = getItemByTypeName('Entity', '_test_child_2', true);
+        // - create associatied objects
         $this->createItem('ITILCategory', [
             'name' => 'category_testGetValues',
         ]);
@@ -78,20 +80,28 @@ class TicketParametersTest extends AbstractParameters
             [
                 'name'            => 'ola_tto_testGetValue',
                 'entities_id'     => $test_entity_id,
-                'type'            => 1,
+                'type'            => \SLM::TTO,
                 'number_time'     => 15,
                 'definition_time' => 'minute',
             ],
             [
                 'name'            => 'ola_ttr_testGetValue',
                 'entities_id'     => $test_entity_id,
-                'type'            => 0,
+                'type'            => \SLM::TTR,
                 'number_time'     => 4,
+                'definition_time' => 'hour',
+            ],
+            [
+                'name'            => 'ola_ttr_testGetValue_2',
+                'entities_id'     => $test_entity_id,
+                'type'            => \SLM::TTR,
+                'number_time'     => 6,
                 'definition_time' => 'hour',
             ],
         ]);
         $olas_id_tto = getItemByTypeName('OLA', 'ola_tto_testGetValue', true);
         $olas_id_ttr = getItemByTypeName('OLA', 'ola_ttr_testGetValue', true);
+        $olas_id_ttr2 = getItemByTypeName('OLA', 'ola_ttr_testGetValue_2', true);
 
         $requester_groups_id = getItemByTypeName('Group', '_test_group_1', true);
         $observer_users_id1  = getItemByTypeName('User', 'normal', true);
@@ -104,13 +114,14 @@ class TicketParametersTest extends AbstractParameters
             'name'                  => 'ticket_testGetValues',
             'content'               => '<p>ticket_testGetValues content</p>',
             'entities_id'           => $test_entity_id,
-            'date'                  => '2021-07-19 17:11:28',
             'itilcategories_id'     => $itilcategories_id,
             'locations_id'          => $locations_id,
             'slas_id_tto'           => $slas_id_tto,
             'slas_id_ttr'           => $slas_id_ttr,
-            'olas_id_tto'           => $olas_id_tto,
-            'olas_id_ttr'           => $olas_id_ttr,
+            // add olas
+            '_olas_id' => [$olas_id_tto, $olas_id_ttr, $olas_id_ttr2],
+            '_la_update'            => true,
+
             'date'                  => $now,
             '_groups_id_requester'  => [$requester_groups_id],
             '_users_id_observer'    => [$observer_users_id1, $observer_users_id2],
@@ -119,14 +130,16 @@ class TicketParametersTest extends AbstractParameters
         ]);
         $tickets_id = $created_ticket->getID();
 
+        // add knowbaseItem for ticket
         $this->createItem(\KnowbaseItem_Item::class, [
             'knowbaseitems_id' => getItemByTypeName(\KnowbaseItem::class, '_knowbaseitem01', true),
             'itemtype'         => 'Ticket',
             'items_id'         => $tickets_id,
         ]);
 
+        // Act
         $parameters = new TicketParameters();
-        $values = $parameters->getValues(getItemByTypeName('Ticket', 'ticket_testGetValues'));
+        $values = $parameters->getValues(getItemByTypeName(\Ticket::class, 'ticket_testGetValues'));
         $this->assertEquals(
             [
                 'id'        => $tickets_id,
@@ -233,19 +246,31 @@ class TicketParametersTest extends AbstractParameters
                     'duration' => 3,
                     'unit'     => 'hours',
                 ],
-                'ola_tto' => [
-                    'id'       => $olas_id_tto,
-                    'name'     => 'ola_tto_testGetValue',
-                    'type'     => 'Time to own',
-                    'duration' => 15,
-                    'unit'     => 'minutes',
+
+                'olas_tto' => [
+                    [
+                        'id'       => $olas_id_tto,
+                        'name'     => 'ola_tto_testGetValue',
+                        'type'     => 'Time to own',
+                        'duration' => 15,
+                        'unit'     => 'minutes',
+                    ]
                 ],
-                'ola_ttr' => [
-                    'id'       => $olas_id_ttr,
-                    'name'     => 'ola_ttr_testGetValue',
-                    'type'     => 'Time to resolve',
-                    'duration' => 4,
-                    'unit'     => 'hours',
+                'olas_ttr' => [
+                    [
+                        'id'       => $olas_id_ttr,
+                        'name'     => 'ola_ttr_testGetValue',
+                        'type'     => 'Time to resolve',
+                        'duration' => 4,
+                        'unit'     => 'hours',
+                    ],
+                    [
+                        'id'       => $olas_id_ttr2,
+                        'name'     => 'ola_ttr_testGetValue_2',
+                        'type'     => 'Time to resolve',
+                        'duration' => 6,
+                        'unit'     => 'hours',
+                    ],
                 ],
                 'requesttype' => [
                     'id'   => 1,

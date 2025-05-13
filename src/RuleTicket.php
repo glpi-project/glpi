@@ -64,14 +64,18 @@ class RuleTicket extends RuleCommonITILObject
                         break;
 
                     case "assign":
-                        // Special case of slas_id_ttr & slas_id_tto & olas_id_ttr & olas_id_tto
+                        // slas_id_ttr & slas_id_tto
                         if (
                             $action->fields["field"] === 'slas_id_ttr'
                             || $action->fields["field"] === 'slas_id_tto'
-                            || $action->fields["field"] === 'olas_id_ttr'
-                            || $action->fields["field"] === 'olas_id_tto'
                         ) {
                             $output['_' . $action->fields["field"]] = $action->fields["value"];
+                        }
+
+                        // olas_id - assign an ola
+                        if ($action->fields["field"] === 'olas_id') {
+                            $output['_la_update'] = true;
+                            $output['_olas_id'][] = $action->fields["value"];
                         }
 
                         // special case of project
@@ -252,17 +256,14 @@ class RuleTicket extends RuleCommonITILObject
         $criterias['olas_id_ttr']['type']                     = 'dropdown';
         $criterias['olas_id_ttr']['condition']                = ['glpi_olas.type' => SLM::TTR];
 
-        $criterias['olas_id_tto']['table']                    = 'glpi_olas';
-        $criterias['olas_id_tto']['field']                    = 'name';
-        $criterias['olas_id_tto']['name']                     = sprintf(
-            __('%1$s %2$s'),
-            __('OLA'),
-            __('Time to own')
-        );
-        $criterias['olas_id_tto']['linkfield']                = 'olas_id_tto';
-        $criterias['olas_id_tto']['type']                     = 'dropdown';
-        $criterias['olas_id_tto']['condition']                = ['glpi_olas.type' => SLM::TTO];
+        // associated ola
+        $criterias['_olas_id_rule_criteria']['type']           = 'dropdown';
+        $criterias['_olas_id_rule_criteria']['table']          = 'glpi_olas';
+        $criterias['_olas_id_rule_criteria']['field']          = 'name'; // @todoseb peut-être faire une concaténation avec le nom du slm - getSpecificValue ou une fonction dans le style existe.
+        $criterias['_olas_id_rule_criteria']['name']           = __('OLA');
+        $criterias['_olas_id_rule_criteria']['linkfield']      = '_olas_id';
 
+        // requester location
         $criterias['_locations_id_of_requester']['table']     = 'glpi_locations';
         $criterias['_locations_id_of_requester']['field']     = 'completename';
         $criterias['_locations_id_of_requester']['name']      = __('Requester location');
@@ -350,16 +351,16 @@ class RuleTicket extends RuleCommonITILObject
         $actions['internal_time_to_resolve']['type']          = 'yesno';
         $actions['internal_time_to_resolve']['force_actions'] = ['delete'];
 
-        $actions['olas_id_tto']['table']                      = 'glpi_olas';
-        $actions['olas_id_tto']['field']                      = 'name';
-        $actions['olas_id_tto']['name']                       = sprintf(
+        // ola assignation (ttr or tto)
+        $actions['olas_id']['type']                       = 'dropdown';
+        $actions['olas_id']['table']                      = 'glpi_olas';
+        $actions['olas_id']['field']                      = 'name';
+        $actions['olas_id']['name']                       = sprintf(
             __('%1$s %2$s'),
             __('OLA'),
             __('Time to own')
         );
-        $actions['olas_id_tto']['linkfield']                  = 'olas_id_tto';
-        $actions['olas_id_tto']['type']                       = 'dropdown';
-        $actions['olas_id_tto']['condition']                  = ['glpi_olas.type' => SLM::TTO];
+        $actions['olas_id']['force_actions']     = ['assign'];
 
         $actions['internal_time_to_own']['name']              = __('Internal Time to own');
         $actions['internal_time_to_own']['type']              = 'yesno';
