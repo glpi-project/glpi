@@ -915,7 +915,7 @@ class ConfigTest extends DbTestCase
         // Arrange: login
         $this->login();
 
-        // Act: display the securitry from
+        // Act: display the security from
         $config = new Config();
         ob_start();
         $config->showFormSecurity();
