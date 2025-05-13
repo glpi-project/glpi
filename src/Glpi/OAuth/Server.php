@@ -246,7 +246,7 @@ final class Server
         }
 
         // Get public key
-        $pubkey = openssl_pkey_get_details($key); // @phpstan-ignore-line Safe\openssl_pkey_get_details only exists for PHP >= 8.4
+        $pubkey = openssl_pkey_get_details($key);
         if ($pubkey === false) {
             $error = openssl_error_string();
             throw new RuntimeException("Unable to get public key details: $error");
