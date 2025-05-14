@@ -37,8 +37,6 @@ namespace Glpi\Form\Condition;
 use JsonSerializable;
 use Override;
 
-use function Safe\json_encode;
-
 final class ConditionData implements JsonSerializable
 {
     public function __construct(
