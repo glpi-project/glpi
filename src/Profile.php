@@ -41,7 +41,6 @@ use Glpi\Event;
 use Glpi\Form\Form;
 use Glpi\Helpdesk\Tile\LinkableToTilesInterface;
 use Glpi\Helpdesk\Tile\TilesManager;
-use Glpi\RichText\UserMention;
 use Glpi\Toolbox\ArrayNormalizer;
 
 /**
@@ -1154,125 +1153,9 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             return false;
         }
 
-        echo "<div class='spaced'>";
-        if ($canedit = Session::haveRightsOr(self::$rightname, [CREATE, UPDATE, PURGE])) {
-            echo "<form method='post' action='" . $this->getFormURL() . "' data-track-changes='true'>";
-        }
-
-        $matrix_options = ['canedit'       => $canedit,
-            'default_class' => 'tab_bg_2',
-        ];
-
-        $matrix_options['title'] = __('Assistance');
-        $this->displayRightsChoiceMatrix(self::getRightsForForm('helpdesk', 'tracking', 'general'), $matrix_options);
-
-        echo "<div class='mt-4 mx-n2'>";
-        echo "<table class='table table-hover card-table'>";
-        echo "<thead>";
-        echo "<tr class='border-top'><th colspan='2'><h4>" . __s('Association') . "</h4></th></tr>";
-        echo "</thead>";
-
-        echo "<tr'>";
-        echo "<td>" . __s('See hardware of my groups') . "</td>";
-        echo "<td>";
-        Html::showCheckbox([
-            'name'    => '_show_group_hardware',
-            'checked' => $this->fields['show_group_hardware'],
+        TemplateRenderer::getInstance()->display('pages/admin/profile/assistance_simple.html.twig', [
+            'item' => $this,
         ]);
-        echo "</td>";
-        echo "</tr>";
-
-        echo "<tr>";
-        echo "<td>" . __s('Link with items for the creation of tickets') . "</td>";
-        echo "<td>";
-        self::getLinearRightChoice(
-            self::getHelpdeskHardwareTypes(true),
-            ['field' => 'helpdesk_hardware',
-                'value' => $this->fields['helpdesk_hardware'],
-            ]
-        );
-        echo "</td>";
-        echo "</tr>";
-
-        echo "<tr>";
-        echo "<td>" . __s('Associable items to tickets, changes and problems') . "</td>";
-        echo "<td>";
-        self::dropdownHelpdeskItemtypes(['values' => $this->fields["helpdesk_item_type"]]);
-
-        echo "</td>";
-        echo "</tr>";
-
-        echo "<tr>";
-        echo "<td>" . __s('Default ticket template') . "</td>";
-        echo "<td>";
-        // Only root entity ones and recursive
-        $options = ['value'     => $this->fields["tickettemplates_id"],
-            'entity'    => 0,
-        ];
-        if (Session::isMultiEntitiesMode()) {
-            $options['condition'] = ['is_recursive' => 1];
-        }
-        // Only add profile if on root entity
-        if (!isset($_SESSION['glpiactiveentities'][0])) {
-            $options['addicon'] = false;
-        }
-        TicketTemplate::dropdown($options);
-        echo "</td>";
-        echo "</tr>";
-
-        echo "<tr>";
-        echo "<td>" . __s('Default change template') . "</td>";
-        echo "<td>";
-        // Only root entity ones and recursive
-        $options = ['value'     => $this->fields["changetemplates_id"],
-            'entity'    => 0,
-        ];
-        if (Session::isMultiEntitiesMode()) {
-            $options['condition'] = ['is_recursive' => 1];
-        }
-        // Only add profile if on root entity
-        if (!isset($_SESSION['glpiactiveentities'][0])) {
-            $options['addicon'] = false;
-        }
-        ChangeTemplate::dropdown($options);
-        echo "</td>";
-        echo "</tr>";
-
-        echo "<tr>";
-        echo "<td>" . __s('Default problem template') . "</td>";
-        echo "<td>";
-        // Only root entity ones and recursive
-        $options = ['value'     => $this->fields["problemtemplates_id"],
-            'entity'    => 0,
-        ];
-        if (Session::isMultiEntitiesMode()) {
-            $options['condition'] = ['is_recursive' => 1];
-        }
-        // Only add profile if on root entity
-        if (!isset($_SESSION['glpiactiveentities'][0])) {
-            $options['addicon'] = false;
-        }
-        ProblemTemplate::dropdown($options);
-        echo "</td>";
-        echo "</tr>";
-
-        if ($canedit) {
-            echo "<tr'>";
-            echo "<td colspan='4' class='center'>";
-            echo "<input type='hidden' name='id' value='" . $this->getID() . "'>";
-            echo Html::submit(_x('button', 'Save'), [
-                'class' => 'btn btn-primary mt-2',
-                'icon'  => 'ti ti-device-floppy',
-                'name'  => 'update',
-            ]);
-            echo "</td></tr>";
-            echo "</table>";
-            Html::closeForm();
-        } else {
-            echo "</table>";
-        }
-        echo "</div>";
-        echo "</div>";
     }
 
     /**
@@ -1306,45 +1189,9 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             return false;
         }
 
-        echo "<div class='spaced'>";
-        if (
-            ($canedit = Session::haveRightsOr(self::$rightname, [UPDATE, CREATE, PURGE]))
-            && $openform
-        ) {
-            echo "<form method='post' action='" . $this->getFormURL() . "' data-track-changes='true'>";
-        }
-
-        $this->displayRightsChoiceMatrix(self::getRightsForForm('central', 'assets', 'general'), [
-            'canedit'       => $canedit,
-            'default_class' => 'tab_bg_2',
-            'title'         => _n('Asset', 'Assets', Session::getPluralNumber()),
+        TemplateRenderer::getInstance()->display('pages/admin/profile/assets.html.twig', [
+            'item' => $this,
         ]);
-
-        $custom_asset_rights = self::getRightsForForm('central', 'assets', 'custom_assets');
-        if (count($custom_asset_rights)) {
-            $this->displayRightsChoiceMatrix($custom_asset_rights, [
-                'canedit' => $canedit,
-                'default_class' => 'tab_bg_2',
-                'title' => _n('Custom asset', 'Custom assets', Session::getPluralNumber()),
-            ]);
-        }
-
-        if (
-            $canedit
-            && $closeform
-        ) {
-            echo "<div class='center'>";
-            echo "<input type='hidden' name='id' value='" . $this->getID() . "'>";
-            echo Html::submit(_x('button', 'Save'), [
-                'class' => 'btn btn-primary mt-2',
-                'icon'  => 'ti ti-device-floppy',
-                'name'  => 'update',
-            ]);
-            echo "</div>";
-            Html::closeForm();
-        }
-
-        echo "</div>";
     }
 
     /**
@@ -1393,192 +1240,13 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
      **/
     public function showFormTracking($openform = true, $closeform = true)
     {
-        /** @var array $CFG_GLPI */
-
-        global $CFG_GLPI;
-
         if (!self::canView()) {
             return false;
         }
 
-        echo "<div class='spaced'>";
-        if (
-            ($canedit = Session::haveRightsOr(self::$rightname, [CREATE, UPDATE, PURGE]))
-            && $openform
-        ) {
-            echo "<form method='post' action='" . $this->getFormURL() . "' data-track-changes='true'>";
-        }
-
-        echo "<div class='mt-n2 mx-n2 mb-4'>";
-        echo "<table class='table table-hover card-table'>";
-        // Assistance / Tracking-helpdesk
-        echo "<thead>";
-        echo "<tr><th colspan='2'><h4>" . __s('ITIL Templates') . "<h4></th></tr>";
-        echo "</thead>";
-
-        echo "<tbody>";
-        foreach (['Ticket', 'Change', 'Problem'] as $itiltype) {
-            $object = new $itiltype();
-            echo "<tr>";
-            echo "<td>" . sprintf(__s('Default %1$s template'), $object->getTypeName()) . "</td><td>";
-            // Only root entity ones and recursive
-            $options = [
-                'value'     => $this->fields[strtolower($itiltype) . "templates_id"],
-                'condition' => ['entities_id' => 0],
-            ];
-            if (Session::isMultiEntitiesMode()) {
-                $options['condition']['is_recursive'] = 1;
-            }
-            // Only add profile if on root entity
-            if (!isset($_SESSION['glpiactiveentities'][0])) {
-                $options['addicon'] = false;
-            }
-
-            $tpl_class = $itiltype . 'Template';
-            $tpl_class::dropdown($options);
-            echo "</td></tr>";
-        }
-
-        echo "</tbody>";
-        echo "</table>";
-        echo "</div>";
-
-        $matrix_options = ['canedit'       => $canedit,
-            'default_class' => 'tab_bg_2',
-        ];
-
-        $matrix_options['title'] = _n('ITIL object', 'ITIL objects', Session::getPluralNumber());
-        $this->displayRightsChoiceMatrix(self::getRightsForForm('central', 'tracking', 'itilobjects'), $matrix_options);
-
-        $matrix_options['title'] = _n('Ticket', 'Tickets', Session::getPluralNumber());
-        $this->displayRightsChoiceMatrix(self::getRightsForForm('central', 'tracking', 'tickets'), $matrix_options);
-
-        $matrix_options['title'] = _n('Followup', 'Followups', Session::getPluralNumber()) . " / " . _n('Task', 'Tasks', Session::getPluralNumber());
-        $this->displayRightsChoiceMatrix(self::getRightsForForm('central', 'tracking', 'followups_tasks'), $matrix_options);
-
-        echo "<div class='mt-n2 mx-n2 mb-4'>";
-        echo "<table class='table table-hover card-table'>";
-        echo "<thead>";
-        echo "<tr><th colspan='2'><h4>" . __s('Users mentions') . "<h4></th></tr>";
-
-        echo "</thead>";
-
-        echo "<tbody>";
-
-        $description = __s('Enables or disables the ability to mention users within the application.') . "<br><br>";
-        $description .= "<b>" . __s('Disabled') . "</b> : " . __('User mentions are disabled for this profile.') . "<br><br>";
-        $description .= "<b>" . __s('Full') . "</b> : " . __('Displays all users. Mentioned users will be added as observers if they are not already actors.') . "<br><br>";
-        $description .= "<b>" . __s('Restricted') . "</b> : " . __('Limits the display to actors directly involved in the ticket.') . "<br><br><br>";
-
-        $disabled = false;
-
-        if ($CFG_GLPI['use_notifications'] == '0') {
-            $disabled = true;
-        }
-
-        echo "<tr>";
-        echo "<td>" . __s('Mentions configuration');
-        echo "<span class='ms-2 form-help'
-              data-bs-toggle='popover'
-              data-bs-placement='top'
-              data-bs-html='true'
-              data-bs-content='" . htmlspecialchars($description) . "'>
-            ?
-        </span>";
-        echo "</td><td>";
-
-        echo Dropdown::showFromArray(
-            'use_mentions',
-            self::getUseMentionsChoices($disabled),
-            [
-                'value' => $this->fields['use_mentions'],
-                'display' => false,
-                'disabled' => $disabled,
-            ]
-        );
-
-        if ($disabled) {
-            $warning = __s('Notifications must be enabled to activate mentions.');
-            echo "<span class='form-help ms-2'
-                  data-bs-toggle='popover'
-                  data-bs-placement='top'
-                  data-bs-html='true'
-                  data-bs-content='" . $warning . "'>
-                ?
-            </span>";
-        }
-
-        echo "</td></tr>";
-
-        echo "</tbody>";
-        echo "</table>";
-        echo "</div>";
-
-        $matrix_options['title'] = _n('Validation', 'Validations', Session::getPluralNumber());
-        $this->displayRightsChoiceMatrix(self::getRightsForForm('central', 'tracking', 'validations'), $matrix_options);
-
-        echo "<div class='mx-n2 my-4'>";
-        echo "<table class='table table-hover card-table'>";
-
-        echo "<thead>";
-        echo "<tr class='border-top'><th colspan='2'><h4>" . __s('Association') . "<h4></th></tr>";
-        echo "</thead>";
-
-        echo "<tr>";
-        echo "<td>" . __s('See hardware of my groups') . "</td>";
-        echo "<td>";
-        Html::showCheckbox(['name'    => '_show_group_hardware',
-            'checked' => $this->fields['show_group_hardware'],
+        TemplateRenderer::getInstance()->display('pages/admin/profile/assistance.html.twig', [
+            'item' => $this,
         ]);
-        echo "</td></tr>";
-
-        echo "<tr>";
-        echo "<td>" . __s('Link with items for the creation of tickets') . "</td>";
-        echo "<td>";
-        self::getLinearRightChoice(
-            self::getHelpdeskHardwareTypes(true),
-            ['field' => 'helpdesk_hardware',
-                'value' => $this->fields['helpdesk_hardware'],
-            ]
-        );
-        echo "</td></tr>";
-
-        echo "<tr>";
-        echo "<td>" . __s('Associable items to tickets, changes and problems') . "</td>";
-        echo "<td>";
-        self::dropdownHelpdeskItemtypes(['values' => $this->fields["helpdesk_item_type"]]);
-        echo "</td>";
-        echo "</tr>";
-        echo "</table>";
-        echo "</div>";
-
-        $matrix_options['title'] = __('Visibility');
-        $this->displayRightsChoiceMatrix(self::getRightsForForm('central', 'tracking', 'visibility'), $matrix_options);
-
-        $matrix_options['title'] = __('Planning');
-        $this->displayRightsChoiceMatrix(self::getRightsForForm('central', 'tracking', 'planning'), $matrix_options);
-
-        $matrix_options['title'] = Problem::getTypeName(Session::getPluralNumber());
-        $this->displayRightsChoiceMatrix(self::getRightsForForm('central', 'tracking', 'problems'), $matrix_options);
-
-        $matrix_options['title'] = _n('Change', 'Changes', Session::getPluralNumber());
-        $this->displayRightsChoiceMatrix(self::getRightsForForm('central', 'tracking', 'changes'), $matrix_options);
-
-        if (
-            $canedit
-            && $closeform
-        ) {
-            echo "<div class='center'>";
-            echo "<input type='hidden' name='id' value='" . $this->getID() . "'>";
-            echo Html::submit(_x('button', 'Save'), [
-                'class' => 'btn btn-primary mt-2',
-                'icon'  => 'ti ti-device-floppy',
-                'name'  => 'update',
-            ]);
-            echo "</div>";
-            Html::closeForm();
-        }
-        echo "</div>";
     }
 
     /**
@@ -3837,24 +3505,6 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
         $p['multiple'] = true;
         $p['size']     = 3;
         return Dropdown::showFromArray($p['name'], $values, $p);
-    }
-
-    /**
-     * @return array<int, string>
-     **/
-    private static function getUseMentionsChoices(bool $disabled): array
-    {
-        if ($disabled) {
-            return [
-                UserMention::USER_MENTION_DISABLED => __('Disabled'),
-            ];
-        }
-
-        return [
-            UserMention::USER_MENTION_DISABLED     => __('Disabled'),
-            UserMention::USER_MENTION_FULL        => __('Full'),
-            UserMention::USER_MENTION_RESTRICTED  => __('Restricted'),
-        ];
     }
 
     /**
