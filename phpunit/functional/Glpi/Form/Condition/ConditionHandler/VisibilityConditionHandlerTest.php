@@ -39,10 +39,34 @@ use Glpi\Form\Condition\LogicOperator;
 use Glpi\Form\Condition\Type;
 use Glpi\Form\Condition\ValueOperator;
 use Glpi\Form\Condition\VisibilityStrategy;
+use Glpi\Form\QuestionType\QuestionTypeActorsExtraDataConfig;
+use Glpi\Form\QuestionType\QuestionTypeAssignee;
+use Glpi\Form\QuestionType\QuestionTypeCheckbox;
+use Glpi\Form\QuestionType\QuestionTypeDateTime;
+use Glpi\Form\QuestionType\QuestionTypeDateTimeExtraDataConfig;
+use Glpi\Form\QuestionType\QuestionTypeDropdown;
+use Glpi\Form\QuestionType\QuestionTypeDropdownExtraDataConfig;
+use Glpi\Form\QuestionType\QuestionTypeEmail;
+use Glpi\Form\QuestionType\QuestionTypeFile;
+use Glpi\Form\QuestionType\QuestionTypeItem;
+use Glpi\Form\QuestionType\QuestionTypeItemDropdown;
+use Glpi\Form\QuestionType\QuestionTypeItemExtraDataConfig;
+use Glpi\Form\QuestionType\QuestionTypeLongText;
+use Glpi\Form\QuestionType\QuestionTypeNumber;
+use Glpi\Form\QuestionType\QuestionTypeObserver;
+use Glpi\Form\QuestionType\QuestionTypeRadio;
+use Glpi\Form\QuestionType\QuestionTypeRequester;
+use Glpi\Form\QuestionType\QuestionTypeRequestType;
+use Glpi\Form\QuestionType\QuestionTypeSelectableExtraDataConfig;
 use Glpi\Form\QuestionType\QuestionTypeShortText;
-use Glpi\Form\Section;
+use Glpi\Form\QuestionType\QuestionTypesManager;
+use Glpi\Form\QuestionType\QuestionTypeUrgency;
+use Glpi\Form\QuestionType\QuestionTypeUserDevice;
+use Glpi\Form\QuestionType\QuestionTypeUserDevicesConfig;
 use Glpi\Tests\FormBuilder;
+use Location;
 use Override;
+use Software;
 use tests\units\Glpi\Form\Condition\AbstractConditionHandler;
 
 final class VisibilityConditionHandlerTest extends AbstractConditionHandler
@@ -50,25 +74,185 @@ final class VisibilityConditionHandlerTest extends AbstractConditionHandler
     #[Override]
     public static function conditionHandlerProvider(): iterable
     {
-        /**
-         * Test default visibility behavior with questions
-         * Visibility conditions are more tested in other test methods
-         */
-        yield "Is visible check" => [
-            'question_type'       => QuestionTypeShortText::class,
-            'condition_operator'  => ValueOperator::VISIBLE,
-            'condition_value'     => null,
-            'submitted_answer'    => null,
-            'expected_result'     => true,
+        $types = [
+            // List each types and their configs
+            "QuestionTypeItem" => [
+                'type' => QuestionTypeItem::class,
+                'extra_data' => new QuestionTypeItemExtraDataConfig(
+                    itemtype: Software::class,
+                ),
+            ],
+            "QuestionTypeLongText" => [
+                'type' => QuestionTypeLongText::class,
+            ],
+            "QuestionTypeShortText" => [
+                'type' => QuestionTypeShortText::class,
+            ],
+            "QuestionTypeEmail" => [
+                'type' => QuestionTypeEmail::class,
+            ],
+            "QuestionTypeNumber" => [
+                'type' => QuestionTypeNumber::class,
+            ],
+            "QuestionTypeRequester (simple)" => [
+                'type' => QuestionTypeRequester::class,
+                'extra_data' => new QuestionTypeActorsExtraDataConfig(
+                    is_multiple_actors: false,
+                ),
+            ],
+            "QuestionTypeRequester (multiple)" => [
+                'type' => QuestionTypeRequester::class,
+                'extra_data' => new QuestionTypeActorsExtraDataConfig(
+                    is_multiple_actors: true,
+                ),
+            ],
+            "QuestionTypeObserver (simple)" => [
+                'type' => QuestionTypeObserver::class,
+                'extra_data' => new QuestionTypeActorsExtraDataConfig(
+                    is_multiple_actors: false,
+                ),
+            ],
+            "QuestionTypeObserver (multiple)" => [
+                'type' => QuestionTypeObserver::class,
+                'extra_data' => new QuestionTypeActorsExtraDataConfig(
+                    is_multiple_actors: true,
+                ),
+            ],
+            "QuestionTypeAssignee (simple)" => [
+                'type' => QuestionTypeObserver::class,
+                'extra_data' => new QuestionTypeActorsExtraDataConfig(
+                    is_multiple_actors: false,
+                ),
+            ],
+            "QuestionTypeAssignee (multiple)" => [
+                'type' => QuestionTypeAssignee::class,
+                'extra_data' => new QuestionTypeActorsExtraDataConfig(
+                    is_multiple_actors: true,
+                ),
+            ],
+            "QuestionTypeDropdown (simple)" => [
+                'type' => QuestionTypeDropdown::class,
+                'extra_data' => new QuestionTypeDropdownExtraDataConfig(
+                    is_multiple_dropdown: false,
+                    options: ['a', 'b'],
+                ),
+            ],
+            "QuestionTypeDropdown (multiple)" => [
+                'type' => QuestionTypeDropdown::class,
+                'extra_data' => new QuestionTypeDropdownExtraDataConfig(
+                    is_multiple_dropdown: true,
+                    options: ['a', 'b'],
+                ),
+            ],
+            "QuestionTypeCheckbox" => [
+                'type' => QuestionTypeCheckbox::class,
+                'extra_data' => new QuestionTypeSelectableExtraDataConfig(
+                    options: ['a', 'b'],
+                ),
+            ],
+            "QuestionTypeRadio" => [
+                'type' => QuestionTypeRadio::class,
+                'extra_data' => new QuestionTypeSelectableExtraDataConfig(
+                    options: ['a', 'b'],
+                ),
+            ],
+            "QuestionTypeUserDevice (simple)" => [
+                'type' => QuestionTypeUserDevice::class,
+                'extra_data' => new QuestionTypeUserDevicesConfig(
+                    is_multiple_devices: false,
+                ),
+            ],
+            "QuestionTypeUserDevice (multiple)" => [
+                'type' => QuestionTypeUserDevice::class,
+                'extra_data' => new QuestionTypeUserDevicesConfig(
+                    is_multiple_devices: true,
+                ),
+            ],
+            "QuestionTypeDateTime (date and time)" => [
+                'type' => QuestionTypeDateTime::class,
+                'extra_data' => new QuestionTypeDateTimeExtraDataConfig(
+                    is_date_enabled: true,
+                    is_time_enabled: true,
+                ),
+            ],
+            "QuestionTypeDateTime (date)" => [
+                'type' => QuestionTypeDateTime::class,
+                'extra_data' => new QuestionTypeDateTimeExtraDataConfig(
+                    is_date_enabled: true,
+                    is_time_enabled: false,
+                ),
+            ],
+            "QuestionTypeDateTime (time)" => [
+                'type' => QuestionTypeDateTime::class,
+                'extra_data' => new QuestionTypeDateTimeExtraDataConfig(
+                    is_date_enabled: false,
+                    is_time_enabled: true,
+                ),
+            ],
+            "QuestionTypeFile" => [
+                'type' => QuestionTypeFile::class,
+            ],
+            "QuestionTypeUrgency" => [
+                'type' => QuestionTypeUrgency::class,
+            ],
+            "QuestionTypeRequestType" => [
+                'type' => QuestionTypeRequestType::class,
+            ],
+            "QuestionTypeItemDropdown" => [
+                'type' => QuestionTypeItemDropdown::class,
+                'extra_data' => new QuestionTypeItemExtraDataConfig(
+                    itemtype: Location::class,
+                ),
+            ],
         ];
 
-        yield "Is not visible check" => [
-            'question_type'       => QuestionTypeShortText::class,
-            'condition_operator'  => ValueOperator::NOT_VISIBLE,
-            'condition_value'     => null,
-            'submitted_answer'    => null,
-            'expected_result'     => false,
-        ];
+        foreach ($types as $label => $data) {
+            $type = $data['type'];
+            $extra_data = $data['extra_data'] ?? null;
+
+            /**
+             * Test default visibility behavior with questions
+             * Visibility conditions are more tested in other test methods
+             */
+            yield "Is visible check for $label" => [
+                'question_type'       => $type,
+                'condition_operator'  => ValueOperator::VISIBLE,
+                'condition_value'     => null,
+                'submitted_answer'    => null,
+                'expected_result'     => true,
+                'question_extra_data' => $extra_data,
+            ];
+
+            yield "Is not visible check for $label" => [
+                'question_type'       => $type,
+                'condition_operator'  => ValueOperator::NOT_VISIBLE,
+                'condition_value'     => null,
+                'submitted_answer'    => null,
+                'expected_result'     => false,
+                'question_extra_data' => $extra_data,
+            ];
+        }
+    }
+
+    public function testAllQuestionTypesAreTested(): void
+    {
+        // Get a map of all used types in the provider
+        $types = iterator_to_array(self::conditionHandlerProvider());
+        $types_found = array_map(fn($case) => $case['question_type'], $types);
+        $types_map = array_flip($types_found);
+
+        // Get all types defined by the manager
+        $possible_types = QuestionTypesManager::getInstance()->getQuestionTypes();
+        $possible_types_classes = array_map(fn($type) => $type::class, $possible_types);
+
+        foreach ($possible_types_classes as $type) {
+            // Ignore tester plugin types
+            if (str_starts_with($type, "GlpiPlugin\Tester")) {
+                continue;
+            }
+
+            $this->assertArrayHasKey($type, $types_map);
+        }
     }
 
     /**

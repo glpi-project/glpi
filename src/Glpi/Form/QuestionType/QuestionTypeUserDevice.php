@@ -292,6 +292,9 @@ TWIG;
             throw new InvalidArgumentException();
         }
 
-        return [new UserDevicesConditionHandler($question_config->isMultipleDevices())];
+        return array_merge(
+            parent::getConditionHandlers($question_config),
+            [new UserDevicesConditionHandler($question_config->isMultipleDevices())],
+        );
     }
 }

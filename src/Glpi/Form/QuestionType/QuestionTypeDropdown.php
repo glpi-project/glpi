@@ -285,7 +285,10 @@ TWIG;
 
         $options = $question_config->getOptions();
         if ($question_config->isMultipleDropdown()) {
-            return [new MultipleChoiceFromValuesConditionHandler($options)];
+            return array_merge(
+                parent::getConditionHandlers($question_config),
+                [new MultipleChoiceFromValuesConditionHandler($options)]
+            );
         } else {
             return array_merge(
                 parent::getConditionHandlers($question_config),
