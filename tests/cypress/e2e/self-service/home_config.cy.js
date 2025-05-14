@@ -274,6 +274,11 @@ for (const test of tests) {
                 "My external tile title",
             ]);
             cy.findByText("My description").should('be.visible');
+            validateTileFields(
+                "My external tile title",
+                "My description",
+                "support.teclib.com"
+            );
         });
 
         it(`can add a "Form" tile (${test.label})`, () => {
@@ -473,6 +478,13 @@ function validateTilesOrder(tiles) {
             cy.findAllByRole("region").eq(i).should('have.attr', 'aria-label', title);
         });
     });
+}
+
+function validateTileFields(title, description, target) {
+    cy.findByRole("region", {'name': title}).click();
+    cy.findByRole("heading", {'name': title}).should('be.visible');
+    cy.findByLabelText('Description').awaitTinyMCE().should('contain', description);
+    cy.findByLabelText('Target url').should('have.value', target);
 }
 
 function moveTileAfterTile(subject, destination) {
