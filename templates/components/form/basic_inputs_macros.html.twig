@@ -227,6 +227,10 @@
         'id': name|slug ~ '_' ~ options.rand
     }|merge(options) %}
 
+    {% if options.fields_template is defined and options.fields_template.isReadonlyField(name)|default(false) %}
+        {% set options = options|merge({'readonly': true}) %}
+    {% endif %}
+
     {% if value == 'NULL' %}
       {% set value = null %}
    {% endif %}
