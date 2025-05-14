@@ -771,61 +771,12 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
      **/
     public function showForm($ID, array $options = [])
     {
-        $onfocus = "";
-        $new     = false;
-        $rowspan = 4;
-        if ($ID > 0) {
-            $rowspan++;
-            $this->check($ID, READ);
-        } else {
-            // Create item
-            $this->check(-1, CREATE);
-            $onfocus = "onfocus=\"if (this.value==" . htmlescape(json_encode($this->fields["name"])) . ") this.value='';\"";
-            $new     = true;
-        }
-
-        $rand = mt_rand();
-
-        $this->showFormHeader($options);
-
-        echo "<tr class='tab_bg_1'><td>" . __s('Name') . "</td>";
-        echo "<td><input type='text' name='name' class='form-control' value=\"" . htmlescape($this->fields["name"]) . "\" $onfocus></td>";
-        echo "<td rowspan='$rowspan' class='middle right'>" . __s('Comments') . "</td>";
-        echo "<td class='center middle' rowspan='$rowspan'>";
-        echo "<textarea class='form-control' rows='4' name='comment' class='form-control'>" . htmlescape($this->fields["comment"]) . "</textarea>";
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_1'><td>" . __s('Default profile') . "</td><td>";
-        Html::showCheckbox(['name'    => 'is_default',
-            'checked' => $this->fields['is_default'],
+        $this->initForm($ID, $options);
+        TemplateRenderer::getInstance()->display('pages/admin/profile/form.html.twig', [
+            'item' => $this,
+            'interfaces' => self::getInterfaces(),
+            'last_super_admin_profile' => $this->isLastSuperAdminProfile(),
         ]);
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_1'><td>" . __s("Profile's interface") . "</td>";
-        echo "<td>";
-        Dropdown::showFromArray(
-            'interface',
-            self::getInterfaces(),
-            [
-                'value' => $this->fields["interface"],
-                'readonly' => $this->isLastSuperAdminProfile() && $this->fields['interface'] == 'central',
-            ]
-        );
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_1'><td>" . __s('Update own password') . "</td><td>";
-        Html::showCheckbox(['name'    => '_password_update',
-            'checked' => $this->fields['password_update'],
-        ]);
-        echo "</td></tr>";
-
-        echo "<tr class='tab_bg_1'><td>" . __s('Ticket creation form on login') . "</td><td>";
-        Html::showCheckbox(['name'    => 'create_ticket_on_login',
-            'checked' => $this->fields['create_ticket_on_login'],
-        ]);
-        echo "</td></tr>";
-
-        $this->showFormButtons($options);
 
         return true;
     }
@@ -1968,48 +1919,9 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             return false;
         }
 
-        echo "<div class='spaced'>";
-
-        if (
-            ($canedit = Session::haveRightsOr(self::$rightname, [CREATE, UPDATE, PURGE]))
-            && $openform
-        ) {
-            echo "<form method='post' action='" . $this->getFormURL() . "' data-track-changes='true'>";
-        }
-
-        $matrix_options = [
-            'canedit'       => $canedit,
-        ];
-
-        $matrix_options['title'] = __('Administration');
-        $this->displayRightsChoiceMatrix(self::getRightsForForm('central', 'admin', 'general'), $matrix_options);
-
-        $matrix_options['title'] = __('Inventory');
-        $this->displayRightsChoiceMatrix(self::getRightsForForm('central', 'admin', 'inventory'), $matrix_options);
-
-        $matrix_options['title'] = _n('Rule', 'Rules', Session::getPluralNumber());
-        $this->displayRightsChoiceMatrix(self::getRightsForForm('central', 'admin', 'rules'), $matrix_options);
-
-        $matrix_options['title'] = __('Dropdowns dictionary');
-        $this->displayRightsChoiceMatrix(self::getRightsForForm('central', 'admin', 'dictionaries'), $matrix_options);
-
-        if (
-            $canedit
-            && $closeform
-        ) {
-            echo "<div class='center'>";
-            echo "<input type='hidden' name='id' value='" . $this->getID() . "'>";
-            echo Html::submit(_x('button', 'Save'), [
-                'class' => 'btn btn-primary mt-2',
-                'icon'  => 'ti ti-device-floppy',
-                'name'  => 'update',
-            ]);
-            echo "</div>";
-            Html::closeForm();
-        }
-        echo "</div>";
-
-        $this->showLegend();
+        TemplateRenderer::getInstance()->display('pages/admin/profile/admin.html.twig', [
+            'item' => $this,
+        ]);
     }
 
     /**
