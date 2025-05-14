@@ -169,7 +169,7 @@ class ValidationStepTest extends \DbTestCase
     {
         $this->login();
         foreach ([\Ticket::class, \Change::class] as $itil_class) {
-            $validation_step = $this->createValidationStep($mininal_required_validation_percent);
+            $validation_step = $this->createValidationStepTemplate($mininal_required_validation_percent);
             // single itil_validation step with 100% required
             [$itil, $itil_validationstep] = $this->createITILSValidationStepWithValidations($validation_step, $validation_states, itil_classname: $itil_class);
             $result_status = $itil_validationstep->getStatus();
@@ -182,7 +182,7 @@ class ValidationStepTest extends \DbTestCase
     {
         $this->login();
         foreach ([\Ticket::class, \Change::class] as $itil_class) {
-            $vs = $this->createValidationStep(100);
+            $vs = $this->createValidationStepTemplate(100);
             // accepted
             [$itil, $itil_validationstep] = $this->createITILSValidationStepWithValidations($vs, [CommonITILValidation::ACCEPTED], itil_classname: $itil_class);
             $achievements = $itil_validationstep->getAchievements();
@@ -204,7 +204,7 @@ class ValidationStepTest extends \DbTestCase
     {
         $this->login();
         foreach ([\Ticket::class, \Change::class] as $itil_class) {
-            $vs = $this->createValidationStep(100);
+            $vs = $this->createValidationStepTemplate(100);
             // 2 validations with same status
             [$itil, $itil_validationstep] = $this->createITILSValidationStepWithValidations($vs, [CommonITILValidation::ACCEPTED, CommonITILValidation::ACCEPTED], itil_classname: $itil_class);
             $achievements = $itil_validationstep->getAchievements();
@@ -258,7 +258,7 @@ class ValidationStepTest extends \DbTestCase
         $this->login();
         foreach ([\Ticket::class, \Change::class] as $itil_class) {
             // arrange - create a validation (+ an itils_validationstep)
-            $vs = $this->createValidationStep(100);
+            $vs = $this->createValidationStepTemplate(100);
             [$itil, $itil_validationstep] = $this->createITILSValidationStepWithValidations($vs, [CommonITILValidation::ACCEPTED], itil_classname: $itil_class);
             $itil_validationstep_id = $itil_validationstep->getID();
 

@@ -133,7 +133,15 @@ abstract class CommonITILValidationTest extends DbTestCase
 
         // create itil_validationstep
         $validationstep_classname = $itil_class::getValidationStepClassName();
-        $itils_validationsteps = $this->createItem($validationstep_classname, ['validationsteps_id' => $default_validation_step_id, 'minimal_required_validation_percent' => 100]);
+        $itils_validationsteps = $this->createItem(
+            $validationstep_classname,
+            [
+                'itemtype'                            => $itil_class,
+                'items_id'                            => $itil_1_id,
+                'validationsteps_id'                  => $default_validation_step_id,
+                'minimal_required_validation_percent' => 100,
+            ]
+        );
 
         $validation_1 = $this->createItem($validation_class, [
             $itil_class::getForeignKeyField()   => $itil_1_id,
@@ -277,7 +285,7 @@ abstract class CommonITILValidationTest extends DbTestCase
         $this->assertGreaterThan(0, $groups_id);
 
         $other_group = new \Group();
-        $other_groups_id = $group->add([
+        $other_groups_id = $other_group->add([
             'name' => __FUNCTION__ . ' other group',
         ]);
         $this->assertGreaterThan(0, $other_groups_id);
@@ -295,13 +303,21 @@ abstract class CommonITILValidationTest extends DbTestCase
         // Add approval for user's group
         $validation_id_1_data = [
             $itil_class::getForeignKeyField() => $itil_items_id,
-            'itemtype_target' => 'Group',
-            'items_id_target' => $groups_id,
+            'itemtype_target'    => 'Group',
+            'items_id_target'    => $groups_id,
             'comment_submission' => __FUNCTION__,
         ];
         // create itil_validationstep
         $validationstep_classname = $itil_class::getValidationStepClassName();
-        $itils_validationsteps = $this->createItem($validationstep_classname, ['validationsteps_id' => $default_validation_step_id, 'minimal_required_validation_percent' => 100]);
+        $itils_validationsteps = $this->createItem(
+            $validationstep_classname,
+            [
+                'itemtype'                            => $itil_class,
+                'items_id'                            => $itil_items_id,
+                'validationsteps_id'                  => $default_validation_step_id,
+                'minimal_required_validation_percent' => 100,
+            ]
+        );
         $validation_id_1_data['itils_validationsteps_id'] = $itils_validationsteps->getID();
 
         $validations_id_1 = $this->createItem($validation_class, $validation_id_1_data)->getID();
@@ -311,9 +327,9 @@ abstract class CommonITILValidationTest extends DbTestCase
         // Add approval for other group
         $approval_data = [
             $itil_class::getForeignKeyField() => $itil_items_id,
-            'itemtype_target' => 'Group',
-            'items_id_target' => $other_groups_id, // Other group.
-            'comment_submission' => __FUNCTION__,
+            'itemtype_target'          => 'Group',
+            'items_id_target'          => $other_groups_id, // Other group.
+            'comment_submission'       => __FUNCTION__,
             'itils_validationsteps_id' => $itils_validationsteps->getID(),
         ];
         $this->createItem($validation_class, $approval_data)->getID();
@@ -575,12 +591,10 @@ abstract class CommonITILValidationTest extends DbTestCase
             }
         }
         unset($array);
-        $itilObject = new $validation::$itemtype();
-        $itilObject->getFromDb(1);
-        $this->assertFalse($itilObject->isNewItem());
+        $itil_class = $validation_class::getItilObjectItemType();
         $validation->add([
             'users_id' => \Session::getLoginUserID(),
-            $validation::$items_id => $itilObject->getID(),
+            $itil_class::getForeignKeyField() => 1,
             'users_id_validate' => \Session::getLoginUserID(),
             'itemtype_target' => User::class,
             'items_id_target' => \Session::getLoginUserID(),
@@ -610,7 +624,7 @@ abstract class CommonITILValidationTest extends DbTestCase
 
         /** @var class-string<\CommonITILValidation> $validation_class */
         $validation_class = $this->getValidationClassname();
-        $itilobject = new ($validation_class::$itemtype)();
+        $itilobject = new ($validation_class::getItilObjectItemType())();
         $itil_id = $itilobject->add([
             'name' => __FUNCTION__,
             'content' => __FUNCTION__,
@@ -618,7 +632,7 @@ abstract class CommonITILValidationTest extends DbTestCase
         ]);
         $validation = new $validation_class();
         $notmine_validation = $validation->add([
-            $validation::$items_id => $itil_id,
+            $itilobject::getForeignKeyField() => $itil_id,
             'itemtype_target' => 'User',
             'items_id_target' => \User::getIdByName('normal'),
             'status' => CommonITILValidation::WAITING,
@@ -763,7 +777,7 @@ abstract class CommonITILValidationTest extends DbTestCase
             'items_id_target' => $user->getID(),
             'status' => CommonITILValidation::WAITING,
             'users_id' => 1,
-            'validationsteps_id' => $default_validation_step_id,
+            '_validationsteps_id' => $default_validation_step_id,
         ]);
         $this->assertGreaterThan(0, (int) $validations_id);
         $this->assertEquals(1, $validation_class::getNumberToValidate($user->getID()));
@@ -781,7 +795,7 @@ abstract class CommonITILValidationTest extends DbTestCase
             'items_id_target' => $group->getID(),
             'status' => CommonITILValidation::WAITING,
             'users_id' => 1,
-            'validationsteps_id' => $default_validation_step_id,
+            '_validationsteps_id' => $default_validation_step_id,
         ]);
         $this->assertGreaterThan(0, (int) $validations_id);
         $this->assertEquals(2, $validation_class::getNumberToValidate($user->getID()));
@@ -824,6 +838,8 @@ abstract class CommonITILValidationTest extends DbTestCase
      */
     public function testGroupUserApproval(): void
     {
+        $validation_class = $this->getValidationClassname();
+
         $this->login();
 
         // --- Arrange
@@ -951,10 +967,18 @@ abstract class CommonITILValidationTest extends DbTestCase
         // accept first validation - implies that validation required is at 0%
         $this->login('glpi', 'glpi');
 
-        $validation_glpi = new ($this->getValidationClassname());
+        $validation_step = new ($this->getITILValidationStepClassname())();
+        $this->assertTrue(
+            $validation_step->getFromDBByCrit([
+                'itemtype' => $itil_1::class,
+                'items_id' => $itil_1->getID(),
+            ])
+        );
+
+        $validation_glpi = new ($this->getValidationClassname())();
         $this->assertTrue(
             $validation_glpi->getFromDBByCrit([
-                $this->getITILForeignKeyName() => $itil_1->getID(),
+                'itils_validationsteps_id' => $validation_step->getID(),
                 'itemtype_target' => 'User',
                 'items_id_target' => $user_glpi->getID(),
             ])
@@ -985,7 +1009,7 @@ abstract class CommonITILValidationTest extends DbTestCase
         $validation_approval = new ($this->getValidationClassname());
         $this->assertTrue(
             $validation_approval->getFromDBByCrit([
-                $this->getITILForeignKeyName() => $itil_1->getID(),
+                'itils_validationsteps_id' => $validation_step->getID(),
                 'itemtype_target' => 'User',
                 'items_id_target' => $user_approval->getID(),
             ])
@@ -1077,10 +1101,19 @@ abstract class CommonITILValidationTest extends DbTestCase
         // accept first validation, second one is still WAITING - test on $itil_id_2
         // one validation is accepted, the other is waiting -> global_validation status should be WAITING
         $this->login('glpi', 'glpi');
+
+        $validation_step = new ($this->getITILValidationStepClassname())();
+        $this->assertTrue(
+            $validation_step->getFromDBByCrit([
+                'itemtype' => $itil::class,
+                'items_id' => $itil_id_2,
+            ])
+        );
+
         $validation = new ($this->getValidationClassname());
         $this->assertTrue(
             $validation->getFromDBByCrit([
-                $this->getITILForeignKeyName() => $itil_id_2,
+                'itils_validationsteps_id' => $validation_step->getID(),
                 'itemtype_target' => 'User',
                 'items_id_target' => $user_glpi->getID(),
             ])
@@ -1090,7 +1123,7 @@ abstract class CommonITILValidationTest extends DbTestCase
         // find itil itil_validationstep -> update it
         $validation = new ($this->getValidationClassname());
         $validation->getFromDBByCrit([
-            $this->getITILForeignKeyName() => $itil_id_2,
+            'itils_validationsteps_id' => $validation_step->getID(),
             'itemtype_target' => 'User',
             'items_id_target' => $user_glpi->getID(),
         ]);
@@ -1116,7 +1149,7 @@ abstract class CommonITILValidationTest extends DbTestCase
         $validation = new ($this->getValidationClassname());
         $this->assertTrue(
             $validation->getFromDBByCrit([
-                $this->getITILForeignKeyName() => $itil_id_2,
+                'itils_validationsteps_id' => $validation_step->getID(),
                 'itemtype_target' => 'User',
                 'items_id_target' => $user_approval->getID(),
             ])
@@ -1142,7 +1175,7 @@ abstract class CommonITILValidationTest extends DbTestCase
             'content' => __FUNCTION__,
         ]);
 
-        $validationstep = $this->getInitialDefaultValidationStep();
+        $default_validation_step_template = $this->getInitialDefaultValidationStep();
 
         // act : create validation
         $validation = $this->createItem($validation_classname, [
@@ -1152,15 +1185,24 @@ abstract class CommonITILValidationTest extends DbTestCase
         ]);
 
         // assert
-        // - validation has an associated itil_validationstep
-        $this->assertGreaterThan(0, $validation->fields['itils_validationsteps_id']);
+        $validation_step = new ($this->getITILValidationStepClassname())();
+        $this->assertTrue(
+            $validation_step->getFromDBByCrit([
+                'itemtype' => $itil::class,
+                'items_id' => $itil->getID(),
+            ])
+        );
+        $this->assertEquals($default_validation_step_template->getID(), $validation_step->fields['validationsteps_id']);
+        $this->assertEquals($default_validation_step_template->fields['minimal_required_validation_percent'], $validation_step->fields['minimal_required_validation_percent']);
 
-        // - the itil_validationstep is created with the default validation step reference and threshold
-        $itil_validationstep = new ($this->getITILValidationStepClassname());
-        $itil_validationstep->getFromDB($validation->fields['itils_validationsteps_id']);
-
-        $this->assertEquals($validationstep->getID(), $itil_validationstep->fields['validationsteps_id']);
-        $this->assertEquals($validationstep->fields['minimal_required_validation_percent'], $itil_validationstep->fields['minimal_required_validation_percent']);
+        $validation = new ($this->getValidationClassname())();
+        $this->assertTrue(
+            $validation->getFromDBByCrit([
+                'itils_validationsteps_id' => $validation_step->getID(),
+                'itemtype_target' => 'User',
+                'items_id_target' => $_SESSION['glpiID'],
+            ])
+        );
     }
 
     /**
@@ -1178,26 +1220,35 @@ abstract class CommonITILValidationTest extends DbTestCase
             'content' => __FUNCTION__,
         ]);
 
-        $validationstep = $this->createValidationStep(77);
+        $validation_step_template = $this->createValidationStepTemplate(77);
 
         // act : create validation
         $validation = $this->createItem($validation_classname, [
             $itil::getForeignKeyField() => $itil->getID(),
             'itemtype_target' => 'User',
             'items_id_target' => $_SESSION['glpiID'],
-            '_validationsteps_id' => $validationstep->getID(),
+            '_validationsteps_id' => $validation_step_template->getID(),
         ]);
 
         // assert
-        // - validation has an associated itil_validationstep
-        $this->assertGreaterThan(0, $validation->fields['itils_validationsteps_id']);
+        $validation_step = new ($this->getITILValidationStepClassname())();
+        $this->assertTrue(
+            $validation_step->getFromDBByCrit([
+                'itemtype' => $itil::class,
+                'items_id' => $itil->getID(),
+            ])
+        );
+        $this->assertEquals($validation_step_template->getID(), $validation_step->fields['validationsteps_id']);
+        $this->assertEquals($validation_step_template->fields['minimal_required_validation_percent'], $validation_step->fields['minimal_required_validation_percent']);
 
-        // - the itil_validationstep is created with the default validation step reference and threshold
-        $itil_validationstep = new ($this->getITILValidationStepClassname());
-        $itil_validationstep->getFromDB($validation->fields['itils_validationsteps_id']);
-
-        $this->assertEquals($validationstep->getID(), $itil_validationstep->fields['validationsteps_id'], 'Validationstep not correctly set using _validationsteps_id');
-        $this->assertEquals($validationstep->fields['minimal_required_validation_percent'], $itil_validationstep->fields['minimal_required_validation_percent']);
+        $validation = new ($this->getValidationClassname())();
+        $this->assertTrue(
+            $validation->getFromDBByCrit([
+                'itils_validationsteps_id' => $validation_step->getID(),
+                'itemtype_target' => 'User',
+                'items_id_target' => $_SESSION['glpiID'],
+            ])
+        );
     }
 
     /**
@@ -1215,8 +1266,9 @@ abstract class CommonITILValidationTest extends DbTestCase
             'name' => __FUNCTION__,
             'content' => __FUNCTION__,
         ]);
-        $validationstep = $this->getInitialDefaultValidationStep();
-        assert($validationstep->fields['minimal_required_validation_percent'] !== $threshold, 'can not test with the same threshold');
+        $default_validation_step_template = $this->getInitialDefaultValidationStep();
+
+        assert($default_validation_step_template->fields['minimal_required_validation_percent'] !== $threshold, 'can not test with the same threshold');
 
         // act : create validation
         $validation = $this->createItem($validation_classname, [
@@ -1227,15 +1279,24 @@ abstract class CommonITILValidationTest extends DbTestCase
         ]);
 
         // assert
-        // - validation has an associated itil_validationstep
-        $this->assertGreaterThan(0, $validation->fields['itils_validationsteps_id']);
+        $validation_step = new ($this->getITILValidationStepClassname())();
+        $this->assertTrue(
+            $validation_step->getFromDBByCrit([
+                'itemtype' => $itil::class,
+                'items_id' => $itil->getID(),
+            ])
+        );
+        $this->assertEquals($default_validation_step_template->getID(), $validation_step->fields['validationsteps_id']);
+        $this->assertEquals($threshold, $validation_step->fields['minimal_required_validation_percent']);
 
-        // - the itil_validationstep is created with the default validation step reference and threshold
-        $itil_validationstep = new ($this->getITILValidationStepClassname());
-        $itil_validationstep->getFromDB($validation->fields['itils_validationsteps_id']);
-
-        $this->assertEquals($validationstep->getID(), $itil_validationstep->fields['validationsteps_id'], 'Validationstep not correctly set using _validationsteps_id');
-        $this->assertEquals($threshold, $itil_validationstep->fields['minimal_required_validation_percent']);
+        $validation = new ($this->getValidationClassname())();
+        $this->assertTrue(
+            $validation->getFromDBByCrit([
+                'itils_validationsteps_id' => $validation_step->getID(),
+                'itemtype_target' => 'User',
+                'items_id_target' => $_SESSION['glpiID'],
+            ])
+        );
     }
 
     /**
@@ -1253,25 +1314,36 @@ abstract class CommonITILValidationTest extends DbTestCase
             'name' => __FUNCTION__,
             'content' => __FUNCTION__,
         ]);
-        $validationstep = $this->getInitialDefaultValidationStep();
-        assert($validationstep->fields['minimal_required_validation_percent'] !== $threshold, 'can not test with the same threshold');
+        $default_validation_step_template = $this->getInitialDefaultValidationStep();
+
+        assert($default_validation_step_template->fields['minimal_required_validation_percent'] !== $threshold, 'can not test with the same threshold');
 
         // act + check: create validation (tested aboved)
         $validation = $this->createItem($validation_classname, [
             $itil::getForeignKeyField() => $itil->getID(),
             'itemtype_target' => 'User',
             'items_id_target' => $_SESSION['glpiID'],
-            //            '_validationsteps_threshold' => $threshold,
         ]);
 
-        $this->assertGreaterThan(0, $validation->fields['itils_validationsteps_id']);
-
         // - the itil_validationstep is created with the default validation step reference and threshold
-        $itil_validationstep = new ($this->getITILValidationStepClassname());
-        $itil_validationstep->getFromDB($validation->fields['itils_validationsteps_id']);
+        $validation_step = new ($this->getITILValidationStepClassname())();
+        $this->assertTrue(
+            $validation_step->getFromDBByCrit([
+                'itemtype' => $itil::class,
+                'items_id' => $itil->getID(),
+            ])
+        );
+        $this->assertEquals($default_validation_step_template->getID(), $validation_step->fields['validationsteps_id']);
+        $this->assertEquals($default_validation_step_template->fields['minimal_required_validation_percent'], $validation_step->fields['minimal_required_validation_percent']);
 
-        $this->assertEquals($validationstep->getID(), $itil_validationstep->fields['validationsteps_id'], 'Validationstep not correctly set using _validationsteps_id');
-        $this->assertEquals($validationstep->fields['minimal_required_validation_percent'], $itil_validationstep->fields['minimal_required_validation_percent']);
+        $validation = new ($this->getValidationClassname())();
+        $this->assertTrue(
+            $validation->getFromDBByCrit([
+                'itils_validationsteps_id' => $validation_step->getID(),
+                'itemtype_target' => 'User',
+                'items_id_target' => $_SESSION['glpiID'],
+            ])
+        );
 
         // act 2 : update validation threshold
         $validation = $this->updateItem(
@@ -1283,8 +1355,8 @@ abstract class CommonITILValidationTest extends DbTestCase
         );
 
         // assert
-        $itil_validationstep->getFromDB($validation->fields['itils_validationsteps_id']);
-        $this->assertEquals($threshold, $itil_validationstep->fields['minimal_required_validation_percent']);
+        $validation_step->getFromDB($validation_step->getID());
+        $this->assertEquals($threshold, $validation_step->fields['minimal_required_validation_percent']);
     }
 
     public function testGlobalValidationUpdate(): void
@@ -1374,7 +1446,7 @@ abstract class CommonITILValidationTest extends DbTestCase
     {
         $this->login();
         // add a validation in same step
-        $vs = $this->createValidationStep(50);
+        $vs = $this->createValidationStepTemplate(50);
         [$itil, $ivs] = $this->createITILSValidationStepWithValidations($vs, [CommonITILValidation::WAITING]);
         // assert validation is created with the expected status
         $this->assertValidationStatusEquals(CommonITILValidation::WAITING, (int) $itil->fields['global_validation']);
@@ -1383,48 +1455,48 @@ abstract class CommonITILValidationTest extends DbTestCase
         $this->assertValidationStatusEquals(CommonITILValidation::ACCEPTED, $itil->fields['global_validation']);
 
         // add a validation in a new step (same code as above but with a new validation step)
-        $vs = $this->createValidationStep(0);
+        $vs = $this->createValidationStepTemplate(0);
         [$itil, $ivs] = $this->createITILSValidationStepWithValidations($vs, [CommonITILValidation::WAITING]);
         // assert validation is created with the expected status
         $this->assertValidationStatusEquals(CommonITILValidation::WAITING, (int) $itil->fields['global_validation']);
-        $vs2 = $this->createValidationStep(0);
+        $vs2 = $this->createValidationStepTemplate(0);
         $this->addITILValidationStepWithValidations($vs2, [CommonITILValidation::REFUSED], $itil);
         assert(true === $itil->getFromDB($itil->getID()));
         $this->assertValidationStatusEquals(CommonITILValidation::REFUSED, $itil->fields['global_validation']);
 
         // remove a validation (same as above but with a validation removed)
-        $vs = $this->createValidationStep(0);
+        $vs = $this->createValidationStepTemplate(0);
         [$itil, $ivs] = $this->createITILSValidationStepWithValidations($vs, [CommonITILValidation::WAITING]);
         // assert validation is created with the expected status
         $this->assertValidationStatusEquals(CommonITILValidation::WAITING, (int) $itil->fields['global_validation']);
-        $vs2 = $this->createValidationStep(0);
+        $vs2 = $this->createValidationStepTemplate(0);
         $ivs = $this->addITILValidationStepWithValidations($vs2, [CommonITILValidation::REFUSED], $itil);
         assert(true === $itil->getFromDB($itil->getID()));
         $this->assertValidationStatusEquals(CommonITILValidation::REFUSED, $itil->fields['global_validation']);
         $validation = $itil::getValidationClassInstance();
-        assert(true === $validation->getFromDBByCrit([$itil::getForeignKeyField() => $itil->getID(), 'itils_validationsteps_id' => $ivs->getID()])); // find validation
+        assert(true === $validation->getFromDBByCrit(['itils_validationsteps_id' => $ivs->getID()])); // find validation
         assert(true === $validation->delete(['id' => $validation->getID()])); // delete validation
         assert(true === $itil->getFromDB($itil->getID())); // reload itil
         $this->assertValidationStatusEquals(CommonITILValidation::WAITING, $itil->fields['global_validation']);
 
         // update a validation
-        $vs = $this->createValidationStep(100);
+        $vs = $this->createValidationStepTemplate(100);
         [$itil, $ivs] = $this->createITILSValidationStepWithValidations($vs, [CommonITILValidation::WAITING]);
         $this->assertValidationStatusEquals(CommonITILValidation::WAITING, (int) $itil->fields['global_validation']);
         $validation = $itil::getValidationClassInstance();
-        assert(true === $validation->getFromDBByCrit([$itil::getForeignKeyField() => $itil->getID()]));
+        assert(true === $validation->getFromDBByCrit(['itils_validationsteps_id' => $ivs->getID()]));
         assert(true === $validation->update(['id' => $validation->getID(), 'status' => CommonITILValidation::ACCEPTED]));
         assert(true === $itil->getFromDB($itil->getID()));
         assert(CommonITILValidation::ACCEPTED === $itil->fields['global_validation']);
 
         // update a validation step required percent
-        $vs = $this->createValidationStep(100);
+        $vs = $this->createValidationStepTemplate(100);
         [$itil, $ivs] = $this->createITILSValidationStepWithValidations($vs, [CommonITILValidation::WAITING, CommonITILValidation::ACCEPTED]);
         $this->assertValidationStatusEquals(CommonITILValidation::WAITING, (int) $itil->fields['global_validation']);
         assert(CommonITILValidation::WAITING === $itil->fields['global_validation']);
         // update itils_validationstep to require 100%
-        $ivs->update(['id' => $ivs->getID(), 'minimal_required_validation_percent' => 50]);
-        $itil->getFromDB($itil->getID());
+        assert(true === $ivs->update(['id' => $ivs->getID(), 'minimal_required_validation_percent' => 50]));
+        assert(true === $itil->getFromDB($itil->getID()));
         $this->assertValidationStatusEquals(CommonITILValidation::ACCEPTED, $itil->fields['global_validation']);
     }
 
@@ -1496,23 +1568,23 @@ abstract class CommonITILValidationTest extends DbTestCase
     {
         $this->login();
         // itil with one refused itil validation step
-        $vs50 = $this->createValidationStep(50);
+        $vs50 = $this->createValidationStepTemplate(50);
         [$itil, $itil_vs] = $this->createITILSValidationStepWithValidations($vs50, [CommonITILValidation::REFUSED]);
         // check created itil_validation step status is REFUSED before testing
         $this->assertValidationStatusEquals(CommonITILValidation::REFUSED, $this->getValidationClassname()::computeValidationStatus($itil));
 
         // + an accepted itil validation step (use previous itil)
-        $vs2 = $this->createValidationStep(50);
+        $vs2 = $this->createValidationStepTemplate(50);
         $itil_vs = $this->addITILValidationStepWithValidations($vs2, [CommonITILValidation::ACCEPTED], $itil);
         $this->assertValidationStatusEquals(CommonITILValidation::REFUSED, $this->getValidationClassname()::computeValidationStatus($itil));
 
         // itil with a waiting + an accepted + refused validation step
         [$itil, $itil_vs] = $this->createITILSValidationStepWithValidations($vs50, [CommonITILValidation::WAITING]);
 
-        $vs100 = $this->createValidationStep(100);
+        $vs100 = $this->createValidationStepTemplate(100);
         $itil_vs = $this->addITILValidationStepWithValidations($vs100, [CommonITILValidation::REFUSED], $itil);
 
-        $vs100_2 = $this->createValidationStep(100);
+        $vs100_2 = $this->createValidationStepTemplate(100);
         $itil_vs = $this->addITILValidationStepWithValidations($vs100_2, [CommonITILValidation::ACCEPTED], $itil);
 
         $this->assertValidationStatusEquals(CommonITILValidation::REFUSED, $this->getValidationClassname()::computeValidationStatus($itil));
@@ -1525,12 +1597,12 @@ abstract class CommonITILValidationTest extends DbTestCase
     {
         $this->login();
         // itil with one waiting itil validation step
-        $vs50 = $this->createValidationStep(50);
+        $vs50 = $this->createValidationStepTemplate(50);
         [$itil, $itil_vs] = $this->createITILSValidationStepWithValidations($vs50, [CommonITILValidation::WAITING]);
         $this->assertValidationStatusEquals(CommonITILValidation::WAITING, $this->getValidationClassname()::computeValidationStatus($itil));
 
         // + an accepted itil validation step (use previous itil)
-        $vs100 = $this->createValidationStep(100);
+        $vs100 = $this->createValidationStepTemplate(100);
         $itil_vs = $this->addITILValidationStepWithValidations($vs100, [CommonITILValidation::ACCEPTED], $itil);
         $this->assertValidationStatusEquals(CommonITILValidation::WAITING, $this->getValidationClassname()::computeValidationStatus($itil));
 
@@ -1551,7 +1623,7 @@ abstract class CommonITILValidationTest extends DbTestCase
     {
         $this->login();
         // arrange
-        $vs50 = $this->createValidationStep(50);
+        $vs50 = $this->createValidationStepTemplate(50);
         [$itil, $itil_vs] = $this->createITILSValidationStepWithValidations($vs50, [CommonITILValidation::ACCEPTED, CommonITILValidation::REFUSED], CommonITILValidation::ACCEPTED);
         $this->assertValidationStatusEquals(CommonITILValidation::ACCEPTED, $itil->fields['global_validation']);
 
@@ -1570,32 +1642,37 @@ abstract class CommonITILValidationTest extends DbTestCase
     {
         $this->login();
         // itil with one ACCEPTED itil validation step
-        $vs50 = $this->createValidationStep(50);
+        $vs50 = $this->createValidationStepTemplate(50);
         [$itil, $itil_vs] = $this->createITILSValidationStepWithValidations($vs50, [CommonITILValidation::ACCEPTED]);
         $this->assertValidationStatusEquals(CommonITILValidation::ACCEPTED, $this->getValidationClassname()::computeValidationStatus($itil));
 
         // many validation step  (use previous itil)
-        $vs100 = $this->createValidationStep(100);
+        $vs100 = $this->createValidationStepTemplate(100);
         $itil_vs = $this->addITILValidationStepWithValidations($vs100, [CommonITILValidation::ACCEPTED], $itil);
         $this->assertValidationStatusEquals(CommonITILValidation::ACCEPTED, $this->getValidationClassname()::computeValidationStatus($itil));
 
         // + another one
-        $vs100_2 = $this->createValidationStep(100);
+        $vs100_2 = $this->createValidationStepTemplate(100);
         $itil_vs = $this->addITILValidationStepWithValidations($vs100_2, [CommonITILValidation::ACCEPTED], $itil);
         $this->assertValidationStatusEquals(CommonITILValidation::ACCEPTED, $this->getValidationClassname()::computeValidationStatus($itil));
 
         // + another one
-        $vs100_3 = $this->createValidationStep(100);
+        $vs100_3 = $this->createValidationStepTemplate(100);
         $itil_vs = $this->addITILValidationStepWithValidations($vs100_3, [CommonITILValidation::ACCEPTED], $itil);
         $this->assertValidationStatusEquals(CommonITILValidation::ACCEPTED, $this->getValidationClassname()::computeValidationStatus($itil));
 
         // itil with a refused + an accepted validation step, then remove the refused validation
         [$itil, $itil_vs] = $this->createITILSValidationStepWithValidations($vs50, [CommonITILValidation::REFUSED]);
-        $tvs = $this->addITILValidationStepWithValidations($vs100, [CommonITILValidation::ACCEPTED], $itil);
+        $this->assertValidationStatusEquals(CommonITILValidation::REFUSED, $this->getValidationClassname()::computeValidationStatus($itil));
+
         // find and delete the refused validation
         $tv = new ($this->getValidationClassname());
-        $tv->getFromDBByCrit([ $this->getITILClassname()::getForeignKeyField() => $itil->getID(), 'itils_validationsteps_id' => $itil_vs->getID()]);
-        assert($tv->delete(['id' => $tv->getID()]));
+        assert(true === $tv->getFromDBByCrit(['itils_validationsteps_id' => $itil_vs->getID()]));
+        assert(true === $tv->delete(['id' => $tv->getID()]));
+        $this->assertValidationStatusEquals(CommonITILValidation::NONE, $this->getValidationClassname()::computeValidationStatus($itil));
+
+        // re-add an ACCEPTED validation
+        $this->addITILValidationStepWithValidations($vs100, [CommonITILValidation::ACCEPTED], $itil);
         $this->assertValidationStatusEquals(CommonITILValidation::ACCEPTED, $this->getValidationClassname()::computeValidationStatus($itil));
     }
 }

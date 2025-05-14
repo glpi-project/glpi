@@ -7719,9 +7719,10 @@ abstract class CommonITILObject extends CommonDBTM
         }
 
         // Add validation to timeline
-        $validation_class = $objType . "Validation";
+        $validation_class = static::getValidationClassName();
         if (
-            class_exists($validation_class) && $params['with_validations']
+            $validation_class !== null
+            && $params['with_validations']
             && (!$params['check_view_rights'] || $validation_class::canView())
         ) {
             /** @var CommonITILValidation $validation_obj */

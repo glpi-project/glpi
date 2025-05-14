@@ -915,6 +915,7 @@ class Ticket extends CommonITILObject
                 TicketCost::class,
                 Ticket_Contract::class,
                 Ticket_Ticket::class,
+                TicketValidationStep::class,
                 TicketValidation::class,
             ]
         );
@@ -6319,8 +6320,8 @@ JAVASCRIPT;
                     if (Session::haveRightsOr(TicketValidation::$rightname, [TicketValidation::VALIDATEINCIDENT, TicketValidation::VALIDATEREQUEST])) {
                         $or[] = [
                             'AND' => [
-                                'glpi_ticketvalidations.tickets_id'        => new QueryExpression('glpi_tickets.id'),
-                                'glpi_ticketvalidations.itemtype_target'   => User::class,
+                                'glpi_ticketvalidations.tickets_id'      => new QueryExpression('glpi_tickets.id'),
+                                'glpi_ticketvalidations.itemtype_target' => User::class,
                                 'glpi_ticketvalidations.items_id_target' => Session::getLoginUserID(),
                             ],
                         ];

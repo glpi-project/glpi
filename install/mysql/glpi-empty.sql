@@ -7694,7 +7694,10 @@ CREATE TABLE `glpi_itils_validationsteps` (
     `id` int unsigned NOT NULL AUTO_INCREMENT,
     `minimal_required_validation_percent` smallint NOT NULL, #, DEFAULT '100',
     `validationsteps_id` int unsigned NOT NULL DEFAULT '0',
+    `itemtype` varchar(255) NOT NULL,
+    `items_id` int unsigned NOT NULL DEFAULT '0',
     PRIMARY KEY (`id`),
+    UNIQUE KEY `unicity` (`itemtype`,`items_id`,`validationsteps_id`),
     KEY `validationsteps_id` (`validationsteps_id`)
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = DYNAMIC;
 

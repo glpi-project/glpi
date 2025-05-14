@@ -73,12 +73,37 @@ trait ValidationStepTrait
     ): \ITIL_ValidationStep {
         assert(!empty($validations_statuses), '$validations_statuses must not be empty');
 
-        $itil_validationstep_id = null;
+        $ivs_crit = [
+            'itemtype' => $itil::class,
+            'items_id' => $itil->getID(),
+            'validationsteps_id' => $validation_step->getID(),
+        ];
+
+        $ivs = $itil::getValidationStepInstance();
+        if (!$ivs->getFromDbByCrit($ivs_crit)) {
+            $ivs = $this->createItem(
+                $itil::getValidationStepClassName(),
+                $ivs_crit + [
+                    'minimal_required_validation_percent' => $validation_step->fields['minimal_required_validation_percent'],
+                ]
+            );
+        }
+
         foreach ($validations_statuses as $status) {
             // itil validation can only be created with Waiting status
             $validation = $this->createItem(
                 $itil::getValidationClassName(),
-                $this->getValidITILValidationData($itil, $validation_step, CommonITILValidation::WAITING)
+                [
+                    $itil::getForeignKeyField() => $itil->getID(),
+                    'itemtype_target' => 'User',
+                    'items_id_target' => getItemByTypeName(User::class, TU_USER)->getID(),
+                    '_validationsteps_id' => $validation_step->getID(),
+                    'status' => CommonITILValidation::WAITING,
+                    'comment_validation' => 'validation comment',
+                ],
+                [
+                    $itil::getForeignKeyField(),
+                ]
             );
             // update status if needed
             if ($status != CommonITILValidation::WAITING) {
@@ -88,18 +113,11 @@ trait ValidationStepTrait
                     ['status' => $status, 'comment_validation' => 'validation comment']
                 );
             }
-
-            // ensure validations are created with the same itils_validation_step, real assertion hidden here.
-            if (!is_null($itil_validationstep_id)) {
-                $this->assertEquals($validation->fields['itils_validationsteps_id'], $itil_validationstep_id, 'All Validations must be created with the same itils_validation_step');
-            }
-            $itil_validationstep_id = $validation->fields['itils_validationsteps_id'];
         }
 
-        $ivs = $itil::getValidationStepInstance();
         // rely on the last created validation, not a problem,
         // the itils_validation_step is the same for all validations because we use a single validation step
-        $ivs->getFromDB($validation->fields['itils_validationsteps_id']);
+        assert(true === $ivs->getFromDB($validation->fields['itils_validationsteps_id']));
 
         // check created itil validation step has the exepected status
         // expected status is explicitely given in argument
@@ -115,7 +133,7 @@ trait ValidationStepTrait
         return $ivs;
     }
 
-    private function createValidationStep(int $mininal_required_validation_percent): ValidationStep
+    private function createValidationStepTemplate(int $mininal_required_validation_percent): ValidationStep
     {
         $data = $this->getValidValidationStepData();
         $data['minimal_required_validation_percent'] = $mininal_required_validation_percent;
@@ -133,7 +151,7 @@ trait ValidationStepTrait
     protected function updateITIL_ValidationStepOfItil(CommonITILValidation $validation, int $validation_percent): void
     {
         $itils_validationsteps_id = $validation->fields['itils_validationsteps_id'];
-        $itils_validationsteps = $validation::$itemtype::getValidationStepClassName();
+        $itils_validationsteps = $validation::getItilObjectItemType()::getValidationStepClassName();
         $this->updateItem($itils_validationsteps, $itils_validationsteps_id, ['minimal_required_validation_percent' => $validation_percent]);
     }
 
@@ -147,29 +165,6 @@ trait ValidationStepTrait
         return [
             'name' => 'Tech team',
             'minimal_required_validation_percent' => 100,
-        ];
-    }
-
-    /**
-     * Data for itil validation step creation (->update() method)
-     *
-     * @param \CommonITILObject $itil
-     * @param ValidationStep $validation_step
-     * @param int $validation_status
-     * @return array
-     */
-    public function getValidITILValidationData(
-        CommonITILObject $itil,
-        ValidationStep $validation_step,
-        int $validation_status
-    ): array {
-        return [
-            $itil::getForeignKeyField() => $itil->getID(),
-            'itemtype_target' => 'User',
-            'items_id_target' => getItemByTypeName(User::class, TU_USER)->getID(),
-            '_validationsteps_id' => $validation_step->getID(),
-            'status' => $validation_status,
-            'comment_validation' => 'validation comment',
         ];
     }
 

@@ -32,15 +32,19 @@
  * ---------------------------------------------------------------------
  */
 
-abstract class ITIL_ValidationStep extends CommonDBTM
+abstract class ITIL_ValidationStep extends CommonDBChild
 {
     public $dohistory              = false;
 
+    public static $itemtype = 'itemtype';
+    public static $items_id = 'items_id';
+
     /**
+     * Related validation class name.
+     *
      * @var class-string<CommonITILValidation>
-     * To override in child classes
      */
-    protected static string $validation_classname = TicketValidation::class;
+    protected static string $validation_classname;
 
     public static function getTable($classname = null)
     {
@@ -78,6 +82,17 @@ abstract class ITIL_ValidationStep extends CommonDBTM
         return false;
     }
 
+    #[Override()]
+    public function cleanDBonPurge()
+    {
+        $validation = new static::$validation_classname();
+        $validation->deleteByCriteria([
+            $this->fields['itemtype']::getForeignKeyField() => $this->fields['items_id'],
+        ]);
+
+        parent::cleanDBonPurge();
+    }
+
     /**
      * Post Update
      *
@@ -90,28 +105,24 @@ abstract class ITIL_ValidationStep extends CommonDBTM
             isset($this->oldvalues['minimal_required_validation_percent'])
             && $this->oldvalues['minimal_required_validation_percent'] !== $this->fields['minimal_required_validation_percent']
         ) {
-            // find if these itil validation steps are used in ticket validation or in change validation
-            $validation = new (static::$validation_classname);
-            $validations = $validation->find(['itils_validationsteps_id' => $this->getID()]);
-            $itils_id = array_unique(array_column($validations, $validation::$itemtype::getForeignKeyField()));
+            $itil = $this->getItem();
+            if (!($itil instanceof CommonITILObject)) {
+                throw new \RuntimeException();
+            }
 
-            foreach ($itils_id as $itil_id) {
-                $itil = (new $validation::$itemtype())->getByID($itil_id);
-                $vs = $itil::getValidationStepInstance();
-                $new_status = $vs::getValidationStatusForITIL($itil);
+            $new_status = static::getValidationStatusForITIL($itil);
 
-                if ($itil->fields['global_validation'] !== $new_status) {
-                    if (
-                        !$itil->update(
-                            [
-                                'id' => $itil->getID(),
-                                'global_validation' => $new_status,
-                                '_from_itilvalidation' => true, // mandatory to allow modification of global_validation @see \CommonITILObject::handleTemplateFields()
-                            ]
-                        )
-                    ) {
-                        Session::addMessageAfterRedirect(msg: 'Failed to update related ' . $validation::$itemtype . ' global validation status on Itil #' . $itil->getID(), message_type: ERROR);
-                    }
+            if ($itil->fields['global_validation'] !== $new_status) {
+                if (
+                    !$itil->update(
+                        [
+                            'id' => $itil->getID(),
+                            'global_validation' => $new_status,
+                            '_from_itilvalidation' => true, // mandatory to allow modification of global_validation @see \CommonITILObject::handleTemplateFields()
+                        ]
+                    )
+                ) {
+                    throw new \RuntimeException();
                 }
             }
         }
@@ -164,7 +175,16 @@ abstract class ITIL_ValidationStep extends CommonDBTM
         $validations = (new static::$validation_classname())->find([
             'itils_validationsteps_id' => $this->getID(),
         ]);
+
         $validations_count = count($validations);
+
+        if ($validations_count === 0) {
+            return [
+                CommonITILValidation::ACCEPTED => 0,
+                CommonITILValidation::REFUSED => 0,
+                CommonITILValidation::WAITING => 0,
+            ];
+        }
 
         $count_by_status = fn($status) => count(array_filter($validations, fn($v) => $v["status"] === $status));
 
@@ -246,27 +266,22 @@ abstract class ITIL_ValidationStep extends CommonDBTM
      */
     public static function getValidationStepsStatus(CommonITILObject $itil): array
     {
-        [$itil_id_field, $itil_validation_classname] = match (get_class($itil)) {
-            Ticket::class => ['tickets_id', TicketValidation::class],
-            Change::class => ['changes_id', ChangeValidation::class],
-            default => throw new InvalidArgumentException('Unsupported ITIL object type')
-        };
-
         // find all validations id related to the itil
-        $validations = (new $itil_validation_classname())->find([
-            $itil_id_field => $itil->getID(),
+        $validation_steps = $itil->getValidationStepInstance()->find([
+            'itemtype' => $itil::class,
+            'items_id' => $itil->getID(),
         ]);
         // find all itils_validationsteps_id related to the validations
-        $itils_validationstep_ids = array_unique(array_column($validations, 'itils_validationsteps_id'));
+        $validationstep_ids = array_column($validation_steps, 'id');
 
         $result = [];
-        foreach ($itils_validationstep_ids as $itils_validationstep_id) {
+        foreach ($validationstep_ids as $validationstep_id) {
             $itil_vs = new static();
-            if (!$itil_vs->getFromDB($itils_validationstep_id)) {
+            if (!$itil_vs->getFromDB($validationstep_id)) {
                 throw new \RuntimeException();
             }
 
-            $result[$itils_validationstep_id] = $itil_vs->getStatus();
+            $result[$validationstep_id] = $itil_vs->getStatus();
         }
 
         return $result;

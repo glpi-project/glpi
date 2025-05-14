@@ -53,7 +53,7 @@ create_validation_steps_table($migration);
 insert_validation_steps_defaults($migration, $DB);
 
 // new object : ITIL_ValidationStep - Association between Validations and ValidationSteps + minimal_required_validation_percent
-create_itils_validationsteps_table($migration);
+create_itils_validationsteps_table($migration, $DB);
 add_validation_steps_in_validations_tables($migration, $validation_tables);
 $migration->executeMigration();
 add_itils_validationstep_to_existings_itils($migration, $validation_tables);
@@ -119,21 +119,30 @@ function insert_validation_steps_defaults(Migration $migration, \DBmysql $DB): v
     }
 }
 
-function create_itils_validationsteps_table(Migration $migration): void
+function create_itils_validationsteps_table(Migration $migration, \DBmysql $DB): void
 {
     $charset = DBConnection::getDefaultCharset();
     $collation = DBConnection::getDefaultCollation();
     $pk_sign = DBConnection::getDefaultPrimaryKeySignOption();
 
-    $query = "CREATE TABLE  IF NOT EXISTS `glpi_itils_validationsteps` (
-        `id` int {$pk_sign} NOT NULL AUTO_INCREMENT,
-        `minimal_required_validation_percent` smallint NOT NULL,
-        `validationsteps_id` int unsigned NOT NULL DEFAULT '0',
-        PRIMARY KEY (`id`),
-        KEY `validationsteps_id` (`validationsteps_id`)
-    ) ENGINE=InnoDB DEFAULT CHARSET=$charset COLLATE=$collation ROW_FORMAT=DYNAMIC;";
+    if (!$DB->tableExists('glpi_itils_validationsteps')) {
+        $query = "CREATE TABLE `glpi_itils_validationsteps` (
+            `id` int {$pk_sign} NOT NULL AUTO_INCREMENT,
+            `minimal_required_validation_percent` smallint NOT NULL,
+            `validationsteps_id` int {$pk_sign} NOT NULL DEFAULT '0',
+            `itemtype` varchar(255) NOT NULL,
+            `items_id` int {$pk_sign} NOT NULL DEFAULT '0',
+            PRIMARY KEY (`id`),
+            UNIQUE KEY `unicity` (`itemtype`,`items_id`,`validationsteps_id`),
+            KEY `validationsteps_id` (`validationsteps_id`)
+        ) ENGINE=InnoDB DEFAULT CHARSET=$charset COLLATE=$collation ROW_FORMAT=DYNAMIC;";
 
-    $migration->addPreQuery($query);
+        $migration->addPreQuery($query);
+    } else {
+        $migration->addField('glpi_itils_validationsteps', 'itemtype', 'varchar(255) NOT NULL');
+        $migration->addField('glpi_itils_validationsteps', 'items_id', 'fkey');
+        $migration->addKey('glpi_itils_validationsteps', ['itemtype', 'items_id', 'validationsteps_id'], 'unicity');
+    }
 }
 
 
@@ -212,7 +221,7 @@ function add_itils_validationstep_to_existings_itils(Migration $migration, array
             default => throw new \RuntimeException('Unexpected validation table: ' . $validation_table),
         };
 
-        $itil_class = $validation_classname::$itemtype;
+        $itil_class = $validation_classname::getItilObjectItemType();
         $itil_fk = match ($itil_class) {
             'Ticket' => 'tickets_id',
             'Change' => 'changes_id',
@@ -231,6 +240,8 @@ function add_itils_validationstep_to_existings_itils(Migration $migration, array
             $itils_validationstep_id = $migration->insertInTable(
                 'glpi_itils_validationsteps',
                 [
+                    'itemtype' => $itil_class,
+                    'items_id' => $validation[$itil_fk],
                     'validationsteps_id' => $default_validation_step->getID(),
                     'minimal_required_validation_percent' => $required_percent,
                 ]

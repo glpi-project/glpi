@@ -288,6 +288,8 @@ abstract class CommonITILValidation extends CommonDBChild
             $input['_validationsteps_id'] = ValidationStep::getDefault()->getID();
         }
 
+        $input = $this->addITILValidationStepFromInput($input);
+
         $input["users_id"] = 0;
         // Only set requester on manual action
         if (
@@ -318,20 +320,12 @@ abstract class CommonITILValidation extends CommonDBChild
             return false;
         }
 
-        $itemtype = static::$itemtype;
-        $input['timeline_position'] = $itemtype::getTimelinePosition($input[static::$items_id], $this->getType(), $input["users_id"]);
+        $itil_class = static::getItilObjectItemType();
+        $itil_fkey  = $itil_class::getForeignKeyField();
+        $input['timeline_position'] = $itil_class::getTimelinePosition($input[$itil_fkey], static::class, $input["users_id"]);
 
         return parent::prepareInputForAdd($input);
     }
-
-    #[Override()]
-    public function pre_addInDB()
-    {
-        if (array_key_exists('_validationsteps_id', $this->input)) {
-            $this->addITILValidationStep($this->input['_validationsteps_id']);
-        }
-    }
-
 
     public function post_addItem()
     {
@@ -342,11 +336,9 @@ abstract class CommonITILValidation extends CommonDBChild
             $this->updateITILValidationStepThreshold((int) $this->input['_validationsteps_threshold']);
         }
 
-        $itilobject_type = new static::$itemtype();
-        $itilobject_id = $this->fields[static::$items_id];
-
-        if (!$itilobject_type->getFromDB($itilobject_id)) {
-            throw new \RuntimeException('Item related to the validation not found ' . static::$itemtype . ' ID: ' . $itilobject_id);
+        $itilobject = $this->getItem();
+        if (!($itilobject instanceof CommonITILObject)) {
+            throw new \RuntimeException();
         }
 
         // Handle rich-text images
@@ -364,8 +356,8 @@ abstract class CommonITILValidation extends CommonDBChild
         // --- update item (ITILObject) handling the validation
         // always recompute global validation status on ticket
         $input = [
-            'id' => $itilobject_id,
-            'global_validation' => static::computeValidationStatus($itilobject_type),
+            'id' => $itilobject->getID(),
+            'global_validation' => static::computeValidationStatus($itilobject),
             '_from_itilvalidation' => true,
         ];
 
@@ -381,7 +373,7 @@ abstract class CommonITILValidation extends CommonDBChild
         if (isset($this->input["_ticket_add"])) {
             $input['_disablenotif'] = true;
         }
-        $itilobject_type->update($input);
+        $itilobject->update($input);
 
         // -- send email notification
         $mailsend = false;
@@ -389,7 +381,7 @@ abstract class CommonITILValidation extends CommonDBChild
             $options = ['validation_id' => $this->fields["id"],
                 'validation_status' => $this->fields["status"],
             ];
-            $mailsend = NotificationEvent::raiseEvent('validation', $itilobject_type, $options, $this);
+            $mailsend = NotificationEvent::raiseEvent('validation', $itilobject, $options, $this);
         }
         if ($mailsend) {
             if ($this->fields['itemtype_target'] === 'User') {
@@ -473,8 +465,8 @@ abstract class CommonITILValidation extends CommonDBChild
 
     public function post_purgeItem()
     {
-        $this->removeUnsedITILValidationStep($this->fields['itils_validationsteps_id']);
         $this->recomputeItilStatus();
+        $this->removeUnsedITILValidationStep();
 
         parent::post_purgeItem();
     }
@@ -521,34 +513,20 @@ abstract class CommonITILValidation extends CommonDBChild
         parent::post_updateItem($history);
     }
 
-    public function pre_deleteItem()
+    public function post_deleteItem()
     {
-        $item    = new static::$itemtype();
-        if ($item->getFromDB($this->fields[static::$items_id])) {
-            // always recompute global validation status on ticket
-            // keep same behaviour for changes (since they have no validation steps)
-            if (static::$itemtype === TicketValidation::class) {
-                $input = [
-                    'id'                    => $this->fields[static::$items_id],
-                    'global_validation'     => static::computeValidationStatus($item),
-                    '_from_itilvalidation'  => true,
-                ];
-            }
+        $item = $this->getItem();
+        if ($item instanceof CommonITILObject) {
+            $input = [
+                'id'                    => $item->getID(),
+                'global_validation'     => static::computeValidationStatus($item),
+                '_from_itilvalidation'  => true,
+            ];
 
-            if (($item->fields['global_validation'] == self::WAITING)) {
-                $input = [
-                    'id'                    => $this->fields[static::$items_id],
-                    'global_validation'     => static::computeValidationStatus($item),
-                    '_from_itilvalidation'  => true,
-                ];
-            }
-
-            if (isset($input) && !$item->update($input)) {
-                Session::addMessageAfterRedirect(msg: 'Failed to update related ' . static::$itemtype . ' approval status  (case 3)', message_type: ERROR);
+            if (!$item->update($input)) {
+                throw new \RuntimeException(sprintf('Failed to update related `%s` approval status.', $item::class));
             }
         }
-
-        return true;
     }
 
 
@@ -760,13 +738,15 @@ abstract class CommonITILValidation extends CommonDBChild
         /** @var \DBmysql $DB */
         global $DB;
 
+        $itil_class = static::getItilObjectItemType();
+
         $it = $DB->request([
-            'FROM'   => static::$itemtype::getTable(),
+            'FROM'   => $itil_class::getTable(),
             'COUNT'  => 'cpt',
             'WHERE'  => [
                 [
                     'id' => new QuerySubQuery([
-                        'SELECT' => static::$items_id,
+                        'SELECT' => $itil_class::getForeignKeyField(),
                         'FROM'   => static::getTable(),
                         'WHERE'  => [
                             'status' => self::WAITING,
@@ -775,7 +755,7 @@ abstract class CommonITILValidation extends CommonDBChild
                     ]),
                 ],
                 'NOT' => [
-                    'status' => [...static::$itemtype::getSolvedStatusArray(), ...static::$itemtype::getClosedStatusArray()],
+                    'status' => [...$itil_class::getSolvedStatusArray(), ...$itil_class::getClosedStatusArray()],
                 ],
             ],
         ]);
@@ -1993,90 +1973,80 @@ HTML;
      *
      * If no itils_validationsteps is defined for the itilobject, create it
      * else, refererence it.
-     *
-     * If threshold is set, use it to create/update the itil_validationstep
      */
-    private function addITILValidationStep(int $validationsteps_id): void
+    private function addITILValidationStepFromInput(array $input): array
     {
-        // find itil validations, then find if an itil_validationsteps referencing the validationstep exists
-        /** @var \CommonITILObject $itilobject_type */
-        $itilobject_type = new static::$itemtype(); // Change | Ticket
-        $itilobject_foreignkey = $itilobject_type::getForeignKeyField(); // tickets_id | changes_id
-        $v = new static();
-        $itil_id = $this->input[$itilobject_foreignkey] ?? $this->fields[$itilobject_foreignkey];
-        $itil_validations = $v->find(
-            [$itilobject_foreignkey => $itil_id,
-                ['NOT' => ['itils_validationsteps_id' => 0]],
-            ]
-        );
-        // find an itils_validationsteps related to the ticket and the validationstep
-        $itils_validationsteps_ids = array_column($itil_validations, 'itils_validationsteps_id');
-        $ivs = $itilobject_type::getValidationStepInstance();
-        $itils_validationsteps_id = $itils_validationsteps_ids[0] ?? null; // there can be only one itil_validationsteps_id related to the validationstep (or none)
-        // check if the itils_validationsteps_id is referencing the validationstep
-        $itils_validationstep_id_with_validationstep_id_exists =
-            !is_null($itils_validationsteps_id)
-            && $ivs->getFromDBByCrit(['id' => $itils_validationsteps_ids, 'validationsteps_id' => $validationsteps_id]);
+        $itil_class = static::getItilObjectItemType(); // Change | Ticket
+        $itil_fkey  = $itil_class::getForeignKeyField(); // changes_id | tickets_id
 
-        if ($itils_validationstep_id_with_validationstep_id_exists) {
-            $itils_validationsteps_id = $ivs->fields['id'];
-            $this->input['itils_validationsteps_id'] = $itils_validationsteps_id;
-        } else {
-            // addValidationStep also update the current Validation
-            // load referenced ValidationStep
-            $vs = new ValidationStep();
-            if (!$vs->getFromDB($validationsteps_id)) {
-                Session::addMessageAfterRedirect('Failed to load approval step while adding approval step.');
-            };
-
-            // create ITIL_ValidationStep
-            $itil_class = static::getItilObjectItemType();
-            $itil_validationstep = $itil_class::getValidationStepInstance();
-            $itil_validationstep->add([
-                'validationsteps_id' => $validationsteps_id,
-                'minimal_required_validation_percent' => $vs->fields['minimal_required_validation_percent'],
-            ]);
-
-            $this->input['itils_validationsteps_id'] = $itil_validationstep->getID();
+        if (!array_key_exists('_validationsteps_id', $input) || !array_key_exists($itil_fkey, $input)) {
+            return $input;
         }
 
-        unset($this->input['_validationsteps_id']);
+        $relation_fields = [
+            'itemtype'           => $itil_class,
+            'items_id'           => $input[$itil_fkey],
+            'validationsteps_id' => $input['_validationsteps_id'],
+        ];
+
+        $itil_validationstep = $itil_class::getValidationStepInstance();
+        if (!$itil_validationstep->getFromDBByCrit($relation_fields)) {
+            $validationstep = new ValidationStep();
+            if (!$validationstep->getFromDB($input['_validationsteps_id'])) {
+                throw new \RuntimeException();
+            };
+
+            $step_input = $relation_fields + [
+                'minimal_required_validation_percent' => $validationstep->fields['minimal_required_validation_percent'],
+            ];
+
+            if (!$itil_validationstep->add($step_input)) {
+                throw new \RuntimeException();
+            }
+        }
+
+        $input['itils_validationsteps_id'] = $itil_validationstep->getID();
+
+        unset($input['_validationsteps_id']);
+
+        return $input;
     }
 
     /**
      * Delete, only if the itils_validationstep is not used anymore
      *
-     * @param int $itils_validationsteps_id
      * @return void
      */
-    private function removeUnsedITILValidationStep(int $itils_validationsteps_id): void
+    private function removeUnsedITILValidationStep(): void
     {
-        /** @var \CommonITILObject $itil */
-        $itil = $this->getItem();
-        $validation = $itil::getValidationClassInstance();
-        $validations = $validation->find(['itils_validationsteps_id' => $itils_validationsteps_id]);
+        $itils_validationsteps_id = $this->fields['itils_validationsteps_id'];
+
+        $validations = (new static())->find(['itils_validationsteps_id' => $itils_validationsteps_id]);
         if (!empty($validations)) {
             // itils_validation is still used, do not delete
             return;
         }
 
-        if (!$itil::getValidationStepInstance()->delete(['id' => $itils_validationsteps_id])) {
-            Session::addMessageAfterRedirect('Failed to delete unused approval step.');
+        $itil_validationstep = static::getItilObjectItemType()::getValidationStepInstance();
+        if (!$itil_validationstep->delete(['id' => $itils_validationsteps_id])) {
+            throw new \RuntimeException('Failed to delete unused approval step.');
         };
     }
 
     public function recomputeItilStatus(): void
     {
-        /** @var CommonITILObject $itil */
-        $itil = $this->getItem();
-        if (
-            !$itil->update([
-                'id' => $itil->getID(),
-                'global_validation' => self::computeValidationStatus($itil),
-                '_from_itilvalidation' => true,
-            ])
-        ) {
-            Session::addMessageAfterRedirect('Failed to update Itil global approval status.');
+        $itil_object = $this->getItem();
+        if (!($itil_object instanceof CommonITILObject)) {
+            throw new \RuntimeException();
+        }
+
+        $update = $itil_object->update([
+            'id' => $itil_object->getID(),
+            'global_validation' => self::computeValidationStatus($itil_object),
+            '_from_itilvalidation' => true,
+        ]);
+        if (!$update) {
+            throw new \RuntimeException('Failed to update Itil global approval status.');
         }
     }
 
@@ -2085,7 +2055,7 @@ HTML;
      */
     private function updateITILValidationStepThreshold(int $threshold): void
     {
-        $itil_validationstep = new (static::$itemtype::getValidationStepClassName());
+        $itil_validationstep = static::getItilObjectItemType()::getValidationStepInstance();
         if (!$itil_validationstep->getFromDB($this->fields['itils_validationsteps_id'])) {
             throw new \RuntimeException('Invalid ITIL validation step. ' . $this->fields['itils_validationsteps_id']);
         };
