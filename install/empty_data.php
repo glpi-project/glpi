@@ -39,6 +39,8 @@ use Glpi\Inventory\Conf;
 use Glpi\RichText\UserMention;
 use Glpi\Socket;
 
+use function Safe\json_encode;
+
 // Use anonymous class so we can have constants that define special values without polluting the global table
 // and adding unnecessary variables to IDE autocomplete data that may result in errors
 $empty_data_builder = new class {
