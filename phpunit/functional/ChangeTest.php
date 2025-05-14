@@ -34,6 +34,7 @@
 
 namespace tests\units;
 
+use Change;
 use DbTestCase;
 
 /* Test for inc/change.class.php */
@@ -463,5 +464,21 @@ class ChangeTest extends DbTestCase
         \Change::showCentralList(0, 'tovalidate', false);
         $output = ob_get_clean();
         $this->assertStringNotContainsString("Your changes to validate", $output);
+    }
+
+    public function testShowFormNewItem(): void
+    {
+        // Arrange: prepare an empty change
+        $change = new Change();
+        $change->getEmpty();
+
+        // Act: render form for a new change
+        $this->login();
+        ob_start();
+        $change->showForm($change->getID());
+        $html = ob_get_clean();
+
+        // Assert: make sure some html was generated
+        $this->assertNotEmpty($html);
     }
 }
