@@ -189,8 +189,8 @@ enum Environment: string
     {
         // Prevent intensive caching on dev env.
         return match ($this) {
-            default           => false,
-            self::DEVELOPMENT, self::TESTING => true,
+            default           => true,
+            self::DEVELOPMENT => false,
         };
     }
 
