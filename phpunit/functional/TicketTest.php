@@ -49,6 +49,7 @@ use Monolog\Logger;
 use Profile;
 use Profile_User;
 use ProfileRight;
+use RuleTicket;
 use Search;
 use Supplier;
 use Supplier_Ticket;
@@ -6443,6 +6444,98 @@ HTML,
                 $this->assertTrue($found, json_encode($expected_actor));
             }
         }
+    }
+
+    public function testAssignFromCategoryOrItemExecuteRule(): void
+    {
+        $tech_id    = getItemByTypeName('User', 'tech', true);
+
+        $entity_id = getItemByTypeName('Entity', '_test_root_entity', true);
+        $this->login();
+
+        $entity = new Entity();
+        $this->assertTrue($entity->update(['id' => $entity_id, 'auto_assign_mode' => Entity::AUTO_ASSIGN_HARDWARE_CATEGORY]));
+
+        $group_tech = $this->createItem(
+            Group::class,
+            [
+                'name'        => 'Group TECH',
+                'entities_id' => $entity_id,
+            ]
+        );
+
+        $group_observer = $this->createItem(
+            Group::class,
+            [
+                'name'        => 'Group Observer',
+                'entities_id' => $entity_id,
+            ]
+        );
+
+        $itilcategory = $this->createItem(
+            ITILCategory::class,
+            [
+                'name'        => 'Cat1',
+                'entities_id' => $entity_id,
+                'users_id'    => $tech_id,
+                'groups_id'   => $group_tech->getID(),
+            ]
+        );
+
+        $rule = $this->createItem(
+            \Rule::class,
+            [
+                'name' => RuleTicket::class,
+                'sub_type' => RuleTicket::class,
+                'match' => \Rule::AND_MATCHING,
+                'is_active' => 1,
+                'condition' => 1,
+                'entities_id' => $entity_id,
+            ]
+        );
+
+        $this->createItem(
+            \RuleAction::class,
+            [
+                'rules_id' => $rule->getID(),
+                'action_type' => 'assign',
+                'field' => '_groups_id_observer',
+                'value' => $group_observer->getID(),
+            ]
+        );
+
+        $this->createItem(
+            \RuleCriteria::class,
+            [
+                'rules_id' => $rule->getID(),
+                'criteria' => '_groups_id_assign',
+                'condition' => \Rule::PATTERN_EXISTS,
+                'pattern' => $group_tech->getID(),
+            ]
+        );
+
+        $ticket = $this->createItem(
+            Ticket::class,
+            [
+                'name'              => 'Ticket',
+                'content'           => 'content',
+                'entities_id'       => $entity_id,
+                'itilcategories_id' => $itilcategory->getID(),
+            ]
+        );
+
+        $group_ticket = new Group_Ticket();
+        $this->assertEquals(1, count($group_ticket->find([
+            'tickets_id' => $ticket->getID(),
+            'groups_id' => $group_tech->getID(),
+            'type' => CommonITILActor::ASSIGN,
+        ])));
+
+        $this->assertEquals(1, count($group_ticket->find([
+            'tickets_id' => $ticket->getID(),
+            'groups_id' => $group_observer->getID(),
+            'type' => CommonITILActor::OBSERVER,
+        ])));
     }
 
     protected function requestersEntitiesProvider(): iterable
