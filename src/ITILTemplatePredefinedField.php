@@ -50,7 +50,7 @@ abstract class ITILTemplatePredefinedField extends ITILTemplateField
 
     public static function getIcon(): string
     {
-        return 'ti ti-blockquote';
+        return 'ti ti-forms';
     }
 
     protected function computeFriendlyName()

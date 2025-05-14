@@ -439,7 +439,7 @@ abstract class ITILTemplate extends CommonDropdown
                 case 'ProblemTemplate':
                     return [1 => static::createTabEntry(
                         __('Preview'),
-                        icon: "ti ti-eye"
+                        icon: "ti ti-file-search"
                     )];
             }
         }

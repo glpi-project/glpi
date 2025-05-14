@@ -49,7 +49,7 @@ abstract class ITILTemplateMandatoryField extends ITILTemplateField
 
     public static function getIcon(): string
     {
-        return 'ti ti-square-asterisk';
+        return 'ti ti-asterisk';
     }
 
 
