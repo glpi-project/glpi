@@ -58,7 +58,7 @@ class IPRestrictionRequestMiddleware extends AbstractMiddleware implements Reque
             'FROM'   => 'glpi_oauthclients',
             'WHERE'  => [
                 'identifier' => $client['client_id'],
-            ]
+            ],
         ])->current();
         $allowed_ips = $result['allowed_ips'] ?? [];
 

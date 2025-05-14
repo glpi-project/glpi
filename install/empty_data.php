@@ -9531,7 +9531,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'is_active' => 1,
                 'is_confidential' => 1,
                 'identifier' => '9246d35072ff62193330003a8106d947fafe5ac036d11a51ebc7ca11b9bc135e',
-                'secret' => (new GLPIKey())->encrypt('d2c4f3b8a0e1f7b5c6a9d1e4f3b8a0e1f7b5c6a9d1e4f3b8a0e1f7b5c6a9d1')
+                'secret' => (new GLPIKey())->encrypt('d2c4f3b8a0e1f7b5c6a9d1e4f3b8a0e1f7b5c6a9d1e4f3b8a0e1f7b5c6a9d1'),
             ];
         }
 
