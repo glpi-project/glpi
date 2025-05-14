@@ -166,35 +166,35 @@ class Change_Ticket extends CommonITILObject_CommonITILObject
                 }
                 return;
             case 'solveticket':
+                if (!$item instanceof Ticket) {
+                    throw new InvalidArgumentException();
+                }
+
                 $input  = $ma->getInput();
-                $ticket = new Ticket();
                 foreach ($ids as $id) {
                     if ($item->can($id, READ)) {
-                        if (
-                            $ticket->getFromDB($item->fields['tickets_id'])
-                            && $ticket->canSolve()
-                        ) {
+                        if ($item->canSolve()) {
                             $solution = new ITILSolution();
                             $added = $solution->add([
-                                'itemtype'  => $ticket::class,
-                                'items_id'  => $ticket->getID(),
-                                'solutiontypes_id'   => $input['solutiontypes_id'],
-                                'content'            => $input['content'],
+                                'itemtype'         => $item::class,
+                                'items_id'         => $item->getID(),
+                                'solutiontypes_id' => $input['solutiontypes_id'],
+                                'content'          => $input['content'],
                             ]);
 
                             if ($added) {
                                 $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                             } else {
                                 $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
-                                $ma->addMessage($ticket->getErrorMessage(ERROR_ON_ACTION));
+                                $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                             }
                         } else {
                             $ma->itemDone($item::class, $id, MassiveAction::ACTION_NORIGHT);
-                            $ma->addMessage($ticket->getErrorMessage(ERROR_RIGHT));
+                            $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                         }
                     } else {
                         $ma->itemDone($item::class, $id, MassiveAction::ACTION_NORIGHT);
-                        $ma->addMessage($ticket->getErrorMessage(ERROR_RIGHT));
+                        $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                     }
                 }
                 return;
