@@ -1163,11 +1163,12 @@ JAVASCRIPT;
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb = self::countForLicense($item->getID());
                         $nb += SoftwareLicense_User::countForLicense($item->getID());
+                        $nb .= '/' . $item->fields['number'];
                     }
                     return [1 => self::createTabEntry(__('Summary'), 0, $item::class),
                         2 => self::createTabEntry(
                             _n('Affected item', 'Affected items', Session::getPluralNumber()),
-                            $nb . '/' . $item->fields['number'],
+                            $nb,
                             $item::class,
                             'ti ti-package'
                         ),
