@@ -39,12 +39,12 @@
       <div class="card">
          <div class="accordion accordion-flush">
             <div class="accordion-item">
-               <h2 class="accordion-header">
+               <div class="accordion-header">
                   <button class="accordion-button {{ nb_opt > 1 ? "collapsed" : "" }}" type="button"
                      data-bs-toggle="collapse" data-bs-target="#{{ card_id }}" aria-expanded="true" aria-controls="collapseOne">
                      {{ label }}
                   </button>
-               </h2>
+               </div>
                <div id="{{ card_id }}" class="accordion-collapse {{ nb_opt > 1 ? "collapse" : "" }}" style="transition: none">
                   <div class="list-group list-group-flush list-group-hoverable">
                      {% for itemtype, dropdown_label in dropdown %}
