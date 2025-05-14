@@ -797,7 +797,7 @@
       {% set field = field|replace({'%id%': id}) %}
       {% set add_field_html = options.add_field_html|length > 0 ? options.add_field_html : '' %}
 
-      {% if options.fields_template is not defined or not options.fields_template.isHiddenField(name) %}
+      {% if options.fields_template is not defined or not options.fields_template.isHiddenField(name)|default(false) %}
          {% if options.no_label %}
             {{ _self.noLabelField(field, id, add_field_html, options) }}
          {% elseif options.is_horizontal %}
