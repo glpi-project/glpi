@@ -36,8 +36,6 @@ namespace Glpi\Form\Condition;
 
 use JsonException;
 
-use function Safe\json_decode;
-
 trait ConditionableTrait
 {
     /**

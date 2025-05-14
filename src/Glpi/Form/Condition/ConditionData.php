@@ -86,16 +86,6 @@ final class ConditionData implements JsonSerializable
         return ValueOperator::tryFrom($this->value_operator ?? "");
     }
 
-    /**
-     * Compute the UUID of the condition.
-     *
-     * @return string
-     */
-    public function getUuid(): string
-    {
-        return md5(json_encode($this->jsonSerialize()));
-    }
-
     #[Override]
     public function jsonSerialize(): array
     {

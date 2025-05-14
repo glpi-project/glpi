@@ -4832,6 +4832,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Form/AnswersSet.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Function json_decode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_decode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Form/Comment.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
 	'identifier' => 'theCodingMachineSafe.function',
 	'count' => 2,
@@ -4906,7 +4912,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Function json_decode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_decode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
 	'identifier' => 'theCodingMachineSafe.function',
-	'count' => 1,
+	'count' => 2,
 	'path' => __DIR__ . '/src/Glpi/Form/Destination/FormDestination.php',
 ];
 $ignoreErrors[] = [
@@ -4942,7 +4948,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Function json_decode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_decode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
 	'identifier' => 'theCodingMachineSafe.function',
-	'count' => 2,
+	'count' => 3,
 	'path' => __DIR__ . '/src/Glpi/Form/Form.php',
 ];
 $ignoreErrors[] = [
@@ -4966,7 +4972,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Function json_decode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_decode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
 	'identifier' => 'theCodingMachineSafe.function',
-	'count' => 3,
+	'count' => 5,
 	'path' => __DIR__ . '/src/Glpi/Form/Question.php',
 ];
 $ignoreErrors[] = [
@@ -5046,6 +5052,12 @@ $ignoreErrors[] = [
 	'identifier' => 'theCodingMachineSafe.function',
 	'count' => 4,
 	'path' => __DIR__ . '/src/Glpi/Form/QuestionType/QuestionTypesManager.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_decode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_decode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Form/Section.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',

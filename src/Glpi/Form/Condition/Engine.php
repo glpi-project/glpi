@@ -187,7 +187,7 @@ final class Engine
         }
 
         return array_filter(array_map(
-            fn(ConditionData $condition): ?ConditionData => $strategy->mustBeValidated($result_per_condition[$condition->getUuid()]) ? null : $condition,
+            fn(ConditionData $condition): ?ConditionData => $strategy->mustBeValidated($result_per_condition[spl_object_id($condition)]) ? null : $condition,
             $conditions,
         ));
     }
@@ -209,7 +209,7 @@ final class Engine
 
     /**
      * @param ConditionData[] $conditions
-     * @param array<string, bool> &$result_per_condition
+     * @param array<int, bool> &$result_per_condition
      * @return bool
      */
     private function computeConditions(array $conditions, array &$result_per_condition = []): bool
@@ -222,7 +222,7 @@ final class Engine
 
             // Apply condition (item + value operator + value)
             $condition_result = $this->computeCondition($condition);
-            $result_per_condition[$condition->getUuid()] = $condition_result;
+            $result_per_condition[spl_object_id($condition)] = $condition_result;
 
             // Apply logic operator
             if ($conditions_result === null) {
