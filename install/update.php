@@ -119,9 +119,6 @@ TemplateRenderer::getInstance()->display('layout/parts/head.html.twig', [
     'custom_header_tags' => [],
 ]);
 
-// CFG
-echo Html::getCoreVariablesForJavascript();
-
 echo "<body>";
 echo "<div id='principal'>";
 echo "<div id='bloc'>";
