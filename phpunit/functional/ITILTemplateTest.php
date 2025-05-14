@@ -319,7 +319,10 @@ class ITILTemplateTest extends DbTestCase
         $expected = [
             1 => 'Preview',
         ];
-        $this->assertSame($expected, $tpl->getTabNameForItem($tpl));
+        $this->assertSame(
+            $expected,
+            array_map('strip_tags', $tpl->getTabNameForItem($tpl)),
+        );
     }
 
     #[DataProvider('itilProvider')]

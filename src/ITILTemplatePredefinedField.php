@@ -48,6 +48,10 @@ abstract class ITILTemplatePredefinedField extends ITILTemplateField
         return _n('Predefined field', 'Predefined fields', $nb);
     }
 
+    public static function getIcon(): string
+    {
+        return 'ti ti-forms';
+    }
 
     protected function computeFriendlyName()
     {

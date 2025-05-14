@@ -47,6 +47,11 @@ abstract class ITILTemplateMandatoryField extends ITILTemplateField
         return _n('Mandatory field', 'Mandatory fields', $nb);
     }
 
+    public static function getIcon(): string
+    {
+        return 'ti ti-asterisk';
+    }
+
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {

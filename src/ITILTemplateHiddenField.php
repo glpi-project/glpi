@@ -48,6 +48,10 @@ abstract class ITILTemplateHiddenField extends ITILTemplateField
         return _n('Hidden field', 'Hidden fields', $nb);
     }
 
+    public static function getIcon(): string
+    {
+        return 'ti ti-eye-off';
+    }
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
