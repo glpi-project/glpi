@@ -30,7 +30,7 @@
  # ---------------------------------------------------------------------
  #}
 
-{% set target       = params['target'] ?? item.getFormURL() %}
+{% set target       = params['target'] ?? item.fields['id'] ? item.getFormURLWithID(item.fields['id']) : item.getFormURL() %}
 {% set withtemplate = params['withtemplate'] ?? '' %}
 {% set rand         = random() %}
 {% set nametype     = params['formtitle'] ?? item.getTypeName(1) %}
