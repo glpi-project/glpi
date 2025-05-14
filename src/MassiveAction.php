@@ -1605,34 +1605,50 @@ class MassiveAction
                         /// Specific entity item
                         $itemtable = getTableForItemType($item->getType());
                         $itemtype2 = getItemTypeForTable($searchopt[$index]["table"]);
-                        if ($item2 = getItemForItemtype($itemtype2)) {
-                            if (
-                                ($index != 80) // No entities_id fields
-                                && ($searchopt[$index]["table"] != $itemtable)
-                                && $item2->isEntityAssign()
-                                && $item->isEntityAssign()
-                            ) {
-                                if ($item2->getFromDB($input[$input["field"]])) {
-                                    if (
-                                        isset($item2->fields["entities_id"])
-                                        && ($item2->fields["entities_id"] >= 0)
-                                    ) {
+
+                        foreach ($ids as $key) {
+
+                            if ($item2 = getItemForItemtype($itemtype2)) {
+                                if (
+                                    ($index != 80) // No entities_id fields
+                                    && ($searchopt[$index]["table"] != $itemtable)
+                                    && $item2->isEntityAssign()
+                                    && $item->isEntityAssign()
+                                ) {
+                                    $related_item = null;
+                                    // Case 1: The modified field is a foreign key (ex : locations_id)
+                                    if (isForeignKeyField($input["field"])) {
+                                        // Attempt to load the related object using its ID (from the input value)
+                                        if ($item2->getFromDB($input[$input["field"]])) {
+                                            $related_item = $item2;
+                                        }
+                                        // Case 2: The field is not a foreign key, but the target class supports connexity (relations)
+                                        // Use getConnexityItem() to dynamically resolve the related object based on the main itemtype and id (items_id)
+                                    } elseif (is_a($item2, CommonDBConnexity::class, true)) {
+                                        $related_item = $item2->getConnexityItem($item->getType(), $key);
+                                    }
+
+                                    if (!is_null($related_item)) {
                                         if (
-                                            isset($item2->fields["is_recursive"])
-                                            && $item2->fields["is_recursive"]
+                                            isset($related_item->fields["entities_id"])
+                                            && ($related_item->fields["entities_id"] >= 0)
                                         ) {
-                                            $link_entity_type = getSonsOf(
-                                                "glpi_entities",
-                                                $item2->fields["entities_id"]
-                                            );
-                                        } else {
-                                            $link_entity_type[] = $item2->fields["entities_id"];
+                                            if (
+                                                isset($related_item->fields["is_recursive"])
+                                                && $related_item->fields["is_recursive"]
+                                            ) {
+                                                $link_entity_type = getSonsOf(
+                                                    "glpi_entities",
+                                                    $related_item->fields["entities_id"]
+                                                );
+                                            } else {
+                                                $link_entity_type[] = $related_item->fields["entities_id"];
+                                            }
                                         }
                                     }
                                 }
                             }
-                        }
-                        foreach ($ids as $key) {
+
                             if (
                                 $item->canEdit($key)
                                 && $item->canMassiveAction(

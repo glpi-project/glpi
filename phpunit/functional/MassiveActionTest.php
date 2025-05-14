@@ -37,6 +37,8 @@ namespace tests\units;
 use CommonDBTM;
 use Contract;
 use DbTestCase;
+use Location;
+use MassiveAction;
 use Notepad;
 use Problem;
 use Session;
@@ -160,6 +162,7 @@ class MassiveActionTest extends DbTestCase
             ->getMock();
 
         // Mock needed methods
+        $ma->POST = $input;
         $ma->method('getAction')->willReturn($action_code);
         $ma->method('addMessage')->willReturn(null);
         $ma->method('getInput')->willReturn($input);
@@ -698,5 +701,125 @@ class MassiveActionTest extends DbTestCase
                 $row["action_class"],
             );
         }
+    }
+
+    public function testProcessMassiveActionsForOneItemtype_updateDropdownOrCommonDBConnexity()
+    {
+        $this->login();
+
+        $provider = $this->updateDropdownOrCommonDBConnexityProvider();
+        foreach ($provider as $row) {
+            $item = $row['item'];
+            $input = $row['input'];
+            $has_right = $row['has_right'];
+            $should_work = $row['should_work'];
+
+
+            $old_session = $_SESSION['glpiactiveprofile'][Ticket::$rightname] ?? 0;
+            if ($has_right) {
+                $_SESSION['glpiactiveprofile'][Ticket::$rightname] = UPDATE;
+            } else {
+                $_SESSION['glpiactiveprofile'][Ticket::$rightname] = 0;
+            }
+
+
+
+            // Check rights set up was successful
+            $this->assertSame(
+                $has_right,
+                (bool) Session::haveRight(Ticket::$rightname, UPDATE)
+            );
+
+            // Default expectation: can't run
+            $expected_ok = 0;
+            $expected_ko = 0;
+
+            // Update expectation: this item should be OK
+            if ($should_work) {
+                $expected_ok = 1;
+            } else {
+                $expected_ko = 1;
+            }
+
+            // Execute action
+            $this->processMassiveActionsForOneItemtype(
+                "update",
+                $item,
+                [$item->fields['id']],
+                $input,
+                $expected_ok,
+                $expected_ko,
+                MassiveAction::class
+            );
+
+            // Reset rights
+            $_SESSION['glpiactiveprofile'][Ticket::$rightname] = $old_session;
+        }
+    }
+
+    protected function updateDropdownOrCommonDBConnexityProvider()
+    {
+        $ticket = new Ticket();
+        $location = new Location();
+        $id = $ticket->add([
+            'name'          => 'test',
+            'content'       => 'test',
+            'entities_id'   => getItemByTypeName('Entity', '_test_root_entity', true),
+        ]);
+        $ticket->getFromDB($id);
+        $this->assertGreaterThan(0, $id);
+        $this->assertSame($ticket->fields['entities_id'], getItemByTypeName('Entity', '_test_root_entity', true));
+
+        $this->createItem(
+            \Entity::class,
+            [
+                'name'          => '_test_root_subentity',
+                'entities_id'   => getItemByTypeName('Entity', '_test_root_entity', true),
+            ]
+        );
+
+        $location = new Location();
+        $location_id_1 = $location->add([
+            'name'        => 'test',
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+        ]);
+        $this->assertGreaterThan(0, $location_id_1);
+
+        $location_id_2 = $location->add([
+            'name'        => 'test_sub',
+            'entities_id' => getItemByTypeName('Entity', '_test_root_subentity', true),
+        ]);
+        $this->assertGreaterThan(0, $location_id_2);
+
+        return [
+            [
+                // Should work
+                'item'        => $ticket,
+                'input'       => [
+                    'locations_id' => $location_id_1,
+                    'search_options' =>
+                    [
+                        $ticket->getType() => 83,
+                    ],
+                    'field' => 'locations_id',
+                ],
+                'has_right'   => true,
+                'should_work' => true,
+            ],
+            [
+                // Should not work
+                'item'        => $ticket,
+                'input'       => [
+                    'locations_id' => $location_id_2,
+                    'search_options' =>
+                    [
+                        $ticket->getType() => 83,
+                    ],
+                    'field' => 'locations_id',
+                ],
+                'has_right'   => true,
+                'should_work' => false, //not same entity
+            ],
+        ];
     }
 }
