@@ -81,10 +81,10 @@ describe('Notifications', () => {
         cy.go('back');
         cy.findByRole('tab', { name: /Templates/ }).click();
 
-        cy.get('table.table tbody td a[href*="notificationtemplate.form.php?id=4"]').click();
+        cy.findByRole('table').findByRole('link', {name: "Tickets"}).click();
         cy.findByRole('tab', { name: /Template translations/ }).click();
         // Click the default template translation link
-        cy.get('table.table tbody td a').contains('Default translation').click();
+        cy.findByRole('link', {name: "Default translation"}).click();
         cy.findByRole('tab', { name: /Template translation/ }).click();
         cy.findByRole('tabpanel').within(() => {
             cy.get('select[name=language]').should('have.value', '');
