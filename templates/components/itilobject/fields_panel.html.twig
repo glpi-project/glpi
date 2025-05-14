@@ -70,7 +70,9 @@
                      item.fields['entities_id'],
                      _n('Entity', 'Entities', 1),
                      field_options|merge({
-                        'entity': userentities,
+                        'entity': userentities|default(
+                           session('glpiactive_entity')
+                        ),
                         'on_change': 'this.form.submit()',
                      })
                   ) }}
@@ -196,7 +198,7 @@
             {{ include('components/itilobject/fields/status.html.twig') }}
 
             {# validation #}
-            {% if item.fields['global_validation'] != 1 %}
+            {% if item.fields['global_validation']|default(1) != 1 %}
                {{ include('components/itilobject/fields/global_validation.html.twig') }}
             {% endif %}
 
@@ -275,7 +277,7 @@
             <span class="badge bg-secondary text-secondary-fg ms-2">
                {{ item.countActors() }}
             </span>
-            {% if not (params['template_preview'] ?? false) and cancreateuser and canupdate %}
+            {% if not (params['template_preview'] ?? false) and cancreateuser|default(false) and canupdate %}
                {{ include('components/user/create_user.html.twig') }}
             {% endif %}
          </button>
@@ -287,7 +289,7 @@
       </div>
    </section>
 
-   {% if canreadnote %}
+   {% if canreadnote|default(false) %}
       {% set notes = call('Notepad::getAllForItem', [get_item('Entity', item.fields['entities_id']), 'Ticket']) %}
       {% set notes_show = headers_states['notes'] is not defined or headers_states['notes'] == "true" ? true : (notes|length > 0) %}
        {% if notes|length != 0 %}

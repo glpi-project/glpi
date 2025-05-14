@@ -35,6 +35,7 @@
 namespace tests\units;
 
 use DbTestCase;
+use Problem;
 
 /* Test for inc/problem.class.php */
 
@@ -305,5 +306,21 @@ class ProblemTest extends DbTestCase
         $this->assertEquals($last_task_date, $problem_with_so['ITEM_Problem_73']);
         $this->assertTrue(array_key_exists('ITEM_Problem_74', $problem_with_so));
         $this->assertEquals($last_solution_date, $problem_with_so['ITEM_Problem_74']);
+    }
+
+    public function testShowFormNewItem(): void
+    {
+        // Arrange: prepare an empty problem
+        $problem = new Problem();
+        $problem->getEmpty();
+
+        // Act: render form for a new problem
+        $this->login();
+        ob_start();
+        $problem->showForm($problem->getID());
+        $html = ob_get_clean();
+
+        // Assert: make sure some html was generated
+        $this->assertNotEmpty($html);
     }
 }
