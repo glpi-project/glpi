@@ -1647,7 +1647,13 @@ class SoftwareTest extends AbstractInventoryAsset
             "date_install" => "2024-03-04",
         ]));
 
-        //check computer-softwareverison relation is the same (ID)
+        //check that no lock have been added
+        $lock = new \Lockedfield();
+        $this->assertFalse($lock->getFromDBByCrit([
+            "itemtype" => \Item_SoftwareVersion::class,
+            "items_id" => $item_version->fields['id'],
+            "field" => "date_install",
+        ]));
     }
 
     public function testSubCategoryDictionnary()

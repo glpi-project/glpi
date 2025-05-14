@@ -412,6 +412,7 @@ class Software extends InventoryAsset
                 $software_version = new Item_SoftwareVersion();
                 $software_version->update([
                     "id" => $db_software[$key_w_version]['id'],
+                    "is_dynamic" => 1,
                     "date_install" => $val->date_install,
                 ], 0);
             }
