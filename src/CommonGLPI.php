@@ -722,7 +722,7 @@ class CommonGLPI implements CommonGLPIInterface
      * icon to be displayed, unless you manually specify the icon.
      *
      * @param string  $text text to display
-     * @param string $badge_content   content of badge (default 0)
+     * @param string|integer $badge_content   content of badge (default 0)
      * @param class-string<CommonGLPI>|null $form_itemtype
      * @param string $icon
      *
