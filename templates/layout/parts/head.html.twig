@@ -74,6 +74,8 @@
 
    {{ importmap() }}
 
+   {{ config_js() }}
+
    {% for js_file in js_files %}
       <script type="text/javascript" src="{{ js_path(js_file.path, js_file.options ?? []) }}"></script>
    {% endfor %}

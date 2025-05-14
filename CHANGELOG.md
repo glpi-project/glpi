@@ -471,6 +471,7 @@ The present file will list all changes made to the project; according to the
 - `Html::displayAccessDeniedPage()`
 - `Html::displayAjaxMessageAfterRedirect()`. The JS function is already provided by `js/misc.js`.
 - `Html::displayItemNotFoundPage()`
+- `Html::getCoreVariablesForJavascript()`
 - `Html::jsConfirmCallback()`
 - `Html::jsHide()`
 - `Html::jsShow()`
