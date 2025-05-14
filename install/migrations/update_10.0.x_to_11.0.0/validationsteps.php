@@ -97,7 +97,7 @@ function create_validation_steps_table(Migration $migration): void
 
 function insert_validation_steps_defaults(Migration $migration, \DBmysql $DB): void
 {
-    if (!$DB->tableExists(ValidationStep::getTable())) {
+    if (!$DB->tableExists('glpi_validationsteps')) {
         $message = 'ValidationSteps table does not exist, skipping defaults insertion';
         $migration->log($message, true);
         throw new \LogicException($message);

@@ -11,6 +11,7 @@ The present file will list all changes made to the project; according to the
 - Configurable toast notification location
 - `Link ITIL Object` and `Unlink ITIL Object` massive actions for Tickets, Changes, and Problems.
 - Group approval requests (any user from group can approve).
+- Approval requests are grouped by validation step. 
 - Satisfaction surveys for Changes
 - New right for assigning service levels to ITIL Objects (UPDATE right also still allows this).
 - New right for impersonation of users with less rights (Config UPDATE right also still allows this globally).

@@ -70,7 +70,7 @@ class ValidationStep extends \CommonDropdown
     public function post_addItem()
     {
         if ($this->isDefault()) {
-            $this->removeDefaultToOthers();
+            $this->removeDefaultFromOthers();
         }
 
         parent::post_addItem();
@@ -79,7 +79,7 @@ class ValidationStep extends \CommonDropdown
     public function post_updateItem($history = true)
     {
         if ($this->isDefault()) {
-            $this->removeDefaultToOthers();
+            $this->removeDefaultFromOthers();
         }
 
         if (!$this->isDefault() && $this->wasDefault()) {
@@ -193,7 +193,7 @@ class ValidationStep extends \CommonDropdown
         ];
     }
 
-    private function removeDefaultToOthers(): void
+    private function removeDefaultFromOthers(): void
     {
         $all_except_this = $this->find(['is_default' => 1, ['NOT' => ['id' => $this->getID()]]]);
         foreach ($all_except_this as $to_update) {

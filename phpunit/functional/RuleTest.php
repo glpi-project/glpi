@@ -362,12 +362,6 @@ class RuleTest extends DbTestCase
                 __('Group users')
             ), 'groups_id_validate',
             ],
-            /*[sprintf(
-                __('%1$s - %2$s'),
-                __('Send an approval request'),
-                __('Minimum validation required')
-            ), 'validation_percent',
-            ],*/
             [__('Approval request to requester group manager'), 'users_id_validate_requester_supervisor'],
             [__('Approval request to technician group manager'), 'users_id_validate_assign_supervisor'],
             [\RequestType::getTypeName(1), 'requesttypes_id'],

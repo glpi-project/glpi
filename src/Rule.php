@@ -2630,9 +2630,6 @@ JS
                     $name = Dropdown::getDropdownName('glpi_groups', $value);
                     return $name == '' ? NOT_AVAILABLE : $name;
 
-                    //                case "dropdown_validation_percent":
-                    //                    return Dropdown::getValueWithUnit($value, '%');
-
                 case "yesonly":
                 case "yesno":
                     return Dropdown::getYesNo($value);

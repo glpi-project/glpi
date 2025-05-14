@@ -647,7 +647,7 @@ class RuleAction extends CommonDBChild
                             break;
 
                         case "dropdown_percent":
-                            $percentages = range(0, 100, 10); // Liste des pourcentages par pas de 10
+                            $percentages = range(0, 100, 10); // List of percentages in increments of 10
                             $options = [];
                             foreach ($percentages as $percentage) {
                                 $options[$percentage] = $percentage . '%';
