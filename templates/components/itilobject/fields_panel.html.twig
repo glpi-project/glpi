@@ -139,6 +139,7 @@
                   'width': '100%',
                   'display': false,
                   'rand': rand,
+                  'readonly': field_options.fields_template.isReadonlyField('type'),
                }|merge(field_options) %}
                {% if item.isNewItem() %}
                   {% set type_params = type_params|merge({'on_change': 'this.form.submit()',}) %}
