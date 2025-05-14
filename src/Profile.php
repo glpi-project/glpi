@@ -1286,30 +1286,9 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             return false;
         }
 
-        echo "<div class='spaced'>";
-        if ($canedit = Session::haveRightsOr(self::$rightname, [CREATE, UPDATE, PURGE])) {
-            echo "<form method='post' action='" . $this->getFormURL() . "' data-track-changes='true'>";
-        }
-
-        $matrix_options = ['canedit'       => $canedit,
-            'default_class' => 'tab_bg_2',
-        ];
-
-        $matrix_options['title'] = __('Tools');
-        $this->displayRightsChoiceMatrix(self::getRightsForForm('helpdesk', 'tools', 'general'), $matrix_options);
-
-        if ($canedit) {
-            echo "<div class='center'>";
-            echo "<input type='hidden' name='id' value='" . $this->getID() . "'>";
-            echo Html::submit(_x('button', 'Save'), [
-                'class' => 'btn btn-primary mt-2',
-                'icon'  => 'ti ti-device-floppy',
-                'name'  => 'update',
-            ]);
-            echo "</div>";
-            Html::closeForm();
-        }
-        echo "</div>";
+        TemplateRenderer::getInstance()->display('pages/admin/profile/tools_simple.html.twig', [
+            'item' => $this
+        ]);
     }
 
     /**
@@ -1382,55 +1361,9 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             return false;
         }
 
-        echo "<div class='spaced'>";
-
-        if (
-            ($canedit = Session::haveRightsOr(self::$rightname, [UPDATE, CREATE, PURGE]))
-            && $openform
-        ) {
-            echo "<form method='post' action='" . $this->getFormURL() . "' data-track-changes='true'>";
-        }
-
-        $matrix_options = ['canedit'       => $canedit,
-            'default_class' => 'tab_bg_2',
-        ];
-
-        $matrix_options['title'] = __('Management');
-        $this->displayRightsChoiceMatrix(self::getRightsForForm('central', 'management', 'general'), $matrix_options);
-
-        echo "<div class='tab_cadre_fixehov mx-n2'>";
-        $rand = rand();
-        echo "<label for='dropdown_managed_domainrecordtypes$rand'>" . __s('Manageable domain records') . "</label>";
-        $values = ['-1' => __('All')];
-        $values += $this->getDomainRecordTypes();
-        Dropdown::showFromArray(
-            'managed_domainrecordtypes',
-            $values,
-            [
-                'display'   => true,
-                'multiple'  => true,
-                'size'      => 3,
-                'rand'      => $rand,
-                'values'    => $this->fields['managed_domainrecordtypes'],
-            ]
-        );
-        echo "</div>";
-
-        if (
-            $canedit
-            && $closeform
-        ) {
-            echo "<div class='center'>";
-            echo "<input type='hidden' name='id' value='" . $this->getID() . "'>";
-            echo Html::submit(_x('button', 'Save'), [
-                'class' => 'btn btn-primary mt-2',
-                'icon'  => 'ti ti-device-floppy',
-                'name'  => 'update',
-            ]);
-            echo "</div>";
-            Html::closeForm();
-        }
-        echo "</div>";
+        TemplateRenderer::getInstance()->display('pages/admin/profile/management.html.twig', [
+            'item' => $this
+        ]);
     }
 
     /**
@@ -1447,40 +1380,9 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             return false;
         }
 
-        echo "<div class='spaced'>";
-
-        if (
-            ($canedit = Session::haveRightsOr(self::$rightname, [UPDATE, CREATE, PURGE]))
-            && $openform
-        ) {
-            echo "<form method='post' action='" . $this->getFormURL() . "' data-track-changes='true'>";
-        }
-
-        $matrix_options = ['canedit'       => $canedit,
-            'default_class' => 'tab_bg_2',
-        ];
-
-        $matrix_options['title'] = __('Tools');
-        $this->displayRightsChoiceMatrix(self::getRightsForForm('central', 'tools', 'general'), $matrix_options);
-
-        $matrix_options['title'] = _n('Project', 'Projects', Session::getPluralNumber());
-        $this->displayRightsChoiceMatrix(self::getRightsForForm('central', 'tools', 'projects'), $matrix_options);
-
-        if (
-            $canedit
-            && $closeform
-        ) {
-            echo "<div class='center'>";
-            echo "<input type='hidden' name='id' value='" . $this->getID() . "'>";
-            echo Html::submit(_x('button', 'Save'), [
-                'class' => 'btn btn-primary mt-2',
-                'icon'  => 'ti ti-device-floppy',
-                'name'  => 'update',
-            ]);
-            echo "</div>";
-            Html::closeForm();
-        }
-        echo "</div>";
+        TemplateRenderer::getInstance()->display('pages/admin/profile/tools.html.twig', [
+            'item' => $this
+        ]);
     }
 
     /**
@@ -1740,54 +1642,9 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             return false;
         }
 
-        echo "<div class='spaced'>";
-
-        if (
-            ($canedit = Session::haveRightsOr(self::$rightname, [CREATE, UPDATE, PURGE]))
-            && $openform
-        ) {
-            echo "<form method='post' action='" . $this->getFormURL() . "' data-track-changes='true'>";
-        }
-
-        $this->displayLifeCycleMatrix(
-            __('Life cycle of tickets'),
-            '_cycle_ticket',
-            'ticket_status',
-            Ticket::getAllStatusArray(),
-            $canedit
-        );
-
-        $this->displayLifeCycleMatrix(
-            __('Life cycle of problems'),
-            '_cycle_problem',
-            'problem_status',
-            Problem::getAllStatusArray(),
-            $canedit
-        );
-
-        $this->displayLifeCycleMatrix(
-            __('Life cycle of changes'),
-            '_cycle_change',
-            'change_status',
-            Change::getAllStatusArray(),
-            $canedit
-        );
-
-        if (
-            $canedit
-            && $closeform
-        ) {
-            echo "<div class='center'>";
-            echo "<input type='hidden' name='id' value='" . $this->getID() . "'>";
-            echo Html::submit(_x('button', 'Save'), [
-                'class' => 'btn btn-primary mt-2',
-                'icon'  => 'ti ti-device-floppy',
-                'name'  => 'update',
-            ]);
-            echo "</div>";
-            Html::closeForm();
-        }
-        echo "</div>";
+        TemplateRenderer::getInstance()->display('pages/admin/profile/lifecycle.html.twig', [
+            'item' => $this
+        ]);
     }
 
     /**
@@ -1874,37 +1731,9 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
             return false;
         }
 
-        echo "<div class='spaced'>";
-
-        if (
-            ($canedit = Session::haveRightsOr(self::$rightname, [CREATE, UPDATE, PURGE]))
-            && $openform
-        ) {
-            echo "<form method='post' action='" . $this->getFormURL() . "' data-track-changes='true'>";
-        }
-
-        $this->displayLifeCycleMatrixTicketHelpdesk(
-            __('Life cycle of tickets'),
-            '_cycle_ticket',
-            'ticket_status',
-            $canedit
-        );
-
-        if (
-            $canedit
-            && $closeform
-        ) {
-            echo "<div class='center'>";
-            echo "<input type='hidden' name='id' value='" . $this->getID() . "'>";
-            echo Html::submit(_x('button', 'Save'), [
-                'class' => 'btn btn-primary mt-2',
-                'icon'  => 'ti ti-device-floppy',
-                'name'  => 'update',
-            ]);
-            echo "</div>";
-            Html::closeForm();
-        }
-        echo "</div>";
+        TemplateRenderer::getInstance()->display('pages/admin/profile/lifecycle_simple.html.twig', [
+            'item' => $this
+        ]);
     }
 
     /**
