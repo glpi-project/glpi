@@ -39,6 +39,8 @@ use Glpi\Inventory\Conf;
 use Glpi\RichText\UserMention;
 use Glpi\Socket;
 
+use function Safe\json_encode;
+
 // Use anonymous class so we can have constants that define special values without polluting the global table
 // and adding unnecessary variables to IDE autocomplete data that may result in errors
 $empty_data_builder = new class {
@@ -9521,6 +9523,17 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'entities_id' => 1,
                 'is_recursive' => 1,
                 'is_dynamic' => 0,
+            ];
+
+            $tables['glpi_oauthclients'][] = [
+                'name' => 'Test E2E OAuth Client',
+                'redirect_uri' => json_encode(["/api.php/oauth2/redirection"]),
+                'grants' => json_encode(['authorization_code']),
+                'scopes' => json_encode(['api', 'user']),
+                'is_active' => 1,
+                'is_confidential' => 1,
+                'identifier' => '9246d35072ff62193330003a8106d947fafe5ac036d11a51ebc7ca11b9bc135e',
+                'secret' => (new GLPIKey())->encrypt('d2c4f3b8a0e1f7b5c6a9d1e4f3b8a0e1f7b5c6a9d1e4f3b8a0e1f7b5c6a9d1'),
             ];
         }
 

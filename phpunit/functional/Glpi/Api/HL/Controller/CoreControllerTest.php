@@ -320,55 +320,6 @@ class CoreControllerTest extends \HLAPITestCase
         });
     }
 
-    public function testOAuthAuthCodeGrant()
-    {
-        // Not a complete end to end test. Not sure how that could be done. Should probably be using Cypress.
-        global $DB;
-
-        // Create an OAuth client
-        $client = new \OAuthClient();
-        $client_id = $client->add([
-            'name' => __FUNCTION__,
-            'is_active' => 1,
-            'is_confidential' => 1,
-        ]);
-        $this->assertGreaterThan(0, $client_id);
-
-        $client->update([
-            'id' => $client_id,
-            'grants' => ['authorization_code'],
-            'redirect_uri' => ["/api.php/oauth2/redirection"],
-        ]);
-
-        // get client ID and secret
-        $it = $DB->request([
-            'SELECT' => ['identifier', 'secret', 'redirect_uri'],
-            'FROM' => \OAuthClient::getTable(),
-            'WHERE' => ['id' => $client_id],
-        ]);
-        $this->assertCount(1, $it);
-        $client_data = $it->current();
-
-        // Test authorize endpoint
-        $request = new Request('GET', '/Authorize', [], null);
-        $request = $request->withQueryParams([
-            'response_type' => 'code',
-            'client_id' => $client_data['identifier'],
-            'scope' => '',
-            'redirect_uri' => json_decode($client_data['redirect_uri'])[0],
-        ]);
-
-        $this->api->call($request, function ($call) {
-            /** @var \HLAPICallAsserter $call */
-            $call->response
-                ->status(fn($status) => $this->assertEquals(302, $status))
-                ->headers(function ($headers) {
-                    global $CFG_GLPI;
-                    $this->assertMatchesRegularExpression('/^' . preg_quote($CFG_GLPI['url_base'], '/') . '\/\?redirect=/', $headers['Location']);
-                });
-        });
-    }
-
     public function testOAuthClientCredentialsGrant(): void
     {
         global $DB;
