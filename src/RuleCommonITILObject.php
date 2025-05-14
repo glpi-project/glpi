@@ -996,7 +996,7 @@ TWIG, ['message' => __('Actions related to validation are set, but no validation
 
             // choose approval (validation) threshold
             $actions['validationsteps_threshold']['name']               = __('Set approval threshold');
-            $actions['validationsteps_threshold']['type']               = 'dropdown_percent';
+            $actions['validationsteps_threshold']['type']               = 'percent';
             $actions['validationsteps_threshold']['force_actions']      = ['add_validation'];
         }
 

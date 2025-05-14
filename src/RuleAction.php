@@ -646,13 +646,14 @@ class RuleAction extends CommonDBChild
                             $display            = true;
                             break;
 
-                        case "dropdown_percent":
-                            $percentages = range(0, 100, 10); // List of percentages in increments of 10
-                            $options = [];
-                            foreach ($percentages as $percentage) {
-                                $options[$percentage] = $percentage . '%';
-                            }
-                            Dropdown::showFromArray('value', $options, ['value' => $param['value']]);
+                        case "percent":
+                            echo Html::input('value', [
+                                'value' => $param['value'],
+                                'type' => 'number',
+                                'min' => 0,
+                                'max' => 100,
+                                'style' => 'padding:9px',
+                                ] );
                             $display = true;
                             break;
 
