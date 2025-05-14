@@ -9524,9 +9524,15 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
         }
 
         // initial validation steps
-        foreach (ValidationStep::getDefaults() as $validation_step) {
-            $tables[ValidationStep::getTable()][] = $validation_step;
-        }
+        $tables[ValidationStep::getTable()][] = [
+            'id' => 1,
+            'name' => 'Approval',
+            'minimal_required_validation_percent' => 100,
+            'is_default' => 1,
+            'date_creation' => date('Y-m-d H:i:s'),
+            'date_mod' => date('Y-m-d H:i:s'),
+            'comment' => '',
+        ];
 
         return $tables;
     }

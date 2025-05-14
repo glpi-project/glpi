@@ -7674,12 +7674,12 @@ CREATE TABLE `glpi_ticketvalidations` (
 
 DROP TABLE IF EXISTS `glpi_validationsteps`;
 CREATE TABLE `glpi_validationsteps` (
-    `id`                                  int unsigned NOT NULL AUTO_INCREMENT,
-    `name`                                varchar(255)          DEFAULT NULL,
-    `minimal_required_validation_percent` smallint     NOT NULL DEFAULT '100',
-    `is_default`                          tinyint      NOT NULL DEFAULT '0',
-    `date_mod`                            timestamp    NULL     DEFAULT NULL,
-    `date_creation`                       timestamp    NULL     DEFAULT NULL,
+    `id`                                  int unsigned          NOT NULL    AUTO_INCREMENT,
+    `name`                                varchar(255)                      DEFAULT NULL,
+    `minimal_required_validation_percent` tinyint unsigned      NOT NULL    DEFAULT '100',
+    `is_default`                          tinyint               NOT NULL    DEFAULT '0',
+    `date_mod`                            timestamp             NULL        DEFAULT NULL,
+    `date_creation`                       timestamp             NULL        DEFAULT NULL,
     `comment`                             text,
     PRIMARY KEY (`id`),
     KEY `name` (`name`),
@@ -7691,11 +7691,11 @@ CREATE TABLE `glpi_validationsteps` (
 
 DROP TABLE IF EXISTS `glpi_itils_validationsteps`;
 CREATE TABLE `glpi_itils_validationsteps` (
-    `id` int unsigned NOT NULL AUTO_INCREMENT,
-    `minimal_required_validation_percent` smallint NOT NULL, #, DEFAULT '100',
-    `validationsteps_id` int unsigned NOT NULL DEFAULT '0',
-    `itemtype` varchar(255) NOT NULL,
-    `items_id` int unsigned NOT NULL DEFAULT '0',
+    `id`                                    int unsigned        NOT NULL AUTO_INCREMENT,
+    `minimal_required_validation_percent`   tinyint unsigned    NOT NULL, #, DEFAULT '100',
+    `validationsteps_id`                    int unsigned        NOT NULL DEFAULT '0',
+    `itemtype`                              varchar(255)        NOT NULL,
+    `items_id`                              int unsigned        NOT NULL DEFAULT '0',
     PRIMARY KEY (`id`),
     UNIQUE KEY `unicity` (`itemtype`,`items_id`,`validationsteps_id`),
     KEY `validationsteps_id` (`validationsteps_id`)

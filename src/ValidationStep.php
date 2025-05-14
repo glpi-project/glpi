@@ -172,27 +172,6 @@ class ValidationStep extends \CommonDropdown
         return $vs;
     }
 
-    /**
-     * Default Validation steps data
-     * Used to populate the database with default values
-     *
-     * @return array<int, array<string, mixed>>
-     */
-    public static function getDefaults(): array
-    {
-        return [
-            [
-                'id' => 1,
-                'name' => 'Approval',
-                'minimal_required_validation_percent' => 100,
-                'is_default' => 1,
-                'date_creation' => date('Y-m-d H:i:s'),
-                'date_mod' => date('Y-m-d H:i:s'),
-                'comment' => '',
-            ],
-        ];
-    }
-
     private function removeDefaultFromOthers(): void
     {
         $all_except_this = $this->find(['is_default' => 1, ['NOT' => ['id' => $this->getID()]]]);

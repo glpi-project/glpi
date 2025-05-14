@@ -75,12 +75,12 @@ function create_validation_steps_table(Migration $migration): void
     $pk_sign = DBConnection::getDefaultPrimaryKeySignOption();
 
     $query = "CREATE TABLE IF NOT EXISTS `glpi_validationsteps` (
-        `id`                                  int {$pk_sign} NOT NULL AUTO_INCREMENT,
-        `name`                                varchar(255)          DEFAULT NULL,
-        `minimal_required_validation_percent` smallint     NOT NULL DEFAULT '100',
-        `is_default`                          tinyint      NOT NULL DEFAULT '0',
-        `date_mod`                            timestamp    NULL     DEFAULT NULL,
-        `date_creation`                       timestamp    NULL     DEFAULT NULL,
+        `id`                                  int {$pk_sign}     NOT NULL AUTO_INCREMENT,
+        `name`                                varchar(255)       DEFAULT NULL,
+        `minimal_required_validation_percent` tinyint unsigned   NOT NULL DEFAULT '100',
+        `is_default`                          tinyint            NOT NULL DEFAULT '0',
+        `date_mod`                            timestamp          NULL DEFAULT NULL,
+        `date_creation`                       timestamp          NULL DEFAULT NULL,
         `comment`                             text,
         PRIMARY KEY (`id`)
     ) ENGINE=InnoDB DEFAULT CHARSET=$charset COLLATE=$collation ROW_FORMAT=DYNAMIC;";
@@ -110,13 +110,18 @@ function insert_validation_steps_defaults(Migration $migration, \DBmysql $DB): v
         throw new \LogicException($message);
     }
 
-    $defaults = ValidationStep::getDefaults();
-    foreach ($defaults as $values) {
-        $values = array_map([$DB, 'escape'], $values);
-        $migration->addPostQuery(
-            $DB->buildInsert('glpi_validationsteps', $values)
-        );
-    }
+    $default = [
+        'id' => 1,
+        'name' => 'Approval',
+        'minimal_required_validation_percent' => 100,
+        'is_default' => 1,
+        'date_creation' => date('Y-m-d H:i:s'),
+        'date_mod' => date('Y-m-d H:i:s'),
+        'comment' => '',
+    ];
+    $migration->addPostQuery(
+        $DB->buildInsert('glpi_validationsteps', $default)
+    );
 }
 
 function create_itils_validationsteps_table(Migration $migration, \DBmysql $DB): void
@@ -127,11 +132,11 @@ function create_itils_validationsteps_table(Migration $migration, \DBmysql $DB):
 
     if (!$DB->tableExists('glpi_itils_validationsteps')) {
         $query = "CREATE TABLE `glpi_itils_validationsteps` (
-            `id` int {$pk_sign} NOT NULL AUTO_INCREMENT,
-            `minimal_required_validation_percent` smallint NOT NULL,
-            `validationsteps_id` int {$pk_sign} NOT NULL DEFAULT '0',
-            `itemtype` varchar(255) NOT NULL,
-            `items_id` int {$pk_sign} NOT NULL DEFAULT '0',
+            `id`                                    int {$pk_sign}        NOT NULL AUTO_INCREMENT,
+            `minimal_required_validation_percent`   tinyint unsigned      NOT NULL,
+            `validationsteps_id`                    int {$pk_sign}        NOT NULL DEFAULT '0',
+            `itemtype`                              varchar(255)          NOT NULL,
+            `items_id`                              int {$pk_sign}        NOT NULL DEFAULT '0',
             PRIMARY KEY (`id`),
             UNIQUE KEY `unicity` (`itemtype`,`items_id`,`validationsteps_id`),
             KEY `validationsteps_id` (`validationsteps_id`)
