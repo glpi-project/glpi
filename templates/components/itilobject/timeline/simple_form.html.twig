@@ -39,7 +39,7 @@
 {% set field_options = {
    'is_horizontal': false,
    'full_width': true,
-   'fields_template': itiltemplate,
+   'fields_template': itiltemplate|default(null),
    'disabled': (not (canupdate or can_requester)),
 } %}
 
@@ -86,8 +86,8 @@
          __('Description'),
          field_options|merge({
             'enable_richtext': true,
-            'enable_fileupload': (itiltemplate.isHiddenField('_documents_id')) ? false : true,
-            'mention_options': mention_options,
+            'enable_fileupload': itiltemplate.isHiddenField('_documents_id')|default(false) ? false : true,
+            'mention_options': mention_options|default({}),
             'entities_id': item.isNewItem() ? entities_id : item.fields['entities_id'],
             'uploads': uploads,
             'add_field_class': 'col-12 itil-textarea-content',
