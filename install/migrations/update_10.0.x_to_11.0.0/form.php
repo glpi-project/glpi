@@ -355,6 +355,28 @@ if (!$DB->fieldExists('glpi_forms_forms', 'submit_button_conditions')) {
     );
 }
 
+if (!$DB->fieldExists('glpi_forms_questions', 'validation_strategy')) {
+    $migration->addField(
+        'glpi_forms_questions',
+        'validation_strategy',
+        "varchar(30) NOT NULL DEFAULT ''",
+        [
+            'after' => 'conditions',
+        ]
+    );
+}
+
+if (!$DB->fieldExists('glpi_forms_questions', 'validation_conditions')) {
+    $migration->addField(
+        'glpi_forms_questions',
+        'validation_conditions',
+        "JSON NOT NULL",
+        [
+            'after' => 'validation_strategy',
+        ]
+    );
+}
+
 // Add rights for the forms object
 $migration->addRight("form", ALLSTANDARDRIGHT, ['config' => UPDATE]);
 

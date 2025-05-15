@@ -40,6 +40,7 @@ use Glpi\Form\Answer;
 use Glpi\Form\AnswersSet;
 use Glpi\Form\Condition\Engine;
 use Glpi\Form\Condition\EngineInput;
+use Glpi\Form\Condition\ValidationStrategy;
 use Glpi\Form\DelegationData;
 use Glpi\Form\Destination\AnswersSet_FormDestinationItem;
 use Glpi\Form\Destination\FormDestination;
@@ -92,6 +93,7 @@ final class AnswersHandler
         $result = new ValidationResult();
         $engine = new Engine($form, new EngineInput($answers));
         $visibility = $engine->computeVisibility();
+        $validation = $engine->computeValidation();
 
         // Retrieve visible mandatory questions
         $mandatory_questions = array_filter(
@@ -107,6 +109,38 @@ final class AnswersHandler
                 || (isset($answers[$question->getID()]['items_id']) && empty($answers[$question->getID()]['items_id']))
             ) {
                 $result->addError($question, __('This field is mandatory'));
+            }
+        }
+
+        // Validate answers for each question if validation conditions are defined
+        foreach ($questions_container->getQuestions() as $question) {
+            if ($question->getConfiguredValidationStrategy() === ValidationStrategy::NO_VALIDATION) {
+                // Skip validation if the question is always validated
+                continue;
+            }
+
+            // Check if the question is visible
+            if (!$visibility->isQuestionVisible($question->getID())) {
+                continue;
+            }
+
+            // Check if the question is not answered (empty or not set)
+            if (empty($answers[$question->getID()])) {
+                continue;
+            }
+
+            // Validate the answer
+            if (!$validation->isQuestionValid($question->getID())) {
+                // Add error for each condition that is not met
+                foreach ($validation->getQuestionValidation($question->getID()) as $condition) {
+                    $result->addError(
+                        $question,
+                        $condition->getValueOperator()?->getErrorMessageForValidation(
+                            $question->getConfiguredValidationStrategy(),
+                            $condition
+                        )
+                    );
+                }
             }
         }
 

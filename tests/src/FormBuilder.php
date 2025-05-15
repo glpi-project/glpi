@@ -36,6 +36,7 @@ namespace Glpi\Tests;
 
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\Condition\CreationStrategy;
+use Glpi\Form\Condition\ValidationStrategy;
 use Glpi\Form\Condition\VisibilityStrategy;
 
 /**
@@ -114,6 +115,11 @@ class FormBuilder
     protected array $questions_visibilities;
 
     /**
+     * Questions validations
+     */
+    protected array $questions_validations;
+
+    /**
      * Comments visibilities
      */
     protected array $comments_visibilities;
@@ -156,6 +162,7 @@ class FormBuilder
         $this->category = 0;
         $this->submit_buttons_visibilities = [];
         $this->questions_visibilities = [];
+        $this->questions_validations = [];
         $this->comments_visibilities = [];
         $this->sections_visibilities = [];
         $this->destinations_conditions = [];
@@ -552,6 +559,22 @@ class FormBuilder
     public function getQuestionVisibility(): array
     {
         return $this->questions_visibilities;
+    }
+
+    public function setQuestionValidation(
+        string $question_name,
+        ValidationStrategy $strategy,
+        array $conditions
+    ): void {
+        $this->questions_validations[$question_name] = [
+            'validation_strategy' => $strategy->value,
+            'conditions' => $conditions,
+        ];
+    }
+
+    public function getQuestionValidation(): array
+    {
+        return $this->questions_validations;
     }
 
     public function setCommentVisibility(

@@ -48,7 +48,7 @@
     </div>
 
     <script defer type="module">
-        import { GlpiFormConditionEditorController } from 'js/modules/Forms/ConditionEditorController';
+        import { GlpiFormConditionVisibilityEditorController } from 'js/modules/Forms/ConditionVisibilityEditorController';
 
         // Load form sections state from backend
         const sections = [];
@@ -81,7 +81,7 @@
 
         // Initialize controller
         const parent_container = document.getElementById('{{ container_id }}');
-        const controller = new GlpiFormConditionEditorController(
+        const controller = new GlpiFormConditionVisibilityEditorController(
             parent_container.querySelector('[data-glpi-conditions-editor-container]'),
             null,
             null,

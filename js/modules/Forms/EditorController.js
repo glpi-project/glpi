@@ -33,7 +33,8 @@
 
 /* global _, tinymce_editor_configs, getUUID, getRealInputWidth, sortable, tinymce, glpi_toast_info, glpi_toast_error, bootstrap, setupAjaxDropdown, setupAdaptDropdown, setHasUnsavedChanges, hasUnsavedChanges */
 
-import { GlpiFormConditionEditorController } from 'js/modules/Forms/ConditionEditorController';
+import { GlpiFormConditionVisibilityEditorController } from './ConditionVisibilityEditorController.js';
+import { GlpiFormConditionValidationEditorController } from './ConditionValidationEditorController.js';
 
 /**
  * Client code to handle users actions on the form_editor template
@@ -83,7 +84,7 @@ export class GlpiFormEditorController
     #question_subtypes_options;
 
     /**
-     * @type {array<GlpiFormConditionEditorController>}
+     * @type {array<GlpiFormConditionVisibilityEditorController>}
      */
     #conditions_editors_controllers;
 
@@ -216,6 +217,22 @@ export class GlpiFormEditorController
                 ),
             );
 
+        // Handle validation editor dropdowns
+        // The dropdown content will be re-rendered each time it is opened.
+        // This ensure the selectable data is always up to date (i.e. the
+        // question selector has up to date questions names, contains all newly
+        // added questions and do not include deleted questions).
+        $(document)
+            .on(
+                'show.bs.dropdown',
+                '[data-glpi-form-editor-validation-dropdown]',
+                (e) => this.#renderValidationEditor(
+                    $(e.target)
+                        .parent()
+                        .find('[data-glpi-conditions-editor-container]')
+                ),
+            );
+
         // Compute state before submitting the form
         $(this.#target).on('submit', (event) => {
             try {
@@ -255,7 +272,7 @@ export class GlpiFormEditorController
 
         // Handle conditions strategy changes
         document.addEventListener('updated_strategy', (e) => {
-            this.#updateVisibilityBadge(
+            this.#updateConditionBadge(
                 $(e.detail.container).closest(
                     '[data-glpi-form-editor-block],[data-glpi-form-editor-section-details],[data-glpi-form-editor-container]'
                 ),
@@ -496,6 +513,12 @@ export class GlpiFormEditorController
 
             case "show-visibility-dropdown":
                 this.#showVisibilityDropdown(
+                    target.closest('[data-glpi-form-editor-block],[data-glpi-form-editor-section-details]')
+                );
+                break;
+
+            case "show-validation-dropdown":
+                this.#showValidationDropdown(
                     target.closest('[data-glpi-form-editor-block],[data-glpi-form-editor-section-details]')
                 );
                 break;
@@ -990,6 +1013,9 @@ export class GlpiFormEditorController
         ).children();
 
         const new_question = this.#addBlock(target, template);
+
+        // Set UUID
+        this.#setUuid(new_question);
 
         // Mark as active
         this.#setActiveItem(new_question);
@@ -1880,6 +1906,9 @@ export class GlpiFormEditorController
 
         const new_comment = this.#addBlock(target, template);
 
+        // Set UUID
+        this.#setUuid(new_comment);
+
         // Mark as active
         this.#setActiveItem(new_comment);
 
@@ -2435,16 +2464,37 @@ export class GlpiFormEditorController
         bootstrap.Dropdown.getOrCreateInstance(dropdown[0]).show();
     }
 
-    #updateVisibilityBadge(container, value) {
-        // Show/hide badges in the container
-        container.find('[data-glpi-editor-visibility-badge]')
+    #updateConditionBadge(container, value) {
+        // Determine which type of badge we're updating based on the container
+        let badgeType = null;
+        if (container.find(`[data-glpi-editor-visibility-badge=${value}]`).length > 0) {
+            badgeType = 'visibility';
+        } else if (container.find(`[data-glpi-editor-validation-badge=${value}]`).length > 0) {
+            badgeType = 'validation';
+        }
+
+        // Hide all badges of this type
+        container.find(`[data-glpi-editor-${badgeType}-badge]`)
             .removeClass('d-flex')
-            .addClass('d-none')
-        ;
-        container.find(`[data-glpi-editor-visibility-badge=${value}]`)
+            .addClass('d-none');
+
+        // Show only the specific badge for the current value
+        container.find(`[data-glpi-editor-${badgeType}-badge=${value}]`)
             .removeClass('d-none')
-            .addClass('d-flex')
+            .addClass('d-flex');
+    }
+
+    #showValidationDropdown(container) {
+        container
+            .find('[data-glpi-form-editor-validation-dropdown-container]')
+            .removeClass('d-none')
         ;
+
+        const dropdown = container
+            .find('[data-glpi-form-editor-validation-dropdown-container]')
+            .find('[data-glpi-form-editor-validation-dropdown]')
+        ;
+        bootstrap.Dropdown.getOrCreateInstance(dropdown[0]).show();
     }
 
     /**
@@ -2541,7 +2591,47 @@ export class GlpiFormEditorController
             ).data('glpi-form-editor-condition-type');
 
             // Init and register controller
-            controller = new GlpiFormConditionEditorController(
+            controller = new GlpiFormConditionVisibilityEditorController(
+                container[0],
+                uuid,
+                type,
+                this.#getSectionStateForConditionEditor(),
+                this.#getQuestionStateForConditionEditor(),
+                this.#getCommentStateForConditionEditor(),
+            );
+            container.attr(
+                'data-glpi-editor-condition-controller-index',
+                this.#conditions_editors_controllers.length,
+            );
+            this.#conditions_editors_controllers.push(controller);
+        } else {
+            // Refresh form data to make sure it is up to date
+            controller.setFormSections(this.#getSectionStateForConditionEditor());
+            controller.setFormQuestions(this.#getQuestionStateForConditionEditor());
+            controller.setFormComments(this.#getCommentStateForConditionEditor());
+        }
+
+        controller.renderEditor();
+    }
+
+    async #renderValidationEditor(container) {
+        let controller = this.#getConditionEditorController(container);
+
+        // Controller lazy loading
+        if (controller === null) {
+            // Read selected item uuid and type
+            const uuid = this.#getItemInput(
+                container.closest(
+                    '[data-glpi-form-editor-block], [data-glpi-form-editor-section-details], [data-glpi-form-editor-container]'
+                ),
+                'uuid',
+            );
+            const type = container.closest(
+                '[data-glpi-form-editor-condition-type]'
+            ).data('glpi-form-editor-condition-type');
+
+            // Init and register controller
+            controller = new GlpiFormConditionValidationEditorController(
                 container[0],
                 uuid,
                 type,

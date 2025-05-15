@@ -34,46 +34,46 @@
 
 namespace Glpi\Form\Condition;
 
-use JsonException;
-
-trait ConditionableTrait
+trait ConditionableValidationTrait
 {
+    use ConditionableTrait {
+        getConditionsFieldName as getValidationConditionsFieldName;
+        getConfiguredConditionsData as getConfiguredValidationConditionsData;
+    }
+
     /**
-     * Get the field name used for conditions
-     * Can be overridden in the class using this trait
+     * Get the field name used for visibility strategy
+     * Classes using this trait can override this method to customize the field name
      *
      * @return string
      */
-    protected function getConditionsFieldName(): string
+    protected function getValidationStrategyFieldName(): string
     {
-        return 'conditions';
+        return 'validation_strategy';
     }
 
     /** @return ConditionData[] */
-    public function getConfiguredConditionsData(): array
+    public function getConfiguredValidationConditionsData(): array
     {
-        return $this->getConditionsData($this->getConditionsFieldName());
+        return $this->getConditionsData($this->getValidationConditionsFieldName());
     }
 
-    /** @return ConditionData[] */
-    private function getConditionsData(string $field_name): array
+    /**
+     * Override the getConditionsFieldName method from ConditionableTrait
+     * to return the validation conditions field name
+     *
+     * @return string
+     */
+    protected function getValidationConditionsFieldName(): string
     {
-        parent::post_getFromDB();
+        return 'validation_conditions';
+    }
 
-        try {
-            $raw_data = json_decode(
-                json       : $this->fields[$field_name] ?? '{}',
-                associative: true,
-                flags      : JSON_THROW_ON_ERROR,
-            );
-        } catch (JsonException $e) {
-            $raw_data = [];
-        }
-
-        $form_data = new FormData([
-            'conditions' => $raw_data,
-        ]);
-
-        return $form_data->getConditionsData();
+    public function getConfiguredValidationStrategy(): ValidationStrategy
+    {
+        $field_name = $this->getValidationStrategyFieldName();
+        $strategy_value = $this->fields[$field_name] ?? "";
+        $strategy = ValidationStrategy::tryFrom($strategy_value);
+        return $strategy ?? ValidationStrategy::NO_VALIDATION;
     }
 }

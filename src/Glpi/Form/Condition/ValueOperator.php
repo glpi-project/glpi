@@ -76,4 +76,49 @@ enum ValueOperator: string
             self::NOT_VISIBLE            => __("Is not visible"),
         };
     }
+
+    public function canBeUsedForValidation(): bool
+    {
+        return match ($this) {
+            self::GREATER_THAN,
+            self::GREATER_THAN_OR_EQUALS,
+            self::LESS_THAN,
+            self::LESS_THAN_OR_EQUALS,
+            self::MATCH_REGEX,
+            self::NOT_MATCH_REGEX => true,
+
+            default => false
+        };
+    }
+
+    public function getErrorMessageForValidation(
+        ValidationStrategy $validation_strategy,
+        ConditionData $condition_data
+    ): string {
+        if ($validation_strategy === ValidationStrategy::VALID_IF) {
+            return match ($this) {
+                self::GREATER_THAN           => sprintf(__("The value must be greater than %s"), $condition_data->getValue()),
+                self::GREATER_THAN_OR_EQUALS => sprintf(__("The value must be greater than or equal to %s"), $condition_data->getValue()),
+                self::LESS_THAN              => sprintf(__("The value must be less than %s"), $condition_data->getValue()),
+                self::LESS_THAN_OR_EQUALS    => sprintf(__("The value must be less than or equal to %s"), $condition_data->getValue()),
+                self::MATCH_REGEX            => __("The value must match the requested format"),
+                self::NOT_MATCH_REGEX        => __("The value must not match the requested format"),
+
+                default => __("The value is not valid"),
+            };
+        } elseif ($validation_strategy === ValidationStrategy::INVALID_IF) {
+            return match ($this) {
+                self::GREATER_THAN           => sprintf(__("The value must not be greater than %s"), $condition_data->getValue()),
+                self::GREATER_THAN_OR_EQUALS => sprintf(__("The value must not be greater than or equal to %s"), $condition_data->getValue()),
+                self::LESS_THAN              => sprintf(__("The value must not be less than %s"), $condition_data->getValue()),
+                self::LESS_THAN_OR_EQUALS    => sprintf(__("The value must not be less than or equal to %s"), $condition_data->getValue()),
+                self::MATCH_REGEX            => __("The value must not match the requested format"),
+                self::NOT_MATCH_REGEX        => __("The value must match the requested format"),
+
+                default => __("The value is not valid"),
+            };
+        }
+
+        return __("The value is not valid");
+    }
 }
