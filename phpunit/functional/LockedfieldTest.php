@@ -924,4 +924,50 @@ class LockedfieldTest extends DbTestCase
         $this->assertTrue($computer->getFromDB($cid));
         $this->assertEquals($computer->fields['locations_id'], 0);
     }
+
+    public function testCheckAllInventoryLockableObjects()
+    {
+        $this->login('glpi', 'glpi');
+
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+        foreach ($CFG_GLPI['inventory_lockable_objects'] as $itemtype) {
+            $this->assertTrue($DB->fieldExists($itemtype::getTable(), 'is_dynamic'), "$itemtype does not have is_dynamic field");
+        }
+
+
+        // Excluded type with is_dynamic field but not in inventory_lockable_objects
+        $excluded = [
+            'UserEmail',
+            'Glpi\\Asset\\Asset', // only concrete classes are registered
+            'Group_User',
+            'Profile_User',
+        ];
+
+        $global_inventory_type = array_merge(
+            $CFG_GLPI['inventory_lockable_objects'],
+            $CFG_GLPI['inventory_types']
+        );
+
+        $tables = $DB->listTables();
+        foreach ($tables as $table_data) {
+            $table = $table_data['TABLE_NAME'];
+
+            if ($DB->fieldExists($table, 'is_dynamic')) {
+                $itemtype = getItemTypeForTable($table);
+                if (in_array($itemtype, $excluded)) {
+                    continue;
+                }
+
+                $this->assertContains(
+                    $itemtype,
+                    $global_inventory_type,
+                    "$itemtype is not in inventory_lockable_objects or inventory_types"
+                );
+            }
+        }
+    }
 }

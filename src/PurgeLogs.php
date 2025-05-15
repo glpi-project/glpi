@@ -97,6 +97,9 @@ class PurgeLogs extends CommonDBTM
                     'linked_action'   => [
                         Log::HISTORY_INSTALL_SOFTWARE,
                         Log::HISTORY_UNINSTALL_SOFTWARE,
+                        Log::HISTORY_ADD_SUBITEM,
+                        Log::HISTORY_UPDATE_SUBITEM,
+                        Log::HISTORY_DELETE_SUBITEM,
                     ],
                 ] + $month
             );
@@ -122,8 +125,24 @@ class PurgeLogs extends CommonDBTM
             $DB->delete(
                 'glpi_logs',
                 [
-                    'itemtype'        => 'Software',
-                    'itemtype_link'   => 'SoftwareVersion',
+                    'OR' => [
+                        [
+                            'itemtype'        => 'Computer',
+                            'itemtype_link'   => 'Software',
+                        ],
+                        [
+                            'itemtype'        => 'Software',
+                            'itemtype_link'   => 'SoftwareVersion',
+                        ],
+                        [
+                            'itemtype'        => 'Software',
+                            'itemtype_link'   => 'Item_SoftwareVersion',
+                        ],
+                        [
+                            'itemtype'        => 'SoftwareVersion',
+                            'itemtype_link'   => 'Item_SoftwareVersion',
+                        ],
+                    ],
                     'linked_action'   => [
                         Log::HISTORY_ADD_SUBITEM,
                         Log::HISTORY_UPDATE_SUBITEM,

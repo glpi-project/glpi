@@ -1048,6 +1048,7 @@ HTML;
     {
         return [
             ['http://localhost', true],
+            ['ftp://localhost', false], // Only http and https protocol are supported
             ['https://localhost', true],
             ['https;//localhost', false],
             ['https://glpi-project.org', true],
@@ -1088,6 +1089,8 @@ HTML;
             ['https://localhost?test=true&othertest=false', true],
             ['https://localhost/front/computer.php?is_deleted=0&as_map=0&criteria[0][link]=AND&criteria[0][field]=80&criteria[0][searchtype]=equals&criteria[0][value]=254&search=Search&itemtype=Computer', true],
             ['https://localhost/this+is+a+test', true], // + to denote a space allowed
+            ['https://localhost/withvadlidencoded%20', true],
+            ['https://localhost/withinvalidencoded%G1', false], // %G1 is not a valid html encoded value
         ];
     }
 

@@ -50,6 +50,7 @@ class DomainRecord extends CommonDBChild
     public static $itemtype        = 'Domain';
     public static $items_id        = 'domains_id';
     public $dohistory              = true;
+    public static $mustBeAttached  = false;
 
     public static function getTypeName($nb = 0)
     {
@@ -285,6 +286,14 @@ class DomainRecord extends CommonDBChild
      */
     private function prepareInput($input, $add = false)
     {
+        if (($add && empty($input['domains_id'])) || (isset($input['domains_id']) && empty($input['domains_id']))) {
+            Session::addMessageAfterRedirect(
+                __('A domain is required'),
+                true,
+                ERROR
+            );
+            return false;
+        }
 
         if ($add) {
             if (isset($input['date_creation']) && empty($input['date_creation'])) {

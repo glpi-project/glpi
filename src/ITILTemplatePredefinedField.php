@@ -80,7 +80,18 @@ abstract class ITILTemplatePredefinedField extends ITILTemplateField
         }
 
         if ((int) $input['num'] === 13) { // 13 - Search option ID for Associated Items for CommonITILObject types
+            // An itemtype must be selected
             if ((string) $input['value'] === '0') {
+                Session::addMessageAfterRedirect(
+                    __s('You must select an associated item'),
+                    true,
+                    ERROR
+                );
+                return false;
+            }
+
+            // An item must be selected
+            if (isset($input['add_items_id']) && $input['add_items_id'] == 0) {
                 Session::addMessageAfterRedirect(
                     __s('You must select an associated item'),
                     true,

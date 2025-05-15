@@ -49,7 +49,8 @@
                 {{ fields.dropdownField('Domain', 'domains_id', item.fields['domains_id'], null, {
                     no_label: true,
                     mb: '',
-                    entity: item.fields['entities_id']
+                    entity: item.fields['entities_id'],
+                    display_emptychoice: false,
                 }) }}
             {% endif %}
         {% endset %}

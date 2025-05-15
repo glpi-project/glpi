@@ -105,6 +105,36 @@ if (
             }
             break;
 
+        case Supplier::getType():
+            $tmpname = [
+                'comment' => "",
+            ];
+            if ($_POST['value'] != 0) {
+                $supplier = new \Supplier();
+                if (!is_array($_POST["value"]) && $supplier->getFromDB($_POST['value']) && $supplier->canView()) {
+                    $supplier_params = [
+                        'id' => $supplier->getID(),
+                        'supplier_name' => $supplier->fields['name'],
+                        'comment' => $supplier->fields['comment'],
+                        'address' => $supplier->fields['address'],
+                        'postcode' => $supplier->fields['postcode'],
+                        'town' => $supplier->fields['town'],
+                        'email' => $supplier->fields['email'],
+                        'fax' => $supplier->fields['fax'],
+                        'registration_number' => $supplier->fields['registration_number'],
+                        'phonenumber' => $supplier->fields['phonenumber'],
+                    ];
+                    $comment = TemplateRenderer::getInstance()->render('components/supplier/info_card.html.twig', [
+                        'supplier' => $supplier_params,
+                    ]);
+                    $tmpname = [
+                        'comment' => $comment,
+                    ];
+                }
+            }
+            echo($tmpname["comment"]);
+            break;
+
         default:
             if ($_POST["value"] > 0) {
                 if (

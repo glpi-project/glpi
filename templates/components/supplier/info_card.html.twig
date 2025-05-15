@@ -1,0 +1,93 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2025 Teclib' and contributors.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+<div class="p-0 supplier-info-card">
+    <div class="row">
+        <h4 class="card-title mb-1">
+            {% if supplier['id'] %}
+                <a href="{{ 'Supplier'|itemtype_form_path(supplier['id']) }}">{{ supplier['supplier_name'] }}</a>
+            {% else %}
+                {{ supplier['supplier_name'] }}
+            {% endif %}
+        </h4>
+
+        <div class="text-muted">
+            {% if supplier['registration_number']|length > 0 %}
+                <div>
+                    <i class="ti ti-id-badge"></i>
+                    {{ supplier['registration_number'] }}
+                </div>
+            {% endif %}
+            {% if supplier['comment']|length > 0 %}
+                <div>
+                    <i class="ti ti-notes"></i>
+                    {{ supplier['comment'] }}
+                </div>
+            {% endif %}
+            {% if not supplier['phonenumber'] is empty %}
+                <div>
+                    <i class="ti ti-phone"></i>
+                    <a href="tel:{{ supplier['phonenumber'] }}">{{ supplier['phonenumber'] }}</a>
+                </div>
+            {% endif %}
+            {% if not supplier['email'] is empty %}
+                <div>
+                    <i class="ti ti-mail"></i>
+                    <a href="mailto:{{ supplier['email'] }}">{{ supplier['email'] }}</a>
+                </div>
+            {% endif %}
+            {% if not supplier['fax'] is empty %}
+                <div>
+                    <i class="ti ti-printer"></i>
+                    {{ supplier['fax'] }}
+                </div>
+            {% endif %}
+            {% if not supplier['address'] is empty or not supplier['town'] is empty or not supplier['postcode'] is empty %}
+                <div>
+                    <i class="ti ti-home"></i>
+                    {% if not supplier['address'] is empty %}
+                        {{ supplier['address'] }}
+                    {% endif %}
+                    {% if not supplier['town'] is empty %}
+                        {{ supplier['town'] }}
+                    {% endif %}
+                    {% if not supplier['address'] is empty and not supplier['town'] is empty and not supplier['postcode'] is empty %}
+                        -
+                    {% endif %}
+                    {% if not supplier['postcode'] is empty %}
+                            {{ supplier['postcode'] }}
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
