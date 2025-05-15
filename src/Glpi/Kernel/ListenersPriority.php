@@ -47,6 +47,7 @@ final class ListenersPriority
         PostBootListener\LoadLegacyConfiguration::class =>             160,
         PostBootListener\LoadLanguage::class =>                        150,
         PostBootListener\CustomObjectsAutoloaderRegistration::class => 140,
+        PostBootListener\DisablePluginsOnVersionChange::class =>       135,
         PostBootListener\InitializePlugins::class =>                   130,
         PostBootListener\CustomObjectsBootstrap::class =>              120,
     ];
