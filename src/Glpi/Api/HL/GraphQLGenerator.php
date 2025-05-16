@@ -85,7 +85,16 @@ final class GraphQLGenerator
         if (is_callable($type)) {
             $type = $type();
         }
+        // Ignore types with no fields (For example, maybe a custom asset from a definition without any custom fields generates an invalid type like "_CustomAsset_Car_custom_fields")
+        if (empty($type->getFields())) {
+            return '';
+        }
         foreach ($type->getFields() as $field_name => $field) {
+            $field_type = $field->config['type'];
+            if ($field_type instanceof ObjectType && empty($field->config['type']->getFields())) {
+                // Ignore properties that would like to types with no fields
+                continue;
+            }
             try {
                 $type_str .= "  $field_name: {$field->getType()}\n";
             } catch (\Throwable $e) {
