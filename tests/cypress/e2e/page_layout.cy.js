@@ -43,11 +43,11 @@ describe('Page layout', () => {
             cy.get('aside.navbar.sidebar').injectAndCheckA11y();
         });
 
-        cy.get('.navbar-nav.user-menu:visible').click();
-        cy.get('.navbar-nav.user-menu:visible .dropdown-menu').injectAndCheckA11y();
+        cy.get('.navbar-nav.user-menu').click();
+        cy.get('.navbar-nav.user-menu .dropdown-menu').injectAndCheckA11y();
 
-        cy.get('.navbar-nav.user-menu:visible .dropdown-menu a.entity-dropdown-toggle').click();
-        cy.get('.navbar-nav.user-menu:visible .dropdown-menu a.entity-dropdown-toggle + .dropdown-menu').injectAndCheckA11y();
+        cy.get('.navbar-nav.user-menu .dropdown-menu a.entity-dropdown-toggle').click();
+        cy.get('.navbar-nav.user-menu .dropdown-menu a.entity-dropdown-toggle + .dropdown-menu').injectAndCheckA11y();
 
         cy.get('header.navbar').injectAndCheckA11y();
     });
