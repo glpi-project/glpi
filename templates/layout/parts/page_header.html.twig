@@ -65,13 +65,6 @@
                </span>
             {% endif %}
 
-            {% if user is not null %}
-               {# There may still be a user logged in without a profile or entity. This is seen when they need to reset their password. #}
-               <div class="d-lg-none">
-                  {{ include('layout/parts/user_header.html.twig') }}
-               </div>
-            {% endif %}
-
             {% if not anonymous %}
                <div class="collapse navbar-collapse" id="navbar-menu">
                    <span class="d-inline-block d-lg-none ms-2">
@@ -111,10 +104,6 @@
                   <span class="glpi-logo"></span>
                </a>
 
-               <div class="d-lg-none">
-                  {{ include('layout/parts/user_header.html.twig') }}
-               </div>
-
                <div class="collapse navbar-collapse justify-content-center" id="navbar-menu">
                   {{ include('layout/parts/menu.html.twig') }}
                   <span class="ms-xl-2 d-inline-block mt-2 mt-xl-2">
@@ -123,9 +112,11 @@
                </div>
             {% endif %}
 
-            <div class="ms-md-4 d-none d-lg-block">
-               {{ include('layout/parts/user_header.html.twig') }}
-            </div>
+            {% if user is not null %}
+               <div class="ms-md-4">
+                  {{ include('layout/parts/user_header.html.twig') }}
+               </div>
+            {% endif %}
          </div>
       </header>
 
