@@ -1287,7 +1287,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
         }
 
         TemplateRenderer::getInstance()->display('pages/admin/profile/tools_simple.html.twig', [
-            'item' => $this
+            'item' => $this,
         ]);
     }
 
@@ -1362,7 +1362,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
         }
 
         TemplateRenderer::getInstance()->display('pages/admin/profile/management.html.twig', [
-            'item' => $this
+            'item' => $this,
         ]);
     }
 
@@ -1381,7 +1381,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
         }
 
         TemplateRenderer::getInstance()->display('pages/admin/profile/tools.html.twig', [
-            'item' => $this
+            'item' => $this,
         ]);
     }
 
@@ -1643,7 +1643,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
         }
 
         TemplateRenderer::getInstance()->display('pages/admin/profile/lifecycle.html.twig', [
-            'item' => $this
+            'item' => $this,
         ]);
     }
 
@@ -1732,7 +1732,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
         }
 
         TemplateRenderer::getInstance()->display('pages/admin/profile/lifecycle_simple.html.twig', [
-            'item' => $this
+            'item' => $this,
         ]);
     }
 
