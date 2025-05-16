@@ -295,9 +295,9 @@ JAVASCRIPT;
 
         $plugins_path = \array_map(fn(string $plugin_key) => "/plugins/{$plugin_key}", Plugin::getPlugins());
 
-        $script = sprintf('const CFG_GLPI = %s;', json_encode($cfg_glpi, JSON_PRETTY_PRINT))
+        $script = sprintf('window.CFG_GLPI = %s;', json_encode($cfg_glpi, JSON_PRETTY_PRINT))
             . "\n"
-            . sprintf('const GLPI_PLUGINS_PATH = %s;', json_encode($plugins_path, JSON_PRETTY_PRINT));
+            . sprintf('window.GLPI_PLUGINS_PATH = %s;', json_encode($plugins_path, JSON_PRETTY_PRINT));
 
         return Html::scriptBlock($script);
     }
