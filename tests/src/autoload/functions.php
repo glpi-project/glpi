@@ -691,6 +691,13 @@ function loadDataset()
                 'is_active' => 1,
                 'profiles' => ['4' => ALLSTANDARDRIGHT | READ_ASSIGNED | UPDATE_ASSIGNED | READ_OWNED | UPDATE_OWNED],
             ],
+            [
+                'system_name' => 'AssetWithNoCustomFields',
+                'icon' => 'ti ti-test-pipe',
+                'label' => 'Asset with no custom fields',
+                'is_active' => 1,
+                'profiles' => ['4' => ALLSTANDARDRIGHT | READ_ASSIGNED | UPDATE_ASSIGNED | READ_OWNED | UPDATE_OWNED],
+            ],
         ],
         'Glpi\\Asset\\CustomFieldDefinition' => [
             [
@@ -711,6 +718,16 @@ function loadDataset()
                 'name' => 'TestB',
                 'entities_id' => '_test_root_entity',
                 'custom_teststring' => 'Test String B',
+            ],
+        ],
+        'Glpi\\CustomAsset\\AssetWithNoCustomFields' => [
+            [
+                'name' => 'AssetWithNoCustomFields01',
+                'entities_id' => '_test_root_entity',
+            ],
+            [
+                'name' => 'AssetWithNoCustomFields02',
+                'entities_id' => '_test_root_entity',
             ],
         ],
     ];
