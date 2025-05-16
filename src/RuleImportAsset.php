@@ -37,6 +37,7 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\AssetDefinitionManager;
 use Glpi\Asset\Capacity\IsInventoriableCapacity;
+use Glpi\Plugin\Hooks;
 
 class RuleImportAsset extends Rule
 {
@@ -515,8 +516,8 @@ class RuleImportAsset extends Rule
 
             $this->handleFieldsCriteria($item, $it_criteria, $input);
 
-            if (isset($PLUGIN_HOOKS['use_rules'])) {
-                foreach ($PLUGIN_HOOKS['use_rules'] as $plugin => $val) {
+            if (isset($PLUGIN_HOOKS[Hooks::USE_RULES])) {
+                foreach ($PLUGIN_HOOKS[Hooks::USE_RULES] as $plugin => $val) {
                     if (!Plugin::isPluginActive($plugin)) {
                         continue;
                     }
@@ -530,7 +531,7 @@ class RuleImportAsset extends Rule
                         ];
                         $sql_results = Plugin::doOneHook(
                             $plugin,
-                            "ruleImportAsset_getSqlRestriction",
+                            Hooks::AUTO_RULEIMPORTASSET_GET_SQL_RESTRICTION,
                             $params
                         );
 
@@ -1148,7 +1149,7 @@ TWIG, $twig_params);
                 if (is_array($val) && in_array(static::class, $val, true)) {
                     $criteria = Plugin::doOneHook(
                         $plugin,
-                        "ruleImportAsset_addGlobalCriteria",
+                        Hooks::AUTO_RULEIMPORTASSET_ADD_GLOBAL_CRITERIA,
                         $criteria
                     );
                 }

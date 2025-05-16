@@ -5472,13 +5472,13 @@ abstract class CommonITILObject extends CommonDBTM
 
         $types = [];
         $ptypes = [];
-        //Types of the plugins (keep the plugin hook for right check)
-        if (isset($PLUGIN_HOOKS['assign_to_ticket'])) {
-            foreach (array_keys($PLUGIN_HOOKS['assign_to_ticket']) as $plugin) {
+        // Types of the plugins (keep the plugin hook for right check)
+        if (isset($PLUGIN_HOOKS[Hooks::ASSIGN_TO_TICKET])) {
+            foreach (array_keys($PLUGIN_HOOKS[Hooks::ASSIGN_TO_TICKET]) as $plugin) {
                 if (!Plugin::isPluginActive($plugin)) {
                     continue;
                 }
-                $ptypes = Plugin::doOneHook($plugin, 'AssignToTicket', $ptypes);
+                $ptypes = Plugin::doOneHook($plugin, Hooks::AUTO_ASSIGN_TO_TICKET, $ptypes);
             }
         }
         asort($ptypes);
@@ -9944,7 +9944,7 @@ abstract class CommonITILObject extends CommonDBTM
             ];
 
             $content = "<div class='kanban-plugin-content'>";
-            $plugin_content_pre = Plugin::doHookFunction('pre_kanban_content', [
+            $plugin_content_pre = Plugin::doHookFunction(Hooks::PRE_KANBAN_CONTENT, [
                 'itemtype' => $itemtype,
                 'items_id' => $item['id'],
             ]);
@@ -9966,7 +9966,7 @@ abstract class CommonITILObject extends CommonDBTM
 
             $content .= "</div>";
             $content .= "<div class='kanban-plugin-content'>";
-            $plugin_content_post = Plugin::doHookFunction('post_kanban_content', [
+            $plugin_content_post = Plugin::doHookFunction(Hooks::POST_KANBAN_CONTENT, [
                 'itemtype' => $itemtype,
                 'items_id' => $item['id'],
             ]);

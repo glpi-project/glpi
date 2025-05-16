@@ -42,6 +42,7 @@ use Glpi\Api\HL\Router;
 use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
+use Glpi\Plugin\Hooks;
 
 /**
  * @phpstan-type AdditionalErrorMessage array{priority: string, message: string}
@@ -139,7 +140,7 @@ abstract class AbstractController
     {
         $schemas = static::getRawKnownSchemas();
         // Allow plugins to inject or modify schemas
-        $schemas = \Plugin::doHookFunction('redefine_api_schemas', [
+        $schemas = \Plugin::doHookFunction(Hooks::REDEFINE_API_SCHEMAS, [
             'controller' => static::class,
             'schemas' => $schemas,
         ])['schemas'];
