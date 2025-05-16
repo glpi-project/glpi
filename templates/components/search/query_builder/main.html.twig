@@ -116,7 +116,8 @@
             <span class="d-none d-sm-block">{{ __('group') }}</span>
          </button>
          {% if mainform %}
-            <span class="ms-auto btn-group">
+            {% set action_count = showaction + p['showbookmark'] + p['showreset'] %}
+            <span class="ms-auto {{ action_count > 1 ? 'btn-group' : '' }}">
                 {% if (showaction) %}
                 {# Display submit button #}
                 <button class="btn btn-sm btn-primary" type="button" name="{{ p['actionname'] }}">
