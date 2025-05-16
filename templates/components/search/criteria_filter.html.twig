@@ -67,6 +67,22 @@
     </div>
 </div>
 
+<style>
+    #manage_filter_ux button[name=search] {
+       --tblr-btn-padding-x: 1rem !important;
+       --tblr-btn-padding-y: 0.4375rem !important;
+       --tblr-btn-line-height: 1.4285714286 !important;
+       font-size: inherit !important;
+       --tblr-btn-color: var(--tblr-secondary-fg);
+       --tblr-btn-bg: var(--tblr-secondary);
+       --tblr-btn-hover-color: var(--tblr-secondary-fg);
+       --tblr-btn-hover-bg: var(--tblr-secondary-darken);
+       --tblr-btn-active-color: var(--tblr-secondary-fg);
+       --tblr-btn-active-bg: var(--tblr-secondary-darken);
+       --tblr-btn-disabled-bg: var(--tblr-secondary);
+       --tblr-btn-disabled-color: var(--tblr-secondary-fg);
+    }
+</style>
 <script>
     // Display search results
     $('button[name=search]').on('click', function(e) {
