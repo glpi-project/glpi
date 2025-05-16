@@ -1155,7 +1155,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
         }
 
         TemplateRenderer::getInstance()->display('pages/admin/profile/assistance_simple.html.twig', [
-            'item' => $this
+            'item' => $this,
         ]);
     }
 
@@ -1212,7 +1212,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
         }
 
         TemplateRenderer::getInstance()->display('pages/admin/profile/assets.html.twig', [
-            'item' => $this
+            'item' => $this,
         ]);
     }
 
@@ -1344,7 +1344,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
         }
 
         TemplateRenderer::getInstance()->display('pages/admin/profile/assistance.html.twig', [
-            'item' => $this
+            'item' => $this,
         ]);
     }
 
