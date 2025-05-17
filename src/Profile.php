@@ -3680,24 +3680,6 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
     }
 
     /**
-     * @return array<int, string>
-     **/
-    private static function getUseMentionsChoices(bool $disabled): array
-    {
-        if ($disabled) {
-            return [
-                UserMention::USER_MENTION_DISABLED => __('Disabled'),
-            ];
-        }
-
-        return [
-            UserMention::USER_MENTION_DISABLED     => __('Disabled'),
-            UserMention::USER_MENTION_FULL        => __('Full'),
-            UserMention::USER_MENTION_RESTRICTED  => __('Restricted'),
-        ];
-    }
-
-    /**
      * Check if user has given right.
      *
      * @since 0.84
