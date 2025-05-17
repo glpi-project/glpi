@@ -41,7 +41,6 @@ use Glpi\Event;
 use Glpi\Form\Form;
 use Glpi\Helpdesk\Tile\LinkableToTilesInterface;
 use Glpi\Helpdesk\Tile\TilesManager;
-use Glpi\RichText\UserMention;
 use Glpi\Toolbox\ArrayNormalizer;
 
 /**
