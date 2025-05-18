@@ -276,6 +276,7 @@ class HtmlTest extends \GLPITestCase
             'Unmanaged',
             'Cable',
             'Glpi\CustomAsset\Test01',
+            'Glpi\CustomAsset\AssetWithNoCustomFields',
             'Item_DeviceSimcard',
         ];
         $this->assertSame('Assets', $menu['assets']['title']);
