@@ -2368,7 +2368,8 @@ abstract class CommonITILObject extends CommonDBTM
         // Handle "_solutiontemplates_id" special input
         $this->handleSolutionTemplateInput();
 
-        // Send validation requests
+        // Handle validation requests
+        $this->handleValidationStepThresholdInput($this->input);
         $this->manageValidationAdd($this->input);
 
         $this->manageITILObjectLinkInput($this->input);
@@ -2726,12 +2727,6 @@ abstract class CommonITILObject extends CommonDBTM
         if (in_array("closedate", $this->updates)) {
             $this->updates[]                  = "close_delay_stat";
             $this->fields['close_delay_stat'] = $this->computeCloseDelayStat();
-        }
-
-        // Update of the global validation status if the validation percentage has changed
-        if (in_array("validation_percent", $this->updates)) {
-            $this->updates[] = 'global_validation';
-            $this->fields['global_validation'] = $this->getValidationClassInstance()->computeValidationStatus($this);
         }
 
         //Look for reopening
@@ -3175,7 +3170,8 @@ abstract class CommonITILObject extends CommonDBTM
         // Handle "_solutiontemplates_id" special input
         $this->handleSolutionTemplateInput();
 
-        // Send validation requests
+        // Handle validation requests
+        $this->handleValidationStepThresholdInput($this->input);
         $this->manageValidationAdd($this->input);
 
         $this->manageITILObjectLinkInput($this->input);
@@ -8851,6 +8847,41 @@ abstract class CommonITILObject extends CommonDBTM
     }
 
     /**
+     * Handle the input related to validation step threshold update.
+     */
+    private function handleValidationStepThresholdInput(array $input): void
+    {
+        // Action for `validationsteps_threshold` rule action
+        if (!array_key_exists('_validationsteps_threshold', $input)) {
+            return;
+        }
+
+        $relation_fields = [
+            'itemtype' => static::class,
+            'items_id' => $this->getID(),
+            'validationsteps_id' => $input['_validationsteps_id'] ?? ValidationStep::getDefault()->getID(),
+        ];
+
+        $success = false;
+
+        $itil_validationstep = static::getValidationStepInstance();
+        if ($itil_validationstep->getFromDBByCrit($relation_fields)) {
+            $success = $itil_validationstep->update([
+                'id' => $itil_validationstep->getID(),
+                'minimal_required_validation_percent' => $input['_validationsteps_threshold'],
+            ]);
+        } else {
+            $success = $itil_validationstep->add($relation_fields + [
+                'minimal_required_validation_percent' => $input['_validationsteps_threshold'],
+            ]);
+        }
+
+        if ($success === false) {
+            throw new \RuntimeException('Unable to update the validation step threshold.');
+        }
+    }
+
+    /**
      * Manage Validation add from input (form and rules)
      *
      * @param array $input
@@ -8882,6 +8913,7 @@ abstract class CommonITILObject extends CommonDBTM
                 $input["_add_validation"] = [$input["_add_validation"]];
             }
 
+            // user/groups assignements
             foreach ($input["_add_validation"] as $key => $value) {
                 switch ($value) {
                     case 'requester_supervisor':
@@ -9059,6 +9091,11 @@ abstract class CommonITILObject extends CommonDBTM
                         ) {
                             continue;
                         }
+                        // add validation step
+                        if (isset($input['_validationsteps_id'])) {
+                            $values['_validationsteps_id'] = $input['_validationsteps_id'];
+                        }
+
                         $values['itemtype_target'] = $validation_to_send['itemtype_target'];
                         $values['items_id_target'] = $validation_to_send['items_id_target'];
                         if ($validation->add($values)) {
@@ -10420,11 +10457,40 @@ abstract class CommonITILObject extends CommonDBTM
      */
     public static function getValidationClassInstance(): ?CommonITILValidation
     {
+        $validation_class_name = self::getValidationClassName();
+
+        return $validation_class_name ? new $validation_class_name() : null;
+    }
+
+    public static function getValidationClassName(): ?string
+    {
         $validation_class = static::class . 'Validation';
         if (class_exists($validation_class)) {
-            return new $validation_class();
+            return $validation_class;
         }
+
         return null;
+    }
+
+
+    /**
+     * @return class-string<\ITIL_ValidationStep>|null
+     */
+    public static function getValidationStepClassName(): ?string
+    {
+        $validation_class = static::class . 'ValidationStep';
+        if (class_exists($validation_class)) {
+            return $validation_class;
+        }
+
+        return null;
+    }
+
+    public static function getValidationStepInstance(): ?ITIL_ValidationStep
+    {
+        $class = self::getValidationStepClassName();
+
+        return $class ? new $class() : null;
     }
 
     /**

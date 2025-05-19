@@ -3507,9 +3507,11 @@ class CommonDBTM extends CommonGLPI
     /**
      * Return a field Value if exists
      *
+     * Use it for display only.
+     *
      * @param string $field field name
      *
-     * @return mixed value of the field or 'N/A' if it does not exist
+     * @return mixed value of the field or NOT_AVAILABLE constant ('N/A') if it does not exist
      **/
     public function getField($field)
     {

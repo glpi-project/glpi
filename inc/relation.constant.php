@@ -197,23 +197,24 @@ $RELATION = [
     ],
 
     'glpi_changes' => [
-        '_glpi_changecosts'         => 'changes_id',
-        '_glpi_changes_changes'     => [
+        '_glpi_changecosts'           => 'changes_id',
+        '_glpi_changes_changes'       => [
             'changes_id_1',
             'changes_id_2',
         ],
-        '_glpi_changes_groups'      => 'changes_id',
-        '_glpi_changes_items'       => 'changes_id',
-        '_glpi_changes_problems'    => 'changes_id',
-        '_glpi_changes_suppliers'   => 'changes_id',
-        '_glpi_changes_tickets'     => 'changes_id',
-        '_glpi_changes_users'       => 'changes_id',
-        '_glpi_changesatisfactions' => 'changes_id',
-        '_glpi_changetasks'         => 'changes_id',
-        '_glpi_changevalidations'   => 'changes_id',
-        '_glpi_itils_projects'      => [['items_id', 'itemtype']],
-        '_glpi_itilfollowups'       => [['items_id', 'itemtype']],
-        '_glpi_itilsolutions'       => [['items_id', 'itemtype']],
+        '_glpi_changes_groups'        => 'changes_id',
+        '_glpi_changes_items'         => 'changes_id',
+        '_glpi_changes_problems'      => 'changes_id',
+        '_glpi_changes_suppliers'     => 'changes_id',
+        '_glpi_changes_tickets'       => 'changes_id',
+        '_glpi_changes_users'         => 'changes_id',
+        '_glpi_changesatisfactions'   => 'changes_id',
+        '_glpi_changetasks'           => 'changes_id',
+        '_glpi_changevalidations'     => 'changes_id',
+        '_glpi_itils_projects'        => [['items_id', 'itemtype']],
+        '_glpi_itilfollowups'         => [['items_id', 'itemtype']],
+        '_glpi_itils_validationsteps' => [['items_id', 'itemtype']],
+        '_glpi_itilsolutions'         => [['items_id', 'itemtype']],
     ],
 
     'glpi_changetemplates' => [
@@ -547,8 +548,6 @@ $RELATION = [
         'glpi_clustertypes'                => 'entities_id',
         'glpi_computers'                   => 'entities_id',
         'glpi_dropdowns_dropdowns'         => 'entities_id',
-        '_glpi_items_softwareversions'     => 'entities_id',
-        '_glpi_itemvirtualmachines'        => 'entities_id',
         'glpi_consumableitems'             => 'entities_id',
         '_glpi_consumables'                => 'entities_id',
         'glpi_contacts'                    => 'entities_id',
@@ -624,6 +623,8 @@ $RELATION = [
         '_glpi_items_devicesoundcards'     => 'entities_id',
         '_glpi_items_disks'                => 'entities_id',
         '_glpi_items_operatingsystems'     => 'entities_id',
+        '_glpi_items_softwareversions'     => 'entities_id',
+        '_glpi_itemvirtualmachines'        => 'entities_id',
         'glpi_itilcategories'              => 'entities_id',
         'glpi_itilfollowuptemplates'       => 'entities_id',
         'glpi_itilvalidationtemplates'     => 'entities_id',
@@ -809,6 +810,17 @@ $RELATION = [
 
     'glpi_itilfollowuptemplates' => [
         'glpi_pendingreasons' => 'itilfollowuptemplates_id',
+    ],
+
+    'glpi_itilvalidationtemplates' => [
+        '_glpi_itilvalidationtemplates_targets' => 'itilvalidationtemplates_id',
+        'glpi_changevalidations' => 'itilvalidationtemplates_id',
+        'glpi_ticketvalidations' => 'itilvalidationtemplates_id',
+    ],
+
+    'glpi_itils_validationsteps' => [
+        'glpi_ticketvalidations' => 'itils_validationsteps_id',
+        'glpi_changevalidations' => 'itils_validationsteps_id',
     ],
 
     'glpi_knowbaseitemcategories' => [
@@ -1422,28 +1434,29 @@ $RELATION = [
     ],
 
     'glpi_tickets' => [
-        '_glpi_changes_tickets'      => 'tickets_id',
-        'glpi_documents'             => 'tickets_id',
-        '_glpi_groups_tickets'       => 'tickets_id',
-        '_glpi_items_tickets'        => 'tickets_id',
-        '_glpi_itils_projects'       => [['items_id', 'itemtype']],
-        '_glpi_itilfollowups'        => [['items_id', 'itemtype']],
-        '_glpi_itilsolutions'        => [['items_id', 'itemtype']],
-        '_glpi_olalevels_tickets'    => 'tickets_id',
-        '_glpi_problems_tickets'     => 'tickets_id',
-        '_glpi_projecttasks_tickets' => 'tickets_id',
-        '_glpi_slalevels_tickets'    => 'tickets_id',
-        '_glpi_suppliers_tickets'    => 'tickets_id',
-        '_glpi_ticketcosts'          => 'tickets_id',
-        '_glpi_tickets_contracts'    => 'tickets_id',
-        '_glpi_tickets_tickets'      => [
+        '_glpi_changes_tickets'       => 'tickets_id',
+        'glpi_documents'              => 'tickets_id',
+        '_glpi_groups_tickets'        => 'tickets_id',
+        '_glpi_items_tickets'         => 'tickets_id',
+        '_glpi_itils_projects'        => [['items_id', 'itemtype']],
+        '_glpi_itilfollowups'         => [['items_id', 'itemtype']],
+        '_glpi_itils_validationsteps' => [['items_id', 'itemtype']],
+        '_glpi_itilsolutions'         => [['items_id', 'itemtype']],
+        '_glpi_olalevels_tickets'     => 'tickets_id',
+        '_glpi_problems_tickets'      => 'tickets_id',
+        '_glpi_projecttasks_tickets'  => 'tickets_id',
+        '_glpi_slalevels_tickets'     => 'tickets_id',
+        '_glpi_suppliers_tickets'     => 'tickets_id',
+        '_glpi_ticketcosts'           => 'tickets_id',
+        '_glpi_tickets_contracts'     => 'tickets_id',
+        '_glpi_tickets_tickets'       => [
             'tickets_id_1',
             'tickets_id_2',
         ],
-        '_glpi_tickets_users'        => 'tickets_id',
-        '_glpi_ticketsatisfactions'  => 'tickets_id',
-        '_glpi_tickettasks'          => 'tickets_id',
-        '_glpi_ticketvalidations'    => 'tickets_id',
+        '_glpi_tickets_users'         => 'tickets_id',
+        '_glpi_ticketsatisfactions'   => 'tickets_id',
+        '_glpi_tickettasks'           => 'tickets_id',
+        '_glpi_ticketvalidations'     => 'tickets_id',
     ],
 
     'glpi_tickettemplates' => [
@@ -1667,6 +1680,11 @@ $RELATION = [
         'glpi_users'    => 'usertitles_id',
     ],
 
+    'glpi_validationsteps' => [
+        'glpi_itilvalidationtemplates' => 'validationsteps_id',
+        'glpi_itils_validationsteps' => 'validationsteps_id',
+    ],
+
     'glpi_virtualmachinestates' => [
         'glpi_itemvirtualmachines' => 'virtualmachinestates_id',
     ],
@@ -1694,12 +1712,6 @@ $RELATION = [
     'glpi_webhookcategories' => [
         'glpi_webhookcategories'    => 'webhookcategories_id',
         'glpi_webhooks'             => 'webhookcategories_id',
-    ],
-
-    'glpi_itilvalidationtemplates' => [
-        '_glpi_itilvalidationtemplates_targets' => 'itilvalidationtemplates_id',
-        'glpi_changevalidations' => 'itilvalidationtemplates_id',
-        'glpi_ticketvalidations' => 'itilvalidationtemplates_id',
     ],
 
 ];

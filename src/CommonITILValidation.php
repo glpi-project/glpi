@@ -37,6 +37,7 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryFunction;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\RichText\RichText;
+use Glpi\RichText\UserMention;
 
 /**
  * CommonITILValidation Class
@@ -55,11 +56,11 @@ abstract class CommonITILValidation extends CommonDBChild
     public const VALIDATE               = 1024;
 
 
-    // STATUS
-    public const NONE      = 1; // none
-    public const WAITING   = 2; // waiting
-    public const ACCEPTED  = 3; // accepted
-    public const REFUSED   = 4; // rejected
+    // STATUSES
+    public const NONE      = 1; // used for ticket.global_validation
+    public const WAITING   = 2;
+    public const ACCEPTED  = 3;
+    public const REFUSED   = 4;
 
     public static function getIcon()
     {
@@ -69,6 +70,19 @@ abstract class CommonITILValidation extends CommonDBChild
     public static function getItilObjectItemType()
     {
         return str_replace('Validation', '', static::class);
+    }
+
+    /**
+     * @return class-string<\ITIL_ValidationStep>|null
+     */
+    public static function getValidationStepClassName(): ?string
+    {
+        $validation_class = static::class . 'Step';
+        if (class_exists($validation_class)) {
+            return $validation_class;
+        }
+
+        return null;
     }
 
     public static function getCreateRights()
@@ -284,6 +298,12 @@ abstract class CommonITILValidation extends CommonDBChild
 
     public function prepareInputForAdd($input)
     {
+        // validation step is mandatory : add default value is not set
+        if (!isset($input['itils_validationsteps_id']) && !isset($input['_validationsteps_id'])) {
+            $input['_validationsteps_id'] = ValidationStep::getDefault()->getID();
+        }
+
+        $input = $this->addITILValidationStepFromInput($input);
 
         $input["users_id"] = 0;
         // Only set requester on manual action
@@ -315,17 +335,22 @@ abstract class CommonITILValidation extends CommonDBChild
             return false;
         }
 
-        $itemtype = static::$itemtype;
-        $input['timeline_position'] = $itemtype::getTimelinePosition($input[static::$items_id], $this->getType(), $input["users_id"]);
+        $itil_class = static::getItilObjectItemType();
+        $itil_fkey  = $itil_class::getForeignKeyField();
+        $input['timeline_position'] = $itil_class::getTimelinePosition($input[$itil_fkey], static::class, $input["users_id"]);
 
         return parent::prepareInputForAdd($input);
     }
-
 
     public function post_addItem()
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
+
+        $itilobject = $this->getItem();
+        if (!($itilobject instanceof CommonITILObject)) {
+            throw new \RuntimeException();
+        }
 
         // Handle rich-text images
         foreach (['comment_submission', 'comment_validation'] as $content_field) {
@@ -339,60 +364,57 @@ abstract class CommonITILValidation extends CommonDBChild
         // Handle uploaded documents
         $this->input = $this->addFiles($this->input);
 
-        $item     = new static::$itemtype();
+        // --- update item (ITILObject) handling the validation
+        // always recompute global validation status on ticket
+        $input = [
+            'id' => $itilobject->getID(),
+            'global_validation' => static::computeValidationStatus($itilobject),
+            '_from_itilvalidation' => true,
+        ];
+
+        // to fix lastupdater
+        if (isset($this->input['_auto_update'])) {
+            $input['_auto_update'] = $this->input['_auto_update'];
+        }
+        // to know update by rules
+        if (isset($this->input["_rule_process"])) {
+            $input['_rule_process'] = $this->input["_rule_process"];
+        }
+        // No update ticket notif on ticket add
+        if (isset($this->input["_ticket_add"])) {
+            $input['_disablenotif'] = true;
+        }
+        $itilobject->update($input);
+
+        // -- send email notification
         $mailsend = false;
-        if ($item->getFromDB($this->fields[static::$items_id])) {
-            // Set global validation to waiting
-            if (((int) $item->fields['global_validation']) !== self::WAITING) {
-                $input = [
-                    'id'                    => $this->fields[static::$items_id],
-                    'global_validation'     => self::WAITING,
-                    '_from_itilvalidation'  => true,
-                ];
-
-                // to fix lastupdater
-                if (isset($this->input['_auto_update'])) {
-                    $input['_auto_update'] = $this->input['_auto_update'];
+        if (!isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"]) {
+            $options = ['validation_id' => $this->fields["id"],
+                'validation_status' => $this->fields["status"],
+            ];
+            $mailsend = NotificationEvent::raiseEvent('validation', $itilobject, $options, $this);
+        }
+        if ($mailsend) {
+            if ($this->fields['itemtype_target'] === 'User') {
+                $user = new User();
+                $user->getFromDB($this->fields["items_id_target"]);
+                $email = $user->getDefaultEmail();
+                if (!empty($email)) {
+                    Session::addMessageAfterRedirect(htmlescape(sprintf(__('Approval request sent to %s'), $user->getName())));
+                } else {
+                    Session::addMessageAfterRedirect(
+                        htmlescape(sprintf(
+                            __('The selected user (%s) has no valid email address. The request has been created, without email confirmation.'),
+                            $user->getName()
+                        )),
+                        false,
+                        ERROR
+                    );
                 }
-                // to know update by rules
-                if (isset($this->input["_rule_process"])) {
-                    $input['_rule_process'] = $this->input["_rule_process"];
-                }
-                // No update ticket notif on ticket add
-                if (isset($this->input["_ticket_add"])) {
-                    $input['_disablenotif'] = true;
-                }
-                $item->update($input);
-            }
-
-            if (!isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"]) {
-                $options = ['validation_id'     => $this->fields["id"],
-                    'validation_status' => $this->fields["status"],
-                ];
-                $mailsend = NotificationEvent::raiseEvent('validation', $item, $options, $this);
-            }
-            if ($mailsend) {
-                if ($this->fields['itemtype_target'] === 'User') {
-                    $user    = new User();
-                    $user->getFromDB($this->fields["items_id_target"]);
-                    $email   = $user->getDefaultEmail();
-                    if (!empty($email)) {
-                        Session::addMessageAfterRedirect(htmlescape(sprintf(__('Approval request sent to %s'), $user->getName())));
-                    } else {
-                        Session::addMessageAfterRedirect(
-                            htmlescape(sprintf(
-                                __('The selected user (%s) has no valid email address. The request has been created, without email confirmation.'),
-                                $user->getName()
-                            )),
-                            false,
-                            ERROR
-                        );
-                    }
-                } elseif (is_a($this->fields["itemtype_target"], CommonDBTM::class, true)) {
-                    $target = new $this->fields["itemtype_target"]();
-                    if ($target->getFromDB($this->fields["items_id_target"])) {
-                        Session::addMessageAfterRedirect(htmlescape(sprintf(__('Approval request sent to %s'), $target->getName())));
-                    }
+            } elseif (is_a($this->fields["itemtype_target"], CommonDBTM::class, true)) {
+                $target = new $this->fields["itemtype_target"]();
+                if ($target->getFromDB($this->fields["items_id_target"])) {
+                    Session::addMessageAfterRedirect(htmlescape(sprintf(__('Approval request sent to %s'), $target->getName())));
                 }
             }
         }
@@ -408,6 +430,7 @@ abstract class CommonITILValidation extends CommonDBChild
         // The following fields shouldn't be changed by anyone after the approval is created
         array_push(
             $forbid_fields,
+            'itils_validationsteps_id',
             'users_id',
             'itemtype_target',
             'items_id_target',
@@ -451,13 +474,21 @@ abstract class CommonITILValidation extends CommonDBChild
         return parent::prepareInputForUpdate($input);
     }
 
+    public function post_purgeItem()
+    {
+        $this->recomputeItilStatus();
+        $this->removeUnsedITILValidationStep();
+
+        parent::post_purgeItem();
+    }
 
     public function post_updateItem($history = true)
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        $item    = new static::$itemtype();
+        $this->recomputeItilStatus();
+
         $donotif = $CFG_GLPI["use_notifications"];
         if (isset($this->input['_disablenotif'])) {
             $donotif = false;
@@ -475,45 +506,34 @@ abstract class CommonITILValidation extends CommonDBChild
         // Handle uploaded documents
         $this->input = $this->addFiles($this->input);
 
-        if ($item->getFromDB($this->fields[static::$items_id])) {
-            if (
-                count($this->updates)
-                && $donotif
-            ) {
-                $options  = ['validation_id'     => $this->fields["id"],
-                    'validation_status' => $this->fields["status"],
-                ];
-                NotificationEvent::raiseEvent('validation_answer', $item, $options, $this);
-            }
-
-            //if status is updated, update global approval status
-            if (in_array("status", $this->updates)) {
-                $input = [
-                    'id'                    => $this->fields[static::$items_id],
-                    'global_validation'     => self::computeValidationStatus($item),
-                    '_from_itilvalidation'  => true,
-                ];
-                $item->update($input);
-            }
+        // -- notifications
+        if (
+            count($this->updates)
+            && $donotif
+        ) {
+            $options  = ['validation_id'     => $this->fields["id"],
+                'validation_status' => $this->fields["status"],
+            ];
+            NotificationEvent::raiseEvent('validation_answer', $this->getItem(), $options, $this);
         }
+
         parent::post_updateItem($history);
     }
 
-    public function pre_deleteItem()
+    public function post_deleteItem()
     {
+        $item = $this->getItem();
+        if ($item instanceof CommonITILObject) {
+            $input = [
+                'id'                    => $item->getID(),
+                'global_validation'     => static::computeValidationStatus($item),
+                '_from_itilvalidation'  => true,
+            ];
 
-        $item    = new static::$itemtype();
-        if ($item->getFromDB($this->fields[static::$items_id])) {
-            if (($item->fields['global_validation'] == self::WAITING)) {
-                $input = [
-                    'id'                    => $this->fields[static::$items_id],
-                    'global_validation'     => self::NONE,
-                    '_from_itilvalidation'  => true,
-                ];
-                $item->update($input);
+            if (!$item->update($input)) {
+                throw new \RuntimeException(sprintf('Failed to update related `%s` approval status.', $item::class));
             }
         }
-        return true;
     }
 
 
@@ -725,13 +745,15 @@ abstract class CommonITILValidation extends CommonDBChild
         /** @var \DBmysql $DB */
         global $DB;
 
+        $itil_class = static::getItilObjectItemType();
+
         $it = $DB->request([
-            'FROM'   => static::$itemtype::getTable(),
+            'FROM'   => $itil_class::getTable(),
             'COUNT'  => 'cpt',
             'WHERE'  => [
                 [
                     'id' => new QuerySubQuery([
-                        'SELECT' => static::$items_id,
+                        'SELECT' => $itil_class::getForeignKeyField(),
                         'FROM'   => static::getTable(),
                         'WHERE'  => [
                             'status' => self::WAITING,
@@ -740,7 +762,7 @@ abstract class CommonITILValidation extends CommonDBChild
                     ]),
                 ],
                 'NOT' => [
-                    'status' => [...static::$itemtype::getSolvedStatusArray(), ...static::$itemtype::getClosedStatusArray()],
+                    'status' => [...$itil_class::getSolvedStatusArray(), ...$itil_class::getClosedStatusArray()],
                 ],
             ],
         ]);
@@ -962,11 +984,9 @@ abstract class CommonITILValidation extends CommonDBChild
 
 
     /**
-     * Print the validation list into item
-     *
-     * @param CommonDBTM $item
-     **/
-    public function showSummary(CommonDBTM $item)
+     * Print validations summary (list of validations of the ITIL object)
+     */
+    private function showSummary(CommonITILObject $itil): void
     {
         /**
          * @var array $CFG_GLPI
@@ -984,124 +1004,229 @@ abstract class CommonITILValidation extends CommonDBChild
                 )
             )
         ) {
-            return false;
+            return;
         }
 
-        /** @var CommonITILObject $item */
-        $tID    = $item->fields['id'];
+        $rand = mt_rand();
+        $validation_steps_classname = static::getValidationStepClassName();
 
-        $tmp    = [static::$items_id => $tID];
-        $rand   = mt_rand();
-
-        $iterator = $DB->Request([
-            'FROM'   => $this->getTable(),
-            'WHERE'  => [static::$items_id => $item->getField('id')],
-            'ORDER'  => 'submission_date DESC',
-        ]);
-
-        Session::initNavigateListItems(
-            static::class,
-            //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
-            sprintf(
-                __('%1$s = %2$s'),
-                $item::getTypeName(1),
-                $item->fields["name"]
-            )
-        );
         $values = [];
-        foreach ($iterator as $row) {
-            $canedit = $this->canEdit($row["id"]);
-            Session::addToNavigateListItems($this->getType(), $row["id"]);
-            $status  = sprintf(
-                '<div class="badge fw-normal fs-4 text-wrap" style="border-color: %s;border-width: 2px;">%s</div>',
-                htmlescape(self::getStatusColor($row['status'])),
-                htmlescape(self::getStatus($row['status']))
+        $validation_steps_iterator = $DB->request(
+            [
+                'FROM'  => $validation_steps_classname::getTable(),
+                'WHERE' => [
+                    'itemtype' => $itil::class,
+                    'items_id' => $itil->getID(),
+                ],
+            ]
+        );
+
+        foreach ($validation_steps_iterator as $validation_step_data) {
+            $validation_step_id = $validation_step_data['id'];
+
+            $validation_step = new $validation_steps_classname();
+            $validation_step->getFromDB($validation_step_id);
+
+            $step_name          = Dropdown::getDropdownName(ValidationStep::getTable(), $validation_step_data['validationsteps_id']);
+            $step_status        = $validation_step->getStatus();
+            $step_achievements  = $validation_step->getAchievements();
+            $step_threshold     = $validation_step->fields['minimal_required_validation_percent'];
+            $edit_dialog_params = [
+                "url"    => $CFG_GLPI['root_doc'] . '/ajax/viewsubitem.php',
+                "params" => [
+                    'type'                      => $validation_steps_classname,
+                    'parenttype'                => $itil::class,
+                    $itil::getForeignKeyField() => $itil->getID(),
+                    'id'                        => $validation_step_id,
+                ],
+            ];
+
+            $step_row_html = TemplateRenderer::getInstance()->renderFromStringTemplate(
+                <<<TWIG
+                    {% macro stacked_progressbar(achieved, bg_color_class, stripped = false) %}
+                        <div class="progress" style="width: {{ achieved }}%">
+                            <div
+                                    class="progress-bar {% if stripped %}progress-bar-striped progress-bar-animated{% endif %} {{ bg_color_class }}"
+                                    role="progressbar"
+                                    aria-valuenow="{{ achieved }}"
+                                    aria-valuemin="0"
+                                    aria-valuemax="100"
+                                    aria-label="{{ achieved|formatted_number }}%"
+                            >
+                                <span class="visually-hidden">{{ achieved|formatted_number }}%</span>
+                            </div>
+                        </div>
+                    {% endmacro %}
+                    <div class="d-flex align-items-center gap-2 mx-auto" style="max-width: 650px;">
+                        <div class="flex-shrink-0"><strong>{{ step_name }}</strong></div>
+                        <div class="flex-shrink-0">
+                            {% if step_status == constant('CommonITILValidation::ACCEPTED') %}
+                                <span class="text-green" data-bs-toogle="tooltip" title="{{ __("Approval step accepted") }}">
+                                    <i class="ti ti-check"></i>
+                                </span>
+                            {% elseif step_status == constant('CommonITILValidation::REFUSED') %}
+                                <span class="text-red" data-bs-toggle="tooltip" title="{{ __("Approval step refused") }}">
+                                    <i class="ti ti-ban"></i>
+                                </span>
+                            {% elseif step_status == constant('CommonITILValidation::WAITING') %}
+                                <span class="text-yellow" data-bs-toggle="tooltip" title="{{ __("Approval step pending") }}">
+                                    <i class="ti ti-clock"></i>
+                                </span>
+                            {% endif %}
+                        </div>
+                        <div class="flex-grow-1">
+                            <div class="progress-stacked position-relative" data-bs-toggle="tooltip"
+                                 title="{{ progress_label|format(accepted_percent|formatted_number, step_threshold|formatted_number) }}">
+                                {{ _self.stacked_progressbar(accepted_percent, 'bg-green') }}
+                                {{ _self.stacked_progressbar(waiting_percent, 'bg-yellow', true) }}
+                                {{ _self.stacked_progressbar(refused_percent, 'bg-red') }}
+                                {# threshold  #}
+                                {# sligly move the indicator on edge case (0|100) to be visible #}
+                                {% if step_threshold == 0 %}
+                                    <div class="threshold-indicator" style="position: absolute; width: 5px; height: 100%; background-color: black; left: 0; top: 0; z-index: 10;"></div>
+                                {% elseif step_threshold == 100 %}
+                                    <div class="threshold-indicator" style="position: absolute; width: 5px; height: 100%; background-color: black; right: 0; top: 0; z-index: 10;"></div>
+                                {% else %}
+                                    <div class="threshold-indicator" style="position: absolute; width: 3px; height: 100%; background-color: black; left: {{ step_threshold }}%; top: 0; z-index: 10;"></div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="flex-shrink-0">
+                            <span class="ti ti-edit"
+                               role="button"
+                               title="{{ edit_button_label }}"
+                               onclick="glpi_ajax_dialog({{ edit_dialog_params|json_encode }});"
+                            >
+                                <span class="sr-only">{{ edit_button_label }}</span>
+                            </span>
+                        </div>
+                    </div>
+                TWIG,
+                [
+                    'step_id'            => $validation_step_id,
+                    'step_name'          => $step_name,
+                    'step_status'        => $step_status,
+                    'accepted_percent'   => $step_achievements[self::ACCEPTED],
+                    'refused_percent'    => $step_achievements[self::REFUSED],
+                    'waiting_percent'    => $step_achievements[self::WAITING],
+                    'step_threshold'     => $step_threshold,
+                    'edit_dialog_params' => $edit_dialog_params,
+                    'edit_button_label'  => __('Edit validation step'),
+                    'progress_label'     => __('Progress: %1$s%% of %2$s%% required'),
+                ]
             );
 
-            $comment_submission = RichText::getEnhancedHtml($this->fields['comment_submission'], ['images_gallery' => true]);
-            $type_name   = null;
-            $target_name = null;
-            if ($row["itemtype_target"] === User::class) {
-                $type_name   = User::getTypeName();
-                $target_name = getUserName($row["items_id_target"]);
-            } elseif (is_a($row["itemtype_target"], CommonDBTM::class, true)) {
-                $target = new $row["itemtype_target"]();
-                $type_name = $target::getTypeName();
-                if ($target->getFromDB($row["items_id_target"])) {
-                    $target_name = $target->getName();
-                }
-            }
-            $is_answered = $row['status'] !== self::WAITING && $row['users_id_validate'] > 0;
-            $comment_validation = RichText::getEnhancedHtml($this->fields['comment_validation'] ?? '', ['images_gallery' => true]);
+            $values[] = [
+                'row_class'          => 'table-light',
+                'showmassiveactions' => false,
+                'edit_colspan'       => 10,
+                'edit'               => $step_row_html,
+            ];
 
-            $doc_item = new Document_Item();
-            $docs = $doc_item->find([
-                "itemtype"          => static::class,
-                "items_id"           => $this->getID(),
-                "timeline_position"  => ['>', CommonITILObject::NO_TIMELINE],
+            $validation_iterator = $DB->request([
+                'FROM'  => $this->getTable(),
+                'WHERE' => ['itils_validationsteps_id' => $validation_step_id],
+                'ORDER' => ['submission_date DESC'],
             ]);
 
-            $document = "";
-            foreach ($docs as $docs_values) {
-                $doc = new Document();
-                if ($doc->getFromDB($docs_values['documents_id'])) {
-                    $document .= sprintf(
-                        '<a href="%s">%s</a><br />',
-                        htmlescape($doc->getLinkURL()),
-                        htmlescape($doc->getName())
-                    );
-                }
-            }
+            foreach ($validation_iterator as $row) {
+                $canedit = $this->canEdit($row["id"]);
+                $status  = sprintf(
+                    '<div class="badge fw-normal fs-4 text-wrap" style="border-color: %s;border-width: 2px;">%s</div>',
+                    htmlescape(self::getStatusColor($row['status'])),
+                    htmlescape(self::getStatus($row['status']))
+                );
 
-            $script = "";
-            if ($canedit) {
-                $edit_title = __s('Edit');
-                $item_id = (int) $item->fields['id'];
-                $row_id = (int) $row["id"];
-                $rand = htmlescape($rand);
-                $view_validation_id = htmlescape($this->fields[static::$items_id]);
-                $root_doc = htmlescape($CFG_GLPI["root_doc"]);
-                $params_json = json_encode([
-                    'type'             => static::class,
-                    'parenttype'       => static::$itemtype,
-                    static::$items_id  => $this->fields[static::$items_id],
-                    'id'               => $row["id"],
+                $comment_submission = RichText::getEnhancedHtml($this->fields['comment_submission'], ['images_gallery' => true]);
+                $type_name   = null;
+                $target_name = null;
+                if ($row["itemtype_target"] === User::class) {
+                    $type_name   = User::getTypeName();
+                    $target_name = getUserName($row["items_id_target"]);
+                } elseif (is_a($row["itemtype_target"], CommonDBTM::class, true)) {
+                    $target = new $row["itemtype_target"]();
+                    $type_name = $target::getTypeName();
+                    if ($target->getFromDB($row["items_id_target"])) {
+                        $target_name = $target->getName();
+                    }
+                }
+                $is_answered = $row['status'] !== self::WAITING && $row['users_id_validate'] > 0;
+                $comment_validation = RichText::getEnhancedHtml($this->fields['comment_validation'] ?? '', ['images_gallery' => true]);
+
+                $doc_item = new Document_Item();
+                $docs = $doc_item->find([
+                    "itemtype"          => static::class,
+                    "items_id"           => $this->getID(),
+                    "timeline_position"  => ['>', CommonITILObject::NO_TIMELINE],
                 ]);
 
-                $script = <<<HTML
-                    <span class="ti ti-edit" style="cursor:pointer" title="{$edit_title}"
-                          onclick="viewEditValidation{$item_id}{$row_id}{$rand}();"
-                          id="viewvalidation{$view_validation_id}{$row_id}{$rand}">
-                    </span>
-                    <script>
-                        function viewEditValidation{$item_id}{$row_id}{$rand}() {
-                            $('#viewvalidation{$item_id}{$rand}').load('$root_doc/ajax/viewsubitem.php', $params_json);
-                        };
-                    </script>
-HTML;
-            }
+                $document = "";
+                foreach ($docs as $docs_values) {
+                    $doc = new Document();
+                    if ($doc->getFromDB($docs_values['documents_id'])) {
+                        $document .= sprintf(
+                            '<a href="%s">%s</a><br />',
+                            htmlescape($doc->getLinkURL()),
+                            htmlescape($doc->getName())
+                        );
+                    }
+                }
 
-            $values[] = [
-                'edit'                  => $script,
-                'status'                => $status,
-                'type_name'             => $type_name,
-                'target_name'           => $target_name,
-                'is_answered'           => $is_answered,
-                'comment_submission'    => $comment_submission,
-                'comment_validation'    => $comment_validation,
-                'document'              => $document,
-                'submission_date'       => $row["submission_date"],
-                'validation_date'       => $row["validation_date"],
-                'user'                  => getUserName($row["users_id"]),
-            ];
+                $script = "";
+                if ($canedit) {
+                    $edit_title = __s('Edit');
+                    $item_id = (int) $itil->fields['id'];
+                    $row_id = (int) $row["id"];
+                    $params_json = json_encode([
+                        'type'             => static::class,
+                        'parenttype'       => static::$itemtype,
+                        static::$items_id  => $this->fields[static::$items_id],
+                        'id'               => $row["id"],
+                    ]);
+
+                    $rand_id = htmlescape($item_id . $row_id . $rand);
+
+                    $script = <<<HTML
+                        <span class="ti ti-edit" style="cursor:pointer" title="{$edit_title}"
+                              onclick="viewEditValidation{$rand_id}();"
+                              id="viewvalidation{$rand_id}">
+                        </span>
+                        <script>
+                            function viewEditValidation{$rand_id}() {
+                                glpi_ajax_dialog({
+                                    url: CFG_GLPI.root_doc + "/ajax/viewsubitem.php",
+                                    modalclass: 'modal-xl',
+                                    params: $params_json,
+                                });
+                            };
+                        </script>
+HTML;
+                }
+
+                $values[] = [
+                    'edit'                  => $script,
+                    'status'                => $status,
+                    'type_name'             => $type_name,
+                    'target_name'           => $target_name,
+                    'is_answered'           => $is_answered,
+                    'comment_submission'    => $comment_submission,
+                    'comment_validation'    => $comment_validation,
+                    'document'              => $document,
+                    'submission_date'       => $row["submission_date"],
+                    'validation_date'       => $row["validation_date"],
+                    'user'                  => getUserName($row["users_id"]),
+                ];
+
+            }
         }
 
+        $can_input = [static::$items_id => $itil->getID()];
         TemplateRenderer::getInstance()->display('components/itilobject/validation.html.twig', [
-            'canadd' => $this->can(-1, CREATE, $tmp),
-            'item' => $item,
+            'canadd' => $this->can(-1, CREATE, $can_input),
+            'item' => $itil,
             'itemtype' => static::$itemtype,
-            'tID' => $tID,
-            'donestatus' => array_merge($item->getSolvedStatusArray(), $item->getClosedStatusArray()),
+            'tID' => $itil->getID(),
+            'donestatus' => array_merge($itil->getSolvedStatusArray(), $itil->getClosedStatusArray()),
             'validation' => $this,
             'rand' => $rand,
             'items_id' => static::$items_id,
@@ -1154,10 +1279,21 @@ HTML;
             $this->check(-1, CREATE, $options);
         }
 
+        /** @var \CommonITILObject $itil */
+        $itil = $this->getItem();
+
+        $ivs = $itil::getValidationStepInstance();
+        $ivs->getFromDB($this->fields['itils_validationsteps_id']);
+        $validationsteps_id = $ivs->fields['validationsteps_id'] ?? ValidationStep::getDefault()->getID();
+
+        $mention_options = UserMention::getMentionOptions($itil);
+
         TemplateRenderer::getInstance()->display('components/itilobject/timeline/form_validation.html.twig', [
-            'item'      => $options['parent'],
-            'subitem'   => $this,
-            'scroll'    => true,
+            'item'                => $itil, // ItilObject
+            'subitem'             => $this, // Validation
+            'scroll'              => true,
+            'mention_options'     => $mention_options,
+            '_validationsteps_id' => $validationsteps_id,
         ]);
 
         return true;
@@ -1265,18 +1401,6 @@ HTML;
         $tab[] = [
             'id'                 => 'validation',
             'name'               => CommonITILValidation::getTypeName(1),
-        ];
-
-        $tab[] = [
-            'id'                 => '51',
-            'table'              => getTableForItemType(static::$itemtype),
-            'field'              => 'validation_percent',
-            'name'               => __('Minimum validation required'),
-            'datatype'           => 'number',
-            'unit'               => '%',
-            'min'                => 0,
-            'max'                => 100,
-            'step'               => 50,
         ];
 
         $tab[] = [
@@ -1775,123 +1899,22 @@ HTML;
     /**
      * Compute the validation status
      *
-     * @param $item CommonITILObject
+     * Reduced all the Validations of an item to a single status
      *
-     * @return integer
-     **/
-    public static function computeValidationStatus(CommonITILObject $item)
-    {
-
-        // Percent of validation
-        $validation_percent = $item->fields['validation_percent'];
-
-        $statuses           = [self::ACCEPTED => 0,
-            self::WAITING  => 0,
-            self::REFUSED  => 0,
-        ];
-        $validations        = getAllDataFromTable(
-            static::getTable(),
-            [
-                static::$items_id => $item->getID(),
-            ]
-        );
-
-        if ($total = count($validations)) {
-            foreach ($validations as $validation) {
-                $statuses[$validation['status']]++;
-            }
-        }
-
-        $accepted = 0;
-        $refused  = 0;
-        if ($total) {
-            $accepted = round($statuses[self::ACCEPTED] * 100 / $total);
-            $refused  = round($statuses[self::REFUSED]  * 100 / $total);
-        }
-
-        return self::computeValidation(
-            $accepted,
-            $refused,
-            $validation_percent
-        );
-    }
-
-    /**
-     * Compute the validation status from the percentage of acceptation, the
-     * percentage of refusals and the target acceptation threshold
-     *
-     * @param int $accepted             0-100 (percentage of acceptation)
-     * @param int $refused              0-100 (percentage of refusals)
-     * @param int $validation_percent   0-100 (target accepation threshold)
-     *
-     * @return int the validation status : ACCEPTED|REFUSED|WAITING
+     * @param $itil CommonITILObject
+     **@return int CommonITILValidation::VALIDATE|CommonITILValidation::REFUSED|CommonITILValidation::WAITING|CommonITILValidation::NONE
      */
-    public static function computeValidation(
-        int $accepted,
-        int $refused,
-        int $validation_percent
-    ): int {
-        if ($validation_percent > 0) {
-            if ($accepted >= $validation_percent) {
-                // We have reached the acceptation threshold
-                return self::ACCEPTED;
-            } elseif ($refused + $validation_percent > 100) {
-                // We can no longer reach the acceptation threshold
-                return self::REFUSED;
-            }
-        } else {
-            // No validation threshold set, one approval or denial is enough
-            if ($accepted > 0) {
-                return self::ACCEPTED;
-            } elseif ($refused > 0) {
-                return self::REFUSED;
-            }
-        }
-
-        return self::WAITING;
-    }
-
-
-    /**
-     * Get the validation statistics
-     *
-     * @param integer $tID tickets id
-     *
-     * @return string
-     **/
-    public static function getValidationStats($tID)
+    public static function computeValidationStatus(CommonITILObject $itil): int
     {
-
-        $tab = self::getAllStatusArray();
-
-        $nb  = countElementsInTable(static::getTable(), [static::$items_id => $tID]);
-
-        $stats = [];
-        foreach (array_keys($tab) as $status) {
-            $validations = countElementsInTable(static::getTable(), [static::$items_id => $tID,
-                'status'          => $status,
-            ]);
-            if ($validations > 0) {
-                if (!isset($stats[$status])) {
-                    $stats[$status] = 0;
-                }
-                $stats[$status] = $validations;
-            }
-        }
-
-        $list = "";
-        foreach ($stats as $stat => $val) {
-            $list .= $tab[$stat];
-            $list .= sprintf(__('%1$s (%2$d%%) '), " ", Html::formatNumber($val * 100 / $nb));
-        }
-
-        return $list;
+        $vs = $itil->getValidationStepInstance();
+        return $vs::getValidationStatusForITIL($itil);
     }
-
 
     /**
      * @param $item       CommonITILObject
      * @param $type
+     *
+     * Used in twig template
      */
     public static function alertValidation(CommonITILObject $item, $type)
     {
@@ -1991,5 +2014,87 @@ HTML;
     public static function getAllValidationStatusArray()
     {
         return [self::NONE, self::WAITING, self::REFUSED, self::ACCEPTED];
+    }
+
+    /**
+     * Associate the validation with an "itil validation step" created from an exiting "validation step"
+     *
+     * If no itils_validationsteps is defined for the itilobject, create it
+     * else, refererence it.
+     */
+    private function addITILValidationStepFromInput(array $input): array
+    {
+        $itil_class = static::getItilObjectItemType(); // Change | Ticket
+        $itil_fkey  = $itil_class::getForeignKeyField(); // changes_id | tickets_id
+
+        if (!array_key_exists('_validationsteps_id', $input) || !array_key_exists($itil_fkey, $input)) {
+            return $input;
+        }
+
+        $relation_fields = [
+            'itemtype'           => $itil_class,
+            'items_id'           => $input[$itil_fkey],
+            'validationsteps_id' => $input['_validationsteps_id'],
+        ];
+
+        $itil_validationstep = $itil_class::getValidationStepInstance();
+        if (!$itil_validationstep->getFromDBByCrit($relation_fields)) {
+            $validationstep = new ValidationStep();
+            if (!$validationstep->getFromDB($input['_validationsteps_id'])) {
+                throw new \RuntimeException();
+            };
+
+            $step_input = $relation_fields + [
+                'minimal_required_validation_percent' => $validationstep->fields['minimal_required_validation_percent'],
+            ];
+
+            if (!$itil_validationstep->add($step_input)) {
+                throw new \RuntimeException();
+            }
+        }
+
+        $input['itils_validationsteps_id'] = $itil_validationstep->getID();
+
+        unset($input['_validationsteps_id']);
+
+        return $input;
+    }
+
+    /**
+     * Delete, only if the itils_validationstep is not used anymore
+     *
+     * @return void
+     */
+    private function removeUnsedITILValidationStep(): void
+    {
+        $itils_validationsteps_id = $this->fields['itils_validationsteps_id'];
+
+        $validations = (new static())->find(['itils_validationsteps_id' => $itils_validationsteps_id]);
+        if (!empty($validations)) {
+            // itils_validation is still used, do not delete
+            return;
+        }
+
+        $itil_validationstep = static::getItilObjectItemType()::getValidationStepInstance();
+        if (!$itil_validationstep->delete(['id' => $itils_validationsteps_id])) {
+            throw new \RuntimeException('Failed to delete unused approval step.');
+        };
+    }
+
+    public function recomputeItilStatus(): void
+    {
+        $itil_object = $this->getItem();
+        if (!($itil_object instanceof CommonITILObject)) {
+            throw new \RuntimeException();
+        }
+
+        $update = $itil_object->update([
+            'id' => $itil_object->getID(),
+            'global_validation' => self::computeValidationStatus($itil_object),
+            '_from_itilvalidation' => true,
+        ]);
+        if (!$update) {
+            throw new \RuntimeException('Failed to update Itil global approval status.');
+        }
     }
 }

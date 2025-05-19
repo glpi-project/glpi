@@ -227,7 +227,8 @@ abstract class LevelAgreementLevel extends RuleTicket
         unset($actions['affectobject']);
         unset($actions['groups_id_validate']);
         unset($actions['users_id_validate']);
-        unset($actions['validation_percent']);
+        unset($actions['validationsteps_id']);
+        unset($actions['validationsteps_threshold']);
         $actions['status']['name']    = __('Status');
         $actions['status']['type']    = 'dropdown_status';
         return $actions;
