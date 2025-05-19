@@ -1065,7 +1065,15 @@ class Auth extends CommonGLPI
                                 'extauth' => $this->extauth,
                                 'remember_me' => $remember_me,
                             ];
-                            Html::redirect($CFG_GLPI["root_doc"] . '/?mfa=1');
+
+                            $redirect_params = [
+                                'mfa' => 1,
+                            ];
+                            if (isset($_POST['redirect'])) {
+                                $redirect_params['redirect'] = \rawurlencode($_POST['redirect']);
+                            }
+
+                            Html::redirect($CFG_GLPI["root_doc"] . '/?' . http_build_query($redirect_params));
                         } elseif (isset($mfa_params['totp_code']) && !$totp->verifyCodeForUser($mfa_params['totp_code'], $this->user->fields['id'])) {
                             $this->addToError(__('Invalid TOTP code'));
                             $this->auth_succeded = false;

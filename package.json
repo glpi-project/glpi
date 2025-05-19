@@ -101,6 +101,7 @@
         "cypress": "^14.3.2",
         "cypress-axe": "^1.6.0",
         "cypress-network-idle": "^1.15.0",
+        "cypress-otp": "^1.0.3",
         "eslint": "^9.25.1",
         "eslint-plugin-cypress": "^4.3.0",
         "eslint-plugin-mocha": "^11.0.0",

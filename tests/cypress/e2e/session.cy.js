@@ -89,6 +89,56 @@ describe("Session", () => {
         cy.url().should('contains', "/front/ticket.form.php");
     });
 
+    it("redirect to requested page after login with 2FA enabled", () => {
+        // Create a new user
+        const username = `e2e_tests_2fa${Date.now()}`;
+        cy.createWithAPI('User', {
+            'name'        : username,
+            'login'       : username,
+            'password'    : 'glpi',
+            'password2'   : 'glpi',
+            '_profiles_id': 2, // Super-Admin
+        });
+
+        // Login as the new user
+        cy.login(username, 'glpi');
+
+        // Configure 2FA
+        cy.visit('/front/preference.php');
+        cy.findByRole('tab', {'name': 'Two-factor authentication (2FA)'}).click();
+        cy.findByRole('textbox', {'name': '2FA secret'}).invoke('val').then((secret) => {
+            cy.wrap(secret).as('secret');
+            cy.task('generateOTP', secret).then((token) => {
+                cy.findByRole('textbox', {'name': '2FA code digit 1 of 6'}).type(token);
+            });
+        });
+        cy.findByRole('button', {'name': 'Disable 2FA'}).should('exist');
+
+        // Logout
+        cy.findByRole('link', {name: 'User menu'}).click();
+        cy.findByRole('link', {name: 'Logout'}).click();
+
+        cy.visit('/front/ticket.form.php', {
+            failOnStatusCode: false
+        });
+        cy.findByRole('link', {'name': "Log in again"}).click();
+
+        // Login as the new user
+        cy.findByRole('textbox', {'name': "Login"}).type(username);
+        cy.findByLabelText("Password").type('glpi');
+        cy.findByRole('button', {name: "Sign in"}).click();
+
+        // Fill 2FA code
+        cy.get('@secret').then((secret) => {
+            cy.task('generateOTP', secret).then((token) => {
+                cy.findByRole('textbox', {'name': '2FA code digit 1 of 6'}).type(token);
+            });
+        });
+
+        // Should be redirected to requested page
+        cy.url().should('contains', "/front/ticket.form.php");
+    });
+
     it("can change profile", () => {
         // Login and go to any page
         cy.login();
