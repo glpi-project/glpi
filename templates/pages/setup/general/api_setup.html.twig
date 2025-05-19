@@ -48,7 +48,7 @@
         '',
         endpoint_doc
     ) }}
-    {{ fields.textField('url_base_api', api_url, __('URL of the API'), {
+    {{ fields.textField('_url_base_api', api_url, __('URL of the API'), {
         readonly: true,
         copyable: true
     }) }}
@@ -81,7 +81,7 @@
          legacy_doc
       ) }}
       {{ fields.nullField() }}
-      {{ fields.textField('legacy_url_base_api', legacy_api_url, __('URL of the API'), {
+      {{ fields.textField('_legacy_url_base_api', legacy_api_url, __('URL of the API'), {
          readonly: true,
          copyable: true
       }) }}
