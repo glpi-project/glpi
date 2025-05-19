@@ -41,6 +41,7 @@ use Glpi\Api\HL\Route;
 use Glpi\Api\HL\RouteVersion;
 use Glpi\Api\HL\Search;
 use Glpi\Asset\Asset;
+use Glpi\Asset\AssetDefinition;
 use Glpi\Asset\AssetDefinitionManager;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
@@ -281,10 +282,10 @@ final class CustomAssetController extends AbstractController
     }
 
     /**
-     * @param bool $classes_only If true, only the class names are returned. If false, the class name => localized name pairs are returned..
+     * @param bool $types_only If true, only the type names are returned. If false, the type name => localized name pairs are returned.
      * @return array<class-string<Asset>, string>
      */
-    public static function getAssetTypes(bool $classes_only = true): array
+    public static function getCustomAssetTypes(bool $types_only = true): array
     {
         static $assets = null;
 
@@ -295,7 +296,7 @@ final class CustomAssetController extends AbstractController
                 $assets[$definition->fields['system_name']] = $definition->getAssetClassName()::getTypeName(1);
             }
         }
-        return $classes_only ? array_keys($assets) : $assets;
+        return $types_only ? array_keys($assets) : $assets;
     }
 
     #[Route(path: '/', methods: ['GET'], middlewares: [ResultFormatterMiddleware::class])]
@@ -322,7 +323,7 @@ final class CustomAssetController extends AbstractController
     )]
     public function index(Request $request): Response
     {
-        $asset_types = self::getAssetTypes(false);
+        $asset_types = self::getCustomAssetTypes(false);
         $asset_paths = [];
         foreach ($asset_types as $asset_type => $asset_name) {
             $asset_paths[] = [
@@ -336,7 +337,7 @@ final class CustomAssetController extends AbstractController
 
     #[RouteVersion(introduced: '2.0')]
     #[Route(path: '/{itemtype}', methods: ['GET'], requirements: [
-        'itemtype' => [self::class, 'getAssetTypes'],
+        'itemtype' => [self::class, 'getCustomAssetTypes'],
     ], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'List or search custom assets of a specific type',
@@ -353,7 +354,7 @@ final class CustomAssetController extends AbstractController
 
     #[RouteVersion(introduced: '2.0')]
     #[Route(path: '/{itemtype}/{id}', methods: ['GET'], requirements: [
-        'itemtype' => [self::class, 'getAssetTypes'],
+        'itemtype' => [self::class, 'getCustomAssetTypes'],
         'id' => '\d+',
     ], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
@@ -370,7 +371,7 @@ final class CustomAssetController extends AbstractController
 
     #[RouteVersion(introduced: '2.0')]
     #[Route(path: '/{itemtype}', methods: ['POST'], requirements: [
-        'itemtype' => [self::class, 'getAssetTypes'],
+        'itemtype' => [self::class, 'getCustomAssetTypes'],
     ], tags: ['Assets'])]
     #[Doc\Route(
         description: 'Create a custom asset of a specific type',
@@ -390,7 +391,7 @@ final class CustomAssetController extends AbstractController
 
     #[RouteVersion(introduced: '2.0')]
     #[Route(path: '/{itemtype}/{id}', methods: ['PATCH'], requirements: [
-        'itemtype' => [self::class, 'getAssetTypes'],
+        'itemtype' => [self::class, 'getCustomAssetTypes'],
         'id' => '\d+',
     ], tags: ['Assets'])]
     #[Doc\Route(
@@ -411,7 +412,7 @@ final class CustomAssetController extends AbstractController
 
     #[RouteVersion(introduced: '2.0')]
     #[Route(path: '/{itemtype}/{id}', methods: ['DELETE'], requirements: [
-        'itemtype' => [self::class, 'getAssetTypes'],
+        'itemtype' => [self::class, 'getCustomAssetTypes'],
         'id' => '\d+',
     ], tags: ['Assets'])]
     #[Doc\Route(
@@ -425,7 +426,7 @@ final class CustomAssetController extends AbstractController
 
     #[RouteVersion(introduced: '2.0')]
     #[Route(path: '/{itemtype}Model', methods: ['GET'], requirements: [
-        'itemtype' => [self::class, 'getAssetTypes'],
+        'itemtype' => [self::class, 'getCustomAssetTypes'],
     ], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'List or search custom asset models of a specific type',
@@ -442,7 +443,7 @@ final class CustomAssetController extends AbstractController
 
     #[RouteVersion(introduced: '2.0')]
     #[Route(path: '/{itemtype}Model/{id}', methods: ['GET'], requirements: [
-        'itemtype' => [self::class, 'getAssetTypes'],
+        'itemtype' => [self::class, 'getCustomAssetTypes'],
         'id' => '\d+',
     ], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
@@ -459,7 +460,7 @@ final class CustomAssetController extends AbstractController
 
     #[RouteVersion(introduced: '2.0')]
     #[Route(path: '/{itemtype}Model', methods: ['POST'], requirements: [
-        'itemtype' => [self::class, 'getAssetTypes'],
+        'itemtype' => [self::class, 'getCustomAssetTypes'],
     ], tags: ['Assets'])]
     #[Doc\Route(
         description: 'Create a custom asset model of a specific type',
@@ -479,7 +480,7 @@ final class CustomAssetController extends AbstractController
 
     #[RouteVersion(introduced: '2.0')]
     #[Route(path: '/{itemtype}Model/{id}', methods: ['PATCH'], requirements: [
-        'itemtype' => [self::class, 'getAssetTypes'],
+        'itemtype' => [self::class, 'getCustomAssetTypes'],
         'id' => '\d+',
     ], tags: ['Assets'])]
     #[Doc\Route(
@@ -500,7 +501,7 @@ final class CustomAssetController extends AbstractController
 
     #[RouteVersion(introduced: '2.0')]
     #[Route(path: '/{itemtype}Model/{id}', methods: ['DELETE'], requirements: [
-        'itemtype' => [self::class, 'getAssetTypes'],
+        'itemtype' => [self::class, 'getCustomAssetTypes'],
         'id' => '\d+',
     ], tags: ['Assets'])]
     #[Doc\Route(
@@ -514,7 +515,7 @@ final class CustomAssetController extends AbstractController
 
     #[RouteVersion(introduced: '2.0')]
     #[Route(path: '/{itemtype}Type', methods: ['GET'], requirements: [
-        'itemtype' => [self::class, 'getAssetTypes'],
+        'itemtype' => [self::class, 'getCustomAssetTypes'],
     ], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
         description: 'List or search custom asset models of a specific type',
@@ -531,7 +532,7 @@ final class CustomAssetController extends AbstractController
 
     #[RouteVersion(introduced: '2.0')]
     #[Route(path: '/{itemtype}Type/{id}', methods: ['GET'], requirements: [
-        'itemtype' => [self::class, 'getAssetTypes'],
+        'itemtype' => [self::class, 'getCustomAssetTypes'],
         'id' => '\d+',
     ], tags: ['Assets'], middlewares: [ResultFormatterMiddleware::class])]
     #[Doc\Route(
@@ -548,7 +549,7 @@ final class CustomAssetController extends AbstractController
 
     #[RouteVersion(introduced: '2.0')]
     #[Route(path: '/{itemtype}Type', methods: ['POST'], requirements: [
-        'itemtype' => [self::class, 'getAssetTypes'],
+        'itemtype' => [self::class, 'getCustomAssetTypes'],
     ], tags: ['Assets'])]
     #[Doc\Route(
         description: 'Create a custom asset type of a specific type',
@@ -568,7 +569,7 @@ final class CustomAssetController extends AbstractController
 
     #[RouteVersion(introduced: '2.0')]
     #[Route(path: '/{itemtype}Type/{id}', methods: ['PATCH'], requirements: [
-        'itemtype' => [self::class, 'getAssetTypes'],
+        'itemtype' => [self::class, 'getCustomAssetTypes'],
         'id' => '\d+',
     ], tags: ['Assets'])]
     #[Doc\Route(
@@ -589,7 +590,7 @@ final class CustomAssetController extends AbstractController
 
     #[RouteVersion(introduced: '2.0')]
     #[Route(path: '/{itemtype}Type/{id}', methods: ['DELETE'], requirements: [
-        'itemtype' => [self::class, 'getAssetTypes'],
+        'itemtype' => [self::class, 'getCustomAssetTypes'],
         'id' => '\d+',
     ], tags: ['Assets'])]
     #[Doc\Route(
