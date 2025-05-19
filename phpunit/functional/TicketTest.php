@@ -40,6 +40,7 @@ use Computer;
 use CronTask;
 use DbTestCase;
 use Entity;
+use Glpi\PHPUnit\Tests\Glpi\ValidationStepTrait;
 use Glpi\Search\SearchOption;
 use Glpi\Team\Team;
 use Group;
@@ -65,6 +66,8 @@ use Session;
 
 class TicketTest extends DbTestCase
 {
+    use ValidationStepTrait;
+
     public static function addActorsProvider(): iterable
     {
         $default_use_notifications = 1;
@@ -3065,7 +3068,6 @@ class TicketTest extends DbTestCase
         $this->assertEquals('', $input['itemtype']);
         $this->assertEquals(0, (int) $input['items_id']);
         $this->assertCount(0, $input['plan']);
-        $this->assertEquals(\CommonITILValidation::NONE, (int) $input['global_validation']);
 
         $this->assertEquals('NULL', $input['time_to_resolve']);
         $this->assertEquals('NULL', $input['time_to_own']);
@@ -8368,71 +8370,6 @@ HTML,
         $category = $this->createItem('ITILCategory', $category_fields);
         $input['itilcategories_id'] = $category->getID();
         $this->assertSame($expected, \Ticket::isCategoryValid($input));
-    }
-
-    public function testGlobalValidationUpdate(): void
-    {
-        $this->login();
-
-        $ticket = $this->createItem('Ticket', [
-            'name' => 'Global_Validation_Update',
-            'content' => 'Global_Validation_Update',
-            'validation_percent' => 100,
-        ]);
-
-        $ticketobj = new \Ticket();
-
-        $this->assertTrue($ticketobj->getFromDB($ticket->getID()));
-
-        $v1_id = $this->createItem('TicketValidation', [
-            'tickets_id'        => $ticket->getID(),
-            'itemtype_target'   => User::class,
-            'items_id_target'   => $_SESSION['glpiID'],
-        ]);
-
-        $this->updateItem('TicketValidation', $v1_id->getID(), [
-            'status'  => \CommonITILValidation::ACCEPTED,
-        ]);
-
-        $this->updateItem('Ticket', $ticket->getID(), [
-            'validation_percent' => 0,
-        ]);
-
-        $this->assertEquals(\CommonITILValidation::ACCEPTED, TicketValidation::computeValidationStatus($ticket));
-
-        $this->updateItem('Ticket', $ticket->getID(), [
-            'validation_percent' => 50,
-        ]);
-
-        $v2_id = $this->createItem('TicketValidation', [
-            'tickets_id'        => $ticket->getID(),
-            'itemtype_target'   => User::class,
-            'items_id_target'   => $_SESSION['glpiID'],
-        ]);
-
-        $this->updateItem('TicketValidation', $v2_id->getID(), [
-            'status'  => \CommonITILValidation::WAITING,
-        ]);
-
-        $this->assertEquals(\CommonITILValidation::WAITING, TicketValidation::computeValidationStatus($ticket));
-
-        $this->updateItem('Ticket', $ticket->getID(), [
-            'validation_percent' => 100,
-        ]);
-
-        $v3_id = $this->createItem('TicketValidation', [
-            'tickets_id'        => $ticket->getID(),
-            'itemtype_target'   => User::class,
-            'items_id_target'   => $_SESSION['glpiID'],
-        ]);
-
-        $this->updateItem('TicketValidation', $v3_id->getID(), [
-            'status'  => \CommonITILValidation::REFUSED,
-            'comment_validation' => 'refused request',
-        ]);
-
-
-        $this->assertEquals(\CommonITILValidation::REFUSED, TicketValidation::computeValidationStatus($ticket));
     }
 
     public function testCanAssign()

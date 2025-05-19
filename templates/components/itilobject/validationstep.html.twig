@@ -30,15 +30,21 @@
  # ---------------------------------------------------------------------
  #}
 
-{{ call(
-    'Html::popHeader',
-    [
-        call(object.getTypeName(), [1]),
-        '',
-        true,
-    ]
-) }}
+{% extends 'generic_show_form.html.twig' %}
+{% import 'components/form/fields_macros.html.twig' as fields %}
 
-{% do object.showForm(id, form_options) %}
-
-{{ call('Html::popFooter') }}
+{% block form_fields %}
+    {{ fields.hiddenField('itemtype', item.fields['itemtype']) }}
+    {{ fields.hiddenField('items_id', item.fields['items_id']) }}
+    {{ fields.dropdownNumberField(
+        'minimal_required_validation_percent',
+        item.fields['minimal_required_validation_percent'],
+        __('Minimum validation required (%)'),
+        {
+            'required': true,
+            'label_class': 'col-9',
+            'input_class': 'col-3',
+            'field_class': 'full-width',
+        }
+    ) }}
+{% endblock %}

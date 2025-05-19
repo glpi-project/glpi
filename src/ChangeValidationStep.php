@@ -32,8 +32,13 @@
  * ---------------------------------------------------------------------
  */
 
-namespace tests\units;
+final class ChangeValidationStep extends ITIL_ValidationStep
+{
+    public static $rightname = 'changevalidation';
+    public static string $validation_classname = ChangeValidation::class;
 
-use Glpi\PHPUnit\Tests\CommonITILValidationTest;
-
-class ChangeValidationTest extends CommonITILValidationTest {}
+    public static function getTypeName($nb = 0)
+    {
+        return _n('Change Approval step', 'Change Approval steps', $nb);
+    }
+}
