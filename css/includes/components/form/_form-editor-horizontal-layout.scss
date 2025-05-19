@@ -222,6 +222,12 @@
                 border-radius: var(--tblr-border-radius);
             }
 
+            &:has(.glpi-form-editor-drag-question-placeholder) {
+                [data-glpi-form-editor-toolbar] {
+                    display: none !important;
+                }
+            }
+
             min-height: 100px;
             flex: 1;
             display: flex;
