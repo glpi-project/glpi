@@ -723,6 +723,7 @@ final class FormMigrationTest extends DbTestCase
             'raw_translations'      => [
                 'Test form migration for translations' => 'Tester la migration des formulaires pour les traductions',
                 'This is a description to test the translation' => 'Voici une description pour tester la traduction',
+                '<p>This is a header to test the translation</p>' => '<p>Voici un en-tête pour tester la traduction</p>',
                 'First section' => 'Première section',
                 'First question' => 'Première question',
                 '&#60;p&#62;&#60;strong&#62;Test description for &#60;/strong&#62;first&#60;strong&#62; &#60;span style="color: #b96ad9;"&#62;question&#60;/span&#62;&#60;/strong&#62;&#60;/p&#62;' => '&#60;p&#62;&#60;strong&#62;Test de description&#60;/strong&#62; pour la première &#60;span style="color: #b96ad9;"&#62;&#60;strong&#62;question&#60;/strong&#62;&#60;/span&#62;&#60;/p&#62;',
@@ -768,6 +769,12 @@ final class FormMigrationTest extends DbTestCase
                         'items_id' => $form->getID(),
                         'itemtype' => Form::class,
                         'key'      => Form::TRANSLATION_KEY_HEADER,
+                        'translations' => ['one' => '<p>Voici un en-tête pour tester la traduction</p>'],
+                    ],
+                    [
+                        'items_id' => $form->getID(),
+                        'itemtype' => Form::class,
+                        'key'      => Form::TRANSLATION_KEY_DESCRIPTION,
                         'translations' => ['one' => 'Voici une description pour tester la traduction'],
                     ],
                     [
@@ -1029,6 +1036,84 @@ final class FormMigrationTest extends DbTestCase
             $this->assertEquals(0, $block->fields['vertical_rank']);
             $this->assertEquals($index, $block->fields['horizontal_rank']);
         }
+    }
+
+    public function testFormMigrationWithDeletedForm(): void
+    {
+        /**
+         * @var \DBmysql $DB
+         */
+        global $DB;
+
+        // Insert a new form
+        $this->assertTrue($DB->insert(
+            'glpi_plugin_formcreator_forms',
+            [
+                'name'       => 'Test form migration for deleted form',
+                'is_deleted' => 1,
+            ]
+        ));
+
+        // Insert a new section
+        $this->assertTrue($DB->insert(
+            'glpi_plugin_formcreator_sections',
+            [
+                'name'                        => 'Test form migration for deleted form - Section',
+                'plugin_formcreator_forms_id' => $DB->insertId(),
+            ]
+        ));
+
+        // Process migration
+        $migration = new FormMigration($DB, FormAccessControlManager::getInstance());
+        $this->setPrivateProperty($migration, 'result', new PluginMigrationResult());
+        $this->assertTrue($this->callPrivateMethod($migration, 'processMigration'));
+
+        $form = getItemByTypeName(Form::class, 'Test form migration for deleted form');
+        $this->assertTrue((bool) $form->isDeleted());
+    }
+
+    public function testFormMigrationFormContentField(): void
+    {
+        /**
+         * @var \DBmysql $DB
+         */
+        global $DB;
+
+        // Insert a new form
+        $this->assertTrue($DB->insert(
+            'glpi_plugin_formcreator_forms',
+            [
+                'name'        => 'Test form migration for form content field',
+                'description' => '<p>Test description</p>',
+                'content'     => '<p>Test header</p>',
+            ]
+        ));
+
+        // Insert a new section
+        $this->assertTrue($DB->insert(
+            'glpi_plugin_formcreator_sections',
+            [
+                'name'                        => 'Test form migration for form content field - Section',
+                'plugin_formcreator_forms_id' => $DB->insertId(),
+            ]
+        ));
+
+        // Process migration
+        $migration = new FormMigration($DB, FormAccessControlManager::getInstance());
+        $this->setPrivateProperty($migration, 'result', new PluginMigrationResult());
+        $this->assertTrue($this->callPrivateMethod($migration, 'processMigration'));
+
+        $form = getItemByTypeName(Form::class, 'Test form migration for form content field');
+        $this->assertNotFalse($form);
+
+        $this->assertEquals(
+            '<p>Test description</p>',
+            $form->fields['description']
+        );
+        $this->assertEquals(
+            '<p>Test header</p>',
+            $form->fields['header']
+        );
     }
 
     public static function provideFormMigrationTagConversion(): iterable
