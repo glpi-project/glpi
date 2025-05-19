@@ -2252,12 +2252,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Contract_Supplier.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Default value of the parameter \\#4 \\$options \\(array\\{\\}\\) of method CronTask\\:\\:register\\(\\) is incompatible with type array\\{state\\: 0\\|1\\|2, mode\\: 1\\|2, allowmode\\: int, hourmin\\: int, hourmax\\: int, logs_lifetime\\: int, param\\: int, comment\\: string\\}\\.$#',
-	'identifier' => 'parameter.defaultValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CronTask.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Function filemtime is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\filemtime;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
 	'identifier' => 'theCodingMachineSafe.function',
 	'count' => 3,
@@ -2326,12 +2320,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Match arm comparison between 2 and 2 is always true\\.$#',
 	'identifier' => 'match.alwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CronTask.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Offset \'allowmode\'\\|\'comment\'\\|\'hourmax\'\\|\'hourmin\'\\|\'logs_lifetime\'\\|\'mode\'\\|\'param\'\\|\'state\' on array\\{state\\: 0\\|1\\|2, mode\\: 1\\|2, allowmode\\: int, hourmin\\: int, hourmax\\: int, logs_lifetime\\: int, param\\: int, comment\\: string\\} in isset\\(\\) always exists and is not nullable\\.$#',
-	'identifier' => 'isset.offset',
 	'count' => 1,
 	'path' => __DIR__ . '/src/CronTask.php',
 ];
