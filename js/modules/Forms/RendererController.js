@@ -197,6 +197,10 @@ export class GlpiFormRendererController
     async #submitForm() {
         // Form will be sumitted using an AJAX request instead
         try {
+            // Disable actions immediately to avoid someone clicking on the actions
+            // while the form is being submitted.
+            this.#disableActions();
+
             // Update tinymce values
             if (window.tinymce !== undefined) {
                 tinymce.get().forEach(editor => {
@@ -205,6 +209,7 @@ export class GlpiFormRendererController
             }
 
             if (!await this.#checkCurrentSectionValidity()) {
+                this.#enableActions();
                 return;
             }
 
@@ -243,6 +248,8 @@ export class GlpiFormRendererController
             glpi_toast_error(
                 __("Failed to submit form, please contact your administrator.")
             );
+        } finally {
+            this.#enableActions();
         }
     }
 
