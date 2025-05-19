@@ -139,6 +139,30 @@ class Change extends CommonITILObject
         return Session::haveRight(self::$rightname, CREATE);
     }
 
+        /**
+     * Overloaded from commonDBTM
+     *
+     * @since 0.83
+     *
+     * @param string $type itemtype of object to add
+     *
+     * @return boolean
+     **/
+    public function canAddItem($type)
+    {
+
+        if ($type == 'Document') {
+            if ($this->getField('status') == self::CLOSED) {
+                return false;
+            }
+
+            if ($this->canAddFollowups()) {
+                return true;
+            }
+        }
+
+        return $this->can($this->getID(), UPDATE);
+    }
 
     /**
      * is the current user could reopen the current change
