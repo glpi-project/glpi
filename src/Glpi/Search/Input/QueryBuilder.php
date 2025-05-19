@@ -85,6 +85,7 @@ final class QueryBuilder implements SearchInputInterface
         $p['showmassiveactions']            = true;
         $p['extra_actions_templates']       = [];
         $p['hide_criteria']                 = $params['hide_criteria'] ?? false;
+        $p['is_criteria_filter']            = $params['is_criteria_filter'] ?? false;
 
         foreach ($params as $key => $val) {
             $p[$key] = $val;
