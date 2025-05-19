@@ -382,12 +382,14 @@ class FormMigration extends AbstractPluginMigration
         $raw_forms = $this->db->request([
             'SELECT' => [
                 'id',
-                'description AS header',
+                'description',
+                'content AS header',
                 'name',
                 'plugin_formcreator_categories_id',
                 'entities_id',
                 'is_recursive',
                 'is_visible AS is_active',
+                'is_deleted',
             ],
             'FROM'   => 'glpi_plugin_formcreator_forms',
         ]);
@@ -398,6 +400,7 @@ class FormMigration extends AbstractPluginMigration
                 [
                     'name'                  => $raw_form['name'],
                     'header'                => $raw_form['header'],
+                    'description'           => $raw_form['description'],
                     'forms_categories_id'   => $this->getMappedItemTarget(
                         'PluginFormcreatorCategory',
                         $raw_form['plugin_formcreator_categories_id']
@@ -405,6 +408,7 @@ class FormMigration extends AbstractPluginMigration
                     'entities_id'           => $raw_form['entities_id'],
                     'is_recursive'          => $raw_form['is_recursive'],
                     'is_active'             => $raw_form['is_active'],
+                    'is_deleted'            => $raw_form['is_deleted'],
                     '_from_migration'       =>  true,
                 ],
                 [
