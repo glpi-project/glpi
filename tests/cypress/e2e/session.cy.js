@@ -89,7 +89,7 @@ describe("Session", () => {
         cy.url().should('contains', "/front/ticket.form.php");
     });
 
-    it.only("redirect to requested page after login with 2FA enabled", () => {
+    it("redirect to requested page after login with 2FA enabled", () => {
         // Create a new user
         const username = `e2e_tests_2fa${Date.now()}`;
         cy.createWithAPI('User', {
