@@ -35,6 +35,8 @@
 namespace tests\units;
 
 use DbTestCase;
+use MassiveAction;
+use SavedSearch;
 
 /* Test for inc/savedsearch.class.php */
 
@@ -262,5 +264,21 @@ class SavedSearchTest extends DbTestCase
             $expected,
             array_column($mine, 'name')
         );
+    }
+
+    public function testAvailableMassiveActions(): void
+    {
+        // Act: get saved searches massive actions
+        $this->login();
+        $actions = MassiveAction::getAllMassiveActions(SavedSearch::class);
+
+        // Assert: validate the available actions
+        $this->assertEquals([
+            'Delete permanently',
+            'Unset as default',
+            'Change count method',
+            'Change visibility',
+            'Change entity',
+        ], array_values($actions));
     }
 }

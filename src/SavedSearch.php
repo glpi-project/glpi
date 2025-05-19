@@ -64,7 +64,6 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
         return ['add'];
     }
 
-
     public static function getTypeName($nb = 0)
     {
         return _n('Saved search', 'Saved searches', $nb);
@@ -78,9 +77,9 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
 
     public function getForbiddenStandardMassiveAction()
     {
-
         $forbidden   = parent::getForbiddenStandardMassiveAction();
         $forbidden[] = 'update';
+        $forbidden[] = 'clone';
         return $forbidden;
     }
 
