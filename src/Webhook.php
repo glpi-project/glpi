@@ -341,6 +341,9 @@ class Webhook extends CommonDBTM implements FilterableInterface
         }
     }
 
+    /**
+     * @return array<class-string<AbstractController>, array{main: array<class-string<CommonDBTM>, array{name: string}>, subtypes?: array<class-string<CommonDBTM>, array{name: string, parent: class-string<CommonDBTM>}>}>
+     */
     public static function getAPIItemtypeData(): array
     {
         static $supported = null;
@@ -395,9 +398,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
             };
 
             /**
-             * @var AbstractController $controller
              * @phpstan-var class-string<AbstractController> $controller
-             * @var array $categories
              */
             foreach ($supported as $controller => $categories) {
                 // TODO Allow pinning webhooks to specific API versions
@@ -413,7 +414,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
                             }
                             unset($supported[$controller][$category][$i]);
                         }
-                    } elseif ($category === 'subtypes' && $controller === ITILController::class) {
+                    } elseif ($controller === ITILController::class) {
                         /** @phpstan-var class-string<ITILController> $controller */
                         foreach ($itemtypes as $supported_itemtype => $type_data) {
                             $supported[$controller][$category][$supported_itemtype]['name'] = $controller::getFriendlyNameForSubtype($supported_itemtype);
@@ -664,7 +665,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
                 $api_name = $categories['subtypes'][$itemtype]['name'];
                 $controller = $controller_class;
                 // Use the specified parent itemtype or the first main one if none is specified (all work)
-                $parent_itemtype = $categories['subtypes'][$itemtype]['parent'] ?? array_key_first($categories['main']);
+                $parent_itemtype = $categories['subtypes'][$itemtype]['parent'] ?: array_key_first($categories['main']);
                 break;
             }
         }
@@ -884,7 +885,6 @@ class Webhook extends CommonDBTM implements FilterableInterface
      */
     public static function getAPISchemaBySupportedItemtype(string $itemtype): ?array
     {
-        /** @var class-string<AbstractController> $controller_class */
         $controller_class = null;
         $schema_name = null;
         $supported = self::getAPIItemtypeData();
@@ -897,9 +897,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
             }
             if (isset($categories['subtypes']) && array_key_exists($itemtype, $categories['subtypes'])) {
                 $schema_name = $categories['subtypes'][$itemtype]['name'];
-                if (isset($categories['subtypes'][$itemtype]['parent'])) {
-                    $schema_name = $categories['main'][$categories['subtypes'][$itemtype]['parent']]['name'] . $schema_name;
-                }
+                $schema_name = $categories['main'][$categories['subtypes'][$itemtype]['parent']]['name'] . $schema_name;
                 $controller_class = $controller;
                 break;
             }
