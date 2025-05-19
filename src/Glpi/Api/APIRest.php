@@ -700,8 +700,8 @@ class APIRest extends API
         $illustration_manager = new IllustrationManager();
 
         // Set range params
-        $page = $this->parameters['page'] ?? 1;;
-        $page_size = $this->parameters['page_size'] ?? ServiceCatalogManager::ITEMS_PER_PAGE;;
+        $page = $this->parameters['page'] ?? 1;
+        $page_size = $this->parameters['page_size'] ?? ServiceCatalogManager::ITEMS_PER_PAGE;
 
         // Fetch items
         $item_request = new ItemRequest(
