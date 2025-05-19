@@ -41,6 +41,7 @@
 {% set nokb = params['nokb'] is defined or (params['nokb'] ?? false) == true %}
 {% set noform = params['noform'] is defined or (params['noform'] ?? false) == true %}
 {% set disabled = (candedit == false) %}
+{% set rand = rand|default(random()) %}
 
 {% set content_field_id = 'solution_content_' ~ rand %}
 
@@ -112,10 +113,11 @@
                         'no_label': true,
                         'enable_richtext': true,
                         'enable_fileupload': true,
-                        'mention_options': mention_options,
+                        'mention_options': mention_options|default({}),
                         'entities_id': item.fields['entities_id'],
                         'rand': rand,
                         'disabled': disabled,
+                        'aria_label': _n('Solution', 'Solutions', 1),
                      }
                   ) }}
                </div>
