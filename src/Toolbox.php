@@ -2144,7 +2144,7 @@ class Toolbox
         $progress_indicator?->advance($init_form_weight);
         $progress_indicator?->addMessage(MessageType::Success, __('Default forms created.'));
 
-        $progress_indicator?->setProgressBarMessage(__('Initalizing default rules…'));
+        $progress_indicator?->setProgressBarMessage(__('Initializing default rules…'));
         RulesManager::initializeRules();
         $progress_indicator?->advance($init_rules_weight);
         $progress_indicator?->addMessage(MessageType::Success, __('Default rules initialized.'));
