@@ -2543,7 +2543,9 @@ class Toolbox
      **/
     public static function prepareArrayForInput(array $value)
     {
-        return base64_encode(json_encode($value));
+        $json = json_encode($value);
+        $compressed = gzcompress($json);
+        return base64_encode($compressed);
     }
 
 
@@ -2560,7 +2562,8 @@ class Toolbox
     {
 
         if ($dec = base64_decode($value)) {
-            if ($ret = json_decode($dec, true)) {
+            $json = gzuncompress($dec);
+            if ($ret = json_decode($json, true)) {
                 return $ret;
             }
         }
