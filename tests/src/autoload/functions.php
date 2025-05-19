@@ -32,6 +32,9 @@
  * ---------------------------------------------------------------------
  */
 
+
+use Glpi\Asset\AssetDefinitionManager;
+use Glpi\Dropdown\DropdownDefinitionManager;
 use Glpi\Socket;
 
 function loadDataset()
@@ -804,6 +807,12 @@ function loadDataset()
     // Ensure cache is clear after dataset reload
     global $GLPI_CACHE;
     $GLPI_CACHE->clear();
+
+    // Force bootstraping of the created custom assets/dropdowns
+    AssetDefinitionManager::unsetInstance();
+    AssetDefinitionManager::getInstance()->bootstrapDefinitions();
+    DropdownDefinitionManager::unsetInstance();
+    DropdownDefinitionManager::getInstance()->bootstrapDefinitions();
 }
 
 /**
