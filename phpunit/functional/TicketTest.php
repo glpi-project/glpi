@@ -8680,4 +8680,31 @@ HTML,
         SearchOption::clearSearchOptionCache(Ticket::class);
         $this->assertArrayNotHasKey('111', SearchOption::getCleanedOptions(Ticket::class));
     }
+
+    public function testShowSubForm(): void
+    {
+        // Arrange: create a ticket
+        $ticket = $this->createItem(Ticket::class, [
+            'name' => 'My ticket',
+            'content' => 'My content',
+            'entities_id' => $this->getTestRootEntity(only_id: true),
+        ]);
+
+        // Act: render sub form for this ticket
+        $this->login();
+        ob_start();
+        Ticket::showSubForm($ticket, $ticket->getId(), [
+            // Note: these parameters are ugly (ticket is both the target and
+            // the parent somehow) but this is how its called from the actual
+            // front files so we need to replicate it.
+            'parent' => $ticket,
+            'tickets_id' => $ticket->getID(),
+        ]);
+        $html = ob_get_clean();
+
+        // Assert: make sure some html was generated
+        $crawler = new Crawler($html);
+        $this->assertCount(1, $crawler->filter('input[name="name"]'));
+        $this->assertCount(1, $crawler->filter('textarea[name="content"]'));
+    }
 }

@@ -382,7 +382,7 @@
         </script>
     {% endif %}
 
-    {% if options.mention_options.enabled and config('use_notifications') %}
+    {% if options.mention_options.enabled|default(false) and config('use_notifications') %}
         <script>
             $(function() {
                 const user_mention = new GLPI.RichText.UserMention(
