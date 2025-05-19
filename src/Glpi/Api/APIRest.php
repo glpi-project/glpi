@@ -40,7 +40,17 @@
 namespace Glpi\Api;
 
 use AllAssets;
+use Glpi\Form\AccessControl\FormAccessParameters;
+use Glpi\Form\Category;
+use Glpi\Form\Form;
+use Glpi\Form\FormTranslation;
+use Glpi\Form\ServiceCatalog\ItemRequest;
+use Glpi\Form\ServiceCatalog\Provider\FormProvider;
+use Glpi\Form\ServiceCatalog\ServiceCatalogManager;
+use Glpi\UI\IllustrationManager;
 use GLPIUploadHandler;
+use RuntimeException;
+use Session;
 use stdClass;
 use Toolbox;
 
@@ -267,6 +277,8 @@ class APIRest extends API
             );
         } elseif (preg_match('%user/(\d+)/picture%i', $path_info, $matches)) {
             $this->userPicture($matches[1]);
+        } elseif ($resource == 'getHelpdeskFormsDetails') {
+            return $this->getHelpdeskFormsDetails();
         } else {
             // commonDBTM manipulation
             $itemtype          = $this->getItemtype(0);
@@ -679,5 +691,53 @@ class APIRest extends API
             echo file_get_contents(GLPI_ROOT . '/' . $file);
         }
         exit();
+    }
+
+    private function getHelpdeskFormsDetails(): void
+    {
+        // Get services
+        $catalog_manager = new ServiceCatalogManager([new FormProvider()]);
+        $illustration_manager = new IllustrationManager();
+
+        // Set range params
+        $page = $this->parameters['page'] ?? 1;;
+        $page_size = $this->parameters['page_size'] ?? ServiceCatalogManager::ITEMS_PER_PAGE;;
+
+        // Fetch items
+        $item_request = new ItemRequest(
+            access_parameters: new FormAccessParameters(
+                session_info: Session::getCurrentSessionInfo(),
+            ),
+            page: $page,
+            items_per_page: $page_size,
+        );
+        $service_catalog_items = $catalog_manager->getItems($item_request);
+
+        // Build response
+        $response = [
+            'items'      => [],
+            'totalcount' => $service_catalog_items['total'],
+        ];
+        foreach ($service_catalog_items['items'] as $form) {
+            if (!$form instanceof Form) {
+                throw new RuntimeException();
+            }
+
+            $category_id = $form->fields['forms_categories_id'];
+            $category = $category_id ? Category::getById($category_id) : null;
+            $response['items'][] = [
+                'id'          => $form->getId(),
+                'name'        => $form->getServiceCatalogItemTitle(),
+                'description' => $form->getServiceCatalogItemDescription(),
+                'logo_url'    => $illustration_manager->getIconPath(
+                    $form->getServiceCatalogItemIllustration(),
+                ),
+                'category'    => $category ? $category->getServiceCatalogItemTitle() : "",
+            ];
+        }
+
+        $is_partial_response = $service_catalog_items['total'] > count($service_catalog_items['items']);
+
+        $this->returnResponse($response, $is_partial_response ? 206 : 200);
     }
 }

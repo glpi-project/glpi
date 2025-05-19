@@ -50,13 +50,18 @@ final class ServiceCatalogManager
     /** @var \Glpi\Form\ServiceCatalog\Provider\ItemProviderInterface[] */
     private array $providers;
 
-    public function __construct()
+    public function __construct(array $providers = [])
     {
-        $this->providers = [
-            new FormProvider(),
-            new CategoryProvider(),
-            new KnowbaseItemProvider(),
-        ];
+        if (empty($providers)) {
+            // Default providers
+            $this->providers = [
+                new FormProvider(),
+                new CategoryProvider(),
+                new KnowbaseItemProvider(),
+            ];
+        } else {
+            $this->providers = $providers;
+        }
     }
 
     /**

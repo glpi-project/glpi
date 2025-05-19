@@ -3356,4 +3356,68 @@ class APIRestTest extends TestCase
             $this->assertEquals('********', $notification['13']); // 13 = body_text
         }
     }
+
+    public static function getHelpdeskFormsDetailsWithPaginationProvider(): iterable
+    {
+        $request_form =  [
+            'id'          => 2,
+            'name'        => "Request a service",
+            'description' => "Ask for a service to be provided by our team.",
+            'logo_url'    => "/lib/glpi-project/illustrations/glpi-illustrations-icons.svg#request-service",
+            'category'    => "",
+        ];
+        $incident_form = [
+            'id'          => 1,
+            'name'        => "Report an issue",
+            'description' => "Ask for support from our helpdesk team.",
+            'logo_url'    => "/lib/glpi-project/illustrations/glpi-illustrations-icons.svg#report-issue",
+            'category'    => "",
+        ];
+
+        yield 'no pagination' => [
+            'query' => [],
+            'expected_totalcount'  => 2,
+            'expected_items'       => [$request_form, $incident_form],
+            'expected_return_code' => 200,
+        ];
+
+        yield 'with pagination, first item' => [
+            'query' => [
+                'page'      => 1,
+                'page_size' => 1,
+            ],
+            'expected_totalcount' => 2,
+            'expected_items'      => [$request_form],
+            'expected_return_code' => 206,
+        ];
+
+        yield 'with pagination, second item' => [
+            'query' => [
+                'page'      => 2,
+                'page_size' => 1,
+            ],
+            'expected_totalcount' => 2,
+            'expected_items'      => [$incident_form],
+            'expected_return_code' => 206,
+        ];
+    }
+
+    #[DataProvider('getHelpdeskFormsDetailsWithPaginationProvider')]
+    public function testGetHelpdeskFormsDetailsWithPagination(
+        array $query,
+        int $expected_totalcount,
+        array $expected_items,
+        int $expected_return_code,
+    ): void {
+        $this->initSessionCredentials();
+        $data = $this->query('getHelpdeskFormsDetails', [
+            'headers' => [
+                'Session-Token' => $this->session_token,
+            ],
+            'query' => $query,
+        ], $expected_return_code);
+
+        $this->assertEquals($expected_totalcount, $data['totalcount']);
+        $this->assertEquals($expected_items, $data['items']);
+    }
 }
