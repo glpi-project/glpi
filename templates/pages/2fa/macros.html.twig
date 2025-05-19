@@ -34,7 +34,8 @@
    <div class="d-flex justify-content-center">
       {% for i in 1..digits %}
          <input type="text" class="form-control text-center {{ i != 1 ? 'ms-2' : '' }} fw-bold" name="totp_code[]"
-             maxlength="1" pattern="[0-9]" inputmode="numeric" required style="width: 2em; font-size: 1.5em">
+             maxlength="1" pattern="[0-9]" inputmode="numeric" required style="width: 2em; font-size: 1.5em"
+             aria-label="{{ __('2FA code digit %s of %s')|format(i, digits) }}">
       {% endfor %}
    </div>
    <script>
@@ -110,7 +111,7 @@
                <div class="mx-auto">
                   <div>
                      <div class="btn-group d-flex">
-                        <input class="form-control" alt="{{ __('Secret') }}" value="{{ secret }}"/>
+                        <input class="form-control" alt="{{ __('Secret') }}" value="{{ secret }}" aria-label="{{ __('2FA secret') }}" />
                         <button type="button" class="btn btn-icon flex-grow-0 flex-shrink-0" name="copy_secret" data-clipboard-text="{{ secret }}">
                            <i class="ti ti-clipboard-copy"></i>
                         </button>

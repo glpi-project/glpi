@@ -472,7 +472,9 @@ final class TOTPManager
      */
     public function showTOTPPrompt(int $users_id): void
     {
-        TemplateRenderer::getInstance()->display('pages/2fa/2fa_request.html.twig');
+        TemplateRenderer::getInstance()->display('pages/2fa/2fa_request.html.twig', [
+            'redirect' => $_GET['redirect'] ?? '',
+        ]);
     }
 
     /**

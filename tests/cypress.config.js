@@ -68,7 +68,8 @@ module.exports = defineConfig({
                     // eslint-disable-next-line no-console
                     console.table(message);
                     return null;
-                }
+                },
+                generateOTP: require('cypress-otp')
             });
         },
     },
