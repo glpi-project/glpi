@@ -728,12 +728,6 @@ function loadDataset()
 
     $DB->beginTransaction();
 
-    Config::setConfigurationValues('core', ['url_base'     => GLPI_URI,
-        'url_base_api' => GLPI_URI . '/apirest.php',
-    ]);
-    $CFG_GLPI['url_base']      = GLPI_URI;
-    $CFG_GLPI['url_base_api']  = GLPI_URI . '/apirest.php';
-
     // make all caldav component available for tests (for default usage we don't VTODO)
     $CFG_GLPI['caldav_supported_components']  = ['VEVENT', 'VJOURNAL', 'VTODO'];
 

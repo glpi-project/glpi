@@ -416,16 +416,6 @@ function step8()
         ]
     );
 
-    $url_base_api = "$url_base/apirest.php/";
-    $DB->update(
-        'glpi_configs',
-        ['value' => $url_base_api],
-        [
-            'context'   => 'core',
-            'name'      => 'url_base_api',
-        ]
-    );
-
     Session::destroy(); // Remove session data (debug mode for instance) set by web installation
 
     TemplateRenderer::getInstance()->display('install/step8.html.twig');

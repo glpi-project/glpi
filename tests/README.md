@@ -65,11 +65,6 @@ $ atoum -bf tests/bootstrap.php -f tests/functional/Html.php -m tests\units\Html
 ```
 In `tests\units\Html::testConvDateTime`, you may need to double the backslashes (depending on the shell you use);
 
-If you want to run the API tests suite, you need to run a development server:
-
-```bash
-php -S localhost:8088 -t public tests/router.php &>/dev/null &
-```
 
 Running `atoum` without any arguments will show you the possible options. Most important are:
 - `-bf` to set bootstrap file,
