@@ -2044,28 +2044,38 @@ export class GlpiFormEditorController
      */
     #enableSortable(sections) {
         // Sortable instance must be unique for each section
-        sections
-            .each((index, section) => {
-                const blocks_container = $(section)
-                    .find("[data-glpi-form-editor-section-blocks], [data-glpi-form-editor-horizontal-blocks], [data-glpi-form-editor-question-drag-merge], [data-glpi-form-editor-horizontal-block-placeholder]");
+        sections.each((index, section) => {
+            const blocks_container = $(section)
+                .find("[data-glpi-form-editor-section-blocks], [data-glpi-form-editor-horizontal-blocks], [data-glpi-form-editor-question-drag-merge], [data-glpi-form-editor-horizontal-block-placeholder]");
 
-                sortable(blocks_container, {
+            blocks_container.each((index, container) => {
+                const $container = $(container);
+
+                // Common sortable configuration
+                const sortableConfig = {
                     // Drag and drop handle selector
                     handle: '[data-glpi-form-editor-question-handle]',
 
                     // Restrict sortable items
                     items: '[data-glpi-form-editor-block], [data-glpi-form-editor-horizontal-block-placeholder]',
 
-                    // Limit the number of blocks in horizontal blocks
-                    maxItems: blocks_container.attr("data-glpi-form-editor-horizontal-blocks") !== typeof undefined ? 4 : 0,
-
                     // Accept from others sections
                     acceptFrom: '[data-glpi-form-editor-section-blocks], [data-glpi-form-editor-horizontal-blocks]',
 
                     // Placeholder class
                     placeholder: '<section class="glpi-form-editor-drag-question-placeholder"></section>',
-                });
+                };
+
+
+                // Add specific configuration based on container type
+                if ($container.is("[data-glpi-form-editor-horizontal-blocks]")) {
+                    sortableConfig.maxItems = 4; // Limit the number of blocks in horizontal blocks
+                }
+
+                // Initialize sortable with the configuration
+                sortable($container, sortableConfig);
             });
+        });
 
         // Keep track on unsaved changes if the sort order was updated
         sections
