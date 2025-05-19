@@ -2675,7 +2675,6 @@ JAVASCRIPT;
                     $entities[] = (int) $value;
                 }
             }
-
             $post["entity_restrict"] = Session::getMatchingActiveEntities($entities);
         }
 
