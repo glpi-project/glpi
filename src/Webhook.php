@@ -35,10 +35,13 @@
 
 use Glpi\Api\HL\Controller\AbstractController;
 use Glpi\Api\HL\Controller\AssetController;
+use Glpi\Api\HL\Controller\CustomAssetController;
 use Glpi\Api\HL\Controller\ITILController;
 use Glpi\Api\HL\Controller\ManagementController;
 use Glpi\Api\HL\Doc\Schema;
 use Glpi\Api\HL\Router;
+use Glpi\Application\Environment;
+use Glpi\Asset\AssetDefinition;
 use Glpi\ContentTemplates\TemplateManager;
 use Glpi\Http\Request;
 use Glpi\Application\View\TemplateRenderer;
@@ -339,17 +342,23 @@ class Webhook extends CommonDBTM implements FilterableInterface
         }
     }
 
+    /**
+     * @return array<class-string<AbstractController>, array{
+     *     main: array<class-string<CommonDBTM>, array{name: string}>,
+     *     subtypes?: array<class-string<CommonDBTM>, array{name: string, parent: class-string<CommonDBTM>}|array{}>
+     * }>
+     */
     public static function getAPIItemtypeData(): array
     {
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
-
         static $supported = null;
 
-        if ($supported === null) {
+        if ($supported === null || Environment::get()->shouldExpectResourcesToChange()) {
             $supported = [
                 AssetController::class => [
-                    'main' => $CFG_GLPI['asset_types'],
+                    'main' => AssetController::getAssetTypes(),
+                ],
+                CustomAssetController::class => [
+                    'main' => array_map(static fn($c) => AssetDefinition::getCustomObjectNamespace() . '\\' . $c, CustomAssetController::getCustomAssetTypes()),
                 ],
                 ITILController::class => [
                     'main' => [Ticket::class, Change::class, Problem::class],
@@ -393,9 +402,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
             };
 
             /**
-             * @var AbstractController $controller
              * @phpstan-var class-string<AbstractController> $controller
-             * @var array $categories
              */
             foreach ($supported as $controller => $categories) {
                 // TODO Allow pinning webhooks to specific API versions
@@ -411,7 +418,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
                             }
                             unset($supported[$controller][$category][$i]);
                         }
-                    } elseif ($category === 'subtypes' && $controller === ITILController::class) {
+                    } elseif ($controller === ITILController::class) {
                         /** @phpstan-var class-string<ITILController> $controller */
                         foreach ($itemtypes as $supported_itemtype => $type_data) {
                             $supported[$controller][$category][$supported_itemtype]['name'] = $controller::getFriendlyNameForSubtype($supported_itemtype);
@@ -434,7 +441,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
         $values = [];
         $supported = self::getAPIItemtypeData();
 
-        $values[__('Assets')] = array_keys($supported[AssetController::class]['main']);
+        $values[__('Assets')] = array_keys([...$supported[AssetController::class]['main'], ...$supported[CustomAssetController::class]['main']]);
         $values[__('Assistance')] = array_merge(
             array_keys($supported[ITILController::class]['main']),
             array_keys($supported[ITILController::class]['subtypes'])
@@ -504,9 +511,10 @@ class Webhook extends CommonDBTM implements FilterableInterface
      */
     private function getWebhookBody(string $event, array $api_data, string $itemtype, int $items_id, bool $raw_output = false): ?string
     {
-        $data = $api_data;
-        $data['item'] = $api_data;
-        $data['event'] = $event;
+        $data = [
+            'item' => $api_data,
+            'event' => $event,
+        ];
         $this->addParentItemData($data, $itemtype, $items_id);
         if ($raw_output) {
             return json_encode($data, JSON_PRETTY_PRINT);
@@ -648,8 +656,12 @@ class Webhook extends CommonDBTM implements FilterableInterface
         $parent_name = null;
         foreach ($itemtypes as $controller_class => $categories) {
             if (array_key_exists($itemtype, $categories['main'])) {
-                $api_name = $categories['main'][$itemtype]['name'];
                 $controller = $controller_class;
+                if ($controller === CustomAssetController::class) {
+                    $api_name = str_replace('CustomAsset_', '', $categories['main'][$itemtype]['name']);
+                } else {
+                    $api_name = $categories['main'][$itemtype]['name'];
+                }
                 break;
             }
 
@@ -668,6 +680,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
 
         $path = match ($controller) {
             AssetController::class => '/Assets/',
+            CustomAssetController::class => '/Assets/Custom/',
             ITILController::class => '/Assistance/',
             ManagementController::class => '/Management/',
             default => '/_404/' // Nonsense path to trigger a 404
@@ -876,7 +889,6 @@ class Webhook extends CommonDBTM implements FilterableInterface
      */
     public static function getAPISchemaBySupportedItemtype(string $itemtype): ?array
     {
-        /** @var class-string<AbstractController> $controller_class */
         $controller_class = null;
         $schema_name = null;
         $supported = self::getAPIItemtypeData();
@@ -889,9 +901,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
             }
             if (isset($categories['subtypes']) && array_key_exists($itemtype, $categories['subtypes'])) {
                 $schema_name = $categories['subtypes'][$itemtype]['name'];
-                if (isset($categories['subtypes'][$itemtype]['parent'])) {
-                    $schema_name = $categories['main'][$categories['subtypes'][$itemtype]['parent']]['name'] . $schema_name;
-                }
+                $schema_name = $categories['main'][$categories['subtypes'][$itemtype]['parent']]['name'] . $schema_name;
                 $controller_class = $controller;
                 break;
             }

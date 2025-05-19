@@ -1361,10 +1361,10 @@ final class AssetController extends AbstractController
     }
 
     /**
-     * @param bool $classes_only If true, only the class names are returned. If false, the class name => localized name pairs are returned.
+     * @param bool $types_only If true, only the type names are returned. If false, the type name => localized name pairs are returned.
      * @return array<class-string<CommonDBTM>, string>
      */
-    public static function getAssetTypes(bool $classes_only = true): array
+    public static function getAssetTypes(bool $types_only = true): array
     {
         static $assets = null;
 
@@ -1381,7 +1381,7 @@ final class AssetController extends AbstractController
                 $assets[$type] = $type::getTypeName(1);
             }
         }
-        return $classes_only ? array_keys($assets) : $assets;
+        return $types_only ? array_keys($assets) : $assets;
     }
 
     public static function getRackTypes(bool $schema_names_only = true): array
