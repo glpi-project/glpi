@@ -351,7 +351,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
                     'main' => AssetController::getAssetTypes(),
                 ],
                 CustomAssetController::class => [
-                    'main' => array_map(static fn ($c) => AssetDefinition::getCustomObjectNamespace() . '\\' . $c, CustomAssetController::getCustomAssetTypes()),
+                    'main' => array_map(static fn($c) => AssetDefinition::getCustomObjectNamespace() . '\\' . $c, CustomAssetController::getCustomAssetTypes()),
                 ],
                 ITILController::class => [
                     'main' => [Ticket::class, Change::class, Problem::class],
