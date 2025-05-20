@@ -1976,6 +1976,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/CommonITILValidation.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/CommonITILValidation.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Method CommonITILValidation\\:\\:getItilObjectItemType\\(\\) invoked with 1 parameter, 0 required\\.$#',
 	'identifier' => 'arguments.count',
 	'count' => 1,

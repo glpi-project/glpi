@@ -55,18 +55,24 @@
     {% if canadd %}
         {% if item.fields['status'] not in donestatus %}
             <div class="card-body mb-3 p-0 text-center">
-                {{ sendapproval_modal.js|raw }}
-                <a href="#"
-                   class='btn btn-primary'
-                   role="button"
-                   title="{{ __('Send an approval request') }}"
-                   data-bs-toggle='modal'
-                   data-bs-target="#{{ sendapproval_modal.target }}"
-                    {{ sendapproval_modal.onclick|raw }}
-                >
-                    {{ __('Send an approval request') }} new
+                <a class='btn btn-primary' href='javascript:viewAddValidation{{ tID }}{{ rand }}()'>
+                    {{ __('Send an approval request') }}
                 </a>
             </div>
         {% endif %}
     {% endif %}
 </div>
+
+<div id="viewvalidation{{ tID }}{{ rand }}"></div>
+
+<script>
+    function viewAddValidation{{ tID }}{{ rand }}() {
+        var params = {
+            type: '{{ get_class(validation)|e('js') }}',
+            parenttype: '{{ itemtype|e('js') }}',
+            {{ items_id }}: '{{ validation.fields[items_id]|e('js') }}',
+            id: -1
+        };
+        $('#viewvalidation{{ tID }}{{ rand }}').load('{{ config('root_doc')|e('js') }}/ajax/viewsubitem.php', params);
+    };
+</script>

@@ -71,6 +71,19 @@ abstract class CommonITILValidation extends CommonDBChild
         return str_replace('Validation', '', static::class);
     }
 
+    /**
+     * @return class-string<\ITIL_ValidationStep>|null
+     */
+    public static function getValidationStepClassName(): ?string
+    {
+        $validation_class = static::class . 'Step';
+        if (class_exists($validation_class)) {
+            return $validation_class;
+        }
+
+        return null;
+    }
+
     public static function getCreateRights()
     {
         return [CREATE];
@@ -1001,153 +1014,230 @@ abstract class CommonITILValidation extends CommonDBChild
             return;
         }
 
-        $tID    = $itil->fields['id'];
-        $tmp    = [static::$items_id => $tID];
-        $rand   = mt_rand();
+        $rand = mt_rand();
+        $validation_steps_classname = static::getValidationStepClassName();
 
-        $validation_sql_results = $DB->Request([
-            'FROM'   => $this->getTable(),
-            'WHERE'  => [static::$items_id => $itil->getID()],
-            'ORDER'  => ['itils_validationsteps_id ASC', 'submission_date DESC'],
-        ]);
-
-        Session::initNavigateListItems(
-            static::class,
-            //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
-            sprintf(
-                __('%1$s = %2$s'),
-                $itil::getTypeName(1),
-                $itil->fields["name"]
-            )
+        $values = [];
+        $validation_steps_iterator = $DB->request(
+            [
+                'FROM'  => $validation_steps_classname::getTable(),
+                'WHERE' => [
+                    'itemtype' => $itil::class,
+                    'items_id' => $itil->getID(),
+                ],
+            ]
         );
-        $validations = [];
-        $validationstep_id_inloop = -1;
-        foreach ($validation_sql_results as $validation) {
-            $canedit = $this->canEdit($validation["id"]);
-            Session::addToNavigateListItems($this->getType(), $validation["id"]);
-            $status  = sprintf(
-                '<div class="badge fw-normal fs-4 text-wrap" style="border-color: %s;border-width: 2px;">%s</div>',
-                htmlescape(self::getStatusColor($validation['status'])),
-                htmlescape(self::getStatus($validation['status']))
-            );
 
-            $comment_submission = RichText::getEnhancedHtml($this->fields['comment_submission'], ['images_gallery' => true]);
-            $type_name   = null;
-            $target_name = null;
-            if ($validation["itemtype_target"] === User::class) {
-                $type_name   = User::getTypeName();
-                $target_name = getUserName($validation["items_id_target"]);
-            } elseif (is_a($validation["itemtype_target"], CommonDBTM::class, true)) {
-                $target = new $validation["itemtype_target"]();
-                $type_name = $target::getTypeName();
-                if ($target->getFromDB($validation["items_id_target"])) {
-                    $target_name = $target->getName();
-                }
-            }
-            $is_answered = $validation['status'] !== self::WAITING && $validation['users_id_validate'] > 0;
-            $comment_validation = RichText::getEnhancedHtml($this->fields['comment_validation'] ?? '', ['images_gallery' => true]);
+        foreach ($validation_steps_iterator as $validation_step_data) {
+            $validation_step_id = $validation_step_data['id'];
 
-            $doc_item = new Document_Item();
-            $docs = $doc_item->find([
-                "itemtype"          => static::class,
-                "items_id"           => $this->getID(),
-                "timeline_position"  => ['>', CommonITILObject::NO_TIMELINE],
-            ]);
+            $validation_step = new $validation_steps_classname();
+            $validation_step->getFromDB($validation_step_id);
 
-            $document = "";
-            foreach ($docs as $docs_values) {
-                $doc = new Document();
-                if ($doc->getFromDB($docs_values['documents_id'])) {
-                    $document .= sprintf(
-                        '<a href="%s">%s</a><br />',
-                        htmlescape($doc->getLinkURL()),
-                        htmlescape($doc->getName())
-                    );
-                }
-            }
+            $step_name          = Dropdown::getDropdownName(ValidationStep::getTable(), $validation_step_data['validationsteps_id']);
+            $step_status        = $validation_step->getStatus();
+            $step_achievements  = $validation_step->getAchievements();
+            $step_threshold     = $validation_step->fields['minimal_required_validation_percent'];
+            $edit_form_url      = $validation_steps_classname::getFormURLWithId($validation_step_id);
 
-            $edit_button = "";
-            if ($canedit) {
-                $edit_button = $this->getModalFormHtmlElements('editapproval_modal', __('Edit Approval'), $itil->getID(), $validation["id"]) + ['anchor_title' => __('Edit') ];
-            }
-
-            $itil_validationstep_id = $validation['itils_validationsteps_id'];
-            $validations[$itil_validationstep_id]['entries'][] = [
-                'edit'                  => $edit_button,
-                'status'                => $status,
-                'type_name'             => $type_name,
-                'target_name'           => $target_name,
-                'is_answered'           => $is_answered,
-                'comment_submission'    => $comment_submission,
-                'comment_validation'    => $comment_validation,
-                'document'              => $document,
-                'submission_date'       => $validation["submission_date"],
-                'validation_date'       => $validation["validation_date"],
-                'user'                  => getUserName($validation["users_id"]),
-            ];
-
-            $itil_edit_js_identifier = 'itilvalidation_edit_' . $itil_validationstep_id;
-            $url = $itil::getValidationStepClassName()::getFormURLWithId($itil_validationstep_id);
-            $validations[$itil_validationstep_id]['edit_link_js']['js'] = Ajax::createIframeModalWindow(
-                $itil_edit_js_identifier,
-                $url,
+            $step_row_html = TemplateRenderer::getInstance()->renderFromStringTemplate(
+                <<<TWIG
+                    {% macro stacked_progressbar(achieved, bg_color_class, stripped = false) %}
+                        <div class="progress" style="width: {{ achieved }}%">
+                            <div
+                                    class="progress-bar {% if stripped %}progress-bar-striped progress-bar-animated{% endif %} {{ bg_color_class }}"
+                                    role="progressbar"
+                                    aria-valuenow="{{ achieved }}"
+                                    aria-valuemin="0"
+                                    aria-valuemax="100"
+                                    aria-label="{{ achieved }}%"
+                            >
+                                <span class="visually-hidden">{{ achieved }}%</span>
+                            </div>
+                        </div>
+                    {% endmacro %}
+                    <div class="d-flex align-items-center gap-2 mx-auto" style="max-width: 650px;">
+                        <div class="flex-shrink-0"><strong>{{ step_name }}</strong></div>
+                        <div class="flex-shrink-0">
+                            {% if step_status == constant('CommonITILValidation::ACCEPTED') %}
+                                <span class="text-green" data-bs-toogle="tooltip" title="{{ __("Approval step accepted") }}">
+                                    <i class="ti ti-check"></i>
+                                </span>
+                            {% elseif step_status == constant('CommonITILValidation::REFUSED') %}
+                                <span class="text-red" data-bs-toggle="tooltip" title="{{ __("Approval step refused") }}">
+                                    <i class="ti ti-ban"></i>
+                                </span>
+                            {% elseif step_status == constant('CommonITILValidation::WAITING') %}
+                                <span class="text-yellow" data-bs-toggle="tooltip" title="{{ __("Approval step pending") }}">
+                                    <i class="ti ti-clock"></i>
+                                </span>
+                            {% endif %}
+                        </div>
+                        <div class="flex-grow-1">
+                            <div class="progress-stacked position-relative" data-bs-toggle="tooltip"
+                                 title="{{ progress_label|format(accepted_percent, step_threshold) }}">
+                                {{ _self.stacked_progressbar(accepted_percent, 'bg-green') }}
+                                {{ _self.stacked_progressbar(waiting_percent, 'bg-yellow', true) }}
+                                {{ _self.stacked_progressbar(refused_percent, 'bg-red') }}
+                                {# threshold  #}
+                                {# sligly move the indicator on edge case (0|100) to be visible #}
+                                {% if step_threshold == 0 %}
+                                    <div class="threshold-indicator" style="position: absolute; width: 5px; height: 100%; background-color: black; left: 0; top: 0; z-index: 10;"></div>
+                                {% elseif step_threshold == 100 %}
+                                    <div class="threshold-indicator" style="position: absolute; width: 5px; height: 100%; background-color: black; right: 0; top: 0; z-index: 10;"></div>
+                                {% else %}
+                                    <div class="threshold-indicator" style="position: absolute; width: 3px; height: 100%; background-color: black; left: {{ step_threshold }}%; top: 0; z-index: 10;"></div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="flex-shrink-0">
+                            {% do call('Ajax::createIframeModalWindow', [
+                                'itilvalidation_edit_' ~ step_id,
+                                edit_form_url,
+                                {
+                                    reloadonclose: true,
+                                }
+                            ]) %}
+                            <a href=""
+                               role="button"
+                               title="{{ edit_button_label }}"
+                               data-bs-toggle="modal"
+                               data-bs-target="#itilvalidation_edit_{{ step_id }}"
+                            >
+                                <i class="ti ti-edit"></i>
+                                <span class="sr-only">{{ edit_button_label }}</span>
+                            </a>
+                        </div>
+                    </div>
+                TWIG,
                 [
-                    'title'           => __('Update approval step'),
-                    'reloadonclose'   => true,
-                    'display'         => false,
-                    'height'          => 120,
+                    'step_id'           => $validation_step_id,
+                    'step_name'         => $step_name,
+                    'step_status'       => $step_status,
+                    'accepted_percent'  => $step_achievements[self::ACCEPTED],
+                    'refused_percent'   => $step_achievements[self::REFUSED],
+                    'waiting_percent'   => $step_achievements[self::WAITING],
+                    'step_threshold'    => $step_threshold,
+                    'edit_form_url'     => $edit_form_url,
+                    'edit_button_label' => __('Edit validation step'),
+                    'progress_label'    => __('Progress: %1$s%% of %2$s%% required'),
                 ]
             );
-            $validations[$itil_validationstep_id]['edit_link_js']['target'] = "$itil_edit_js_identifier";
 
-            if ($itil_validationstep_id !== $validationstep_id_inloop) {
-                $itil_validationstep = $itil::getValidationStepInstance();
-                if (!$itil_validationstep->getFromDB($itil_validationstep_id)) {
-                    throw new Exception("itil Approval step not found " . $itil_validationstep_id);
+            $values[] = [
+                'row_class'          => 'table-light',
+                'showmassiveactions' => false,
+                'edit_colspan'       => 10,
+                'edit'               => $step_row_html,
+            ];
+
+            $validation_iterator = $DB->request([
+                'FROM'  => $this->getTable(),
+                'WHERE' => ['itils_validationsteps_id' => $validation_step_id],
+                'ORDER' => ['submission_date DESC'],
+            ]);
+
+            foreach ($validation_iterator as $row) {
+                $canedit = $this->canEdit($row["id"]);
+                $status  = sprintf(
+                    '<div class="badge fw-normal fs-4 text-wrap" style="border-color: %s;border-width: 2px;">%s</div>',
+                    htmlescape(self::getStatusColor($row['status'])),
+                    htmlescape(self::getStatus($row['status']))
+                );
+
+                $comment_submission = RichText::getEnhancedHtml($this->fields['comment_submission'], ['images_gallery' => true]);
+                $type_name   = null;
+                $target_name = null;
+                if ($row["itemtype_target"] === User::class) {
+                    $type_name   = User::getTypeName();
+                    $target_name = getUserName($row["items_id_target"]);
+                } elseif (is_a($row["itemtype_target"], CommonDBTM::class, true)) {
+                    $target = new $row["itemtype_target"]();
+                    $type_name = $target::getTypeName();
+                    if ($target->getFromDB($row["items_id_target"])) {
+                        $target_name = $target->getName();
+                    }
+                }
+                $is_answered = $row['status'] !== self::WAITING && $row['users_id_validate'] > 0;
+                $comment_validation = RichText::getEnhancedHtml($this->fields['comment_validation'] ?? '', ['images_gallery' => true]);
+
+                $doc_item = new Document_Item();
+                $docs = $doc_item->find([
+                    "itemtype"          => static::class,
+                    "items_id"           => $this->getID(),
+                    "timeline_position"  => ['>', CommonITILObject::NO_TIMELINE],
+                ]);
+
+                $document = "";
+                foreach ($docs as $docs_values) {
+                    $doc = new Document();
+                    if ($doc->getFromDB($docs_values['documents_id'])) {
+                        $document .= sprintf(
+                            '<a href="%s">%s</a><br />',
+                            htmlescape($doc->getLinkURL()),
+                            htmlescape($doc->getName())
+                        );
+                    }
                 }
 
-                $validation_step_status = $itil_validationstep->getStatus();
-                $validation_step_achievements = $itil_validationstep->getAchievements();
+                $script = "";
+                if ($canedit) {
+                    $edit_title = __s('Edit');
+                    $item_id = (int) $itil->fields['id'];
+                    $row_id = (int) $row["id"];
+                    $root_doc = htmlescape($CFG_GLPI["root_doc"]);
+                    $params_json = json_encode([
+                        'type'             => static::class,
+                        'parenttype'       => static::$itemtype,
+                        static::$items_id  => $this->fields[static::$items_id],
+                        'id'               => $row["id"],
+                    ]);
 
-                $vs = $itil_validationstep;
-                $vs->getFromDB($validation['itils_validationsteps_id']);
-                $validationsteps_id = $vs->fields['validationsteps_id'];
+                    $rand_id = htmlescape($item_id . $row_id . $rand);
 
-                $validations[$itil_validationstep_id]['validationstep'] = [
-                    'id' => $validation['itils_validationsteps_id'],
-                    'name' => Dropdown::getDropdownName(ValidationStep::getTable(), $validationsteps_id),
-                    // structured to be later replaced by a DTO with Status::isAccepted()|isRefused()|isWaiting() & getStatus()
-                    'status' => [
-                        'waiting' => $validation_step_status === self::WAITING,
-                        'refused' => $validation_step_status === self::REFUSED,
-                        'accepted' => $validation_step_status === self::ACCEPTED,
-                    ],
-                    // structured to be later replaced by a DTO with getAchievement()
-                    'achievement' => [
-                        'waiting' => $validation_step_achievements[self::WAITING],
-                        'refused' => $validation_step_achievements[self::REFUSED],
-                        'accepted' => $validation_step_achievements[self::ACCEPTED],
-                    ],
-                    'minimal_required_validation_percent' => $itil_validationstep->fields['minimal_required_validation_percent'],
+                    $script = <<<HTML
+                        <span class="ti ti-edit" style="cursor:pointer" title="{$edit_title}"
+                              onclick="viewEditValidation{$rand_id}();"
+                              id="viewvalidation{$rand_id}">
+                        </span>
+                        <script>
+                            function viewEditValidation{$rand_id}() {
+                                $('#viewvalidation{$rand_id}').load('$root_doc/ajax/viewsubitem.php', $params_json);
+                            };
+                        </script>
+HTML;
+                }
+
+                $values[] = [
+                    'edit'                  => $script,
+                    'status'                => $status,
+                    'type_name'             => $type_name,
+                    'target_name'           => $target_name,
+                    'is_answered'           => $is_answered,
+                    'comment_submission'    => $comment_submission,
+                    'comment_validation'    => $comment_validation,
+                    'document'              => $document,
+                    'submission_date'       => $row["submission_date"],
+                    'validation_date'       => $row["validation_date"],
+                    'user'                  => getUserName($row["users_id"]),
                 ];
 
-                $validationstep_id_inloop = $itil_validationstep_id;
             }
         }
 
+        $can_input = [static::$items_id => $itil->getID()];
         TemplateRenderer::getInstance()->display('components/itilobject/validation.html.twig', [
-            'canadd' => $this->can(-1, CREATE, $tmp),
+            'canadd' => $this->can(-1, CREATE, $can_input),
             'item' => $itil,
             'itemtype' => static::$itemtype,
-            'tID' => $tID,
+            'tID' => $itil->getID(),
             'donestatus' => array_merge($itil->getSolvedStatusArray(), $itil->getClosedStatusArray()),
             'validation' => $this,
             'rand' => $rand,
             'items_id' => static::$items_id,
-            'sendapproval_modal' => $this->getModalFormHtmlElements('sendapproval_modal', __('Send approval request'), $itil->getID()),
         ]);
 
-        TemplateRenderer::getInstance()->display('components/sections_datatable.html.twig', [
+        TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'is_tab' => true,
             'nofilter' => true,
             'nosort' => true,
@@ -1164,7 +1254,7 @@ abstract class CommonITILValidation extends CommonDBChild
                 'document' => __('Documents'),
             ],
             'formatters' => [
-                'edit' => 'html_modal',
+                'edit' => 'raw_html',
                 'status' => 'raw_html',
                 'submission_date' => 'date',
                 'comment_submission' => 'raw_html',
@@ -1172,8 +1262,8 @@ abstract class CommonITILValidation extends CommonDBChild
                 'comment_validation' => 'raw_html',
                 'document' => 'raw_html',
             ],
-            'validationsteps' => $validations,
-            'total_number' => count($validations),
+            'entries' => $values,
+            'total_number' => count($values),
             'showmassiveactions' => false,
         ]);
     }
@@ -1196,7 +1286,6 @@ abstract class CommonITILValidation extends CommonDBChild
 
         /** @var \CommonITILObject $itil */
         $itil = $this->getItem();
-
 
         $ivs = $itil::getValidationStepInstance();
         $ivs->getFromDB($this->fields['itils_validationsteps_id']);
@@ -1927,46 +2016,6 @@ HTML;
     public static function getAllValidationStatusArray()
     {
         return [self::NONE, self::WAITING, self::REFUSED, self::ACCEPTED];
-    }
-
-    /**
-     * Elements to create a modal to edit/send an approval request
-     *
-     * @param string $dom_identifier The $itilvalidation_id parameter is happened to this identifier (unlesss it is -1)
-     * @param string $modal_title
-     * @param int $itil_id
-     * @param int $itilvalidation_id
-     * @return array{js: string, onclick: string, target: string}
-     */
-    private function getModalFormHtmlElements(string $dom_identifier, string $modal_title, int $itil_id, int $itilvalidation_id = -1): array
-    {
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
-
-        $dom_identifier .= $itilvalidation_id === -1 ?: (string) $itilvalidation_id;
-
-        $uri_params = [
-            'type' => static::class,
-            'parenttype' => static::$itemtype,
-            static::$items_id => $itil_id,
-            'id' => $itilvalidation_id,
-        ];
-
-        $modal['js'] = Ajax::createModalWindow(
-            $dom_identifier,
-            $CFG_GLPI['root_doc'] . "/ajax/viewsubitem.php",
-            [
-                'title'           => htmlescape($modal_title),
-                'reloadonclose'   => true,
-                'display'         => false,
-                'modal_class'     => "modal-lg",
-                'extraparams'     => $uri_params,
-            ]
-        );
-        $modal['onclick'] = 'onclick="' . $dom_identifier . '.show();"';
-        $modal['target'] = "$dom_identifier";
-
-        return $modal;
     }
 
     /**
