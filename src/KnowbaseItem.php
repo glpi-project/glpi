@@ -1920,13 +1920,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria
             // Pager
             $parameters = "start=" . $params["start"] . "&amp;knowbaseitemcategories_id=" .
                         $params['knowbaseitemcategories_id'] . "&amp;contains=" .
-                        $params["contains"];
-
-            if ($type != 'search' && $type != 'browse') {
-                $parameters .= "&amp;is_faq=" . $type;
-            } else {
-                $parameters .= "&amp;is_faq=" . $params['faq'];
-            }
+                        $params["contains"] . "&amp;faq=" . $params['faq'] . "&amp;type=" . $type;
 
             if (
                 isset($options['item_itemtype'])
