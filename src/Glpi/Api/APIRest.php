@@ -43,7 +43,6 @@ use AllAssets;
 use Glpi\Form\AccessControl\FormAccessParameters;
 use Glpi\Form\Category;
 use Glpi\Form\Form;
-use Glpi\Form\FormTranslation;
 use Glpi\Form\ServiceCatalog\ItemRequest;
 use Glpi\Form\ServiceCatalog\Provider\FormProvider;
 use Glpi\Form\ServiceCatalog\ServiceCatalogManager;
