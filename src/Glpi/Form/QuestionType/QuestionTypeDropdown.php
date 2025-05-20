@@ -105,7 +105,7 @@ final class QuestionTypeDropdown extends AbstractQuestionTypeSelectable implemen
     {
         // language=Twig
         $js = <<<TWIG
-            import("js/modules/Forms/QuestionDropdown").then((m) => {
+            import("/js/modules/Forms/QuestionDropdown.js").then((m) => {
                 {% if question is not null %}
                     const container = $('div[data-glpi-form-editor-selectable-question-options="{{ rand }}"]');
                     container.data(

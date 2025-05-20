@@ -30,9 +30,9 @@
  * ---------------------------------------------------------------------
  */
 
-import '../../../../public/build/vue/app.js';
-import FuzzySearchModal from '../../../../js/src/vue/FuzzySearch/Modal.vue';
-import '../../../../public/lib/fuzzy.js';
+import '/build/vue/app.js';
+import FuzzySearchModal from '/js/src/vue/FuzzySearch/Modal.vue';
+import '/lib/fuzzy.js';
 import {enableAutoUnmount, mount} from "@vue/test-utils";
 
 enableAutoUnmount(afterEach);

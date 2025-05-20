@@ -248,21 +248,14 @@ class ImportMapGenerator
                     $relative_path = sprintf('plugins/%s/', $plugin_key) . $relative_path;
                 }
 
-                // Calculate module name with context - remove the `public/` prefix - preserve following directory structure
-                $module_path = Path::makeRelative($file_path, $base_path);
-                $module_name = preg_replace('~^public/~', '', $module_path);
-                $module_name = preg_replace('~\.js$~', '', $module_name);
-
-                // Add plugin prefix for plugin modules
-                if ($plugin_key !== null) {
-                    $module_name = $plugin_key . '/' . $module_name;
-                }
+                // Get the path that would be used for a GLPI located at the server root dir (e.g. `/js/modules/Foo.js`)
+                $clean_path = '/' . $relative_path;
 
                 // Generate version parameter
                 $version_param = $this->generateVersionParam($file_path);
 
                 // Add to import map
-                $import_map['imports'][$module_name] = $this->root_doc . '/' . $relative_path . '?v=' . $version_param;
+                $import_map['imports'][$clean_path] = $this->root_doc . $clean_path . '?v=' . $version_param;
             }
         }
     }

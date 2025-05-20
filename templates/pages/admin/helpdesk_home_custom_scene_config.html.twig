@@ -171,8 +171,7 @@
 </div>
 
 <script>
-    {% set dropdown_controller = path("/js/modules/DynamicDropdownController.js") %}
-    import("{{ dropdown_controller }}")
+    import("/js/modules/DynamicDropdownController.js")
         .then((module) => new module.DynamicDropdownController())
     ;
 </script>

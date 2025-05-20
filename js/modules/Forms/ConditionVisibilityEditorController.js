@@ -30,7 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
-import { BaseConditionEditorController } from './BaseConditionEditorController.js';
+import { BaseConditionEditorController } from '/js/modules/Forms/BaseConditionEditorController.js';
 
 export class GlpiFormConditionVisibilityEditorController extends BaseConditionEditorController {
     constructor(container, item_uuid, item_type, forms_sections, form_questions, form_comments) {

@@ -101,7 +101,7 @@
 {% endif %}
 
 <script>
-    import('{{ js_path('js/modules/ObjectLock.js') }}').then((m) => {
+    import('/js/modules/ObjectLock.js').then((m) => {
         $(() => {
             if ($('.navigationheader').length > 0) {
                 $('#message_after_lock').insertAfter('.navigationheader');

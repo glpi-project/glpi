@@ -33,8 +33,8 @@
 
 /* global _, tinymce_editor_configs, getUUID, getRealInputWidth, sortable, tinymce, glpi_toast_info, glpi_toast_error, bootstrap, setupAjaxDropdown, setupAdaptDropdown, setHasUnsavedChanges, hasUnsavedChanges */
 
-import { GlpiFormConditionVisibilityEditorController } from './ConditionVisibilityEditorController.js';
-import { GlpiFormConditionValidationEditorController } from './ConditionValidationEditorController.js';
+import { GlpiFormConditionVisibilityEditorController } from '/js/modules/Forms/ConditionVisibilityEditorController.js';
+import { GlpiFormConditionValidationEditorController } from '/js/modules/Forms/ConditionValidationEditorController.js';
 
 /**
  * Client code to handle users actions on the form_editor template

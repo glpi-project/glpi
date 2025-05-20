@@ -30,7 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
-import Screenshot from '../../../../js/modules/Screenshot/Screenshot.js';
+import Screenshot from '/js/modules/Screenshot/Screenshot.js';
 import {jest} from '@jest/globals';
 
 describe('Screenshot', () => {

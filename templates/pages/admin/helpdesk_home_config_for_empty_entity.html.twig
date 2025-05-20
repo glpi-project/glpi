@@ -103,7 +103,7 @@
 <script defer type="module">
     (async () => {
         const module = await import(
-            "{{ js_path('js/modules/Helpdesk/HelpdeskConfigForEmptyEntityController.js') }}"
+            "/js/modules/Helpdesk/HelpdeskConfigForEmptyEntityController.js"
         );
         new module.GlpiHelpdeskConfigForEmptyEntityController(
             document.getElementById("{{ container_id }}"),

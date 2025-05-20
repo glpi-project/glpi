@@ -102,7 +102,7 @@ class Knowbase {
         // from the server. We can load the library (if it isn't already and the data at the same time and await both promises.
         // The dynamic import will not load the library again if it is already loaded, it will simply resolve immediately.
 
-        const lib_import = import(`${CFG_GLPI.root_doc}/lib/jquery-prettytextdiff.js`);
+        const lib_import = import('/lib/jquery-prettytextdiff.js');
         const data_promise = $.ajax({
             url: `${CFG_GLPI.root_doc}/ajax/compareKbRevisions.php`,
             method: 'post',

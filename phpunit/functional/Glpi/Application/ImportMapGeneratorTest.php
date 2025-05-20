@@ -183,17 +183,17 @@ class ImportMapGeneratorTest extends GLPITestCase
         // Assertions for structure and entries
         $this->assertArrayHasKey('imports', $import_map, 'Import map should have an imports key');
 
-        // Check for core modules in js/modules
-        $this->assertArrayHasKey('js/modules/Forms/GlpiFormConditionEditorController', $import_map['imports']);
-        $this->assertArrayHasKey('js/modules/Forms/GlpiFormDestinationAutoConfigController', $import_map['imports']);
-        $this->assertArrayHasKey('js/modules/Utils/HelperFunctions', $import_map['imports']);
+        // Check for core modules in /js/modules
+        $this->assertArrayHasKey('/js/modules/Forms/GlpiFormConditionEditorController.js', $import_map['imports']);
+        $this->assertArrayHasKey('/js/modules/Forms/GlpiFormDestinationAutoConfigController.js', $import_map['imports']);
+        $this->assertArrayHasKey('/js/modules/Utils/HelperFunctions.js', $import_map['imports']);
 
         // Check for core modules in public/lib and public/build
-        $this->assertArrayHasKey('lib/vendor1/library1', $import_map['imports']);
-        $this->assertArrayHasKey('lib/vendor2/library2', $import_map['imports']);
-        $this->assertArrayHasKey('build/compiled', $import_map['imports']);
-        $this->assertArrayHasKey('build/assets/module1', $import_map['imports']);
-        $this->assertArrayHasKey('build/assets/module2', $import_map['imports']);
+        $this->assertArrayHasKey('/lib/vendor1/library1.js', $import_map['imports']);
+        $this->assertArrayHasKey('/lib/vendor2/library2.js', $import_map['imports']);
+        $this->assertArrayHasKey('/build/compiled.js', $import_map['imports']);
+        $this->assertArrayHasKey('/build/assets/module1.js', $import_map['imports']);
+        $this->assertArrayHasKey('/build/assets/module2.js', $import_map['imports']);
 
         // Verify all URLs have version parameters
         foreach ($import_map['imports'] as $module_name => $url) {
@@ -202,12 +202,12 @@ class ImportMapGeneratorTest extends GLPITestCase
 
         // Verify URL paths are correct
         $this->assertStringContainsString(
-            self::ROOT_URL . '/js/modules/Forms/GlpiFormConditionEditorController.js',
-            $import_map['imports']['js/modules/Forms/GlpiFormConditionEditorController']
+            self::ROOT_URL . '/js/modules/Forms/GlpiFormConditionEditorController.js?v=',
+            $import_map['imports']['/js/modules/Forms/GlpiFormConditionEditorController.js']
         );
         $this->assertStringContainsString(
-            self::ROOT_URL . '/lib/vendor1/library1.js',
-            $import_map['imports']['lib/vendor1/library1']
+            self::ROOT_URL . '/lib/vendor1/library1.js?v=',
+            $import_map['imports']['/lib/vendor1/library1.js']
         );
     }
 
@@ -280,22 +280,22 @@ class ImportMapGeneratorTest extends GLPITestCase
         $import_map = $generator->generate();
 
         // Verify that only registered paths are included
-        $this->assertArrayHasKey('myplugin/js/modules/CustomModule', $import_map['imports'], 'Module from registered path should be included');
-        $this->assertArrayHasKey('myplugin/build/plugin-build', $import_map['imports'], 'Plugin build file should be included');
-        $this->assertArrayHasKey('myotherplugin/build/component/other-build', $import_map['imports'], 'Another plugin build file should be included');
-        $this->assertArrayHasKey('myotherplugin/lib/other-lib', $import_map['imports'], 'Another plugin module should be included');
+        $this->assertArrayHasKey('/plugins/myplugin/js/modules/CustomModule.js', $import_map['imports'], 'Module from registered path should be included');
+        $this->assertArrayHasKey('/plugins/myplugin/build/plugin-build.js', $import_map['imports'], 'Plugin build file should be included');
+        $this->assertArrayHasKey('/plugins/myotherplugin/build/component/other-build.js', $import_map['imports'], 'Another plugin build file should be included');
+        $this->assertArrayHasKey('/plugins/myotherplugin/lib/other-lib.js', $import_map['imports'], 'Another plugin module should be included');
 
         // Verify that unregistered paths are not included
-        $this->assertArrayNotHasKey('myotherplugin/js/modules/CustomModule', $import_map['imports'], 'Files outside registered paths should not be included');
+        $this->assertArrayNotHasKey('/plugins/myotherplugin/js/modules/CustomModule.js', $import_map['imports'], 'Files outside registered paths should not be included');
 
         // Verify URL paths are correct
         $this->assertStringContainsString(
-            self::ROOT_URL . '/plugins/myplugin/js/modules/CustomModule.js',
-            $import_map['imports']['myplugin/js/modules/CustomModule']
+            self::ROOT_URL . '/plugins/myplugin/js/modules/CustomModule.js?v=',
+            $import_map['imports']['/plugins/myplugin/js/modules/CustomModule.js']
         );
         $this->assertStringContainsString(
-            self::ROOT_URL . '/plugins/myotherplugin/lib/other-lib.js',
-            $import_map['imports']['myotherplugin/lib/other-lib']
+            self::ROOT_URL . '/plugins/myotherplugin/lib/other-lib.js?v=',
+            $import_map['imports']['/plugins/myotherplugin/lib/other-lib.js']
         );
     }
 

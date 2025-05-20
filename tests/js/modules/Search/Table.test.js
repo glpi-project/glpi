@@ -32,7 +32,7 @@
 
 /* global GLPI */
 
-import '../../../../js/modules/Search/Table.js';
+import '/js/modules/Search/Table.js';
 import {jest} from '@jest/globals';
 
 describe('Search Table', () => {

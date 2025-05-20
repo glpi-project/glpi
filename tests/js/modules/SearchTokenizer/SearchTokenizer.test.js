@@ -32,8 +32,8 @@
 
 /* global GLPI */
 
-import SearchTokenizer from "../../../../js/src/vue/Kanban/SearchTokenizer.js";
-import SearchToken from "../../../../js/src/vue/Kanban/SearchToken.js";
+import SearchTokenizer from "/js/src/vue/Kanban/SearchTokenizer.js";
+import SearchToken from "/js/src/vue/Kanban/SearchToken.js";
 
 describe('Search Tokenizer', () => {
 

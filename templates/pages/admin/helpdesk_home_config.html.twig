@@ -116,7 +116,7 @@
     <script defer type="module">
         (async () => {
             const module = await import(
-                "{{ js_path('js/modules/Helpdesk/HelpdeskConfigController.js') }}"
+                "/js/modules/Helpdesk/HelpdeskConfigController.js"
             );
             new module.GlpiHelpdeskConfigController(
                 document.getElementById("{{ container_id }}"),

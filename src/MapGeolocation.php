@@ -50,7 +50,7 @@ trait MapGeolocation
             {% set rand = random() %}
             <div id="setlocation_container_{{ rand }}"></div>
             <script type="module">
-                import('{{ js_path('js/modules/Form/GeolocationField.js') }}').then((m) => {
+                import('/js/modules/Form/GeolocationField.js').then((m) => {
                     new m.default('setlocation_container_{{ rand }}');
                 });
             </script>
