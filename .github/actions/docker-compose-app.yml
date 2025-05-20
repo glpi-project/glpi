@@ -4,6 +4,9 @@ services:
     image: "ghcr.io/glpi-project/${PHP_IMAGE:-githubactions-php-apache:8.3}"
     environment:
       CODE_COVERAGE: "${CODE_COVERAGE:-false}"
+      CI: true # Will be used to alter some configuration when running on github vs locally.
+      PLAYWRIGHT_BROWSERS_PATH: /opt/pw-browsers # Custom browser path to prevent some rights issues.
+      GLPI_BASE_URL: http://localhost:80 # Default URL for GLPI. Used for e2e tests.
     volumes:
       - type: "bind"
         source: "${APPLICATION_ROOT}"
