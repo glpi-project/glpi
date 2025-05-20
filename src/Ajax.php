@@ -371,6 +371,7 @@ JAVASCRIPT;
                                 data-glpi-ajax-content='{$tab_content_url}'
                                 href='{$direct_link_url}'
                                 data-bs-target='#{$target}'
+                                aria-label='{$title_clean}'
                             >{$title}</a>
                         </li>
 HTML;
