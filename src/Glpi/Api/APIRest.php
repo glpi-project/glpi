@@ -277,7 +277,7 @@ class APIRest extends API
         } elseif (preg_match('%user/(\d+)/picture%i', $path_info, $matches)) {
             $this->userPicture($matches[1]);
         } elseif ($resource == 'getHelpdeskFormsDetails') {
-            return $this->getHelpdeskFormsDetails();
+            $this->getHelpdeskFormsDetails();
         } else {
             // commonDBTM manipulation
             $itemtype          = $this->getItemtype(0);
