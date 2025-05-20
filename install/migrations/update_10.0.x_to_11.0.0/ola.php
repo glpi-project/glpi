@@ -36,16 +36,17 @@
 
 $migration->log('Group managed olas', false);
 
-remove_olas_fields_in_tickets($migration);
 add_groups_id_field_in_olas($migration);
 create_items_olas_table($migration);
+migrate_items_olas_data($migration);
+remove_olas_fields_in_tickets($migration);
 
 $migration->executeMigration();
 return;
 
 // --- functions
 
-function add_groups_id_field_in_olas(Migration $migration)
+function add_groups_id_field_in_olas(Migration $migration): void
 {
     $migration->addField(
         OLA::getTable(),
@@ -61,54 +62,19 @@ function add_groups_id_field_in_olas(Migration $migration)
     // addKey requires the table to exist -> execute migration before
     $migration->executeMigration();
     $migration->addKey(OLA::getTable(), Group::getForeignKeyField());
-
-    // solution temporaire pour le problème des groupes
-    // - création d'un groupe
-    // - ajout du groupe à l'ola
-    // - ajout de l'utilisateur 'normal' au groupe
-    // @todo problème a résoudre avec Alexandre
-    if (!countElementsInTable(Group::getTable())) {
-        $group = new Group();
-        if (!$group->add(['name' => 'ola_group', 'comment' => 'ola_group temporaire à fixer'])) {
-            ;
-            throw new Exception('Impossible de créer le groupe ola_group');
-        }
-        $groups_id = $group->getID();
-    } else {
-        // le premier groupe trouvé
-        $group = new Group();
-        $groups_ids = $group->find([]);
-        $groups_id = array_pop($groups_ids)['id'];
-    }
-    $migration->addPostQuery('UPDATE ' . OLA::getTable() . ' SET ' . Group::getForeignKeyField() . ' = ' . $groups_id);
-    // ajout de 'normal' au group
-    $user = new User();
-    $user->getFromDBbyName('normal');
-    $association = new Group_User();
-    // synchrone delete
-    /** @var \DB $DB */
-    global $DB;
-    $DB->delete(Group_User::getTable(), ['users_id' => $user->getID()]);
-
-    if (!$association->add(['groups_id' => $groups_id, 'users_id' => $user->getID(), 'is_dynamic' => 0, 'is_manager' => 0])) {
-        throw new Exception('Impossible d\'ajouter l\'utilisateur normal au groupe ola_group');
-    }
-
-    $migration->addPostQuery('UPDATE ' . OLA::getTable() . ' SET ' . Group::getForeignKeyField() . ' = ' . $groups_id);
-    // fin du fix temporaire
 }
 
 function remove_olas_fields_in_tickets(Migration $migration): void
 {
     $fields_to_remove = [
-        'ola_waiting_duration',
-        'olas_id_tto',
-        'olas_id_ttr',
+        'ola_waiting_duration', // waiting_time -> moved // @todoseb cleanup
+        'olas_id_tto', // -> moved
+        'olas_id_ttr', // -> moved
         'olalevels_id_ttr',
-        'ola_tto_begin_date',
-        'ola_ttr_begin_date',
-        'internal_time_to_resolve',
-        'internal_time_to_own',
+        'ola_tto_begin_date', // -> start_time (a confirmer)
+        'ola_ttr_begin_date', // -> start time dans un second ola
+        'internal_time_to_resolve', // -> due_time (à confirmer)
+        'internal_time_to_own', // -> start_time
     ];
 
     foreach ($fields_to_remove as $field) {
@@ -132,12 +98,59 @@ function create_items_olas_table(Migration $migration): void
         `end_time`      timestamp NULL DEFAULT NULL,
         -- `status` int NOT NULL,
         `waiting_time` int NOT NULL DEFAULT 0,
+        `olalevel_date` timestamp NULL DEFAULT NULL,
         PRIMARY KEY (`id`) 
          ) ENGINE=InnoDB DEFAULT CHARSET=$charset COLLATE=$collation ROW_FORMAT=DYNAMIC;";
 
     $migration->addPreQuery($query);
     $migration->executeMigration();
 
-    $migration->addKey(Item_Ola::getTable(), OLA::getForeignKeyField());
-    $migration->addKey(Item_Ola::getTable(), ['itemtype', 'items_id'], 'item');
+    $migration->addKey('glpi_items_olas', 'olas_id');
+    $migration->addKey('glpi_items_olas', ['itemtype', 'items_id'], 'item');
+}
+
+function migrate_items_olas_data(Migration $migration): void
+{
+    $_ticket = new Ticket();
+    $tickets_with_ola = $_ticket->find(['OR' =>
+        [
+            ['NOT' => ['olas_id_tto' => null]],
+            ['NOT' => ['olas_id_ttr' => null]]
+    ]]);
+
+    foreach ($tickets_with_ola as $ticket) {
+        if($ticket['olas_id_tto'] !== 0) {
+            $io = new Item_Ola();
+
+            $_data = [
+                'itemtype' => Ticket::class,
+                'items_id' => $ticket['id'],
+                'olas_id' => $ticket['olas_id_tto'],
+                'start_time' => $ticket['ola_tto_begin_date'],
+                'due_time' => $ticket['internal_time_to_own'],
+                'waiting_time' => $ticket['ola_waiting_duration'],
+            ];
+
+           if(!$io->add($_data)) {
+                throw new Exception('Failed to migrato OLA TTO data: ' . json_encode($_data));
+            }
+        }
+
+        if($ticket['olas_id_ttr'] !== 0) {
+            $io = new Item_Ola();
+
+            $_data = [
+                'itemtype' => Ticket::class,
+                'items_id' => $ticket['id'],
+                'olas_id' => $ticket['olas_id_ttr'],
+                'start_time' => $ticket['ola_ttr_begin_date'],
+                'due_time' => $ticket['internal_time_to_resolve'],
+                'waiting_time' => $ticket['ola_waiting_duration'],
+            ];
+
+           if(!$io->add($_data)) {
+                throw new Exception('Failed to migrato OLA TTO data: ' . json_encode($_data));
+            }
+        }
+    }
 }
