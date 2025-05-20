@@ -34,6 +34,7 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\QueryFunction;
 
 class Domain_Item extends CommonDBRelation
 {
@@ -382,7 +383,11 @@ TWIG, $twig_params);
                 'glpi_entities.id AS entity',
                 'glpi_domains.name AS assocName',
                 'glpi_domains.*',
-
+                QueryFunction::groupConcat(
+                    expression: Group_Item::getTable() . '.groups_id',
+                    separator: ',',
+                    alias: 'groups_id_tech',
+                )
             ],
             'FROM'      => self::getTable(),
             'LEFT JOIN' => [
@@ -398,6 +403,17 @@ TWIG, $twig_params);
                         Entity::getTable()   => 'id',
                     ],
                 ],
+                Group_Item::getTable() => [
+                    'ON'  => [
+                        Group_Item::getTable() => 'items_id',
+                        self::getTable()       => 'id', [
+                            'AND' => [
+                                Group_Item::getTable() . '.itemtype' => Domain::class,
+                                Group_Item::getTable() . '.type' => Group_Item::GROUP_TYPE_TECH,
+                            ]
+                        ]
+                    ],
+                ]
             ],
             'WHERE'     => [],//to be filled
             'ORDER'     => 'assocName',
@@ -534,8 +550,14 @@ TWIG, $twig_params);
             if (Session::isMultiEntitiesMode() && !isset($entity_names[$data['entity']])) {
                 $entity_names[$data['entity']] = Dropdown::getDropdownName(table: "glpi_entities", id: $data['entity'], default: '');
             }
-            if (!isset($group_names[$data['groups_id_tech']])) {
-                $group_names[$data['groups_id_tech']] = Dropdown::getDropdownName(table: "glpi_groups", id: $data['groups_id_tech'], default: '');
+
+            $groups = explode(',', $data['groups_id_tech'] ?? '');
+            $entry_groups = [];
+            foreach ($groups as $group) {
+                if (!isset($group_names[$group])) {
+                    $group_names[$group] = Dropdown::getDropdownName(table: "glpi_groups", id: $group, default: '');
+                }
+                $entry_groups[] = $group_names[$group];
             }
             if (!isset($user_names[$data['users_id_tech']])) {
                 $user_names[$data['users_id_tech']] = getUserName($data['users_id_tech']);
@@ -563,7 +585,7 @@ TWIG, $twig_params);
                 'row_class' => $data['is_deleted'] ? 'table-danger' : '',
                 'name'     => $link,
                 'entities_id' => $entity_names[$data['entity']] ?? '',
-                'groups_id_tech' => $group_names[$data['groups_id_tech']] ?? '',
+                'groups_id_tech' => implode("\n", $entry_groups),
                 'users_id_tech' => $user_names[$data['users_id_tech']] ?? '',
                 'domaintypes_id' => $type_names[$data['domaintypes_id']] ?? '',
                 'domainrelations_id' => $relation_names[$data['domainrelations_id']] ?? '',
