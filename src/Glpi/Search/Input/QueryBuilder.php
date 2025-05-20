@@ -38,6 +38,7 @@ namespace Glpi\Search\Input;
 use AllAssets;
 use Glpi\Application\Environment;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Plugin\Hooks;
 use Glpi\Search\SearchEngine;
 use Glpi\Search\SearchOption;
 use Glpi\Toolbox\URL;
@@ -340,7 +341,7 @@ final class QueryBuilder implements SearchInputInterface
                     ) {
                         $display = \Plugin::doOneHook(
                             $plug['plugin'],
-                            'searchOptionsValues',
+                            Hooks::AUTO_SEARCH_OPTION_VALUES,
                             [
                                 'name'           => $inputname,
                                 'searchtype'     => $request['searchtype'],

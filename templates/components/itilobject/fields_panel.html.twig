@@ -44,7 +44,7 @@
 
 <div class="accordion open accordion-flush" id="itil-data">
    {% set main_show = headers_states['item-main'] is not defined or headers_states['item-main'] == "true" ? true : false %}
-   {{ call_plugin_hook('pre_itil_info_section', {"item": item, 'options': params}) }}
+   {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::PRE_ITIL_INFO_SECTION'), {"item": item, 'options': params}) }}
    <section class="accordion-item" aria-label="{{ item.getTypeName(1) }}">
       <h2 class="accordion-header" id="heading-main-item">
          <button class="accordion-button {{ main_show ? "" : "collapsed" }}" type="button" data-bs-toggle="collapse" data-bs-target="#item-main" aria-expanded="true" aria-controls="ticket-main">
@@ -60,7 +60,7 @@
       <section id="item-main" class="accordion-collapse collapse {{ main_show ? "show" : "" }}" aria-labelledby="heading-main-item">
          <div class="accordion-body row m-0 mt-n2">
 
-            {{ call_plugin_hook('pre_item_form', {"item": item, 'options': params}) }}
+            {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::PRE_ITEM_FORM'), {"item": item, 'options': params}) }}
 
             {% if is_multi_entities_mode() %}
                {% if item.isNewItem() %}
@@ -261,7 +261,7 @@
                {{ fields.textField('externalid', item.fields['externalid'], __('External ID'), field_options) }}
             {% endif %}
 
-            {{ call_plugin_hook('post_item_form', {"item": item, 'options': params}) }}
+            {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::POST_ITEM_FORM'), {"item": item, 'options': params}) }}
          </div>
       </section>
    </section>
@@ -491,7 +491,7 @@
       </div>
    </section>
 
-   {{ call_plugin_hook('post_itil_info_section', {"item": item, 'options': params}) }}
+   {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::POST_ITIL_INFO_SECTION'), {"item": item, 'options': params}) }}
 
     <span class="d-none d-md-block">
         <button type="button" class="switch-panel-width btn btn-icon btn-ghost-secondary position-absolute bottom-0 start-0 mb-2">
