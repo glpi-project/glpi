@@ -150,7 +150,6 @@ class Change extends CommonITILObject
      **/
     public function canAddItem($type)
     {
-
         if ($type == 'Document') {
             if ($this->getField('status') == self::CLOSED) {
                 return false;
@@ -161,7 +160,7 @@ class Change extends CommonITILObject
             }
         }
 
-        return $this->can($this->getID(), UPDATE);
+        parent::canAddItem($type);
     }
 
     /**
