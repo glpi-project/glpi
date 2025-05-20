@@ -2455,7 +2455,7 @@ abstract class API
         echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
             <div class='documentation'>{{ md|raw }}</div>
             <script type="module">
-                import('{{ path("js/modules/Monaco/MonacoEditor.js") }}').then(() => {
+                import('/js/modules/Monaco/MonacoEditor.js').then(() => {
                     const lang_elements = $('code[class^="language-"]');
                     lang_elements.each((index, element) => {
                         const el = $(element);

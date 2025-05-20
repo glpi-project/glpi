@@ -348,11 +348,10 @@ function step4($databasename, $newdatabasename)
         echo \sprintf(
             <<<HTML
                 <script defer type="module">
-                    import { init_database } from '%s/js/modules/GlpiInstall.js';
+                    import { init_database } from '/js/modules/GlpiInstall.js';
                     init_database("%s");
                 </script>
-            HTML,
-            $CFG_GLPI['root_doc'],
+HTML,
             \Glpi\Controller\InstallController::PROGRESS_KEY_INIT_DATABASE,
         );
     } else { // can't create config_db file

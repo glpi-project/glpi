@@ -40,8 +40,9 @@ module.exports = {
             moduleDirectories: ['js/modules', 'tests/js/modules', 'node_modules'],
             moduleFileExtensions: ['js'],
             moduleNameMapper: {
-                '^js/modules/(.*)$': '<rootDir>/../../js/modules/$1',
-                '^lib/(.*)$': '<rootDir>/../../public/lib/$1',
+                '^/js/(.*)$': '<rootDir>/../../js/$1',
+                '^/build/(.*)$': '<rootDir>/../../public/build/$1',
+                '^/lib/(.*)$': '<rootDir>/../../public/lib/$1',
             },
             transform: {},
             transformIgnorePatterns: [
@@ -55,6 +56,11 @@ module.exports = {
             testMatch: ['<rootDir>/vue/**/*.test.js'],
             setupFilesAfterEnv: ["<rootDir>/jest-setup.mjs"],
             setupFiles: ['<rootDir>/bootstrap.mjs'],
+            moduleNameMapper: {
+                '^/js/(.*)$': '<rootDir>/../../js/$1',
+                '^/build/(.*)$': '<rootDir>/../../public/build/$1',
+                '^/lib/(.*)$': '<rootDir>/../../public/lib/$1',
+            },
             transform: {
                 '^.+\\.vue$': '@vue/vue3-jest',
                 '^.+\\.js$': 'babel-jest'

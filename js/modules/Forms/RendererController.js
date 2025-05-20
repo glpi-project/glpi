@@ -33,7 +33,7 @@
 
 /* global glpi_toast_info, tinymce, glpi_toast_error, _ */
 
-import { GlpiFormConditionEngine } from 'js/modules/Forms/Condition/Engine';
+import { GlpiFormConditionEngine } from '/js/modules/Forms/Condition/Engine.js';
 
 /**
  * Client code to handle users actions on the form_renderer template

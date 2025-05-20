@@ -393,9 +393,9 @@
 <script defer type="module">
 (async () => {
     const modules = await Promise.all([
-        import("js/modules/Forms/EditorController"),
-        import("js/modules/Forms/EditorConvertedExtractedDefaultValue"),
-        import("js/modules/Forms/EditorConvertedExtractedSelectableDefaultValue")
+        import("/js/modules/Forms/EditorController.js"),
+        import("/js/modules/Forms/EditorConvertedExtractedDefaultValue.js"),
+        import("/js/modules/Forms/EditorConvertedExtractedSelectableDefaultValue.js")
     ]);
     const GlpiFormEditorController = modules[0].GlpiFormEditorController;
     const EditorConvertedExtractedDefaultValue = modules[1].GlpiFormEditorConvertedExtractedDefaultValue;

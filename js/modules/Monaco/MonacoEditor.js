@@ -262,7 +262,7 @@ window.GLPI.Monaco = {
         window.GLPI.Monaco._themes_registered = true;
     },
     createEditor: async (element_id, language, value = '', completions = [], options = {}) => {
-        return import('../../../lib/monaco.js').then(() => {
+        return import('/lib/monaco.js').then(() => {
             return new MonacoEditor(element_id, language, value, completions, options);
         });
     },
@@ -287,7 +287,7 @@ window.GLPI.Monaco = {
      * @return {Promise<void>}
      */
     colorizeElement: async (element, language) => {
-        return import('../../../lib/monaco.js').then(() => {
+        return import('/lib/monaco.js').then(() => {
             window.GLPI.Monaco.registerGLPIThemes();
             return window.monaco.editor.colorizeElement(element, {
                 language: language,

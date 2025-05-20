@@ -56,7 +56,7 @@ echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
     <p>{{ description }}</p>
     <div id='telemetry-preview' style="height: 400px"></div>
     <script type="module">
-        import('{{ path("js/modules/Monaco/MonacoEditor.js") }}').then(() => {
+        import('/js/modules/Monaco/MonacoEditor.js').then(() => {
             window.GLPI.Monaco.createEditor('telemetry-preview', 'javascript', `{{ info|escape('js') }}`, [], {
                 readOnly: true,
                 minimap: {

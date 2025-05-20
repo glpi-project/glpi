@@ -32,7 +32,7 @@
 
 /* global GLPI */
 
-import SearchInput from "../../../../js/src/vue/Kanban/SearchInput.js";
+import SearchInput from "/js/src/vue/Kanban/SearchInput.js";
 
 describe('Search Tokenizer Input', () => {
 
