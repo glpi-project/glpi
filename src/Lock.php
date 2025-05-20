@@ -1297,11 +1297,15 @@ TWIG);
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
+        if (!is_subclass_of($itemtype, CommonDBTM::class)) {
+            return;
+        }
+
         $action_unlock_component = __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'unlock_component';
         $action_unlock_fields = __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'unlock_fields';
 
         if (
-            Session::haveRight(strtolower($itemtype), UPDATE)
+            Session::haveRight($itemtype::$rightname, UPDATE)
             && in_array($itemtype, $CFG_GLPI['inventory_types'] + $CFG_GLPI['inventory_lockable_objects'], true)
         ) {
             $actions[$action_unlock_component] = __('Unlock components');

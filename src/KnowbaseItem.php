@@ -1459,6 +1459,7 @@ TWIG, $twig_params);
                 'knowbaseitemcategories_id' => $params['knowbaseitemcategories_id'],
                 'contains' => $params["contains"],
                 'is_faq' => $params['faq'],
+                'type' => $type,
             ];
 
             if (isset($options['item_itemtype'], $options['item_items_id'])) {

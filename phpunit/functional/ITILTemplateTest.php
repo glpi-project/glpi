@@ -464,6 +464,19 @@ class ITILTemplateTest extends DbTestCase
         $entity = getItemByTypeName('Entity', '_test_child_1');
         $this->assertTrue($entity->update(['id' => $entity->fields['id'], $field => $entity_tpl_id]));
 
+        //add a predefined field
+        $predef_class = '\\' . $itiltype . 'TemplatePredefinedField';
+        $predef = new $predef_class();
+        $input = [
+            $predef::$items_id   => $entity_tpl_id,
+            'num'                => 7, // Category
+            'value'              => $cat_id,
+        ];
+        $this->createItem(
+            $predef_class,
+            $input
+        );
+
         //login back as tech
         $this->login('tech', 'tech');
 
@@ -473,6 +486,7 @@ class ITILTemplateTest extends DbTestCase
             'Not template expected from entity assignment'
         );
         $this->assertSame($entity_tpl_id, (int) $tt->fields['id']);
+        $this->assertSame($cat_id, (int) $tt->predefined['itilcategories_id']);
 
         $tt = $itilobject->getITILTemplateToUse(0, $type, $cat_id, $entity->fields['id']);
         $this->assertFalse(

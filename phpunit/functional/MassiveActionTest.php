@@ -72,7 +72,7 @@ class MassiveActionTest extends DbTestCase
             ], [
                 'itemtype'     => 'NetworkEquipment',
                 'items_id'     => '_test_networkequipment_1',
-                'allcount'     => 22,
+                'allcount'     => 24,
                 'singlecount'  => 17,
             ], [
                 'itemtype'     => 'Peripheral',

@@ -8333,8 +8333,8 @@ abstract class CommonITILObject extends CommonDBTM
                 $newtype = $tt->predefined['type'];
             }
             if (
-                $newtype
-                && $newitilcategories_id
+                $newtype != $type
+                && $newitilcategories_id != $itilcategories_id
             ) {
                 $categ = new ITILCategory();
                 if ($categ->getFromDB($newitilcategories_id)) {

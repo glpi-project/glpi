@@ -82,9 +82,9 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
 
     public function getForbiddenStandardMassiveAction()
     {
-
         $forbidden   = parent::getForbiddenStandardMassiveAction();
         $forbidden[] = 'update';
+        $forbidden[] = 'clone';
         return $forbidden;
     }
 
@@ -98,7 +98,7 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
                      = __('Change visibility');
         if (Session::haveRight('transfer', READ)) {
             $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'change_entity']
-                     = __s('Change visibility');
+                     = __s('Change entity');
         }
         return $actions;
     }
