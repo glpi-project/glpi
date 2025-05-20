@@ -6751,6 +6751,7 @@ CREATE TABLE `glpi_items_olas` (
   `olas_id` int unsigned NOT NULL,
   `start_time` datetime,
   `waiting_time` int NOT NULL DEFAULT 0,
+  `olalevel_date` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `item` (`itemtype`,`items_id`),
   KEY `olas_id` (`olas_id`)

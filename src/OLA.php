@@ -40,10 +40,34 @@
 class OLA extends LevelAgreement
 {
     protected static $prefix            = 'ola';
-    protected static $prefixticket      = 'internal_';
+
+    /**
+     * Remove associated OLA
+     *
+     */
+    public function cleanDBonPurge()
+    {
+        // @todoseb à implementer : chercher ola liées et les supprimer
+        //        parent::cleanDBonPurge();
+    }
+
+    protected static $prefixticket      = 'internal_'; // @todoseb pas utilisé selon phpstorm : voir si on peut vraiment le supprimer
     protected static $levelclass        = 'OlaLevel';
     protected static $levelticketclass  = 'OlaLevel_Ticket';
     protected static $forward_entity_to = ['OlaLevel'];
+
+    /**
+     * Get table fields
+     *
+     * @param integer $subtype of OLA/SLA, can be SLM::TTO or SLM::TTR
+     *
+     * @return array of 'date' and 'sla' field names
+     */
+    public static function getFieldNames($subtype)
+    {
+        throw new \Exception('On ne doit plus utiliser '.__FUNCTION__.' pour les OLA. SLM::TTO + (chercher dans templates) '.$subtype);
+        // @todoseb déplacer le parent dans LevelAgreement ? (probablement pas)
+    }
 
     public static function getTypeName($nb = 0)
     {
