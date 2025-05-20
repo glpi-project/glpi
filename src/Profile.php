@@ -1230,7 +1230,7 @@ class Profile extends CommonDBTM
         echo "<td>";
         // Only root entity ones and recursive
         $options = ['value'     => $this->fields["tickettemplates_id"],
-            'condition' => ['entities_id' => 0]
+            'condition' => ['entities_id' => 0],
         ];
         if (Session::isMultiEntitiesMode()) {
             $options['condition'] = ['is_recursive' => 1];
@@ -1248,7 +1248,7 @@ class Profile extends CommonDBTM
         echo "<td>";
         // Only root entity ones and recursive
         $options = ['value'     => $this->fields["changetemplates_id"],
-            'condition' => ['entities_id' => 0]
+            'condition' => ['entities_id' => 0],
         ];
         if (Session::isMultiEntitiesMode()) {
             $options['condition'] = ['is_recursive' => 1];
@@ -1266,7 +1266,7 @@ class Profile extends CommonDBTM
         echo "<td>";
         // Only root entity ones and recursive
         $options = ['value'     => $this->fields["problemtemplates_id"],
-            'condition' => ['entities_id' => 0]
+            'condition' => ['entities_id' => 0],
         ];
         if (Session::isMultiEntitiesMode()) {
             $options['condition'] = ['is_recursive' => 1];
