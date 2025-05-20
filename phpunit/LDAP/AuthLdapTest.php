@@ -374,7 +374,7 @@ class AuthLDAPTest extends DbTestCase
         /** @var \AuthLDAP $ldap */
         $ldap = getItemByTypeName('AuthLDAP', 'LDAP3');
         $result = \AuthLDAP::buildLdapFilter($ldap);
-        $this->assertSame("(&(email=*) )", $result);
+        $this->assertSame("(&(email=*))", $result);
 
         $_SESSION['ldap_import']['interface'] = \AuthLDAP::SIMPLE_INTERFACE;
         $_SESSION['ldap_import']['criterias'] = ['name'        => 'foo',
@@ -399,7 +399,7 @@ class AuthLDAPTest extends DbTestCase
         $ldap->fields['condition'] = '(objectclass=inetOrgPerson)';
         $result = \AuthLDAP::buildLdapFilter($ldap);
         $ldap->fields['condition'] = '';
-        $this->assertSame('(&(LDAP3=foo) (objectclass=inetOrgPerson))', $result);
+        $this->assertSame('(&(LDAP3=foo)(objectclass=inetOrgPerson))', $result);
 
         $_SESSION['ldap_import']['begin_date']        = '2017-04-20 00:00:00';
         $_SESSION['ldap_import']['end_date']          = '2017-04-22 00:00:00';
