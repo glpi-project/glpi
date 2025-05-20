@@ -9555,6 +9555,8 @@ CREATE TABLE `glpi_forms_questions` (
     `extra_data` text COMMENT 'JSON - Extra configuration field(s) depending on the questions type',
     `visibility_strategy` varchar(30) NOT NULL DEFAULT '',
     `conditions` JSON NOT NULL,
+    `validation_strategy` varchar(30) NOT NULL DEFAULT '',
+    `validation_conditions` JSON NOT NULL,
     PRIMARY KEY (`id`),
     UNIQUE KEY `uuid` (`uuid`),
     KEY `name` (`name`),

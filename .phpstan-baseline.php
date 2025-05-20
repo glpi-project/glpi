@@ -5002,13 +5002,13 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Function json_decode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_decode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
 	'identifier' => 'theCodingMachineSafe.function',
-	'count' => 4,
+	'count' => 5,
 	'path' => __DIR__ . '/src/Glpi/Form/Question.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
 	'identifier' => 'theCodingMachineSafe.function',
-	'count' => 3,
+	'count' => 5,
 	'path' => __DIR__ . '/src/Glpi/Form/Question.php',
 ];
 $ignoreErrors[] = [

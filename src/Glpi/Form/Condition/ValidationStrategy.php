@@ -34,46 +34,50 @@
 
 namespace Glpi\Form\Condition;
 
-use JsonException;
+use Override;
 
-trait ConditionableTrait
+enum ValidationStrategy: string implements StrategyInterface
 {
-    /**
-     * Get the field name used for conditions
-     * Can be overridden in the class using this trait
-     *
-     * @return string
-     */
-    protected function getConditionsFieldName(): string
+    case NO_VALIDATION = 'no_validation';
+    case VALID_IF      = 'valid_if';
+    case INVALID_IF    = 'invalid_if';
+
+    #[Override]
+    public function getLabel(): string
     {
-        return 'conditions';
+        return match ($this) {
+            self::NO_VALIDATION => __('No validation'),
+            self::VALID_IF      => __('Valid if...'),
+            self::INVALID_IF    => __('Invalid if...'),
+        };
     }
 
-    /** @return ConditionData[] */
-    public function getConfiguredConditionsData(): array
+    #[Override]
+    public function getIcon(): string
     {
-        return $this->getConditionsData($this->getConditionsFieldName());
+        return match ($this) {
+            self::NO_VALIDATION => 'ti ti-filter',
+            self::VALID_IF      => 'ti ti-filter-cog',
+            self::INVALID_IF    => 'ti ti-filter-x',
+        };
     }
 
-    /** @return ConditionData[] */
-    private function getConditionsData(string $field_name): array
+    #[Override]
+    public function showEditor(): bool
     {
-        parent::post_getFromDB();
+        return match ($this) {
+            self::NO_VALIDATION => false,
+            self::VALID_IF      => true,
+            self::INVALID_IF    => true,
+        };
+    }
 
-        try {
-            $raw_data = json_decode(
-                json       : $this->fields[$field_name] ?? '{}',
-                associative: true,
-                flags      : JSON_THROW_ON_ERROR,
-            );
-        } catch (JsonException $e) {
-            $raw_data = [];
-        }
-
-        $form_data = new FormData([
-            'conditions' => $raw_data,
-        ]);
-
-        return $form_data->getConditionsData();
+    public function mustBeValidated(bool $conditions_result): bool
+    {
+        return match ($this) {
+            self::NO_VALIDATION => true,
+            self::VALID_IF      => $conditions_result,
+            self::INVALID_IF    => !$conditions_result,
+        };
     }
 }

@@ -96,6 +96,21 @@ final class Engine
         return $output;
     }
 
+    public function computeValidation(): EngineValidationOutput
+    {
+        $validation = new EngineValidationOutput();
+
+        // Compute questions validation
+        foreach ($this->form->getQuestions() as $question) {
+            $validation->setQuestionValidation(
+                $question->getID(),
+                $this->computeItemValidation($question),
+            );
+        }
+
+        return $validation;
+    }
+
     public function computeItemsThatMustBeCreated(): EngineCreationOutput
     {
         $output = new EngineCreationOutput();
@@ -151,6 +166,32 @@ final class Engine
         }
     }
 
+    /**
+     * @param Question $question
+     * @return ConditionData[]
+     */
+    private function computeItemValidation(Question $question): array
+    {
+        // Stop immediatly if the strategy result is forced.
+        $strategy = $question->getConfiguredValidationStrategy();
+        if ($strategy == ValidationStrategy::NO_VALIDATION) {
+            return [];
+        }
+
+        // Compute the conditions
+        $conditions = $question->getConfiguredValidationConditionsData();
+        $result_per_condition = [];
+        $conditions_result = $this->computeConditions($conditions, $result_per_condition);
+        if ($strategy->mustBeValidated($conditions_result)) {
+            return [];
+        }
+
+        return array_filter(array_map(
+            fn(ConditionData $condition): ?ConditionData => $strategy->mustBeValidated($result_per_condition[spl_object_id($condition)]) ? null : $condition,
+            $conditions,
+        ));
+    }
+
     private function computeDestinationCreation(ConditionableCreationInterface $item): bool
     {
         // Stop immediatly if the strategy result is forced.
@@ -166,7 +207,12 @@ final class Engine
         return $strategy->mustBeCreated($conditions_result);
     }
 
-    private function computeConditions(array $conditions): bool
+    /**
+     * @param ConditionData[] $conditions
+     * @param array<int, bool> &$result_per_condition
+     * @return bool
+     */
+    private function computeConditions(array $conditions, array &$result_per_condition = []): bool
     {
         $conditions_result = null;
         foreach ($conditions as $condition) {
@@ -176,6 +222,7 @@ final class Engine
 
             // Apply condition (item + value operator + value)
             $condition_result = $this->computeCondition($condition);
+            $result_per_condition[spl_object_id($condition)] = $condition_result;
 
             // Apply logic operator
             if ($conditions_result === null) {
