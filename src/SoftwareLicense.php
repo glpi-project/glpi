@@ -917,12 +917,26 @@ class SoftwareLicense extends CommonTreeDropdown
         return $result['numsum'] ?: 0;
     }
 
-    public function getSpecificMassiveActions($checkitem = null)
+    public function getSpecificMassiveActions($checkitem = null, $items_id = null)
     {
         $actions = parent::getSpecificMassiveActions($checkitem);
-        if (static::canUpdate()) {
-            $prefix                       = 'Item_SoftwareLicense' . MassiveAction::CLASS_ACTION_SEPARATOR;
-            $actions[$prefix . 'add_item']  = _sx('button', 'Add an item');
+
+        if ($items_id) {
+            $lic = new self();
+            $lic->getFromDB($items_id);
+            $number = Item_SoftwareLicense::countForLicense($lic->getID());
+            $number += SoftwareLicense_User::countForLicense($lic->getID());
+
+            //If the number of linked assets have reached the number defined in the license,
+            //and over-quota is not allowed, do not allow to add more assets
+            if (
+                static::canUpdate()
+                && ($lic->getField('number') == -1 || $number < $lic->getField('number')
+                || $lic->getField('allow_overquota'))
+            ) {
+                $prefix                       = 'Item_SoftwareLicense' . MassiveAction::CLASS_ACTION_SEPARATOR;
+                $actions[$prefix . 'add_item']  = _sx('button', 'Add an item');
+            }
         }
 
         return $actions;

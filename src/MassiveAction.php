@@ -759,7 +759,7 @@ class MassiveAction
             }
 
             // Specific actions
-            $actions += $item->getSpecificMassiveActions($checkitem);
+            $actions += $item->getSpecificMassiveActions($checkitem, $items_id);
 
             Document::getMassiveActionsForItemtype($actions, $itemtype, $is_deleted, $checkitem);
             Contract::getMassiveActionsForItemtype($actions, $itemtype, $is_deleted, $checkitem);
