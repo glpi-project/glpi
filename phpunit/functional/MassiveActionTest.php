@@ -67,8 +67,8 @@ class MassiveActionTest extends DbTestCase
             ], [
                 'itemtype'     => 'SoftwareLicense',
                 'items_id'     => '_test_softlic_1',
-                'allcount'     => 15,
-                'singlecount'  => 10,
+                'allcount'     => 14,
+                'singlecount'  => 9,
             ], [
                 'itemtype'     => 'NetworkEquipment',
                 'items_id'     => '_test_networkequipment_1',
