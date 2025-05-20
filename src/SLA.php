@@ -70,6 +70,34 @@ class SLA extends LevelAgreement
         return SLM::getIcon();
     }
 
+    public function cleanDBonPurge()
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        // Clean levels
+        $fk        = getForeignKeyFieldForItemType(static::class);
+        $level     = new static::$levelclass();
+        $level->deleteByCriteria([$fk => $this->getID()]);
+
+        // Update tickets : clean SLA/OLA
+        [, $laField] = static::getFieldNames($this->fields['type']);
+        $iterator =  $DB->request([
+            'SELECT' => 'id',
+            'FROM'   => 'glpi_tickets',
+            'WHERE'  => [$laField => $this->fields['id']],
+        ]);
+
+        if (count($iterator)) {
+            $ticket = new Ticket();
+            foreach ($iterator as $data) {
+                $ticket->deleteLevelAgreement(static::class, $data['id'], $this->fields['type']);
+            }
+        }
+
+        Rule::cleanForItemAction($this);
+    }
+
     public function showFormWarning() {}
 
     public function getAddConfirmation(): array
