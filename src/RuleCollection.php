@@ -852,6 +852,11 @@ TWIG, $twig_params);
 
         // Get actual ranking of Rule to move
         $ruleDescription->getFromDB($ID);
+        if(!isset($ruleDescription->fields["ranking"]))
+        {
+            dump($ruleDescription);
+//            throw new \RuntimeException('Rule ranking not found ');
+        }
         $old_rank = $ruleDescription->fields["ranking"];
 
         $max_ranking_criteria = [
