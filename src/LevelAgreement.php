@@ -935,7 +935,10 @@ TWIG, $twig_params);
     }
 
     /**
-     * Add a level to do for a ticket
+     * Add a level to do for a ticket - writes in the levelticket table
+     *
+     *  Add an entry in slalevels_tickets | olalevels_tickets table
+     *  The level is set by $levels_id parameter or the current level set in slalevels_id_ttr | olalevels_id_ttr (if set)
      *
      * Add an entry in slalevels_tickets | olalevels_tickets table
      * The level is set by $levels_id parameter or the current level set in slalevels_id_ttr | olalevels_id_ttr (if set)
@@ -956,42 +959,77 @@ TWIG, $twig_params);
         if ($levels_id) {
             $toadd = [];
 
-            // Compute start date
-            if ($pre === "ola") {
-                // OLA have their own start date which is set when the OLA is added to the ticket
-                if (
-                    (int) $this->fields['type'] === SLM::TTO
-                    && $ticket->fields['ola_tto_begin_date'] !== null
-                ) {
-                    $date_field = "ola_tto_begin_date";
-                } elseif (
-                    (int) $this->fields['type'] === SLM::TTR
-                    && $ticket->fields['ola_ttr_begin_date'] !== null
-                ) {
-                    $date_field = "ola_ttr_begin_date";
-                } else {
-                    // Fall back to default date in case the specific date fields
-                    // are not set (which may be the case for tickets created
-                    // before their addition)
-                    $date_field = 'date';
-                }
-            } else {
-                // SLA are based on the ticket opening date
-                $date_field = 'date';
-            }
+//            $item_olas = Item_Ola::getListForItem($ticket);
+//            $item_olas->next();
+//            dump($item_olas->current());
 
-            $date = $this->computeExecutionDate(
-                $ticket->fields[$date_field],
-                $levels_id,
-                $ticket->fields[$pre . '_waiting_duration']
-            );
-            if ($date !== null) {
-                $toadd['date']           = $date;
-                $toadd[$pre . 'levels_id'] = $levels_id;
-                $toadd['tickets_id']     = $ticket->fields["id"];
-                $levelticket             = getItemForItemtype(static::$levelticketclass);
-                $levelticket->add($toadd);
+//            $ticket->getOlasData()
+
+            // Compute start date
+            // - ola tto
+            // before : find field storing start date of sla ttr, sla tto, ola tto, ola ttr, $date_field
+            // OLA have their own start date which is set when the OLA is added to the ticket
+            if ($pre === "ola") {
+//                throw new \Exception('ne plus utiliser cette fonction'); // pourquoi ?
+                /**
+                 * Utiliser directment le code suivant, sauf que là on ne change pas le level
+                 * Du coup on l'uitilse quand même ?
+                 *
+                 * $item_ola_data['olalevel_date'] = $ola->computeExecutionDate(
+                 * $item_ola->fields['start_time'],
+                 * $item_ola->fields['olalevels_id'],
+                 * $item_ola_data['waiting_time']
+                 * );
+                 */
+
+                // retrieved linked Item_Ola
+                $item_ola = new Item_Ola();
+                $item_ola->getFromDBByCrit(['itemtype' => $ticket->getType(), 'items_id' => $ticket->getID(), 'olas_id' => $this->getID()]);
+
+                $start_date = $item_ola->fields['start_time'];
+                $date = $this->computeExecutionDate(
+                    $start_date,
+                    $levels_id,
+                    $item_ola->fields['waiting_time']
+                );
+
+                $_item_olas = new Item_Ola();
+                if(!$_item_olas->update(['id' => $item_ola->getID(), 'olalevel_date' => $date, 'olalevels_id' => $levels_id]))
+                {
+                    throw new \RuntimeException('Unable to update item_ola');
+                }
+
+                if ($date !== null) {
+                    $toadd['date']           = $date;
+                    $toadd[$pre . 'levels_id'] = $levels_id;
+                    $toadd['tickets_id']     = $ticket->fields["id"];
+                    $levelticket             = new static::$levelticketclass();
+                    $levelticket->add($toadd);
+                }
             }
+            elseif($pre === "sla")
+            {
+                // SLA are based on the ticket opening date
+                $date = $this->computeExecutionDate(
+                    $ticket->fields['date'],
+                    $levels_id,
+                    $ticket->fields[$pre . '_waiting_duration']
+                );
+
+                if ($date !== null) {
+                    $toadd['date']           = $date;
+                    $toadd[$pre . 'levels_id'] = $levels_id;
+                    $toadd['tickets_id']     = $ticket->fields["id"];
+                    $levelticket             = getItemForItemtype(static::$levelticketclass);
+                    if(!$levelticket->add($toadd)) {
+                        throw new \RuntimeException('Unable to add level ticket');
+                    }
+                }
+            }
+            else {
+                throw new LogicException('invalid levelAgreementType');
+            }
+//            throw new \Exception('rechercher l ecriture et lecture des champs : ola_tto_begin_date, ola_ttr_begin_date & olalevels_id_ttr de Ticket');
         }
     }
 
@@ -1021,34 +1059,6 @@ TWIG, $twig_params);
                 $levelticket->delete(['id' => $data['id']]);
             }
         }
-    }
-
-    public function cleanDBonPurge()
-    {
-        /** @var \DBmysql $DB */
-        global $DB;
-
-        // Clean levels
-        $fk        = getForeignKeyFieldForItemType(static::class);
-        $level     = getItemForItemtype(static::$levelclass);
-        $level->deleteByCriteria([$fk => $this->getID()]);
-
-        // Update tickets : clean SLA/OLA
-        [, $laField] = static::getFieldNames($this->fields['type']);
-        $iterator =  $DB->request([
-            'SELECT' => 'id',
-            'FROM'   => 'glpi_tickets',
-            'WHERE'  => [$laField => $this->fields['id']],
-        ]);
-
-        if (count($iterator)) {
-            $ticket = new Ticket();
-            foreach ($iterator as $data) {
-                $ticket->deleteLevelAgreement(static::class, $data['id'], $this->fields['type']);
-            }
-        }
-
-        Rule::cleanForItemAction($this);
     }
 
     public function post_clone($source, $history)

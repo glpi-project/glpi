@@ -40,4 +40,14 @@ class Item_Ola extends CommonDBRelation
             'start_time' => $_SESSION['glpi_currenttime'],
         ] + $input);
     }
+
+    public function getOla(): OLA
+    {
+        $item = $this->getConnexityItem(self::$itemtype_2, self::$items_id_2);
+        if ($item instanceof OLA) {
+            return $item;
+        }
+
+        throw new \RuntimeException('Linked OLA not found');
+    }
 }
