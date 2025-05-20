@@ -145,31 +145,51 @@
 
         // Add a max-width to elements when the block isn't active
         @for $i from 2 through 4 {
-            &:has(> section:nth-of-type(#{$i})) {
-                [data-glpi-form-editor-block],
-                [data-glpi-form-editor-horizontal-block-placeholder],
-                .glpi-form-editor-drag-question-placeholder {
-                    &:not([data-glpi-form-editor-active-question], [data-glpi-form-editor-active-comment]) {
-                        // Ensure each block has the same max width and share the available space
-                        @if $i == 4 {
-                            max-width: calc(100% / #{$i} - 0.5rem * (#{$i} - 1) / #{$i});
-                        } @else {
-                            /**
-                             * 0.5rem is the gap between blocks
-                             * 2.5rem is the width of the button
-                             */
-                            max-width: calc(100% / #{$i} - 0.5rem - 2.5rem / #{$i});
+            &:has(> section:not([style*="display: none"])) {
+                // Check that we have exactly $i visible sections
+                $selector: "> section:not([style*=\"display: none\"])";
+
+                @for $j from 2 through $i {
+                    $selector: $selector + " ~ section:not([style*=\"display: none\"])";
+                }
+
+                &:has(#{$selector}) {
+                    &:not(:has(#{$selector} ~ section:not([style*="display: none"]))) {
+                        [data-glpi-form-editor-block],
+                        [data-glpi-form-editor-horizontal-block-placeholder],
+                        .glpi-form-editor-drag-question-placeholder {
+                            &:not([data-glpi-form-editor-active-question], [data-glpi-form-editor-active-comment]) {
+                                // Ensure each block has the same max width and share the available space
+                                @if $i == 4 {
+                                    max-width: calc(100% / #{$i} - 0.5rem * (#{$i} - 1) / #{$i});
+                                } @else {
+                                    /**
+                                     * 0.5rem is the gap between blocks
+                                     * 2.5rem is the width of the button
+                                     */
+                                    max-width: calc(100% / #{$i} - 0.5rem - 2.5rem / #{$i});
+                                }
+                            }
                         }
                     }
                 }
             }
         }
 
-        &:has(> section:nth-of-type(4)) {
-            [data-glpi-form-editor-horizontal-block-toolbar],
-            [data-glpi-form-editor-on-click="duplicate-question"],
-            [data-glpi-form-editor-on-click="duplicate-comment"] {
-                display: none !important;
+        // Rule to hide buttons when there are 4 or more visible sections
+        &:has(> section:not([style*="display: none"])) {
+            // This nesting checks that there are 4 consecutive visible sections
+            &:has(
+                > section:not([style*="display: none"]) ~
+                section:not([style*="display: none"]) ~
+                section:not([style*="display: none"]) ~
+                section:not([style*="display: none"])
+            ) {
+                [data-glpi-form-editor-horizontal-block-toolbar],
+                [data-glpi-form-editor-on-click="duplicate-question"],
+                [data-glpi-form-editor-on-click="duplicate-comment"] {
+                    display: none !important;
+                }
             }
         }
 

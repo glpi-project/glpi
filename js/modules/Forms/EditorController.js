@@ -877,9 +877,9 @@ export class GlpiFormEditorController
                         return true;
                     }
 
-                    return item_container !== null
-                        && !$(element).is(item_container)
-                        && $(element).has(item_container).length === 0;
+                    return item_container === null
+                        || (!$(element).is(item_container)
+                        && $(element).has(item_container).length === 0);
                 })
                 .removeAttr(`data-glpi-form-editor-active-${type}`);
         });
@@ -2088,9 +2088,17 @@ export class GlpiFormEditorController
 
         // Add a special class while a drag and drop is happening
         sections
-            .find("[data-glpi-form-editor-section-blocks]")
-            .on('sortstart', () => {
+            .find("[data-glpi-form-editor-section-blocks], [data-glpi-form-editor-horizontal-blocks], [data-glpi-form-editor-question-drag-merge], [data-glpi-form-editor-horizontal-block-placeholder]")
+            .on('sortstart', (e) => {
                 $(this.#target).addClass("disable-focus").attr('data-glpi-form-editor-sorting', '');
+
+                // If dragged item is active, store it to restore it later
+                if ($(e.detail.item).is('[data-glpi-form-editor-active-question],[data-glpi-form-editor-active-comment]')) {
+                    $(e.detail.item).attr('data-glpi-form-editor-restore-active-state', '');
+                }
+
+                // Remove active states
+                this.#setActiveItem(null);
             });
 
         // Run the post move process if any item was dragged, even if it was not
@@ -2140,6 +2148,13 @@ export class GlpiFormEditorController
                 // until our drag operation is over.
                 $(this.#target).removeClass("disable-focus").removeAttr('data-glpi-form-editor-sorting');
                 $('.content-editable-tinymce').removeClass('simulate-focus');
+
+                // Restore active state if needed
+                const restore_active_state = $(e.detail.item).attr('data-glpi-form-editor-restore-active-state');
+                if (restore_active_state !== undefined) {
+                    $(e.detail.item).removeAttr('data-glpi-form-editor-restore-active-state');
+                    this.#setActiveItem($(e.detail.item));
+                }
             });
     }
 
