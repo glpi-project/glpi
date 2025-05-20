@@ -3594,7 +3594,7 @@ class AuthLDAP extends CommonDBTM
         $filter = "(" . $values['login_field'] . "=" . $filter_value . ")";
 
         if (!empty($values['condition'])) {
-            $filter = "(&$filter " . Sanitizer::unsanitize($values['condition']) . ")";
+            $filter = "(&$filter" . Sanitizer::unsanitize($values['condition']) . ")";
         }
 
         $result = @ldap_search($ds, $values['basedn'], $filter, $attrs);
@@ -4152,7 +4152,7 @@ class AuthLDAP extends CommonDBTM
         $ldap_condition = Sanitizer::unsanitize($authldap->getField('condition'));
         //Add entity filter and filter filled in directory's configuration form
         if (isset($_SESSION['ldap_import']['entity_filter'])) {
-            return  "(&" . $_SESSION['ldap_import']['entity_filter'] . "$filter $ldap_condition)";
+            return  "(&" . $_SESSION['ldap_import']['entity_filter'] . "$filter$ldap_condition)";
         } else {
             return  "(&$filter$ldap_condition)";
         }

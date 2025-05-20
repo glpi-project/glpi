@@ -2783,7 +2783,7 @@ class AuthLDAPTest extends DbTestCase
             'error'         => implode(
                 "\n",
                 [
-                    'LDAP search with base DN `dc=glpi,dc=org` and filter `(&(uid=johndoe) invalidfilter))` failed',
+                    'LDAP search with base DN `dc=glpi,dc=org` and filter `(&(uid=johndoe)invalidfilter))` failed',
                     'error: Bad search filter (-7)',
                 ]
             ),
