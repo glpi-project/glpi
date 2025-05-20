@@ -4152,9 +4152,9 @@ class AuthLDAP extends CommonDBTM
         $ldap_condition = Sanitizer::unsanitize($authldap->getField('condition'));
         //Add entity filter and filter filled in directory's configuration form
         if (isset($_SESSION['ldap_import']['entity_filter'])) {
-            return  "(&" . $_SESSION['ldap_import']['entity_filter'] . " $filter $ldap_condition)";
+            return  "(&" . $_SESSION['ldap_import']['entity_filter'] . "$filter $ldap_condition)";
         } else {
-            return  "(&$filter $ldap_condition)";
+            return  "(&$filter$ldap_condition)";
         }
     }
 
