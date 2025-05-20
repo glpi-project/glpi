@@ -34,7 +34,7 @@ trait ITILTrait
 //            'takeintoaccountdate' => null,
 //            'date_mod' => null,
 //            'users_id_lastupdater' => 0,
-//            'status' => 1,
+            'status' => \CommonITILObject::WAITING,
 //            'users_id_recipient' => 0,
 //            'requesttypes_id' => 0,
             'content' => 'Ticket Example content',

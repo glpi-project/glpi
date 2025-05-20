@@ -3,6 +3,7 @@
 namespace Glpi\PHPUnit\Tests\Glpi;
 
 use OLA;
+use SLA;
 use SLM;
 
 trait SLMTrait
@@ -11,6 +12,9 @@ trait SLMTrait
     // see @\LevelAgreement::getDefinitionTimeValues() for available unit values
     const OLA_TTO_DELAY = [90, 'minute'];
     const OLA_TTR_DELAY = [2, 'day'];
+
+    const SLA_TTO_DELAY = [180, 'minute'];
+    const SLA_TTR_DELAY = [3, 'day'];
 
     /**
      * @param array $data
@@ -32,7 +36,7 @@ trait SLMTrait
         };
 
         $ola = $this->createItem(
-            Ola::class,
+            OLA::class,
             $data + [
                 //                'id' => 0,
                 'name' => 'OLA ' . time(),
@@ -53,6 +57,47 @@ trait SLMTrait
         );
 
         return ['ola' => $ola, 'slm' => $slm, 'group' => $group];
+    }
+
+    /**
+     * @param array $data
+     * @param int $sla_type
+     * @param \SLM|null $slm
+     *
+     * @return array{sla: SLA, slm: SLM}
+     */
+    private function createSLA(array $data = [], int $sla_type = SLM::TTO, ?SLM $slm = null): array
+    {
+        assert(in_array($sla_type, array_keys(SLA::getTypes())));
+        $slm = $slm ?? $this->createSLM();
+
+        [$amount, $unit] = match ($sla_type) {
+            SLM::TTO => self::SLA_TTO_DELAY,
+            SLM::TTR => self::SLA_TTR_DELAY,
+        };
+
+        $sla = $this->createItem(
+            SLA::class,
+            $data + [
+                //                'id' => 0,
+                'name' => 'SLA ' . time(),
+                //                'entities_id' => 0,
+                'is_recursive' => 1,
+                'type' => $sla_type,
+                'comment' => 'SLA comment ' . time(),
+                'number_time' => $amount,
+                'definition_time' => $unit,
+                //                'use_ticket_calendar' => 0,
+                //                'calendars_id' => 0,
+                //                'date_mod' => null,
+                //                'end_of_working_day' => 0,
+                //                'date_creation' => null,
+                'slms_id' => $slm->getID(),
+//                'groups_id' => $group->getID(),
+            ]
+        );
+
+        return ['sla' => $sla, 'slm' => $slm];
     }
 
     private function createSLM(array $data = [], ?\Calendar $calendar = null): SLM

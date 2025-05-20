@@ -108,16 +108,17 @@ class TicketTemplate extends ITILTemplate
                 'time_to_own',
                 'glpi_tickets'
             )   => 'time_to_own',
-            $itil_object->getSearchOptionIDByField(
-                'field',
-                'internal_time_to_resolve',
-                'glpi_tickets'
-            )   => 'internal_time_to_resolve',
-            $itil_object->getSearchOptionIDByField(
-                'field',
-                'internal_time_to_own',
-                'glpi_tickets'
-            )   => 'internal_time_to_own',
+            // @todoseb probablement inutile, plus de valeur prédéfinie, si ne vient pas d'un ola
+//            $itil_object->getSearchOptionIDByField(
+//                'field',
+//                'internal_time_to_resolve',
+//                'glpi_tickets'
+//            )   => 'internal_time_to_resolve',
+//            $itil_object->getSearchOptionIDByField(
+//                'field',
+//                'internal_time_to_own',
+//                'glpi_tickets'
+//            )   => 'internal_time_to_own',
             $itil_object->getSearchOptionIDByField(
                 'field',
                 'global_validation',
