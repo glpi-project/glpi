@@ -1478,13 +1478,13 @@ class RuleTicketTest extends RuleCommonITILObjectTest
         $this->login();
         // arrange
         $entity = getItemByTypeName(\Entity::class, '_test_child_1');
-        ['ola' => $ola, 'slm' => $slm, 'group' => $group] = $this->createOLA();
+        ['ola' => $ola_tto, 'slm' => $slm, 'group' => $group] = $this->createOLA();
         ['ola' => $ola_ttr1] = $this->createOLA(ola_type: \SLM::TTR, group: $group, slm: $slm);
         ['ola' => $ola_ttr2] = $this->createOLA(ola_type: \SLM::TTR, group: $group);
 
         $rule_builder = new \RuleBuilder(__FUNCTION__, \RuleTicket::class);
         $rule_builder->addCriteria('entities_id', Rule::PATTERN_IS, $entity->getID());
-        $rule_builder->addAction('assign', 'olas_id', $ola->getID());
+        $rule_builder->addAction('assign', 'olas_id', $ola_tto->getID());
         $rule_builder->addAction('assign', 'olas_id', $ola_ttr1->getID());
         $rule_builder->addAction('assign', 'olas_id', $ola_ttr2->getID());
         $this->createRule($rule_builder);
@@ -1492,11 +1492,21 @@ class RuleTicketTest extends RuleCommonITILObjectTest
         // act - create ticket matching criteria
         $ticket = $this->createTicket(['entities_id' => $entity->getID()]);
 
-        // assert - ola is associated to ticket
+        // assert - ola is associated to ticket - getOlasData()
         $olas_data = $ticket->getOlasData();
         $this->assertCount(3, $olas_data);
         $olas_ids = array_column($olas_data, 'id');
-        $this->assertEqualsCanonicalizing($olas_ids, [$ola->getID(), $ola_ttr1->getID(), $ola_ttr2->getID()]);
+        $this->assertEqualsCanonicalizing($olas_ids, [$ola_tto->getID(), $ola_ttr1->getID(), $ola_ttr2->getID()]);        // assert - ola is associated to ticket - getOlasData()
+
+        $olas_ttr_data = $ticket->getOlasTTRData();
+        $this->assertCount(2, $olas_ttr_data);
+        $olas_ids = array_column($olas_ttr_data, 'id');
+        $this->assertEqualsCanonicalizing($olas_ids, [$ola_ttr1->getID(), $ola_ttr2->getID()]);        // assert - ola is associated to ticket - getOlasData()
+
+        $olas_tto_data = $ticket->getOlasTTOData();
+        $this->assertCount(1, $olas_tto_data);
+        $olas_ids = array_column($olas_tto_data, 'id');
+        $this->assertEqualsCanonicalizing($olas_ids, [$ola_tto->getID()]);
     }
 
     public function testCriteriaOlaOnCreate()
