@@ -917,29 +917,34 @@ class SoftwareLicense extends CommonTreeDropdown
         return $result['numsum'] ?: 0;
     }
 
-    public function getSpecificMassiveActions($checkitem = null, $items_id = null)
+    public function getSpecificMassiveActions($checkitem = null)
     {
         $actions = parent::getSpecificMassiveActions($checkitem);
-
-        if ($items_id) {
-            $lic = new self();
-            $lic->getFromDB($items_id);
-            $number = Item_SoftwareLicense::countForLicense($lic->getID());
-            $number += SoftwareLicense_User::countForLicense($lic->getID());
-
-            //If the number of linked assets have reached the number defined in the license,
-            //and over-quota is not allowed, do not allow to add more assets
-            if (
-                static::canUpdate()
-                && ($lic->getField('number') == -1 || $number < $lic->getField('number')
-                || $lic->getField('allow_overquota'))
-            ) {
-                $prefix                       = 'Item_SoftwareLicense' . MassiveAction::CLASS_ACTION_SEPARATOR;
-                $actions[$prefix . 'add_item']  = _sx('button', 'Add an item');
-            }
+        if (static::canUpdate()) {
+            $prefix                       = 'Item_SoftwareLicense' . MassiveAction::CLASS_ACTION_SEPARATOR;
+            $actions[$prefix . 'add_item']  = _sx('button', 'Add an item');
         }
 
         return $actions;
+    }
+
+    public function getForbiddenSingleMassiveActions()
+    {
+        $forbidden = parent::getForbiddenSingleMassiveActions();
+
+        $number = Item_SoftwareLicense::countForLicense($this->getID());
+        $number += SoftwareLicense_User::countForLicense($this->getID());
+
+        //If we don't have update rights OR we've reached/exceeded license limit without overquota permission
+        if (
+            !static::canUpdate()
+            || ($this->getField('number') != -1 && $number >= $this->getField('number')
+            && !$this->getField('allow_overquota'))
+        ) {
+            $forbidden[] = 'Item_SoftwareLicense' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_item';
+        }
+
+        return $forbidden;
     }
 
     /**

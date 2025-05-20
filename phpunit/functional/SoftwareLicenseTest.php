@@ -482,26 +482,35 @@ class SoftwareLicenseTest extends DbTestCase
         $license = new \SoftwareLicense();
         $this->assertTrue($license->getFromDB($license_id));
 
-        // Check that 'Add an item' action is available when no assignments yet
-        $actions = $license->getSpecificMassiveActions(null, $license_id);
+        // Check that action is initially available (added by getSpecificMassiveActions)
+        $specific_actions = $license->getSpecificMassiveActions();
+        $action_key = 'Item_SoftwareLicense' . \MassiveAction::CLASS_ACTION_SEPARATOR . 'add_item';
         $this->assertTrue(
-            $this->actionExists($actions, 'Item_SoftwareLicense' . \MassiveAction::CLASS_ACTION_SEPARATOR . 'add_item'),
-            "Add an item action should be available when under quota"
+            $this->actionExists($specific_actions, $action_key),
+            "Add an item action should be added by getSpecificMassiveActions"
+        );
+
+        // Check that action is not forbidden when license is under quota
+        $forbidden_actions = $license->getForbiddenSingleMassiveActions();
+        $this->assertFalse(
+            in_array($action_key, $forbidden_actions),
+            "Add an item action should not be forbidden when under quota"
         );
 
         // Add a computer to this license to reach the limit
         $computer = getItemByTypeName('Computer', '_test_pc01');
-        $this->createItem(\Item_SoftwareLicense::class, [
+        $item_license_id = $this->createItem(\Item_SoftwareLicense::class, [
             'softwarelicenses_id' => $license_id,
             'items_id' => $computer->getID(),
             'itemtype' => 'Computer',
-        ]);
+        ])->getID();
 
-        // Check that 'Add an item' action is NOT available when at quota limit
-        $actions = $license->getSpecificMassiveActions(null, $license_id);
-        $this->assertFalse(
-            $this->actionExists($actions, 'Item_SoftwareLicense' . \MassiveAction::CLASS_ACTION_SEPARATOR . 'add_item'),
-            "Add an item action should NOT be available when at quota limit"
+        // Check that action is NOW forbidden when at quota limit
+        $license->getFromDB($license_id); // Reload to get current state
+        $forbidden_actions = $license->getForbiddenSingleMassiveActions();
+        $this->assertTrue(
+            in_array($action_key, $forbidden_actions),
+            "Add an item action should be forbidden when at quota limit"
         );
 
         // Create a license WITH overquota allowed
@@ -517,17 +526,17 @@ class SoftwareLicenseTest extends DbTestCase
         $this->assertTrue($license2->getFromDB($license2_id));
 
         // Add a computer to this license to reach the limit
-        $this->createItem(\Item_SoftwareLicense::class, [
+        $item_license2_id = $this->createItem(\Item_SoftwareLicense::class, [
             'softwarelicenses_id' => $license2_id,
             'items_id' => $computer->getID(),
             'itemtype' => 'Computer',
-        ]);
+        ])->getID();
 
-        // Check that 'Add an item' action is STILL available because overquota is allowed
-        $actions = $license2->getSpecificMassiveActions(null, $license2_id);
-        $this->assertTrue(
-            $this->actionExists($actions, 'Item_SoftwareLicense' . \MassiveAction::CLASS_ACTION_SEPARATOR . 'add_item'),
-            "Add an item action should be available when overquota is allowed"
+        // Check that action is NOT forbidden even when at quota limit but overquota is allowed
+        $forbidden_actions = $license2->getForbiddenSingleMassiveActions();
+        $this->assertFalse(
+            in_array($action_key, $forbidden_actions),
+            "Add an item action should not be forbidden when overquota is allowed"
         );
 
         // Create a license with unlimited installations
@@ -551,11 +560,11 @@ class SoftwareLicenseTest extends DbTestCase
             ]);
         }
 
-        // Check that 'Add an item' action is STILL available because the license is unlimited
-        $actions = $license3->getSpecificMassiveActions(null, $license3_id);
-        $this->assertTrue(
-            $this->actionExists($actions, 'Item_SoftwareLicense' . \MassiveAction::CLASS_ACTION_SEPARATOR . 'add_item'),
-            "Add an item action should be available for unlimited licenses"
+        // Check that action is NOT forbidden for unlimited licenses
+        $forbidden_actions = $license3->getForbiddenSingleMassiveActions();
+        $this->assertFalse(
+            in_array($action_key, $forbidden_actions),
+            "Add an item action should not be forbidden for unlimited licenses"
         );
     }
 
