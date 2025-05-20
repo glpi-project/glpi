@@ -932,16 +932,24 @@ class SoftwareLicense extends CommonTreeDropdown
     {
         $forbidden = parent::getForbiddenSingleMassiveActions();
 
-        $number = Item_SoftwareLicense::countForLicense($this->getID());
-        $number += SoftwareLicense_User::countForLicense($this->getID());
+        $prefix = 'Item_SoftwareLicense' . MassiveAction::CLASS_ACTION_SEPARATOR;
+        $add_item_action = $prefix . 'add_item';
 
-        //If we don't have update rights OR we've reached/exceeded license limit without overquota permission
+        if (!static::canUpdate()) {
+            $forbidden[] = $add_item_action;
+            return $forbidden;
+        }
+
         if (
-            !static::canUpdate()
-            || ($this->getField('number') != -1 && $number >= $this->getField('number')
-            && !$this->getField('allow_overquota'))
+            !$this->fields['allow_overquota']
+            && $this->fields['number'] != -1
         ) {
-            $forbidden[] = 'Item_SoftwareLicense' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_item';
+            $number = Item_SoftwareLicense::countForLicense($this->getID());
+            $number += SoftwareLicense_User::countForLicense($this->getID());
+
+            if ($number >= $this->fields['number']) {
+                $forbidden[] = $add_item_action;
+            }
         }
 
         return $forbidden;
