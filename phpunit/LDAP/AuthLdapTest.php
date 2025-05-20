@@ -381,19 +381,19 @@ class AuthLDAPTest extends DbTestCase
             'phone_field' => '+33454968584',
         ];
         $result = \AuthLDAP::buildLdapFilter($ldap);
-        $this->assertSame('(&(LDAP3=*foo*)(phonenumber=*+33454968584*) )', $result);
+        $this->assertSame('(&(LDAP3=*foo*)(phonenumber=*+33454968584*))', $result);
 
         $_SESSION['ldap_import']['criterias']['name'] = '^foo';
         $result = \AuthLDAP::buildLdapFilter($ldap);
-        $this->assertSame('(&(LDAP3=foo*)(phonenumber=*+33454968584*) )', $result);
+        $this->assertSame('(&(LDAP3=foo*)(phonenumber=*+33454968584*))', $result);
 
         $_SESSION['ldap_import']['criterias']['name'] = 'foo$';
         $result = \AuthLDAP::buildLdapFilter($ldap);
-        $this->assertSame('(&(LDAP3=*foo)(phonenumber=*+33454968584*) )', $result);
+        $this->assertSame('(&(LDAP3=*foo)(phonenumber=*+33454968584*))', $result);
 
         $_SESSION['ldap_import']['criterias']['name'] = '^foo$';
         $result = \AuthLDAP::buildLdapFilter($ldap);
-        $this->assertSame('(&(LDAP3=foo)(phonenumber=*+33454968584*) )', $result);
+        $this->assertSame('(&(LDAP3=foo)(phonenumber=*+33454968584*))', $result);
 
         $_SESSION['ldap_import']['criterias'] = ['name' => '^foo$'];
         $ldap->fields['condition'] = '(objectclass=inetOrgPerson)';
@@ -406,7 +406,7 @@ class AuthLDAPTest extends DbTestCase
         $_SESSION['ldap_import']['criterias']['name'] = '^foo$';
         $result = \AuthLDAP::buildLdapFilter($ldap);
         $this->assertSame(
-            '(&(LDAP3=foo)(modifyTimestamp>=20170420000000.0Z)(modifyTimestamp<=20170422000000.0Z) )',
+            '(&(LDAP3=foo)(modifyTimestamp>=20170420000000.0Z)(modifyTimestamp<=20170422000000.0Z))',
             $result
         );
     }
