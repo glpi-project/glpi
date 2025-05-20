@@ -245,6 +245,7 @@ class RuleTicket extends RuleCommonITILObject
         $criterias['slas_id_tto']['type']                     = 'dropdown';
         $criterias['slas_id_tto']['condition']                = ['glpi_slas.type' => SLM::TTO];
 
+        //  @todoseb logique a réécrire ailleurs -  règle ola ttr/tto
         $criterias['olas_id_ttr']['table']                    = 'glpi_olas';
         $criterias['olas_id_ttr']['field']                    = 'name';
         $criterias['olas_id_ttr']['name']                     = sprintf(
@@ -336,17 +337,8 @@ class RuleTicket extends RuleCommonITILObject
         $actions['time_to_own']['type']                       = 'yesno';
         $actions['time_to_own']['force_actions']              = ['delete'];
 
-        $actions['olas_id_ttr']['table']                      = 'glpi_olas';
-        $actions['olas_id_ttr']['field']                      = 'name';
-        $actions['olas_id_ttr']['name']                       = sprintf(
-            __('%1$s %2$s'),
-            __('OLA'),
-            __('Time to resolve')
-        );
-        $actions['olas_id_ttr']['linkfield']                  = 'olas_id_ttr';
-        $actions['olas_id_ttr']['type']                       = 'dropdown';
-        $actions['olas_id_ttr']['condition']                  = ['glpi_olas.type' => SLM::TTR];
 
+        // @todoseb à remimplementer la suppression de la valeur, pertinent ? concerne les items associés ? (et pas les valeurs ?)
         $actions['internal_time_to_resolve']['name']          = __('Internal time to resolve');
         $actions['internal_time_to_resolve']['type']          = 'yesno';
         $actions['internal_time_to_resolve']['force_actions'] = ['delete'];
@@ -362,6 +354,7 @@ class RuleTicket extends RuleCommonITILObject
         );
         $actions['olas_id']['force_actions']     = ['assign'];
 
+        // @todoseb à remimplementer - voir commentaire au dessus.
         $actions['internal_time_to_own']['name']              = __('Internal Time to own');
         $actions['internal_time_to_own']['type']              = 'yesno';
         $actions['internal_time_to_own']['force_actions']     = ['delete'];
