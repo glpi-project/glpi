@@ -141,7 +141,7 @@ class Change extends CommonITILObject
 
     public function canAddItem($type)
     {
-        if ($type == 'Document') {
+        if ($type == Document::class) {
             if (in_array($this->fields['status'], $this->getClosedStatusArray())) {
                 return false;
             }
