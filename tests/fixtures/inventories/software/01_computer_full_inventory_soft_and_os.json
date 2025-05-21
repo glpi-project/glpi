@@ -1,0 +1,62 @@
+{
+    "action": "inventory",
+    "content": {
+        "bios": {
+            "assettag": "SYS_CHASSIS_ASSET_TAG_NUM_1",
+            "bdate": "2021-07-02",
+            "bmanufacturer": "Intel Corp.",
+            "bversion": "EBTGL357.0061.2021.0702.1707",
+            "mmanufacturer": "Intel Corporation",
+            "mmodel": "flghfgh5fgh",
+            "msn": "sdf15sd5f1sd65fsLV",
+            "smanufacturer": "Intel(R) Client Systems",
+            "smodel": "flghfgh5fgh",
+            "ssn": "df56dfg-dfg41f5g1f-df4fdg"
+        },
+        "hardware": {
+            "chassis_type": "Mini PC",
+            "defaultgateway": "192.168.8.1",
+            "dns": "192.168.8.1",
+            "memory": 7817,
+            "name": "ARN2032",
+            "uuid": "sdf5s1dfsd-sd5f48q7eaz8e-sd41sdf-5sd4fsdf",
+            "vmsystem": "Physical",
+            "winlang": "1033",
+            "workgroup": "WORKGROUP"
+        },
+        "operatingsystem": {
+            "arch": "64-bit",
+            "boot_time": "2025-05-15 21:40:57",
+            "dns_domain": "WORKGROUP",
+            "fqdn": "ARN2032",
+            "full_name": "Microsoft Windows 10 IoT Enterprise LTSC",
+            "install_date": "2022-07-18 18:34:14",
+            "kernel_name": "MSWin32",
+            "kernel_version": "10.0.19044",
+            "name": "Windows",
+            "service_pack": "19044.5854",
+            "timezone": {
+                "name": "Asia\/Riyadh",
+                "offset": "+0300"
+            },
+            "version": "21H2"
+        },
+        "softwares": [
+            {
+                "arch": "x86_64",
+                "from": "registry",
+                "guid": "Teclib_Software",
+                "install_date": "2025-05-19",
+                "name": "Teclib Software Software",
+                "publisher": "Teclib",
+                "system_category": "application",
+                "uninstall_string": " ",
+                "version": "2.20.4853.2486"
+            }
+        ],
+        "versionclient": "GLPI-Agent_v1.9"
+    },
+    "deviceid": "ARN2032",
+    "itemtype": "Computer",
+    "partial": false
+}
