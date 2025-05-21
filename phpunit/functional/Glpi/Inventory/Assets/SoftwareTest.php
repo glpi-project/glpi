@@ -1835,4 +1835,126 @@ JSON;
             $isoft_version->find(['itemtype' => \Computer::class, 'items_id' => $computers_id])
         );
     }
+
+    public function testDuplicateSoftwareVersion()
+    {
+        $fixturesPath = FIXTURE_DIR . '/inventories/software/';
+
+        $computer         = new \Computer();
+        $software         = new \Software();
+        $softwareVersion  = new \SoftwareVersion();
+        $itemSoftware     = new \Item_SoftwareVersion();
+
+        // Step 1: Full inventory (software + OS) on computer ARN2032
+        // This should create the software, version, and link it to the computer.
+        $jsonSource = json_decode(file_get_contents($fixturesPath . "01_computer_full_inventory_soft_and_os.json"));
+        $this->doInventory($jsonSource);
+
+        $foundComputers = $computer->find(['name' => "ARN2032"]);
+        $this->assertCount(1, $foundComputers);
+        $firstComputer = array_pop($foundComputers);
+
+        $softwares = $software->find(['name' => "Teclib Software Software"]);
+        $this->assertCount(1, $softwares);
+        $firstSoftware = array_pop($softwares);
+
+        $versions = $softwareVersion->find(['name' => "2.20.4853.2486", 'softwares_id' => $firstSoftware['id']]);
+        $this->assertCount(1, $versions);
+        $version = array_pop($versions);
+
+        $itemSoftwares = $itemSoftware->find([
+            'itemtype'            => \Computer::class,
+            'items_id'            => $firstComputer['id'],
+            'softwareversions_id' => $version['id'],
+        ]);
+        $this->assertCount(1, $itemSoftwares);
+
+        // Step 2: Full inventory (software + OS) on a second computer ARN2045
+        // This should reuse the existing software version, not create a duplicate.
+        $jsonSource = json_decode(file_get_contents($fixturesPath . "02_computer_full_inventory_soft_and_os.json"));
+        $this->doInventory($jsonSource);
+
+        $foundComputers = $computer->find(['name' => "ARN2045"]);
+        $this->assertCount(1, $foundComputers);
+        $secondComputer = array_pop($foundComputers);
+
+        $softwares = $software->find(['name' => "Teclib Software Software"]);
+        $this->assertCount(1, $softwares);
+        $firstSoftware = array_pop($softwares);
+
+        $versions = $softwareVersion->find(['name' => "2.20.4853.2486", 'softwares_id' => $firstSoftware['id']]);
+        $this->assertCount(1, $versions);
+        $version = array_pop($versions);
+
+        $itemSoftwares = $itemSoftware->find([
+            'itemtype'            => \Computer::class,
+            'items_id'            => $secondComputer['id'],
+            'softwareversions_id' => $version['id'],
+        ]);
+        $this->assertCount(1, $itemSoftwares);
+
+        // Step 3: Partial inventory (software + OS) on a third computer ARN3045
+        // This simulates partial inventory behavior where OS info is present, and should still reuse the same version.
+        $jsonSource = json_decode(file_get_contents($fixturesPath . "03_computer_partial_inventory_with_os.json"));
+        $this->doInventory($jsonSource);
+
+        $foundComputers = $computer->find(['name' => "ARN3045"]);
+        $this->assertCount(1, $foundComputers);
+        $thirdComputer = array_pop($foundComputers);
+
+        $softwares = $software->find(['name' => "Teclib Software Software"]);
+        $this->assertCount(1, $softwares);
+        $firstSoftware = array_pop($softwares);
+
+        $versions = $softwareVersion->find(['name' => "2.20.4853.2486", 'softwares_id' => $firstSoftware['id']]);
+        $this->assertCount(1, $versions);
+        $version = array_pop($versions);
+
+        $itemSoftwares = $itemSoftware->find([
+            'itemtype'            => \Computer::class,
+            'items_id'            => $thirdComputer['id'],
+            'softwareversions_id' => $version['id'],
+        ]);
+        $this->assertCount(1, $itemSoftwares);
+
+        // Step 4: Full inventory with OS only (no software) on ARN4058
+        // This prepares the main asset with an OS for use in the next step (software will need to retrieve OS from main asset).
+        $jsonSource = json_decode(file_get_contents($fixturesPath . "04_computer_full_inventory_with_os_without_soft.json"));
+        $this->doInventory($jsonSource);
+
+        $foundComputers = $computer->find(['name' => "ARN4058"]);
+        $this->assertCount(1, $foundComputers);
+        $fourthComputer = array_pop($foundComputers);
+
+        $softwares = $software->find(['name' => "Teclib Software Software"]);
+        $this->assertCount(1, $softwares);
+        $firstSoftware = array_pop($softwares);
+
+        // Step 5: Partial inventory with software only (no OS) on ARN4058
+        // This simulates a case where prepare() must fetch the OS from the main asset to avoid creating a duplicate version.
+        $jsonSource = json_decode(file_get_contents($fixturesPath . "05_computer_full_inventory_without_os_with_soft.json"));
+        $this->doInventory($jsonSource);
+
+        $foundComputers = $computer->find(['name' => "ARN4058"]);
+        $this->assertCount(1, $foundComputers);
+        $fourthComputer = array_pop($foundComputers);
+
+        $softwares = $software->find(['name' => "Teclib Software Software"]);
+        $this->assertCount(1, $softwares);
+        $firstSoftware = array_pop($softwares);
+
+        $versions = $softwareVersion->find(['name' => "2.20.4853.2486", 'softwares_id' => $firstSoftware['id']]);
+        $this->assertCount(1, $versions);
+        $version = array_pop($versions);
+
+        $itemSoftwares = $itemSoftware->find([
+            'itemtype'            => \Computer::class,
+            'items_id'            => $fourthComputer['id'],
+            'softwareversions_id' => $version['id'],
+        ]);
+        $this->assertCount(1, $itemSoftwares);
+
+        // Step 6: Full inventory with software and without OS should never happen
+    }
+
 }

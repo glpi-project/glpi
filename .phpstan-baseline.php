@@ -2794,13 +2794,13 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Negated boolean expression is always false\\.$#',
 	'identifier' => 'booleanNot.alwaysFalse',
-	'count' => 2,
+	'count' => 1,
 	'path' => __DIR__ . '/src/Inventory/Asset/Software.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Property Glpi\\\\Inventory\\\\Asset\\\\InventoryAsset\\:\\:\\$main_asset \\(Glpi\\\\Inventory\\\\Asset\\\\MainAsset\\) in isset\\(\\) is not nullable\\.$#',
 	'identifier' => 'isset.property',
-	'count' => 1,
+	'count' => 2,
 	'path' => __DIR__ . '/src/Inventory/Asset/Software.php',
 ];
 $ignoreErrors[] = [
