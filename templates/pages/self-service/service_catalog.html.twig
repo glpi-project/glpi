@@ -40,7 +40,7 @@
 
 {% block content_title %}
     <div class="d-flex">
-        <ol class="breadcrumb breadcrumb-alternate" aria-label="{{ __("Service catalog categories") }}" role="navigation">
+        <ol class="breadcrumb breadcrumb-alternate" aria-label="{{ _n("Service catalog category", "Service catalog categories", get_plural_number()) }}" role="navigation">
             <li class="breadcrumb-item text-truncate active">
                 <a
                     href="?category=0"
