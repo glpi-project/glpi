@@ -5058,7 +5058,7 @@ HTML;
             file_exists($prod_file)
             && $_SESSION['glpi_use_mode'] != Session::DEBUG_MODE
         ) {
-            $url = self::getPrefixedUrl(str_replace(GLPI_ROOT, '', $prod_file));
+            $url = self::getPrefixedUrl(str_replace(GLPI_ROOT . '/public', '', $prod_file));
         } else {
             $file = $url;
             $url = self::getPrefixedUrl('/front/css.php');
