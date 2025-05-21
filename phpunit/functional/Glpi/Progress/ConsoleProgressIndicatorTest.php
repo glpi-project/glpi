@@ -58,8 +58,8 @@ class ConsoleProgressIndicatorTest extends GLPITestCase
             yield [
                 'verbosity'          => $verbosity,
                 'type'               => MessageType::Error,
-                'message'            => 'An unexpected error occured.',
-                'expected_output'    => '> <error>An unexpected error occured.</error>',
+                'message'            => 'An unexpected error occurred.',
+                'expected_output'    => '> <error>An unexpected error occurred.</error>',
                 'expected_verbosity' => OutputInterface::VERBOSITY_QUIET,
             ];
 

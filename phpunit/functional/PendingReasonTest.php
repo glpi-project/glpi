@@ -302,7 +302,7 @@ class PendingReasonTest extends DbTestCase
                 'expected' => '2021-02-25 19:01:00',
             ],
             [
-                // Case 6: 0/8 bump occured with weekend between
+                // Case 6: 0/8 bump occurred with weekend between
                 'fields' => [
                     'pendingreason' => [
                         'calendars_id' => 1,
@@ -316,7 +316,7 @@ class PendingReasonTest extends DbTestCase
                 ],
                 'expected' => '2023-04-20 13:00:00',
             ],
-            // Case 7: 0/8 bump occured with xmas holidays between
+            // Case 7: 0/8 bump occurred with xmas holidays between
             [
                 'fields' => [
                     'calendar_holiday' => [

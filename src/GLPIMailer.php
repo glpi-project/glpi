@@ -64,7 +64,7 @@ class GLPIMailer
     private Email $email;
 
     /**
-     * Errors that may have occured during email sending.
+     * Errors that may have occurred during email sending.
      * @var string|null
      */
     private ?string $error;

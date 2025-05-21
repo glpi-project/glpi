@@ -59,9 +59,9 @@ class ErrorLogLineFormatterTest extends TestCase
                 datetime: new DateTimeImmutable('2024-04-12 21:45:32'),
                 channel: 'glpiphplog',
                 level: Level::Alert,
-                message: 'An unexpected error occured',
+                message: 'An unexpected error occurred',
             ),
-            'expected' => '[2024-04-12 21:45:32] glpiphplog.ALERT:   *** An unexpected error occured',
+            'expected' => '[2024-04-12 21:45:32] glpiphplog.ALERT:   *** An unexpected error occurred',
         ];
         yield [
             'record' => new LogRecord(
