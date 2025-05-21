@@ -1218,6 +1218,10 @@ class Plugin extends CommonDBTM
         /** @var \DBmysql $DB */
         global $DB;
 
+        if (countElementsInTable(static::getTable(), ['state' => self::ACTIVATED]) === 0) {
+            return;
+        }
+
         $DB->update(
             $this->getTable(),
             [
