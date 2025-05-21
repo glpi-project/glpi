@@ -164,7 +164,7 @@ class SlaLevel_Ticket extends CommonDBTM
         global $DB;
 
         $tot = 0;
-        $now = $DB->escape($_SESSION['glpi_currenttime']);
+        $now = $_SESSION['glpi_currenttime'];
 
         $iterator = $DB->request([
             'SELECT'    => [
