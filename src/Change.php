@@ -160,7 +160,7 @@ class Change extends CommonITILObject
             }
         }
 
-        parent::canAddItem($type);
+        return parent::canAddItem($type);
     }
 
     /**
