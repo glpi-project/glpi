@@ -6453,8 +6453,12 @@ HTML,
         $entity_id = getItemByTypeName('Entity', '_test_root_entity', true);
         $this->login();
 
-        $entity = new Entity();
-        $this->assertTrue($entity->update(['id' => $entity_id, 'auto_assign_mode' => Entity::AUTO_ASSIGN_HARDWARE_CATEGORY]));
+        $this->updateItem(\Entity::class,
+            $entity_id,
+            [
+                'auto_assign_mode' => Entity::AUTO_ASSIGN_HARDWARE_CATEGORY,
+            ]
+        );
 
         $group_tech = $this->createItem(
             Group::class,
