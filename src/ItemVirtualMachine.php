@@ -228,7 +228,7 @@ class ItemVirtualMachine extends CommonDBChild
                     'columns' => [
                         'name' => __('Name'),
                         'serial' => __('Serial number'),
-                        'comment' => __('Comments'),
+                        'comment' => _n('Comment', 'Comments', Session::getPluralNumber()),
                         'entity' => _n('Entity', 'Entities', 1),
                     ],
                     'formatters' => [

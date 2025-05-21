@@ -441,7 +441,7 @@ class SoftwareLicense extends CommonTreeDropdown
             'id'                 => '16',
             'table'              => static::getTable(),
             'field'              => 'comment',
-            'name'               => __('Comments'),
+            'name'               => _n('Comment', 'Comments', Session::getPluralNumber()),
             'datatype'           => 'text',
         ];
 
@@ -679,7 +679,7 @@ class SoftwareLicense extends CommonTreeDropdown
             'id'                 => '165',
             'table'              => static::getTable(),
             'field'              => 'comment',
-            'name'               => __('Comments'),
+            'name'               => _n('Comment', 'Comments', Session::getPluralNumber()),
             'forcegroupby'       => true,
             'datatype'           => 'text',
             'massiveaction'      => false,

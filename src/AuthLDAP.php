@@ -792,7 +792,7 @@ TWIG, ['authldaps_id' => $ID]);
             'fields' => [
                 'realname_field'            => __('Surname'),
                 'firstname_field'           => __('First name'),
-                'comment_field'             => __('Comments'),
+                'comment_field'             => _n('Comment', 'Comments', Session::getPluralNumber()),
                 'registration_number_field' => _x('user', 'Administrative number'),
                 'email1_field'              => _n('Email', 'Emails', 1),
                 'email2_field'              => sprintf('%1$s %2$s', _n('Email', 'Emails', 1), '2'),
@@ -968,7 +968,7 @@ TWIG, ['authldaps_id' => $ID]);
             'id'                 => '16',
             'table'              => static::getTable(),
             'field'              => 'comment',
-            'name'               => __('Comments'),
+            'name'               => _n('Comment', 'Comments', Session::getPluralNumber()),
             'datatype'           => 'text',
         ];
 

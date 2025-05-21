@@ -422,7 +422,7 @@ abstract class CommonITILSatisfaction extends CommonDBTM
             'id'                 => 63 + $base_id,
             'table'              => $table,
             'field'              => 'comment',
-            'name'               => __('Comments'),
+            'name'               => _n('Comment', 'Comments', Session::getPluralNumber()),
             'datatype'           => 'text',
             'massiveaction'      => false,
             'joinparams'         => [

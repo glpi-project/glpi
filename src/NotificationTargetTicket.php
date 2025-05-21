@@ -694,7 +694,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
             'validation.commentsubmission' => sprintf(
                 __('%1$s: %2$s'),
                 __('Request'),
-                __('Comments')
+                _n('Comment', 'Comments', Session::getPluralNumber())
             ),
             'validation.validationdate'    => sprintf(
                 __('%1$s: %2$s'),
@@ -707,7 +707,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
             'validation.commentvalidation'      => sprintf(
                 __('%1$s: %2$s'),
                 _n('Validation', 'Validations', 1),
-                __('Comments')
+                _n('Comment', 'Comments', Session::getPluralNumber())
             ),
         ];
 

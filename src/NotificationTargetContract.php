@@ -185,7 +185,7 @@ class NotificationTargetContract extends NotificationTarget
         $tags = ['contract.action'       => _n('Event', 'Events', 1),
             'contract.name'         => __('Name'),
             'contract.number'       => _x('phone', 'Number'),
-            'contract.comment'      => __('Comments'),
+            'contract.comment'      => _n('Comment', 'Comments', Session::getPluralNumber()),
             'contract.account'      => __('Account number'),
             'contract.items.number' => _x('quantity', 'Number of items'),
             'contract.items'        => __('Device list'),

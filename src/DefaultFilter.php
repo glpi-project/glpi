@@ -89,7 +89,7 @@ class DefaultFilter extends CommonDBTM implements FilterableInterface
             'id'            => '4',
             'table'         => self::getTable(),
             'field'         =>  'comment',
-            'name'          =>  __('Comments'),
+            'name'          =>  _n('Comment', 'Comments', Session::getPluralNumber()),
             'datatype'      =>  'text',
         ];
 

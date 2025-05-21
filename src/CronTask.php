@@ -1467,7 +1467,7 @@ TWIG, ['msg' => __('Last run list')]);
             'id'                 => '16',
             'table'              => self::getTable(),
             'field'              => 'comment',
-            'name'               => __('Comments'),
+            'name'               => _n('Comment', 'Comments', Session::getPluralNumber()),
             'datatype'           => 'text',
         ];
 

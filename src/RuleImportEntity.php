@@ -115,7 +115,7 @@ class RuleImportEntity extends Rule
             ],
             'oscomment' => [
                 'field' => 'name',
-                'name' => sprintf('%s > %s', OperatingSystem::getTypeName(1), __('Comments')),
+                'name' => sprintf('%s > %s', OperatingSystem::getTypeName(1), _n('Comment', 'Comments', Session::getPluralNumber())),
             ],
             '_source' => [
                 'table' => '',

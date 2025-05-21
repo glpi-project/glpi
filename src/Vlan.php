@@ -160,7 +160,7 @@ class Vlan extends CommonDropdown
                     )) . "<br>" .
                     htmlescape(sprintf(
                         __('%1$s: %2$s'),
-                        __('Comments'),
+                        _n('Comment', 'Comments', Session::getPluralNumber()),
                         $vlan->fields['comment']
                     )),
                     ['display' => false]

@@ -208,7 +208,7 @@ final class SearchOption implements \ArrayAccess
 
                 $search[$itemtype][16]['table']         = 'asset_types';
                 $search[$itemtype][16]['field']         = 'comment';
-                $search[$itemtype][16]['name']          = __('Comments');
+                $search[$itemtype][16]['name']          = _n('Comment', 'Comments', Session::getPluralNumber());
                 $search[$itemtype][16]['datatype']      = 'text';
 
                 $search[$itemtype][70]['table']         = 'glpi_users';

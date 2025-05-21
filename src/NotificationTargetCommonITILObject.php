@@ -2027,7 +2027,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
             'cost.comment'                      => sprintf(
                 __('%1$s: %2$s'),
                 _n('Cost', 'Costs', 1),
-                __('Comments')
+                _n('Comment', 'Comments', Session::getPluralNumber())
             ),
             'cost.datebegin'                    => sprintf(
                 __('%1$s: %2$s'),

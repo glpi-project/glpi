@@ -110,7 +110,7 @@ class RuleAsset extends Rule
         $criterias['states_id']['name']             = __('Status');
         $criterias['states_id']['type']             = 'dropdown';
 
-        $criterias['comment']['name']               = __('Comments');
+        $criterias['comment']['name']               = _n('Comment', 'Comments', Session::getPluralNumber());
 
         $criterias['contact']['name']               = __('Alternate username');
 
@@ -216,7 +216,7 @@ class RuleAsset extends Rule
 
         $actions['comment']['table']            = '';
         $actions['comment']['field']            = 'comment';
-        $actions['comment']['name']             = __('Comments');
+        $actions['comment']['name']             = _n('Comment', 'Comments', Session::getPluralNumber());
         $actions['comment']['force_actions']    = ['assign', 'regex_result'];
 
         $actions['otherserial']['name']              = __('Inventory number');

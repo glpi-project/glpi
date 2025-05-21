@@ -640,7 +640,7 @@ TWIG, $buttons_params);
             'columns' => [
                 'type' => __('Linked to'),
                 'link' => _n('Link', 'Links', 1),
-                'comment' => __('Comment'),
+                'comment' => _n('Comment', 'Comments', 1),
                 'actions' => _n('Action', 'Actions', Session::getPluralNumber()),
             ],
             'formatters' => [

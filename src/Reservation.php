@@ -1088,7 +1088,7 @@ JAVASCRIPT;
             'item'       => _n('Item', 'Items', 1),
             'entity'     => Entity::getTypeName(1),
             'by'         => __('By'),
-            'comments'   => __('Comments'),
+            'comments'   => _n('Comment', 'Comments', Session::getPluralNumber()),
             'planning'  => '',
         ];
         $formatters = [

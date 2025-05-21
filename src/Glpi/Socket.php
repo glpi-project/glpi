@@ -895,7 +895,7 @@ class Socket extends CommonDBChild
                 'asset' => _n('Asset', 'Assets', 1),
                 'networkports_id' => NetworkPort::getTypeName(1),
                 'wiring_side' => __('Wiring side'),
-                'comment' => __('Comments'),
+                'comment' => _n('Comment', 'Comments', Session::getPluralNumber()),
             ],
             'formatters' => [
                 'name' => 'raw_html',

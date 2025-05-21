@@ -654,7 +654,7 @@ TWIG, $twig_params);
         foreach ($fields as $field) {
             $columns[$field['name']] = $field['label'];
         }
-        $columns['comment'] = __('Comments');
+        $columns['comment'] = _n('Comment', 'Comments', Session::getPluralNumber());
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'is_tab' => true,
             'nofilter' => true,
@@ -821,7 +821,7 @@ TWIG, $twig_params);
             'id'                => '16',
             'table'             => $this->getTable(),
             'field'             => 'comment',
-            'name'              => __('Comments'),
+            'name'              => _n('Comment', 'Comments', Session::getPluralNumber()),
             'datatype'          => 'text',
         ];
 

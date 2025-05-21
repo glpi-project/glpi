@@ -66,7 +66,7 @@ class RuleDictionnaryPrinter extends Rule
         $criterias['manufacturer']['table'] = '';
 
         $criterias['comment']['field']      = 'comment';
-        $criterias['comment']['name']       = __('Comments');
+        $criterias['comment']['name']       = _n('Comment', 'Comments', Session::getPluralNumber());
         $criterias['comment']['table']      = '';
 
         return $criterias;

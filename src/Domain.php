@@ -162,7 +162,7 @@ class Domain extends CommonDBTM
             'id'                 => '7',
             'table'              => $this->getTable(),
             'field'              => 'comment',
-            'name'               => __('Comments'),
+            'name'               => _n('Comment', 'Comments', Session::getPluralNumber()),
             'datatype'           => 'text',
         ];
 
