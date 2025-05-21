@@ -39,8 +39,8 @@
 {% if timerange_presets is not defined %}
     {% set timerange_presets = {
         'P1D': __('Last day'),
-        'P1W': __('Last 7 days'),
-        'P1M': __('Last 30 days'),
+        'P1W': __('Last %s days')|format(7),
+        'P1M': __('Last %s days')|format(30),
         'P3M': __('Last quarter'),
         'P1Y': __('Last year'),
         'P1000Y': __('All time'),
