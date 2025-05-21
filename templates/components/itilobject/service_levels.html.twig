@@ -39,8 +39,6 @@ field_options.fields_template est un ITILTemplate passé dans l'appel du twig da
 
 {# sla display #}
 
-{% set can_assign_sla_ola = canupdate and has_profile_right('slm', constant('SLM::RIGHT_ASSIGN')) %}
-
 {#
 --- SLA display
 At the moment, there is 2 sla for a ticket, defined inside the ticket fields
@@ -84,6 +82,7 @@ Handle only linked ola, not ola ttr and tto defined using datetime fields
         <tr>
             {% set display_datetime_field  = field_options.fields_template is not defined or not field_options.fields_template.isHiddenField('time_to_own') %}
             {% set display_associatedsla_field = field_options.fields_template is not defined or not field_options.fields_template.isHiddenField('slas_id_tto') %}
+            {% set can_assign_sla_ola = canupdate and has_profile_right('slm', constant('SLM::RIGHT_ASSIGN')) and not field_options.fields_template.isReadonlyField('slas_id_tto') %}
 
             {# @todo cleanup debug - force display #}
 {#            {% set display_datetime_field  = true %}#}
@@ -137,11 +136,13 @@ Handle only linked ola, not ola ttr and tto defined using datetime fields
             {% if sla.type == constant('SLM::TTO') %}
                 {% set display_datetime_field  = field_options.fields_template is not defined or not field_options.fields_template.isHiddenField('time_to_own') %}
                 {% set display_associatedsla_field = field_options.fields_template is not defined or not field_options.fields_template.isHiddenField('slas_id_tto') %}
+                {% set can_assign_sla_ola = canupdate and has_profile_right('slm', constant('SLM::RIGHT_ASSIGN')) and not field_options.fields_template.isReadonlyField('slas_id_tto') %}
                 {% set _fieldname = 'time_to_own' %}
                 {% set _label = __('TTO') %}
             {% elseif sla.type == constant('SLM::TTR') %}
                 {% set display_datetime_field  = field_options.fields_template is not defined or not field_options.fields_template.isHiddenField('time_to_resolve') %}
                 {% set display_associatedsla_field  = field_options.fields_template is not defined or not field_options.fields_template.isHiddenField('slas_id_ttr') %}
+                {% set can_assign_sla_ola = canupdate and has_profile_right('slm', constant('SLM::RIGHT_ASSIGN')) and not field_options.fields_template.isReadonlyField('slas_id_ttr') %}
                 {% set _fieldname = 'time_to_resolve' %}
                 {% set _label = __('TTR') %}
             {% endif %}
@@ -178,6 +179,7 @@ Handle only linked ola, not ola ttr and tto defined using datetime fields
         <tr>
             {% set display_datetime_field  = field_options.fields_template is not defined or not field_options.fields_template.isHiddenField('time_to_resolve') %}
             {% set display_associatedsla_field = field_options.fields_template is not defined or not field_options.fields_template.isHiddenField('slas_id_ttr') %}
+            {% set can_assign_sla_ola = canupdate and has_profile_right('slm', constant('SLM::RIGHT_ASSIGN')) and not field_options.fields_template.isReadonlyField('slas_id_ttr') %}
             {# @todo cleanup - debug - force display #}
 {#            {% set display_datetime_field  = true %}#}
 {#            {% set display_associatedsla_field = true %}#}
@@ -242,11 +244,13 @@ Handle only linked ola, not ola ttr and tto defined using datetime fields
             {# @todo voir comment gérer ce choix d'afficher ou pas selon une config #}
 {#            {% set display_associatedsla_field = field_options.fields_template is not defined or not field_options.fields_template.isHiddenField('slas_id_tto') %}#}
 {#            {% set _fieldname = 'time_to_own' %}#}
+            {% set can_assign_sla_ola = canupdate and has_profile_right('slm', constant('SLM::RIGHT_ASSIGN')) and not field_options.fields_template.isReadonlyField('olas_id_tto') %}
             {% set _label = __('TTO') %}
         {% elseif ola.type == constant('SLM::TTR') %}
 {#            {% set display_datetime_field  = field_options.fields_template is not defined or not field_options.fields_template.isHiddenField('time_to_resolve') %}#}
 {#            {% set display_associatedsla_field  = field_options.fields_template is not defined or not field_options.fields_template.isHiddenField('slas_id_ttr') %}#}
 {#            {% set _fieldname = 'time_to_resolve' %}#}
+            {% set can_assign_sla_ola = canupdate and has_profile_right('slm', constant('SLM::RIGHT_ASSIGN')) and not field_options.fields_template.isReadonlyField('olas_id_ttr') %}
             {% set _label = __('TTR') %}
         {% endif %}
 {#        {% set _value = item.fields[_fieldname] %}#}
