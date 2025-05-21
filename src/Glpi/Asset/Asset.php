@@ -45,6 +45,7 @@ use Group_Item;
 use Location;
 use Log;
 use Manufacturer;
+use Session;
 use State;
 use User;
 
@@ -179,7 +180,7 @@ abstract class Asset extends CommonDBTM
             'id'                 => '16',
             'table'              => $this->getTable(),
             'field'              => 'comment',
-            'name'               => __('Comments'),
+            'name'               => _n('Comment', 'Comments', Session::getPluralNumber()),
             'datatype'           => 'text',
         ];
 

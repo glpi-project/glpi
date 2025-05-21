@@ -151,7 +151,7 @@ TWIG, $twig_params);
                 'num' => _x('phone', 'Number'),
                 'begin_date' => __('Start date'),
                 'end_date' => __('End date'),
-                'comment' => __('Comments'),
+                'comment' => _n('Comment', 'Comments', Session::getPluralNumber()),
             ];
             $formatters = [
                 'name' => 'raw_html',

@@ -502,14 +502,14 @@ final class SQLProvider implements SearchProviderInterface
 
                     $add_minus = '';
                     if (isset($opt["datafields"][3])) {
-                        $add_minus = '-' . $DB::quoteName("{$table}{$addtable}.{$opt["datafields"][3]}");
+                        $add_minus = '-' . $DB::quoteName("{$table}{$addtable}.{$opt['datafields'][3]}");
                     }
                     if ($meta || $opt->isForceGroupBy()) {
                         return array_merge([
                             QueryFunction::groupConcat(
                                 expression: QueryFunction::dateAdd(
-                                    date: "{$table}{$addtable}.{$opt["datafields"][1]}",
-                                    interval: new QueryExpression($DB::quoteName("{$table}{$addtable}.{$opt["datafields"][2]}") . $add_minus),
+                                    date: "{$table}{$addtable}.{$opt['datafields'][1]}",
+                                    interval: new QueryExpression($DB::quoteName("{$table}{$addtable}.{$opt['datafields'][2]}") . $add_minus),
                                     interval_unit: $interval
                                 ),
                                 separator: \Search::LONGSEP,

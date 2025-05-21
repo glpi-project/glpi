@@ -177,7 +177,7 @@ class NotificationTargetReservation extends NotificationTarget
         $tags_except_alert = ['reservation.user'        => __('Writer'),
             'reservation.begin'       => __('Start date'),
             'reservation.end'         => __('End date'),
-            'reservation.comment'     => __('Comments'),
+            'reservation.comment'     => _n('Comment', 'Comments', Session::getPluralNumber()),
             'reservation.note'        => __('Notes'),
             'reservation.item.entity' => Entity::getTypeName(1),
             'reservation.item.name'   => _n('Associated item', 'Associated items', 1),

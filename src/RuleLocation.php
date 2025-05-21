@@ -107,7 +107,7 @@ class RuleLocation extends Rule
                 'name'            => __("Serial number"),
             ],
             'oscomment' => [
-                'name'            => sprintf('%s > %s', OperatingSystem::getTypeName(1), __('Comments')),
+                'name'            => sprintf('%s > %s', OperatingSystem::getTypeName(1), _n('Comment', 'Comments', Session::getPluralNumber())),
             ],
         ];
     }

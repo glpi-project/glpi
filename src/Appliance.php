@@ -157,7 +157,7 @@ class Appliance extends CommonDBTM
             'id'            => '4',
             'table'         => self::getTable(),
             'field'         =>  'comment',
-            'name'          =>  __('Comments'),
+            'name'          =>  _n('Comment', 'Comments', Session::getPluralNumber()),
             'datatype'      =>  'text',
         ];
 

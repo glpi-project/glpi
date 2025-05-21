@@ -132,7 +132,7 @@ class ReservationItem extends CommonDBChild
             'id'                 => '4',
             'table'              => static::getTable(),
             'field'              => 'comment',
-            'name'               => __('Comments'),
+            'name'               => _n('Comment', 'Comments', Session::getPluralNumber()),
             'datatype'           => 'text',
         ];
 
@@ -201,7 +201,7 @@ class ReservationItem extends CommonDBChild
             'id'                 => '16',
             'table'              => 'reservation_types',
             'field'              => 'comment',
-            'name'               => __('Comments'),
+            'name'               => _n('Comment', 'Comments', Session::getPluralNumber()),
             'datatype'           => 'text',
             'massiveaction'      => false,
         ];

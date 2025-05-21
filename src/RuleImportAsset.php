@@ -166,7 +166,7 @@ class RuleImportAsset extends Rule
                 'name'            => sprintf('%s > %s', _n('Asset', 'Assets', 1), OperatingSystem::getTypeName(1)),
             ],
             'oscomment' => [
-                'name'            => sprintf('%s > %s > %s', _n('Asset', 'Assets', 1), OperatingSystem::getTypeName(1), __('Comments')),
+                'name'            => sprintf('%s > %s > %s', _n('Asset', 'Assets', 1), OperatingSystem::getTypeName(1), _n('Comment', 'Comments', Session::getPluralNumber())),
             ],
             'itemtype' => [
                 'name'            => sprintf('%s > %s', _n('Asset', 'Assets', 1), __('Item type')),

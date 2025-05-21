@@ -213,7 +213,7 @@ class Certificate extends CommonDBTM
             'id'                 => '15',
             'table'              => $this->getTable(),
             'field'              => 'comment',
-            'name'               => __('Comments'),
+            'name'               => _n('Comment', 'Comments', Session::getPluralNumber()),
             'datatype'           => 'text',
         ];
 
@@ -460,7 +460,7 @@ class Certificate extends CommonDBTM
             'id'                 => '1305',
             'table'              => self::getTable(),
             'field'              => 'comment',
-            'name'               => __('Comments'),
+            'name'               => _n('Comment', 'Comments', Session::getPluralNumber()),
             'forcegroupby'       => true,
             'datatype'           => 'text',
             'massiveaction'      => false,

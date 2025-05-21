@@ -100,7 +100,7 @@ class ProjectTaskTemplate extends CommonDropdown
                 'type'  => 'actiontime',
             ],
             ['name'  => 'comments',
-                'label' => __('Comments'),
+                'label' => _n('Comment', 'Comments', Session::getPluralNumber()),
                 'type'  => 'textarea',
             ],
             ['name'  => 'description',

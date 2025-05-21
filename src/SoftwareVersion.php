@@ -170,7 +170,7 @@ TWIG, $twig_params);
             'id'                 => '16',
             'table'              => static::getTable(),
             'field'              => 'comment',
-            'name'               => __('Comments'),
+            'name'               => _n('Comment', 'Comments', Session::getPluralNumber()),
             'datatype'           => 'text',
         ];
 
@@ -353,7 +353,7 @@ TWIG, $twig_params);
                 'os' => OperatingSystem::getTypeName(1),
                 'arch' => _n('Architecture', 'Architectures', 1),
                 'installations' => _n('Installation', 'Installations', Session::getPluralNumber()),
-                'comments' => __('Comments'),
+                'comments' => _n('Comment', 'Comments', Session::getPluralNumber()),
             ],
             'formatters' => [
                 'version' => 'raw_html',

@@ -690,7 +690,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
             'id'                 => '16',
             'table'              => static::getTable(),
             'field'              => 'comment',
-            'name'               => __('Comments'),
+            'name'               => _n('Comment', 'Comments', Session::getPluralNumber()),
             'datatype'           => 'text',
         ];
 
@@ -1088,7 +1088,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
             'id'                 => '125',
             'table'              => ProjectTask::getTable(),
             'field'              => 'comment',
-            'name'               => __('Comments'),
+            'name'               => _n('Comment', 'Comments', Session::getPluralNumber()),
             'datatype'           => 'text',
             'massiveaction'      => false,
             'forcegroupby'       => true,
