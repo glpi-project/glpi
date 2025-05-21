@@ -8,6 +8,7 @@ services:
     restart: "unless-stopped"
     volumes:
       - "..:/var/www/glpi:rw"
+      - ".xdebug-mode.ini:/usr/local/etc/php/conf.d/xdebug-mode.ini"
     ports:
       - "8080:80"
       - "9637:9637"
