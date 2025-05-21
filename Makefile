@@ -175,3 +175,16 @@ lint-twig: ## Run the twig linter script
 lint-js: ## Run the js linter script
 	@$(PHP) .github/actions/lint_js-lint.sh
 .PHONY: lint-js
+
+## —— Xdebug ———————————————————————————————————————————————————————————————————
+xdebug-off: ## Disable xdebug
+	@$(PHP) sudo bash -c 'echo "xdebug.mode=off" > /usr/local/etc/php/conf.d/xdebug-mode.ini && sudo service apache2 reload'
+.PHONY: xdebug-off
+
+xdebug-on: ## Enable xdebug
+	@$(PHP) sudo bash -c 'echo "xdebug.mode=debug" > /usr/local/etc/php/conf.d/xdebug-mode.ini && sudo service apache2 reload'
+.PHONY: xdebug-on
+
+xdebug-profile: ## Enable xdebug performance profiling
+	@$(PHP) sudo bash -c 'echo "xdebug.mode=profile" > /usr/local/etc/php/conf.d/xdebug-mode.ini && sudo service apache2 reload'
+.PHONY: xdebug-profile
