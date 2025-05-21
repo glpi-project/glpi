@@ -55,7 +55,7 @@
 
             <div class="row ms-n2 me-n2 mb-3" data-glpi-helpdesk-config-tiles>
                 {# The tiles have their own templates as they will be reloaded using AJAX #}
-                {{ include('pages/admin/profile/helpdesk_home/tiles.html.twig', {
+                {{ include('pages/admin/helpdesk_home_config_tiles.html.twig', {
                     'tiles_manager': tiles_manager,
                     'tiles': tiles,
                     'editable': editable,

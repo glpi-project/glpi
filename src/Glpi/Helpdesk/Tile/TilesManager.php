@@ -232,7 +232,7 @@ final class TilesManager
     ): void {
         // Render content
         $twig = TemplateRenderer::getInstance();
-        $twig->display('pages/admin/profile/helpdesk_home/config.html.twig', [
+        $twig->display('pages/admin/helpdesk_home_config.html.twig', [
             'tiles_manager' => $this,
             'tiles'         => $this->getTilesForItem($item),
             'itemtype_item' => $item::class,

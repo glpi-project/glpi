@@ -38,7 +38,7 @@
         data-glpi-helpdesk-config-tiles-empty-entity-original-content
         class="helpdesk-home-config-for-empty-entity-wrapper"
     >
-        {{ include('pages/admin/profile/helpdesk_home/config.html.twig', {
+        {{ include('pages/admin/helpdesk_home_config.html.twig', {
             tiles_manager: tiles_manager,
             tiles        : [],
             itemtype_item: itemtype_item,
@@ -62,7 +62,7 @@
         </div>
 
         <div class="row ms-n2 me-n2 mb-3">
-            {{ include('pages/admin/profile/helpdesk_home/tiles.html.twig', {
+            {{ include('pages/admin/helpdesk_home_config_tiles.html.twig', {
                 'tiles_manager': tiles_manager,
                 'tiles': parent_tiles,
                 'editable': false,

@@ -522,7 +522,7 @@ final class TilesManagerTest extends DbTestCase
 
         // Act: render the tiles
         TemplateRenderer::getInstance()->render(
-            'pages/admin/profile/helpdesk_home/tiles.html.twig',
+            'pages/admin/helpdesk_home_config_tiles.html.twig',
             [
                 'tiles_manager' => $this->getManager(),
                 'tiles' => [$tile],
