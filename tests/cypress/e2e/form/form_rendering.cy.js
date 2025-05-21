@@ -250,6 +250,29 @@ describe('Form rendering', () => {
             cy.findByRole('button', {name: 'Submit'}).should('have.class', 'pointer-events-none');
         });
     });
+
+    it("Display untitled labels for questions and comments in form preview", () => {
+        // Login and create a new form
+        cy.login();
+        cy.createFormWithAPI().visitFormTab();
+
+        // Add a question and a comment to the form
+        cy.findByRole('button', { name: 'Add a question' }).click();
+        cy.findByRole('button', { name: 'Add a comment' }).click();
+
+        // Save the form configuration
+        cy.findByRole('button', { name: 'Save' }).click();
+        cy.checkAndCloseAlert('Item successfully updated');
+
+        // Navigate to the preview page (changing target to avoid opening in new tab)
+        cy.findByRole("link", { name: "Preview" })
+            .invoke('attr', 'target', '_self')
+            .click();
+
+        // Verify both elements appear in the preview
+        cy.findByRole('heading', { name: 'Untitled question' }).should('exist');
+        cy.findByRole('heading', { name: 'Untitled comment' }).should('exist');
+    });
 });
 
 function addQuestionAndGetUuuid(name, type = null, subtype = null) {

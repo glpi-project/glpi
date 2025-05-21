@@ -145,6 +145,7 @@ final class Question extends CommonDBChild implements BlockInterface, Conditiona
         return $handlers;
     }
 
+    #[Override]
     public function displayBlockForEditor(): void
     {
         TemplateRenderer::getInstance()->display('pages/admin/form/form_question.html.twig', [
@@ -156,6 +157,12 @@ final class Question extends CommonDBChild implements BlockInterface, Conditiona
             'can_update'                   => $this->getForm()->canUpdate(),
             'allow_unauthenticated_access' => FormAccessControlManager::getInstance()->allowUnauthenticatedAccess($this->getForm()),
         ]);
+    }
+
+    #[Override]
+    public function getUntitledLabel(): string
+    {
+        return __('Untitled question');
     }
 
     /**
