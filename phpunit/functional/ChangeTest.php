@@ -530,7 +530,7 @@ class ChangeTest extends DbTestCase
                             'items_id'  => $user->getID(),
                         ],
                     ],
-                ]
+                ],
             ]);
 
             $input = ['itemtype' => 'Change', 'items_id' => $change->getID()];

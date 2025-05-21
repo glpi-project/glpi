@@ -139,7 +139,7 @@ class Change extends CommonITILObject
         return Session::haveRight(self::$rightname, CREATE);
     }
 
-        /**
+    /**
      * Overloaded from commonDBTM
      *
      * @since 0.83
