@@ -118,7 +118,7 @@ class AbstractPluginMigrationTest extends DbTestCase
         $expected_messages = [
             [
                 'type' => MessageType::Error,
-                'message' => 'An unexpected error occurred.',
+                'message' => 'An unexpected error occurred',
             ],
         ];
         $this->assertEquals($expected_messages, $result->getMessages());
@@ -196,7 +196,7 @@ class AbstractPluginMigrationTest extends DbTestCase
             ],
             [
                 'type' => MessageType::Error,
-                'message' => 'An unexpected error occurred.',
+                'message' => 'An unexpected error occurred',
             ],
         ];
         $this->assertEquals($expected_messages, $result->getMessages());
@@ -275,7 +275,7 @@ class AbstractPluginMigrationTest extends DbTestCase
             ],
             [
                 'type' => MessageType::Error,
-                'message' => 'An unexpected error occurred.',
+                'message' => 'An unexpected error occurred',
             ],
         ];
         $this->assertEquals($expected_messages, $result->getMessages());

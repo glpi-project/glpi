@@ -79,7 +79,7 @@ class StoredProgressIndicatorTest extends GLPITestCase
         $storage->expects($this->exactly(7))->method('save');
 
         // Act
-        $instance->addMessage(MessageType::Error, 'An unexpected error occurred.');
+        $instance->addMessage(MessageType::Error, 'An unexpected error occurred');
         $instance->addMessage(MessageType::Warning, 'Invalid foo has been ignored.');
         $instance->addMessage(MessageType::Debug, 'Some debug info...');
         $instance->addMessage(MessageType::Debug, 'Some other debug info...');
@@ -91,7 +91,7 @@ class StoredProgressIndicatorTest extends GLPITestCase
         $expected_messages_1 = [
             [
                 'type'      => MessageType::Error,
-                'message'   => 'An unexpected error occurred.',
+                'message'   => 'An unexpected error occurred',
             ],
             [
                 'type'      => MessageType::Warning,

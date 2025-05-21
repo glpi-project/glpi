@@ -239,7 +239,7 @@ export class ProgressIndicator
         } catch (err) {
             this.#display_message(
                 'error',
-                __('An unexpected error occurred.')
+                __('An unexpected error occurred')
             );
             this.#error_callback();
             this.#show_progress_failure();
