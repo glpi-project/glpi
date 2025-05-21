@@ -43,7 +43,7 @@ class ExtensionTest extends \GLPITestCase
         $instance = new Extension('curl');
         $this->assertTrue($instance->isValidated());
         $this->assertEquals(
-            ['curl extension is installed.'],
+            ['curl extension is installed'],
             $instance->getValidationMessages()
         );
     }
@@ -53,7 +53,7 @@ class ExtensionTest extends \GLPITestCase
         $instance = new Extension('fake_ext');
         $this->assertFalse($instance->isValidated());
         $this->assertEquals(
-            ['fake_ext extension is missing.'],
+            ['fake_ext extension is missing'],
             $instance->getValidationMessages()
         );
     }
@@ -63,7 +63,7 @@ class ExtensionTest extends \GLPITestCase
         $instance = new Extension('fake_ext', true);
         $this->assertFalse($instance->isValidated());
         $this->assertEquals(
-            ['fake_ext extension is not present.'],
+            ['fake_ext extension is not present'],
             $instance->getValidationMessages()
         );
     }
