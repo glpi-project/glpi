@@ -45,6 +45,16 @@
     ) %}
 {% endmacro %}
 
+{% macro displayLifecycleMatrix(item, title, html_field, db_field, statuses) %}
+    {% do item.displayLifeCycleMatrix(
+        title,
+        html_field,
+        db_field,
+        statuses,
+        has_profile_right('profile', constant('CREATE')) or has_profile_right('profile', constant('UPDATE')) or has_profile_right('profile', constant('PURGE'))
+    ) %}
+{% endmacro %}
+
 <div class="asset">
     {% if can_edit %}
         <form method="post" action="{{ 'Profile'|itemtype_form_path }}" data-track-changes="true">

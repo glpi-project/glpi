@@ -30,28 +30,9 @@
  # ---------------------------------------------------------------------
  #}
 
+{% set show_legend = true %}
 {% extends 'pages/admin/profile/base_tab.html.twig' %}
 
 {% block content %}
-    {{ _self.displayLifecycleMatrix(
-        item,
-        __('Life cycle of tickets'),
-        '_cycle_ticket',
-        'ticket_status',
-        call('Ticket::getAllStatusArray')
-    ) }}
-    {{ _self.displayLifecycleMatrix(
-        item,
-        __('Life cycle of problems'),
-        '_cycle_problem',
-        'problem_status',
-        call('Problem::getAllStatusArray')
-    ) }}
-    {{ _self.displayLifecycleMatrix(
-        item,
-        __('Life cycle of changes'),
-        '_cycle_change',
-        'change_status',
-        call('Change::getAllStatusArray')
-    ) }}
+    {{ _self.displayRightsMatrix(item, 'central', 'setup', 'general', __('Setup')) }}
 {% endblock %}

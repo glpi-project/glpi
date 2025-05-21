@@ -237,6 +237,7 @@ The present file will list all changes made to the project; according to the
 - The refusal of the collected emails corresponding to a GLPI notification will now be made based on a default rule.
 - The `$store_path` parameter has been removed from the `Dropdown::dropdownIcons()` method.
 - The `PLUGINS_DIRECTORIES` constant has been renamed to `GLPI_PLUGINS_DIRECTORIES`.
+- Most of the `Profile::show*()` methods have been made private.
 
 #### Deprecated
 - Usage of the `/marketplace` path for plugins URLs. All plugins URLs should now start with `/plugins`.
