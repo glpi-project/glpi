@@ -34,6 +34,7 @@
 
 namespace Glpi\Kernel\Listener\PostBootListener;
 
+use Config;
 use DBConnection;
 use Glpi\Debug\Profiler;
 use Glpi\Kernel\ListenersPriority;
@@ -53,7 +54,7 @@ final readonly class DisablePluginsOnVersionChange implements EventSubscriberInt
 
     public function onPostBoot(): void
     {
-        if (!DBConnection::isDbAvailable()) {
+        if (!DBConnection::isDbAvailable() || !Config::isLegacyConfigurationLoaded()) {
             return;
         }
 
