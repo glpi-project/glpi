@@ -33,7 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\DBAL\QueryFunction;
 
 /**
  * @since 9.2
@@ -167,6 +166,7 @@ class OlaLevel_Ticket extends CommonDBTM
         global $DB;
 
         $tot = 0;
+        $now = $DB->escape($_SESSION['glpi_currenttime']);
 
         $iterator = $DB->request([
             'SELECT'    => [
@@ -189,7 +189,7 @@ class OlaLevel_Ticket extends CommonDBTM
                 ],
             ],
             'WHERE'     => [
-                'glpi_olalevels_tickets.date' => ['<', QueryFunction::now()],
+                'glpi_olalevels_tickets.date' => ['<', $now],
             ],
         ]);
 
@@ -323,6 +323,7 @@ class OlaLevel_Ticket extends CommonDBTM
         /** @var \DBmysql $DB */
         global $DB;
 
+        $now = $DB->escape($_SESSION['glpi_currenttime']);
         $criteria = [
             'SELECT'    => 'glpi_olalevels_tickets.*',
             'FROM'      => 'glpi_olalevels_tickets',
@@ -341,7 +342,7 @@ class OlaLevel_Ticket extends CommonDBTM
                 ],
             ],
             'WHERE'     => [
-                'glpi_olalevels_tickets.date'       => ['<', QueryFunction::now()],
+                'glpi_olalevels_tickets.date'       => ['<', $now],
                 'glpi_olalevels_tickets.tickets_id' => $tickets_id,
                 'glpi_olas.type'                    => $olaType,
             ],
