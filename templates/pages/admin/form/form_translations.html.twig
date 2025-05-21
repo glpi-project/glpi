@@ -32,7 +32,7 @@
 
 {% import 'components/form/fields_macros.html.twig' as fields %}
 
-<section aria-label="{{ __('Form translations') }}">
+<section aria-label="{{ _n('Form translation', 'Form translations', get_plural_number()) }}">
     <div class="mb-2">
         <button
             type="button"
