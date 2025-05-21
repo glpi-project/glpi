@@ -58,7 +58,7 @@ class DatabasesPluginToCoreCommand extends AbstractPluginToCoreCommand
         parent::configure();
 
         $this->setName('migration:databases_plugin_to_core');
-        $this->setDescription(__('Migrate Databases plugin data into GLPI core tables'));
+        $this->setDescription(sprintf(__('Migrate %s plugin data into GLPI core tables'), 'Databases'));
     }
 
     protected function getPluginKey(): string

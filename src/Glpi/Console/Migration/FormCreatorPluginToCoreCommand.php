@@ -50,7 +50,7 @@ class FormCreatorPluginToCoreCommand extends AbstractPluginMigrationCommand
     #[Override]
     public function getDescription(): string
     {
-        return __('Migrate Formcreator plugin data into GLPI core tables');
+        return sprintf(__('Migrate %s plugin data into GLPI core tables'), 'Formcreator');
     }
 
     #[Override]
