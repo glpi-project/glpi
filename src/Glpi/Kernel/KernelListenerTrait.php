@@ -34,6 +34,7 @@
 
 namespace Glpi\Kernel;
 
+use Config;
 use DBConnection;
 use Symfony\Component\HttpFoundation\Request;
 use Update;
@@ -77,6 +78,8 @@ trait KernelListenerTrait
      */
     protected function isDatabaseUsable(): bool
     {
-        return DBConnection::isDbAvailable() && Update::isUpdateMandatory() === false;
+        return DBConnection::isDbAvailable()
+            && Config::isLegacyConfigurationLoaded()
+            && Update::isUpdateMandatory() === false;
     }
 }

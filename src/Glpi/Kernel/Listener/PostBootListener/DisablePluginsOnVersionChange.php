@@ -34,7 +34,9 @@
 
 namespace Glpi\Kernel\Listener\PostBootListener;
 
+use Config;
 use DBConnection;
+use DBmysql;
 use Glpi\Debug\Profiler;
 use Glpi\Kernel\ListenersPriority;
 use Glpi\Kernel\PostBootEvent;
@@ -53,7 +55,15 @@ final readonly class DisablePluginsOnVersionChange implements EventSubscriberInt
 
     public function onPostBoot(): void
     {
-        if (!DBConnection::isDbAvailable()) {
+        /** @var \DBmysql|null $DB */
+        global $DB;
+
+        if (
+            !DBConnection::isDbAvailable()
+            || !Config::isLegacyConfigurationLoaded()
+            || !($DB instanceof DBmysql)
+            || !$DB->tableExists(Plugin::getTable())
+        ) {
             return;
         }
 
