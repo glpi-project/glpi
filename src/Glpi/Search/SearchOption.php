@@ -39,6 +39,7 @@ use Change;
 use CommonDBTM;
 use Glpi\Socket;
 use Problem;
+use Session;
 use Ticket;
 
 /**
@@ -265,7 +266,7 @@ final class SearchOption implements \ArrayAccess
         }
 
         if (
-            \Session::getLoginUserID()
+            Session::getLoginUserID()
             && in_array($itemtype, $CFG_GLPI["ticket_types"])
         ) {
             $search[$itemtype]['tracking']          = __('Assistance');
@@ -318,19 +319,19 @@ final class SearchOption implements \ArrayAccess
         }
 
         if (in_array($itemtype, $CFG_GLPI["link_types"])) {
-            $search[$itemtype]['link'] = \Link::getTypeName(\Session::getPluralNumber());
+            $search[$itemtype]['link'] = \Link::getTypeName(Session::getPluralNumber());
             $fn_append_options(\Link::getSearchOptionsToAdd($itemtype));
-            $search[$itemtype]['manuallink'] = \ManualLink::getTypeName(\Session::getPluralNumber());
+            $search[$itemtype]['manuallink'] = \ManualLink::getTypeName(Session::getPluralNumber());
             $fn_append_options(\ManualLink::getSearchOptionsToAdd($itemtype));
         }
 
         if (in_array($itemtype, $CFG_GLPI['reservation_types'], true)) {
-            $search[$itemtype]['reservationitem'] = \Reservation::getTypeName(\Session::getPluralNumber());
+            $search[$itemtype]['reservationitem'] = \Reservation::getTypeName(Session::getPluralNumber());
             $fn_append_options(\ReservationItem::getSearchOptionsToAdd($itemtype));
         }
 
         if (in_array($itemtype, $CFG_GLPI['socket_types'], true)) {
-            $search[$itemtype]['socket'] = Socket::getTypeName(\Session::getPluralNumber());
+            $search[$itemtype]['socket'] = Socket::getTypeName(Session::getPluralNumber());
             $fn_append_options(Socket::getSearchOptionsToAdd($itemtype));
         }
 
@@ -339,7 +340,7 @@ final class SearchOption implements \ArrayAccess
             $plugsearch = \Plugin::getAddSearchOptions($itemtype);
             $plugsearch = $plugsearch + \Plugin::getAddSearchOptionsNew($itemtype);
             if (count($plugsearch)) {
-                $search[$itemtype] += ['plugins' => ['name' => _n('Plugin', 'Plugins', \Session::getPluralNumber())]];
+                $search[$itemtype] += ['plugins' => ['name' => _n('Plugin', 'Plugins', Session::getPluralNumber())]];
                 $fn_append_options($plugsearch);
             }
         }
@@ -630,7 +631,7 @@ final class SearchOption implements \ArrayAccess
         $todel   = [];
 
         if (
-            !\Session::haveRight('infocom', $action)
+            !Session::haveRight('infocom', $action)
             && \Infocom::canApplyOn($itemtype)
         ) {
             $itemstodel = \Infocom::getSearchOptionsToAdd($itemtype);
@@ -638,7 +639,7 @@ final class SearchOption implements \ArrayAccess
         }
 
         if (
-            !\Session::haveRight('contract', $action)
+            !Session::haveRight('contract', $action)
             && in_array($itemtype, $CFG_GLPI["contract_types"])
         ) {
             $itemstodel = \Contract::getSearchOptionsToAdd();
@@ -646,7 +647,7 @@ final class SearchOption implements \ArrayAccess
         }
 
         if (
-            !\Session::haveRight('document', $action)
+            !Session::haveRight('document', $action)
             && \Document::canApplyOn($itemtype)
         ) {
             $itemstodel = \Document::getSearchOptionsToAdd();
@@ -657,18 +658,18 @@ final class SearchOption implements \ArrayAccess
         if (
             ($itemtype == 'Ticket')
             && ($action == UPDATE)
-            && !\Session::haveRight('ticket', \Ticket::CHANGEPRIORITY)
+            && !Session::haveRight('ticket', \Ticket::CHANGEPRIORITY)
         ) {
             $todel[] = 3;
         }
 
         if ($itemtype == 'Computer') {
-            if (!\Session::haveRight('networking', $action)) {
+            if (!Session::haveRight('networking', $action)) {
                 $itemstodel = \NetworkPort::getSearchOptionsToAdd($itemtype);
                 $todel      = array_merge($todel, array_keys($itemstodel));
             }
         }
-        if (!\Session::haveRight(strtolower($itemtype), READNOTE)) {
+        if (!Session::haveRight(strtolower($itemtype), READNOTE)) {
             $todel[] = 90;
         }
 
@@ -740,7 +741,7 @@ final class SearchOption implements \ArrayAccess
 
         // Add entity view :
         if (
-            \Session::isMultiEntitiesMode()
+            Session::isMultiEntitiesMode()
             && $entity_check
             && (isset($CFG_GLPI["union_search_type"][$itemtype])
                 || ($item && $item->maybeRecursive())
