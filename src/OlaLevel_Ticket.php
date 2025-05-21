@@ -323,7 +323,7 @@ class OlaLevel_Ticket extends CommonDBTM
         /** @var \DBmysql $DB */
         global $DB;
 
-        $now = $DB->escape($_SESSION['glpi_currenttime']);
+        $now = $_SESSION['glpi_currenttime'];
         $criteria = [
             'SELECT'    => 'glpi_olalevels_tickets.*',
             'FROM'      => 'glpi_olalevels_tickets',
