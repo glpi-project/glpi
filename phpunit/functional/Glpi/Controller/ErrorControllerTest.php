@@ -122,7 +122,7 @@ class ErrorControllerTest extends DbTestCase
                     'exception'         => new \Exception(),
                     'expected_code'     => 500,
                     'expected_title'    => 'Error',
-                    'expected_message'  => 'An unexpected error has occurred.',
+                    'expected_message'  => 'An unexpected error occurred.',
                 ];
 
                 // Check some random 5xx codes
@@ -133,7 +133,7 @@ class ErrorControllerTest extends DbTestCase
                         'exception'         => new HttpException($code),
                         'expected_code'     => $code,
                         'expected_title'    => 'Error',
-                        'expected_message'  => 'An unexpected error has occurred.',
+                        'expected_message'  => 'An unexpected error occurred.',
                     ];
                 }
             }

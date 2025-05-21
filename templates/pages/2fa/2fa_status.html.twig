@@ -32,7 +32,7 @@
 
 <form method="post" action="#" data-submit-once>
    <div class="alert alert-info">
-      <h1>{{ __('2FA Enabled') }}</h1>
+      <h1>{{ __('2FA enabled') }}</h1>
       <h2>
          {% if enforcement == constant('Glpi\\Security\\TOTPManager::ENFORCEMENT_MANDATORY_GRACE_PERIOD') %}
             {{ __('2FA grace period ends %s')|format(grace_period_end|relative_datetime) }}
