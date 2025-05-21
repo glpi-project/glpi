@@ -928,6 +928,33 @@ class SoftwareLicense extends CommonTreeDropdown
         return $actions;
     }
 
+    public function getForbiddenSingleMassiveActions()
+    {
+        $forbidden = parent::getForbiddenSingleMassiveActions();
+
+        $prefix = 'Item_SoftwareLicense' . MassiveAction::CLASS_ACTION_SEPARATOR;
+        $add_item_action = $prefix . 'add_item';
+
+        if (!static::canUpdate()) {
+            $forbidden[] = $add_item_action;
+            return $forbidden;
+        }
+
+        if (
+            !$this->fields['allow_overquota']
+            && $this->fields['number'] != -1
+        ) {
+            $number = Item_SoftwareLicense::countForLicense($this->getID());
+            $number += SoftwareLicense_User::countForLicense($this->getID());
+
+            if ($number >= $this->fields['number']) {
+                $forbidden[] = $add_item_action;
+            }
+        }
+
+        return $forbidden;
+    }
+
     /**
      * Show Licenses of a software
      *

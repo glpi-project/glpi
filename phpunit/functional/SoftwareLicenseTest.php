@@ -455,4 +455,124 @@ class SoftwareLicenseTest extends DbTestCase
             $u->delete(['id' => $id], true);
         }
     }
+
+    /**
+     * Test the updated getSpecificMassiveActions() method to verify
+     * it correctly handles quota limits
+     */
+    public function testGetSpecificMassiveActionsWithQuotaLimits()
+    {
+        $this->login();
+
+        // Create a software
+        $software_id = $this->createItem(\Software::class, [
+            'name' => 'Test software for quota limits',
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+        ])->getID();
+
+        // Create a license with limited number and NO overquota allowed
+        $license_id = $this->createItem(\SoftwareLicense::class, [
+            'name' => 'Test license with strict quota',
+            'softwares_id' => $software_id,
+            'number' => 1, // Limit to 1 installation
+            'allow_overquota' => 0, // No overquota
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+        ])->getID();
+
+        $license = new \SoftwareLicense();
+        $this->assertTrue($license->getFromDB($license_id));
+
+        // Check that action is initially available (added by getSpecificMassiveActions)
+        $specific_actions = $license->getSpecificMassiveActions();
+        $action_key = 'Item_SoftwareLicense' . \MassiveAction::CLASS_ACTION_SEPARATOR . 'add_item';
+        $this->assertTrue(
+            $this->actionExists($specific_actions, $action_key),
+            "Add an item action should be added by getSpecificMassiveActions"
+        );
+
+        // Check that action is not forbidden when license is under quota
+        $forbidden_actions = $license->getForbiddenSingleMassiveActions();
+        $this->assertFalse(
+            in_array($action_key, $forbidden_actions),
+            "Add an item action should not be forbidden when under quota"
+        );
+
+        // Add a computer to this license to reach the limit
+        $computer = getItemByTypeName('Computer', '_test_pc01');
+        $item_license_id = $this->createItem(\Item_SoftwareLicense::class, [
+            'softwarelicenses_id' => $license_id,
+            'items_id' => $computer->getID(),
+            'itemtype' => 'Computer',
+        ])->getID();
+
+        // Check that action is NOW forbidden when at quota limit
+        $license->getFromDB($license_id); // Reload to get current state
+        $forbidden_actions = $license->getForbiddenSingleMassiveActions();
+        $this->assertTrue(
+            in_array($action_key, $forbidden_actions),
+            "Add an item action should be forbidden when at quota limit"
+        );
+
+        // Create a license WITH overquota allowed
+        $license2_id = $this->createItem(\SoftwareLicense::class, [
+            'name' => 'Test license with overquota',
+            'softwares_id' => $software_id,
+            'number' => 1, // Limit to 1 installation
+            'allow_overquota' => 1, // Allow overquota
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+        ])->getID();
+
+        $license2 = new \SoftwareLicense();
+        $this->assertTrue($license2->getFromDB($license2_id));
+
+        // Add a computer to this license to reach the limit
+        $item_license2_id = $this->createItem(\Item_SoftwareLicense::class, [
+            'softwarelicenses_id' => $license2_id,
+            'items_id' => $computer->getID(),
+            'itemtype' => 'Computer',
+        ])->getID();
+
+        // Check that action is NOT forbidden even when at quota limit but overquota is allowed
+        $forbidden_actions = $license2->getForbiddenSingleMassiveActions();
+        $this->assertFalse(
+            in_array($action_key, $forbidden_actions),
+            "Add an item action should not be forbidden when overquota is allowed"
+        );
+
+        // Create a license with unlimited installations
+        $license3_id = $this->createItem(\SoftwareLicense::class, [
+            'name' => 'Test license with unlimited installations',
+            'softwares_id' => $software_id,
+            'number' => -1, // Unlimited installations
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+        ])->getID();
+
+        $license3 = new \SoftwareLicense();
+        $this->assertTrue($license3->getFromDB($license3_id));
+
+        // Add multiple computers to this license
+        for ($i = 1; $i <= 3; $i++) {
+            $computer = getItemByTypeName('Computer', '_test_pc0' . $i);
+            $this->createItem(\Item_SoftwareLicense::class, [
+                'softwarelicenses_id' => $license3_id,
+                'items_id' => $computer->getID(),
+                'itemtype' => 'Computer',
+            ]);
+        }
+
+        // Check that action is NOT forbidden for unlimited licenses
+        $forbidden_actions = $license3->getForbiddenSingleMassiveActions();
+        $this->assertFalse(
+            in_array($action_key, $forbidden_actions),
+            "Add an item action should not be forbidden for unlimited licenses"
+        );
+    }
+
+    /**
+     * Helper method to check if an action exists in the actions array
+     */
+    private function actionExists($actions, $action_key)
+    {
+        return array_key_exists($action_key, $actions);
+    }
 }
