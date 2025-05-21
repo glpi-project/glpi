@@ -38,14 +38,14 @@
    {% set input = item.getMassiveActionsForItem().getInput() %}
    {% if input['actions']|length > 0 %}
    {% set ms_auto = (single_actions_ms_auto ?? false) ? 'ms-auto' : '' %}
-<div class="d-none d-sm-block btn-group {{ ms_auto }}" title="{{ __('Actions') }}"
+<div class="d-none d-sm-block btn-group {{ ms_auto }}" title="{{ _n('Action', 'Actions', get_plural_number()) }}"
      {% if onlyicon %}data-bs-toggle="tooltip" data-bs-placement="top"{% endif %}>
    <button class="btn {{ onlyicon ? 'btn-icon' : 'dropdown-toggle' }} btn-outline-secondary" type="button"
            id="single-action" data-bs-toggle="dropdown" aria-haspopup="true"
            aria-expanded="false">
       <i class="ti ti-dots-vertical"></i>
       {% if not onlyicon %}
-         <span>{{ __('Actions') }}</span>
+         <span>{{ _n('Action', 'Actions', get_plural_number()) }}</span>
       {% endif %}
    </button>
 

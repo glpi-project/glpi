@@ -2432,7 +2432,7 @@ class Plugin extends CommonDBTM
             'id'                 => '8',
             'table'              => $this->getTable(),
             'field'              => 'id',
-            'name'               => __('Actions'),
+            'name'               => _n('Action', 'Actions', Session::getPluralNumber()),
             'massiveaction'      => false,
             'nosearch'           => true,
             'datatype'           => 'specific',
