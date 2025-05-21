@@ -1386,7 +1386,7 @@ class Migration
                     [
                         'AND' => [
                             "right$i.name"   => $reqright,
-                            new QueryExpression("{$DB::quoteName("right$i.rights")} & $reqvalue = $reqvalue"),
+                            new QueryExpression($DB::quoteName("right$i.rights") . " & $reqvalue = $reqvalue"),
                         ],
                     ],
                 ],
@@ -1455,7 +1455,7 @@ class Migration
                     [
                         'AND' => [
                             "right$i.name"   => $reqright,
-                            new QueryExpression("{$DB::quoteName("right$i.rights")} & $reqvalue = $reqvalue"),
+                            new QueryExpression($DB::quoteName("right$i.rights") . " & $reqvalue = $reqvalue"),
                         ],
                     ],
                 ],

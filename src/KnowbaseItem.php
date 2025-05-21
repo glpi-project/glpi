@@ -1533,7 +1533,7 @@ TWIG, $twig_params);
                 if ($output_type === Search::HTML_OUTPUT) {
                     $toadd = '';
                     if (isset($options['item_itemtype'], $options['item_items_id'])) {
-                        $href  = " href='#' data-bs-toggle='modal' data-bs-target='#kbshow{$data["id"]}'";
+                        $href  = " href='#' data-bs-toggle='modal' data-bs-target='#kbshow{$data['id']}'";
                         $toadd = Ajax::createIframeModalWindow(
                             'kbshow' . $data["id"],
                             self::getFormURLWithID($data["id"]),
