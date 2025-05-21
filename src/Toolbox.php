@@ -3301,7 +3301,7 @@ HTML;
         }
 
         if (!preg_match('/(\d+).*?(\w+)/', $size, $matches)) {
-            // Unkown format, keep the string as it is
+            // Unknown format, keep the string as it is
             return $size;
         }
         $supported_sizes = [

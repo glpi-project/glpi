@@ -90,7 +90,7 @@
                             data-glpi-form-renderer-step-label
                         >
                             {% if visibility_engine_output.isSectionVisible(section.getID()) %}
-                                {{ __("Step %d of %d")|format(
+                                {{ __("Step %1$s of %2$s")|format(
                                     section_visible_index,
                                     visibility_engine_output.getNumberOfVisibleSections()
                                 ) }}

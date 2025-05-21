@@ -268,11 +268,11 @@
                         </a>
                         <a class="dropdown-item" href="{{ exporthref ~ '&display_type=' ~ constant('Search::ODS_OUTPUT') }}" role="menuitem">
                             <i class="ti ti-file-spreadsheet"></i>
-                            {{ __('ODS') }}
+                            {{ __('Spreadsheet (%s)')|format('ODS') }}
                         </a>
                         <a class="dropdown-item" href="{{ exporthref ~ '&display_type=' ~ constant('Search::XLSX_OUTPUT') }}" role="menuitem">
                             <i class="ti ti-file-spreadsheet"></i>
-                            {{ __('XLSX') }}
+                            {{ __('Spreadsheet (%s)')|format('XLSX') }}
                         </a>
                         <hr class="dropdown-divider">
                         <div role="separator"><h6 class="dropdown-header">{{ __("All pages") }}</h6></div>
@@ -290,11 +290,11 @@
                         </a>
                         <a class="dropdown-item" href="{{ exporthref ~ '&display_type=-' ~ constant('Search::ODS_OUTPUT') }}" role="menuitem">
                             <i class="ti ti-file-spreadsheet"></i>
-                            {{ __('ODS') }}
+                            {{ __('Spreadsheet (%s)')|format('ODS') }}
                         </a>
                         <a class="dropdown-item" href="{{ exporthref ~ '&display_type=-' ~ constant('Search::XLSX_OUTPUT') }}" role="menuitem">
                             <i class="ti ti-file-spreadsheet"></i>
-                            {{ __('XLSX') }}
+                            {{ __('Spreadsheet (%s)')|format('XLSX') }}
                         </a>
                         {% if itemtype != 'Stat' %}
                         <hr class="dropdown-divider">
