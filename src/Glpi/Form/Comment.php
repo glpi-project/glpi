@@ -175,6 +175,7 @@ final class Comment extends CommonDBChild implements
         return [new VisibilityConditionHandler()];
     }
 
+    #[Override]
     public function displayBlockForEditor(): void
     {
         TemplateRenderer::getInstance()->display('pages/admin/form/form_comment.html.twig', [
@@ -183,6 +184,12 @@ final class Comment extends CommonDBChild implements
             'section'    => $this->getItem(),
             'can_update' => $this->getForm()->canUpdate(),
         ]);
+    }
+
+    #[Override]
+    public function getUntitledLabel(): string
+    {
+        return __('Untitled comment');
     }
 
     /**
