@@ -5,6 +5,7 @@ COMPOSE = docker compose
 PHP = $(COMPOSE) exec app
 DB = $(COMPOSE) exec db
 CONSOLE = $(PHP) bin/console
+INI_DIR = /usr/local/etc/php/custom_conf.d
 
 # Helper variables
 _TITLE := "\033[32m[%s]\033[0m %s\n" # Green text
@@ -160,3 +161,23 @@ lint-twig: ## Run the twig linter script
 lint-js: ## Run the js linter script
 	@$(PHP) .github/actions/lint_js-lint.sh
 .PHONY: lint-js
+
+## —— Xdebug ———————————————————————————————————————————————————————————————————
+XDEBUG_FILE = xdebug-mode.ini
+
+xdebug-off: ## Disable xdebug
+	@$(PHP) sudo bash -c 'echo "xdebug.mode=off" > $(INI_DIR)/$(XDEBUG_FILE)'
+	@$(PHP) sudo service apache2 reload
+.PHONY: xdebug-off
+
+xdebug-on: ## Enable xdebug
+	@$(PHP) sudo bash -c 'echo "xdebug.mode=debug" > $(INI_DIR)/$(XDEBUG_FILE)'
+	@$(PHP) sudo bash -c 'echo "xdebug.start_with_request=1" >> $(INI_DIR)/$(XDEBUG_FILE)'
+	@$(PHP) sudo service apache2 reload
+.PHONY: xdebug-on
+
+xdebug-profile: ## Enable xdebug performance profiling
+	@$(PHP) sudo bash -c 'echo "xdebug.mode=profile" > $(INI_DIR)/$(XDEBUG_FILE)'
+	@$(PHP) sudo bash -c 'echo "xdebug.start_with_request=1" >> $(INI_DIR)/$(XDEBUG_FILE)'
+	@$(PHP) sudo service apache2 reload
+.PHONY: xdebug-profile
