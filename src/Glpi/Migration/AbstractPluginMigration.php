@@ -109,7 +109,7 @@ abstract class AbstractPluginMigration
         } catch (\Throwable $e) {
             $this->result->addMessage(
                 MessageType::Error,
-                $e instanceof MigrationException ? $e->getLocalizedMessage() : __('An unexpected error occured.')
+                $e instanceof MigrationException ? $e->getLocalizedMessage() : __('An unexpected error occurred')
             );
 
             $this->logger?->error($e->getMessage(), context: ['exception' => $e]);

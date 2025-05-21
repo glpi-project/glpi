@@ -109,12 +109,12 @@ final class Search
     private function validateIterator(\DBmysqlIterator $iterator): void
     {
         if ($iterator->isFailed()) {
-            $message = __('An internal error occured while trying to fetch the data.');
+            $message = __('An internal error occurred while trying to fetch the data.');
             if ($_SESSION['glpi_use_mode'] === \Session::DEBUG_MODE) {
                 $message .= ' ' . __('For more information, check the GLPI logs.');
             }
             throw new APIException(
-                message: 'A SQL error occured while trying to get data from the database',
+                message: 'A SQL error occurred while trying to get data from the database',
                 user_message: $message
             );
         }

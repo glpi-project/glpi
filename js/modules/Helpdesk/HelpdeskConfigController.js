@@ -172,7 +172,7 @@ export class GlpiHelpdeskConfigController
             this.#getTilesContainerDiv().innerHTML = await response.text();
             glpi_toast_info(__("Configuration updated successfully."));
         } catch (e) {
-            glpi_toast_error(__('An unexpected error occurred.'));
+            glpi_toast_error(__('An unexpected error occurred'));
             console.error(e);
         }
     }
@@ -255,7 +255,7 @@ export class GlpiHelpdeskConfigController
             this.#getTilesContainerDiv().innerHTML = await response.text();
             bootstrap.Offcanvas.getInstance('#tile-form-offcanvas').hide();
         } catch (e) {
-            glpi_toast_error(__('An unexpected error occurred.'));
+            glpi_toast_error(__('An unexpected error occurred'));
             console.error(e);
         }
     }
@@ -288,7 +288,7 @@ export class GlpiHelpdeskConfigController
             this.#getFormTileDiv().classList.remove('d-none');
             this.#getFormTileLoadingIndicatorDiv().classList.add('d-none');
         } catch (e) {
-            glpi_toast_error(__('An unexpected error occurred.'));
+            glpi_toast_error(__('An unexpected error occurred'));
             console.error(e);
         }
     }
@@ -341,7 +341,7 @@ export class GlpiHelpdeskConfigController
             this.#getTilesContainerDiv().innerHTML = await response.text();
             bootstrap.Offcanvas.getInstance('#tile-form-offcanvas').hide();
         } catch (e) {
-            glpi_toast_error(__('An unexpected error occurred.'));
+            glpi_toast_error(__('An unexpected error occurred'));
             console.error(e);
         }
     }
@@ -364,11 +364,11 @@ export class GlpiHelpdeskConfigController
             // to be executed for richtext input initialization
             $(this.#getFormTileDiv()).html(await response.text());
 
-            this.#getFormTileHeader().innerHTML = __("Add a tile");
+            this.#getFormTileHeader().innerHTML = __("Add tile");
             this.#getFormTileDiv().classList.remove('d-none');
             this.#getFormTileLoadingIndicatorDiv().classList.add('d-none');
         } catch (e) {
-            glpi_toast_error(__('An unexpected error occurred.'));
+            glpi_toast_error(__('An unexpected error occurred'));
             console.error(e);
         }
     }
@@ -420,7 +420,7 @@ export class GlpiHelpdeskConfigController
             this.#getTilesContainerDiv().innerHTML = await response.text();
             bootstrap.Offcanvas.getInstance('#tile-form-offcanvas').hide();
         } catch (e) {
-            glpi_toast_error(__('An unexpected error occurred.'));
+            glpi_toast_error(__('An unexpected error occurred'));
             console.error(e);
         }
     }

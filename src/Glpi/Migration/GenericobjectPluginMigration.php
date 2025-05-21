@@ -510,7 +510,7 @@ class GenericobjectPluginMigration extends AbstractPluginMigration
                         $asset_definition->getID(),
                     )
                 );
-                throw new \RuntimeException('An error occured during the item update.');
+                throw new \RuntimeException('An error occurred during the item update.');
             }
 
             // Update profiles configuration
@@ -537,7 +537,7 @@ class GenericobjectPluginMigration extends AbstractPluginMigration
                                 $profile_data['id'],
                             )
                         );
-                        throw new \RuntimeException('An error occured during the item update.');
+                        throw new \RuntimeException('An error occurred during the item update.');
                     }
                 }
             }

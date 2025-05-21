@@ -60,7 +60,7 @@ class ErrorController extends AbstractController
         $status_code = $exception instanceof HttpExceptionInterface ? $exception->getStatusCode() : 500;
 
         $title      = _n('Error', 'Errors', 1);
-        $message    = __('An unexpected error has occurred.');
+        $message    = __('An unexpected error occurred');
         $link_text  = null;
         $link_url   = null;
 

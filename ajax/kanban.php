@@ -240,7 +240,7 @@ if (($_POST['action'] ?? null) === 'update') {
     ] + $params);
 } elseif (($_POST['action'] ?? null) === 'save_column_state') {
     if (!isset($_POST['state'])) {
-        // Do nothing with the state unless it isn't saved yet. Could be that no columns are shown or an error occured.
+        // Do nothing with the state unless it isn't saved yet. Could be that no columns are shown or an error occurred.
         // If the state is supposed to be cleared, it should come through as a clear_column_state request.
         if (Item_Kanban::hasStateForItem($_POST['itemtype'], $_POST['items_id'])) {
             return;

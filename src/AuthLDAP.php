@@ -168,12 +168,12 @@ class AuthLDAP extends CommonDBTM
     ];
 
     /**
-     * Message of last error occured during connection.
+     * Message of last error occurred during connection.
      * @var ?string
      */
     private static ?string $last_error;
     /**
-     * Numero of last error occured during connection.
+     * Numero of last error occurred during connection.
      * @var ?int
      */
     private static ?int $last_errno;

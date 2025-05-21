@@ -637,7 +637,7 @@ class Search
      * @param string  $val          Item num in the request
      * @param integer $meta         Is a meta search (meta=2 in search.class.php) (default 0)
      *
-     * @return string|false Where string or false if an error occured or if there was no valid WHERE string that could be created.
+     * @return string|false Where string or false if an error occurred or if there was no valid WHERE string that could be created.
      **/
     public static function addWhere($link, $nott, $itemtype, $ID, $searchtype, $val, $meta = 0)
     {

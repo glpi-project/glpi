@@ -88,7 +88,7 @@ class UpdateCommand extends AbstractCommand implements ConfigurationCommandInter
     public const ERROR_DATABASE_INTEGRITY_CHECK_FAILED = 4;
 
     /**
-     * Error code returned when an error occured during the update.
+     * Error code returned when an error occurred during the update.
      *
      * @var integer
      */
