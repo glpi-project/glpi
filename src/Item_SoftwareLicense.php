@@ -116,7 +116,7 @@ class Item_SoftwareLicense extends CommonDBRelation
     /**
      * display a value according to a field
      *
-     * @since 0.83
+     * @since 11.0
      *
      * @param $field     String         name of the field
      * @param $values    String / Array with the value to display
@@ -137,7 +137,8 @@ class Item_SoftwareLicense extends CommonDBRelation
                 $assign_item = self::countForLicense($options['raw_data']['id']);
                 $remaining = $softlicense->fields['number'] - $assign_item;
                 $tmptxt = sprintf(__('Total: %1$d, Assigned: %2$d, Remaining: %3$d'), $softlicense->fields['number'], $assign_item, $remaining);
-                return '<div class="tab_bg_1_2"> ' . htmlescape($tmptxt) . '</div>';
+                $background_color = $remaining >= 0 ? '#49bf4d' : '#cf9b9b';
+                return "<div style='background-color: " . $background_color . ";'> " . htmlescape($tmptxt) . "</div>";
         }
 
         return parent::getSpecificValueToDisplay($field, $values, $options);
@@ -1163,14 +1164,14 @@ JAVASCRIPT;
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb = self::countForLicense($item->getID());
                         $nb += SoftwareLicense_User::countForLicense($item->getID());
-                        $nb .= '/' . $item->fields['number'];
                     }
                     return [1 => self::createTabEntry(__('Summary'), 0, $item::class),
                         2 => self::createTabEntry(
                             _n('Affected item', 'Affected items', Session::getPluralNumber()),
                             $nb,
                             $item::class,
-                            'ti ti-package'
+                            'ti ti-package',
+                            $item->fields['number'],
                         ),
                     ];
                 }

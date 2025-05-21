@@ -115,15 +115,15 @@
          {% if item.fields['is_valid'] %}
                <span class="green">{{ _x('adjective', 'Valid') }}</span>
                <span class="green">{{ _x('adjective', 'Assigned') }} : {{ licences_assigned }} </span>
-               <span class="green">{{ _x('adjective', 'Remaining') }} : {{ item.fields['number'] - licences_assigned }}</span>
+               <span class="green">{{ _x('adjective', 'Remaining') }} : {{ item.fields['number']|number_format - licences_assigned }}</span>
             {% elseif not item.fields['is_valid'] and item.fields['allow_overquota'] %}
                <span class="green">{{ _x('adjective', 'Valid (Over Quota)') }}</span>
                <span class="green">{{ _x('adjective', 'Assigned') }} : {{ licences_assigned }} </span>
-               <span class="green">{{ _x('adjective', 'Remaining') }} : {{ item.fields['number'] }}</span>
+               <span class="green">{{ _x('adjective', 'Remaining') }} : {{ item.fields['number']|number_format - licences_assigned }}</span>
             {% else %}
                <span class="red">{{ _x('adjective', 'Invalid') }}</span>
                <span class="red">{{ _x('adjective', 'Assigned') }} : {{ licences_assigned }} </span>
-               <span class="red">{{ _x('adjective', 'Remaining') }} : {{ item.fields['number'] - licences_assigned }}</span>
+               <span class="red">{{ _x('adjective', 'Remaining') }} : {{ item.fields['number']|number_format - licences_assigned }}</span>
             {% endif %}
          </div>
       {% endset %}
