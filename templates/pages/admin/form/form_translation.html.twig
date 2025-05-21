@@ -135,7 +135,7 @@
                 <div class="card border-bottom-0">
                     {% include "components/datatable.html.twig" with {
                         'datatable_id': 'glpi-form-translations-languages',
-                        'datatable_aria_label': _n('Form translation', 'Form translations' , get_plural_number()),
+                        'datatable_aria_label': _n('Form translation', 'Form translations', get_plural_number()),
                         'columns': {
                             'type': '',
                             'default': __('Default (%s)')|format(call('Dropdown::getLanguageName', [config('language')])),
