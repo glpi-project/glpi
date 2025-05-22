@@ -141,14 +141,18 @@ class Item_SoftwareLicense extends CommonDBRelation
                 $remaining = __('Remaining') . ': ' . $remaining_item;
                 $span_class = $remaining_item >= 0 ? '#74b72e' : '#cf9b9b';
                 $class = htmlescape($span_class);
-                return sprintf('<div>
+                return sprintf(
+                    '<div>
                         <span class="badge" style="background-color: %s;">%s</span>
                         <span class="badge" style="background-color: %s;">%s</span>
                         <span class="badge" style="background-color: %s;">%s</span>
                     </div>',
-                    $class, htmlescape($assigned),
-                    $class, htmlescape($remaining),
-                    $class, htmlescape($total)
+                    $class,
+                    htmlescape($assigned),
+                    $class,
+                    htmlescape($remaining),
+                    $class,
+                    htmlescape($total)
                 );
         }
 
