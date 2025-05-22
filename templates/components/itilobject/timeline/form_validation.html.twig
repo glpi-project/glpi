@@ -41,7 +41,7 @@
       <div class="read-only-content w-100">
          {{ entry_i['content']|raw }}
 
-         {% if entry_i['comment_submission']|length %}
+         {% if (entry_i['comment_submission'] ?? '')|length %}
             <div class='alert alert-info mt-2'>
                 <div class='d-flex'>
                     <div><i class='ti ti-quote me-2'></i></div>
@@ -68,7 +68,7 @@
             </div>
          {% endif %}
 
-         {% if entry_i['can_answer'] %}
+         {% if entry_i['can_answer'] ?? false %}
             <hr class="my-2" />
             <form id="validationanswers_id_{{ entry_i['id'] }}"
                   action="{{ entry['type']|itemtype_form_path }}" method="post" data-submit-once>
