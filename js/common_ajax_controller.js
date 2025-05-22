@@ -93,7 +93,7 @@ class GlpiCommonAjaxController
                 console.error(error);
                 this.#handleFeedbackMessages({
                     messages: {
-                        error: __("Unexpected error"),
+                        error: __("Unexpected error."),
                     },
                 });
             }
