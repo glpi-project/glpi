@@ -262,7 +262,7 @@ class SlaLevel_Ticket extends CommonDBTM
                     // Drop line when status is closed
                     $slalevelticket->delete(['id' => $data['id']]);
                 } elseif ($ticket->fields['status'] != CommonITILObject::SOLVED) {
-                    // No execution if ticket has been taken into account
+                    // No execution of TTO if ticket has been taken into account
                     if (
                         !(($slaType == SLM::TTO)
                         && ($ticket->fields['takeintoaccount_delay_stat'] > 0))
