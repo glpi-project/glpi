@@ -46,6 +46,7 @@ use Glpi\RichText\RichText;
 use Glpi\RichText\UserMention;
 use Glpi\Search\DefaultSearchRequestInterface;
 use Safe\DateTime;
+use Safe\Exceptions\DatetimeException;
 
 use function Safe\preg_match;
 use function Safe\preg_match_all;
@@ -505,11 +506,11 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
      **/
     public function deleteLevelAgreement($laType, $la_id, $subtype, $delete_date = false)
     {
-        if($laType === 'OLA') {
+        if ($laType === 'OLA') {
             // delete Item_Ola
             $item_ola = new Item_Ola();
-            if(!$item_ola->delete(['id' => (int) $la_id])) {
-                throw new \RuntimeException('Unable to delete Item_Ola #'.$la_id);
+            if (!$item_ola->delete(['id' => (int) $la_id])) {
+                throw new \RuntimeException('Unable to delete Item_Ola #' . $la_id);
             }
 
             // delete level agreement level
@@ -517,8 +518,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
             $level_ticket->deleteForTicket($la_id, $subtype);
 
             return true;
-        }
-        elseif($laType === 'SLA') {
+        } elseif ($laType === 'SLA') {
             switch ($subtype) {
                 case SLM::TTR:
                     $input['slas_id_ttr'] = 0;
@@ -1017,9 +1017,6 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
             foreach ([SLM::TTR, SLM::TTO] as $slmType) {
                 [$dateField, $slaField] = SLA::getFieldNames($slmType);
                 unset($input[$dateField], $input[$slaField]);
-
-//                [$dateField, $olaField] = OLA::getFieldNames($slmType);
-//                unset($input[$dateField], $input[$olaField]);
             }
         }
 
@@ -1283,7 +1280,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
     /**
      * Manage OLA level escalation
      *
-     * @param $olas_id
+     * @param int $olas_id
      *
      * @return void
      **@since 9.1
@@ -1291,7 +1288,6 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
      */
     public function manageOlaLevel($olas_id)
     {
-
         // Add first level in working table
         $olalevels_id = OlaLevel::getFirstOlaLevel($olas_id);
 
@@ -1572,8 +1568,6 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
             foreach ([SLM::TTR, SLM::TTO] as $slmType) {
                 [$dateField, $slaField] = SLA::getFieldNames($slmType);
                 unset($input[$dateField], $input[$slaField]);
-                [$dateField, $olaField] = OLA::getFieldNames($slmType);
-                unset($input[$dateField], $input[$olaField]);
             }
         }
 
@@ -1739,12 +1733,6 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
             [$dateField, $slaField] = SLA::getFieldNames($slmType);
             if (isset($this->input[$slaField]) && ($this->input[$slaField] > 0)) {
                 $this->manageSlaLevel($this->input[$slaField]);
-            }
-            [$dateField, $olaField] = OLA::getFieldNames($slmType);
-            if (isset($this->input[$olaField]) && ($this->input[$olaField] > 0)) {
-                // deprecated, see updateOLAs()
-                throw new \LogicException($olaField . ' is not handled. this Exception should never happend because of transformOlasInputForBackwardCompatibility()');
-                $this->manageOlaLevel($this->input[$olaField]);
             }
         }
 
@@ -5453,7 +5441,7 @@ JAVASCRIPT;
     public function showStatsDates()
     {
         $now                      = time();
-        $date_creation            = strtotime($this->fields['date']);
+        $date_creation            = strtotime($this->fields['date'] ?? '');
         // Tickets created before 10.0.4 do not have takeintoaccountdate field, use old and incorrect computation for those cases
         $date_takeintoaccount     = 0;
         if ($this->fields['takeintoaccountdate'] !== null) {
@@ -5461,26 +5449,18 @@ JAVASCRIPT;
         } elseif ($this->fields['takeintoaccount_delay_stat'] > 0) {
             $date_takeintoaccount = $date_creation + $this->fields['takeintoaccount_delay_stat'];
         }
-
-        $internal_time_to_own     = !empty($this->fields['internal_time_to_own'])
-            ? strtotime($this->fields['internal_time_to_own'])
-            : null;
-        $time_to_own              = !empty($this->fields['time_to_own'])
-            ? strtotime($this->fields['time_to_own'])
-            : null;
-        $internal_time_to_resolve = !empty($this->fields['internal_time_to_resolve'])
-            ? strtotime($this->fields['internal_time_to_resolve'])
-            : null;
-        $time_to_resolve          = !empty($this->fields['time_to_resolve'])
-            ? strtotime($this->fields['time_to_resolve'])
-            : null;
-        $solvedate                = !empty($this->fields['solvedate'])
-            ? strtotime($this->fields['solvedate'])
-            : null;
-        $closedate                = !empty($this->fields['closedate'])
-            ? strtotime($this->fields['closedate'])
-            : null;
-
+        $internal_time_to_own     = strtotime($this->fields['internal_time_to_own'] ?? '');
+        $time_to_own              = strtotime($this->fields['time_to_own'] ?? '');
+        // @todoseb recupérer la date des ola
+//        $internal_time_to_resolve = strtotime($this->fields['internal_time_to_resolve'] ?? '');
+        $internal_time_to_resolve = '';
+        $time_to_resolve          = strtotime($this->fields['time_to_resolve'] ?? '');
+        try {
+            $solvedate = strtotime($this->fields['solvedate'] ?? '');
+        } catch (DatetimeException $e) {
+            $solvedate = '';
+        }
+        $closedate                = strtotime($this->fields['closedate'] ?? '');
         $goal_takeintoaccount     = ($date_takeintoaccount > 0 ? $date_takeintoaccount : $now);
         $goal_solvedate           = ($solvedate > 0 ? $solvedate : $now);
 
@@ -6211,10 +6191,10 @@ JAVASCRIPT;
             }
 
             // ola creation is done with updateOLAs(), which is triggered on post_Update / post_Add (this is needed because ITIL Object need to exist)
-//            [$dateField, $olaField] = OLA::getFieldNames($slmType);
-//            if (isset($input[$olaField]) && ($input[$olaField] > 0)) {
-//                $manual_olas_id[$slmType] = $input[$olaField];
-//            }
+            //            [$dateField, $olaField] = OLA::getFieldNames($slmType);
+            //            if (isset($input[$olaField]) && ($input[$olaField] > 0)) {
+            //                $manual_olas_id[$slmType] = $input[$olaField];
+            //            }
         }
 
         parent::processRules($condition, $input, $entid);
@@ -6418,45 +6398,45 @@ JAVASCRIPT;
     public function getOlasData(): array
     {
         // @todoseb fix cache invalidation ($this->associatedOlas) before using it
-//        if (!isset($this->associatedOlas)) {
-            if ($this->isNewItem()) {
-//                $this->associatedOlas = [];
-                return [];
-            } else {
-                $ola_data = [];
-                $items_ola = new Item_Ola();
-                //            $items_ola->getFromDBByCrit(['itemtype' => static::class, 'items_id' => $this->getID()]
-                $olas = iterator_to_array(Item_Ola::getListForItem($this));
+        //        if (!isset($this->associatedOlas)) {
+        if ($this->isNewItem()) {
+            //                $this->associatedOlas = [];
+            return [];
+        } else {
+            $ola_data = [];
+            $items_ola = new Item_Ola();
+            //            $items_ola->getFromDBByCrit(['itemtype' => static::class, 'items_id' => $this->getID()]
+            $olas = iterator_to_array(Item_Ola::getListForItem($this));
 
-                // merge data from ola dans items_ola
-                foreach ($olas as $ola) {
-                    $_ola = new OLA();
+            // merge data from ola dans items_ola
+            foreach ($olas as $ola) {
+                $_ola = new OLA();
 
-                    $_data = $ola;
-                    if (!$items_ola->getFromDB($_data['linkid'])) {
-                        throw new LogicException('Associated referenced OLA not found'); // probably never happend
-                    }
-                    $_data += $items_ola->fields;
-
-                    $_data['items_olas_id'] = $_data['linkid'];
-                    $_data['olas_id'] = $_data['id'];
-                    unset($_data['id']); // @todoseb revoir le front qui va être cassé à cause de l'id qui a sauté (probablement)
-
-                    // additionnal datas
-                    $_data['class'] = OLA::class; // SLA::class
-                    $_data['item'] = $this; // object, not just fields, functions used in template
-                    $_data['nextaction'] = $_ola->getNextActionForTicket($this, $_data['type']);
-                    $_data['level'] = $_ola->getLevelFromAction($_data['nextaction']);
-
-                    $ola_data[] = $_data;
+                $_data = $ola;
+                if (!$items_ola->getFromDB($_data['linkid'])) {
+                    throw new LogicException('Associated referenced OLA not found'); // probably never happend
                 }
+                $_data += $items_ola->fields;
 
-//                $this->associatedOlas = $ola_data;
-                return $ola_data;
+                $_data['items_olas_id'] = $_data['linkid'];
+                $_data['olas_id'] = $_data['id'];
+                unset($_data['id']); // @todoseb revoir le front qui va être cassé à cause de l'id qui a sauté (probablement)
+
+                // additionnal datas
+                $_data['class'] = OLA::class; // SLA::class
+                $_data['item'] = $this; // object, not just fields, functions used in template
+                $_data['nextaction'] = $_ola->getNextActionForTicket($this, $_data['type']);
+                $_data['level'] = $_ola->getLevelFromAction($_data['nextaction']);
+
+                $ola_data[] = $_data;
             }
-//        }
 
-//        return $this->associatedOlas;
+            //                $this->associatedOlas = $ola_data;
+            return $ola_data;
+        }
+        //        }
+
+        //        return $this->associatedOlas;
     }
 
     public function getOlasTTOData(): array
@@ -6517,8 +6497,8 @@ JAVASCRIPT;
     private function updateOlaAssociations(): void
     {
         // invalidate olas cache
-//        $this->associatedOlas = null;
-//        dump('invaldate cache');
+        //        $this->associatedOlas = null;
+        //        dump('invaldate cache');
 
         // handle _olas_id fiels only if _la_update is set
         if (!isset($this->input['_la_update'])) {
@@ -6563,9 +6543,8 @@ JAVASCRIPT;
             }
         }
 
-        //        return;
         foreach ($added_olas_ids as $olas_id) {
-            $this->manageOlaLevel($olas_id); // @todoseb et pour la suppression ?
+            $this->manageOlaLevel($olas_id);
         }
 
         return;

@@ -559,7 +559,6 @@ TWIG, $twig_params);
 
         [, $field] = static::getFieldNames($type);
 
-        // ola.id attachés au ticket $tickets_id
         $iterator = $DB->request([
             'SELECT'       => [static::getTable() . '.id'],
             'FROM'         => static::getTable(),
@@ -567,7 +566,7 @@ TWIG, $twig_params);
                 'glpi_tickets' => [
                     'FKEY'   => [
                         static::getTable()   => 'id',
-                        'glpi_tickets'       => $field, // sla_id_ttr | sla_id_tto
+                        'glpi_tickets'       => $field,
                     ],
                 ],
             ],
@@ -576,8 +575,6 @@ TWIG, $twig_params);
         ]);
 
         if (count($iterator)) {
-            //            return true; // @todo dois suffire ou (ligne suivante)
-            //            return [];
             return self::getFromIter($iterator);
         }
         return false;
