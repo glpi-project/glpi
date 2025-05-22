@@ -43,7 +43,7 @@
                             </h3>
                             <ul class="steps steps-vertical steps-counter my-4">
                                 {% for test in tests %}
-                                    <li class="step-item {{ test['active'] ? 'active' : '' }}">
+                                    <li class="step-item {{ (test['active'] ?? false) ? 'active' : '' }}">
                                         <div class="h4 m-0">{{ test['title'] }}</div>
                                         <div class="{{ test['success'] ? 'text-success' : 'text-warning' }}">{{ test['message'] }}</div>
                                     </li>

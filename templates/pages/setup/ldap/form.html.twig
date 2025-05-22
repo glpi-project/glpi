@@ -53,7 +53,7 @@
     {{ fields.dropdownYesNo('is_default', item.fields['is_default'], __('Default server')) }}
     {{ fields.dropdownYesNo('is_active', item.fields['is_active'], __('Active')) }}
     {{ fields.textField('host', item.fields['host'], __('Server')) }}
-    {{ fields.numberField('port', item.fields['port'], __('Port (default=389)')) }}
+    {{ fields.numberField('port', item.fields['port'], __('Port (default=389)'), {'max': 65535}) }}
     {{ fields.textareaField('comment', item.fields['comment'], __('Comments')) }}
     {{ fields.nullField() }}
 
@@ -91,7 +91,7 @@
         input_class: 'col-xxl-10',
         add_field_class: 'bind_field' ~ (item.fields['use_bind'] == '1' ? '' : ' d-none'),
     }) }}
-    {{ fields.passwordField('rootdn_passwd', item.fields['rootdn_passwd'], __('Password (for non-anonymous binds)'), {
+    {{ fields.passwordField('rootdn_passwd', '', __('Password (for non-anonymous binds)'), {
         full_width: true,
         label_class: 'col-xxl-2',
         input_class: 'col-xxl-10',
