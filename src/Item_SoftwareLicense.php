@@ -135,10 +135,21 @@ class Item_SoftwareLicense extends CommonDBRelation
                 $softlicense = new SoftwareLicense();
                 $softlicense->getFromDB($options['raw_data']['id']);
                 $assign_item = self::countForLicense($options['raw_data']['id']);
-                $remaining = $softlicense->fields['number'] - $assign_item;
-                $tmptxt = sprintf(__('Total: %1$d, Assigned: %2$d, Remaining: %3$d'), $softlicense->fields['number'], $assign_item, $remaining);
-                $background_color = $remaining >= 0 ? '#49bf4d' : '#cf9b9b';
-                return "<div style='background-color: " . $background_color . ";'> " . htmlescape($tmptxt) . "</div>";
+                $remaining_item = $softlicense->fields['number'] - $assign_item;
+                $total = __('Total') . ': ' . $softlicense->fields["number"];
+                $assigned = __('Assigned') . ': ' . $assign_item;
+                $remaining = __('Remaining') . ': ' . $remaining_item;
+                $span_class = $remaining_item >= 0 ? '#74b72e' : '#cf9b9b';
+                $class = htmlescape($span_class);
+                return sprintf('<div>
+                        <span class="badge" style="background-color: %s;">%s</span>
+                        <span class="badge" style="background-color: %s;">%s</span>
+                        <span class="badge" style="background-color: %s;">%s</span>
+                    </div>',
+                    $class, htmlescape($assigned),
+                    $class, htmlescape($remaining),
+                    $class, htmlescape($total)
+                );
         }
 
         return parent::getSpecificValueToDisplay($field, $values, $options);

@@ -111,19 +111,19 @@
    {% set validity_msg = null %}
    {% if item_type == 'SoftwareLicense' %}
       {% set validity_msg %}
-         <div class="d-flex justify-content-around">
+         <div class="d-flex justify-content-around pt-2">
          {% if item.fields['is_valid'] %}
-               <span class="green">{{ _x('adjective', 'Valid') }}</span>
-               <span class="green">{{ _x('adjective', 'Assigned') }} : {{ licences_assigned }} </span>
-               <span class="green">{{ _x('adjective', 'Remaining') }} : {{ item.fields['number']|number_format - licences_assigned }}</span>
+               <span class="badge" style="background-color: #74b72e;">{{ _x('adjective', 'Valid') }}</span>
+               <span class="badge" style="background-color: #74b72e;">{{ _x('adjective', 'Assigned') }} : {{ licences_assigned }} </span>
+               <span class="badge" style="background-color: #74b72e;">{{ _x('adjective', 'Remaining') }} : {{ item.fields['number']|number_format - licences_assigned }}</span>
             {% elseif not item.fields['is_valid'] and item.fields['allow_overquota'] %}
-               <span class="green">{{ _x('adjective', 'Valid (Over Quota)') }}</span>
-               <span class="green">{{ _x('adjective', 'Assigned') }} : {{ licences_assigned }} </span>
-               <span class="green">{{ _x('adjective', 'Remaining') }} : {{ item.fields['number']|number_format - licences_assigned }}</span>
+               <span class="badge" style="background-color: #74b72e;">{{ _x('adjective', 'Valid (Over Quota)') }}</span>
+               <span class="badge" style="background-color: #74b72e;">{{ _x('adjective', 'Assigned') }} : {{ licences_assigned }} </span>
+               <span class="badge" style="background-color: #74b72e;">{{ _x('adjective', 'Remaining') }} : {{ item.fields['number']|number_format - licences_assigned }}</span>
             {% else %}
-               <span class="red">{{ _x('adjective', 'Invalid') }}</span>
-               <span class="red">{{ _x('adjective', 'Assigned') }} : {{ licences_assigned }} </span>
-               <span class="red">{{ _x('adjective', 'Remaining') }} : {{ item.fields['number']|number_format - licences_assigned }}</span>
+               <span class="badge" style="background-color: #cf9b9b;">{{ _x('adjective', 'Invalid') }}</span>
+               <span class="badge" style="background-color: #cf9b9b;">{{ _x('adjective', 'Assigned') }} : {{ licences_assigned }} </span>
+               <span class="badge" style="background-color: #cf9b9b;">{{ _x('adjective', 'Remaining') }} : {{ item.fields['number']|number_format - licences_assigned }}</span>
             {% endif %}
          </div>
       {% endset %}
