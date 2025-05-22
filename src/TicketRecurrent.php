@@ -78,13 +78,13 @@ class TicketRecurrent extends CommonITILRecurrent
 
         // Compute internal_time_to_resolve if predefined based on create date
         // @todoseb probablement inutile, plus de valeur prédéfinie, si ne vient pas d'un ola
-//        if (isset($predefined['internal_time_to_resolve'])) {
-//            $input['internal_time_to_resolve'] = Html::computeGenericDateTimeSearch(
-//                $predefined['internal_time_to_resolve'],
-//                false,
-//                $this->getCreateTime()
-//            );
-//        }
+        //        if (isset($predefined['internal_time_to_resolve'])) {
+        //            $input['internal_time_to_resolve'] = Html::computeGenericDateTimeSearch(
+        //                $predefined['internal_time_to_resolve'],
+        //                false,
+        //                $this->getCreateTime()
+        //            );
+        //        }
 
         return $input;
     }

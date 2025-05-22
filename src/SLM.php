@@ -48,8 +48,8 @@ class SLM extends CommonDBTM
 
     public static $rightname                   = 'slm';
 
-        public const TTR = 0; // Time to resolve
-        public const TTO = 1; // Time to own
+    public const TTR = 0; // Time to resolve
+    public const TTO = 1; // Time to own
 
     public const RIGHT_ASSIGN = 256;
 

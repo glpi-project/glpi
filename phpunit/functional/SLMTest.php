@@ -518,7 +518,7 @@ class SLMTest extends DbTestCase
     }
 
     /**
-     * Check 'internal_time_to_resolve' computed dates.
+     * Check OLA TTR computed dates.
      */
     public function testInternalTtrComputation()
     {
@@ -562,7 +562,7 @@ class SLMTest extends DbTestCase
                 'type'            => SLM::TTR,
                 'number_time'     => 4,
                 'definition_time' => 'hour',
-                'is_recursive'    => 1
+                'is_recursive'    => 1,
             ]
         );
         $this->assertGreaterThan(0, $ola_id);
@@ -576,7 +576,7 @@ class SLMTest extends DbTestCase
             ]
         );
         $ticket = new \Ticket();
-        $ticket_id = $ticket->add(             $this->getValidTicketData()        );
+        $ticket_id = $ticket->add($this->getValidTicketData());
         $this->assertGreaterThan(0, $ticket_id);
 
         $this->assertTrue($ticket->getFromDB($ticket_id));
@@ -584,11 +584,11 @@ class SLMTest extends DbTestCase
         $this->assertEmpty($ticket->getOlasData());
 
         // Assign TTR OLA
-        $update_time = strtotime('+10s');
+        $update_time = strtotime('+10s'); // to check ola start time is related to the moment the ola is added
         $_SESSION['glpi_currenttime'] = date('Y-m-d H:i:s', $update_time);
 
         // add an OLA
-        $ticket = $this->updateItem(Ticket::class, $ticket->getID(), ['_la_update' => true, '_olas_id' => [(int) $ola_id]] );
+        $ticket = $this->updateItem(Ticket::class, $ticket->getID(), ['_la_update' => true, '_olas_id' => [(int) $ola_id]]);
         $_SESSION['glpi_currenttime'] = $currenttime_bak;
         $this->assertTrue($ticket->getFromDB($ticket_id));
         $this->assertEquals($ola_id, (int) $ticket->fields['olas_id_ttr']);
@@ -984,7 +984,7 @@ class SLMTest extends DbTestCase
                     'pauses'                 => [],
                     'target_date'            => '2034-06-09 09:16:12',
                     'waiting_duration'       => 0,
-                    // Negative 10 minutes escalation level
+                    // escalation 10 minutes before target date
                     'escalation_time'        => - 10 * MINUTE_TIMESTAMP,
                     'target_escalation_date' => '2034-06-09 09:06:12',
                 ];
@@ -1285,7 +1285,7 @@ class SLMTest extends DbTestCase
         string $target_escalation_date
     ): void {
         // test only works with SLA
-        if($la_class == \OLA::class) {
+        if ($la_class == \OLA::class) {
             return;
         }
 
@@ -1384,7 +1384,7 @@ class SLMTest extends DbTestCase
         string $target_escalation_date
     ): void {
         // test only works with SLA
-        if($la_class == \SLA::class) {
+        if ($la_class == \SLA::class) {
             return;
         }
 
@@ -1436,7 +1436,6 @@ class SLMTest extends DbTestCase
         // Create a ticket
         $_SESSION['glpi_currenttime'] = $begin_date;
 
-//        [$la_date_field, $la_fk_field] = $la->getFieldNames($la->fields['type']);
         $ticket = $this->createItem(
             \Ticket::class,
             [
@@ -2849,6 +2848,26 @@ class SLMTest extends DbTestCase
             ),
             $ola_compare
         );
+    }
+
+    /**
+     * Set $_SESSION['glpi_currenttime'] with current day + $time param and return the related DateTime
+     *
+     * @param string $time expected format is H:i:s
+     */
+    private function setCurrentTime(string $time): \DateTime
+    {
+        // assert format is H:i:s
+        assert(1 === preg_match('/^([01]?[0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])$/', $time));
+
+        // set session time
+        $_SESSION['glpi_currenttime'] = date('Y-m-d ' . $time);
+
+        // create and return DateTime
+        $dt = new \DateTime();
+        $dt->setTime(...explode(':', $time));
+
+        return $dt;
     }
 
     private function runSlaCron(): void
