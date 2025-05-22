@@ -77,11 +77,11 @@ class Extension extends AbstractRequirement
     protected function buildValidationMessage()
     {
         if ($this->validated) {
-            $this->validation_messages[] = sprintf(__('%s extension is installed.'), $this->name);
+            $this->validation_messages[] = sprintf(__('%s extension is installed'), $this->name);
         } elseif ($this->optional) {
-            $this->validation_messages[] = sprintf(__('%s extension is not present.'), $this->name);
+            $this->validation_messages[] = sprintf(__('%s extension is not present'), $this->name);
         } else {
-            $this->validation_messages[] = sprintf(__('%s extension is missing.'), $this->name);
+            $this->validation_messages[] = sprintf(__('%s extension is missing'), $this->name);
         }
     }
 }

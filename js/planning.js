@@ -508,7 +508,7 @@ var GLPIPlanning  = {
                 if (is_recurrent) {
                     glpi_html_dialog({
                         title: __("Recurring event dragged"),
-                        body: __("The dragged event is a recurring event. Do you want to move the serie or instance ?"),
+                        body: __("The dragged event is a recurring event. Do you want to move the serie or instance?"),
                         buttons: [
                             {
                                 label: __("Serie"),

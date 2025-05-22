@@ -1312,7 +1312,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
             'toadd'              => [
                 self::CONFIG_PARENT  => __('Inheritance of the parent entity'),
                 self::CONFIG_NEVER   => __('Never'),
-                0                  => __('Immediatly'),
+                0                  => __('Immediately'),
             ],
         ];
 
@@ -1331,7 +1331,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
             'toadd'              => [
                 self::CONFIG_PARENT  => __('Inheritance of the parent entity'),
                 self::CONFIG_NEVER   => __('Never'),
-                0                  => __('Immediatly'),
+                0                  => __('Immediately'),
             ],
         ];
 

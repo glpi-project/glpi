@@ -72,8 +72,8 @@
                      {% set unaffect_btn %}
                         <a class="btn btn-sm btn-outline-danger"
                         onclick=" submitGetLink('{{ item.getFormURL }}', {'unaffect': 'unaffect', 'id': '{{ ID }}', '_glpi_csrf_token': '{{ csrf_token() }}', '_glpi_simple_form': '1'});">
-                           <span class="ti ti-unlink " title={{ __('Dissociate') }}>
-                              <span class="sr-only">{{ __('Dissociate') }}</span>
+                           <span class="ti ti-unlink " title={{ _x('button', 'Dissociate') }}>
+                              <span class="sr-only">{{ _x('button', 'Dissociate') }}</span>
                            </span>
                         </a>
 

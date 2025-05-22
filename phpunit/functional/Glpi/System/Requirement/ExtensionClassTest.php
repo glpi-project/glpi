@@ -43,7 +43,7 @@ class ExtensionClassTest extends \GLPITestCase
         $instance = new ExtensionClass('psr-log', 'Psr\\Log\\NullLogger');
         $this->assertTrue($instance->isValidated());
         $this->assertEquals(
-            ['psr-log extension is installed.'],
+            ['psr-log extension is installed'],
             $instance->getValidationMessages()
         );
     }
@@ -53,7 +53,7 @@ class ExtensionClassTest extends \GLPITestCase
         $instance = new ExtensionClass('psr-simplecache', 'Psr\\SimpleCache\\CacheInterface');
         $this->assertTrue($instance->isValidated());
         $this->assertEquals(
-            ['psr-simplecache extension is installed.'],
+            ['psr-simplecache extension is installed'],
             $instance->getValidationMessages()
         );
     }
@@ -63,7 +63,7 @@ class ExtensionClassTest extends \GLPITestCase
         $instance = new ExtensionClass('fake_ext', 'Fake\\FakeExtension');
         $this->assertFalse($instance->isValidated());
         $this->assertEquals(
-            ['fake_ext extension is missing.'],
+            ['fake_ext extension is missing'],
             $instance->getValidationMessages()
         );
     }
@@ -73,7 +73,7 @@ class ExtensionClassTest extends \GLPITestCase
         $instance = new ExtensionClass('fake_ext', 'Fake\\FakeExtension', true);
         $this->assertFalse($instance->isValidated());
         $this->assertEquals(
-            ['fake_ext extension is not present.'],
+            ['fake_ext extension is not present'],
             $instance->getValidationMessages()
         );
     }
