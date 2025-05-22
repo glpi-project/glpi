@@ -42,8 +42,10 @@
             <i class="ti ti-info-circle"></i>
         </a>
         {% if not item.isNewItem() %}
-            <button type="button" name="unaffect_networkname" class="btn btn-outline-secondary p-2" title="{{ __('Dissociate') }}">
-                <i class="ti ti-circle-minus text-danger"></i>
+            <button type="button" name="unaffect_networkname" class="btn btn-outline-secondary p-2" title="{{ _x('button', 'Dissociate') }}">
+                <i class="ti ti-circle-minus text-danger">
+                    <span class="sr-only">{{ _x('button', 'Dissociate') }}</span>
+                </i>
             </button>
             <script>
                 $('button[name="unaffect_networkname"]').on('click', () => {
