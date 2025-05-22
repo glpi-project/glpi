@@ -3318,7 +3318,7 @@ JAVASCRIPT;
             $fieldsearch_id = Html::cleanId("dropdown_$searchtype_name$rands");
         }
 
-        echo "<div class='col-auto' id='$dropdownname' data-itemtype='{$request["itemtype"]}' data-fieldname='$fieldname' data-prefix='$prefix' data-num='$num'>";
+        echo "<div class='col-auto' id='$dropdownname' data-itemtype='{$request['itemtype']}' data-fieldname='$fieldname' data-prefix='$prefix' data-num='$num'>";
         $params = [
             'value'       => rawurlencode(Sanitizer::dbUnescape($request['value'])),
             'searchopt'   => $searchopt,

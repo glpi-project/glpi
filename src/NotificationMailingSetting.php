@@ -336,7 +336,7 @@ class NotificationMailingSetting extends NotificationSetting
             $out .= "<tr class='tab_bg_2'>";
             $out .= "<td><label for='smtp_oauth_client_id{$rand}'>" . _x('oauth', 'Client ID') . "</label></td>";
             $out .= "<td>";
-            $out .= "<input class='form-control' name='smtp_oauth_client_id' id='smtp_oauth_client_id{$rand}' value='{$CFG_GLPI["smtp_oauth_client_id"]}'>";
+            $out .= "<input class='form-control' name='smtp_oauth_client_id' id='smtp_oauth_client_id{$rand}' value='{$CFG_GLPI['smtp_oauth_client_id']}'>";
             $out .= "</td>";
             $out .= "<td><label for='smtp_oauth_client_secret{$rand}'>" . _x('oauth', 'Client secret') . "</label></td>";
             $out .= "<td>";

@@ -489,7 +489,7 @@ class Item_SoftwareLicense extends CommonDBRelation
             }
 
             if (count($target_types)) {
-                echo "<tr class='tab_bg_2'><td colspan='2'>{$data["completename"]}</td></tr>";
+                echo "<tr class='tab_bg_2'><td colspan='2'>{$data['completename']}</td></tr>";
                 foreach ($target_types as $itemtype) {
                     $nb = self::countForLicense($softwarelicense_id, $data['id'], $itemtype);
                     echo "<tr class='tab_bg_2'><td>$tab$tab{$itemtype::getTypeName()}</td>";
