@@ -2368,7 +2368,8 @@ abstract class CommonITILObject extends CommonDBTM
         // Handle "_solutiontemplates_id" special input
         $this->handleSolutionTemplateInput();
 
-        // Send validation requests
+        // Handle validation requests
+        $this->handleValidationStepThresholdInput($this->input);
         $this->manageValidationAdd($this->input);
 
         $this->manageITILObjectLinkInput($this->input);
@@ -3169,7 +3170,8 @@ abstract class CommonITILObject extends CommonDBTM
         // Handle "_solutiontemplates_id" special input
         $this->handleSolutionTemplateInput();
 
-        // Send validation requests
+        // Handle validation requests
+        $this->handleValidationStepThresholdInput($this->input);
         $this->manageValidationAdd($this->input);
 
         $this->manageITILObjectLinkInput($this->input);
@@ -8845,6 +8847,41 @@ abstract class CommonITILObject extends CommonDBTM
     }
 
     /**
+     * Handle the input related to validation step threshold update.
+     */
+    private function handleValidationStepThresholdInput(array $input): void
+    {
+        // Action for `validationsteps_threshold` rule action
+        if (!array_key_exists('_validationsteps_threshold', $input)) {
+            return;
+        }
+
+        $relation_fields = [
+            'itemtype' => static::class,
+            'items_id' => $this->getID(),
+            'validationsteps_id' => $input['_validationsteps_id'] ?? ValidationStep::getDefault()->getID(),
+        ];
+
+        $success = false;
+
+        $itil_validationstep = static::getValidationStepInstance();
+        if ($itil_validationstep->getFromDBByCrit($relation_fields)) {
+            $success = $itil_validationstep->update([
+                'id' => $itil_validationstep->getID(),
+                'minimal_required_validation_percent' => $input['_validationsteps_threshold'],
+            ]);
+        } else {
+            $success = $itil_validationstep->add($relation_fields + [
+                'minimal_required_validation_percent' => $input['_validationsteps_threshold'],
+            ]);
+        }
+
+        if ($success === false) {
+            throw new \RuntimeException('Unable to update the validation step threshold.');
+        }
+    }
+
+    /**
      * Manage Validation add from input (form and rules)
      *
      * @param array $input
@@ -9057,10 +9094,6 @@ abstract class CommonITILObject extends CommonDBTM
                         // add validation step
                         if (isset($input['_validationsteps_id'])) {
                             $values['_validationsteps_id'] = $input['_validationsteps_id'];
-                        }
-                        // change validation step threshold
-                        if (isset($input['_validationsteps_threshold'])) {
-                            $values['_validationsteps_threshold'] = $input['_validationsteps_threshold'];
                         }
 
                         $values['itemtype_target'] = $validation_to_send['itemtype_target'];
