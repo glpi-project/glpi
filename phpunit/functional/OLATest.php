@@ -122,7 +122,6 @@ class OLATest extends DbTestCase
 
         // act - create ticket with OLA
         $ticket = $this->createItem(Ticket::class, ['_la_update' => true, '_olas_id' => [$ola->getID()],] + $this->getValidTicketData());
-//        $ticket = $this->reloadItem($ticket);
 
         // assert
         $fetched_olas = array_column($ticket->getOlasData(), 'olas_id');
@@ -156,7 +155,6 @@ class OLATest extends DbTestCase
 
         // act - create ticket with OLA
         $ticket = $this->createItem(Ticket::class, ['_la_update' => true, '_olas_id' => $olas_ids,] + $this->getValidTicketData());
-//        $ticket = $this->reloadItem($ticket);
 
         // assert
         $fetched_olas = array_column($ticket->getOlasData(), 'olas_id');

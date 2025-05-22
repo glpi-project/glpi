@@ -49,7 +49,6 @@ use Ticket;
 
 class SLMTest extends DbTestCase
 {
-
     use ITILTrait;
     use SLMTrait;
     /**
@@ -226,7 +225,6 @@ class SLMTest extends DbTestCase
             'field'       => 'olas_id',
             'value'       => $ola_ttr_id,
         ]);
-//        $rule_builder->addAction('assign', 'olas_id', $ola->getID());
         // une seule rule avec plusieurs actions
         $this->checkInput($ruleaction, $act_id, $act_input);
 
@@ -519,7 +517,7 @@ class SLMTest extends DbTestCase
     }
 
     /**
-     * Check 'internal_time_to_resolve' computed dates.
+     * Check OLA TTR computed dates.
      */
     public function testInternalTtrComputation()
     {
@@ -564,14 +562,14 @@ class SLMTest extends DbTestCase
                 'type'            => \SLM::TTR,
                 'number_time'     => 4,
                 'definition_time' => 'hour',
-                'is_recursive'    => 1
+                'is_recursive'    => 1,
             ]
         );
         $this->assertGreaterThan(0, $ola_id);
 
         // Create ticket to test computation based on OLA
         $ticket = new \Ticket();
-        $ticket_id = $ticket->add(             $this->getValidTicketData()        );
+        $ticket_id = $ticket->add($this->getValidTicketData());
         $this->assertGreaterThan(0, $ticket_id);
 
         $this->assertTrue($ticket->getFromDB($ticket_id));
@@ -579,11 +577,11 @@ class SLMTest extends DbTestCase
         $this->assertEmpty($ticket->getOlasData());
 
         // Assign TTR OLA
-        $update_time = strtotime('+10s');
+        $update_time = strtotime('+10s'); // to check ola start time is related to the moment the ola is added
         $_SESSION['glpi_currenttime'] = date('Y-m-d H:i:s', $update_time);
 
         // add an OLA
-        $ticket = $this->updateItem(Ticket::class, $ticket->getID(), ['_la_update' => true, '_olas_id' => [(int) $ola_id]] );
+        $ticket = $this->updateItem(Ticket::class, $ticket->getID(), ['_la_update' => true, '_olas_id' => [(int) $ola_id]]);
         $_SESSION['glpi_currenttime'] = $currenttime_bak;
         $this->assertTrue($ticket->getFromDB($ticket_id));
 
@@ -845,7 +843,6 @@ class SLMTest extends DbTestCase
             "type"            => \SLM::TTO,
             "number_time"     => 2,
             "definition_time" => "hour",
-//            "is_recursive"    => 1,
         ]);
         $ola_ttr = $this->createItem("OLA", [
             "slms_id"         => $slm->getID(),
@@ -854,7 +851,6 @@ class SLMTest extends DbTestCase
             "type"            => \SLM::TTR,
             "number_time"     => 8,
             "definition_time" => "hour",
-//            "is_recursive"    => 1,
         ]);
 
         // Create one escalation level for each SLA and OLA
@@ -978,7 +974,7 @@ class SLMTest extends DbTestCase
                     'pauses'                 => [],
                     'target_date'            => '2034-06-09 09:16:12',
                     'waiting_duration'       => 0,
-                    // Negative 10 minutes escalation level
+                    // escalation 10 minutes before target date
                     'escalation_time'        => - 10 * MINUTE_TIMESTAMP,
                     'target_escalation_date' => '2034-06-09 09:06:12',
                 ];
@@ -1279,7 +1275,7 @@ class SLMTest extends DbTestCase
         string $target_escalation_date
     ): void {
         // test only works with SLA
-        if($la_class == \OLA::class) {
+        if ($la_class == \OLA::class) {
             return;
         }
 
@@ -1378,7 +1374,7 @@ class SLMTest extends DbTestCase
         string $target_escalation_date
     ): void {
         // test only works with SLA
-        if($la_class == \SLA::class) {
+        if ($la_class == \SLA::class) {
             return;
         }
 
@@ -1430,7 +1426,6 @@ class SLMTest extends DbTestCase
         // Create a ticket
         $_SESSION['glpi_currenttime'] = $begin_date;
 
-//        [$la_date_field, $la_fk_field] = $la->getFieldNames($la->fields['type']);
         $ticket = $this->createItem(
             \Ticket::class,
             [
@@ -2435,11 +2430,6 @@ class SLMTest extends DbTestCase
         return $dt;
     }
 
-    /**
-     * Run the SLA cron task
-     *
-     * Copy of \SlaLevel_Ticket::cronSlaTicket but time is set to $dateTime now calculated using NOW()
-     */
     private function runSlaCron(): void
     {
         SlaLevel_Ticket::cronSlaTicket(getItemByTypeName(\CronTask::class, 'slaticket'));

@@ -34,6 +34,8 @@
  * ---------------------------------------------------------------------
  */
 
+use function Safe\json_encode;
+
 $migration->log('Group managed olas', false);
 
 add_groups_id_field_in_olas($migration);
@@ -101,7 +103,7 @@ function create_items_olas_table(Migration $migration): void
         `olalevel_date` timestamp NULL DEFAULT NULL,
         PRIMARY KEY (`id`) 
          ) ENGINE=InnoDB DEFAULT CHARSET=$charset COLLATE=$collation ROW_FORMAT=DYNAMIC;";
-
+    // @todoseb olalevel_date n'est plus utile - cf spec
     $migration->addPreQuery($query);
     $migration->executeMigration();
 
@@ -115,11 +117,11 @@ function migrate_items_olas_data(Migration $migration): void
     $tickets_with_ola = $_ticket->find(['OR' =>
         [
             ['NOT' => ['olas_id_tto' => null]],
-            ['NOT' => ['olas_id_ttr' => null]]
-    ]]);
+            ['NOT' => ['olas_id_ttr' => null]],
+        ]]);
 
     foreach ($tickets_with_ola as $ticket) {
-        if($ticket['olas_id_tto'] !== 0) {
+        if ($ticket['olas_id_tto'] !== 0) {
             $io = new Item_Ola();
 
             $_data = [
@@ -131,12 +133,12 @@ function migrate_items_olas_data(Migration $migration): void
                 'waiting_time' => $ticket['ola_waiting_duration'],
             ];
 
-           if(!$io->add($_data)) {
+            if (!$io->add($_data)) {
                 throw new Exception('Failed to migrato OLA TTO data: ' . json_encode($_data));
             }
         }
 
-        if($ticket['olas_id_ttr'] !== 0) {
+        if ($ticket['olas_id_ttr'] !== 0) {
             $io = new Item_Ola();
 
             $_data = [
@@ -148,7 +150,7 @@ function migrate_items_olas_data(Migration $migration): void
                 'waiting_time' => $ticket['ola_waiting_duration'],
             ];
 
-           if(!$io->add($_data)) {
+            if (!$io->add($_data)) {
                 throw new Exception('Failed to migrato OLA TTO data: ' . json_encode($_data));
             }
         }

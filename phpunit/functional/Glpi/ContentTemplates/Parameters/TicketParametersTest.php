@@ -254,7 +254,7 @@ class TicketParametersTest extends AbstractParameters
                         'type'     => 'Time to own',
                         'duration' => 15,
                         'unit'     => 'minutes',
-                    ]
+                    ],
                 ],
                 'olas_ttr' => [
                     [

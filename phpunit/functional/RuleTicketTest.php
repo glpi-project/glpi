@@ -1524,7 +1524,7 @@ class RuleTicketTest extends RuleCommonITILObject
         // act create ticket with priority 1
         $ticket = $this->createTicket(
             ['impact' => 1, 'entities_id' => $entity->getID(), '_la_update' => true, '_olas_id' => [$ola->getID()]] + $this->getValidTicketData(),
-                 ['impact'], // do not check impact, it is modified by the rule
+            ['impact'], // do not check impact, it is modified by the rule
         );
 
         // assert priority changed to 4
@@ -1551,7 +1551,7 @@ class RuleTicketTest extends RuleCommonITILObject
         $ticket = $this->createTicket(['priority' => 1, 'entities_id' => $entity->getID()]);
 
         // add the ola matching the rule
-        $ticket = $this->updateItem($ticket::class, $ticket->getID(), ['_la_update' => true, '_olas_id' => [$ola->getID()]] );
+        $ticket = $this->updateItem($ticket::class, $ticket->getID(), ['_la_update' => true, '_olas_id' => [$ola->getID()]]);
 
         // assert priority changed to 4
         $this->assertEquals(4, $ticket->fields['priority']);

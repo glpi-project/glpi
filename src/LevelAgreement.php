@@ -50,7 +50,7 @@ abstract class LevelAgreement extends CommonDBChild
     public static $itemtype = 'SLM';
     public static $items_id = 'slms_id';
 
-    protected static $prefix            = ''; // 'ola' | 'sla'
+    protected static $prefix            = '';
     protected static $prefixticket      = '';
     /** @var class-string<LevelAgreementLevel> */
     protected static $levelclass        = '';
@@ -540,10 +540,10 @@ TWIG, $twig_params);
     }
 
     /**
-     * Get all LevelAgreements related to the ticket, filtered by LevelAgreement type (SLM::TTR | SLM::TTO)
+     * Get data by type and ticket
      *
-     * @param int $tickets_id
-     * @param int $type
+     * @param $tickets_id
+     * @param $type
      * @return false|iterable
      * @used-by templates/components/itilobject/service_levels.html.twig
      */
@@ -554,7 +554,6 @@ TWIG, $twig_params);
 
         [, $field] = static::getFieldNames($type);
 
-        // ola.id attachés au ticket $tickets_id
         $iterator = $DB->request([
             'SELECT'       => [static::getTable() . '.id'],
             'FROM'         => static::getTable(),
@@ -562,7 +561,7 @@ TWIG, $twig_params);
                 'glpi_tickets' => [
                     'FKEY'   => [
                         static::getTable()   => 'id',
-                        'glpi_tickets'       => $field, // sla_id_ttr | sla_id_tto
+                        'glpi_tickets'       => $field,
                     ],
                 ],
             ],
@@ -571,8 +570,6 @@ TWIG, $twig_params);
         ]);
 
         if (count($iterator)) {
-            //            return true; // @todo dois suffire ou (ligne suivante)
-            //            return [];
             return self::getFromIter($iterator);
         }
         return false;
@@ -804,8 +801,8 @@ TWIG, $twig_params);
     public function computeExecutionDate($start_date, $levels_id, $additional_delay = 0)
     {
         if (isset($this->fields['id'])) {
-            $level = new static::$levelclass(); // SlaLevel | OlaLevel
-            $fk = getForeignKeyFieldForItemType(static::class); // slas_id | olas_id
+            $level = new static::$levelclass();
+            $fk = getForeignKeyFieldForItemType(static::class);
 
             if ($level->getFromDB($levels_id)) { // level exists
                 if ((int) $level->fields[$fk] === (int) $this->fields['id']) { // correct level

@@ -93,7 +93,7 @@ trait SLMTrait
                 //                'end_of_working_day' => 0,
                 //                'date_creation' => null,
                 'slms_id' => $slm->getID(),
-//                'groups_id' => $group->getID(),
+                //                'groups_id' => $group->getID(),
             ]
         );
 
@@ -123,32 +123,32 @@ trait SLMTrait
     private function createGroup(): \Group
     {
         return $this->createItem(\Group::class, [
-//            'id' => 0,
-//            'entities_id' => 0,
-//            'is_recursive' => 0,
+            //            'id' => 0,
+            //            'entities_id' => 0,
+            //            'is_recursive' => 0,
             'name' => 'Group name ' . time(),
-//            'code' => null,
+            //            'code' => null,
             'comment' => 'Group comment text ' . time(),
-//            'ldap_field' => null,
-//            'ldap_value' => null,
-//            'ldap_group_dn' => null,
-//            'date_mod' => null,
-//            'groups_id' => 0,
-//            'completename' => null,
-//            'level' => 0,
-//            'ancestors_cache' => null,
-//            'sons_cache' => null,
-//            'is_requester' => 1,
-//            'is_watcher' => 1,
-//            'is_assign' => 1,
-//            'is_task' => 1,
-//            'is_notify' => 1,
-//            'is_itemgroup' => 1,
-//            'is_usergroup' => 1,
-//            'is_manager' => 1,
-//            'date_creation' => null,
-//            'recursive_membership' => 0,
-//            '2fa_enforced' => 0,
+            //            'ldap_field' => null,
+            //            'ldap_value' => null,
+            //            'ldap_group_dn' => null,
+            //            'date_mod' => null,
+            //            'groups_id' => 0,
+            //            'completename' => null,
+            //            'level' => 0,
+            //            'ancestors_cache' => null,
+            //            'sons_cache' => null,
+            //            'is_requester' => 1,
+            //            'is_watcher' => 1,
+            //            'is_assign' => 1,
+            //            'is_task' => 1,
+            //            'is_notify' => 1,
+            //            'is_itemgroup' => 1,
+            //            'is_usergroup' => 1,
+            //            'is_manager' => 1,
+            //            'date_creation' => null,
+            //            'recursive_membership' => 0,
+            //            '2fa_enforced' => 0,
         ]);
     }
 
@@ -163,9 +163,9 @@ trait SLMTrait
             \CalendarSegment::class,
             [
                 'calendars_id' => $calendar->getID(),
-                'day'          => (int)date('w'),
+                'day'          => (int) date('w'),
                 'begin'        => '09:00:00',
-                'end'          => '19:00:00'
+                'end'          => '19:00:00',
             ]
         );
         // tomorrow
@@ -173,9 +173,9 @@ trait SLMTrait
             \CalendarSegment::class,
             [
                 'calendars_id' => $calendar->getID(),
-                'day'          => (int)date('w') === 6 ? 0 : (int)date('w') + 1, // day of the week number
+                'day'          => (int) date('w') === 6 ? 0 : (int) date('w') + 1, // day of the week number
                 'begin'        => '09:00:00',
-                'end'          => '19:00:00'
+                'end'          => '19:00:00',
             ]
         );
 
