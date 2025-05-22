@@ -91,7 +91,7 @@
         input_class: 'col-xxl-10',
         add_field_class: 'bind_field' ~ (item.fields['use_bind'] == '1' ? '' : ' d-none'),
     }) }}
-    {{ fields.passwordField('rootdn_passwd', item.fields['rootdn_passwd'], __('Password (for non-anonymous binds)'), {
+    {{ fields.passwordField('rootdn_passwd', '', __('Password (for non-anonymous binds)'), {
         full_width: true,
         label_class: 'col-xxl-2',
         input_class: 'col-xxl-10',
