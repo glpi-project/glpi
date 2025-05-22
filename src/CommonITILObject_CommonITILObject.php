@@ -129,7 +129,7 @@ abstract class CommonITILObject_CommonITILObject extends CommonDBRelation
                     'checkright'      => true,
                     'entity_restrict' => $_SESSION['glpiactive_entity'],
                 ]);
-                echo "<br><input type='submit' name='delete' value=\"" . __s('Delete permanently') . "\" class='btn btn-primary'>";
+                echo "<br><input type='submit' name='delete' value=\"" . _sx('button', 'Delete permanently') . "\" class='btn btn-primary'>";
                 return true;
         }
         return false;
