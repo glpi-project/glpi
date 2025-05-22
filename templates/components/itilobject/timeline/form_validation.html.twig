@@ -68,7 +68,7 @@
             </div>
          {% endif %}
 
-         {% if entry_i['can_answer'] %}
+         {% if entry_i['can_answer'] ?? false %}
             <hr class="my-2" />
             <form id="validationanswers_id_{{ entry_i['id'] }}"
                   action="{{ entry['type']|itemtype_form_path }}" method="post" data-submit-once>
