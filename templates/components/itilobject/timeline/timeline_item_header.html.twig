@@ -46,7 +46,7 @@
 
    <div class="d-flex ms-auto timeline-item-buttons">
       {% set actions = {} %}
-      {% if entry_i['can_edit'] and not status_closed and not (entry['type'] in ['Document_Item', 'Assign']) %}
+      {% if entry_i['can_edit'] ?? false and not status_closed and not (entry['type'] in ['Document_Item', 'Assign']) %}
          {% set edit_btn %}
             <li>
                <a class="dropdown-item edit-timeline-item" href="#">
