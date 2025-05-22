@@ -608,7 +608,7 @@ class GenericobjectPluginMigration extends AbstractPluginMigration
 
         foreach ($dropdown_mapping as $plugin_itemtype => $dropdown_class) {
             $this->progress_indicator?->setProgressBarMessage(
-                sprintf(__('Importing "%s"...'), $dropdown_class::getTypeName())
+                sprintf(__('Importing %s...'), $dropdown_class::getTypeName())
             );
 
             $dropdown_iterator = $this->db->request(['FROM' => $this->getExpectedTableForPluginClassName($plugin_itemtype)]);

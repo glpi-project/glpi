@@ -984,7 +984,7 @@ class GLPIDashboard {
      * Delete current dashboard
      */
     delete() {
-        const confirm_msg = __("Are you sure you want to delete the dashboard %s ?")
+        const confirm_msg = __("Are you sure you want to delete the dashboard %s?")
             .replace('%s', this.current_name);
         if (window.confirm(confirm_msg, __("Delete this dashboard"))) {
             $.post({

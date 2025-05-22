@@ -457,7 +457,7 @@ HTML;
                     </select>";
             }
 
-            $yourplugin   = __s("Your plugin here ? Contact us.");
+            $yourplugin   = __s("Your plugin here? Contact us.");
             $networkmail  = htmlescape(GLPI_NETWORK_MAIL);
             $refresh_lbl  = __s("Refresh plugin list");
             $search_label = __s("Filter plugin list");
