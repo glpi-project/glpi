@@ -901,6 +901,9 @@ TWIG, $twig_params);
     /**
      * Add a level to do for a ticket
      *
+     * Add an entry in slalevels_tickets | olalevels_tickets table
+     * The level is set by $levels_id parameter or the current level set in slalevels_id_ttr | olalevels_id_ttr (if set)
+     *
      * @param Ticket  $ticket Ticket object
      * @param integer $levels_id SlaLevel or OlaLevel ID
      *
