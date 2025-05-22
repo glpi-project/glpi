@@ -117,7 +117,7 @@ trait SLMTrait
                 //                'end_of_working_day' => 0,
                 //                'date_creation' => null,
                 'slms_id' => $slm->getID(),
-//                'groups_id' => $group->getID(),
+                //                'groups_id' => $group->getID(),
             ]
         );
 
