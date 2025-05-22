@@ -35,6 +35,7 @@
 
 namespace tests\units\Glpi\Api\HL\Controller;
 
+use Glpi\Api\HL\Controller\CustomAssetController;
 use Glpi\Asset\AssetDefinitionManager;
 use Glpi\Http\Request;
 use HLAPICallAsserter;
@@ -43,6 +44,11 @@ use PHPUnit\Framework\Attributes\DataProvider;
 
 class CustomAssetControllerTest extends HLAPITestCase
 {
+    public function testGetAssetTypes(): void
+    {
+        $this->assertNotEmpty(CustomAssetController::getCustomAssetTypes());
+    }
+
     public function testIndex(): void
     {
         $definitions = AssetDefinitionManager::getInstance()->getDefinitions();
