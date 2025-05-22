@@ -2503,23 +2503,23 @@ abstract class CommonITILObject extends CommonDBTM
         // check internal_time_to_resolve (OLA)
         // remove internat_time_to_resolve from updates if it's lower than ticket 'date'
         // @todoseb logique a reprendre
-//        if (
-//            (in_array("date", $this->updates) || in_array("internal_time_to_resolve", $this->updates))
-//            && !is_null($this->fields["internal_time_to_resolve"])
-//        ) { // Date set
-//            if ($this->fields["internal_time_to_resolve"] < $this->fields["date"]) {
-//                Session::addMessageAfterRedirect(__s('Invalid dates. Update cancelled.'), false, ERROR);
-//
-//                if (($key = array_search('date', $this->updates)) !== false) {
-//                    unset($this->updates[$key]);
-//                    unset($this->oldvalues['date']);
-//                }
-//                if (($key = array_search('internal_time_to_resolve', $this->updates)) !== false) {
-//                    unset($this->updates[$key]);
-//                    unset($this->oldvalues['internal_time_to_resolve']);
-//                }
-//            }
-//        }
+        //        if (
+        //            (in_array("date", $this->updates) || in_array("internal_time_to_resolve", $this->updates))
+        //            && !is_null($this->fields["internal_time_to_resolve"])
+        //        ) { // Date set
+        //            if ($this->fields["internal_time_to_resolve"] < $this->fields["date"]) {
+        //                Session::addMessageAfterRedirect(__s('Invalid dates. Update cancelled.'), false, ERROR);
+        //
+        //                if (($key = array_search('date', $this->updates)) !== false) {
+        //                    unset($this->updates[$key]);
+        //                    unset($this->oldvalues['date']);
+        //                }
+        //                if (($key = array_search('internal_time_to_resolve', $this->updates)) !== false) {
+        //                    unset($this->updates[$key]);
+        //                    unset($this->oldvalues['internal_time_to_resolve']);
+        //                }
+        //            }
+        //        }
 
         // Unset closedate if before solvedate
         // unset 'date' and unset 'closedate' if closedate is before 'date'
@@ -2681,7 +2681,7 @@ abstract class CommonITILObject extends CommonDBTM
                 }
             }
 
-            // OLA case : compute ola durations and delays (note, both ttr and tto are computed for ola)
+            // --- OLA case : compute ola durations and delays (note, both ttr and tto are computed for ola)
             // @todoseb encapsuler cette logique dans item_ola
 
             $_item_ola = new Item_Ola();
