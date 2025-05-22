@@ -60,7 +60,7 @@
 
       {% set is_private_class = is_private ? "private-item" : "" %}
 
-      {% set can_edit_i  = entry_i['can_edit'] %}
+      {% set can_edit_i  = entry_i['can_edit'] ?? false %}
 
       {% set timeline_position = entry_i['timeline_position'] %}
       {% set item_position = 't-left' %}
