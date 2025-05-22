@@ -106,6 +106,8 @@ abstract class RuleCommonITILObject extends Rule
     public function getTitleAction()
     {
         parent::getTitleAction();
+
+        // Recompute warning
         $has_impact_urgency = false;
         $has_priority_recompute = false;
         if (isset($this->actions)) {
@@ -127,6 +129,47 @@ abstract class RuleCommonITILObject extends Rule
                 </div>
 TWIG, ['message' => __('Urgency or impact used in actions, think to add Priority: recompute action if needed.')]);
         }
+
+        // Validation step assignation without any validation action,
+        // or validation action without assigning the corresponding step
+        $action_keys = [];
+        $actions_fields = array_column($this->actions, 'fields');
+        foreach ($actions_fields as $field) {
+            $action_keys[] = $field['field'];
+        }
+
+        $fields_trigerring_validation = [
+            'users_id_validate',
+            'responsible_id_validate',
+            'groups_id_validate',
+            'groups_id_validate_any',
+            'users_id_validate_requester_supervisor',
+            'users_id_validate_assign_supervisor',
+            'validationsteps_threshold',
+        ];
+        if (
+            in_array('validationsteps_id', $action_keys, true)
+            && count(array_intersect($action_keys, $fields_trigerring_validation)) === 0
+        ) {
+            // language=Twig
+            echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+                <div class="alert alert-warning">
+                    {{ message }}
+                </div>
+TWIG, ['message' => __('An action defines the validation step, but there is no action related to this validation step. Did you forgot to add an action?')]);
+        } elseif (
+            count(array_intersect($action_keys, $fields_trigerring_validation)) > 0
+            && in_array('validationsteps_id', $action_keys, true) === false
+        ) {
+            // language=Twig
+            echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
+                <div class="alert alert-warning">
+                    {{ message }}
+                </div>
+TWIG, ['message' => __('An action related to a validation exists, but there is no action assigning the corresponding validation step. Therefore, the default one will be used.')]);
+        }
+
+        return;
     }
 
     public function addSpecificParamsForPreview($params)
@@ -156,6 +199,9 @@ TWIG, ['message' => __('Urgency or impact used in actions, think to add Priority
         if (count($this->actions)) {
             foreach ($this->actions as $action) {
                 switch ($action->fields["action_type"]) {
+                    // each entry with "add_validation" ($output['_add_validation'])action_type will create (at least) a new Validation
+                    // to provide additionnal data to the validation, use $output['my_field'] = 'myvalue'.
+                    // possible actions are registered in \RuleAction::getActions()
                     case "add_validation":
                         if (isset($output['_add_validation']) && !is_array($output['_add_validation'])) {
                             $output['_add_validation'] = [$output['_add_validation']];
@@ -185,8 +231,12 @@ TWIG, ['message' => __('Urgency or impact used in actions, think to add Priority
                                 $output['_add_validation'][] = 'requester_responsible';
                                 break;
 
-                            case 'validation_percent':
-                                $output[$action->fields["field"]] = $action->fields["value"];
+                            case 'validationsteps_id':
+                                $output['_validationsteps_id'] = $action->fields["value"];
+                                break;
+
+                            case 'validationsteps_threshold':
+                                $output['_validationsteps_threshold'] = $action->fields["value"];
                                 break;
 
                             default:
@@ -771,20 +821,24 @@ TWIG, ['message' => __('Urgency or impact used in actions, think to add Priority
     {
         $actions                                                = parent::getActions();
 
+        // set a category
         $actions['itilcategories_id']['name']                       = _n('Category', 'Categories', 1);
         $actions['itilcategories_id']['type']                       = 'dropdown';
         $actions['itilcategories_id']['table']                      = 'glpi_itilcategories';
         $actions['itilcategories_id']['force_actions']              = ['assign', 'regex_result'];
 
+        // set a category from regexp
         $actions['_itilcategories_id_by_completename']['name']                 = sprintf(__('%1$s (%2$s)'), _n('Category', 'Categories', 1), __('by completename'));
         $actions['_itilcategories_id_by_completename']['type']                 = 'dropdown';
         $actions['_itilcategories_id_by_completename']['table']                = 'glpi_itilcategories';
         $actions['_itilcategories_id_by_completename']['force_actions']        = ['regex_result'];
 
+        // set a category from code regexp
         $actions['_affect_itilcategory_by_code']['name']            = __('ITIL category from code');
         $actions['_affect_itilcategory_by_code']['type']            = 'text';
         $actions['_affect_itilcategory_by_code']['force_actions']   = ['regex_result'];
 
+        // set a requester (user)
         $actions['_users_id_requester']['name']                     = _n('Requester', 'Requesters', 1);
         $actions['_users_id_requester']['type']                     = 'dropdown_users';
         $actions['_users_id_requester']['force_actions']            = ['assign', 'append'];
@@ -793,6 +847,7 @@ TWIG, ['message' => __('Urgency or impact used in actions, think to add Priority
         $actions['_users_id_requester']['appendtoarray']            = ['use_notification' => 1];
         $actions['_users_id_requester']['appendtoarrayfield']       = 'users_id';
 
+        // set a requester group
         $actions['_groups_id_requester']['name']                    = _n('Requester group', 'Requester groups', 1);
         $actions['_groups_id_requester']['type']                    = 'dropdown';
         $actions['_groups_id_requester']['table']                   = 'glpi_groups';
@@ -801,6 +856,7 @@ TWIG, ['message' => __('Urgency or impact used in actions, think to add Priority
         $actions['_groups_id_requester']['permitseveral']           = ['append'];
         $actions['_groups_id_requester']['appendto']                = '_additional_groups_requesters';
 
+        // set a requester group from regexp
         $actions['_groups_id_requester_by_completename']['name']              = sprintf(__('%1$s (%2$s)'), _n('Requester group', 'Requester groups', 1), __('by completename'));
         $actions['_groups_id_requester_by_completename']['type']              = 'dropdown';
         $actions['_groups_id_requester_by_completename']['table']             = 'glpi_groups';
@@ -809,6 +865,7 @@ TWIG, ['message' => __('Urgency or impact used in actions, think to add Priority
         $actions['_groups_id_requester_by_completename']['permitseveral']     = ['append'];
         $actions['_groups_id_requester_by_completename']['appendto']          = '_additional_groups_requesters';
 
+        // set a technician ("assigned to")
         $actions['_users_id_assign']['name']                        = __('Technician');
         $actions['_users_id_assign']['type']                        = 'dropdown_assign';
         $actions['_users_id_assign']['force_actions']                = ['assign', 'append'];
@@ -817,6 +874,7 @@ TWIG, ['message' => __('Urgency or impact used in actions, think to add Priority
         $actions['_users_id_assign']['appendtoarray']               = ['use_notification' => 1];
         $actions['_users_id_assign']['appendtoarrayfield']          = 'users_id';
 
+        // set a technician group
         $actions['_groups_id_assign']['table']                      = 'glpi_groups';
         $actions['_groups_id_assign']['name']                       = __('Technician group');
         $actions['_groups_id_assign']['type']                       = 'dropdown';
@@ -825,6 +883,7 @@ TWIG, ['message' => __('Urgency or impact used in actions, think to add Priority
         $actions['_groups_id_assign']['permitseveral']              = ['append'];
         $actions['_groups_id_assign']['appendto']                   = '_additional_groups_assigns';
 
+        // set a technician group from regexp
         $actions['_groups_id_assign_by_completename']['table']                = 'glpi_groups';
         $actions['_groups_id_assign_by_completename']['name']                 = sprintf(__('%1$s (%2$s)'), __('Technician group'), __('by completename'));
         $actions['_groups_id_assign_by_completename']['type']                 = 'dropdown';
@@ -833,6 +892,7 @@ TWIG, ['message' => __('Urgency or impact used in actions, think to add Priority
         $actions['_groups_id_assign_by_completename']['permitseveral']        = ['append'];
         $actions['_groups_id_assign_by_completename']['appendto']             = '_additional_groups_assigns';
 
+        // set a supplier
         $actions['_suppliers_id_assign']['table']                   = 'glpi_suppliers';
         $actions['_suppliers_id_assign']['name']                    = __('Assigned to a supplier');
         $actions['_suppliers_id_assign']['type']                    = 'dropdown';
@@ -842,6 +902,7 @@ TWIG, ['message' => __('Urgency or impact used in actions, think to add Priority
         $actions['_suppliers_id_assign']['appendtoarray']           = ['use_notification' => 1];
         $actions['_suppliers_id_assign']['appendtoarrayfield']      = 'suppliers_id';
 
+        // set a observer
         $actions['_users_id_observer']['name']                      = _n('Observer', 'Observers', 1);
         $actions['_users_id_observer']['type']                      = 'dropdown_users';
         $actions['_users_id_observer']['force_actions']             = ['assign', 'append'];
@@ -850,6 +911,7 @@ TWIG, ['message' => __('Urgency or impact used in actions, think to add Priority
         $actions['_users_id_observer']['appendtoarray']             = ['use_notification' => 1];
         $actions['_users_id_observer']['appendtoarrayfield']        = 'users_id';
 
+        // set a observer group
         $actions['_groups_id_observer']['table']                    = 'glpi_groups';
         $actions['_groups_id_observer']['name']                     = _n('Observer group', 'Observer groups', 1);
         $actions['_groups_id_observer']['type']                     = 'dropdown';
@@ -858,6 +920,7 @@ TWIG, ['message' => __('Urgency or impact used in actions, think to add Priority
         $actions['_groups_id_observer']['permitseveral']            = ['append'];
         $actions['_groups_id_observer']['appendto']                 = '_additional_groups_observers';
 
+        // set a observer by regexp
         $actions['_groups_id_observer_by_completename']['table']              = 'glpi_groups';
         $actions['_groups_id_observer_by_completename']['name']               = sprintf(__('%1$s (%2$s)'), _n('Watcher group', 'Watcher groups', 1), __('by completename'));
         $actions['_groups_id_observer_by_completename']['type']               = 'dropdown';
@@ -866,25 +929,31 @@ TWIG, ['message' => __('Urgency or impact used in actions, think to add Priority
         $actions['_groups_id_observer_by_completename']['permitseveral']      = ['append'];
         $actions['_groups_id_observer_by_completename']['appendto']           = '_additional_groups_observers';
 
+        // set urgency
         $actions['urgency']['name']                                 = __('Urgency');
         $actions['urgency']['type']                                 = 'dropdown_urgency';
 
+        // set impact
         $actions['impact']['name']                                  = __('Impact');
         $actions['impact']['type']                                  = 'dropdown_impact';
 
+        // set priority
         $actions['priority']['name']                                = __('Priority');
         $actions['priority']['type']                                = 'dropdown_priority';
         $actions['priority']['force_actions']                       = ['assign', 'compute'];
 
+        // set status
         $actions['status']['name']                                  = __('Status');
         $actions['status']['type']                                  = 'dropdown_status';
 
+        // assign an object
         $actions['affectobject']['name']                            = _n('Associated element', 'Associated elements', Session::getPluralNumber());
         $actions['affectobject']['type']                            = 'text';
         $actions['affectobject']['force_actions']                   = ['affectbyip', 'affectbyfqdn',
             'affectbymac',
         ];
 
+        // assign an appliance
         $actions['assign_appliance']['name']                        = _n('Associated element', 'Associated elements', Session::getPluralNumber()) . " : " . Appliance::getTypeName(1);
         $actions['assign_appliance']['type']                        = 'dropdown';
         $actions['assign_appliance']['table']                       = 'glpi_appliances';
@@ -893,9 +962,9 @@ TWIG, ['message' => __('Urgency or impact used in actions, think to add Priority
         $actions['assign_appliance']['force_actions']               = ['assign','regex_result', 'append'];
         $actions['assign_appliance']['appendto']                    = 'items_id';
 
-        $itemtype = static::getItemtype();
-
-        if ($itemtype::getValidationClassInstance() !== null) {
+        // actions for ITIL Objects with Approvals/Validations
+        if (static::getItemtype()::getValidationClassInstance() !== null) {
+            // set a user for approval
             $actions['users_id_validate']['name'] = sprintf(
                 __('%1$s - %2$s'),
                 __('Send an approval request'),
@@ -931,13 +1000,7 @@ TWIG, ['message' => __('Urgency or impact used in actions, think to add Priority
             $actions['groups_id_validate_any']['force_actions']             = ['add_validation'];
             $actions['groups_id_validate_any']['permitseveral']             = ['add_validation'];
 
-            $actions['validation_percent']['name']                      = sprintf(
-                __('%1$s - %2$s'),
-                __('Send an approval request'),
-                __('Minimum validation required')
-            );
-            $actions['validation_percent']['type']                      = 'dropdown_validation_percent';
-
+            // Approval request to requester group manager
             $actions['users_id_validate_requester_supervisor']['name']  = __('Approval request to requester group manager');
             $actions['users_id_validate_requester_supervisor']['type']  = 'yesno';
             $actions['users_id_validate_requester_supervisor']['force_actions'] = ['add_validation'];
@@ -945,21 +1008,36 @@ TWIG, ['message' => __('Urgency or impact used in actions, think to add Priority
             $actions['users_id_validate_assign_supervisor']['name']     = __('Approval request to technician group manager');
             $actions['users_id_validate_assign_supervisor']['type']     = 'yesno';
             $actions['users_id_validate_assign_supervisor']['force_actions'] = ['add_validation'];
+
+            // choose approval (validation) step
+            $actions['validationsteps_id']['name']                      = __('Set approval request step');
+            $actions['validationsteps_id']['type']                      = 'dropdown';
+            $actions['validationsteps_id']['table']                     = 'glpi_validationsteps';
+            $actions['validationsteps_id']['force_actions']             = ['add_validation'];
+
+            // choose approval (validation) threshold
+            $actions['validationsteps_threshold']['name']               = __('Set approval threshold (in percentage)');
+            $actions['validationsteps_threshold']['type']               = 'percent';
+            $actions['validationsteps_threshold']['force_actions']      = ['add_validation'];
         }
 
+        // set request source
         $actions['requesttypes_id']['name']                         = RequestType::getTypeName(1);
         $actions['requesttypes_id']['type']                         = 'dropdown';
         $actions['requesttypes_id']['table']                        = 'glpi_requesttypes';
 
+        // set takeintoaccount
         $actions['takeintoaccount_delay_stat']['name']              = __('Take into account delay');
         $actions['takeintoaccount_delay_stat']['type']              = 'yesno';
         $actions['takeintoaccount_delay_stat']['force_actions']     = ['do_not_compute'];
 
+        // add a solution
         $actions['solution_template']['name']                       = _n('Solution template', 'Solution templates', 1);
         $actions['solution_template']['type']                       = 'dropdown';
         $actions['solution_template']['table']                      = 'glpi_solutiontemplates';
         $actions['solution_template']['force_actions']              = ['assign'];
 
+        // add a task
         $actions['task_template']['name']                           = _n('Task template', 'Task templates', 1);
         $actions['task_template']['type']                           = 'dropdown';
         $actions['task_template']['table']                          = TaskTemplate::getTable();
@@ -967,15 +1045,13 @@ TWIG, ['message' => __('Urgency or impact used in actions, think to add Priority
         $actions['task_template']['permitseveral']                  = ['append'];
         $actions['task_template']['appendto']                       = '_tasktemplates_id';
 
+        // add a followup
         $actions['itilfollowup_template']['name']                   = ITILFollowupTemplate::getTypeName(1);
         $actions['itilfollowup_template']['type']                   = 'dropdown';
         $actions['itilfollowup_template']['table']                  = ITILFollowupTemplate::getTable();
         $actions['itilfollowup_template']['force_actions']          = ['append'];
         $actions['itilfollowup_template']['permitseveral']          = ['append'];
         $actions['itilfollowup_template']['appendto']               = '_itilfollowuptemplates_id';
-
-        $actions['global_validation']['name']                       = _n('Validation', 'Validations', 1);
-        $actions['global_validation']['type']                       = 'dropdown_validation_status';
 
         return $actions;
     }

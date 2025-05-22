@@ -315,6 +315,7 @@ class Change extends CommonITILObject
                 Change_Ticket::class,
                 // Done by parent: Change_User::class,
                 ChangeCost::class,
+                ChangeValidationStep::class,
                 ChangeValidation::class,
                 // Done by parent: ITILSolution::class,
                 Change_Change::class,

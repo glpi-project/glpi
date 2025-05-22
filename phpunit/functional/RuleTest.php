@@ -267,7 +267,10 @@ class RuleTest extends DbTestCase
         $this->assertFalse($rule->getRuleWithCriteriasAndActions(10000));
     }
 
-    public function testMaxActionsCount()
+    /**
+     * Test the number of predefined actions in database.
+     */
+    public function testMaxActionsCount(): void
     {
         $rule = new \Rule();
         $this->assertSame(1, $rule->maxActionsCount());
@@ -359,11 +362,13 @@ class RuleTest extends DbTestCase
                 __('Group users')
             ), 'groups_id_validate',
             ],
-            [sprintf(
-                __('%1$s - %2$s'),
-                __('Send an approval request'),
-                __('Minimum validation required')
-            ), 'validation_percent',
+            [
+                __('Set approval request step'),
+                'validationsteps_id',
+            ],
+            [
+                __('Set approval threshold (in percentage)'),
+                'validationsteps_threshold',
             ],
             [__('Approval request to requester group manager'), 'users_id_validate_requester_supervisor'],
             [__('Approval request to technician group manager'), 'users_id_validate_assign_supervisor'],

@@ -39,6 +39,7 @@ use CommonITILValidation;
 use DbTestCase;
 use Entity;
 use Generator;
+use Glpi\PHPUnit\Tests\Glpi\ValidationStepTrait;
 use Group;
 use Group_Ticket;
 use Group_User;
@@ -55,11 +56,14 @@ use TaskTemplate;
 use Ticket;
 use User;
 
-abstract class RuleCommonITILObject extends DbTestCase
+abstract class RuleCommonITILObjectTest extends DbTestCase
 {
+    use ValidationStepTrait;
+
     /**
-     * Return the name of the Rule class this test class tests
-     * @return string
+     * Return the name of the Rule class this test class tests (RuleTicket, ChangeTicket, ...)
+     *
+     * @return class-string<\RuleCommonITILObject>
      */
     protected function getTestedClass(): string
     {
@@ -69,7 +73,8 @@ abstract class RuleCommonITILObject extends DbTestCase
     }
 
     /**
-     * Get an instance of the tested Rule class
+     * Get an instance of the tested Rule class, TicketRule, ChangeRule, ...
+     *
      * @return \RuleCommonITILObject
      */
     protected function getRuleInstance(): \RuleCommonITILObject
@@ -1658,6 +1663,214 @@ abstract class RuleCommonITILObject extends DbTestCase
 
         // Check that the rule was executed
         $this->assertEquals($action_value, $itil->fields['global_validation']);
+    }
+
+    /**
+     * Test Rule Action that set a choosen validation step for the created approval
+     *
+     * - Rule to create an approval
+     * - Rule to assigne the validation step
+     *
+     * Skip test for Problems (no validation for problems)
+     */
+    public function testAssignValidationStepOnCreate(): void
+    {
+        if ($this->getITILObjectClass() === \Problem::class) {
+            return;
+        }
+
+        $this->login();
+        // arrange : create a rule (criterion, approval action creation, validation step creation action)
+        $validationstep = $this->createValidationStepTemplate(100);
+        $threshold = 50;
+        assert(false == $validationstep->fields['is_default'], 'test ValidationStep must not be the default to unsure rule is applied.');
+        $rule_classname = $this->getTestedClass();
+        $rule_builder = new RuleBuilder(__FUNCTION__, $rule_classname);
+        $rule_builder->setEntity(0);
+        $rule_builder->addCriteria('priority', Rule::PATTERN_IS, '6');
+        $rule_builder->addAction('add_validation', 'users_id_validate', getItemByTypeName(User::class, TU_USER, true));
+        $rule_builder->addAction('add_validation', 'validationsteps_threshold', $threshold);
+        $rule_builder->addAction('add_validation', 'validationsteps_id', $validationstep->getID());
+        $rule = $this->createRule($rule_builder);
+
+        // instantiate new ITILRule (TicketRule, etc)
+        /** @var \RuleCommonITILObject $itil_rule */
+        $itil_rule = new ($rule_classname);
+        $itil_rule->getFromDB($rule->getID());
+
+        // act : create ITILObject matching the rule
+        /** @var $itil \CommonITILObject */
+        $itil = $this->createItem($this->getITILObjectClass(), [
+            'name'     => 'itil created on ' . __METHOD__,
+            'content' => 'itil description content',
+            'priority' => 6,
+        ]);
+
+        // assert the itil_validationstep has the validation step defined by the rule
+        $itil_validation_step = $itil::getValidationStepInstance();
+        $this->assertTrue($itil_validation_step->getFromDBByCrit(['itemtype' => $itil::class, 'items_id' => $itil->getID()]));
+        $this->assertEquals($validationstep->getID(), $itil_validation_step->fields['validationsteps_id']);
+        $this->assertEquals($threshold, $itil_validation_step->fields['minimal_required_validation_percent']);
+
+        // assert Validation is created - (tested elsewhere)
+        $validation = $itil::getValidationClassInstance(); // TicketValidation, ChangeValidation, ...
+        $this->assertTrue($validation->getFromDBByCrit(['itils_validationsteps_id' => $itil_validation_step->getID()]), 'Validation not created by rule');
+
+    }
+    /**
+     * Test Rule Action that set a choosen validation step for the created approval
+     *
+     * - Rule to create an approval
+     * - Rule to assigne the validation step
+     */
+    public function testAssignValidationStepOnUpdate(): void
+    {
+        if ($this->getITILObjectClass() === \Problem::class) {
+            return;
+        }
+        $this->login();
+        $matching_priority = 6;
+        $non_matching_priority = 5;
+        // arrange : create a rule (criterion, approval action creation, validation step creation action)
+        $validationstep = $this->createValidationStepTemplate(100);
+        $threshold = 50;
+        assert(false == $validationstep->fields['is_default'], 'test ValidationStep must not be the default to unsure rule is applied.');
+        $rule_classname = $this->getTestedClass();
+        $rule_builder = new RuleBuilder(__FUNCTION__, $rule_classname);
+        $rule_builder->setEntity(0);
+        $rule_builder->addCriteria('priority', Rule::PATTERN_IS, '6');
+        $rule_builder->addAction('add_validation', 'users_id_validate', getItemByTypeName(User::class, TU_USER, true));
+        $rule_builder->addAction('add_validation', 'validationsteps_threshold', $threshold);
+        $rule_builder->addAction('add_validation', 'validationsteps_id', $validationstep->getID());
+        $rule = $this->createRule($rule_builder);
+
+        // instantiate new ITILRule (TicketRule, etc)
+        /** @var \RuleCommonITILObject $itil_rule */
+        $itil_rule = new ($rule_classname);
+        $itil_rule->getFromDB($rule->getID());
+
+        // act : create ITILObject not matching the rule
+        /** @var $itil \CommonITILObject */
+        $itil = $this->createItem($this->getITILObjectClass(), [
+            'name'     => 'itil created on ' . __METHOD__,
+            'content' => 'itil description content',
+            'priority' => $non_matching_priority,
+        ]);
+        // assert no validation is created
+        $itil_validation_step = $itil::getValidationStepInstance();
+        $this->assertFalse($itil_validation_step->getFromDBByCrit(['itemtype' => $itil::class, 'items_id' => $itil->getID()]));
+
+        // assert the itil_validationstep has the validation step defined by the rule
+        $itil->update([
+            'id'       => $itil->getID(),
+            'priority' => $matching_priority,
+        ]);
+        $this->assertTrue($itil_validation_step->getFromDBByCrit(['itemtype' => $itil::class, 'items_id' => $itil->getID()]));
+        $this->assertEquals($validationstep->getID(), $itil_validation_step->fields['validationsteps_id']);
+        $this->assertEquals($threshold, $itil_validation_step->fields['minimal_required_validation_percent']);
+
+        // assert Validation is created - (tested elsewhere)
+        $validation = $itil::getValidationClassInstance(); // TicketValidation, ChangeValidation, ...
+        $this->assertTrue($validation->getFromDBByCrit(['itils_validationsteps_id' => $itil_validation_step->getID()]), 'Validation not created by rule');
+    }
+
+    /**
+     * Test Rule Action that set an approval threshold (percentage) of a validation step
+     *
+     * - Rule to create an approval
+     * - (Rule to assigne the validation step)
+     * - Rule to choose threshold
+     */
+    public function testAssignValidationStepThresholdOnCreation(): void
+    {
+        if ($this->getITILObjectClass() === \Problem::class) {
+            return;
+        }
+        $this->login();
+        // arrange : create a rule (criterion, validation threshold definition)
+        $validationstep = $this->getInitialDefaultValidationStep();
+        $threshold = 50;
+        assert($threshold !== $validationstep->fields['minimal_required_validation_percent'], 'Threshold must not be the default to unsure rule is applied.');
+        $rule_classname = $this->getTestedClass();
+        $rule_builder = new RuleBuilder(__FUNCTION__, $rule_classname);
+        $rule_builder->setEntity(0);
+        $rule_builder->addCriteria('priority', Rule::PATTERN_IS, '6');
+        $rule_builder->addAction('add_validation', 'validationsteps_threshold', $threshold);
+        $rule = $this->createRule($rule_builder);
+
+        // instantiate new ITILRule (TicketRule, etc)
+        /** @var \RuleCommonITILObject $itil_rule */
+        $itil_rule = new ($rule_classname);
+        $itil_rule->getFromDB($rule->getID());
+
+        // act : create ITILObject matching the rule
+        /** @var $itil \CommonITILObject */
+        $itil = $this->createItem($this->getITILObjectClass(), [
+            'name'     => 'itil created on ' . __METHOD__,
+            'content' => 'itil description content',
+            'priority' => 6,
+        ]);
+
+        // assert the itil_validationstep has the minimal_required_validation_percent (threshold) step defined by the rule
+        $itil_validation_step = $itil::getValidationStepInstance();
+        $this->assertTrue($itil_validation_step->getFromDBByCrit(['itemtype' => $itil::class, 'items_id' => $itil->getID()]));
+        $this->assertEquals($validationstep->getID(), $itil_validation_step->fields['validationsteps_id']);
+        $this->assertEquals($threshold, $itil_validation_step->fields['minimal_required_validation_percent']);
+
+    }
+
+    /**
+     * Test Rule Action that set an approval threshold (percentage) of a validation step
+     *
+     * - Rule to create an approval
+     * - (Rule to assigne the validation step)
+     * - Rule to choose threshold
+     */
+    public function testAssignValidationStepThresholdOnUpdate(): void
+    {
+        if ($this->getITILObjectClass() === \Problem::class) {
+            return;
+        }
+        $this->login();
+        $matching_priority = 6;
+        $non_matching_priority = 5;
+        // arrange : create a rule (criterion, validation threshold definition)
+        $validationstep = $this->getInitialDefaultValidationStep();
+        $threshold = 50;
+        assert($threshold !== $validationstep->fields['minimal_required_validation_percent'], 'Threshold must not be the default to unsure rule is applied.');
+        $rule_classname = $this->getTestedClass();
+        $rule_builder = new RuleBuilder(__FUNCTION__, $rule_classname);
+        $rule_builder->setEntity(0);
+        $rule_builder->addCriteria('priority', Rule::PATTERN_IS, '6');
+        $rule_builder->addAction('add_validation', 'validationsteps_threshold', $threshold);
+        $rule = $this->createRule($rule_builder);
+
+        // instantiate new ITILRule (TicketRule, etc)
+        /** @var \RuleCommonITILObject $itil_rule */
+        $itil_rule = new ($rule_classname);
+        $itil_rule->getFromDB($rule->getID());
+
+        // act : create ITILObject matching the rule
+        /** @var $itil \CommonITILObject */
+        $itil = $this->createItem($this->getITILObjectClass(), [
+            'name'     => 'itil created on ' . __METHOD__,
+            'content' => 'itil description content',
+            'priority' => $non_matching_priority,
+        ]);
+
+
+        $itil_validation_step = $itil::getValidationStepInstance();
+        $this->assertFalse($itil_validation_step->getFromDBByCrit(['itemtype' => $itil::class, 'items_id' => $itil->getID()]));
+
+        $itil->update([
+            'id'       => $itil->getID(),
+            'priority' => $matching_priority,
+        ]);
+
+        // assert the itil_validationstep has the minimal_required_validation_percent (threshold) step defined by the rule
+        $this->assertTrue($itil_validation_step->getFromDBByCrit(['itemtype' => $itil::class, 'items_id' => $itil->getID()]));
+        $this->assertEquals($validationstep->getID(), $itil_validation_step->fields['validationsteps_id']);
+        $this->assertEquals($threshold, $itil_validation_step->fields['minimal_required_validation_percent']);
     }
 
     public function testITILCategoryCode()

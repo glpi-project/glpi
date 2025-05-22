@@ -177,25 +177,49 @@
             <input type="hidden" name="itemtype" value="{{ item.getType() }}" />
             <input type="hidden" name="{{ item.getForeignKeyField() }}" value="{{ item.fields['id'] }}" />
 
-            <div class="card-header">
-                <h3 class="cart-title">{{ __("Validation request") }}</h3>
-            </div>
             <div class="card-body">
-                {% if item.isNewItem() %}
-                   {{ fields.dropdownField(
-                      'ITILValidationTemplate',
-                      'itilvalidationtemplates_id',
-                      '',
-                      _n('Template', 'Templates', 1),
-                      {
-                         'full_width': true,
-                         'on_change': 'itilvalidationtemplate_update' ~ rand ~ '(this.value);',
-                         'entity': item.fields['entities_id'],
-                         'rand': rand,
-                      },
+                {% if subitem.isNewItem() %}
+                    {# Validation template #}
+                    {{ fields.dropdownField(
+                        'ITILValidationTemplate',
+                        'itilvalidationtemplates_id',
+                        '',
+                        _n('Template', 'Templates', 1),
+                        {
+                            'full_width': true,
+                            'on_change': 'itilvalidationtemplate_update' ~ rand ~ '(this.value);',
+                            'entity': item.fields['entities_id'],
+                            'rand': rand,
+                        },
+                    ) }}
+
+                    {# Validation step #}
+                    {{ fields.dropdownField(
+                        'ValidationStep',
+                        '_validationsteps_id',
+                        '',
+                        _n('Approval step', 'Approval step', 1),
+                        {
+                            'full_width': true,
+                            'rand': rand,
+                            'required': true,
+                        }
+                    ) }}
+                {% else %}
+                    {{ fields.readOnlyField(
+                        '',
+                        get_item_name(
+                            'ValidationStep',
+                            get_item(item.getValidationStepClassName(), subitem.fields['itils_validationsteps_id']).fields['validationsteps_id']
+                        ),
+                        _n('Approval step', 'Approval step', 1),
+                        {
+                            'full_width': true,
+                        }
                     ) }}
                 {% endif %}
 
+                {# Requester #}
                 {{ fields.readOnlyField(
                     'approval_requester',
                     get_current_user().getFriendlyName(),
@@ -206,6 +230,7 @@
                     }
                 ) }}
 
+               {# Approver #}
                 {% if subitem.isNewItem() %}
                     {% set validation_right = 'validate' %}
                     {% if item.getType() == 'Ticket' %}
@@ -242,6 +267,7 @@
                     ) }}
                 {% endif %}
 
+                {# Comment #}
                 {{ fields.textareaField(
                     'comment_submission',
                     subitem.fields['comment_submission'],
@@ -304,6 +330,7 @@
       {% endif %}
 
       <script type="text/javascript">
+         // --- fill form with template data
          function itilvalidationtemplate_update{{ rand }}(value) {
             $.ajax({
                url: '{{ path('/ajax/itilvalidation.php') }}',
@@ -319,6 +346,7 @@
                   setRichTextEditorContent("comment_submission_{{ rand }}", data.content);
                }
 
+               // Validator field
                if (data.validatortype !== undefined) {
                   // set validator type
                   $("#dropdown__validatortype_{{ rand }}").trigger('setValue', "0");
@@ -359,6 +387,12 @@
                      });
                   }
                }
+
+               // Validation step field
+               if( data.validationsteps_id !== undefined ) {
+                  $("#dropdown__validationsteps_id{{ rand }}").trigger('setValue', data.validationsteps_id);
+               }
+
             });
          }
       </script>

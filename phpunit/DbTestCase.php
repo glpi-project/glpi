@@ -232,12 +232,14 @@ class DbTestCase extends \GLPITestCase
     }
 
     /**
-     * Create an item of the given class
+     * Create an item of the given class and check data of created object are same as given in input.
+     *
+     * Fields starting with _ and fields provided in $skip_fields are ignored in the checking.
      *
      * @template T of CommonDBTM
      * @param class-string<T> $itemtype
      * @param array $input
-     * @param array $skip_fields Fields that wont be checked after creation
+     * @param array $skip_fields Fields that won't be checked after creation
      *
      * @return T
      */
@@ -247,7 +249,7 @@ class DbTestCase extends \GLPITestCase
         $item->add($input);
         $id = $item->getID();
         $this->assertIsInt($id);
-        $this->assertGreaterThan(0, $id);
+        $this->assertGreaterThan(0, $id, 'Failed to create item ' . $itemtype . ' with input ' . json_encode($input));
 
         // Remove special fields
         $skip_fields[] = 'id';

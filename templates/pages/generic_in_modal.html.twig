@@ -39,9 +39,7 @@
     ]
 ) }}
 
-{{ object.showForm(
-    id,
-    form_options
-) }}
+{#{% call(object.showForm(id, form_options)) %}#}
+{% set _ = object.showForm(id, form_options) %}
 
 {{ call('Html::popFooter') }}
