@@ -41,7 +41,7 @@
       <div class="read-only-content w-100">
          {{ entry_i['content']|raw }}
 
-         {% if entry_i['comment_submission']|length %}
+         {% if (entry_i['comment_submission'] ?? '')|length %}
             <div class='alert alert-info mt-2'>
                 <div class='d-flex'>
                     <div><i class='ti ti-quote me-2'></i></div>
