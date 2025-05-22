@@ -69,14 +69,14 @@
                 {% endif %}
 
                 {{ fields.smallTitle(__('Search criteria for users')) }}
-                {{ fields.textField('basedn', _request['basedn'], __('BaseDN'), {
+                {{ fields.textField('basedn', _request['basedn'] ?? '', __('BaseDN'), {
                     full_width: true,
                     add_field_class: is_expert_interface ? '' : 'd-none',
                     add_field_attribs: {
                         'data-interface': 'expert'
                     }
                 }) }}
-                {{ fields.textField('ldap_filter', _request['ldap_filter'], __('Search filter for users'), {
+                {{ fields.textField('ldap_filter', _request['ldap_filter'] ?? '', __('Search filter for users'), {
                     full_width: true,
                     add_field_class: is_expert_interface ? '' : 'd-none',
                     add_field_attribs: {
@@ -86,7 +86,7 @@
 
                 {% set simple_fields = {
                     'login_field': __('Login'),
-                    'sync_field': __('Synchronization field') ~ ' (' ~ authldap.fields['sync_field'] ~ ')',
+                    'sync_field': __('Synchronization field') ~ ' (' ~ authldap.fields['sync_field'] ?? '' ~ ')',
                     'email1_field': _n('Email', 'Emails', 1),
                     'email2_field': __('%1$s %2$s')|format(_n('Email', 'Emails', 1), '2'),
                     'email3_field': __('%1$s %2$s')|format(_n('Email', 'Emails', 1), '3'),
