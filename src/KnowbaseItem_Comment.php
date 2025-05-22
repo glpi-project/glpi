@@ -168,7 +168,7 @@ class KnowbaseItem_Comment extends CommonDBTM
                     }
 
                     $.ajax({
-                       url: '{$CFG_GLPI["root_doc"]}/ajax/getKbComment.php',
+                       url: '{$CFG_GLPI['root_doc']}/ajax/getKbComment.php',
                        method: 'post',
                        cache: false,
                        data: _data,
@@ -199,7 +199,7 @@ class KnowbaseItem_Comment extends CommonDBTM
                     }
 
                     $.ajax({
-                       url: '{$CFG_GLPI["root_doc"]}/ajax/getKbComment.php',
+                       url: '{$CFG_GLPI['root_doc']}/ajax/getKbComment.php',
                        method: 'post',
                        cache: false,
                        data: _data,

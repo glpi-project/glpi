@@ -983,7 +983,7 @@ JAVASCRIPT;
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        $base_url = "{$CFG_GLPI["root_doc"]}/front/rule.backup.php";
+        $base_url = "{$CFG_GLPI['root_doc']}/front/rule.backup.php";
         $buttons  = [
             "{$base_url}?action=import" =>
             "<i class='fas fa-upload'></i><span>" . _x('button', 'Import') . "</span>",
