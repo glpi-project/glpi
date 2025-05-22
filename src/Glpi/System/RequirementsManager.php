@@ -42,7 +42,6 @@ use Glpi\System\Requirement\DirectoryWriteAccess;
 use Glpi\System\Requirement\Extension;
 use Glpi\System\Requirement\ExtensionConstant;
 use Glpi\System\Requirement\ExtensionGroup;
-use Glpi\System\Requirement\InstallationNotOverriden;
 use Glpi\System\Requirement\IntegerSize;
 use Glpi\System\Requirement\LogsWriteAccess;
 use Glpi\System\Requirement\MemoryLimit;
@@ -141,8 +140,6 @@ class RequirementsManager
         if ($db instanceof \DBmysql) {
             $requirements[] = new DbEngine($db);
         }
-
-        $requirements[] = new InstallationNotOverriden($db);
 
         /** @var \Psr\Log\LoggerInterface $PHPLOGGER */
         global $PHPLOGGER;
