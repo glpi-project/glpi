@@ -1847,4 +1847,65 @@ class CommonDBTMTest extends DbTestCase
             ])
         );
     }
+
+
+    /**
+     * Provider for self::testFilterValues().
+     *
+     * @return array
+     */
+    public static function getFilterValuesProvider()
+    {
+        return [
+            [
+                // This test ensures that fields like 'completename' (when typed as 'itemlink',
+                // e.g., in CommonTreeDropdown or its children like IPNetwork) are **excluded**
+                // from length validation. These fields are stored as TEXT or MEDIUMTEXT in DB,
+                // not as VARCHAR, so values longer than 255 characters must be preserved.
+                \IPNetwork::class,
+                // Initial input (short version without completename)
+                [
+                    'entities_id'     => 0,
+                    'network'         => '192.168.7.0 / 255.255.255.0',
+                    'gateway'         => '192.168.7.245',
+                    'ipnetworks_id'   => 0,
+                    'name'            => '192.168.7.0/255.255.255.0 - 192.168.7.245',
+                    'level'           => 1,
+                ],
+                // Update input (includes long completename to test length bypass)
+                [
+                    'entities_id'     => 0,
+                    'network'         => '192.168.7.0 / 255.255.255.0',
+                    'gateway'         => '192.168.7.245',
+                    'ipnetworks_id'   => 0,
+                    'name'            => '192.168.7.0/255.255.255.0 - 192.168.7.245',
+                    'level'           => 7,
+                    'completename'    => '192.168.0.0/255.255.0.0 - 192.168.8.1 > 192.168.0.0/255.255.128.0 - 192.168.6.254 > 192.168.0.0/255.255.240.0 - 192.168.0.1 > 192.168.4.0/255.255.252.0 - 192.168.4.1 > 192.168.6.0/255.255.254.0 - 192.168.6.1 > 192.168.7.0/255.255.255.0 - 192.168.7.254 > 192.168.7.0/255.255.255.0 - 192.168.7.245',
+                ],
+            ],
+        ];
+    }
+
+
+    /**
+     * Test CommonDBTM FilterValues() method.
+     *
+     * @dataProvider getFilterValuesProvider
+     * @return void
+     */
+    public function testFilterValues($classname, $add_input, $update_input)
+    {
+        $item = new $classname();
+
+        // Step 1: create the item and assert successful creation
+        $this->assertGreaterThan(0, $item->add($add_input));
+        $this->assertTrue($item->getFromDB($item->getID()));
+        $this->checkInput($item, $item->getID(), $add_input);
+
+        // Step 2: update the item with new values (including long completename) and check again
+        $this->assertTrue($item->update(['id' => $item->getID()] + $update_input));
+        $this->assertTrue($item->getFromDB($item->getID()));
+        $this->checkInput($item, $item->getID(), $update_input);
+    }
+
 }
