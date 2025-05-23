@@ -98,7 +98,7 @@ trait SLMTrait
     private function createSLA(array $data = [], int $sla_type = SLM::TTO, ?SLM $slm = null): array
     {
         assert(in_array($sla_type, array_keys(SLA::getTypes())));
-        $slm = $slm ?? $this->createSLM();
+        $slm ??= $this->createSLM();
 
         [$amount, $unit] = match ($sla_type) {
             SLM::TTO => self::SLA_TTO_DELAY,
