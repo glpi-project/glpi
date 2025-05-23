@@ -35,6 +35,8 @@
 
 namespace Glpi\Application;
 
+use FilesystemIterator;
+
 final class ResourcesChecker
 {
     public function __construct(private string $root_dir) {}
@@ -45,6 +47,12 @@ final class ResourcesChecker
      */
     public function checkResources(): void
     {
+        if ($this->isSourceCodeMixedOfMultipleVersions()) {
+            echo 'Source code files of a previous GLPI version were detected.' . PHP_EOL;
+            echo 'Please update GLPI by following the procedure described in the installation documentation.' . PHP_EOL;
+            exit(1); // @phpstan-ignore glpi.forbidExit (Script execution should be stopped to prevent further errors)
+        }
+
         if (!$this->shouldCheckResources()) {
             return;
         }
@@ -58,6 +66,24 @@ final class ResourcesChecker
             echo 'Run "php bin/console locales:compile" in the glpi tree to fix this.' . PHP_EOL;
             exit(1); // @phpstan-ignore glpi.forbidExit (Script execution should be stopped to prevent further errors)
         }
+    }
+
+    /**
+     * Check if the GLPI source code files seems to contain a mix of multiple GLPI versions.
+     */
+    private function isSourceCodeMixedOfMultipleVersions(): bool
+    {
+        $version_dir = $this->root_dir . '/version';
+
+        if (!\file_exists($version_dir)) {
+            // Cannot check
+            return false;
+        }
+
+        $file_iterator = new FilesystemIterator($version_dir);
+        $version_files_count = iterator_count($file_iterator);
+
+        return $version_files_count > 1;
     }
 
     /**
