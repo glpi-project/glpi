@@ -1125,7 +1125,7 @@
                 <span class="d-flex align-items-center">
                      <i class="ti ti-stopwatch slt me-1"></i>
                      <span class="text-truncate"
-                           title="{{ get_item_comment(la.class, la.id) }}"
+                           title="{{ get_item_comment(la.class, la.olas_id) }}"
                            data-bs-toggle="tooltip" data-bs-placement="top">
                             {{ la.name }}
                      </span>
@@ -1164,12 +1164,12 @@
                             delete_date = 1;
                         }
 
-                        {% set action_prefix = la.class == 'OLA' ? 'ola ' : 'sla' %}
+                        {% set action_prefix = la.class == 'OLA' ? 'ola' : 'sla' %}
                         submitGetLink('{{ la.item.getFormURL() }}', {
                             '{{ action_prefix }}_delete': 1,
                             'id': {{ la.item.fields['id'] }},
                             'type': {{ la.type }},
-                            'la_id': {{ la.id }},
+                            'la_id': {{ la.olas_id }},
                             '_glpi_csrf_token': '{{ csrf_token() }}',
                             '_glpi_simple_form': 1,
                             'delete_date': delete_date
@@ -1177,6 +1177,9 @@
                     }
             </script>
         {% endif %}
+
+        {# hidden input field to preserve olas on update #}
+        <input type="hidden"   name="_olas_id[]" value="{{ la.olas_id }}" />
     </div>
 
     {# <span>Nouveau design à implémenter Ola field à implementer</span> #}
@@ -1310,7 +1313,8 @@ option.rand is mandatory to link to datetime field
 {#            data-bs-toggle="modal"#}
 {#            data-bs-target="#{{ assign_la_id }}"#}
             aria-expanded="false"
-            aria-controls="{{ assign_la_id }}">
+{#            aria-controls="{{ assign_la_id }}"#}
+    >
         <i class="ti ti-plus slt pointer"
            title="{{ __('Add') }}"
            data-bs-toggle="tooltip" data-bs-placement="top"></i>

@@ -237,7 +237,7 @@ Handle only linked ola, not ola ttr and tto defined using datetime fields
     </tr>
     </thead>
     <tbody>
-{% for ola in item.getAssociatedOlas() %}
+{% for ola in item.getOlasData() %}
     <tr>
         {% if ola.type == constant('SLM::TTO') %}
 {#            {% set display_datetime_field  = field_options.fields_template is not defined or not field_options.fields_template.isHiddenField('time_to_own') %}#}
