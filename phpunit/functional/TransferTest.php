@@ -648,4 +648,58 @@ class TransferTest extends DbTestCase
         $this->assertTrue($ticket->getFromDB($ticket_id));
         $this->assertEquals(0, $ticket->fields['locations_id']);
     }
+
+    public function testTicketWithDocumentTransfer()
+    {
+        $this->login();
+
+        //Original entity
+        $fentity = (int) getItemByTypeName('Entity', '_test_root_entity', true);
+        //Destination entity
+        $dentity = (int) getItemByTypeName('Entity', '_test_child_2', true);
+
+        $ticket = new \Ticket();
+        $ticket_id = (int) $ticket->add([
+            'name' => 'ticket',
+            'content' => 'content ticket',
+            'entities_id' => $fentity,
+        ]);
+        $this->assertGreaterThan(0, $ticket_id);
+        $this->assertTrue($ticket->getFromDB($ticket_id));
+
+        // Create a document stub.
+        $mdoc = $this->getMockBuilder(\Document::class)
+            ->onlyMethods(['moveUploadedDocument'])
+            ->getMock();
+        $mdoc->method('moveUploadedDocument')->willReturn(true);
+
+        $input['upload_file'] = 'filename.ext';
+        $input['itemtype'] = \Ticket::class;
+        $input['items_id'] = $ticket_id;
+        $input['entities_id'] = $fentity;
+
+        $docid = $mdoc->add($input);
+        $this->assertGreaterThan(0, $docid);
+
+        $doc_item = new \Document_Item();
+        $this->assertTrue($doc_item->getFromDBByCrit(['documents_id' => $docid]));
+        $this->assertSame($fentity, $doc_item->fields['entities_id']);
+
+        //transfer to another entity
+        $transfer = new \Transfer();
+        $this->assertTrue($transfer->getFromDB(1));
+
+        //update transfer model to keep documents
+        $transfer->fields["keep_document"] = 1;
+        $this->assertTrue($transfer->update($transfer->fields));
+
+        $item_to_transfer = [\Ticket::class => [$ticket_id => $ticket_id]];
+        $transfer->moveItems($item_to_transfer, $dentity, $transfer->fields);
+
+        //reload ticket
+        $this->assertTrue($ticket->getFromDB($ticket_id));
+        $doc_item = new \Document_Item();
+        $this->assertTrue($doc_item->getFromDBByCrit(['documents_id' => $docid]));
+        $this->assertSame($dentity, $doc_item->fields['entities_id']);
+    }
 }
