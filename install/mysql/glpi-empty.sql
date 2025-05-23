@@ -6744,12 +6744,12 @@ CREATE TABLE `glpi_olas` (
 DROP TABLE IF EXISTS `glpi_items_olas`;
 CREATE TABLE `glpi_items_olas` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
-  `due_time` datetime,
-  `end_time` datetime,
+  `due_time` timestamp,
+  `end_time` timestamp,
   `items_id` int unsigned NOT NULL,
   `itemtype` varchar(255) NOT NULL,
   `olas_id` int unsigned NOT NULL,
-  `start_time` datetime,
+  `start_time` timestamp,
   `waiting_time` int NOT NULL DEFAULT 0,
   `olalevel_date` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`),
