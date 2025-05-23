@@ -763,12 +763,16 @@ class Item_SoftwareVersion extends CommonDBRelation
                 echo "<td>" . htmlescape($data['location']) . "</td>";
                 echo "<td>" . htmlescape($data['state']) . "</td>";
                 echo "<td>" . htmlescape($data['groupe']) . "</td>";
-                echo "<td>" . formatUserLink(
-                    $data['userid'],
-                    $data['username'],
-                    $data['userrealname'],
-                    $data['userfirstname'],
-                ) . "</td>";
+                echo "<td>";
+                if ($data['userid']) {
+                    echo formatUserLink(
+                        $data['userid'],
+                        $data['username'],
+                        $data['userrealname'],
+                        $data['userfirstname'],
+                    );
+                }
+                echo "</td>";
 
                 $lics = Item_SoftwareLicense::getLicenseForInstallation(
                     $data['item_type'],
