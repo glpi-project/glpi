@@ -1021,8 +1021,8 @@ class CommonDBTM extends CommonGLPI
     /**
      * Delete children items and relation with other items from database.
      *
-     * @param array $relations_classes List of classname on which deletion will be done
-     *                                 Classes needs to extends CommonDBConnexity.
+     * @param class-string[] $relations_classes List of classname on which deletion will be done
+     *                                 class needs to extend CommonDBConnexity.
      *
      * @return void
      **/
