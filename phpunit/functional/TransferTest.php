@@ -595,7 +595,7 @@ class TransferTest extends DbTestCase
         $transfer->fields["keep_location"] = 1;
         $this->assertTrue($transfer->update($transfer->fields));
 
-        $item_to_transfer = ["ticket" => [$ticket_id => $ticket_id]];
+        $item_to_transfer = [\Ticket::class => [$ticket_id => $ticket_id]];
         $transfer->moveItems($item_to_transfer, $dentity, $transfer->fields);
 
         //reload ticket
@@ -641,7 +641,7 @@ class TransferTest extends DbTestCase
         $transfer->fields["keep_location"] = 0;
         $this->assertTrue($transfer->update($transfer->fields));
 
-        $item_to_transfer = ["ticket" => [$ticket_id => $ticket_id]];
+        $item_to_transfer = [\Ticket::class => [$ticket_id => $ticket_id]];
         $transfer->moveItems($item_to_transfer, $dentity, $transfer->fields);
 
         //reload ticket
