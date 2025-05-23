@@ -85,6 +85,9 @@ class Document extends CommonDBTM
         // We also allow direct items to check
         if ($item instanceof CommonGLPI) {
             $item = $item->getType();
+        } elseif (!getItemForItemtype($item)) {
+            //itemtype is invalid
+            throw new \RuntimeException("Itemtype $item is not valid");
         }
 
         if (in_array($item, $CFG_GLPI['document_types'])) {
