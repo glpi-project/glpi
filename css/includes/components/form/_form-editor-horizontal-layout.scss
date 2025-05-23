@@ -48,6 +48,8 @@
     margin-bottom: 1rem;
 
     &[data-glpi-form-editor-active-horizontal-blocks] {
+        width: calc(100% + 2.5rem + 0.25rem);
+
         [data-glpi-form-editor-horizontal-blocks] {
             &:has(> [data-glpi-form-editor-active-question], [data-glpi-form-editor-active-comment]) {
                 [data-glpi-form-editor-question], [data-glpi-form-editor-comment] {

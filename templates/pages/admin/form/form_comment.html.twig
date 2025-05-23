@@ -46,6 +46,7 @@
 
 <section
     role="option"
+    class="d-flex"
     data-glpi-form-editor-block
     data-glpi-form-editor-comment
     data-glpi-form-editor-condition-type="{{ enum('Glpi\\Form\\Condition\\Type').COMMENT.value }}"
@@ -191,7 +192,7 @@
         {{ include('pages/admin/form/form_toolbar.html.twig', {
             'can_update'     : can_update,
             'form'           : form,
-            'vertical_layout': false
+            'vertical_layout': true
         }, with_context = false) }}
     </div>
     <div data-glpi-form-editor-question-drag-merge></div>

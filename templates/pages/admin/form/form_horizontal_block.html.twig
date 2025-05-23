@@ -44,10 +44,12 @@
 </div>
 
 <section
+    class="d-flex"
     data-glpi-form-editor-horizontal-blocks-container
     aria-label="{{ __("Horizontal blocks layout") }}"
 >
     <section
+        class="flex-grow-1"
         data-glpi-form-editor-horizontal-blocks
         aria-label="{{ __("Horizontal blocks") }}"
     >
@@ -89,7 +91,7 @@
     {{ include('pages/admin/form/form_toolbar.html.twig', {
         'can_update'     : can_update,
         'form'           : form,
-        'vertical_layout': false,
+        'vertical_layout': true,
     }, with_context = false) }}
 </section>
 
