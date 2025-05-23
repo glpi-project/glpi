@@ -2615,9 +2615,7 @@ abstract class CommonITILObject extends CommonDBTM
                 );
                 // Add current level to do
                 $sla->addLevelToDo($this);
-            }
-            else // sla set by date
-            {
+            } else { // sla set by date
                 // Using calendar
                 if (
                     ($calendars_id > 0)
@@ -2647,51 +2645,55 @@ abstract class CommonITILObject extends CommonDBTM
             // --- OLA case : compute ola durations and delays (note, both ttr and tto are computed for ola)
             // @todoseb encapsuler cette logique dans item_ola
 
-            $_item_ola = new Item_Ola();
-            $item_olas_array = $_item_ola->find(['items_id' => $this->fields['id'], 'itemtype' => static::class]);
+            if (is_a($this, Ticket::class)) {
+                $_item_ola = new Item_Ola();
+                $item_olas_array = $_item_ola->find(['items_id' => $this->fields['id'], 'itemtype' => static::class]);
 
-            /** @var \Item_Ola[] $item_olas */
-            $item_olas = $_item_ola->getByIds(array_column($item_olas_array, 'olas_id'));
-            $calendars_id = $this->getCalendar();
+                $item_olas = $_item_ola->getByIds(array_column($item_olas_array, 'id'));
+                $calendars_id = $this->getCalendar();
 
-            foreach($item_olas as $item_ola) {
-                $ola = $item_ola->getOla();
-                $ola->setTicketCalendar($calendars_id);
-                $item_ola_data['id'] = $item_ola->getID();
+                foreach ($item_olas as $item_ola) {
+                    $ola = $item_ola->getOla();
 
-                // update waiting_time
-                $item_ola_data['waiting_time'] = $item_ola->fields['waiting_time'] + $ola->getActiveTimeBetween(
-                    $this->fields['begin_waiting_date'],
-                    $_SESSION["glpi_currenttime"]
-                );
+                    // OLA TTO is not impacted by waiting time, update only for TTR
+                    if ($ola->fields['type'] == SLM::TTO) {
+                        continue;
+                    }
 
-                // update due_time (time_to_own, time_to_resolve)
-                $item_ola_data['due_time'] = $ola->computeDate(
-                    $item_ola->fields['start_time'],
-                    $item_ola_data['waiting_time']
-                );
+                    $ola->setTicketCalendar($calendars_id);
+                    $item_ola_data['id'] = $item_ola->getID();
 
-                // update olalevel_date (do not change olalevels_id)
-                // pas d'appel de manageOlaLevel pour éviter le multiplier les requetes
-                $item_ola_data['olalevel_date'] = $ola->computeExecutionDate(
-                    $item_ola->fields['start_time'],
-                    $item_ola->fields['olalevels_id'],
-                    $item_ola_data['waiting_time']
-                );
+                    // update waiting_time
+                    if ($ola->fields['type'] == SLM::TTR) {
+                        $item_ola_data['waiting_time'] = $item_ola->fields['waiting_time'] + $ola->getActiveTimeBetween(
+                            $this->fields['begin_waiting_date'],
+                            $_SESSION["glpi_currenttime"]
+                        );
+                    } else {
+                        $item_ola_data['waiting_time'] = 0;
+                    }
 
-//                $ola->addLevelToDo($this);
+                    // update due_time (former internal_time_to_own, internal_time_to_resolve)
+                    $item_ola_data['due_time'] = $ola->computeDate(
+                        $item_ola->fields['start_time'],
+                        $item_ola_data['waiting_time']
+                    );
 
-                if(!$_item_ola->update($item_ola_data)) {
-                    throw new \Exception('Failed to update item_ola');
+                    if (!(new Item_Ola())->update($item_ola_data)) {
+                        throw new \Exception('Failed to update item_ola');
+                    }
+
+                    OLA::deleteLevelsToDo($this);
+                    $this->manageOlaLevel($item_ola->fields['olas_id']);
                 }
+
+                $this->updates[] = "waiting_duration";
+                $this->fields["waiting_duration"] += $delay_time;
+
+                // Reset begin_waiting_date
+                $this->updates[] = "begin_waiting_date";
+                $this->fields["begin_waiting_date"] = 'NULL';
             }
-
-            $this->updates[]                   = "waiting_duration";
-            $this->fields["waiting_duration"] += $delay_time;
-
-            // Reset begin_waiting_date
-            $this->updates[]                    = "begin_waiting_date";
-            $this->fields["begin_waiting_date"] = 'NULL';
         }
 
         // Set begin waiting date if needed
@@ -2710,7 +2712,8 @@ abstract class CommonITILObject extends CommonDBTM
             }
 
             if (isset($this->fields['olas_id_ttr']) && ($this->fields['olas_id_ttr'] > 0)) {
-                OLA::deleteLevelsToDo($this);
+                OLA::deleteLevelsToDo($this); // // @todoseb probably useless -> exception below
+                //                throw new \Exception('These lines must be removed, see above in code');
             }
         }
 

@@ -98,8 +98,6 @@ class Ticket extends CommonITILObject
     public const OWN              =  32768;
     public const CHANGEPRIORITY   =  65536;
     public const READNEWTICKET    = 262144;
-    /** @var array|null cache for $this->getAssociatedOlas() */
-    private array|null $associatedOlas;
 
     #[Override]
     public static function supportHelpdeskDisplayPreferences(): bool
@@ -474,7 +472,7 @@ class Ticket extends CommonITILObject
             );
             $ola->setTicketCalendar($calendars_id);
             if ($ola->fields['type'] == SLM::TTR) {
-                $data["olalevels_id_ttr"] = OlaLevel::getFirstOlaLevel($olas_id);
+                $data["olalevels_id_ttr"] = OlaLevel::getFirstOlaLevel($olas_id);  // @todoseb to remove - probably no need to set it in items_ola, SLMTest is ok, try all tests...
                 $data['ola_ttr_begin_date'] = $date;
             } elseif ($ola->fields['type'] == SLM::TTO) {
                 $data['ola_tto_begin_date'] = $date;
@@ -483,7 +481,7 @@ class Ticket extends CommonITILObject
             $data['ola_waiting_duration'] = (int) ($this->fields['ola_waiting_duration'] ?? 0);
             $data[$dateField]             = $ola->computeDate($date, $data['ola_waiting_duration']);
         } else {
-            $data["olalevels_id_ttr"]     = 0;
+            $data["olalevels_id_ttr"]     = 0; // @todoseb to remove - probably no need to set it in items_ola
             $data[$olaField]              = 0;
             $data['ola_waiting_duration'] = 0;
         }
@@ -494,25 +492,29 @@ class Ticket extends CommonITILObject
     /**
      * Delete Level Agreement for the ticket
      *
-     * @since 9.2
+     * - update relataed fields in ticket ($laType = SLA only)
+     *  - remove Item_Olas
+     *  - OlaLevel_Ticket
      *
-     * @param string  $laType (SLA | OLA)
+     * @param class-string<\LevelAgreement> $laType
      * @param integer $la_id the sla/ola id
      * @param integer $subtype (SLM::TTR | SLM::TTO)
      * @param bool    $delete_date (default false)
      *
      * @return bool
-     **/
+     **@since 9.2
+     *
+     */
     public function deleteLevelAgreement($laType, $la_id, $subtype, $delete_date = false)
     {
         if ($laType === 'OLA') {
-            // delete Item_Ola
+            // delete Item_Ola, there is just one item_ola for one ticket + ola
             $item_ola = new Item_Ola();
-            if (!$item_ola->delete(['id' => (int) $la_id])) {
+            if (!$item_ola->deleteByCriteria(['olas_id' => (int) $la_id])) {
                 throw new \RuntimeException('Unable to delete Item_Ola #' . $la_id);
             }
 
-            // delete level agreement level
+            // delete level agreement level to do
             $level_ticket  = new OlaLevel_Ticket();
             $level_ticket->deleteForTicket($la_id, $subtype);
 
@@ -1301,7 +1303,7 @@ class Ticket extends CommonITILObject
         $olalevels_id = OlaLevel::getFirstOlaLevel($olas_id);
 
         $ola = new OLA();
-        if ($ola->getFromDB($olas_id)) {
+        if ($olalevels_id && $ola->getFromDB($olas_id)) {
             $ola->clearInvalidLevels($this->fields['id']);
             $calendars_id = Entity::getUsedConfig(
                 'calendars_strategy',
@@ -1310,7 +1312,7 @@ class Ticket extends CommonITILObject
                 0
             );
             $ola->setTicketCalendar($calendars_id);
-            $ola->addLevelToDo($this, $olalevels_id);
+            $ola->addLevelToDo($this, $olalevels_id, $olas_id);
         }
         OlaLevel_Ticket::replayForTicket($this->getID(), $ola->getField('type'));
     }
@@ -5494,11 +5496,12 @@ JAVASCRIPT;
         } elseif ($this->fields['takeintoaccount_delay_stat'] > 0) {
             $date_takeintoaccount = $date_creation + $this->fields['takeintoaccount_delay_stat'];
         }
-        $internal_time_to_own     = strtotime($this->fields['internal_time_to_own'] ?? '');
         $time_to_own              = strtotime($this->fields['time_to_own'] ?? '');
-        // @todoseb recupérer la date des ola
-//        $internal_time_to_resolve = strtotime($this->fields['internal_time_to_resolve'] ?? '');
-        $internal_time_to_resolve = '';
+        // @todo internal_time_to_resolve & internal_time_to_own are removed from ticket.
+        // a ticket can have multiple ola.
+        // what should we do with this ? remove the field, add multiples data ?
+        // $internal_time_to_own     = strtotime($this->fields['internal_time_to_own'] ?? '');
+        // $internal_time_to_resolve = strtotime($this->fields['internal_time_to_resolve'] ?? '');
         $time_to_resolve          = strtotime($this->fields['time_to_resolve'] ?? '');
         try {
             $solvedate = strtotime($this->fields['solvedate'] ?? '');
@@ -5524,7 +5527,7 @@ JAVASCRIPT;
             $sla_ttr_link = "<a href='" . $sla->getLinkURL() . "'>
                           <i class='ti ti-stopwatch slt' title='" . $sla->getName() . "'></i></a>";
         }
-        // @todoseb lien vers l'ola
+        // @todo link to ola removed, we have multiples ola. : we can just let it or add multiple links
         //        if ($ola->getFromDB($this->fields['olas_id_tto'])) {
         //            $ola_tto_link = "<a href='" . $ola->getLinkURL() . "'>
         //                          <i class='ti ti-stopwatch slt' title='" . $ola->getName() . "'></i></a>";
@@ -5545,14 +5548,14 @@ JAVASCRIPT;
                 'label'     => __('Take into account'),
                 'class'     => 'checked',
             ],
-            $internal_time_to_own . '_internal_time_to_own' => [
-                'timestamp' => $internal_time_to_own,
-                'label'     => __('Internal time to own') . " " . $ola_tto_link,
-                'class'     => ($internal_time_to_own < $goal_takeintoaccount
-                               ? 'passed' : '') . " " .
-                           ($date_takeintoaccount != ''
-                               ? 'checked' : ''),
-            ],
+            //            $internal_time_to_own . '_internal_time_to_own' => [
+            //                'timestamp' => $internal_time_to_own,
+            //                'label'     => __('Internal time to own') . " " . $ola_tto_link,
+            //                'class'     => ($internal_time_to_own < $goal_takeintoaccount
+            //                               ? 'passed' : '') . " " .
+            //                           ($date_takeintoaccount != ''
+            //                               ? 'checked' : ''),
+            //            ],
             $time_to_own . '_time_to_own' => [
                 'timestamp' => $time_to_own,
                 'label'     => __('Time to own') . " " . $sla_tto_link,
@@ -5561,14 +5564,14 @@ JAVASCRIPT;
                            ($date_takeintoaccount != ''
                                ? 'checked' : ''),
             ],
-            $internal_time_to_resolve . '_internal_time_to_resolve' => [
-                'timestamp' => $internal_time_to_resolve,
-                'label'     => __('Internal time to resolve') . " " . $ola_ttr_link,
-                'class'     => ($internal_time_to_resolve < $goal_solvedate
-                               ? 'passed' : '') . " " .
-                           ($solvedate != ''
-                               ? 'checked' : ''),
-            ],
+            //            $internal_time_to_resolve . '_internal_time_to_resolve' => [
+            //                'timestamp' => $internal_time_to_resolve,
+            //                'label'     => __('Internal time to resolve') . " " . $ola_ttr_link,
+            //                'class'     => ($internal_time_to_resolve < $goal_solvedate
+            //                               ? 'passed' : '') . " " .
+            //                           ($solvedate != ''
+            //                               ? 'checked' : ''),
+            //            ],
             $time_to_resolve . '_time_to_resolve' => [
                 'timestamp' => $time_to_resolve,
                 'label'     => __('Time to resolve') . " " . $sla_ttr_link,
@@ -6600,8 +6603,6 @@ JAVASCRIPT;
         foreach ($added_olas_ids as $olas_id) {
             $this->manageOlaLevel($olas_id);
         }
-
-        return;
     }
 
     /**
