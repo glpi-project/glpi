@@ -33,8 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\DBAL\QueryFunction;
-
 /**
  * Table to store slalevels to be processed.
  * `date` field contains the date when the level has to processed
@@ -166,7 +164,7 @@ class SlaLevel_Ticket extends CommonDBTM
         global $DB;
 
         $tot = 0;
-        $now = $DB->escape($_SESSION['glpi_currenttime']);
+        $now = $_SESSION['glpi_currenttime'];
 
         $iterator = $DB->request([
             'SELECT'    => [
@@ -264,8 +262,10 @@ class SlaLevel_Ticket extends CommonDBTM
                 } elseif ($ticket->fields['status'] != CommonITILObject::SOLVED) {
                     // No execution of TTO if ticket has been taken into account
                     if (
-                        !(($slaType == SLM::TTO)
-                        && ($ticket->fields['takeintoaccount_delay_stat'] > 0))
+                        !(
+                            ($slaType == SLM::TTO)
+                            && ($ticket->fields['takeintoaccount_delay_stat'] > 0)
+                        )
                     ) {
                         // If status = solved : keep the line in case of solution not validated
                         $input['id']           = $ticket->getID();
@@ -328,7 +328,7 @@ class SlaLevel_Ticket extends CommonDBTM
         /** @var \DBmysql $DB */
         global $DB;
 
-        $now = $DB->escape($_SESSION['glpi_currenttime']);
+        $now = $_SESSION['glpi_currenttime'];
 
         $criteria = [
             'SELECT'    => 'glpi_slalevels_tickets.*',

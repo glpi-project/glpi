@@ -10,11 +10,11 @@ trait SLMTrait
 {
     // default delay for tto & ttr ola
     // see @\LevelAgreement::getDefinitionTimeValues() for available unit values
-    const OLA_TTO_DELAY = [90, 'minute'];
-    const OLA_TTR_DELAY = [2, 'day'];
+    public const OLA_TTO_DELAY = [90, 'minute'];
+    public const OLA_TTR_DELAY = [2, 'day'];
 
-    const SLA_TTO_DELAY = [180, 'minute'];
-    const SLA_TTR_DELAY = [3, 'day'];
+    public const SLA_TTO_DELAY = [180, 'minute'];
+    public const SLA_TTR_DELAY = [3, 'day'];
 
     /**
      * @param array $data
@@ -27,8 +27,8 @@ trait SLMTrait
     private function createOLA(array $data = [], int $ola_type = SLM::TTO, ?\Group $group = null, ?SLM $slm = null): array
     {
         assert(in_array($ola_type, array_keys(OLA::getTypes())));
-        $slm = $slm ?? $this->createSLM();
-        $group = $group ?? $this->createGroup();
+        $slm ??= $this->createSLM();
+        $group ??= $this->createGroup();
 
         [$amount, $unit] = match ($ola_type) {
             SLM::TTO => self::OLA_TTO_DELAY,
@@ -69,7 +69,7 @@ trait SLMTrait
     private function createSLA(array $data = [], int $sla_type = SLM::TTO, ?SLM $slm = null): array
     {
         assert(in_array($sla_type, array_keys(SLA::getTypes())));
-        $slm = $slm ?? $this->createSLM();
+        $slm ??= $this->createSLM();
 
         [$amount, $unit] = match ($sla_type) {
             SLM::TTO => self::SLA_TTO_DELAY,
@@ -102,7 +102,7 @@ trait SLMTrait
 
     private function createSLM(array $data = [], ?\Calendar $calendar = null): SLM
     {
-        $calendar = $calendar ?? $this->createCalendar();
+        $calendar ??= $this->createCalendar();
 
         return $this->createItem(
             SLM::class,
