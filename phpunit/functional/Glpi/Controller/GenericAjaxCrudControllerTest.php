@@ -142,7 +142,7 @@ class GenericAjaxCrudControllerTest extends DbTestCase
                 'messages' => [
                     'info'    => [],
                     'warning' => [],
-                    'error'   => ["Item not found."],
+                    'error'   => ["Item not found"],
                 ],
             ],
         ];
@@ -196,7 +196,7 @@ class GenericAjaxCrudControllerTest extends DbTestCase
                 'messages' => [
                     'info'    => [],
                     'warning' => [],
-                    'error'   => ["Item not found."],
+                    'error'   => ["Item not found"],
                 ],
             ],
         ];
@@ -248,7 +248,7 @@ class GenericAjaxCrudControllerTest extends DbTestCase
                 'messages' => [
                     'info'    => [],
                     'warning' => [],
-                    'error'   => ["Item not found."],
+                    'error'   => ["Item not found"],
                 ],
             ],
         ];
@@ -300,7 +300,7 @@ class GenericAjaxCrudControllerTest extends DbTestCase
                 'messages' => [
                     'info'    => [],
                     'warning' => [],
-                    'error'   => ["Item not found."],
+                    'error'   => ["Item not found"],
                 ],
             ],
         ];

@@ -317,7 +317,7 @@ class GenericAjaxCrudController extends AbstractController
         if (!$this->item->checkIfExistOrNew($id)) {
             throw new \Symfony\Component\HttpKernel\Exception\HttpException(
                 404,
-                __("Item not found.")
+                __("Item not found")
             );
         } elseif (!$this->item->can($id, $right, $input)) {
             throw new \Symfony\Component\HttpKernel\Exception\HttpException(
