@@ -2994,14 +2994,16 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                                     ) {
                                         unset($mandatory_missing[$dateField]);
                                     }
-                                    [$dateField, $olaField] = OLA::getFieldNames($slmType);
-                                    if (
-                                        ($key == $dateField)
-                                        && isset($input[$olaField]) && ($input[$olaField] > 0)
-                                        && isset($mandatory_missing[$dateField])
-                                    ) {
-                                        unset($mandatory_missing[$dateField]);
-                                    }
+
+                                    // @todoseb a réimplementer
+//                                    [$dateField, $olaField] = OLA::getFieldNames($slmType);
+//                                    if (
+//                                        ($key == $dateField)
+//                                        && isset($input[$olaField]) && ($input[$olaField] > 0)
+//                                        && isset($mandatory_missing[$dateField])
+//                                    ) {
+//                                        unset($mandatory_missing[$dateField]);
+//                                    }
                                 }
                             }
 
