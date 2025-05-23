@@ -1522,7 +1522,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Function strtotime is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\strtotime;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
 	'identifier' => 'theCodingMachineSafe.function',
-	'count' => 11,
+	'count' => 10,
 	'path' => __DIR__ . '/src/CommonITILObject.php',
 ];
 $ignoreErrors[] = [
@@ -6980,12 +6980,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/ObjectLock.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @param references unknown parameter\\: \\$type$#',
-	'identifier' => 'parameter.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/OlaLevel_Ticket.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Function file_get_contents is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\file_get_contents;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
 	'identifier' => 'theCodingMachineSafe.function',
 	'count' => 1,
@@ -8194,7 +8188,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Function strtotime is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\strtotime;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
 	'identifier' => 'theCodingMachineSafe.function',
-	'count' => 10,
+	'count' => 8,
 	'path' => __DIR__ . '/src/Ticket.php',
 ];
 $ignoreErrors[] = [
