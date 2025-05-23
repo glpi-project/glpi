@@ -208,7 +208,7 @@ TWIG;
     public function convertExtraData(array $rawData): array
     {
         $config = new QuestionTypeSelectableExtraDataConfig(
-            options: json_decode($rawData['values']) ?? []
+            options: json_decode($rawData['values'], true) ?? []
         );
         return $config->jsonSerialize();
     }
