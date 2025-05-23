@@ -457,7 +457,7 @@ class Ticket extends CommonITILObject
      **/
     public function getDatasToAddOLA($olas_id, $entities_id, $date, $type)
     {
-
+        // @todoseb a supprimer
         [$dateField, $olaField] = OLA::getFieldNames($type);
 
         $data         = [];
@@ -1180,7 +1180,7 @@ class Ticket extends CommonITILObject
      */
     public function olaAffect($type, &$input, $manual_olas_id)
     {
-
+        // @todoseb a supprimer
         [$dateField, $olaField] = OLA::getFieldNames($type);
 
         // Restore olas
@@ -6572,6 +6572,7 @@ JAVASCRIPT;
         }
 
         foreach ($added_olas_ids as $olas_id) {
+            OLA::deleteLevelsToDo($this);
             $this->manageOlaLevel($olas_id);
         }
     }

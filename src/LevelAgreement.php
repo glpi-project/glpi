@@ -463,6 +463,12 @@ TWIG, $twig_params);
         /** @var DBmysql $DB */
         global $DB;
 
+        if($this instanceof OLA)
+        {
+            // @todoseb re implement me
+            return;
+        }
+
         $fk      = static::getFieldNames($this->fields['type'])[1];
         $rule    = new RuleTicket();
         $canedit = self::canUpdate();
