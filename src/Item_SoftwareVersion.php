@@ -365,6 +365,9 @@ class Item_SoftwareVersion extends CommonDBRelation
 
         $count = 0;
         foreach ($target_types as $itemtype) {
+            if (!getItemForItemtype($itemtype)) {
+                continue;
+            }
             $itemtable = $itemtype::getTable();
             $request = [
                 'FROM'         => 'glpi_softwareversions',
