@@ -3234,7 +3234,8 @@ JS
                     return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::class);
 
                 case SLA::class:
-                case OLA::class:
+                    // @todoseb reimplement me
+//                case OLA::class:
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb = countElementsInTable(
                             'glpi_ruleactions',
