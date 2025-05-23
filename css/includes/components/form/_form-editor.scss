@@ -515,7 +515,7 @@ html {
 [data-glpi-form-editor-toolbar].btn-group-vertical {
     &::before {
         content: "\ea7c";
-        font-family: "tabler-icons" !important;
+        font-family: tabler-icons !important;
         font-size: x-large;
         color: var(--tblr-border-active-color);
         transform: translateY(1.9rem);
