@@ -366,6 +366,10 @@ class Item_SoftwareVersion extends CommonDBRelation
         $count = 0;
         foreach ($target_types as $itemtype) {
             if (!getItemForItemtype($itemtype)) {
+                trigger_error(
+                    "Itemtype $itemtype not found",
+                    E_USER_WARNING
+                );
                 continue;
             }
             $itemtable = $itemtype::getTable();
