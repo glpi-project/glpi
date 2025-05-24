@@ -40,7 +40,6 @@ use TicketCost;
 
 class Item_TicketTest extends AbstractCommonItilObject_ItemTest
 {
-
     public function testUpdateItemTCO(): void
     {
         $this->login();
