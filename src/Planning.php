@@ -2284,6 +2284,38 @@ TWIG, ['msg' => __('Your planning')]);
                 if (isset($val["url"])) {
                     $vevent['URL'] = $val["url"];
                 }
+
+                // RRULE
+                if (!empty($val['rrule'])) {
+                    $parts = [];
+                    foreach ($val['rrule'] as $k => $v) {
+                
+                        if ($v === '' || $v === null) {
+                            continue;
+                        }
+                
+                        // EXDATE
+                        if ($k === 'exceptions') {
+                            $exceptions = array_unique($v);
+                            $exceptions = array_map(
+                                static fn ($date) => str_replace('-', '', $date),
+                                $exceptions
+                            );
+                            $vevent['EXDATE;VALUE=DATE'] = $exceptions;
+                            continue;
+                        }
+                
+                        if ($k === 'until') {
+                            $v = str_replace('-', '', $v);
+                        }
+                
+                        $parts[] = strtoupper($k) . '=' . strtoupper($v);
+                    }
+                    if ($parts) {
+                        $vevent['RRULE'] = implode(';', $parts);
+                    }
+                }
+                
                 $vcalendar->add('VEVENT', $vevent);
             }
         }
