@@ -2265,6 +2265,8 @@ TWIG, ['msg' => __('Your planning')]);
 
         if (count($interv) > 0) {
             foreach ($interv as $key => $val) {
+                $vevent = [];
+
                 if (isset($val['itemtype'])) {
                     if (isset($val[getForeignKeyFieldForItemType($val['itemtype'])])) {
                         $uid = $val['itemtype'] . "#" . $val[getForeignKeyFieldForItemType($val['itemtype'])];
@@ -2307,6 +2309,41 @@ TWIG, ['msg' => __('Your planning')]);
                 if (isset($val["url"])) {
                     $vevent['URL'] = $val["url"];
                 }
+
+                // RRULE
+                if (isset($val['rrule']) && count($val['rrule'])) {
+                    $rrule_parts = [];
+                    foreach ($val['rrule'] as $rrule_key => $rrule_value) {
+                        if (empty($rrule_value)) {
+                            continue;
+                        }
+
+                        if ($rrule_key === 'exceptions') {
+                            $vevent['EXDATE;VALUE=DATE'] = array_map(
+                                static function ($datestring) {
+                                    $date = new DateTime($datestring);
+                                    $date->setTimeZone(new DateTimeZone('UTC'));
+                                    return $date->format('Ymd');
+                                },
+                                $rrule_value
+                            );
+                            continue;
+                        }
+
+                        if ($rrule_key === 'until') {
+                            $until_date = new DateTime($rrule_value);
+                            $until_date->setTimeZone(new DateTimeZone('UTC'));
+                            $rrule_parts['UNTIL'] = $until_date->format('Ymd');
+                            continue;
+                        }
+
+                        $rrule_parts[strtoupper($rrule_key)] = $rrule_value;
+                    }
+                    if (count($rrule_parts) > 0) {
+                        $vevent['RRULE'] = $rrule_parts;
+                    }
+                }
+
                 $vcalendar->add('VEVENT', $vevent);
             }
         }
