@@ -53,7 +53,7 @@ function testDefaultForm({ profile, formId }) {
     cy.getDropdownByLabelText('Urgency').selectDropdownValue('High');
     cy.getDropdownByLabelText('Category').selectDropdownValue(`»Test ITILCategory - ${uuid}`);
     cy.getDropdownByLabelText('User devices').selectDropdownValue(`Computers - Test Computer - ${uuid}`);
-    cy.getDropdownByLabelText('Watchers').selectDropdownValue('glpi');
+    cy.getDropdownByLabelText('Observers').selectDropdownValue('glpi');
     cy.getDropdownByLabelText('Location').selectDropdownValue(`»Test Location - ${uuid}`);
     cy.findByRole('textbox', { name: "Title" }).type("My title");
     cy.findByLabelText("Description").awaitTinyMCE().type("My description");

@@ -26,7 +26,7 @@
                 {
                     "id": 1,
                     "uuid": "question-1",
-                    "name": "Watchers",
+                    "name": "Observers",
                     "type": "Glpi\\Form\\QuestionType\\QuestionTypeObserver",
                     "is_mandatory": false,
                     "vertical_rank": 2,

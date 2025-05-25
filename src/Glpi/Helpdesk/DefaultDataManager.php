@@ -60,6 +60,7 @@ use Glpi\Helpdesk\Tile\GlpiPageTile;
 use Glpi\Helpdesk\Tile\TilesManager;
 use ITILCategory;
 use Location;
+use Session;
 use Ticket;
 
 final class DefaultDataManager
@@ -144,7 +145,7 @@ final class DefaultDataManager
         $this->addQuestion($section, $this->getUrgencyQuestionData());
         $this->addQuestion($section, $this->getCategoryQuestionData());
         $this->addQuestion($section, $this->getUserDevicesQuestionData());
-        $this->addQuestion($section, $this->getWatchersQuestionData());
+        $this->addQuestion($section, $this->getObserversQuestionData());
         $this->addQuestion($section, $this->getLocationQuestionData());
         $title_question = $this->addQuestion($section, $this->getTitleQuestionData());
         $description_question = $this->addQuestion($section, $this->getDescriptionQuestionData());
@@ -204,7 +205,7 @@ final class DefaultDataManager
         $this->addQuestion($section, $this->getUrgencyQuestionData());
         $this->addQuestion($section, $this->getCategoryQuestionData());
         $this->addQuestion($section, $this->getUserDevicesQuestionData());
-        $this->addQuestion($section, $this->getWatchersQuestionData());
+        $this->addQuestion($section, $this->getObserversQuestionData());
         $this->addQuestion($section, $this->getLocationQuestionData());
         $title_question = $this->addQuestion($section, $this->getTitleQuestionData());
         $description_question = $this->addQuestion($section, $this->getDescriptionQuestionData());
@@ -348,11 +349,11 @@ final class DefaultDataManager
         ];
     }
 
-    private function getWatchersQuestionData(): array
+    private function getObserversQuestionData(): array
     {
         return [
             'type' => QuestionTypeObserver::class,
-            'name' => __("Watchers"),
+            'name' => _n('Observer', 'Observers', Session::getPluralNumber()),
             'extra_data' => json_encode(['is_multiple_actors' => true]),
         ];
     }
