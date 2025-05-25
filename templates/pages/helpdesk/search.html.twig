@@ -48,7 +48,7 @@
                         {{ render_illustration("browse-kb", 60) }}
                     </div>
                     <div class="col text-truncate">
-                        <span class="text-dark text-reset d-block">{{ faq.name }}</span>
+                        <span class="text-body d-block">{{ faq.name }}</span>
                         <div class="d-block text-secondary text-truncate richtext-strip-margin">
                             {{ faq.answer|safe_html }}
                         </div>
@@ -82,7 +82,7 @@
                         {{ render_illustration(form.fields.illustration, 60) }}
                     </div>
                     <div class="col text-truncate">
-                        <span class="text-dark text-reset d-block"> {{ form.fields.name }} </span>
+                        <span class="text-body d-block"> {{ form.fields.name }} </span>
                         <div class="d-block text-secondary text-truncate">
                             {{ form.fields.description }}
                         </div>
