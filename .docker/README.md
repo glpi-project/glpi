@@ -61,7 +61,6 @@ services:
   app:
     ports: !override
       - "9000:80"
-      - "9001:9637"
   mailpit:
     ports: !override
       - "9025:8025"
