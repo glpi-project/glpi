@@ -645,7 +645,7 @@ describe ('Conditions', () => {
         // Add a few conditions to the default destination
         goToDestinationTab();
         openConditionEditor();
-        setConditionStrategy('Created if');
+        setConditionStrategy('Created if...');
         fillCondition(0, null, 'My second question', 'Is not equal to', 'I love GLPI');
         addNewEmptyCondition();
         fillCondition(1, 'Or', 'My first question', 'Contains', 'GLPI is great');
@@ -1809,7 +1809,7 @@ describe ('Conditions', () => {
         // Define destination conditions
         checkThatConditionEditorIsNotDisplayed();
         openConditionEditor();
-        setConditionStrategy('Created if');
+        setConditionStrategy('Created if...');
         checkThatConditionEditorIsDisplayed();
         fillCondition(0, null, 'My first question', 'Is equal to', 'Expected answer 1');
         addNewEmptyCondition();
@@ -1925,5 +1925,47 @@ describe ('Conditions', () => {
             deleteConditon(0);
             cy.findByRole('status', {'name': 'Conditions count'}).invoke('text').invoke('trim').should('eq', '0');
         });
+    });
+
+    it('conditions count badge is updated when conditions are added or removed in form destination', () => {
+        createForm();
+        // Add a question to the form
+        addQuestion('My first question');
+
+        // Save the form to ensure we can access the destination tab
+        saveAndReload();
+        goToDestinationTab();
+
+        // Open the condition editor for the destination
+        openConditionEditor();
+        setConditionStrategy('Created if...');
+
+        // Verify the initial count badge shows 0 conditions
+        cy.findByRole('status', {'name': 'Conditions count'}).invoke('text').invoke('trim').should('eq', '0');
+
+        // Add the first condition and verify the count increases to 1
+        fillCondition(0, null, 'My first question', 'Is equal to', 'Expected answer 1');
+        cy.findByRole('status', {'name': 'Conditions count'}).invoke('text').invoke('trim').should('eq', '1');
+
+        // Add a second condition and verify the count increases to 2
+        addNewEmptyCondition();
+        fillCondition(1, null, 'My first question', 'Is equal to', 'Expected answer 2');
+        cy.findByRole('status', {'name': 'Conditions count'}).invoke('text').invoke('trim').should('eq', '2');
+
+        // Delete the first condition and verify the count decreases to 1
+        deleteConditon(0);
+        cy.findByRole('status', {'name': 'Conditions count'}).invoke('text').invoke('trim').should('eq', '1');
+
+        // Save the destination conditions and reload the page to ensure persistence
+        saveDestination();
+        cy.reload();
+
+        // Verify that the condition count is still 1 after reload
+        openConditionEditor();
+        cy.findByRole('status', {'name': 'Conditions count'}).invoke('text').invoke('trim').should('eq', '1');
+
+        // Delete the remaining condition and verify the count returns to 0
+        deleteConditon(0);
+        cy.findByRole('status', {'name': 'Conditions count'}).invoke('text').invoke('trim').should('eq', '0');
     });
 });

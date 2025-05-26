@@ -231,3 +231,9 @@
         display: none !important;
     }
 }
+
+button:has([data-glpi-editor-condition-badge=always_created].d-flex) {
+    [data-glpi-editor-conditions-count-badge] {
+        display: none !important;
+    }
+}
