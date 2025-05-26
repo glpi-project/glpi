@@ -895,10 +895,9 @@ class MassiveAction
     public static function showMassiveActionsSubForm(MassiveAction $ma)
     {
         /**
-         * @var array $CFG_GLPI
          * @var \DBmysql $DB
          */
-        global $CFG_GLPI, $DB;
+        global $DB;
 
         switch ($ma->getAction()) {
             case 'update':
@@ -1083,7 +1082,7 @@ class MassiveAction
                         );
                     }
                     // Only display the form for this stage
-                    return;
+                    return true;
                 }
 
                 if (!isset($ma->POST['common_options'])) {
