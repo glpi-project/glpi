@@ -522,3 +522,15 @@ html {
         position: absolute;
     }
 }
+
+[data-glpi-form-editor-visibility-dropdown-container], [data-glpi-form-editor-validation-dropdown-container] {
+    padding-right: 0.75rem;
+
+    &:has([data-glpi-editor-visibility-badge=always_visible].d-flex, [data-glpi-editor-validation-badge=no_validation].d-flex) {
+        padding-right: 0rem;
+
+        [data-glpi-editor-visibility-conditions-count-badge], [data-glpi-editor-validation-conditions-count-badge] {
+            display: none !important;
+        }
+    }
+}
