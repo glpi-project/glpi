@@ -1704,7 +1704,7 @@ $RELATION = [
 
 ];
 
-$define_mapping_entry = static function (string $source_table, string $target_table_key) use (&$RELATION) {
+$add_mapping_entry = static function (string $source_table, string $target_table_key, string|array $relation_fields) use (&$RELATION) {
     if (!array_key_exists($source_table, $RELATION)) {
         $RELATION[$source_table] = [];
     }
@@ -1713,6 +1713,10 @@ $define_mapping_entry = static function (string $source_table, string $target_ta
     }
     if (!is_array($RELATION[$source_table][$target_table_key])) {
         $RELATION[$source_table][$target_table_key] = [$RELATION[$source_table][$target_table_key]];
+    }
+
+    if (!in_array($relation_fields, $RELATION[$source_table][$target_table_key], true)) {
+        $RELATION[$source_table][$target_table_key][] = $relation_fields;
     }
 };
 
@@ -1809,9 +1813,7 @@ foreach ($polymorphic_types_mapping as $target_itemtype => $source_itemtypes) {
         $target_table_key = $target_table_key_prefix . $target_itemtype::getTable();
         $source_table     = $source_itemtype::getTable();
 
-        $define_mapping_entry($source_table, $target_table_key);
-
-        $RELATION[$source_table][$target_table_key][] = ['items_id', 'itemtype'];
+        $add_mapping_entry($source_table, $target_table_key, ['items_id', 'itemtype']);
     }
 }
 
@@ -1821,9 +1823,7 @@ foreach ($CFG_GLPI['networkport_types'] as $source_itemtype) {
     $target_table_key = IPAddress::getTable();
     $source_table     = $source_itemtype::getTable();
 
-    $define_mapping_entry($source_table, $target_table_key);
-
-    $RELATION[$source_table][$target_table_key][] = ['mainitems_id', 'mainitemtype'];
+    $add_mapping_entry($source_table, $target_table_key, ['mainitems_id', 'mainitemtype']);
 }
 
 // Asset_PeripheralAsset specific case
@@ -1831,15 +1831,13 @@ foreach ($CFG_GLPI['directconnect_types'] as $directconnect_itemtype) {
     $target_table_key = Asset_PeripheralAsset::getTable();
     $source_table     = $directconnect_itemtype::getTable();
 
-    $define_mapping_entry($source_table, $target_table_key);
-    $RELATION[$source_table][$target_table_key][] = ['itemtype_peripheral', 'items_id_peripheral'];
+    $add_mapping_entry($source_table, $target_table_key, ['itemtype_peripheral', 'items_id_peripheral']);
 }
 foreach (Asset_PeripheralAsset::getPeripheralHostItemtypes() as $peripheralhost_itemtype) {
     $target_table_key = Asset_PeripheralAsset::getTable();
     $source_table     = $peripheralhost_itemtype::getTable();
 
-    $define_mapping_entry($source_table, $target_table_key);
-    $RELATION[$source_table][$target_table_key][] = ['itemtype_asset', 'items_id_asset'];
+    $add_mapping_entry($source_table, $target_table_key, ['itemtype_asset', 'items_id_asset']);
 }
 
 // Multiple groups assignments
@@ -1847,6 +1845,5 @@ $assignable_itemtypes = $CFG_GLPI['assignable_types'];
 foreach ($assignable_itemtypes as $assignable_itemtype) {
     $source_table_key = $assignable_itemtype::getTable();
 
-    $define_mapping_entry($source_table_key, '_glpi_groups_items');
-    $RELATION[$source_table_key]['_glpi_groups_items'][] = ['itemtype', 'items_id'];
+    $add_mapping_entry($source_table_key, '_glpi_groups_items', ['itemtype', 'items_id']);
 }
