@@ -8083,7 +8083,7 @@ HTML,
             [
                 'entities_id' => 0,
                 'name' => 'ITILsolution Template',
-                'content' => 'ITILsolution Content'
+                'content' => 'ITILsolution Content',
             ]
         );
 
@@ -8095,7 +8095,7 @@ HTML,
                 'sub_type' => 'RuleTicket',
                 'match' => 'AND',
                 'is_active' => 1,
-                'condition' => 3,
+                'condition' => 1,
             ]
         );
 
@@ -8135,6 +8135,50 @@ HTML,
 
         $queue = new \QueuedNotification();
         $this->assertEquals(1, count($queue->find([
+            'itemtype' => Ticket::class,
+            'items_id' => $ticket->getID(),
+            'event' => 'solved',
+            'mode' => 'mailing',
+            'recipientname' => 'tech',
+        ])));
+
+        $solution = new \ITILSolution();
+        $this->assertEquals(1, count($solution->find([
+            'items_id' => $ticket->getID(),
+            'itemtype' => Ticket::class,
+            'status'   => 2,
+        ])));
+        $solution->getFromDBByCrit([
+            'items_id' => $ticket->getID(),
+            'itemtype' => Ticket::class,
+            'status'   => 2,
+        ]);
+        $this->updateItem(
+            \ITILSolution::class,
+            $solution->getID(),
+            [
+                'status' => 3,
+            ],
+        );
+
+        $this->updateItem(
+            \Ticket::class,
+            $ticket->getID(),
+            [
+                'status'     => CommonITILObject::ASSIGNED,
+            ],
+        );
+
+        $this->createItem(
+            ITILSolution::class,
+            [
+                'items_id' => $ticket->getID(),
+                'itemtype' => Ticket::class,
+                'status'   => 2,
+            ],
+        );
+
+        $this->assertEquals(2, count($queue->find([
             'itemtype' => Ticket::class,
             'items_id' => $ticket->getID(),
             'event' => 'solved',
