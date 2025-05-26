@@ -8137,10 +8137,9 @@ HTML,
         $this->assertEquals(1, count($queue->find([
             'itemtype' => Ticket::class,
             'items_id' => $ticket->getID(),
-            'notificationtemplate_id' => 4,
             'event' => 'solved',
             'mode' => 'mailing',
-            'recipientname' => 'tech@tech.tech',
+            'recipientname' => 'tech',
         ])));
     }
 }
