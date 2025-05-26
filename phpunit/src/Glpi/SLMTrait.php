@@ -161,7 +161,6 @@ trait SLMTrait
 
     private function createSLM(array $data = [], ?\Calendar $calendar = null): SLM
     {
-        $calendar ??= $this->createCalendar();
         $calendar ??= getItemByTypeName(\Calendar::class, 'Default');
 
         return $this->createItem(
