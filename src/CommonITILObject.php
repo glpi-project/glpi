@@ -8457,7 +8457,7 @@ abstract class CommonITILObject extends CommonDBTM
                         if (
                             !$validation->alreadyExists($values[$self_fk], $user)
                             || isset($input['_rule_process'])
-                            ) {
+                        ) {
                             $values["users_id_validate"] = $user;
                             if ($validation->add($values)) {
                                 $add_done = true;
