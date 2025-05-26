@@ -3238,7 +3238,7 @@ JS
 
                 case SLA::class:
                     // @todoseb reimplement me
-//                case OLA::class:
+                    //                case OLA::class:
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb = countElementsInTable(
                             'glpi_ruleactions',
