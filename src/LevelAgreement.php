@@ -194,7 +194,7 @@ abstract class LevelAgreement extends CommonDBChild
 
         // group
         if ($this->isField('groups_id')) {
-            echo "<tr class='tab_bg_1'><td>" . __s('Group', ) . "</td>";
+            echo "<tr class='tab_bg_1'><td>" . _sn('Group', 'Groups', 1) . "</td>";
             echo "<td>";
             Group::dropdown(['value' => $this->fields["groups_id"], 'display_emptychoice' => false]);
             echo "</td>";
@@ -462,8 +462,7 @@ TWIG, $twig_params);
     {
         global $DB;
 
-        if($this instanceof OLA)
-        {
+        if ($this instanceof OLA) {
             // @todoseb re implement me
             return;
         }
