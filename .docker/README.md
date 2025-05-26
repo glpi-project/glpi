@@ -66,7 +66,7 @@ services:
   mailpit:
     ports: !override
       - "9025:8025"
-  adminer:
+  dbgate:
     ports: !override
       - "9080:8080"
 ```
