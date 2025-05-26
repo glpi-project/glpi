@@ -55,7 +55,7 @@ By default, the following ports are exposed:
  - `8090` for the DBGate web server,
  - `9637` for the webpack dev server.
 
-You can customize these ports by creating a `.devcontainer/docker-compose.override.yaml` file.
+You can customize these ports by creating a `docker-compose.override.yaml` file.
 
 ```yaml
 services:
@@ -87,7 +87,7 @@ services:
   dbgate: !reset null
 ```
 
-To remove the db service, you'll also need to remove the `depends_on` directive.
+To remove the `db` service, you'll also need to remove the `depends_on` directive.
 
 ```yaml
 services:
