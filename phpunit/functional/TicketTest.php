@@ -7965,7 +7965,7 @@ HTML,
         $this->assertEquals(5, $results['data']['totalcount']);
     }
 
-    public function testRequesterHaveDoubleSolvedTicketNotification()
+    public function testRequesterHaveOneSolvedTicketNotificationWithSolutionTemplateRule()
     {
         global $CFG_GLPI;
         $CFG_GLPI['use_notifications'] = 1;
@@ -8033,10 +8033,9 @@ HTML,
         $this->assertEquals(1, count($queue->find([
             'itemtype' => Ticket::class,
             'items_id' => $ticket->getID(),
-            'notificationtemplate_id' => 4,
             'event' => 'solved',
             'mode' => 'mailing',
-            'recipientname' => 'tech@tech.tech',
+            'recipientname' => 'tech',
         ])));
     }
 }
