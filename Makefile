@@ -3,6 +3,7 @@ SHELL=bash
 COMPOSE = docker compose
 
 PHP = $(COMPOSE) exec app
+DB = $(COMPOSE) exec db
 CONSOLE = $(PHP) bin/console
 
 # Helper variables
@@ -20,60 +21,44 @@ help: ## Show this help message
 	@grep -E '(^[a-zA-Z_-]+:.*?##.*$$)|(^##)' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[32m%-25s\033[0m %s\n", $$1, $$2}' | sed -e 's/\[32m##/[33m/'
 .PHONY: help
 
-install: .env build start vendor db-install test-db-install ## Install the project
+install: init-override build up vendor db-install test-db-install ## Install the project
 .PHONY: install
 
 ## —— Docker ———————————————————————————————————————————————————————————————————
-.env:
+init-override:
 	@\
-	if [ ! -f ".devcontainer/docker-compose.override.yaml" ]; then \
-		printf $(_TITLE) "Project" "Creating \".devcontainer/docker-compose.override.yaml\" file for Docker Compose" ; \
-		touch .devcontainer/docker-compose.override.yaml ; \
-	fi ; \
-	if [ ! -f ".env" ]; then \
-		printf $(_TITLE) "Project" "Creating \".env\" file for Docker Compose" ; \
-		touch .env ; \
-	fi ; \
-	if grep -q COMPOSE_FILE ".env"; then \
-		printf $(_TITLE) "Project" "\".env\" file is already populated" ; \
-	else \
-		printf $(_TITLE) "Project" "Writing config to \".env\" file" ; \
-		echo "COMPOSE_FILE=./.devcontainer/docker-compose.yaml:./.devcontainer/docker-compose.override.yaml" >> .env ; \
-    fi
-
-.PHONY: .env
+	if [ ! -f "./docker-compose.override.yaml" ]; then \
+		printf $(_TITLE) "Project" "Creating \"./docker-compose.override.yaml\" file for Docker Compose" ; \
+		touch ./docker-compose.override.yaml ; \
+	fi ;
+.PHONY: init-override
 
 build: ## Build the Docker images
 	@printf $(_TITLE) "Project" "Pulling Docker images" \
 	@$(COMPOSE) pull
-	@$(COMPOSE) build
+	@$(COMPOSE) build --no-cache
 .PHONY: build
 
-start: ## Start all containers
-	@$(COMPOSE) up -d --remove-orphans
+up: ## Start all containers
+	@$(COMPOSE) up -d
 .PHONY: start
 
-stop: ## Stop all containers
-	@$(COMPOSE) stop
+down: ## Stop the containers
+	@$(COMPOSE) down --remove-orphans
 .PHONY: stop
 
-restart: ## Restart the containers & the PHP server
-	@$(MAKE) stop
-	@$(MAKE) start
-.PHONY: restart
-
-kill: ## Stop and remove all containers
+kill: ## Stop the containers and remove the volumes (use with caution)
 	@$(COMPOSE) kill
 	@$(COMPOSE) down --volumes --remove-orphans
 .PHONY: kill
 
-reset: ## Reset and start a fresh install of the project
-reset: kill install
-.PHONY: reset
-
 bash: ## Start a shell inside the php container
 	@$(PHP) bash
 .PHONY: bash
+
+sql: ## Enter the database cli
+	@$(DB) mariadb -D glpi -u glpi -pglpi
+.PHONY: sql
 
 ## —— GLPI commands ————————————————————————————————————————————————————————————
 console: ## Run a console command, example: make console c='glpi:mycommand'
