@@ -140,7 +140,7 @@ phpunit: ## Run phpunits tests, example: make phpunit c='phpunit/functional/Glpi
 .PHONY: phpunit
 
 phpstan: ## Run phpstan
-	@$(PHP) php vendor/bin/phpstan
+	@$(PHP) php vendor/bin/phpstan --memory-limit=1G
 .PHONY: phpstan
 
 ## —— Linters ——————————————————————————————————————————————————————————————————

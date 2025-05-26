@@ -41,6 +41,7 @@ use Dropdown;
 use Entity;
 use Glpi\Inventory\Conf;
 use Glpi\DBAL\QueryParam;
+use Item_OperatingSystem;
 use Item_SoftwareVersion;
 use RuleDictionnarySoftwareCollection;
 use Software as GSoftware;
@@ -298,6 +299,26 @@ class Software extends InventoryAsset
             $os_soft_data->version = $os_data->version ?? '';
 
             $this->data[] = $os_soft_data;
+        } else {
+
+            // Verify that the main asset is set before accessing its properties
+            // This check is necessary because some unit tests call the handle function
+            // directly on the Software class, bypassing the main asset initialization.
+            // For more details, see the functional test case:
+            // phpunit/functional/Glpi/Inventory/Assets/SoftwareTest.php -> testHandle()
+            if (isset($this->main_asset)) {
+                // When $this->extra_data['\Glpi\Inventory\Asset\OperatingSystem'] is not set,
+                // it indicates that the inventory is running in partial mode (or without operating system data).
+                // Therefore, fall back to retrieving the operating system from the main asset.
+                $item_os = new Item_OperatingSystem();
+                $os_list = $item_os->find([
+                    'items_id' => $this->main_asset->item->fields['id'],
+                    'itemtype' => $this->main_asset->item->getType(),
+                ]);
+                if (count($os_list) == 1) {
+                    $operatingsystems_id = current($os_list)['operatingsystems_id'];
+                }
+            }
         }
 
         $db_software = [];
@@ -515,7 +536,7 @@ class Software extends InventoryAsset
 
     public function getOsForKey($val)
     {
-        if (!$this->main_asset || !$this->main_asset->isPartial()) {
+        if ($val->operatingsystems_id > 0) {
             return $val->operatingsystems_id;
         } else {
             return '%';
