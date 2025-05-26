@@ -81,7 +81,7 @@ trait DCBreadcrumb
                         'link'     => $rack->getLink(
                             [
                                 'class' => $rack->isDeleted() ? 'target-deleted' : '',
-                                'icon'  => true
+                                'icon'  => true,
                             ]
                         ),
                         'position' => $pdu_rack->fields['position'],
@@ -101,7 +101,7 @@ trait DCBreadcrumb
                     'link'     => $enclosure->getLink(
                         [
                             'class' => $enclosure->isDeleted() ? 'target-deleted' : '',
-                            'icon'  => true
+                            'icon'  => true,
                         ]
                     ),
                     'position' => $item->getPositionInEnclosure(),
@@ -118,7 +118,7 @@ trait DCBreadcrumb
                     'link'     => $rack->getLink(
                         [
                             'class' => $rack->isDeleted() ? 'target-deleted' : '',
-                            'icon'  => true
+                            'icon'  => true,
                         ]
                     ),
                     'position' => $item->getPositionInRack(),
@@ -140,7 +140,7 @@ trait DCBreadcrumb
                     'link'     => $dcroom->getLink(
                         [
                             'class' => $dcroom->isDeleted() ? 'target-deleted' : '',
-                            'icon'  => true
+                            'icon'  => true,
                         ]
                     ),
                     'location' => $location !== null ? $location->fields : null,
@@ -161,7 +161,7 @@ trait DCBreadcrumb
                     'link'     => $datacenter->getLink(
                         [
                             'class' => $datacenter->isDeleted() ? 'target-deleted' : '',
-                            'icon'  => true
+                            'icon'  => true,
                         ]
                     ),
                     'location' => $location !== null ? $location->fields : null,
@@ -174,7 +174,7 @@ trait DCBreadcrumb
         return TemplateRenderer::getInstance()->render(
             'layout/parts/dcbreadcrumbs.html.twig',
             [
-                'breadcrumbs'   => $breadcrumb
+                'breadcrumbs'   => $breadcrumb,
             ]
         );
     }

@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -64,8 +63,8 @@ class PeripheralTest extends AbstractInventoryAsset
          <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
          <QUERY>INVENTORY</QUERY>
          </REQUEST>",
-                'expected'  => '{"caption": "VFS451 Fingerprint Reader", "manufacturer": "Validity Sensors, Inc.", "name": "VFS451 Fingerprint Reader", "productid": "0007", "serial": "00B0FE47AC85", "vendorid": "138A", "manufacturers_id": "Validity Sensors, Inc.", "is_dynamic": 1}'
-            ]
+                'expected'  => '{"caption": "VFS451 Fingerprint Reader", "manufacturer": "Validity Sensors, Inc.", "name": "VFS451 Fingerprint Reader", "productid": "0007", "serial": "00B0FE47AC85", "vendorid": "138A", "manufacturers_id": "Validity Sensors, Inc.", "is_dynamic": 1}',
+            ],
         ];
     }
 
@@ -78,7 +77,7 @@ class PeripheralTest extends AbstractInventoryAsset
 
         $computer = getItemByTypeName('Computer', '_test_pc01');
         $asset = new \Glpi\Inventory\Asset\Peripheral($computer, $json->content->usbdevices);
-        $asset->setExtraData((array)$json->content);
+        $asset->setExtraData((array) $json->content);
         $result = $asset->prepare();
         $this->assertEquals(json_decode($expected), $result[0]);
     }
@@ -94,7 +93,7 @@ class PeripheralTest extends AbstractInventoryAsset
             $idp->getFromDbByCrit([
                 'itemtype_asset' => 'Computer',
                 'items_id_asset' => $computer->fields['id'],
-                'itemtype_peripheral' => 'Peripheral'
+                'itemtype_peripheral' => 'Peripheral',
             ]),
             'A peripheral is already linked to computer!'
         );
@@ -108,7 +107,7 @@ class PeripheralTest extends AbstractInventoryAsset
 
         $computer = getItemByTypeName('Computer', '_test_pc01');
         $asset = new \Glpi\Inventory\Asset\Peripheral($computer, $json->content->usbdevices);
-        $asset->setExtraData((array)$json->content);
+        $asset->setExtraData((array) $json->content);
         $result = $asset->prepare();
         $this->assertEquals(json_decode($expected['expected']), $result[0]);
 
@@ -123,7 +122,7 @@ class PeripheralTest extends AbstractInventoryAsset
         $this->assertTrue($idp->getFromDbByCrit([
             'itemtype_asset' => 'Computer',
             'items_id_asset' => $computer->fields['id'],
-            'itemtype_peripheral' => 'Peripheral'
+            'itemtype_peripheral' => 'Peripheral',
         ]), 'Peripheral has not been linked to computer :(');
     }
 
@@ -172,13 +171,13 @@ class PeripheralTest extends AbstractInventoryAsset
         $computers_id = $computer->add([
             'name'   => 'pc002',
             'serial' => 'ggheb7ne7',
-            'entities_id' => 0
+            'entities_id' => 0,
         ]);
         $this->assertGreaterThan(0, $computers_id);
 
         $manufacturer = new \Manufacturer();
         $manufacturers_id = $manufacturer->add([
-            'name' => 'Validity Sensors, Inc.'
+            'name' => 'Validity Sensors, Inc.',
         ]);
         $this->assertGreaterThan(0, $manufacturers_id);
 
@@ -186,7 +185,7 @@ class PeripheralTest extends AbstractInventoryAsset
             'name' => 'VFS451 Fingerprint Reader',
             'manufacturers_id' => $manufacturers_id,
             'serial' => '00B0FE47AC85',
-            'entities_id'  => 0
+            'entities_id'  => 0,
         ]);
         $this->assertGreaterThan(0, $periph_1_id);
 
@@ -194,12 +193,12 @@ class PeripheralTest extends AbstractInventoryAsset
             'itemtype_asset' => 'Computer',
             'items_id_asset' => $computers_id,
             'itemtype_peripheral' => 'Peripheral',
-            'items_id_peripheral' => $periph_1_id
+            'items_id_peripheral' => $periph_1_id,
         ]);
         $this->assertGreaterThan(0, $item_periph_1_id);
 
         $manufacturers_id = $manufacturer->add([
-            'name' => 'O2 Micro, Inc.'
+            'name' => 'O2 Micro, Inc.',
         ]);
         $this->assertGreaterThan(0, $manufacturers_id);
 
@@ -207,7 +206,7 @@ class PeripheralTest extends AbstractInventoryAsset
             'name' => 'OZ776 CCID Smartcard Reader',
             'manufacturers_id' => $manufacturers_id,
             'serial' => 'ABCDEF',
-            'entities_id'  => 0
+            'entities_id'  => 0,
         ]);
         $this->assertGreaterThan(0, $periph_2_id);
 
@@ -215,19 +214,19 @@ class PeripheralTest extends AbstractInventoryAsset
             'itemtype_asset' => 'Computer',
             'items_id_asset' => $computers_id,
             'itemtype_peripheral' => 'Peripheral',
-            'items_id_peripheral' => $periph_2_id
+            'items_id_peripheral' => $periph_2_id,
         ]);
         $this->assertGreaterThan(0, $item_periph_2_id);
 
         $manufacturers_id = $manufacturer->add([
-            'name' => 'Logitech, Inc.'
+            'name' => 'Logitech, Inc.',
         ]);
 
         $periph_3_id = $periph->add([
             'name' => 'Unifying Receiver',
             'manufacturers_id' => $manufacturers_id,
             'serial' => 'a0b2c3d4e5',
-            'entities_id'  => 0
+            'entities_id'  => 0,
         ]);
         $this->assertGreaterThan(0, $periph_3_id);
 
@@ -235,14 +234,14 @@ class PeripheralTest extends AbstractInventoryAsset
             'itemtype_asset' => 'Computer',
             'items_id_asset' => $computers_id,
             'itemtype_peripheral' => 'Peripheral',
-            'items_id_peripheral' => $periph_3_id
+            'items_id_peripheral' => $periph_3_id,
         ]);
         $this->assertGreaterThan(0, $item_periph_3_id);
 
         $periphs = $item_periph->find([
             'itemtype_asset' => 'Computer',
             'items_id_asset' => $computers_id,
-            'itemtype_peripheral' => 'Peripheral'
+            'itemtype_peripheral' => 'Peripheral',
         ]);
         $this->assertCount(3, $periphs);
         foreach ($periphs as $p) {
@@ -261,8 +260,8 @@ class PeripheralTest extends AbstractInventoryAsset
             'LIMIT' => $nblogsnow,
             'OFFSET' => $this->nblogs,
             'WHERE' => [
-                'NOT' => ['itemtype' => \Config::class]
-            ]
+                'NOT' => ['itemtype' => \Config::class],
+            ],
         ]);
         $this->assertCount(0, $logs);
 
@@ -274,7 +273,7 @@ class PeripheralTest extends AbstractInventoryAsset
         $periphs = $item_periph->find([
             'itemtype_asset' => 'Computer',
             'items_id_asset' => $computers_id,
-            'itemtype_peripheral' => 'Peripheral'
+            'itemtype_peripheral' => 'Peripheral',
         ]);
         $this->assertCount(3, $periphs);
 
@@ -283,7 +282,7 @@ class PeripheralTest extends AbstractInventoryAsset
             'itemtype_asset' => 'Computer',
             'items_id_asset' => $computers_id,
             'itemtype_peripheral' => 'Peripheral',
-            'is_dynamic' => 1
+            'is_dynamic' => 1,
         ]);
         $this->assertCount(2, $periphs);
 
@@ -292,7 +291,7 @@ class PeripheralTest extends AbstractInventoryAsset
             'itemtype_asset' => 'Computer',
             'items_id_asset' => $computers_id,
             'itemtype_peripheral' => 'Peripheral',
-            'is_dynamic' => 0
+            'is_dynamic' => 0,
         ]);
         $this->assertCount(1, $periphs);
 
@@ -331,8 +330,8 @@ class PeripheralTest extends AbstractInventoryAsset
             'LIMIT' => $nblogsnow,
             'OFFSET' => $this->nblogs,
             'WHERE' => [
-                'NOT' => ['itemtype' => \Config::class]
-            ]
+                'NOT' => ['itemtype' => \Config::class],
+            ],
         ]);
         $this->assertCount(0, $logs);
 
@@ -344,7 +343,7 @@ class PeripheralTest extends AbstractInventoryAsset
         $periphs = $item_periph->find([
             'itemtype_asset' => 'Computer',
             'items_id_asset' => $computers_id,
-            'itemtype_peripheral' => 'Peripheral'
+            'itemtype_peripheral' => 'Peripheral',
         ]);
         $this->assertCount(2, $periphs);
 
@@ -353,7 +352,7 @@ class PeripheralTest extends AbstractInventoryAsset
             'itemtype_asset' => 'Computer',
             'items_id_asset' => $computers_id,
             'itemtype_peripheral' => 'Peripheral',
-            'is_dynamic' => 1
+            'is_dynamic' => 1,
         ]);
         $this->assertCount(1, $periphs);
 
@@ -362,7 +361,7 @@ class PeripheralTest extends AbstractInventoryAsset
             'itemtype_asset' => 'Computer',
             'items_id_asset' => $computers_id,
             'itemtype_peripheral' => 'Peripheral',
-            'is_dynamic' => 0
+            'is_dynamic' => 0,
         ]);
         $this->assertCount(1, $periphs);
     }
@@ -407,8 +406,8 @@ class PeripheralTest extends AbstractInventoryAsset
             'LIMIT' => $nblogsnow,
             'OFFSET' => $this->nblogs,
             'WHERE' => [
-                'NOT' => ['itemtype' => \Config::class]
-            ]
+                'NOT' => ['itemtype' => \Config::class],
+            ],
         ]);
         $this->assertCount(0, $logs);
 
@@ -428,7 +427,7 @@ class PeripheralTest extends AbstractInventoryAsset
         $peripherals = $item_peripheral->find([
             'itemtype_asset' => 'Computer',
             'items_id_asset' => $computers_id,
-            'itemtype_peripheral' => 'Peripheral'
+            'itemtype_peripheral' => 'Peripheral',
         ]);
         $this->assertCount(1, $peripherals);
 
@@ -437,7 +436,7 @@ class PeripheralTest extends AbstractInventoryAsset
             'itemtype_asset' => 'Computer',
             'items_id_asset' => $computers_id,
             'itemtype_peripheral' => 'Peripheral',
-            'is_dynamic' => 1
+            'is_dynamic' => 1,
         ]);
         $this->assertCount(1, $peripherals);
 
@@ -451,8 +450,8 @@ class PeripheralTest extends AbstractInventoryAsset
             'LIMIT' => $nblogsnow,
             'OFFSET' => $this->nblogs,
             'WHERE' => [
-                'NOT' => ['itemtype' => \Config::class]
-            ]
+                'NOT' => ['itemtype' => \Config::class],
+            ],
         ]);
         $this->assertCount(0, $logs);
 
@@ -468,7 +467,7 @@ class PeripheralTest extends AbstractInventoryAsset
         $peripherals = $item_peripheral->find([
             'itemtype_asset' => 'Computer',
             'items_id_asset' => $computers_id,
-            'itemtype_peripheral' => 'Peripheral'
+            'itemtype_peripheral' => 'Peripheral',
         ]);
         $this->assertCount(1, $peripherals);
 
@@ -506,8 +505,8 @@ class PeripheralTest extends AbstractInventoryAsset
             'LIMIT' => $nblogsnow,
             'OFFSET' => $this->nblogs,
             'WHERE' => [
-                'NOT' => ['itemtype' => \Config::class]
-            ]
+                'NOT' => ['itemtype' => \Config::class],
+            ],
         ]);
         $this->assertCount(0, $logs);
 
@@ -523,7 +522,7 @@ class PeripheralTest extends AbstractInventoryAsset
         $peripherals = $item_peripheral->find([
             'itemtype_asset' => 'Computer',
             'items_id_asset' => $computers_id,
-            'itemtype_peripheral' => 'Peripheral'
+            'itemtype_peripheral' => 'Peripheral',
         ]);
         $this->assertCount(0, $peripherals);
 
@@ -531,7 +530,7 @@ class PeripheralTest extends AbstractInventoryAsset
         $peripherals = $item_peripheral->find([
             'itemtype_asset' => 'Computer',
             'items_id_asset' => $computers_2_id,
-            'itemtype_peripheral' => 'Peripheral'
+            'itemtype_peripheral' => 'Peripheral',
         ]);
         $this->assertCount(1, $peripherals);
 
@@ -540,7 +539,7 @@ class PeripheralTest extends AbstractInventoryAsset
             'itemtype_asset' => 'Computer',
             'items_id_asset' => $computers_2_id,
             'itemtype_peripheral' => 'Peripheral',
-            'is_dynamic' => 1
+            'is_dynamic' => 1,
         ]);
         $this->assertCount(1, $peripherals);
 
@@ -554,8 +553,8 @@ class PeripheralTest extends AbstractInventoryAsset
             'LIMIT' => $nblogsnow,
             'OFFSET' => $this->nblogs,
             'WHERE' => [
-                'NOT' => ['itemtype' => \Config::class]
-            ]
+                'NOT' => ['itemtype' => \Config::class],
+            ],
         ]);
         $this->assertCount(0, $logs);
 
@@ -568,7 +567,7 @@ class PeripheralTest extends AbstractInventoryAsset
         $peripherals = $item_peripheral->find([
             'itemtype_asset' => 'Computer',
             'items_id_asset' => $computers_id,
-            'itemtype_peripheral' => 'Peripheral'
+            'itemtype_peripheral' => 'Peripheral',
         ]);
         $this->assertCount(1, $peripherals);
 
@@ -576,7 +575,7 @@ class PeripheralTest extends AbstractInventoryAsset
         $peripherals = $item_peripheral->find([
             'itemtype_asset' => 'Computer',
             'items_id_asset' => $computers_2_id,
-            'itemtype_peripheral' => 'Peripheral'
+            'itemtype_peripheral' => 'Peripheral',
         ]);
         $this->assertCount(0, $peripherals);
 
@@ -585,7 +584,7 @@ class PeripheralTest extends AbstractInventoryAsset
             'itemtype_asset' => 'Computer',
             'items_id_asset' => $computers_id,
             'itemtype_peripheral' => 'Peripheral',
-            'is_dynamic' => 1
+            'is_dynamic' => 1,
         ]);
         $this->assertCount(1, $peripherals);
     }
@@ -630,8 +629,8 @@ class PeripheralTest extends AbstractInventoryAsset
             'LIMIT' => $nblogsnow,
             'OFFSET' => $this->nblogs,
             'WHERE' => [
-                'NOT' => ['itemtype' => \Config::class]
-            ]
+                'NOT' => ['itemtype' => \Config::class],
+            ],
         ]);
         $this->assertCount(0, $logs);
 
@@ -651,7 +650,7 @@ class PeripheralTest extends AbstractInventoryAsset
         $peripherals = $item_peripheral->find([
             'itemtype_asset' => 'Computer',
             'items_id_asset' => $computers_id,
-            'itemtype_peripheral' => 'Peripheral'
+            'itemtype_peripheral' => 'Peripheral',
         ]);
         $this->assertCount(1, $peripherals);
 
@@ -660,7 +659,7 @@ class PeripheralTest extends AbstractInventoryAsset
             'itemtype_asset' => 'Computer',
             'items_id_asset' => $computers_id,
             'itemtype_peripheral' => 'Peripheral',
-            'is_dynamic' => 1
+            'is_dynamic' => 1,
         ]);
         $this->assertCount(1, $peripherals);
 
@@ -674,8 +673,8 @@ class PeripheralTest extends AbstractInventoryAsset
             'LIMIT' => $nblogsnow,
             'OFFSET' => $this->nblogs,
             'WHERE' => [
-                'NOT' => ['itemtype' => \Config::class]
-            ]
+                'NOT' => ['itemtype' => \Config::class],
+            ],
         ]);
         $this->assertCount(0, $logs);
 
@@ -691,7 +690,7 @@ class PeripheralTest extends AbstractInventoryAsset
         $peripherals = $item_peripheral->find([
             'itemtype_asset' => 'Computer',
             'items_id_asset' => $computers_id,
-            'itemtype_peripheral' => 'Peripheral'
+            'itemtype_peripheral' => 'Peripheral',
         ]);
         $this->assertCount(1, $peripherals);
 
@@ -733,8 +732,8 @@ class PeripheralTest extends AbstractInventoryAsset
             'LIMIT' => $nblogsnow,
             'OFFSET' => $this->nblogs,
             'WHERE' => [
-                'NOT' => ['itemtype' => \Config::class]
-            ]
+                'NOT' => ['itemtype' => \Config::class],
+            ],
         ]);
         $this->assertCount(0, $logs);
 
@@ -750,7 +749,7 @@ class PeripheralTest extends AbstractInventoryAsset
         $peripherals = $item_peripheral->find([
             'itemtype_asset' => 'Computer',
             'items_id_asset' => $computers_id,
-            'itemtype_peripheral' => 'Peripheral'
+            'itemtype_peripheral' => 'Peripheral',
         ]);
         $this->assertCount(1, $peripherals);
 
@@ -758,7 +757,7 @@ class PeripheralTest extends AbstractInventoryAsset
         $peripherals = $item_peripheral->find([
             'itemtype_asset' => 'Computer',
             'items_id_asset' => $computers_2_id,
-            'itemtype_peripheral' => 'Peripheral'
+            'itemtype_peripheral' => 'Peripheral',
         ]);
         $this->assertCount(1, $peripherals);
 
@@ -767,14 +766,14 @@ class PeripheralTest extends AbstractInventoryAsset
             'itemtype_asset' => 'Computer',
             'items_id_asset' => $computers_id,
             'itemtype_peripheral' => 'Peripheral',
-            'is_dynamic' => 1
+            'is_dynamic' => 1,
         ]);
         $this->assertCount(1, $peripherals);
         $peripherals = $item_peripheral->find([
             'itemtype_asset' => 'Computer',
             'items_id_asset' => $computers_2_id,
             'itemtype_peripheral' => 'Peripheral',
-            'is_dynamic' => 1
+            'is_dynamic' => 1,
         ]);
         $this->assertCount(1, $peripherals);
     }
@@ -829,8 +828,8 @@ class PeripheralTest extends AbstractInventoryAsset
             'LIMIT' => $nblogsnow,
             'OFFSET' => $this->nblogs,
             'WHERE' => [
-                'NOT' => ['itemtype' => \Config::class]
-            ]
+                'NOT' => ['itemtype' => \Config::class],
+            ],
         ]);
         $this->assertCount(0, $logs);
 
@@ -850,7 +849,7 @@ class PeripheralTest extends AbstractInventoryAsset
         $peripherals = $item_peripheral->find([
             'itemtype_asset' => 'Computer',
             'items_id_asset' => $computers_id,
-            'itemtype_peripheral' => 'Peripheral'
+            'itemtype_peripheral' => 'Peripheral',
         ]);
         $this->assertCount(1, $peripherals);
 
@@ -859,7 +858,7 @@ class PeripheralTest extends AbstractInventoryAsset
             'itemtype_asset' => 'Computer',
             'items_id_asset' => $computers_id,
             'itemtype_peripheral' => 'Peripheral',
-            'is_dynamic' => 1
+            'is_dynamic' => 1,
         ]);
         $this->assertCount(1, $peripherals);
 
@@ -907,8 +906,8 @@ class PeripheralTest extends AbstractInventoryAsset
             'LIMIT' => $nblogsnow,
             'OFFSET' => $this->nblogs,
             'WHERE' => [
-                'NOT' => ['itemtype' => \Config::class]
-            ]
+                'NOT' => ['itemtype' => \Config::class],
+            ],
         ]);
         $this->assertCount(0, $logs);
 
@@ -924,7 +923,7 @@ class PeripheralTest extends AbstractInventoryAsset
         $peripherals = $item_peripheral->find([
             'itemtype_asset' => 'Computer',
             'items_id_asset' => $computers_id,
-            'itemtype_peripheral' => 'Peripheral'
+            'itemtype_peripheral' => 'Peripheral',
         ]);
         $this->assertCount(1, $peripherals);
 
@@ -932,7 +931,7 @@ class PeripheralTest extends AbstractInventoryAsset
         $peripherals = $item_peripheral->find([
             'itemtype_asset' => 'Computer',
             'items_id_asset' => $computers_2_id,
-            'itemtype_peripheral' => 'Peripheral'
+            'itemtype_peripheral' => 'Peripheral',
         ]);
         $this->assertCount(1, $peripherals);
 
@@ -941,14 +940,14 @@ class PeripheralTest extends AbstractInventoryAsset
             'itemtype_asset' => 'Computer',
             'items_id_asset' => $computers_id,
             'itemtype_peripheral' => 'Peripheral',
-            'is_dynamic' => 1
+            'is_dynamic' => 1,
         ]);
         $this->assertCount(1, $peripherals);
         $peripherals = $item_peripheral->find([
             'itemtype_asset' => 'Computer',
             'items_id_asset' => $computers_2_id,
             'itemtype_peripheral' => 'Peripheral',
-            'is_dynamic' => 1
+            'is_dynamic' => 1,
         ]);
         $this->assertCount(1, $peripherals);
     }
@@ -1003,8 +1002,8 @@ class PeripheralTest extends AbstractInventoryAsset
             'LIMIT' => $nblogsnow,
             'OFFSET' => $this->nblogs,
             'WHERE' => [
-                'NOT' => ['itemtype' => \Config::class]
-            ]
+                'NOT' => ['itemtype' => \Config::class],
+            ],
         ]);
         $this->assertCount(0, $logs);
 
@@ -1023,7 +1022,7 @@ class PeripheralTest extends AbstractInventoryAsset
         $peripherals = $item_peripheral->find([
             'itemtype_asset' => 'Computer',
             'items_id_asset' => $computers_id,
-            'itemtype_peripheral' => 'Peripheral'
+            'itemtype_peripheral' => 'Peripheral',
         ]);
         $this->assertCount(1, $peripherals);
 
@@ -1032,7 +1031,7 @@ class PeripheralTest extends AbstractInventoryAsset
             'itemtype_asset' => 'Computer',
             'items_id_asset' => $computers_id,
             'itemtype_peripheral' => 'Peripheral',
-            'is_dynamic' => 1
+            'is_dynamic' => 1,
         ]);
         $this->assertCount(1, $peripherals);
 
@@ -1046,8 +1045,8 @@ class PeripheralTest extends AbstractInventoryAsset
             'LIMIT' => $nblogsnow,
             'OFFSET' => $this->nblogs,
             'WHERE' => [
-                'NOT' => ['itemtype' => \Config::class]
-            ]
+                'NOT' => ['itemtype' => \Config::class],
+            ],
         ]);
         $this->assertCount(0, $logs);
 
@@ -1063,7 +1062,7 @@ class PeripheralTest extends AbstractInventoryAsset
         $peripherals = $item_peripheral->find([
             'itemtype_asset' => 'Computer',
             'items_id_asset' => $computers_id,
-            'itemtype_peripheral' => 'Peripheral'
+            'itemtype_peripheral' => 'Peripheral',
         ]);
         $this->assertCount(1, $peripherals);
 
@@ -1115,8 +1114,8 @@ class PeripheralTest extends AbstractInventoryAsset
             'LIMIT' => $nblogsnow,
             'OFFSET' => $this->nblogs,
             'WHERE' => [
-                'NOT' => ['itemtype' => \Config::class]
-            ]
+                'NOT' => ['itemtype' => \Config::class],
+            ],
         ]);
         $this->assertCount(0, $logs);
 
@@ -1132,7 +1131,7 @@ class PeripheralTest extends AbstractInventoryAsset
         $peripherals = $item_peripheral->find([
             'itemtype_asset' => 'Computer',
             'items_id_asset' => $computers_id,
-            'itemtype_peripheral' => 'Peripheral'
+            'itemtype_peripheral' => 'Peripheral',
         ]);
         $this->assertCount(0, $peripherals);
 
@@ -1140,7 +1139,7 @@ class PeripheralTest extends AbstractInventoryAsset
         $peripherals = $item_peripheral->find([
             'itemtype_asset' => 'Computer',
             'items_id_asset' => $computers_2_id,
-            'itemtype_peripheral' => 'Peripheral'
+            'itemtype_peripheral' => 'Peripheral',
         ]);
         $this->assertCount(1, $peripherals);
 
@@ -1149,7 +1148,7 @@ class PeripheralTest extends AbstractInventoryAsset
             'itemtype_asset' => 'Computer',
             'items_id_asset' => $computers_2_id,
             'itemtype_peripheral' => 'Peripheral',
-            'is_dynamic' => 1
+            'is_dynamic' => 1,
         ]);
         $this->assertCount(1, $peripherals);
 
@@ -1173,8 +1172,8 @@ class PeripheralTest extends AbstractInventoryAsset
             'LIMIT' => $nblogsnow,
             'OFFSET' => $this->nblogs,
             'WHERE' => [
-                'NOT' => ['itemtype' => \Config::class]
-            ]
+                'NOT' => ['itemtype' => \Config::class],
+            ],
         ]);
         $this->assertCount(0, $logs);
 
@@ -1187,7 +1186,7 @@ class PeripheralTest extends AbstractInventoryAsset
         $peripherals = $item_peripheral->find([
             'itemtype_asset' => 'Computer',
             'items_id_asset' => $computers_id,
-            'itemtype_peripheral' => 'Peripheral'
+            'itemtype_peripheral' => 'Peripheral',
         ]);
         $this->assertCount(1, $peripherals);
 
@@ -1195,7 +1194,7 @@ class PeripheralTest extends AbstractInventoryAsset
         $peripherals = $item_peripheral->find([
             'itemtype_asset' => 'Computer',
             'items_id_asset' => $computers_2_id,
-            'itemtype_peripheral' => 'Peripheral'
+            'itemtype_peripheral' => 'Peripheral',
         ]);
         $this->assertCount(0, $peripherals);
 
@@ -1204,7 +1203,7 @@ class PeripheralTest extends AbstractInventoryAsset
             'itemtype_asset' => 'Computer',
             'items_id_asset' => $computers_id,
             'itemtype_peripheral' => 'Peripheral',
-            'is_dynamic' => 1
+            'is_dynamic' => 1,
         ]);
         $this->assertCount(1, $peripherals);
     }
@@ -1244,7 +1243,7 @@ class PeripheralTest extends AbstractInventoryAsset
         $conf = new \Glpi\Inventory\Conf();
         $this->assertTrue(
             $conf->saveConf([
-                'import_peripheral' => 0
+                'import_peripheral' => 0,
             ])
         );
         $this->logout();
@@ -1256,7 +1255,7 @@ class PeripheralTest extends AbstractInventoryAsset
         $this->login();
         $this->assertTrue(
             $conf->saveConf([
-                'import_peripheral' => 1
+                'import_peripheral' => 1,
             ])
         );
         $this->logOut();
@@ -1268,8 +1267,8 @@ class PeripheralTest extends AbstractInventoryAsset
             'LIMIT' => $nblogsnow,
             'OFFSET' => $this->nblogs,
             'WHERE' => [
-                'NOT' => ['itemtype' => \Config::class]
-            ]
+                'NOT' => ['itemtype' => \Config::class],
+            ],
         ]);
         $this->assertCount(0, $logs);
 
@@ -1290,8 +1289,8 @@ class PeripheralTest extends AbstractInventoryAsset
             'LIMIT' => $nblogsnow,
             'OFFSET' => $this->nblogs,
             'WHERE' => [
-                'NOT' => ['itemtype' => \Config::class]
-            ]
+                'NOT' => ['itemtype' => \Config::class],
+            ],
         ]);
         $this->assertCount(0, $logs);
 
@@ -1303,7 +1302,7 @@ class PeripheralTest extends AbstractInventoryAsset
         $peripherals = $item_peripheral->find([
             'itemtype_asset' => 'Computer',
             'items_id_asset' => $computers_id,
-            'itemtype_peripheral' => 'Peripheral'
+            'itemtype_peripheral' => 'Peripheral',
         ]);
         $this->assertCount(1, $peripherals);
 
@@ -1312,7 +1311,7 @@ class PeripheralTest extends AbstractInventoryAsset
             'itemtype_asset' => 'Computer',
             'items_id_asset' => $computers_id,
             'itemtype_peripheral' => 'Peripheral',
-            'is_dynamic' => 1
+            'is_dynamic' => 1,
         ]);
         $this->assertCount(1, $peripherals);
     }

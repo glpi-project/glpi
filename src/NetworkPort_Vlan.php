@@ -37,7 +37,7 @@ use Glpi\Application\View\TemplateRenderer;
 
 class NetworkPort_Vlan extends CommonDBRelation
 {
-   // From CommonDBRelation
+    // From CommonDBRelation
     public static $itemtype_1          = 'NetworkPort';
     public static $items_id_1          = 'networkports_id';
 
@@ -60,7 +60,7 @@ class NetworkPort_Vlan extends CommonDBRelation
     {
         $this->getFromDBByCrit([
             'networkports_id' => $portID,
-            'vlans_id'        => $vlanID
+            'vlans_id'        => $vlanID,
         ]);
 
         return $this->delete($this->fields);
@@ -77,7 +77,7 @@ class NetworkPort_Vlan extends CommonDBRelation
         $input = [
             'networkports_id' => $port,
             'vlans_id'        => $vlan,
-            'tagged'          => $tagged
+            'tagged'          => $tagged,
         ];
 
         return $this->add($input);
@@ -106,18 +106,18 @@ class NetworkPort_Vlan extends CommonDBRelation
             'SELECT'    => [
                 'glpi_networkports_vlans.id as assocID',
                 'glpi_networkports_vlans.tagged',
-                'glpi_vlans.*'
+                'glpi_vlans.*',
             ],
             'FROM'      => 'glpi_networkports_vlans',
             'LEFT JOIN' => [
                 'glpi_vlans'   => [
                     'ON' => [
                         'glpi_networkports_vlans'  => 'vlans_id',
-                        'glpi_vlans'               => 'id'
-                    ]
-                ]
+                        'glpi_vlans'               => 'id',
+                    ],
+                ],
             ],
-            'WHERE'     => ['networkports_id' => $ID]
+            'WHERE'     => ['networkports_id' => $ID],
         ]);
 
         $vlans  = [];
@@ -171,23 +171,22 @@ TWIG, $twig_params);
                 'name'          => $vlan->getLink(),
                 'entities_id'   => $entity_cache[$data['entities_id']],
                 'tagged'        => Dropdown::getYesNo($data["tagged"]),
-                'tag'           => $data['tag']
+                'tag'           => $data['tag'],
             ];
         }
 
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'is_tab' => true,
-            'nopager' => true,
             'nofilter' => true,
             'nosort' => true,
             'columns' => [
                 'name' => __('Name'),
                 'entities_id' => Entity::getTypeName(1),
                 'tagged' => __('Tagged'),
-                'tag' => __('ID TAG')
+                'tag' => __('ID TAG'),
             ],
             'formatters' => [
-                'name' => 'raw_html'
+                'name' => 'raw_html',
             ],
             'entries' => $entries,
             'total_number' => count($entries),
@@ -196,7 +195,7 @@ TWIG, $twig_params);
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
                 'container'     => 'mass' . static::class . mt_rand(),
-            ]
+            ],
         ]);
     }
 
@@ -218,18 +217,18 @@ TWIG, $twig_params);
             'SELECT'    => [
                 'glpi_networkports_vlans.id as assocID',
                 'glpi_networkports_vlans.tagged',
-                'glpi_networkports.*'
+                'glpi_networkports.*',
             ],
             'FROM'      => 'glpi_networkports_vlans',
             'LEFT JOIN' => [
                 'glpi_networkports'   => [
                     'ON' => [
                         'glpi_networkports_vlans'  => 'networkports_id',
-                        'glpi_networkports'        => 'id'
-                    ]
-                ]
+                        'glpi_networkports'        => 'id',
+                    ],
+                ],
             ],
-            'WHERE'     => ['vlans_id' => $ID]
+            'WHERE'     => ['vlans_id' => $ID],
         ]);
 
         $entries = [];
@@ -244,13 +243,12 @@ TWIG, $twig_params);
                 'itemtype'      => self::class,
                 'id'            => $data['assocID'],
                 'name'          => $netport->getLink(),
-                'entities_id'   => $entity_cache[$data['entities_id']]
+                'entities_id'   => $entity_cache[$data['entities_id']],
             ];
         }
 
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'is_tab' => true,
-            'nopager' => true,
             'nofilter' => true,
             'nosort' => true,
             'columns' => [
@@ -258,7 +256,7 @@ TWIG, $twig_params);
                 'entities_id' => Entity::getTypeName(1),
             ],
             'formatters' => [
-                'name' => 'raw_html'
+                'name' => 'raw_html',
             ],
             'entries' => $entries,
             'total_number' => count($entries),
@@ -267,7 +265,7 @@ TWIG, $twig_params);
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
                 'container'     => 'mass' . static::class . mt_rand(),
-            ]
+            ],
         ]);
     }
 
@@ -284,7 +282,7 @@ TWIG, $twig_params);
         $iterator = $DB->request([
             'SELECT' => 'vlans_id',
             'FROM'   => 'glpi_networkports_vlans',
-            'WHERE'  => ['networkports_id' => $portID]
+            'WHERE'  => ['networkports_id' => $portID],
         ]);
 
         foreach ($iterator as $data) {

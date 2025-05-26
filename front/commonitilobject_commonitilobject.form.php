@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+require_once(__DIR__ . '/_check_webserver_config.php');
+
 use Glpi\Event;
 use Glpi\Exception\Http\BadRequestHttpException;
 
@@ -40,7 +42,7 @@ use Glpi\Exception\Http\BadRequestHttpException;
  * @since 11.0.0
  */
 
-Session ::checkCentralAccess();
+Session::checkCentralAccess();
 
 if (isset($_POST['purge'], $_POST['id'])) {
     [$link_class_1, $link_class_2, $link_id] = explode('_', $_POST['id'], 3);

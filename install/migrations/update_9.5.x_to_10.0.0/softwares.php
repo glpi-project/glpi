@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -39,15 +38,13 @@
  */
 
 // CleanSoftwareCron cron task
-CronTask::register(
+$migration->addCrontask(
     'CleanSoftwareCron',
     'cleansoftware',
     MONTH_TIMESTAMP,
-    [
-        'state'         => 0,
-        'param'         => 1000,
-        'mode'          => 2,
-        'allowmode'     => 3,
+    param: 1000,
+    options: [
+        'state' => 0, // CronTask::STATE_DISABLE
         'logs_lifetime' => 300,
     ]
 );
@@ -60,7 +57,7 @@ if (!$DB->fieldExists('glpi_softwareversions', 'arch', false)) {
         'arch',
         'string',
         [
-            'after' => 'name'
+            'after' => 'name',
         ]
     );
     $migration->addKey('glpi_softwareversions', 'arch');

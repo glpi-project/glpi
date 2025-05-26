@@ -35,10 +35,12 @@
 
 namespace Glpi\Form\QuestionType;
 
+use Override;
+
 /**
  * List of valid question types categories
  */
-enum QuestionTypeCategory: string
+enum QuestionTypeCategory: string implements QuestionTypeCategoryInterface
 {
     /**
      * Questions that expect short single line answers (text, number, ...)
@@ -95,10 +97,7 @@ enum QuestionTypeCategory: string
      */
     case ITEM = "item";
 
-    /**
-     * Get category label
-     * @return string
-     */
+    #[Override]
     public function getLabel(): string
     {
         return match ($this) {
@@ -116,10 +115,7 @@ enum QuestionTypeCategory: string
         };
     }
 
-    /**
-     * Get category icon
-     * @return string
-     */
+    #[Override]
     public function getIcon(): string
     {
         return match ($this) {
@@ -134,6 +130,24 @@ enum QuestionTypeCategory: string
             self::CHECKBOX => "ti ti-select",
             self::DROPDOWN => "ti ti-list",
             self::ITEM => "ti ti-link",
+        };
+    }
+
+    #[Override]
+    public function getWeight(): int
+    {
+        return match ($this) {
+            self::SHORT_ANSWER  => 10,
+            self::LONG_ANSWER   => 20,
+            self::DATE_AND_TIME => 30,
+            self::ACTORS        => 40,
+            self::URGENCY       => 50,
+            self::REQUEST_TYPE  => 60,
+            self::FILE          => 70,
+            self::RADIO         => 80,
+            self::CHECKBOX      => 90,
+            self::DROPDOWN      => 100,
+            self::ITEM          => 110,
         };
     }
 }

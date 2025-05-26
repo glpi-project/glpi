@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -68,7 +67,7 @@ abstract class AbstractPlanningEvent extends \DbTestCase
                 'interval'  => 1,
                 'byweekday' => 'MO',
                 'bymonth'   => 1,
-                'exceptions' => "$this->exdate1, $this->exdate2"
+                'exceptions' => "$this->exdate1, $this->exdate2",
             ],
             'state'      => \Planning::TODO,
             'background' => 1,
@@ -82,10 +81,10 @@ abstract class AbstractPlanningEvent extends \DbTestCase
         $event = new $this->myclass();
         $id    = $event->add($this->input);
 
-        $this->assertGreaterThan(0, (int)$id);
+        $this->assertGreaterThan(0, (int) $id);
         $this->assertTrue($event->getFromDB($id));
 
-       // check end date
+        // check end date
         if (isset($event->fields['end'])) {
             $this->assertEquals($this->end, $event->fields['end']);
         }
@@ -152,9 +151,49 @@ abstract class AbstractPlanningEvent extends \DbTestCase
 
         $event = new $this->myclass();
         $id    = $event->add($this->input);
-        $this->assertGreaterThan(0, (int)$id);
+        $this->assertGreaterThan(0, (int) $id);
 
         $this->assertTrue($event->delete(['id' => $id]));
         $this->assertFalse($event->getFromDB($id));
     }
+
+    public function testSimpleRepeat()
+    {
+        $this->login();
+
+        $event = new $this->myclass();
+        $id    = $event->add(
+            [
+                'name'       => 'repeat each day',
+                'plan'       => [
+                    'begin'     => $this->begin,
+                    '_duration' => $this->duration,
+                ],
+                'rrule'      => [
+                    'freq'      => 'daily',
+                    'interval'  => 1,
+                    'bymonth'   => '',
+                ],
+                'state'      => \Planning::TODO,
+                'background' => 1,
+            ]
+        );
+
+        $this->assertGreaterThan(0, (int) $id);
+        $this->assertTrue($event->getFromDB($id));
+
+        // check end date
+        if (isset($event->fields['end'])) {
+            $this->assertEquals($this->end, $event->fields['end']);
+        }
+
+        // check rrule encoding
+        $this->assertEquals(
+            '{"freq":"daily","interval":1}',
+            $event->fields['rrule']
+        );
+
+        return $event;
+    }
+
 }

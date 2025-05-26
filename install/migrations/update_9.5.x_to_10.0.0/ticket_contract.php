@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -63,7 +62,7 @@ if (!$DB->fieldExists("glpi_entities", "contracts_id_default")) {
             'after'     => "anonymize_support_agents",
             'value'     => -2,               // Inherit as default value
             'update'    => '0',              // Not enabled for root entity
-            'condition' => 'WHERE `id` = 0'
+            'condition' => 'WHERE `id` = 0',
         ]
     );
 

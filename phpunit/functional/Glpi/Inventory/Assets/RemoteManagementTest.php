@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -59,7 +58,7 @@ class RemoteManagementTest extends AbstractInventoryAsset
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-                'expected'  => '{"remoteid": "123456789", "type": "teamviewer", "is_dynamic": 1}'
+                'expected'  => '{"remoteid": "123456789", "type": "teamviewer", "is_dynamic": 1}',
             ], [
                 'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
@@ -73,7 +72,7 @@ class RemoteManagementTest extends AbstractInventoryAsset
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-                'expected'  => '{"remoteid": "abcdyz", "type": "anydesk", "is_dynamic": 1}'
+                'expected'  => '{"remoteid": "abcdyz", "type": "anydesk", "is_dynamic": 1}',
             ], [
                 'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
@@ -87,8 +86,8 @@ class RemoteManagementTest extends AbstractInventoryAsset
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-                'expected'  => '{"remoteid": "myspecialid", "type": "litemanager", "is_dynamic": 1}'
-            ]
+                'expected'  => '{"remoteid": "myspecialid", "type": "litemanager", "is_dynamic": 1}',
+            ],
         ];
     }
 
@@ -101,7 +100,7 @@ class RemoteManagementTest extends AbstractInventoryAsset
 
         $computer = getItemByTypeName('Computer', '_test_pc01');
         $asset = new \Glpi\Inventory\Asset\RemoteManagement($computer, $json->content->remote_mgmt);
-        $asset->setExtraData((array)$json->content);
+        $asset->setExtraData((array) $json->content);
         $result = $asset->prepare();
         $this->assertEquals(json_decode($expected), $result[0]);
     }
@@ -125,7 +124,7 @@ class RemoteManagementTest extends AbstractInventoryAsset
         $this->assertFalse(
             $mgmt->getFromDbByCrit([
                 'itemtype' => $computer->getType(),
-                'items_id' => $computer->fields['id']
+                'items_id' => $computer->fields['id'],
             ]),
             'A remote management is already linked to computer!'
         );
@@ -138,18 +137,18 @@ class RemoteManagementTest extends AbstractInventoryAsset
         $json = json_decode($data);
 
         $asset = new \Glpi\Inventory\Asset\RemoteManagement($computer, $json->content->remote_mgmt);
-        $asset->setExtraData((array)$json->content);
+        $asset->setExtraData((array) $json->content);
         $result = $asset->prepare();
         $this->assertEquals(json_decode($expected['expected']), $result[0]);
 
-       //handle
+        //handle
         $asset->handleLinks();
 
         $asset->handle();
         $this->assertTrue(
             $mgmt->getFromDbByCrit([
                 'itemtype' => $computer->getType(),
-                'items_id' => $computer->fields['id']
+                'items_id' => $computer->fields['id'],
             ]),
             'Remote Management has not been linked to computer :('
         );
@@ -161,12 +160,12 @@ class RemoteManagementTest extends AbstractInventoryAsset
 
         $computer = getItemByTypeName('Computer', '_test_pc01');
 
-       //first, check there are no remote management linked to this computer
+        //first, check there are no remote management linked to this computer
         $mgmt = new \Item_RemoteManagement();
         $this->assertTrue(
             $mgmt->getFromDbByCrit([
                 'itemtype' => $computer->getType(),
-                'items_id' => $computer->fields['id']
+                'items_id' => $computer->fields['id'],
             ]),
             'No remote management linked to computer!'
         );
@@ -174,7 +173,7 @@ class RemoteManagementTest extends AbstractInventoryAsset
         $expected = $this::assetProvider()[0];
         $json_expected = json_decode($expected['expected']);
         $xml = $expected['xml'];
-       //change version
+        //change version
         $xml = str_replace('<ID>123456789</ID>', '<ID>987654321</ID>', $xml);
         $json_expected->remoteid = '987654321';
 
@@ -183,7 +182,7 @@ class RemoteManagementTest extends AbstractInventoryAsset
         $json = json_decode($data);
 
         $asset = new \Glpi\Inventory\Asset\RemoteManagement($computer, $json->content->remote_mgmt);
-        $asset->setExtraData((array)$json->content);
+        $asset->setExtraData((array) $json->content);
         $result = $asset->prepare();
         $this->assertEquals($json_expected, $result[0]);
 
@@ -192,7 +191,7 @@ class RemoteManagementTest extends AbstractInventoryAsset
         $this->assertTrue(
             $mgmt->getFromDbByCrit([
                 'itemtype' => $computer->getType(),
-                'items_id' => $computer->fields['id']
+                'items_id' => $computer->fields['id'],
             ])
         );
 
@@ -227,11 +226,11 @@ class RemoteManagementTest extends AbstractInventoryAsset
   <QUERY>INVENTORY</QUERY>
 </REQUEST>";
 
-       //create manually a computer, with 3 remote managements
+        //create manually a computer, with 3 remote managements
         $computers_id = $computer->add([
             'name'   => 'pc002',
             'serial' => 'ggheb7ne7',
-            'entities_id' => 0
+            'entities_id' => 0,
         ]);
         $this->assertGreaterThan(0, $computers_id);
 
@@ -241,7 +240,7 @@ class RemoteManagementTest extends AbstractInventoryAsset
                 'itemtype' => 'Computer',
                 'items_id' => $computers_id,
                 'type' => 'teamviewer',
-                'remoteid' => '123456789'
+                'remoteid' => '123456789',
             ])
         );
 
@@ -251,7 +250,7 @@ class RemoteManagementTest extends AbstractInventoryAsset
                 'itemtype' => 'Computer',
                 'items_id' => $computers_id,
                 'type' => 'anydesk',
-                'remoteid' => 'abcdyz'
+                'remoteid' => 'abcdyz',
             ])
         );
 
@@ -261,7 +260,7 @@ class RemoteManagementTest extends AbstractInventoryAsset
                 'itemtype' => 'Computer',
                 'items_id' => $computers_id,
                 'type' => 'mymgmt',
-                'remoteid' => 'qwertyuiop'
+                'remoteid' => 'qwertyuiop',
             ])
         );
 
@@ -271,7 +270,7 @@ class RemoteManagementTest extends AbstractInventoryAsset
             $this->assertEquals(0, $m['is_dynamic']);
         }
 
-       //computer inventory knows only "teamviewer" and "anydesk" remote managements
+        //computer inventory knows only "teamviewer" and "anydesk" remote managements
         $this->doInventory($xml_source, true);
 
         //we still have 3 remote managements
@@ -282,15 +281,15 @@ class RemoteManagementTest extends AbstractInventoryAsset
         $mgmts = $mgmt->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
         $this->assertCount(3, $mgmts);
 
-       //remote managements present in the inventory source are now dynamic
+        //remote managements present in the inventory source are now dynamic
         $mgmts = $mgmt->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
         $this->assertCount(2, $mgmts);
 
-       //remote management not present in the inventory is still not dynamic
+        //remote management not present in the inventory is still not dynamic
         $mgmts = $mgmt->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 0]);
         $this->assertCount(1, $mgmts);
 
-       //Redo inventory, but with removed "anydesk" remote managements
+        //Redo inventory, but with removed "anydesk" remote managements
         $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
@@ -312,19 +311,19 @@ class RemoteManagementTest extends AbstractInventoryAsset
 
         $this->doInventory($xml_source, true);
 
-       //we now have only 2 remote managements
+        //we now have only 2 remote managements
         $mgmts = $mgmt->find();
         $this->assertCount(2, $mgmts);
 
-       //we now have 2 remote managements linked to computer only
+        //we now have 2 remote managements linked to computer only
         $mgmts = $mgmt->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
         $this->assertCount(2, $mgmts);
 
-       //remote management present in the inventory source is still dynamic
+        //remote management present in the inventory source is still dynamic
         $mgmts = $mgmt->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
         $this->assertCount(1, $mgmts);
 
-       //remote management not present in the inventory is still not dynamic
+        //remote management not present in the inventory is still not dynamic
         $mgmts = $mgmt->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 0]);
         $this->assertCount(1, $mgmts);
     }

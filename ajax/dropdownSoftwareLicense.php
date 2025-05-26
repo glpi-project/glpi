@@ -48,14 +48,14 @@ if ($_POST['softwares_id'] > 0) {
         $_POST['value'] = 0;
     }
 
-   // Make a select box
+    // Make a select box
     $iterator = $DB->request([
         'DISTINCT'  => true,
         'FROM'      => 'glpi_softwarelicenses',
         'WHERE'     => [
-            'glpi_softwarelicenses.softwares_id'   => (int)$_POST['softwares_id']
+            'glpi_softwarelicenses.softwares_id'   => (int) $_POST['softwares_id'],
         ] + getEntitiesRestrictCriteria('glpi_softwarelicenses', 'entities_id', Session::getMatchingActiveEntities($_POST['entity_restrict']), true),
-        'ORDERBY'   => 'name'
+        'ORDERBY'   => 'name',
     ]);
     $number = count($iterator);
 

@@ -92,7 +92,7 @@ abstract class CommonITILActor extends CommonDBRelation
         $iterator = $DB->request([
             'FROM'   => static::getTable(),
             'WHERE'  => [static::getItilObjectForeignKey() => $items_id],
-            'ORDER'  => 'id ASC'
+            'ORDER'  => 'id ASC',
         ]);
         foreach ($iterator as $data) {
             $users[$data['type']][] = $data;
@@ -114,10 +114,10 @@ abstract class CommonITILActor extends CommonDBRelation
             'FROM'   => static::getTable(),
             'WHERE'  => [
                 static::getItilObjectForeignKey()   => $items_id,
-                'alternative_email'                 => $email
+                'alternative_email'                 => $email,
             ],
             'START'  => 0,
-            'LIMIT'  => 1
+            'LIMIT'  => 1,
         ]);
         return count($iterator) > 0;
     }
@@ -160,7 +160,7 @@ abstract class CommonITILActor extends CommonDBRelation
                 }
                 $item->update([
                     'id'     => $this->fields[static::getItilObjectForeignKey()],
-                    'status' => $status
+                    'status' => $status,
                 ]);
                 if ($donotif) {
                     $options = [];
@@ -216,7 +216,7 @@ abstract class CommonITILActor extends CommonDBRelation
 
         if (!isset($input['alternative_email']) || is_null($input['alternative_email'])) {
             $input['alternative_email'] = '';
-        } else if ($input['alternative_email'] != '' && !NotificationMailing::isUserAddressValid($input['alternative_email'])) {
+        } elseif ($input['alternative_email'] != '' && !NotificationMailing::isUserAddressValid($input['alternative_email'])) {
             Session::addMessageAfterRedirect(
                 __s('Invalid email address'),
                 false,
@@ -265,13 +265,13 @@ abstract class CommonITILActor extends CommonDBRelation
 
         $no_stat_computation = true;
         if ($this->input['type'] == CommonITILActor::ASSIGN) {
-           // Compute "take into account delay" unless "do not compute" flag was set by business rules
+            // Compute "take into account delay" unless "do not compute" flag was set by business rules
             $no_stat_computation = $item->isTakeIntoAccountComputationBlocked($this->input);
         }
         $item->updateDateMod($this->fields[static::getItilObjectForeignKey()], $no_stat_computation);
 
         if ($item->getFromDB($this->fields[static::getItilObjectForeignKey()])) {
-           // Check object status and update it if needed
+            // Check object status and update it if needed
             if (
                 $this->input['type'] == CommonITILActor::ASSIGN
                 && !isset($this->input['_from_object'])
@@ -280,11 +280,11 @@ abstract class CommonITILActor extends CommonDBRelation
             ) {
                 $item->update(['id'               => $item->getID(),
                     'status'           => CommonITILObject::ASSIGNED,
-                    '_from_assignment' => true
+                    '_from_assignment' => true,
                 ]);
             }
 
-           // raise notification for this actor addition
+            // raise notification for this actor addition
             if (!isset($this->input['_disablenotif'])) {
                 $string_type = match ($this->input['type']) {
                     self::REQUESTER => 'requester',
@@ -292,7 +292,7 @@ abstract class CommonITILActor extends CommonDBRelation
                     self::ASSIGN    => 'assign',
                     default         => '',
                 };
-               // example for event: assign_group
+                // example for event: assign_group
                 $event = $string_type . "_" . strtolower($this::$itemtype_2);
                 NotificationEvent::raiseEvent($event, $item);
             }

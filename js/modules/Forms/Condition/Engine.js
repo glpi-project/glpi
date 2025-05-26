@@ -43,8 +43,6 @@ export class GlpiFormConditionEngine
 
     async computeVisiblity(container)
     {
-        container = document.querySelector(container);
-
         try {
             // Send data to server for computation and apply results.
             return await this.#computeVisibilityOnBackend({
@@ -53,7 +51,7 @@ export class GlpiFormConditionEngine
         } catch (e) {
             console.error(e);
             glpi_toast_error(
-                __("An unexpected error occurred.")
+                __("An unexpected error occurred")
             );
         }
     }
@@ -61,6 +59,8 @@ export class GlpiFormConditionEngine
     #getQuestionsData(container)
     {
         const questions_data = new Map();
+        const array_values = new Map(); // Store array values temporarily
+        const keyed_array_values = new Map(); // Store array values with keys
 
         // Map questions that can be used as condition critera by others items.
         const questions_criteria_ids = [];
@@ -75,25 +75,72 @@ export class GlpiFormConditionEngine
         const data = new FormData(container);
         for (const entry of data.entries()) {
             const key = entry[0];
+            const value = entry[1];
 
             // Skip data unrelated to form answers
-            if (key.indexOf('answers_') == -1) {
+            if (key.indexOf('answers_') !== 0) {
                 continue;
             }
 
-            if (key.indexOf('[') == -1) {
-                // Read simple text value
-                const simple_key_regex = RegExp('answers_(.*)');
-                const match = simple_key_regex.exec(key);
+            if (key.includes('[')) {
+                // Handle array values: answers_questionId[] or answers_questionId[key]
+                const array_key_regex = /^answers_([^[]+)(\[(\d*|[^\]]*)\])$/;
+                const match = array_key_regex.exec(key);
 
-                // Extra value if it is from a criteria
-                if (questions_criteria_ids.indexOf(match[1]) != -1) {
-                    questions_data.set(match[1], entry[1]);
+                if (match && match[1]) {
+                    const question_id = match[1];
+                    const array_key = match[3];  // Extract the key inside brackets
+
+                    // Check if this question is a criteria
+                    if (questions_criteria_ids.indexOf(question_id) !== -1) {
+                        if (array_key === '') {
+                            // For answers_questionId[]
+                            if (!array_values.has(question_id)) {
+                                array_values.set(question_id, []);
+                            }
+                            if (value !== '') {
+                                array_values.get(question_id).push(value);
+                            }
+                        } else {
+                            // For answers_questionId[key]
+                            if (!keyed_array_values.has(question_id)) {
+                                keyed_array_values.set(question_id, {});
+                            }
+                            if (value !== '') {
+                                keyed_array_values.get(question_id)[array_key] = value;
+                            }
+                        }
+                    }
                 }
             } else {
-                // Value is an array, not yet supported (TODO)
+                // Handle simple values: answers_questionId
+                const simple_key_regex = /^answers_(.*)$/;
+                const match = simple_key_regex.exec(key);
+
+                if (match && match[1]) {
+                    const question_id = match[1];
+
+                    // Extra value if it is from a criteria
+                    if (questions_criteria_ids.indexOf(question_id) !== -1) {
+                        questions_data.set(question_id, value);
+                    }
+                }
             }
         };
+
+        // Add collected array values to questions_data
+        for (const [question_id, values] of array_values.entries()) {
+            if (values.length > 0) {
+                questions_data.set(question_id, values);
+            }
+        }
+
+        // Add collected keyed array values to questions_data
+        for (const [question_id, values] of keyed_array_values.entries()) {
+            if (Object.keys(values).length > 0) {
+                questions_data.set(question_id, values);
+            }
+        }
 
         return questions_data;
     }
@@ -103,8 +150,10 @@ export class GlpiFormConditionEngine
         // Build POST data
         const form_data = new FormData();
         form_data.append('form_id', this.#form_id);
-        for (const entry of data.answers.entries()) {
-            form_data.append(`answers[${entry[0]}]`, entry[1]);
+
+        // Process answers with proper handling of nested structures
+        for (const [question_id, value] of data.answers.entries()) {
+            this.#appendFormDataValue(form_data, `answers[${question_id}]`, value);
         }
 
         // Send request
@@ -124,6 +173,33 @@ export class GlpiFormConditionEngine
         }
 
         return response.json();
+    }
+
+    /**
+     * Recursively append values to FormData with proper key formatting
+     * @param {FormData} form_data - The FormData object
+     * @param {string} key - The current key
+     * @param {*} value - The value to append
+     */
+    #appendFormDataValue(form_data, key, value) {
+        if (value === null || value === undefined) {
+            return;
+        }
+
+        if (Array.isArray(value)) {
+            // Handle array values with empty bracket notation
+            for (const item of value) {
+                this.#appendFormDataValue(form_data, `${key}[]`, item);
+            }
+        } else if (typeof value === 'object' && value !== null) {
+            // Handle object values with key notation
+            for (const [objKey, objValue] of Object.entries(value)) {
+                this.#appendFormDataValue(form_data, `${key}[${objKey}]`, objValue);
+            }
+        } else {
+            // Handle primitive values
+            form_data.append(key, value);
+        }
     }
 }
 

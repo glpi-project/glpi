@@ -64,7 +64,7 @@ class RequestTypeFilter extends AbstractFilter
 
         if ((int) $value > 0) {
             $criteria["WHERE"] = [
-                "$table.requesttypes_id" => (int) $value
+                "$table.requesttypes_id" => (int) $value,
             ];
         }
 
@@ -80,7 +80,7 @@ class RequestTypeFilter extends AbstractFilter
                 'link'       => 'AND',
                 'field'      => self::getSearchOptionID($table, 'requesttypes_id', 'glpi_requesttypes'),
                 'searchtype' => 'equals',
-                'value'      => (int) $value
+                'value'      => (int) $value,
             ];
         }
 

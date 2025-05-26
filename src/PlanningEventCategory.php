@@ -47,12 +47,12 @@ class PlanningEventCategory extends CommonDropdown
                 'name'  => 'color',
                 'label' => __('Color'),
                 'type'  => 'color',
-            ]
+            ],
         ];
     }
 
     public static function getIcon()
     {
-        return "fas fa-tag";
+        return "ti ti-tags";
     }
 }

@@ -37,7 +37,7 @@ use Glpi\Application\View\TemplateRenderer;
 
 class Problem_Ticket extends CommonITILObject_CommonITILObject
 {
-   // From CommonDBRelation
+    // From CommonDBRelation
     public static $itemtype_1   = 'Problem';
     public static $items_id_1   = 'problems_id';
 
@@ -126,22 +126,22 @@ class Problem_Ticket extends CommonITILObject_CommonITILObject
                 foreach ($ids as $id) {
                     if ($item->can($id, READ)) {
                         if ($ticket->getFromDB($item->fields['tickets_id'])) {
-                              $input2 = [$field              => $item->fields['tickets_id'],
-                                  'taskcategories_id' => $input['taskcategories_id'],
-                                  'actiontime'        => $input['actiontime'],
-                                  'content'           => $input['content']
-                              ];
-                              if ($task->can(-1, CREATE, $input2)) {
-                                  if ($task->add($input2)) {
-                                      $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
-                                  } else {
-                                      $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
-                                      $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
-                                  }
-                              } else {
-                                  $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
-                                  $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
-                              }
+                            $input2 = [$field              => $item->fields['tickets_id'],
+                                'taskcategories_id' => $input['taskcategories_id'],
+                                'actiontime'        => $input['actiontime'],
+                                'content'           => $input['content'],
+                            ];
+                            if ($task->can(-1, CREATE, $input2)) {
+                                if ($task->add($input2)) {
+                                    $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                                } else {
+                                    $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                                    $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
+                                }
+                            } else {
+                                $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
+                                $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
+                            }
                         } else {
                             $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_NORIGHT);
                             $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
@@ -151,35 +151,35 @@ class Problem_Ticket extends CommonITILObject_CommonITILObject
                 return;
 
             case 'solveticket':
+                if (!$item instanceof Ticket) {
+                    throw new InvalidArgumentException();
+                }
+
                 $input  = $ma->getInput();
-                $ticket = new Ticket();
                 foreach ($ids as $id) {
                     if ($item->can($id, READ)) {
-                        if (
-                            $ticket->getFromDB($item->fields['tickets_id'])
-                            && $ticket->canSolve()
-                        ) {
+                        if ($item->canSolve()) {
                             $solution = new ITILSolution();
                             $added = $solution->add([
-                                'itemtype'  => $ticket::class,
-                                'items_id'  => $ticket->getID(),
-                                'solutiontypes_id'   => $input['solutiontypes_id'],
-                                'content'            => $input['content']
+                                'itemtype'         => $item::class,
+                                'items_id'         => $item->getID(),
+                                'solutiontypes_id' => $input['solutiontypes_id'],
+                                'content'          => $input['content'],
                             ]);
 
                             if ($added) {
                                 $ma->itemDone($item::class, $id, MassiveAction::ACTION_OK);
                             } else {
                                 $ma->itemDone($item::class, $id, MassiveAction::ACTION_KO);
-                                $ma->addMessage($ticket->getErrorMessage(ERROR_ON_ACTION));
+                                $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                             }
                         } else {
                             $ma->itemDone($item::class, $id, MassiveAction::ACTION_NORIGHT);
-                            $ma->addMessage($ticket->getErrorMessage(ERROR_RIGHT));
+                            $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                         }
                     } else {
                         $ma->itemDone($item::class, $id, MassiveAction::ACTION_NORIGHT);
-                        $ma->addMessage($ticket->getErrorMessage(ERROR_RIGHT));
+                        $ma->addMessage($item->getErrorMessage(ERROR_RIGHT));
                     }
                 }
                 return;
@@ -226,7 +226,7 @@ class Problem_Ticket extends CommonITILObject_CommonITILObject
                     'used'        => $used,
                     'displaywith' => ['id'],
                 ],
-                'create_link' => false
+                'create_link' => false,
             ]);
         }
 
@@ -239,7 +239,6 @@ class Problem_Ticket extends CommonITILObject_CommonITILObject
 
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'is_tab' => true,
-            'nopager' => true,
             'nofilter' => true,
             'nosort' => true,
             'columns' => $columns,
@@ -254,10 +253,10 @@ class Problem_Ticket extends CommonITILObject_CommonITILObject
                 'specific_actions' => [
                     'purge' => _sx('button', 'Delete permanently'),
                     __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'solveticket' => __s('Solve tickets'),
-                    __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_task' => __s('Add a new task')
+                    __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'add_task' => __s('Add a new task'),
                 ],
                 'extraparams'      => ['problems_id' => $problem->getID()],
-            ]
+            ],
         ]);
     }
 
@@ -302,7 +301,7 @@ class Problem_Ticket extends CommonITILObject_CommonITILObject
                     'used'        => $used,
                     'displaywith' => ['id'],
                 ],
-                'create_link' => Session::haveRight(Problem::$rightname, CREATE)
+                'create_link' => Session::haveRight(Problem::$rightname, CREATE),
             ]);
         }
 
@@ -315,7 +314,6 @@ class Problem_Ticket extends CommonITILObject_CommonITILObject
 
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'is_tab' => true,
-            'nopager' => true,
             'nofilter' => true,
             'nosort' => true,
             'columns' => $columns,
@@ -327,7 +325,7 @@ class Problem_Ticket extends CommonITILObject_CommonITILObject
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
                 'container'     => 'mass' . static::class . $rand,
-            ]
+            ],
         ]);
     }
 

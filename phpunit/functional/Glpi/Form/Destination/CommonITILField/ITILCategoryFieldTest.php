@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -149,11 +148,11 @@ final class ITILCategoryFieldTest extends AbstractDestinationFieldTest
             answers: [
                 "ITILCategory 1" => [
                     'itemtype' => ITILCategory::getType(),
-                    'items_id' => $itilcategories[0]->getID()
+                    'items_id' => $itilcategories[0]->getID(),
                 ],
                 "ITILCategory 2" => [
                     'itemtype' => ITILCategory::getType(),
-                    'items_id' => $itilcategories[1]->getID()
+                    'items_id' => $itilcategories[1]->getID(),
                 ],
             ],
             expected_itilcategory: $itilcategories[0]->getID()
@@ -169,11 +168,11 @@ final class ITILCategoryFieldTest extends AbstractDestinationFieldTest
             answers: [
                 "ITILCategory 1" => [
                     'itemtype' => ITILCategory::getType(),
-                    'items_id' => $itilcategories[0]->getID()
+                    'items_id' => $itilcategories[0]->getID(),
                 ],
                 "ITILCategory 2" => [
                     'itemtype' => ITILCategory::getType(),
-                    'items_id' => $itilcategories[1]->getID()
+                    'items_id' => $itilcategories[1]->getID(),
                 ],
             ],
             expected_itilcategory: $itilcategories[1]->getID()
@@ -199,11 +198,11 @@ final class ITILCategoryFieldTest extends AbstractDestinationFieldTest
             answers: [
                 "ITILCategory 1" => [
                     'itemtype' => ITILCategory::getType(),
-                    'items_id' => $itilcategories[0]->getID()
+                    'items_id' => $itilcategories[0]->getID(),
                 ],
                 "ITILCategory 2" => [
                     'itemtype' => ITILCategory::getType(),
-                    'items_id' => $itilcategories[1]->getID()
+                    'items_id' => $itilcategories[1]->getID(),
                 ],
             ],
             expected_itilcategory: $itilcategories[1]->getID()
@@ -216,7 +215,7 @@ final class ITILCategoryFieldTest extends AbstractDestinationFieldTest
             answers: [
                 "ITILCategory 1" => [
                     'itemtype' => ITILCategory::getType(),
-                    'items_id' => $itilcategories[0]->getID()
+                    'items_id' => $itilcategories[0]->getID(),
                 ],
             ],
             expected_itilcategory: $itilcategories[0]->getID()
@@ -229,7 +228,7 @@ final class ITILCategoryFieldTest extends AbstractDestinationFieldTest
             answers: [
                 "ITILCategory 2" => [
                     'itemtype' => ITILCategory::getType(),
-                    'items_id' => $itilcategories[1]->getID()
+                    'items_id' => $itilcategories[1]->getID(),
                 ],
             ],
             expected_itilcategory: $itilcategories[1]->getID()
@@ -255,7 +254,7 @@ final class ITILCategoryFieldTest extends AbstractDestinationFieldTest
             'fields_to_set' => [
                 'category_rule' => 1, // PluginFormcreatorAbstractItilTarget::CATEGORY_RULE_NONE
             ],
-            'field_config' => fn ($migration, $form) => (new ITILCategoryField())->getDefaultConfig($form)
+            'field_config' => fn($migration, $form) => (new ITILCategoryField())->getDefaultConfig($form),
         ];
 
         // Start a transaction to rollback changes
@@ -283,15 +282,15 @@ final class ITILCategoryFieldTest extends AbstractDestinationFieldTest
             'field_key'     => ITILCategoryField::getKey(),
             'fields_to_set' => [
                 'category_rule'     => 3, // PluginFormcreatorAbstractItilTarget::CATEGORY_RULE_ANSWER
-                'category_question' => 72
+                'category_question' => 72,
             ],
-            'field_config' => fn ($migration, $form) => new ITILCategoryFieldConfig(
+            'field_config' => fn($migration, $form) => new ITILCategoryFieldConfig(
                 strategy: ITILCategoryFieldStrategy::SPECIFIC_ANSWER,
                 specific_question_id: $migration->getMappedItemTarget(
                     'PluginFormcreatorQuestion',
                     72
                 )['items_id'] ?? throw new \Exception("Question not found")
-            )
+            ),
         ];
 
         yield 'Last valid answer' => [
@@ -301,7 +300,7 @@ final class ITILCategoryFieldTest extends AbstractDestinationFieldTest
             ],
             'field_config' => new ITILCategoryFieldConfig(
                 ITILCategoryFieldStrategy::LAST_VALID_ANSWER
-            )
+            ),
         ];
     }
 

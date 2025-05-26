@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -66,7 +65,7 @@ final class PasswordHistoryTest extends DbTestCase
                 Auth::getPasswordHash("old password 5"),
                 Auth::getPasswordHash("old password 6"),
                 Auth::getPasswordHash("old password 7"),
-            ])
+            ]),
         ]);
         $tu_user->getFromDB($tu_user->getID());
 
@@ -168,7 +167,6 @@ final class PasswordHistoryTest extends DbTestCase
             'user' => $user,
             'password' => "",
             'expected' => [],
-            'warning' => 'Unexpected empty password has not been added to passwords history.',
         ];
 
         // Update password with history disabled
@@ -223,7 +221,7 @@ final class PasswordHistoryTest extends DbTestCase
             'user'     => $user,
             'password' => $unhashed_password,
             'expected' => [$previous_password_5, $previous_password_4, $previous_password_3, $previous_password_2],
-            'warning'  => 'Unhashed password has not been added to passwords history.'
+            'warning'  => 'Unhashed password has not been added to passwords history.',
         ];
     }
 

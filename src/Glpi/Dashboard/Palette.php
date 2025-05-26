@@ -86,7 +86,7 @@ final class Palette
             "#ffee65",
             "#beb9db",
             "#fdcce5",
-            "#8bd3c7"
+            "#8bd3c7",
         ],
         'paired' => [
             '#a6cee3',
@@ -111,7 +111,7 @@ final class Palette
             "#bdcf32",
             "#87bc45",
             "#27aeef",
-            "#b33dc6"
+            "#b33dc6",
         ],
         'accent' => [
             '#7fc97f',
@@ -243,7 +243,7 @@ final class Palette
             "#e1a692",
             "#de6e56",
             "#e14b31",
-            "#c23728"
+            "#c23728",
         ],
         'pink_foam' => [
             "#54bebe",
@@ -254,7 +254,7 @@ final class Palette
             "#e4bcad",
             "#df979e",
             "#d7658b",
-            "#c80064"
+            "#c80064",
         ],
         'salmon_to_aqua' => [
             "#e27c7c",
@@ -265,7 +265,7 @@ final class Palette
             "#3c4e4b",
             "#466964",
             "#599e94",
-            "#6cd4c5"
+            "#6cd4c5",
         ],
         'black_to_pink' => [
             "#2e2b28",
@@ -276,7 +276,7 @@ final class Palette
             "#ab3da9",
             "#de25da",
             "#eb44e8",
-            "#ff80ff"
+            "#ff80ff",
         ],
         'grey_to_red' => [
             "#d7e1ee",
@@ -287,7 +287,7 @@ final class Palette
             "#df8879",
             "#c86558",
             "#b04238",
-            "#991f17"
+            "#991f17",
         ],
         'blues' => [
             "#0000b3",
@@ -298,7 +298,7 @@ final class Palette
             "#0080ff",
             "#009fff",
             "#00bfff",
-            "#00ffff"
+            "#00ffff",
         ],
     ];
 

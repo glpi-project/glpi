@@ -198,6 +198,52 @@ final class StringConditionHandlerTest extends AbstractConditionHandler
                 'submitted_answer'   => "exact ANSWER",
                 'expected_result'    => false,
             ];
+
+            // Test string answers with the MATCH_REGEX operator
+            yield "Match regex check - case 1 for $type" => [
+                'question_type'      => $type,
+                'condition_operator' => ValueOperator::MATCH_REGEX,
+                'condition_value'    => "/[09]+/",
+                'submitted_answer'   => "Invalid format",
+                'expected_result'    => false,
+            ];
+            yield "Match regex check - case 2 for $type" => [
+                'question_type'      => $type,
+                'condition_operator' => ValueOperator::MATCH_REGEX,
+                'condition_value'    => "/[09]+/",
+                'submitted_answer'   => "0124511",
+                'expected_result'    => true,
+            ];
+            yield "Match regex check - case 3 for $type" => [
+                'question_type'      => $type,
+                'condition_operator' => ValueOperator::MATCH_REGEX,
+                'condition_value'    => "not a regex", // Invalid regex should not trigger errors
+                'submitted_answer'   => "answer",
+                'expected_result'    => false,
+            ];
+
+            // Test string answers with the NOT_MATCH_REGEX operator
+            yield "Not match regex check - case 1 for $type" => [
+                'question_type'      => $type,
+                'condition_operator' => ValueOperator::NOT_MATCH_REGEX,
+                'condition_value'    => "/[09]+/",
+                'submitted_answer'   => "Invalid format",
+                'expected_result'    => true,
+            ];
+            yield "Not match regex check - case 2 for $type" => [
+                'question_type'      => $type,
+                'condition_operator' => ValueOperator::NOT_MATCH_REGEX,
+                'condition_value'    => "/[09]+/",
+                'submitted_answer'   => "0124511",
+                'expected_result'    => false,
+            ];
+            yield "Not match regex check - case 3 for $type" => [
+                'question_type'      => $type,
+                'condition_operator' => ValueOperator::NOT_MATCH_REGEX,
+                'condition_value'    => "not a regex", // Invalid regex should not trigger errors
+                'submitted_answer'   => "answer",
+                'expected_result'    => true,
+            ];
         }
     }
 }

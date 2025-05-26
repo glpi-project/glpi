@@ -186,7 +186,7 @@ abstract class AbstractDefinition extends CommonDBTM
 
         if (!self::isNewID($ID)) {
             $count_conditions = [
-                static::getForeignKeyField() => $ID
+                static::getForeignKeyField() => $ID,
             ];
             if ($DB->fieldExists($item_type::getTable(), 'is_template')) {
                 $count_conditions['is_template'] = 0;
@@ -202,7 +202,7 @@ abstract class AbstractDefinition extends CommonDBTM
                     'icon' => 'ti ti-trash',
                     'text' => _x('button', 'Delete permanently'),
                     'type' => 'submit',
-                ]
+                ],
             ];
         }
 
@@ -213,11 +213,11 @@ abstract class AbstractDefinition extends CommonDBTM
                 'item'                  => $this,
                 'params'                => $options,
                 'has_rights_enabled'    => $this->hasRightsEnabled(),
-                'reserved_system_names' => $definition_manager->getReservedSystemNames(),
+                'reserved_system_names_pattern' => $definition_manager->getReservedSystemNamesPattern(),
                 'existing_system_names' => array_values(array_filter(array_map(
-                    static fn (self $definition) => $definition->fields['system_name'],
+                    static fn(self $definition) => $definition->fields['system_name'],
                     $definition_manager->getDefinitions()
-                ), fn ($name) => $name !== $this->fields['system_name'])),
+                ), fn($name) => $name !== $this->fields['system_name'])),
                 'item_count'            => $item_count,
             ]
         );
@@ -245,7 +245,7 @@ abstract class AbstractDefinition extends CommonDBTM
 
         $central_profiles = \array_filter(
             $profiles_data,
-            static fn (array $profile) => $profile['interface'] !== 'heldesk'
+            static fn(array $profile) => $profile['interface'] !== 'heldesk'
         );
 
         $nb_cb_per_col = array_fill_keys(
@@ -271,7 +271,7 @@ abstract class AbstractDefinition extends CommonDBTM
 
             $row = [
                 'label' => $profile_data['name'],
-                'columns' => []
+                'columns' => [],
             ];
             foreach (array_keys($possible_rights) as $right_value) {
                 $checked = $profile_rights & $right_value;
@@ -295,7 +295,7 @@ abstract class AbstractDefinition extends CommonDBTM
                 'matrix_rows'    => $matrix_rows,
                 'nb_cb_per_col'  => $nb_cb_per_col,
                 'nb_cb_per_row'  => $nb_cb_per_row,
-                'extra_fields'   => $this->getExtraProfilesFields($profiles_data)
+                'extra_fields'   => $this->getExtraProfilesFields($profiles_data),
             ]
         );
     }
@@ -338,7 +338,7 @@ abstract class AbstractDefinition extends CommonDBTM
 
         usort(
             $translations,
-            static fn (array $a, array $b) => strnatcasecmp($CFG_GLPI['languages'][$a['language']][0], $CFG_GLPI['languages'][$b['language']][0])
+            static fn(array $a, array $b) => strnatcasecmp($CFG_GLPI['languages'][$a['language']][0], $CFG_GLPI['languages'][$b['language']][0])
         );
 
         $rand = mt_rand();
@@ -376,6 +376,45 @@ abstract class AbstractDefinition extends CommonDBTM
             );
             return false;
         }
+
+        if (
+            !is_string($input['system_name'])
+            || preg_match('/^' . self::SYSTEM_NAME_PATTERN . '$/', $input['system_name']) !== 1
+        ) {
+            Session::addMessageAfterRedirect(
+                htmlescape(sprintf(
+                    __('The following field has an incorrect value: "%s".'),
+                    __('System name')
+                )),
+                false,
+                ERROR
+            );
+            return false;
+        } elseif (preg_match(static::getDefinitionManagerClass()::getInstance()->getReservedSystemNamesPattern(), $input['system_name']) === 1) {
+            Session::addMessageAfterRedirect(
+                htmlescape(sprintf(
+                    __('The system name is a reserved name.'),
+                    $input['system_name']
+                )),
+                false,
+                ERROR
+            );
+            return false;
+        } else {
+            $existing_system_names = array_map(static fn($d) => strtolower($d->fields['system_name'] ?? ''), static::getDefinitionManagerClass()::getInstance()->getDefinitions());
+            if (in_array(strtolower($input['system_name']), $existing_system_names, true)) {
+                Session::addMessageAfterRedirect(
+                    htmlescape(sprintf(
+                        __('The system name must be unique.'),
+                        $input['system_name']
+                    )),
+                    false,
+                    ERROR
+                );
+                return false;
+            }
+        }
+
         if (empty($input['label'])) {
             $input['label'] = $input['system_name'];
         }
@@ -402,7 +441,7 @@ abstract class AbstractDefinition extends CommonDBTM
                 $translations[$input['language']] = $input['plurals'];
                 unset($input['_save_translation'], $input['language'], $input['plurals']);
                 $input['translations'] = $translations;
-            } else if (array_key_exists('one', $input['plurals'])) {
+            } elseif (array_key_exists('one', $input['plurals'])) {
                 $custom_field = new CustomFieldDefinition();
                 if ($custom_field->getFromDB($input['field']) && $custom_field->fields[static::getForeignKeyField()] === $this->getID()) {
                     $translations = $custom_field->getDecodedTranslationsField();
@@ -445,56 +484,6 @@ abstract class AbstractDefinition extends CommonDBTM
     protected function prepareInput(array $input): array|bool
     {
         $has_errors = false;
-
-        if (array_key_exists('system_name', $input)) {
-            if (
-                !is_string($input['system_name'])
-                || preg_match('/^' . self::SYSTEM_NAME_PATTERN . '$/', $input['system_name']) !== 1
-            ) {
-                Session::addMessageAfterRedirect(
-                    htmlescape(sprintf(
-                        __('The following field has an incorrect value: "%s".'),
-                        __('System name')
-                    )),
-                    false,
-                    ERROR
-                );
-                $has_errors = true;
-            } else if (in_array($input['system_name'], static::getDefinitionManagerClass()::getInstance()->getReservedSystemNames(), true)) {
-                Session::addMessageAfterRedirect(
-                    htmlescape(sprintf(
-                        __('The system name must not be the reserved word "%s".'),
-                        $input['system_name']
-                    )),
-                    false,
-                    ERROR
-                );
-                $has_errors = true;
-            } else if (preg_match('/(Model|Type)$/i', $input['system_name']) === 1) {
-                Session::addMessageAfterRedirect(
-                    __s('The system name must not end with the word "Model" or the word "Type".'),
-                    false,
-                    ERROR
-                );
-                $has_errors = true;
-            } else {
-                $existing_system_names = array_map(static fn ($d) => strtolower($d->fields['system_name'] ?? ''), static::getDefinitionManagerClass()::getInstance()->getDefinitions());
-                if (
-                    ($this->isNewItem() || ($input['system_name'] !== $this->fields['system_name']))
-                    && in_array(strtolower($input['system_name']), $existing_system_names, true)
-                ) {
-                    Session::addMessageAfterRedirect(
-                        htmlescape(sprintf(
-                            __('The system name must be unique.'),
-                            $input['system_name']
-                        )),
-                        false,
-                        ERROR
-                    );
-                    $has_errors = true;
-                }
-            }
-        }
 
         if (array_key_exists('profiles', $input)) {
             if (!$this->validateProfileArray($input['profiles'])) {
@@ -738,7 +727,7 @@ abstract class AbstractDefinition extends CommonDBTM
             'table'         => self::getTable(),
             'field'         => 'is_active',
             'name'          => __('Active'),
-            'datatype'      => 'bool'
+            'datatype'      => 'bool',
         ];
 
         $search_options[] = [
@@ -747,7 +736,7 @@ abstract class AbstractDefinition extends CommonDBTM
             'field'         => 'date_mod',
             'name'          => __('Last update'),
             'datatype'      => 'datetime',
-            'massiveaction' => false
+            'massiveaction' => false,
         ];
 
         $search_options[] = [
@@ -756,7 +745,7 @@ abstract class AbstractDefinition extends CommonDBTM
             'field'         => 'date_creation',
             'name'          => __('Creation date'),
             'datatype'      => 'datetime',
-            'massiveaction' => false
+            'massiveaction' => false,
         ];
 
         $search_options[] = [
@@ -772,8 +761,8 @@ abstract class AbstractDefinition extends CommonDBTM
             'id'            => 7,
             'table'         => self::getTable(),
             'field'         => 'comment',
-            'name'          => __('Comments'),
-            'datatype'      => 'text'
+            'name'          => _n('Comment', 'Comments', Session::getPluralNumber()),
+            'datatype'      => 'text',
         ];
 
         $search_options[] = [
@@ -781,7 +770,7 @@ abstract class AbstractDefinition extends CommonDBTM
             'table'         => self::getTable(),
             'field'         => 'translations',
             'name'          => __('Translations'),
-            'datatype'      => 'specific'
+            'datatype'      => 'specific',
         ];
 
         return $search_options;
@@ -907,7 +896,7 @@ TWIG, ['name' => $name, 'value' => $value]);
             }
 
             $available_categories = array_map(
-                fn (Language_Category $category) => $category->id,
+                fn(Language_Category $category) => $category->id,
                 self::getPluralFormsForLanguage($language)
             );
             foreach ($values as $category => $translation) {
@@ -1005,7 +994,7 @@ TWIG, ['name' => $name, 'value' => $value]);
                 $is_valid = false;
                 break;
             }
-            if ($check_values && !in_array((int)$profile_id, $available_profiles, true)) {
+            if ($check_values && !in_array((int) $profile_id, $available_profiles, true)) {
                 $is_valid = false;
                 break;
             }

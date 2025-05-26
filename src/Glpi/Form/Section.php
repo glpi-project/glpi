@@ -36,17 +36,25 @@
 namespace Glpi\Form;
 
 use CommonDBChild;
+use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\Condition\ConditionableVisibilityInterface;
 use Glpi\Form\Condition\ConditionableVisibilityTrait;
+use Glpi\ItemTranslation\Context\TranslationHandler;
+use Glpi\ItemTranslation\Context\ProvideTranslationsInterface;
+use Glpi\Form\Condition\ConditionHandler\VisibilityConditionHandler;
+use Glpi\Form\Condition\UsedAsCriteriaInterface;
 use Override;
 use Ramsey\Uuid\Uuid;
 
 /**
  * Section of a given helpdesk form
  */
-final class Section extends CommonDBChild implements ConditionableVisibilityInterface
+final class Section extends CommonDBChild implements ConditionableVisibilityInterface, ProvideTranslationsInterface, UsedAsCriteriaInterface
 {
     use ConditionableVisibilityTrait;
+
+    public const TRANSLATION_KEY_NAME = 'section_name';
+    public const TRANSLATION_KEY_DESCRIPTION = 'section_description';
 
     public static $itemtype = Form::class;
     public static $items_id = 'forms_forms_id';
@@ -69,6 +77,12 @@ final class Section extends CommonDBChild implements ConditionableVisibilityInte
     public static function getTypeName($nb = 0)
     {
         return _n('Step', 'Steps', $nb);
+    }
+
+    #[Override]
+    public function getUUID(): string
+    {
+        return $this->fields['uuid'];
     }
 
     #[Override]
@@ -122,12 +136,60 @@ final class Section extends CommonDBChild implements ConditionableVisibilityInte
         return $input;
     }
 
+    #[Override]
+    public function listTranslationsHandlers(): array
+    {
+        $form = $this->getItem();
+        if (!$form instanceof Form) {
+            throw new \LogicException('Section must be attached to a form');
+        }
+
+        $handlers = [];
+        $key = sprintf('%s: %s', self::getTypeName(), $this->getName());
+        if (count($form->getSections()) > 1) {
+            if (!empty($this->fields['name'])) {
+                $handlers[$key][] = new TranslationHandler(
+                    item: $this,
+                    key: self::TRANSLATION_KEY_NAME,
+                    name: __('Section title'),
+                    value: $this->fields['name'],
+                );
+            }
+
+            if (!empty($this->fields['description'])) {
+                $handlers[$key][] = new TranslationHandler(
+                    item: $this,
+                    key: self::TRANSLATION_KEY_DESCRIPTION,
+                    name: __('Section description'),
+                    value: $this->fields['description'],
+                );
+            }
+        }
+
+        $blocks_handlers = [];
+        foreach ($this->getBlocks() as $block) {
+            $blocks_to_process = is_array($block) ? $block : [$block];
+            foreach ($blocks_to_process as $b) {
+                $blocks_handlers[] = $b->listTranslationsHandlers();
+            }
+        }
+
+        return array_merge($handlers, ...$blocks_handlers);
+    }
+
+    #[Override]
+    public function getConditionHandlers(
+        ?JsonFieldInterface $question_config
+    ): array {
+        return [new VisibilityConditionHandler()];
+    }
+
     /**
      * Get blocks of this section
      * Block can be a question or a comment
      * Each block implements BlockInterface and extends CommonDBChild
      *
-     * @return array<int, (BlockInterface & CommonDBChild)[]>
+     * @return array<int, (BlockInterface & CommonDBChild)|(BlockInterface & CommonDBChild)[]>
      */
     public function getBlocks(): array
     {

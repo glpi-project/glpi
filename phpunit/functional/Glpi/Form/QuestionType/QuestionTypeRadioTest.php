@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -36,8 +35,8 @@
 namespace tests\units\Glpi\Form\QuestionType;
 
 use DbTestCase;
-use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\QuestionType\QuestionTypeRadio;
+use Glpi\Form\QuestionType\QuestionTypeSelectableExtraDataConfig;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
 
@@ -51,14 +50,16 @@ final class QuestionTypeRadioTest extends DbTestCase
         $builder->addQuestion(
             name: "Your favorite software",
             type: QuestionTypeRadio::class,
-            extra_data: json_encode([
-                'options' => ['GLPI', 'GLPI again', 'Still GLPI'],
-            ])
+            extra_data: json_encode(new QuestionTypeSelectableExtraDataConfig([
+                'glpi'       => 'GLPI',
+                'glpi_again' => 'GLPI again',
+                'still_glpi' => 'Still GLPI',
+            ]))
         );
         $form = $this->createForm($builder);
 
         $ticket = $this->sendFormAndGetCreatedTicket($form, [
-            "Your favorite software" => 'GLPI again',
+            "Your favorite software" => 'glpi_again',
         ]);
 
         $this->assertStringContainsString(

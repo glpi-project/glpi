@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -37,6 +36,7 @@ namespace tests\units;
 
 use DatabaseInstance;
 use DbTestCase;
+use Glpi\Asset\Capacity;
 use Glpi\Asset\Capacity\HasDatabaseInstanceCapacity;
 use Glpi\Features\Clonable;
 use Toolbox;
@@ -48,7 +48,7 @@ class DatabaseInstanceTest extends DbTestCase
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        $this->initAssetDefinition(capacities: [HasDatabaseInstanceCapacity::class]);
+        $this->initAssetDefinition(capacities: [new Capacity(name: HasDatabaseInstanceCapacity::class)]);
 
         $this->login(); // tab will be available only if corresponding right is available in the current session
 
@@ -68,7 +68,7 @@ class DatabaseInstanceTest extends DbTestCase
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        $this->initAssetDefinition(capacities: [HasDatabaseInstanceCapacity::class]);
+        $this->initAssetDefinition(capacities: [new Capacity(name: HasDatabaseInstanceCapacity::class)]);
 
         foreach ($CFG_GLPI['databaseinstance_types'] as $itemtype) {
             if (!Toolbox::hasTrait($itemtype, Clonable::class)) {
@@ -89,7 +89,7 @@ class DatabaseInstanceTest extends DbTestCase
         $instid = $instance->add([
             'name' => 'To be removed',
             'port' => 3306,
-            'size' => 52000
+            'size' => 52000,
         ]);
 
         //check DB is created, and load it
@@ -103,17 +103,17 @@ class DatabaseInstanceTest extends DbTestCase
                 0,
                 $database->add([
                     'name'                   => 'Database ' . $i,
-                    'databaseinstances_id'   => $instid
+                    'databaseinstances_id'   => $instid,
                 ])
             );
         }
         $this->assertSame(5, countElementsInTable(\Database::getTable()));
 
-       //test removal
+        //test removal
         $this->assertTrue($instance->delete(['id' => $instid], 1));
         $this->assertFalse($instance->getFromDB($instid));
 
-       //ensure databases has been dropped aswell
+        //ensure databases has been dropped aswell
         $this->assertSame(0, countElementsInTable(\Database::getTable()));
     }
 

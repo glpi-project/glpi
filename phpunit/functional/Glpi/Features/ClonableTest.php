@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -50,7 +49,7 @@ class ClonableTest extends \DbTestCase
             [\Software::class, true],
             [\Ticket::class, true],
             [\Plugin::class, false],
-            [\Config::class, false]
+            [\Config::class, false],
         ];
     }
 
@@ -68,7 +67,7 @@ class ClonableTest extends \DbTestCase
             $item = $this->createItem($class, [
                 'name' => 'Test',
                 'entities_id' => $this->getTestRootEntity(true),
-                'content' => ''
+                'content' => '',
             ], ['content']);
             if ($item->maybeTemplate()) {
                 $specific_actions = \MassiveAction::getAllMassiveActions($class, false, $item, $item->getID());

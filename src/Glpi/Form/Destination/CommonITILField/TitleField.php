@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -45,10 +44,13 @@ use Glpi\Form\Migration\FormMigration;
 use InvalidArgumentException;
 use Glpi\Form\Tag\FormTagProvider;
 use Glpi\Form\Tag\FormTagsManager;
+use Glpi\Form\Migration\TagConversionTrait;
 use Override;
 
-class TitleField extends AbstractConfigField implements DestinationFieldConverterInterface
+final class TitleField extends AbstractConfigField implements DestinationFieldConverterInterface
 {
+    use TagConversionTrait;
+
     #[Override]
     public function getLabel(): string
     {
@@ -89,6 +91,7 @@ class TitleField extends AbstractConfigField implements DestinationFieldConverte
                     'toolbar'          : false,
                     'editor_height'    : 0,
                     'statusbar'        : false,
+                    'mb'               : '',
                 })
             ) }}
 
@@ -166,7 +169,8 @@ TWIG;
     public function convertFieldConfig(FormMigration $migration, Form $form, array $rawData): JsonFieldInterface
     {
         if (isset($rawData['target_name'])) {
-            return new SimpleValueConfig($rawData['target_name']);
+            $title = $this->convertLegacyTags($rawData['target_name'], $migration);
+            return new SimpleValueConfig($title);
         }
 
         return $this->getDefaultConfig($form);

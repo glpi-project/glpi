@@ -34,6 +34,8 @@
 
 namespace Glpi\Http;
 
+use Config;
+use Glpi\Exception\Http\AccessDeniedHttpException;
 use Session;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -51,6 +53,11 @@ final class Firewall
      * Check that user is authenticated.
      */
     public const STRATEGY_AUTHENTICATED = 'authenticated';
+
+    /**
+     * Check that user is authenticated and has administration rights.
+     */
+    public const STRATEGY_ADMIN_ACCESS = 'admin_access';
 
     /**
      * Check that user is authenticated and is using a profile based on central interface.
@@ -102,7 +109,7 @@ final class Firewall
     public function __construct(?string $root_dir = null, ?array $plugins_dirs = null)
     {
         $this->root_dir = $root_dir ?? GLPI_ROOT;
-        $this->plugins_dirs = $plugins_dirs ?? PLUGINS_DIRECTORIES;
+        $this->plugins_dirs = $plugins_dirs ?? GLPI_PLUGINS_DIRECTORIES;
     }
 
     /**
@@ -140,6 +147,12 @@ final class Firewall
         switch ($strategy) {
             case self::STRATEGY_AUTHENTICATED:
                 Session::checkLoginUser();
+                break;
+            case self::STRATEGY_ADMIN_ACCESS:
+                Session::checkLoginUser();
+                if (!Session::haveRight(Config::$rightname, UPDATE)) {
+                    throw new AccessDeniedHttpException('Missing administration rights.');
+                }
                 break;
             case self::STRATEGY_CENTRAL_ACCESS:
                 Session::checkCentralAccess();
@@ -218,6 +231,7 @@ final class Firewall
             '/front/locale.php' => self::STRATEGY_NO_CHECK, // locales must be accessible also on public pages
             '/front/login.php' => self::STRATEGY_NO_CHECK,
             '/front/logout.php' => self::STRATEGY_NO_CHECK,
+            '/front/initpassword.php' => self::STRATEGY_NO_CHECK,
             '/front/lostpassword.php' => self::STRATEGY_NO_CHECK,
             '/front/updatepassword.php' => self::STRATEGY_NO_CHECK,
             '/install/' => self::STRATEGY_NO_CHECK, // No check during install/update

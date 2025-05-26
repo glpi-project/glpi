@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -39,6 +38,7 @@ use CommonDBRelation;
 use DisplayPreference;
 use Glpi\Asset\Asset;
 use Glpi\Asset\AssetDefinition;
+use Glpi\Asset\CapacityConfig;
 use Log;
 
 /**
@@ -53,13 +53,16 @@ abstract class AbstractCapacity implements CapacityInterface
      *
      * Declared as final to ensure that constructor can be called without having to pass any parameter.
      */
-    final public function __construct()
-    {
-    }
+    final public function __construct() {}
 
     public function getDescription(): string
     {
         return '';
+    }
+
+    public function getConfigurationForm(string $fieldname_prefix, ?CapacityConfig $current_config): ?string
+    {
+        return null;
     }
 
     public function getSearchOptions(string $classname): array
@@ -94,9 +97,10 @@ abstract class AbstractCapacity implements CapacityInterface
      *
      * @param class-string<\CommonDBTM> $asset_classname
      * @param class-string<\CommonDBTM> $relation_classname
+     * @param array $specific_criteria
      * @return int
      */
-    protected function countPeerItemsUsage(string $asset_classname, string $relation_classname): int
+    final protected function countPeerItemsUsage(string $asset_classname, string $relation_classname, array $specific_criteria = []): int
     {
         /** @var \DBmysql $DB */
         global $DB;
@@ -119,7 +123,7 @@ abstract class AbstractCapacity implements CapacityInterface
                 $distinct_field,
                 [
                     'itemtype' => $asset_classname,
-                ]
+                ] + $specific_criteria
             );
         }
 
@@ -132,7 +136,7 @@ abstract class AbstractCapacity implements CapacityInterface
                 $relation_classname::getTable(),
                 [
                     'itemtype' => $asset_classname,
-                ]
+                ] + $specific_criteria
             );
         }
 
@@ -146,9 +150,10 @@ abstract class AbstractCapacity implements CapacityInterface
      *
      * @param class-string<\CommonDBTM> $asset_classname
      * @param class-string<\CommonDBTM> $relation_classname
+     * @param array $specific_criteria
      * @return int
      */
-    protected function countAssetsLinkedToPeerItem(string $asset_classname, string $relation_classname): int
+    final protected function countAssetsLinkedToPeerItem(string $asset_classname, string $relation_classname, array $specific_criteria = []): int
     {
         // We assume that asset type/id are always store in `itemtype`/`items_id` fields.
         return countDistinctElementsInTable(
@@ -156,7 +161,7 @@ abstract class AbstractCapacity implements CapacityInterface
             'items_id',
             [
                 'itemtype' => $asset_classname,
-            ]
+            ] + $specific_criteria
         );
     }
 
@@ -173,26 +178,20 @@ abstract class AbstractCapacity implements CapacityInterface
         return countElementsInTable(
             Asset::getTable(),
             $where_clause + [
-                AssetDefinition::getForeignKeyField() => $classname::getDefinition()->fields['id']
+                AssetDefinition::getForeignKeyField() => $classname::getDefinition()->fields['id'],
             ]
         );
     }
 
-    public function onClassBootstrap(string $classname): void
-    {
-    }
+    public function onClassBootstrap(string $classname, CapacityConfig $config): void {}
 
-    public function onObjectInstanciation(Asset $object): void
-    {
-    }
+    public function onObjectInstanciation(Asset $object, CapacityConfig $config): void {}
 
-    public function onCapacityEnabled(string $classname): void
-    {
-    }
+    public function onCapacityEnabled(string $classname, CapacityConfig $config): void {}
 
-    public function onCapacityDisabled(string $classname): void
-    {
-    }
+    public function onCapacityDisabled(string $classname, CapacityConfig $config): void {}
+
+    public function onCapacityUpdated(string $classname, CapacityConfig $old_config, CapacityConfig $new_config): void {}
 
     /**
      * Delete logs related to relations between two itemtypes.

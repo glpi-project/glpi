@@ -43,8 +43,8 @@ describe('Number form question type', () => {
             const tab = 'Glpi\\Form\\Form$main';
             cy.visit(`/front/form/form.form.php?id=${form_id}&forcetab=${tab}`);
 
-            // Add a new question
-            cy.findByRole("button", { name: "Add a new question" }).should('exist').click();
+            // Add a question
+            cy.findByRole("button", { name: "Add a question" }).should('exist').click();
 
             // Set the question name
             cy.findByRole("textbox", { name: "Question name" }).should('exist').type("Test number question");
@@ -78,8 +78,8 @@ describe('Number form question type', () => {
         // Check the default value in the preview page
         cy.findByRole('spinbutton', { name: 'Test number question' }).should('have.value', value);
 
-        // Send form
-        cy.findByRole('button', { name: 'Send form' }).click();
+        // Submit
+        cy.findByRole('button', { name: 'Submit' }).click();
 
         // Check the form was submitted
         cy.checkAndCloseAlert('Item successfully created');

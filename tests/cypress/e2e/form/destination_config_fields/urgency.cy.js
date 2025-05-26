@@ -6,7 +6,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -38,17 +37,18 @@ describe('Urgency configuration', () => {
 
         // Create form with a single "urgency" question
         cy.createFormWithAPI().visitFormTab('Form');
-        cy.findByRole('button', {'name': "Add a new question"}).click();
+        cy.findByRole('button', {'name': "Add a question"}).click();
         cy.focused().type("My urgency question");
         cy.getDropdownByLabelText('Question type').selectDropdownValue('Urgency');
         cy.findByRole('button', {'name': 'Save'}).click();
-        cy.findByRole('alert').should('contain.text', 'Item successfully updated');
+        cy.checkAndCloseAlert('Item successfully updated');
 
         // Go to destination tab
         cy.findByRole('tab', { 'name': "Items to create 1" }).click();
     });
 
     it('can use all possibles configuration options', () => {
+        cy.openAccordionItem('Destination fields accordion', 'Properties');
         cy.findByRole('region', {'name': "Urgency configuration"}).as("config");
         cy.get('@config').getDropdownByLabelText('Urgency').as("urgency_dropdown");
 
@@ -66,6 +66,7 @@ describe('Urgency configuration', () => {
         cy.get('@urgency_dropdown').selectDropdownValue('From template');
         cy.findByRole('button', {'name': 'Update item'}).click();
         cy.checkAndCloseAlert('Item successfully updated');
+        cy.openAccordionItem('Destination fields accordion', 'Properties');
         cy.get('@urgency_dropdown').should('have.text', 'From template');
 
         // Switch to "Specific type"
@@ -75,6 +76,7 @@ describe('Urgency configuration', () => {
 
         cy.findByRole('button', {'name': 'Update item'}).click();
         cy.checkAndCloseAlert('Item successfully updated');
+        cy.openAccordionItem('Destination fields accordion', 'Properties');
         cy.get('@urgency_dropdown').should('have.text', 'Specific urgency');
         cy.get('@specific_urgency_dropdown').should('have.text', 'High');
 
@@ -85,6 +87,7 @@ describe('Urgency configuration', () => {
 
         cy.findByRole('button', {'name': 'Update item'}).click();
         cy.checkAndCloseAlert('Item successfully updated');
+        cy.openAccordionItem('Destination fields accordion', 'Properties');
         cy.get('@urgency_dropdown').should('have.text', 'Answer from a specific question');
         cy.get('@specific_answer_type_dropdown').should('have.text', 'My urgency question');
     });
@@ -99,7 +102,7 @@ describe('Urgency configuration', () => {
 
         // Fill form
         cy.getDropdownByLabelText("My urgency question").selectDropdownValue('Very high');
-        cy.findByRole('button', {'name': 'Send form'}).click();
+        cy.findByRole('button', {'name': 'Submit'}).click();
         cy.findByRole('link', {'name': 'My test form'}).click();
 
         // Check ticket values

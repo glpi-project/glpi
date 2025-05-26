@@ -64,7 +64,7 @@ switch ($_REQUEST['action']) {
         $search_params = Search::manageParams($itemtype, $_REQUEST, $_REQUEST['usesession'] ?? true);
         $params = array_replace($search_params, $params);
         // Remove hidden criteria such as the longitude and latitude criteria which are injected in the search engine itself for map searches
-        $params['criteria'] = array_filter($params['criteria'], static fn ($criteria) => !isset($criteria['_hidden']) || !$criteria['_hidden']);
+        $params['criteria'] = array_filter($params['criteria'], static fn($criteria) => !isset($criteria['_hidden']) || !$criteria['_hidden']);
 
         if (
             isset($search_params['browse'])

@@ -67,15 +67,16 @@
     }
 
     &.vertical {
-        .nav-link {
-            border-bottom: 1px solid var(--glpi-tabs-border-color);
-            border-top-right-radius: 0;
+        .nav:not(.nav-underline)
+            .nav-link {
+                border-bottom: 1px solid var(--glpi-tabs-border-color);
+                border-top-right-radius: 0;
 
-            &.active {
-                border-left-width: 5px;
-                border-right-color: transparent !important;
+                &.active {
+                    border-left-width: 5px;
+                    border-right-color: transparent !important;
+                }
             }
-        }
     }
 
     &.horizontal {

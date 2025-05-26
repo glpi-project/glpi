@@ -6,7 +6,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -38,7 +37,7 @@ describe('OLA TTO configuration', () => {
 
         // Create form
         cy.createFormWithAPI().visitFormTab('Form');
-        cy.findByRole('button', {'name': "Add a new question"}).click();
+        cy.findByRole('button', {'name': "Add a question"}).click();
         cy.focused().type("My test question");
         cy.findByRole('button', {'name': 'Save'}).click();
         cy.checkAndCloseAlert('Item successfully updated');
@@ -60,8 +59,9 @@ describe('OLA TTO configuration', () => {
     });
 
     it('can use all possibles configuration options', () => {
-        cy.findByRole('region', { 'name': "OLA TTO configuration" }).as("config");
-        cy.get('@config').getDropdownByLabelText('OLA TTO').as("ola_tto_dropdown");
+        cy.openAccordionItem('Destination fields accordion', 'Service levels');
+        cy.findByRole('region', { 'name': "Internal TTO configuration" }).as("config");
+        cy.get('@config').getDropdownByLabelText('Internal TTO').as("ola_tto_dropdown");
 
         // Default value
         cy.get('@ola_tto_dropdown').should(
@@ -73,6 +73,7 @@ describe('OLA TTO configuration', () => {
         cy.get('@ola_tto_dropdown').selectDropdownValue('From template');
         cy.findByRole('button', { 'name': 'Update item' }).click();
         cy.checkAndCloseAlert('Item successfully updated');
+        cy.openAccordionItem('Destination fields accordion', 'Service levels');
         cy.get('@ola_tto_dropdown').should('have.text', 'From template');
 
         // Switch to "Specific OLA"
@@ -85,6 +86,7 @@ describe('OLA TTO configuration', () => {
 
         cy.findByRole('button', { 'name': 'Update item' }).click();
         cy.checkAndCloseAlert('Item successfully updated');
+        cy.openAccordionItem('Destination fields accordion', 'Service levels');
         cy.get('@ola_tto_dropdown').should('have.text', 'Specific OLA');
         cy.get('@slm_id').then((slm_id) => {
             const ola_name = `OLA TTO - ${slm_id}`;
@@ -94,8 +96,9 @@ describe('OLA TTO configuration', () => {
 
     it('can create ticket using default configuration', () => {
         // Switch to "Specific OLA"
-        cy.findByRole('region', { 'name': "OLA TTO configuration" }).as("config");
-        cy.get('@config').getDropdownByLabelText('OLA TTO').selectDropdownValue('Specific OLA');
+        cy.openAccordionItem('Destination fields accordion', 'Service levels');
+        cy.findByRole('region', { 'name': "Internal TTO configuration" }).as("config");
+        cy.get('@config').getDropdownByLabelText('Internal TTO').selectDropdownValue('Specific OLA');
         cy.get('@slm_id').then((slm_id) => {
             const ola_name = `OLA TTO - ${slm_id}`;
             cy.get('@config').getDropdownByLabelText('Select a OLA...').selectDropdownValue(ola_name);
@@ -114,7 +117,7 @@ describe('OLA TTO configuration', () => {
         cy.findByRole('textbox', { 'name': 'My test question' }).type('My test answer');
 
         // Submit form
-        cy.findByRole('button', { 'name': 'Send form' }).click();
+        cy.findByRole('button', { 'name': 'Submit' }).click();
         cy.findByRole('link', { 'name': 'My test form' }).click();
 
         // Check ticket values

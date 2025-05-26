@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -45,7 +44,7 @@ class NetworkNameTest extends DbTestCase
     {
         $this->login();
 
-       //First add IPNetwork
+        //First add IPNetwork
         $IPNetwork = new \IPNetwork();
         $ipnetwork_id = $IPNetwork->add([
             'name'               => "test",
@@ -56,7 +55,7 @@ class NetworkNameTest extends DbTestCase
             'addressable'        => 0,
         ]);
 
-        $this->assertGreaterThan(0, (int)$ipnetwork_id);
+        $this->assertGreaterThan(0, (int) $ipnetwork_id);
         $this->assertTrue($IPNetwork->getFromDB($ipnetwork_id));
         $current_ipnetwork = $IPNetwork->fields;
 
@@ -95,7 +94,7 @@ class NetworkNameTest extends DbTestCase
         ];
         $this->assertSame($expected, $current_ipnetwork);
 
-       //Second add NetworkName
+        //Second add NetworkName
         $Networkname = new \NetworkName();
         $networkname_id = $Networkname->add([
             'name'          => "test",
@@ -105,10 +104,10 @@ class NetworkNameTest extends DbTestCase
             'itemtype'      => '',
             'fqdns_id'      => 0,
             'comment'       => '',
-            'ipnetworks_id' => 0
+            'ipnetworks_id' => 0,
         ]);
 
-        $this->assertGreaterThan(0, (int)$networkname_id);
+        $this->assertGreaterThan(0, (int) $networkname_id);
         $this->assertTrue($Networkname->getFromDB($networkname_id));
         $current_networkname = $Networkname->fields;
 

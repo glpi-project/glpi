@@ -6,7 +6,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -349,13 +348,18 @@ Cypress.Commands.add("getWithAPI", (itemtype, id) => {
  * @memberof Cypress.Chainable.prototype
  * @method createWithAPI
  * @description Create an item using the legacy API
- * @param {string} url API endpoint
+ * @param {string} itemtype API endpoint
  * @param {object} values Values to create the item with
  */
-Cypress.Commands.add("createWithAPI", (url, values) => {
-    return cy.initApi().doApiRequest("POST", url, values).then(response => {
+Cypress.Commands.add("createWithAPI", (itemtype, values) => {
+    return cy.initApi().doApiRequest("POST", itemtype, values).then(response => {
         if (response.status !== 201) {
             throw new Error('Failed to create item');
+        }
+
+        // Session can't be re-used as active entities will be invalid...
+        if (itemtype == "Entity") {
+            api_token = null;
         }
 
         return response.body.id;
@@ -366,11 +370,38 @@ Cypress.Commands.add("createWithAPI", (url, values) => {
  * @memberof Cypress.Chainable.prototype
  * @method updateWithAPI
  * @description Update an item using the legacy API
- * @param {string} url API endpoint
+ * @param {string} itemtype API endpoint
  * @param {object} values Values to update the item with
  */
-Cypress.Commands.add("updateWithAPI", (url, values) => {
-    cy.initApi().doApiRequest("PUT", url, values);
+Cypress.Commands.add("updateWithAPI", (itemtype, id, values) => {
+    cy.initApi().doApiRequest("PUT", `${itemtype}/${id}`, values);
+});
+
+Cypress.Commands.add("deleteWithAPI", (itemtype, id) => {
+    cy.initApi().doApiRequest("DELETE", `${itemtype}/${id}`);
+});
+
+Cypress.Commands.add("searchWithAPI", (itemtype, values) => {
+    let url = `search/${itemtype}`;
+
+    let i = 0;
+    for (const criteria of values) {
+        url += i == 0 ? "?" : "&";
+        url += `criteria[${i}][link]=${criteria.link}`;
+        url += `&criteria[${i}][field]=${criteria.field}`;
+        url += `&criteria[${i}][searchtype]=${criteria.searchtype}`;
+        url += `&criteria[${i}][value]=${criteria.value}`;
+        i++;
+    }
+
+    return cy.initApi().doApiRequest("GET", url).then((response) => {
+        if (response.body.count == 0) {
+            // The "data" key does not exist in the API response if there are 0 results.
+            return [];
+        }
+
+        return response.body.data;
+    });
 });
 
 /**
@@ -506,9 +537,9 @@ Cypress.Commands.add('dropDraggedItemAfter', {prevSubject: true}, (subject) => {
 });
 
 Cypress.Commands.add('checkAndCloseAlert', (text) => {
-    cy.findByRole('alert').as('alert');
-    cy.get('@alert').should('contain.text', text);
-    cy.get('@alert').findByRole('button', {name: 'Close'}).click();
+    cy.findAllByRole('alert').as('alerts');
+    cy.get('@alerts').should('contain.text', text);
+    cy.get('@alerts').findByRole('button', {name: 'Close'}).click();
 });
 
 Cypress.Commands.add('validateBreadcrumbs', (breadcrumbs) => {
@@ -527,4 +558,25 @@ Cypress.Commands.add('validateMenuIsActive', (name) => {
         .findByRole('link', {'name': name})
         .should('have.class', 'active')
     ;
+});
+
+Cypress.Commands.add('openAccordionItem', (container_label, item_label) => {
+    cy.findAllByRole('region', {name: container_label})
+        .findByRole('button', {name: item_label})
+        .should('have.class', 'collapsed')
+        .click()
+    ;
+});
+
+
+Cypress.Commands.add('closeAccordionItem', (container_label, item_label) => {
+    cy.findAllByRole('region', {name: container_label})
+        .findByRole('button', {name: item_label})
+        .should('not.have.class', 'collapsed')
+        .click()
+    ;
+});
+
+Cypress.Commands.add('updateTestUserSettings', (settings) => {
+    return cy.updateWithAPI('User', 7, settings);
 });

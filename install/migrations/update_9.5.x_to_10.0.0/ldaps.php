@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -47,7 +46,7 @@ if (!$DB->fieldExists('glpi_authldaps', 'tls_certfile')) {
         'tls_certfile',
         'text',
         [
-            'after'  => 'inventory_domain'
+            'after'  => 'inventory_domain',
         ]
     );
 }
@@ -58,7 +57,7 @@ if (!$DB->fieldExists('glpi_authldaps', 'tls_keyfile')) {
         'tls_keyfile',
         'text',
         [
-            'after'  => 'tls_certfile'
+            'after'  => 'tls_certfile',
         ]
     );
 }
@@ -70,7 +69,7 @@ if (!$DB->fieldExists('glpi_authldaps', 'use_bind')) {
         'bool',
         [
             'after'  => 'tls_keyfile',
-            'value' => 1
+            'value' => 1,
         ]
     );
 }
@@ -82,7 +81,7 @@ if (!$DB->fieldExists('glpi_authldaps', 'timeout')) {
         'int',
         [
             'after'  => 'use_bind',
-            'value' => 10
+            'value' => 10,
         ]
     );
 }
@@ -94,7 +93,7 @@ if (!$DB->fieldExists('glpi_authldapreplicates', 'timeout')) {
         'int',
         [
             'after'  => 'name',
-            'value' => 10
+            'value' => 10,
         ]
     );
 }

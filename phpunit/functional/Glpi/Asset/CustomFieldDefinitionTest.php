@@ -35,6 +35,7 @@
 namespace tests\units\Glpi\Asset;
 
 use DbTestCase;
+use Glpi\Asset\Capacity;
 use Glpi\Asset\CustomFieldType\BooleanType;
 use Glpi\Asset\CustomFieldType\DateTimeType;
 use Glpi\Asset\CustomFieldType\DateType;
@@ -57,7 +58,7 @@ class CustomFieldDefinitionTest extends DbTestCase
     {
         $asset_definition = $this->initAssetDefinition(
             capacities: [
-                \Glpi\Asset\Capacity\HasHistoryCapacity::class,
+                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
             ]
         );
         $asset_classname = $asset_definition->getAssetClassName();
@@ -83,7 +84,7 @@ class CustomFieldDefinitionTest extends DbTestCase
             'fields_display' => [
                 0 => 'name',
                 1 => 'custom_test_string',
-                2 => 'serial'
+                2 => 'serial',
             ],
         ]));
 
@@ -288,7 +289,7 @@ class CustomFieldDefinitionTest extends DbTestCase
         $opt_id_offset = 45000;
         $asset_definition = $this->initAssetDefinition(
             capacities: [
-                \Glpi\Asset\Capacity\HasHistoryCapacity::class,
+                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
             ]
         );
 
@@ -475,7 +476,7 @@ class CustomFieldDefinitionTest extends DbTestCase
                 QueryFunction::jsonUnquote(
                     expression: QueryFunction::jsonExtract([
                         'glpi_assets_assets.custom_fields',
-                        new QueryExpression($DB::quoteValue('$."' . $fields_id . '"'))
+                        new QueryExpression($DB::quoteValue('$."' . $fields_id . '"')),
                     ]),
                     alias: 'value'
                 ),
@@ -498,7 +499,7 @@ class CustomFieldDefinitionTest extends DbTestCase
     {
         $asset_definition = $this->initAssetDefinition(
             capacities: [
-                \Glpi\Asset\Capacity\HasHistoryCapacity::class,
+                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
             ]
         );
         $field_1 = new \Glpi\Asset\CustomFieldDefinition();
@@ -522,7 +523,7 @@ class CustomFieldDefinitionTest extends DbTestCase
         $asset = new ($asset_definition->getAssetClassName());
         $asset->add([
             'entities_id' => $this->getTestRootEntity(true),
-            'name' => 'Test asset'
+            'name' => 'Test asset',
         ]);
 
         $asset->update([
@@ -558,8 +559,8 @@ class CustomFieldDefinitionTest extends DbTestCase
             'label' => 'Test',
             'type' => StringType::class,
             'translations' => [
-                'fr_FR' => 'test_fr'
-            ]
+                'fr_FR' => 'test_fr',
+            ],
         ]));
         $_SESSION['glpilanguage'] = 'fr_FR';
         $this->assertEquals('test_fr', $field->getFriendlyName());
@@ -578,8 +579,8 @@ class CustomFieldDefinitionTest extends DbTestCase
         $this->assertTrue($field->update([
             'id' => $field->getID(),
             'translations' => [
-                'fr_FR' => 'test_fr'
-            ]
+                'fr_FR' => 'test_fr',
+            ],
         ]));
         $_SESSION['glpilanguage'] = 'fr_FR';
         $this->assertEquals('test_fr', $field->getFriendlyName());

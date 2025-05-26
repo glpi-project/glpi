@@ -6,7 +6,6 @@
  # http://glpi-project.org
  #
  # @copyright 2015-2025 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -47,18 +46,22 @@
             <input type="text" placeholder="{{ _x('button', 'Search') }}" class="me-3" id="search-capacities" />
             <a role="button" class="btn btn-sm btn-ghost-secondary ms-auto" id="select-all-capacities">
                 <i class="ti ti-copy-check"></i>
-                <span>{{ __('(Un)select all') }}</span>
+                <span>{{ __('Select/unselect all') }}</span>
             </a>
         </div>
 
         {% for capacity in capacities %}
+            {% set index = loop.index0 %}
+            {% set configuration_form = capacity.getConfigurationForm('capacities[' ~ index ~ '][config]', item.getCapacityConfiguration(get_class(capacity))) %}
             <div class="col-12 col-lg-6 col-xxl-4 mb-2 capacity-box">
+                <input type="hidden" name="capacities[{{ index }}][name]" value="{{ get_class(capacity) }}" />
                 <label class="form-selectgroup-boxes flex-fill w-100 h-100" style="min-height: 70px;">
+                    <input type="hidden" name="capacities[{{ index }}][is_active]" value="0">
                     <input type="checkbox"
-                            name="capacities[]"
-                            value="{{ get_class(capacity) }}"
+                            name="capacities[{{ index }}][is_active]"
+                            value="1"
                             class="form-selectgroup-input"
-                            id="{{ get_class(capacity) }}"
+                            data-capacity-checkbox="1"
                             data-capacity="{{ get_class(capacity) }}"
                             data-capacity-search="{{ capacity.getLabel() ~ ' ' ~ capacity.getDescription() }}"
                             data-is-used="{{ capacity.isUsed(classname) ? 1 : 0 }}"
@@ -68,8 +71,16 @@
                             <i class="{{ capacity.getIcon() }} fa-2x text-secondary"></i>
                         </span>
                         <div class="text-start">
-                            <div class="fw-bold">
-                                {{ capacity.getLabel() }}
+                            <div class="d-flex align-items-center">
+                                <div class="fw-bold">
+                                    {{ capacity.getLabel() }}
+                                </div>
+
+                                {% if configuration_form is not null %}
+                                    <button type="button" data-bs-toggle="modal" data-bs-target="#{{ get_class(capacity)|slug }}-modal" class="ms-1 btn btn-icon btn-sm btn-ghost-secondary">
+                                        <i class="ti ti-settings"></i>
+                                    </button>
+                                {% endif %}
                             </div>
                             {% if capacity.getDescription() is not empty %}
                             <small class="form-hint">
@@ -88,6 +99,28 @@
                         </div>
                     </div>
                 </label>
+
+                {% if configuration_form is not null %}
+                    <div class="modal fade" id="{{ get_class(capacity)|slug }}-modal" tabindex="-1" aria-labelledby="{{ get_class(capacity)|slug }}-modal-label" aria-hidden="true">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="{{ get_class(capacity)|slug }}-modal-label">
+                                        {{ __('Capacity options') }}
+                                    </h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ __("Close") }}"></button>
+                                </div>
+                                <div class="modal-body">{{ configuration_form|raw }}</div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">
+                                        <i class="ti ti-device-floppy"></i>
+                                        <span>{{ _x('button', 'OK') }}</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
             </div>
         {% endfor %}
     </div>
@@ -148,7 +181,7 @@
 
                 if (
                     data.is_from_modal !== true
-                    && $('input[name="capacities[]"][data-is-used="1"]:not(:checked)').length > 0
+                    && $('input[data-capacity-checkbox="1"][data-is-used="1"]:not(:checked)').length > 0
                 ) {
                     event.preventDefault();
                     $('#capacityWarningModal').modal('show');
@@ -166,7 +199,7 @@
             });
 
             // warn user about the consequences of disabling a capacity
-            $('input[name="capacities[]"][data-is-used=1]').on('change', function() {
+            $('input[data-capacity-checkbox="1"][data-is-used=1]').on('change', function() {
                 $(this).toggleClass('red-toggle-switch-bg');
                 $('.alert-capacity[data-capacity="' + $.escapeSelector($(this).data('capacity')) + '"]').toggleClass('d-none', $(this).is(':checked'));
             });
@@ -179,7 +212,7 @@
                 // delay the search to avoid flickering
                 clearTimeout(delay_timer);
                 delay_timer = setTimeout(function() {
-                    $('input[name="capacities[]"]').each(function() {
+                    $('input[data-capacity-checkbox="1"]').each(function() {
                         const capacity_search = $(this).data('capacity-search').toLowerCase();
                         if (capacity_search.indexOf(search) === -1) {
                             $(this).closest('.capacity-box').addClass('d-none');
@@ -192,7 +225,7 @@
 
             // (un)toggle all capacities button
             $('#select-all-capacities').on('click', function() {
-                var $checkboxes = $('input[name="capacities[]"]');
+                var $checkboxes = $('input[data-capacity-checkbox="1"]');
                 var $checkedCheckboxes = $checkboxes.filter(':checked');
 
                 if ($checkedCheckboxes.length === $checkboxes.length) {

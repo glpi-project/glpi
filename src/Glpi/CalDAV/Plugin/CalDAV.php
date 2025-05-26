@@ -72,7 +72,7 @@ class CalDAV extends Plugin
     public function propFind(PropFind $propFind, INode $node)
     {
 
-       // Return any requested property as long as it is defined in node.
+        // Return any requested property as long as it is defined in node.
         if ($node instanceof IProperties) {
             $properties = $node->getProperties([]);
             foreach ($properties as $property_name => $property_value) {

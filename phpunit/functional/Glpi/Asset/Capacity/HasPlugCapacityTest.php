@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -37,6 +36,7 @@ namespace tests\units\Glpi\Asset\Capacity;
 
 use DbTestCase;
 use Entity;
+use Glpi\Asset\Capacity;
 use Item_Plug;
 use Glpi\PHPUnit\Tests\Glpi\Asset\CapacityUsageTestTrait;
 use Log;
@@ -59,21 +59,21 @@ class HasPlugCapacityTest extends DbTestCase
 
         $definition_1 = $this->initAssetDefinition(
             capacities: [
-                \Glpi\Asset\Capacity\HasPlugCapacity::class,
-                \Glpi\Asset\Capacity\HasNotepadCapacity::class,
+                new Capacity(name: \Glpi\Asset\Capacity\HasPlugCapacity::class),
+                new Capacity(name: \Glpi\Asset\Capacity\HasNotepadCapacity::class),
             ]
         );
         $classname_1  = $definition_1->getAssetClassName();
         $definition_2 = $this->initAssetDefinition(
             capacities: [
-                \Glpi\Asset\Capacity\HasHistoryCapacity::class,
+                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
             ]
         );
         $classname_2  = $definition_2->getAssetClassName();
         $definition_3 = $this->initAssetDefinition(
             capacities: [
-                \Glpi\Asset\Capacity\HasPlugCapacity::class,
-                \Glpi\Asset\Capacity\HasHistoryCapacity::class,
+                new Capacity(name: \Glpi\Asset\Capacity\HasPlugCapacity::class),
+                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
             ]
         );
         $classname_3  = $definition_3->getAssetClassName();
@@ -112,15 +112,15 @@ class HasPlugCapacityTest extends DbTestCase
 
         $definition_1 = $this->initAssetDefinition(
             capacities: [
-                \Glpi\Asset\Capacity\HasPlugCapacity::class,
-                \Glpi\Asset\Capacity\HasHistoryCapacity::class,
+                new Capacity(name: \Glpi\Asset\Capacity\HasPlugCapacity::class),
+                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
             ]
         );
         $classname_1  = $definition_1->getAssetClassName();
         $definition_2 = $this->initAssetDefinition(
             capacities: [
-                \Glpi\Asset\Capacity\HasPlugCapacity::class,
-                \Glpi\Asset\Capacity\HasHistoryCapacity::class,
+                new Capacity(name: \Glpi\Asset\Capacity\HasPlugCapacity::class),
+                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
             ]
         );
         $classname_2  = $definition_2->getAssetClassName();
@@ -199,7 +199,7 @@ class HasPlugCapacityTest extends DbTestCase
     public function testCloneAsset()
     {
         $definition = $this->initAssetDefinition(
-            capacities: [\Glpi\Asset\Capacity\HasPlugCapacity::class]
+            capacities: [new Capacity(name: \Glpi\Asset\Capacity\HasPlugCapacity::class)]
         );
         $class = $definition->getAssetClassName();
         $entity = $this->getTestRootEntity(true);
@@ -254,7 +254,7 @@ class HasPlugCapacityTest extends DbTestCase
         yield [
             'target_classname'   => Plug::class,
             'relation_classname' => Item_Plug::class,
-            'expected'           => '%d plugs attached to %d assets'
+            'expected'           => '%d plugs attached to %d assets',
         ];
     }
 }

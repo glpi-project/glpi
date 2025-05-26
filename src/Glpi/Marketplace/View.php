@@ -37,6 +37,7 @@ namespace Glpi\Marketplace;
 
 use CommonGLPI;
 use Config;
+use Document;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Marketplace\Api\Plugins as PluginsApi;
 use GLPINetwork;
@@ -98,7 +99,7 @@ class View extends CommonGLPI
     public function defineTabs($options = [])
     {
         $tabs = [
-            'no_all_tab' => true
+            'no_all_tab' => true,
         ];
         $this->addStandardTab(__CLASS__, $tabs, $options);
 
@@ -185,7 +186,7 @@ class View extends CommonGLPI
                         . __('and') . " "
                         . "<a href='$config_url'>" . __("fill your registration key in setup.") . "</a>"
                 );
-            } else if (!$registration_info['subscription']['is_running']) {
+            } elseif (!$registration_info['subscription']['is_running']) {
                 $valid = false;
 
                 array_push(
@@ -224,6 +225,10 @@ class View extends CommonGLPI
         bool $only_lis = false,
         string $string_filter = ""
     ) {
+        /**
+         * @var array $CFG_GLPI
+         */
+        global $CFG_GLPI;
 
         $plugin_inst = new Plugin();
         $plugin_inst->init(true); // reload plugins
@@ -247,10 +252,16 @@ class View extends CommonGLPI
                 continue;
             }
 
+            $logo_url = $apidata['logo_url'] ?? '';
+            if (Document::isImage(\sprintf('%s/logo.png', Plugin::getPhpDir($key)))) {
+                // Use the local logo.png file if it exists.
+                $logo_url = sprintf('%s/Plugin/%s/Logo', $CFG_GLPI['root_doc'], $key);
+            }
+
             $clean_plugin = [
                 'key'           => $key,
                 'name'          => $plugin['name'],
-                'logo_url'      => $apidata['logo_url'] ?? "",
+                'logo_url'      => $logo_url,
                 'description'   => $apidata['descriptions'][0]['short_description'] ?? "",
                 'authors'       => $apidata['authors'] ?? [['id' => 'all', 'name' => $plugin['author'] ?? ""]],
                 'license'       => $apidata['license'] ?? $plugin['license'] ?? "",
@@ -304,11 +315,6 @@ class View extends CommonGLPI
             $sort,
             $nb_plugins
         );
-
-        // Clear all output buffers
-        while (ob_get_level()) {
-            ob_end_clean();
-        }
 
         header("X-GLPI-Marketplace-Total: $nb_plugins");
         self::displayList($plugins, "discover", $only_lis, $nb_plugins, $sort, $api->isListTruncated());
@@ -377,7 +383,7 @@ class View extends CommonGLPI
         }
 
         if (!$only_lis) {
-           // check writable state
+            // check writable state
             if (!Controller::hasWriteAccess()) {
                 echo "<div class='alert alert-warning'><i class='ti ti-alert-triangle fs-5x'></i>"
                       . sprintf(__("We can't write on the markeplace directory (%s)."), GLPI_MARKETPLACE_DIR)
@@ -451,7 +457,7 @@ HTML;
                     </select>";
             }
 
-            $yourplugin   = __s("Your plugin here ? Contact us.");
+            $yourplugin   = __s("Your plugin here? Contact us.");
             $networkmail  = htmlescape(GLPI_NETWORK_MAIL);
             $refresh_lbl  = __s("Refresh plugin list");
             $search_label = __s("Filter plugin list");
@@ -661,7 +667,7 @@ HTML;
         for ($i = 1; $i < 6; $i++) {
             if ($value >= $i) {
                 $stars .= "<i class='ti ti-star-filled'></i>";
-            } else if ($value + 0.5 == $i) {
+            } elseif ($value + 0.5 == $i) {
                 $stars .= "<i class='ti ti-star-half-filled'></i>";
             } else {
                 $stars .= "<i class='ti ti-star'></i>";
@@ -742,7 +748,7 @@ HTML;
                 <button class='modify_plugin'
                         data-action='clean_plugin'
                         title='" . __s("Clean") . "'>
-                        <i class='fas fa-broom'></i>
+                        <i class='ti ti-recycle'></i>
                 </button>";
             if ($can_be_downloaded) {
                 $buttons .= "
@@ -752,7 +758,7 @@ HTML;
                         <i class='ti ti-cloud-download'></i>
                     </button>";
             }
-        } else if (!$is_available) {
+        } elseif (!$is_available) {
             if (!$can_run_local_install) {
                 $rand = mt_rand();
                 $buttons .= "<i class='ti ti-alert-triangle plugin-unavailable' id='plugin-tooltip-$rand'></i>";
@@ -763,7 +769,7 @@ HTML;
                     ]
                 );
             }
-        } else if (
+        } elseif (
             (!$exists && !$mk_controller->hasWriteAccess())
             || ($has_web_update && !$can_be_overwritten && GLPI_MARKETPLACE_MANUAL_DOWNLOADS)
         ) {
@@ -799,14 +805,14 @@ HTML;
                     </button>";
                 }
             }
-        } else if ($can_be_downloaded) {
+        } elseif ($can_be_downloaded) {
             if (!$exists) {
                 $buttons .= "<button class='modify_plugin'
                                      data-action='download_plugin'
                                      title='" . __s("Download") . "'>
                         <i class='ti ti-cloud-download'></i>
                     </button>";
-            } else if ($can_be_updated) {
+            } elseif ($can_be_updated) {
                 $update_title = sprintf(
                     __s("A new version (%s) is available, update?", 'marketplace'),
                     htmlescape($web_update_version)
@@ -836,7 +842,7 @@ HTML;
                 implode(', ', $required_offers)
             );
 
-             $buttons .= "<a href='" . GLPI_NETWORK_SERVICES . "' target='_blank'>
+            $buttons .= "<a href='" . GLPI_NETWORK_SERVICES . "' target='_blank'>
                     <button class='add_tooltip need_offers' title='$warning'>
                         <i class='ti ti-alert-triangle'></i>
                     </button>
@@ -908,7 +914,7 @@ HTML;
                 'content' => sprintf(
                     __s('By uninstalling the "%s" plugin you will lose all the data of the plugin.'),
                     htmlescape($plugin_inst->getField('name'))
-                )
+                ),
             ]);
 
             if (!strlen($error) && $is_actived && $config_page) {
@@ -1116,12 +1122,12 @@ HTML;
                ? Controller::MP_REPLACE_NEVER
                : Controller::MP_REPLACE_ASK);
             Config::setConfigurationValues('core', [
-                'marketplace_replace_plugins' => $mp_value
+                'marketplace_replace_plugins' => $mp_value,
             ]);
 
             // is user agree, redirect him to marketplace
             if ($mp_value === Controller::MP_REPLACE_YES) {
-                 Html::redirect($CFG_GLPI["root_doc"] . "/front/marketplace.php");
+                Html::redirect($CFG_GLPI["root_doc"] . "/front/marketplace.php");
             }
 
             // avoid annoying user for the current session
@@ -1150,7 +1156,7 @@ HTML;
             echo Html::submit(__('Yes'), [
                 'name'  => 'marketplace_replace_plugins_yes',
                 'icon'  => 'ti ti-check',
-                'class' => 'btn btn-primary'
+                'class' => 'btn btn-primary',
             ]);
             echo "&nbsp;";
             echo Html::submit(__('No'), [

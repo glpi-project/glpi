@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -123,7 +122,7 @@ class AssetDefinitionManagerTest extends DbTestCase
         yield [
             $definition,
             $subject,
-            ["Item_Ticket$1"]
+            ["Item_Ticket$1"],
         ];
 
         // Link subject to problem
@@ -139,7 +138,7 @@ class AssetDefinitionManagerTest extends DbTestCase
         yield [
             $definition,
             $subject,
-            ["Item_Ticket$1", "Item_Problem$1"]
+            ["Item_Ticket$1", "Item_Problem$1"],
         ];
 
         // Link subject to change
@@ -155,7 +154,7 @@ class AssetDefinitionManagerTest extends DbTestCase
         yield [
             $definition,
             $subject,
-            ["Item_Ticket$1", "Item_Problem$1", "Change_Item$1"]
+            ["Item_Ticket$1", "Item_Problem$1", "Change_Item$1"],
         ];
 
         // Create a separate definition to test rights as tabs are not removed
@@ -186,7 +185,7 @@ class AssetDefinitionManagerTest extends DbTestCase
         yield [
             $definition,
             $subject,
-            ["Item_Ticket$1", "Item_Problem$1", "Change_Item$1"]
+            ["Item_Ticket$1", "Item_Problem$1", "Change_Item$1"],
         ];
     }
 

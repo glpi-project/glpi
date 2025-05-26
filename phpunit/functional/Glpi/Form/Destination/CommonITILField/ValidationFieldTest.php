@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -320,7 +319,7 @@ final class ValidationFieldTest extends AbstractDestinationFieldTest
             ],
             'field_config' => new ValidationFieldConfig(
                 strategies: [ValidationFieldStrategy::NO_VALIDATION],
-            )
+            ),
         ];
 
         yield 'Specific user or group' => [
@@ -329,43 +328,43 @@ final class ValidationFieldTest extends AbstractDestinationFieldTest
                 'commonitil_validation_rule'     => 2, // PluginFormcreatorAbstractItilTarget::VALIDATION_SPECIFIC_USER_OR_GROUP
                 'commonitil_validation_question' => json_encode([
                     'type'   => 'user',
-                    'values' => [getItemByTypeName(User::class, 'glpi', true)]
-                ])
+                    'values' => [getItemByTypeName(User::class, 'glpi', true)],
+                ]),
             ],
             'field_config' => new ValidationFieldConfig(
                 strategies: [ValidationFieldStrategy::SPECIFIC_ACTORS],
                 specific_actors: ['User' => [getItemByTypeName(User::class, 'glpi', true)]]
-            )
+            ),
         ];
 
         yield 'User from question answer' => [
             'field_key'     => ValidationField::getKey(),
             'fields_to_set' => [
                 'commonitil_validation_rule'     => 3, // PluginFormcreatorAbstractItilTarget::VALIDATION_ANSWER_USER
-                'commonitil_validation_question' => 75 // Question ID
+                'commonitil_validation_question' => 75, // Question ID
             ],
-            'field_config' => fn ($migration, $form) => new ValidationFieldConfig(
+            'field_config' => fn($migration, $form) => new ValidationFieldConfig(
                 strategies: [ValidationFieldStrategy::SPECIFIC_ANSWERS],
                 specific_question_ids: [
                     $migration->getMappedItemTarget('PluginFormcreatorQuestion', 75)['items_id']
-                        ?? throw new \Exception("Question not found")
+                        ?? throw new \Exception("Question not found"),
                 ]
-            )
+            ),
         ];
 
         yield 'Group from question answer' => [
             'field_key'     => ValidationField::getKey(),
             'fields_to_set' => [
                 'commonitil_validation_rule'     => 4, // PluginFormcreatorAbstractItilTarget::VALIDATION_ANSWER_GROUP
-                'commonitil_validation_question' => 76 // Question ID
+                'commonitil_validation_question' => 76, // Question ID
             ],
-            'field_config' => fn ($migration, $form) => new ValidationFieldConfig(
+            'field_config' => fn($migration, $form) => new ValidationFieldConfig(
                 strategies: [ValidationFieldStrategy::SPECIFIC_ANSWERS],
                 specific_question_ids: [
                     $migration->getMappedItemTarget('PluginFormcreatorQuestion', 76)['items_id']
-                        ?? throw new \Exception("Question not found")
+                        ?? throw new \Exception("Question not found"),
                 ]
-            )
+            ),
         ];
     }
 
@@ -455,23 +454,23 @@ final class ValidationFieldTest extends AbstractDestinationFieldTest
                 [
                     'name' => 'ValidationFieldTest User 1',
                     'entities_id' => $entities_id,
-                    '_profiles_id' => $profiles_id
+                    '_profiles_id' => $profiles_id,
                 ],
                 [
                     'name' => 'ValidationFieldTest User 2',
                     'entities_id' => $entities_id,
-                    '_profiles_id' => $profiles_id
+                    '_profiles_id' => $profiles_id,
                 ],
                 [
                     'name' => 'ValidationFieldTest User 3',
                     'entities_id' => $entities_id,
-                    '_profiles_id' => $profiles_id
+                    '_profiles_id' => $profiles_id,
                 ],
                 [
                     'name' => 'ValidationFieldTest User 4',
                     'entities_id' => $entities_id,
-                    '_profiles_id' => $profiles_id
-                ]
+                    '_profiles_id' => $profiles_id,
+                ],
             ]
         );
 
@@ -493,11 +492,11 @@ final class ValidationFieldTest extends AbstractDestinationFieldTest
             [
                 [
                     'name' => 'ValidationFieldTest User for Group 1',
-                    'entities_id' => $this->getTestRootEntity()->getID()
+                    'entities_id' => $this->getTestRootEntity()->getID(),
                 ],
                 [
                     'name' => 'ValidationFieldTest User for Group 2',
-                    'entities_id' => $this->getTestRootEntity()->getID()
+                    'entities_id' => $this->getTestRootEntity()->getID(),
                 ],
             ]
         );

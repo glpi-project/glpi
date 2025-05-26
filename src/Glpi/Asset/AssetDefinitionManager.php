@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -153,9 +152,9 @@ final class AssetDefinitionManager extends AbstractDefinitionManager
         return AssetDefinition::class;
     }
 
-    public function getReservedSystemNames(): array
+    public function getReservedSystemNamesPattern(): string
     {
-        $names = [
+        $core_assets = [
             'Computer',
             'Monitor',
             'Software',
@@ -173,9 +172,7 @@ final class AssetDefinitionManager extends AbstractDefinitionManager
             'Cable',
         ];
 
-        sort($names);
-
-        return $names;
+        return '/^(.+(Model|Type)|' . \implode('|', $core_assets) . ')$/i';
     }
 
     public function bootstrapDefinition(AbstractDefinition $definition): void
@@ -194,7 +191,7 @@ final class AssetDefinitionManager extends AbstractDefinitionManager
             'location_types',
             'state_types',
             'ticket_types',
-            'unicity_types'
+            'unicity_types',
         ];
         foreach ($config_keys as $config_key) {
             if (!in_array($asset_class_name, $CFG_GLPI[$config_key], true)) {
@@ -214,7 +211,7 @@ final class AssetDefinitionManager extends AbstractDefinitionManager
         foreach ($capacities as $capacity) {
             if ($definition->hasCapacityEnabled($capacity)) {
                 Profiler::getInstance()->start('Bootstrap ' . $capacity::class . ' on ' . $asset_class_name, Profiler::CATEGORY_CUSTOMOBJECTS);
-                $capacity->onClassBootstrap($asset_class_name);
+                $capacity->onClassBootstrap($asset_class_name, $definition->getCapacityConfiguration($capacity::class));
                 Profiler::getInstance()->stop('Bootstrap ' . $capacity::class . ' on ' . $asset_class_name);
             }
         }

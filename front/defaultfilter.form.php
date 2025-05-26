@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+require_once(__DIR__ . '/_check_webserver_config.php');
+
 use Glpi\Event;
 
 Session::checkRight(DefaultFilter::$rightname, READ);
@@ -58,7 +60,7 @@ if (isset($_POST["add"])) {
         }
     }
     Html::back();
-} else if (isset($_POST["purge"])) {
+} elseif (isset($_POST["purge"])) {
     $defaultfilter->check($_POST["id"], PURGE);
 
     if ($defaultfilter->delete($_POST, 1)) {
@@ -72,7 +74,7 @@ if (isset($_POST["add"])) {
         );
     }
     $defaultfilter->redirectToList();
-} else if (isset($_POST["update"])) {
+} elseif (isset($_POST["update"])) {
     $defaultfilter->check($_POST["id"], UPDATE);
 
     if ($defaultfilter->update($_POST)) {

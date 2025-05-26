@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -35,6 +34,7 @@
 
 namespace tests\units;
 
+use Config;
 use DbTestCase;
 use Glpi\Plugin\Hooks;
 use Log;
@@ -53,26 +53,26 @@ class ConfigTest extends DbTestCase
 
     public function testAcls()
     {
-       //check ACLs when not logged
+        //check ACLs when not logged
         $this->assertFalse(\Config::canView());
         $this->assertFalse(\Config::canCreate());
 
         $conf = new \Config();
         $this->assertFalse($conf->canViewItem());
 
-       //check ACLs from superadmin profile
+        //check ACLs from superadmin profile
         $this->login();
-        $this->assertTrue((bool)\Config::canView());
+        $this->assertTrue((bool) \Config::canView());
         $this->assertFalse(\Config::canCreate());
         $this->assertFalse($conf->canViewItem());
 
         $this->assertTrue($conf->getFromDB(1));
         $this->assertTrue($conf->canViewItem());
 
-       //check ACLs from tech profile
+        //check ACLs from tech profile
         $auth = new \Auth();
-        $this->assertTrue((bool)$auth->login('tech', 'tech', true));
-        $this->assertFalse((bool)\Config::canView());
+        $this->assertTrue((bool) $auth->login('tech', 'tech', true));
+        $this->assertFalse((bool) \Config::canView());
         $this->assertFalse(\Config::canCreate());
         $this->assertTrue($conf->canViewItem());
     }
@@ -106,7 +106,7 @@ class ConfigTest extends DbTestCase
 
         //Standards users do not have extra tabs
         $auth = new \Auth();
-        $this->assertTrue((bool)$auth->login('tech', 'tech', true));
+        $this->assertTrue((bool) $auth->login('tech', 'tech', true));
 
         $instance = new \Config();
         $tabs = array_map('strip_tags', $instance->defineTabs());
@@ -141,7 +141,7 @@ class ConfigTest extends DbTestCase
         $input = [
             'context'   => 'core',
             'name'      => 'name',
-            'value'     => 'value'
+            'value'     => 'value',
         ];
         $expected = $input;
 
@@ -151,7 +151,7 @@ class ConfigTest extends DbTestCase
         $input = [
             'context'   => 'core',
             'name'      => 'proxy_passwd',
-            'value'     => 'value'
+            'value'     => 'value',
         ];
         $expected = $input;
         unset($expected['value']);
@@ -162,7 +162,7 @@ class ConfigTest extends DbTestCase
         $input = [
             'context'   => 'core',
             'name'      => 'smtp_passwd',
-            'value'     => 'value'
+            'value'     => 'value',
         ];
         $expected = $input;
         unset($expected['value']);
@@ -171,57 +171,6 @@ class ConfigTest extends DbTestCase
         $this->assertSame($expected, $input);
     }
 
-    public function testGetLibraries()
-    {
-        $actual = $expected = [];
-        $deps = \Config::getLibraries(true);
-        foreach ($deps as $dep) {
-           // composer names only (skip htmlLawed)
-            if (strpos($dep['name'], '/')) {
-                $actual[] = $dep['name'];
-            }
-        }
-        sort($actual);
-        $this->assertNotEmpty($actual);
-        $composer = json_decode(file_get_contents(__DIR__ . '/../../composer.json'), true);
-        foreach (array_keys($composer['require']) as $dep) {
-           // composer names only (skip php, ext-*, ...)
-            if (strpos($dep, '/')) {
-                $expected[] = $dep;
-            }
-        }
-        sort($expected);
-        $this->assertNotEmpty($expected);
-
-        $unexpected_libs = array_diff($actual, $expected);
-        $missing_libs    = array_diff($expected, $actual);
-
-        $this->assertEmpty(
-            $unexpected_libs,
-            'Unexpected libs returned by Config::getLibraries(): ' . implode(', ', $unexpected_libs)
-        );
-        $this->assertEmpty(
-            $missing_libs,
-            'Missing libs in Config::getLibraries() return value: ' . implode(', ', $missing_libs)
-        );
-    }
-
-    public function testGetLibraryDir()
-    {
-        $this->assertFalse(\Config::getLibraryDir(''));
-        $this->assertFalse(\Config::getLibraryDir('abcde'));
-
-        $expected = realpath(__DIR__ . '/../../vendor/symfony/console');
-        if (is_dir($expected)) { // skip when system library is used
-            $this->assertSame($expected, \Config::getLibraryDir('Symfony\Component\Console\Application'));
-
-            $mailer = new \Symfony\Component\Console\Application();
-            $this->assertSame($expected, \Config::getLibraryDir($mailer));
-        }
-
-        $expected = realpath(__DIR__ . '/../../tests/src/autoload');
-        $this->assertSame($expected, \Config::getLibraryDir('getItemByTypeName'));
-    }
 
     public function testCheckExtensions()
     {
@@ -237,25 +186,25 @@ class ConfigTest extends DbTestCase
                 'mysqli' => 'mysqli extension is installed',
             ],
             'missing'   => [],
-            'may'       => []
+            'may'       => [],
         ];
 
         //check extension from class name
         $list = [
             'mysqli' => [
                 'required'  => true,
-                'class'     => 'mysqli'
-            ]
+                'class'     => 'mysqli',
+            ],
         ];
         $report = \Config::checkExtensions($list);
         $this->assertSame($expected, $report);
 
-       //check extension from method name
+        //check extension from method name
         $list = [
             'mysqli' => [
                 'required'  => true,
-                'function'  => 'mysqli_commit'
-            ]
+                'function'  => 'mysqli_commit',
+            ],
         ];
         $report = \Config::checkExtensions($list);
         $this->assertSame($expected, $report);
@@ -263,15 +212,15 @@ class ConfigTest extends DbTestCase
         //check extension from its name
         $list = [
             'mysqli' => [
-                'required'  => true
-            ]
+                'required'  => true,
+            ],
         ];
         $report = \Config::checkExtensions($list);
         $this->assertSame($expected, $report);
 
         //required, missing extension
         $list['notantext'] = [
-            'required'  => true
+            'required'  => true,
         ];
         $report = \Config::checkExtensions($list);
         $expected = [
@@ -280,9 +229,9 @@ class ConfigTest extends DbTestCase
                 'mysqli' => 'mysqli extension is installed',
             ],
             'missing'   => [
-                'notantext' => 'notantext extension is missing'
+                'notantext' => 'notantext extension is missing',
             ],
-            'may'       => []
+            'may'       => [],
         ];
         $this->assertSame($expected, $report);
 
@@ -297,8 +246,8 @@ class ConfigTest extends DbTestCase
             ],
             'missing'   => [],
             'may'       => [
-                'totally_optionnal' => 'totally_optionnal extension is not present'
-            ]
+                'totally_optionnal' => 'totally_optionnal extension is not present',
+            ],
         ];
         $this->assertSame($expected, $report);
     }
@@ -314,7 +263,7 @@ class ConfigTest extends DbTestCase
         $this->assertEquals(
             [
                 'dbversion' => GLPI_SCHEMA_VERSION,
-                'version'   => GLPI_VERSION
+                'version'   => GLPI_VERSION,
             ],
             $conf
         );
@@ -326,7 +275,7 @@ class ConfigTest extends DbTestCase
         $this->assertEquals(
             [
                 'notification_to_myself'   => '1',
-                'version'                  => GLPI_VERSION
+                'version'                  => GLPI_VERSION,
             ],
             $conf
         );
@@ -337,7 +286,7 @@ class ConfigTest extends DbTestCase
         $this->assertEquals(
             [
                 'notification_to_myself'   => '0',
-                'version'                  => GLPI_VERSION
+                'version'                  => GLPI_VERSION,
             ],
             $conf
         );
@@ -347,7 +296,7 @@ class ConfigTest extends DbTestCase
         $conf = \Config::getConfigurationValues('core', ['version', 'new_configuration_key']);
         $this->assertEquals(
             [
-                'version' => GLPI_VERSION
+                'version' => GLPI_VERSION,
             ],
             $conf
         );
@@ -358,7 +307,7 @@ class ConfigTest extends DbTestCase
         $this->assertEquals(
             [
                 'new_configuration_key' => 'test',
-                'version'               => GLPI_VERSION
+                'version'               => GLPI_VERSION,
             ],
             $conf
         );
@@ -368,7 +317,7 @@ class ConfigTest extends DbTestCase
         $conf = \Config::getConfigurationValues('core', ['version', 'new_configuration_key']);
         $this->assertEquals(
             [
-                'version' => GLPI_VERSION
+                'version' => GLPI_VERSION,
             ],
             $conf
         );
@@ -380,7 +329,7 @@ class ConfigTest extends DbTestCase
         $this->assertSame(
             [
                 READ     => 'Read',
-                UPDATE   => 'Update'
+                UPDATE   => 'Update',
             ],
             $conf->getRights()
         );
@@ -424,39 +373,39 @@ class ConfigTest extends DbTestCase
             [
                 'raw'       => '10.1.48-MariaDB',
                 'version'   => '10.1.48',
-                'compat'    => false
+                'compat'    => false,
             ], [
                 'raw'       => '10.2.14-MariaDB',
                 'version'   => '10.2.14',
-                'compat'    => false
+                'compat'    => false,
             ], [
                 'raw'       => '10.3.28-MariaDB',
                 'version'   => '10.3.28',
-                'compat'    => false
+                'compat'    => false,
             ], [
                 'raw'       => '10.4.8-MariaDB-1:10.4.8+maria~bionic',
                 'version'   => '10.4.8',
-                'compat'    => false
+                'compat'    => false,
             ], [
                 'raw'       => '10.5.9-MariaDB',
                 'version'   => '10.5.9',
-                'compat'    => true
+                'compat'    => true,
             ], [
                 'raw'       => '10.6.7-MariaDB-1:10.6.7-2ubuntu1.1',
                 'version'   => '10.6.7',
-                'compat'    => true
+                'compat'    => true,
             ], [
                 'raw'       => '5.6.38-log',
                 'version'   => '5.6.38',
-                'compat'    => false
+                'compat'    => false,
             ],  [
                 'raw'       => '5.7.50-log',
                 'version'   => '5.7.50',
-                'compat'    => false
+                'compat'    => false,
             ], [
                 'raw'       => '8.0.23-standard',
                 'version'   => '8.0.23',
-                'compat'    => true
+                'compat'    => true,
             ],
         ];
     }
@@ -598,14 +547,14 @@ class ConfigTest extends DbTestCase
         $conf->update([
             'id'                       => 1,
             '_update_devices_in_menu'  => 1,
-            'devices_in_menu'          => ['Item_DeviceSimcard', 'Item_DeviceBattery']
+            'devices_in_menu'          => ['Item_DeviceSimcard', 'Item_DeviceBattery'],
         ]);
 
         //check values in db
         $res = $DB->request([
             'SELECT' => 'value',
             'FROM'   => $conf->getTable(),
-            'WHERE'  => ['name' => 'devices_in_menu']
+            'WHERE'  => ['name' => 'devices_in_menu'],
         ])->current();
         $this->assertSame(
             ['value' => exportArrayToDB(['Item_DeviceSimcard', 'Item_DeviceBattery'])],
@@ -625,7 +574,7 @@ class ConfigTest extends DbTestCase
         $conf = new \Config();
         $crontask = new \CronTask();
 
-       // create some non local users for the test
+        // create some non local users for the test
         foreach ([\Auth::LDAP, \Auth::EXTERNAL, \Auth::CAS] as $authtype) {
             $user = new \User();
             $user_id = $user->add(
@@ -637,26 +586,26 @@ class ConfigTest extends DbTestCase
             $this->assertGreaterThan(0, $user_id);
         }
 
-       // get count of users using local auth
+        // get count of users using local auth
         $local_users_count = countElementsInTable(
             \User::getTable(),
             ['authtype' => \Auth::DB_GLPI]
         );
-       // get count of users using external auth
+        // get count of users using external auth
         $external_users_count = countElementsInTable(
             \User::getTable(),
             ['NOT' => ['authtype' => \Auth::DB_GLPI]]
         );
-       // reset 'password_last_update' to null for the test
+        // reset 'password_last_update' to null for the test
         $DB->update(\User::getTable(), ['password_last_update' => null], [true]);
 
-       // initial data:
-       //  - password expiration is not active
-       //  - users from installation data have no value for password_last_update
-       //  - crontask is not active
+        // initial data:
+        //  - password expiration is not active
+        //  - users from installation data have no value for password_last_update
+        //  - crontask is not active
         $values = \Config::getConfigurationValues('core');
         $this->assertArrayHasKey('password_expiration_delay', $values);
-        $this->assertSame(-1, (int)$values['password_expiration_delay']);
+        $this->assertSame(-1, (int) $values['password_expiration_delay']);
         $this->assertEquals(
             $local_users_count,
             countElementsInTable(
@@ -672,24 +621,24 @@ class ConfigTest extends DbTestCase
             )
         );
         $this->assertTrue($crontask->getFromDBbyName(\User::getType(), 'passwordexpiration'));
-        $this->assertSame(0, (int)$crontask->fields['state']);
+        $this->assertSame(0, (int) $crontask->fields['state']);
 
-       // check that activation of password expiration reset `password_last_update` to current date
-       // for all local users but not for external users
-       // and activate passwordexpiration crontask
+        // check that activation of password expiration reset `password_last_update` to current date
+        // for all local users but not for external users
+        // and activate passwordexpiration crontask
         $current_time = $_SESSION['glpi_currenttime'];
         $update_datetime = date('Y-m-d H:i:s', strtotime('-15 days')); // arbitrary date
         $_SESSION['glpi_currenttime'] = $update_datetime;
         $conf->update(
             [
                 'id'                        => 1,
-                'password_expiration_delay' => 30
+                'password_expiration_delay' => 30,
             ]
         );
         $_SESSION['glpi_currenttime'] = $current_time;
         $values = \Config::getConfigurationValues('core');
         $this->assertArrayHasKey('password_expiration_delay', $values);
-        $this->assertSame(30, (int)$values['password_expiration_delay']);
+        $this->assertSame(30, (int) $values['password_expiration_delay']);
         $this->assertEquals(
             $local_users_count,
             countElementsInTable(
@@ -705,7 +654,7 @@ class ConfigTest extends DbTestCase
             )
         );
         $this->assertTrue($crontask->getFromDBbyName(\User::getType(), 'passwordexpiration'));
-        $this->assertSame(1, (int)$crontask->fields['state']);
+        $this->assertSame(1, (int) $crontask->fields['state']);
 
         // check that changing password expiration delay does not reset `password_last_update` to current date
         // if password expiration was already active
@@ -715,13 +664,13 @@ class ConfigTest extends DbTestCase
         $conf->update(
             [
                 'id'                        => 1,
-                'password_expiration_delay' => 45
+                'password_expiration_delay' => 45,
             ]
         );
         $_SESSION['glpi_currenttime'] = $current_time;
         $values = \Config::getConfigurationValues('core');
         $this->assertArrayHasKey('password_expiration_delay', $values);
-        $this->assertSame(45, (int)$values['password_expiration_delay']);
+        $this->assertSame(45, (int) $values['password_expiration_delay']);
         $this->assertEquals(
             $local_users_count,
             countElementsInTable(
@@ -799,6 +748,8 @@ class ConfigTest extends DbTestCase
             'user_name'        => Session::getLoginUserID(false),
             'date_mod'         => $_SESSION['glpi_currenttime'],
             'id_search_option' => 1,
+            'old_id' => null,
+            'new_id' => null,
         ];
 
         $clean_ids = function (&$value, $key) {
@@ -911,7 +862,7 @@ class ConfigTest extends DbTestCase
         ]);
         $this->assertEquals($default_lock_profile, (int) $CFG_GLPI['lock_lockprofile_id']);
         $this->hasSessionMessages(ERROR, [
-            "The specified profile doesn&#039;t exist or is not allowed to access the central interface."
+            "The specified profile doesn&#039;t exist or is not allowed to access the central interface.",
         ]);
 
         // Invalid profile 2: doesn't exist
@@ -920,12 +871,12 @@ class ConfigTest extends DbTestCase
         ]);
         $this->assertEquals($default_lock_profile, (int) $CFG_GLPI['lock_lockprofile_id']);
         $this->hasSessionMessages(ERROR, [
-            "The specified profile doesn&#039;t exist or is not allowed to access the central interface."
+            "The specified profile doesn&#039;t exist or is not allowed to access the central interface.",
         ]);
 
         // Valid profile
         $super_admin = getItemByTypeName(Profile::class, "Super-Admin", true);
-        $this->assertNotEquals($super_admin, (int)$CFG_GLPI['lock_lockprofile_id']);
+        $this->assertNotEquals($super_admin, (int) $CFG_GLPI['lock_lockprofile_id']);
         $config->prepareInputForUpdate([
             'lock_lockprofile_id' => $super_admin,
         ]);
@@ -948,7 +899,7 @@ class ConfigTest extends DbTestCase
         ]);
         $this->assertEquals($default_font, $CFG_GLPI['pdffont']);
         $this->hasSessionMessages(ERROR, [
-            'The following field has an incorrect value: &quot;PDF export font&quot;.'
+            'The following field has an incorrect value: &quot;PDF export font&quot;.',
         ]);
 
         // Valid font
@@ -957,5 +908,20 @@ class ConfigTest extends DbTestCase
             'pdffont' => 'freesans',
         ]);
         $this->assertEquals('freesans', $CFG_GLPI['pdffont']);
+    }
+
+    public function testShowFormSecurity(): void
+    {
+        // Arrange: login
+        $this->login();
+
+        // Act: display the security from
+        $config = new Config();
+        ob_start();
+        $config->showFormSecurity();
+        $html = ob_get_clean();
+
+        // Assert: make sure we reached this point without errors
+        $this->assertNotEmpty($html);
     }
 }

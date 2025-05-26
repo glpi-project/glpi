@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+require_once(__DIR__ . '/_check_webserver_config.php');
+
 use Glpi\Exception\Http\AccessDeniedHttpException;
 
 if (!isset($_GET['item_type']) || !is_string($_GET['item_type']) || !is_a($_GET['item_type'], CommonGLPI::class, true)) {
@@ -57,7 +59,7 @@ if (isset($_GET["display_type"])) {
 
     switch ($itemtype) {
         case 'KnowbaseItem':
-            KnowbaseItem::showList($_GET, $_GET["is_faq"]);
+            KnowbaseItem::showList($_GET, $_GET["type"]);
             break;
 
         case 'Stat':
@@ -84,31 +86,31 @@ if (isset($_GET["display_type"])) {
                         break;
 
                     default:
-                          $val2 = ($params['value2'] ?? 0);
-                          $val  = Stat::getItems(
-                              $_GET["itemtype"],
-                              $params["date1"],
-                              $params["date2"],
-                              $params["type"],
-                              $val2
-                          );
-                         Stat::showTable(
-                             $_GET["itemtype"],
-                             $params["type"],
-                             $params["date1"],
-                             $params["date2"],
-                             $params["start"],
-                             $val,
-                             $val2
-                         );
+                        $val2 = ($params['value2'] ?? 0);
+                        $val  = Stat::getItems(
+                            $_GET["itemtype"],
+                            $params["date1"],
+                            $params["date2"],
+                            $params["type"],
+                            $val2
+                        );
+                        Stat::showTable(
+                            $_GET["itemtype"],
+                            $params["type"],
+                            $params["date1"],
+                            $params["date2"],
+                            $params["start"],
+                            $val,
+                            $val2
+                        );
                 }
-            } else if (isset($_GET["type"]) && ($_GET["type"] === "hardwares")) {
+            } elseif (isset($_GET["type"]) && ($_GET["type"] === "hardwares")) {
                 Stat::showItems("", $_GET["date1"], $_GET["date2"], $_GET['start'], $_GET["itemtype"]);
             }
             break;
 
         default:
-           // Plugin case
+            // Plugin case
             if ($plug = isPluginItemType($itemtype)) {
                 if (Plugin::doOneHook($plug['plugin'], 'dynamicReport', $_GET)) {
                     return;

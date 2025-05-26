@@ -166,9 +166,6 @@ class GLPIDashboard {
         // see https://github.com/gridstack/gridstack.js/issues/1229
         this.grid.setStatic(true);
 
-        // generate the css based on the grid width
-        this.generateCss();
-
         // set the width of the select box to match the selected option
         this.resizeSelect();
 
@@ -256,7 +253,7 @@ class GLPIDashboard {
             if (!document.webkitIsFullScreen
                 && !document.mozFullScreen
                 && !document.msFullscreenElement) {
-                this.disableFullscreenMode();
+                this.removeFullscreenModeClass();
             }
         });
 
@@ -295,8 +292,6 @@ class GLPIDashboard {
 
             window.clearTimeout(debounce);
             debounce = window.setTimeout(() => {
-                this.generateCss();
-
                 // fit again numbers
                 this.fitNumbers();
             }, 200);
@@ -946,8 +941,7 @@ class GLPIDashboard {
     toggleFullscreenMode(fs_ctrl) {
         const fs_enabled = !fs_ctrl.hasClass('active');
 
-        this.element.toggleClass('fullscreen')
-            .find('.night-mode').toggle(fs_enabled);
+        this.element.toggleClass('fullscreen');
         fs_ctrl.toggleClass('active');
 
         // desactivate edit mode
@@ -963,13 +957,10 @@ class GLPIDashboard {
         }
     }
 
-    disableFullscreenMode() {
+    removeFullscreenModeClass() {
         this.element
             .removeClass('fullscreen')
-            .find('.night-mode').hide().end()
             .find('.toggle-fullscreen').removeClass('active');
-
-        GoOutFullscreen();
     }
 
     /**
@@ -993,7 +984,7 @@ class GLPIDashboard {
      * Delete current dashboard
      */
     delete() {
-        const confirm_msg = __("Are you sure you want to delete the dashboard %s ?")
+        const confirm_msg = __("Are you sure you want to delete the dashboard %s?")
             .replace('%s', this.current_name);
         if (window.confirm(confirm_msg, __("Delete this dashboard"))) {
             $.post({
@@ -1017,7 +1008,7 @@ class GLPIDashboard {
      */
     addForm() {
         glpi_ajax_dialog({
-            title: __("Add a new dashboard"),
+            title: __("Add a dashboard"),
             url: CFG_GLPI.root_doc+"/ajax/dashboard.php",
             params: {
                 action: 'add_new',
@@ -1040,7 +1031,7 @@ class GLPIDashboard {
     }
 
     /**
-     * Add a new option to top left dashboard select
+     * Add a option to top left dashboard select
      */
     addNewDashbardInSelect(label, value) {
         const newOption = new Option(label, value, false, true);
@@ -1114,7 +1105,7 @@ class GLPIDashboard {
                     this.fitNumbers(card);
                     this.animateNumbers(card);
                 }, () => {
-                    card.html("<div class='empty-card card-error'><i class='fas fa-exclamation-triangle'></i></div>");
+                    card.html("<div class='empty-card card-error'><i class='ti ti-alert-triangle'></i></div>");
                 }));
             });
 
@@ -1154,13 +1145,13 @@ class GLPIDashboard {
                         }
                     });
                     if (!has_result) {
-                        card.html("<div class='empty-card card-error'><i class='fas fa-exclamation-triangle'></i></div>");
+                        card.html("<div class='empty-card card-error'><i class='ti ti-alert-triangle'></i></div>");
                     }
                 });
             }, () => {
                 $.each(requested_cards, (i2, crd) => {
                     const card = crd.card_el;
-                    card.html("<div class='empty-card card-error'><i class='fas fa-exclamation-triangle'></i></div>");
+                    card.html("<div class='empty-card card-error'><i class='ti ti-alert-triangle'></i></div>");
                 });
             });
         }
@@ -1177,52 +1168,6 @@ class GLPIDashboard {
         }, 10);
     }
 
-    generateCss() {
-        const dash_width    = Math.floor(this.element.width());
-        const cell_length   = (dash_width - 1) / this.cols;
-        let cell_height   = cell_length;
-        const cell_fullsize = (dash_width / this.cols);
-        const width_percent = 100 / this.cols;
-
-        let style = " \
-      "+this.elem_id+" .cell-add { \
-         width: "+cell_length+"px; \
-         height: "+cell_fullsize+"px; \
-      } \
-      "+this.elem_id+" .grid-guide { \
-         background-size: "+cell_length+"px "+cell_fullsize+"px; \
-         bottom: "+cell_fullsize+"px; \
-      }";
-
-        for (let i = 0; i < this.cols; i++) {
-            const left  = i * width_percent;
-            const width = (i+1) * width_percent;
-
-            style+= this.elem_id+" .grid-stack > .grid-stack-item[gs-x='"+i+"'] { \
-            left: "+left+"%; \
-         } \
-         "+this.elem_id+" .grid-stack > .grid-stack-item[gs-w='"+(i+1)+"'] { \
-            min-width: "+width_percent+"%; \
-            width: "+width+"%; \
-         }";
-        }
-
-        // remove old inline styles
-        $("#gs_inline_css_"+this.rand).remove();
-
-        // add new style
-        if (dash_width > 700) {
-            $("<style id='gs_inline_css_"+this.rand+"'></style>")
-                .prop("type", "text/css")
-                .html(style)
-                .appendTo("head");
-        } else {
-            cell_height = 60;
-        }
-
-        // apply new height to gridstack
-        this.grid.cellHeight(cell_height);
-    }
 
     /**
      * init filters of the dashboard

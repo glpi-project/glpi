@@ -56,8 +56,8 @@ class Telemetry extends CommonGLPI
                 'db'           => self::grabDbInfos($hide_sensitive_data),
                 'web_server'   => self::grabWebserverInfos($hide_sensitive_data),
                 'php'          => self::grabPhpInfos($hide_sensitive_data),
-                'os'           => self::grabOsInfos($hide_sensitive_data)
-            ]
+                'os'           => self::grabOsInfos($hide_sensitive_data),
+            ],
         ];
 
         return $data;
@@ -91,15 +91,15 @@ class Telemetry extends CommonGLPI
                 'avg_groups'            => self::getAverage('Group'),
                 'ldap_enabled'          => AuthLDAP::useAuthLdap(),
                 'mailcollector_enabled' => (MailCollector::countActiveCollectors() > 0),
-                'notifications_modes'   => []
-            ]
+                'notifications_modes'   => [],
+            ],
         ];
 
         $plugins = new Plugin();
         foreach ($plugins->getList(['directory', 'version']) as $plugin) {
             $glpi['plugins'][] = [
                 'key'       => $plugin['directory'],
-                'version'   => $hide_sensitive_data ? 'x.y.z' : $plugin['version']
+                'version'   => $hide_sensitive_data ? 'x.y.z' : $plugin['version'],
             ];
         }
 
@@ -131,10 +131,10 @@ class Telemetry extends CommonGLPI
                 QueryFunction::round(
                     expression: new QueryExpression(QueryFunction::sum(new QueryExpression('data_length + index_length')) . ' / 1024 / 1024'),
                     alias: 'dbsize',
-                )
+                ),
             ],
             'FROM'   => 'information_schema.tables',
-            'WHERE'  => ['table_schema' => $DB->dbdefault]
+            'WHERE'  => ['table_schema' => $DB->dbdefault],
         ])->current();
 
         $db = [
@@ -142,7 +142,7 @@ class Telemetry extends CommonGLPI
             'version'   => $hide_sensitive_data ? 'x.y.z' : $dbinfos['Server Version'],
             'size'      => $size_res['dbsize'],
             'log_size'  => '',
-            'sql_mode'  => $dbinfos['Server SQL Mode']
+            'sql_mode'  => $dbinfos['Server SQL Mode'],
         ];
 
         return $db;
@@ -217,8 +217,8 @@ class Telemetry extends CommonGLPI
                 'post_max_size'         => ini_get('post_max_size'),
                 'safe_mode'             => ini_get('safe_mode'),
                 'session'               => ini_get('session.save_handler'),
-                'upload_max_filesize'   => ini_get('upload_max_filesize')
-            ]
+                'upload_max_filesize'   => ini_get('upload_max_filesize'),
+            ],
         ];
 
         return $php;
@@ -253,23 +253,23 @@ class Telemetry extends CommonGLPI
      */
     public static function getAverage($itemtype)
     {
-        $count = (int)countElementsInTable(getTableForItemType($itemtype));
+        $count = (int) countElementsInTable(getTableForItemType($itemtype));
 
         if ($count <= 500) {
             return '0-500';
-        } else if ($count <= 1000) {
+        } elseif ($count <= 1000) {
             return '500-1000';
-        } else if ($count <= 2500) {
+        } elseif ($count <= 2500) {
             return '1000-2500';
-        } else if ($count <= 5000) {
+        } elseif ($count <= 5000) {
             return '2500-5000';
-        } else if ($count <= 10000) {
+        } elseif ($count <= 10000) {
             return '5000-10000';
-        } else if ($count <= 50000) {
+        } elseif ($count <= 50000) {
             return '10000-50000';
-        } else if ($count <= 100000) {
+        } elseif ($count <= 100000) {
             return '50000-100000';
-        } else if ($count <= 500000) {
+        } elseif ($count <= 500000) {
             return '100000-500000';
         }
         return '500000+';
@@ -299,14 +299,14 @@ class Telemetry extends CommonGLPI
         $url = GLPI_TELEMETRY_URI . '/telemetry';
         $opts = [
             CURLOPT_POSTFIELDS      => $infos,
-            CURLOPT_HTTPHEADER      => ['Content-Type:application/json']
+            CURLOPT_HTTPHEADER      => ['Content-Type:application/json'],
         ];
 
         $errstr = null;
         $content = json_decode(Toolbox::callCurl($url, $opts, $errstr));
 
         if ($content && property_exists($content, 'message')) {
-           //all is OK!
+            //all is OK!
             return 1;
         } else {
             $message = 'Something went wrong sending telemetry information';
@@ -377,7 +377,7 @@ class Telemetry extends CommonGLPI
             e.preventDefault();
 
             glpi_ajax_dialog({
-               title: __('Telemetry data'),
+               title: " . json_encode(__('Telemetry data')) . ",
                url: $('#view_telemetry').attr('href'),
                dialogclass: 'modal-lg'
             });
@@ -431,8 +431,8 @@ class Telemetry extends CommonGLPI
             'FROM'   => 'glpi_crontasks',
             'WHERE'  => [
                 'name'   => 'telemetry',
-                'state' => 1
-            ]
+                'state' => 1,
+            ],
 
         ]);
         return count($iterator) > 0;
@@ -475,7 +475,7 @@ class Telemetry extends CommonGLPI
             sprintf(
                 "<a href='" . GLPI_TELEMETRY_URI . "/reference?showmodal&uuid=" .
                 self::getRegistrationUuid() . "' class='btn btn-sm btn-info' target='_blank'>
-               <i class='fas fa-pen-alt me-1'></i>
+               <i class='ti ti-writing-sign me-1'></i>
                %1\$s
             </a>",
                 __('the registration form')

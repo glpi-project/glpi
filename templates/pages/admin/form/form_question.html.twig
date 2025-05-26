@@ -6,7 +6,6 @@
  # http://glpi-project.org
  #
  # @copyright 2015-2025 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -49,6 +48,7 @@
 
 <section
     role="option"
+    class="d-flex"
     data-glpi-form-editor-block
     data-glpi-form-editor-question
     data-glpi-form-editor-condition-type="{{ enum('Glpi\\Form\\Condition\\Type').QUESTION.value }}"
@@ -104,6 +104,14 @@
                     {% set question_strategy = question.getConfiguredVisibilityStrategy() %}
                 {% endif %}
 
+                <div class="ms-auto"></div>
+
+                {# Validation dropdown #}
+                {{ include('pages/admin/form/conditional_validation_dropdown.html.twig', {
+                    'item': question,
+                    'type': "Glpi\\Form\\Question",
+                }, with_context = false) }}
+
                 {# Visibility dropdown #}
                 {{ include('pages/admin/form/conditional_visibility_dropdown.html.twig', {
                     'item': question,
@@ -157,6 +165,16 @@
                             <button
                                 type="button"
                                 class="dropdown-item"
+                                data-glpi-form-editor-on-click="show-validation-dropdown"
+                            >
+                                <i class="ti ti-checks me-2"></i>
+                                <span>{{ __("Configure validation") }}</span>
+                            </button>
+                        </li>
+                        <li>
+                            <button
+                                type="button"
+                                class="dropdown-item"
                                 data-glpi-form-editor-on-click="copy-uuid"
                             >
                                 <i class="ti ti-id-badge me-2"></i>
@@ -187,7 +205,7 @@
                     question is not null ? question.fields.description : '',
                     __('Description'),
                     base_field_options|merge({
-                        'placeholder': __('Add a description...'),
+                        'placeholder': __('Add a description'),
                         'aria_label': __("Question description"),
                         'enable_richtext': true,
                         'add_body_classes': ['content-editable-tinymce-editor', 'text-muted'],
@@ -206,15 +224,10 @@
                 data-fix-dropdown-flex
             >
                 <div class="question-type-dropdown-group">
-                    {% set categories = {} %}
-                    {% for category in question_types_manager.getCategories() %}
-                        {% set categories = categories|merge({(category.value): category.getLabel()}) %}
-                    {% endfor %}
-
                     {{ fields.dropdownArrayField(
                         '_type_category',
-                        question_type.getCategory().value,
-                        categories,
+                        question_types_manager.getCategoryKey(question_type.getCategory()),
+                        question_types_manager.getCategoriesDropdownValues(),
                         '',
                         {
                             'init'                 : question is not null,
@@ -233,10 +246,7 @@
                         }
                     ) }}
 
-                    {% set types = question_types_manager.getTypesForCategory(question_type.getCategory()) %}
-                    {% for possible_question_type in types %}
-                        {% set types = types|merge({(get_class(possible_question_type)): possible_question_type.getName()}) %}
-                    {% endfor %}
+                    {% set types = question_types_manager.getQuestionTypesDropdownValuesForCategory(question_type.getCategory()) %}
 
                     {{ fields.dropdownArrayField(
                         'type',
@@ -328,7 +338,7 @@
         <input
             type="hidden"
             name="category"
-            value="{{ question_type.getCategory().value }}"
+            value="{{ question_types_manager.getCategoryKey(question_type.getCategory()) }}"
         />
         <input
             type="hidden"
@@ -341,7 +351,7 @@
         {{ include('pages/admin/form/form_toolbar.html.twig', {
             'can_update'     : can_update,
             'form'           : form,
-            'vertical_layout': false
+            'vertical_layout': true
         }, with_context = false) }}
     </div>
     <div data-glpi-form-editor-question-drag-merge></div>

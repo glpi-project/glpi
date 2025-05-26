@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+require_once(__DIR__ . '/_check_webserver_config.php');
+
 use Glpi\Event;
 
 Session::checkRight('database', READ);
@@ -62,7 +64,7 @@ if (isset($_POST["add"])) {
         }
     }
     Html::back();
-} else if (isset($_POST["delete"])) {
+} elseif (isset($_POST["delete"])) {
     $database->check($_POST["id"], DELETE);
     $database->delete($_POST);
 
@@ -75,7 +77,7 @@ if (isset($_POST["add"])) {
         sprintf(__('%s deletes an item'), $_SESSION["glpiname"])
     );
     $database->redirectToList();
-} else if (isset($_POST["restore"])) {
+} elseif (isset($_POST["restore"])) {
     $database->check($_POST["id"], DELETE);
 
     $database->restore($_POST);
@@ -88,7 +90,7 @@ if (isset($_POST["add"])) {
         sprintf(__('%s restores an item'), $_SESSION["glpiname"])
     );
     $database->redirectToList();
-} else if (isset($_POST["purge"])) {
+} elseif (isset($_POST["purge"])) {
     $database->check($_POST["id"], PURGE);
 
     $database->delete($_POST, 1);
@@ -101,7 +103,7 @@ if (isset($_POST["add"])) {
         sprintf(__('%s purges an item'), $_SESSION["glpiname"])
     );
     $database->redirectToList();
-} else if (isset($_POST["update"])) {
+} elseif (isset($_POST["update"])) {
     $database->check($_POST["id"], UPDATE);
 
     $database->update($_POST);
@@ -117,6 +119,6 @@ if (isset($_POST["add"])) {
 } else {
     $menus = ["management", "database"];
     Database::displayFullPageForItem($_GET['id'], $menus, [
-        'databaseinstances_id' => $_GET['databaseinstances_id']
+        'databaseinstances_id' => $_GET['databaseinstances_id'],
     ]);
 }

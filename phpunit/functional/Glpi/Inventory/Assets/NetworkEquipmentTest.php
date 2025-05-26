@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -43,7 +42,7 @@ include_once __DIR__ . '/../../../../abstracts/AbstractInventoryAsset.php';
 
 class NetworkEquipmentTest extends AbstractInventoryAsset
 {
-    const INV_FIXTURES = GLPI_ROOT . '/vendor/glpi-project/inventory_format/examples/';
+    public const INV_FIXTURES = GLPI_ROOT . '/vendor/glpi-project/inventory_format/examples/';
 
     public static function assetProvider(): array
     {
@@ -87,7 +86,7 @@ class NetworkEquipmentTest extends AbstractInventoryAsset
   <DEVICEID>foo</DEVICEID>
   <QUERY>SNMPQUERY</QUERY>
 </REQUEST>",
-                'asset'  => '{"description":"Cisco NX-OS(tm) ucs, Software (ucs-6100-k9-system), Version 5.0(3)N2(4.02b), RELEASE SOFTWARE Copyright (c) 2002-2013 by Cisco Systems, Inc.   Compiled 1/16/2019 18:00:00", "sysdescr":"Cisco NX-OS(tm) ucs, Software (ucs-6100-k9-system), Version 5.0(3)N2(4.02b), RELEASE SOFTWARE Copyright (c) 2002-2013 by Cisco Systems, Inc.   Compiled 1/16/2019 18:00:00", "autoupdatesystems_id":"GLPI Native Inventory","last_inventory_update": "DATE_NOW","contact":"noc@glpi-project.org","cpu":4,"firmware":"5.0(3)N2(4.02b)","location":"paris.pa3","mac":"8c:60:4f:8d:ae:fc","manufacturer":"Cisco","model":"UCS 6248UP 48-Port","name":"ucs6248up-cluster-pa3-B","serial":"SSI1912014B","type":"Networking","uptime":"482 days, 05:42:18.50","ips":["127.0.0.1","10.2.5.10","192.168.12.5"],"locations_id":"paris.pa3","networkequipmentmodels_id":"UCS 6248UP 48-Port","networkequipmenttypes_id":"Networking","manufacturers_id":"Cisco","is_deleted": 0}'
+                'asset'  => '{"description":"Cisco NX-OS(tm) ucs, Software (ucs-6100-k9-system), Version 5.0(3)N2(4.02b), RELEASE SOFTWARE Copyright (c) 2002-2013 by Cisco Systems, Inc.   Compiled 1/16/2019 18:00:00", "sysdescr":"Cisco NX-OS(tm) ucs, Software (ucs-6100-k9-system), Version 5.0(3)N2(4.02b), RELEASE SOFTWARE Copyright (c) 2002-2013 by Cisco Systems, Inc.   Compiled 1/16/2019 18:00:00", "autoupdatesystems_id":"GLPI Native Inventory","last_inventory_update": "DATE_NOW","contact":"noc@glpi-project.org","cpu":4,"firmware":"5.0(3)N2(4.02b)","location":"paris.pa3","mac":"8c:60:4f:8d:ae:fc","manufacturer":"Cisco","model":"UCS 6248UP 48-Port","name":"ucs6248up-cluster-pa3-B","serial":"SSI1912014B","type":"Networking","uptime":"482 days, 05:42:18.50","ips":["127.0.0.1","10.2.5.10","192.168.12.5"],"locations_id":"paris.pa3","networkequipmentmodels_id":"UCS 6248UP 48-Port","networkequipmenttypes_id":"Networking","manufacturers_id":"Cisco","is_deleted": 0}',
             ], [
                 'xml'   => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
@@ -156,8 +155,8 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
   <DEVICEID>foo</DEVICEID>
   <QUERY>SNMPQUERY</QUERY>
 </REQUEST>",
-                'asset'  => '{"autoupdatesystems_id":"GLPI Native Inventory","last_inventory_update":"DATE_NOW","cpu":47,"firmware":"12.2(55)SE6","ips":["10.1.0.100","10.1.0.22","10.1.0.41","10.1.0.45","10.1.0.59","10.11.11.1","10.11.11.5","10.11.13.1","10.11.13.5","172.21.0.1","172.21.0.7","172.22.0.1","172.22.0.5","172.23.0.1","172.23.0.5","172.24.0.1","172.24.0.5","172.25.1.15","172.28.200.1","172.28.200.5","172.28.211.5","172.28.215.1","172.28.221.1","185.10.253.65","185.10.253.97","185.10.254.1","185.10.255.146","185.10.255.224","185.10.255.250"],"location":"paris.pa3","mac":"00:23:ac:6a:01:00","manufacturer":"Cisco","model":"Catalyst 3750-24\/48","name":"3k-1-pa3.teclib.infra","ram":128,"serial":"FOC1243W0ED","type":"Networking","uptime":"103 days, 13:53:28.28","description":"Cisco IOS Software, C3750 Software (C3750-IPSERVICESK9-M), Version 12.2(55)SE6, RELEASE SOFTWARE (fc1)\nTechnical Support: http:\/\/www.cisco.com\/techsupport\nCopyright (c) 1986-2012 by Cisco Systems, Inc.\nCompiled Mon 23-Jul-12 13:22 by prod_rel_team","sysdescr":"Cisco IOS Software, C3750 Software (C3750-IPSERVICESK9-M), Version 12.2(55)SE6, RELEASE SOFTWARE (fc1)\nTechnical Support: http:\/\/www.cisco.com\/techsupport\nCopyright (c) 1986-2012 by Cisco Systems, Inc.\nCompiled Mon 23-Jul-12 13:22 by prod_rel_team","locations_id":"paris.pa3","networkequipmentmodels_id":"Catalyst 3750-24\/48","networkequipmenttypes_id":"Networking","manufacturers_id":"Cisco","is_deleted": 0}'
-            ]
+                'asset'  => '{"autoupdatesystems_id":"GLPI Native Inventory","last_inventory_update":"DATE_NOW","cpu":47,"firmware":"12.2(55)SE6","ips":["10.1.0.100","10.1.0.22","10.1.0.41","10.1.0.45","10.1.0.59","10.11.11.1","10.11.11.5","10.11.13.1","10.11.13.5","172.21.0.1","172.21.0.7","172.22.0.1","172.22.0.5","172.23.0.1","172.23.0.5","172.24.0.1","172.24.0.5","172.25.1.15","172.28.200.1","172.28.200.5","172.28.211.5","172.28.215.1","172.28.221.1","185.10.253.65","185.10.253.97","185.10.254.1","185.10.255.146","185.10.255.224","185.10.255.250"],"location":"paris.pa3","mac":"00:23:ac:6a:01:00","manufacturer":"Cisco","model":"Catalyst 3750-24\/48","name":"3k-1-pa3.teclib.infra","ram":128,"serial":"FOC1243W0ED","type":"Networking","uptime":"103 days, 13:53:28.28","description":"Cisco IOS Software, C3750 Software (C3750-IPSERVICESK9-M), Version 12.2(55)SE6, RELEASE SOFTWARE (fc1)\nTechnical Support: http:\/\/www.cisco.com\/techsupport\nCopyright (c) 1986-2012 by Cisco Systems, Inc.\nCompiled Mon 23-Jul-12 13:22 by prod_rel_team","sysdescr":"Cisco IOS Software, C3750 Software (C3750-IPSERVICESK9-M), Version 12.2(55)SE6, RELEASE SOFTWARE (fc1)\nTechnical Support: http:\/\/www.cisco.com\/techsupport\nCopyright (c) 1986-2012 by Cisco Systems, Inc.\nCompiled Mon 23-Jul-12 13:22 by prod_rel_team","locations_id":"paris.pa3","networkequipmentmodels_id":"Catalyst 3750-24\/48","networkequipmenttypes_id":"Networking","manufacturers_id":"Cisco","is_deleted": 0}',
+            ],
         ];
     }
 
@@ -173,20 +172,20 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
 
         $netequ = new \NetworkEquipment();
         $main = new \Glpi\Inventory\MainAsset\NetworkEquipment($netequ, $json);
-        $main->setExtraData((array)$json->content);
+        $main->setExtraData((array) $json->content);
         $result = $main->prepare();
         $this->assertEquals(json_decode($asset), $result[0]);
     }
 
     public function testStacked()
     {
-       //non stacked
+        //non stacked
         $json_str = file_get_contents(self::INV_FIXTURES . 'networkequipment_1.json');
         $json = json_decode($json_str);
 
         $netequ = new \NetworkEquipment();
 
-        $data = (array)$json->content;
+        $data = (array) $json->content;
         $inventory = new \Glpi\Inventory\Inventory();
         $this->assertTrue($inventory->setData($json));
 
@@ -206,7 +205,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
 
         $netequ = new \NetworkEquipment();
 
-        $data = (array)$json->content;
+        $data = (array) $json->content;
         $inventory = new \Glpi\Inventory\Inventory();
         $this->assertTrue($inventory->setData($json));
 
@@ -278,14 +277,14 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
                 'type' => 'chassis',
                 'firmware' => '12.2(55)SE6',
                 'stack_number' => 8,
-            ]
+            ],
         ];
 
         $this->assertTrue($main->isStackedSwitch());
         $stack = $main->getStackedSwitches();
         $this->assertSame(array_keys($stack), array_keys($expected_stack));
         foreach ($expected_stack as $key => $entry) {
-            $this->assertSame((array)$stack[$key], $entry);
+            $this->assertSame((array) $stack[$key], $entry);
         }
     }
 
@@ -296,6 +295,9 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
      */
     public function testStackedDellSwitch()
     {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
         $xml_source = '<?xml version="1.0" encoding="UTF-8" ?>
 <REQUEST>
   <CONTENT>
@@ -392,7 +394,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
 
         $this->assertSame(2, countElementsInTable($networkPort->getTable()), 'Must have two ports');
 
-        foreach ([['DL253300100', 177783810], ['DL253300200', 242009090]] as list($serial, $logical_number)) {
+        foreach ([['DL253300100', 177783810], ['DL253300200', 242009090]] as [$serial, $logical_number]) {
             $this->assertTrue(
                 $networkEquipment->getFromDBByCrit(['serial' => $serial]),
                 "Switch s/n $serial doesn't exist"
@@ -402,7 +404,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
                 $networkPort->getFromDBByCrit([
                     'itemtype' => $networkEquipment->getType(),
                     'items_id' => $networkEquipment->getID(),
-                    'logical_number' => $logical_number
+                    'logical_number' => $logical_number,
                 ]),
                 sprintf("Switch \"%s\" doesn't have port with ifindex %d", $networkEquipment->fields['name'], $logical_number)
             );
@@ -416,7 +418,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
 
         $netequ = new \NetworkEquipment();
 
-        $data = (array)$json->content;
+        $data = (array) $json->content;
         $inventory = new \Glpi\Inventory\Inventory();
         $this->assertTrue($inventory->setData($json));
 
@@ -481,7 +483,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         // Another switch
         $networkequipments_other_id = $networkEquipment->add([
             'name'        => 'otherswitch',
-            'entities_id' => 0
+            'entities_id' => 0,
         ]);
         $this->assertGreaterThan(0, $networkequipments_other_id);
 
@@ -490,7 +492,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
             'items_id'       => $networkequipments_other_id,
             'entities_id'    => 0,
             'mac'            => '00:24:b5:bd:c8:01',
-            'logical_number' => 22
+            'logical_number' => 22,
         ]);
         $this->assertGreaterThan(0, $networkports_other_id);
 
@@ -568,7 +570,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         // Unmanaged device
         $unmanageds_id = $unmanaged->add([
             'name'        => 'Unmanaged device',
-            'entities_id' => 0
+            'entities_id' => 0,
         ]);
         $this->assertGreaterThan(0, $unmanageds_id);
 
@@ -577,7 +579,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
             'items_id'       => $unmanageds_id,
             'entities_id'    => 0,
             'mac'            => '00:24:b5:bd:c8:01',
-            'logical_number' => 22
+            'logical_number' => 22,
         ]);
         $this->assertGreaterThan(0, $unmanaged_networkports_id);
 
@@ -727,7 +729,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         // Another switch
         $networkequipments_other_id = $networkEquipment->add([
             'name'        => 'otherswitch',
-            'entities_id' => 0
+            'entities_id' => 0,
         ]);
         $this->assertGreaterThan(0, $networkequipments_other_id);
 
@@ -736,14 +738,14 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
             'itemtype'          => 'NetworkEquipment',
             'instantiation_type' => 'NetworkPortAggregate',
             'items_id'          => $networkequipments_other_id,
-            'entities_id'       => 0
+            'entities_id'       => 0,
         ]);
         $this->assertGreaterThan(0, $managementports_id);
 
         $networknames_id = $networkName->add([
             'entities_id' => 0,
             'itemtype'    => 'NetworkPort',
-            'items_id'    => $managementports_id
+            'items_id'    => $managementports_id,
         ]);
         $this->assertGreaterThan(0, $networknames_id);
 
@@ -751,7 +753,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
             'entities_id' => 0,
             'itemtype' => 'NetworkName',
             'items_id' => $networknames_id,
-            'name' => '192.168.200.124'
+            'name' => '192.168.200.124',
         ]);
         $this->assertGreaterThan(0, $ipaddress_id);
 
@@ -762,7 +764,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
             'entities_id'    => 0,
             'mac'            => '00:24:b5:bd:c8:01',
             'logical_number' => 22,
-            'ifdescr' => 'GigabitEthernet0/10'
+            'ifdescr' => 'GigabitEthernet0/10',
         ]);
         $this->assertGreaterThan(0, $networkports_other_id);
 
@@ -845,21 +847,21 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         // Unmanaged
         $unmanageds_id = $unmanaged->add([
             'name'        => 'otherswitch',
-            'entities_id' => 0
+            'entities_id' => 0,
         ]);
         $this->assertGreaterThan(0, $unmanageds_id);
 
         $networkports_unknown_id = $networkport->add([
             'itemtype'       => 'Unmanaged',
             'items_id'       => $unmanageds_id,
-            'entities_id'    => 0
+            'entities_id'    => 0,
         ]);
         $this->assertGreaterThan(0, $networkports_unknown_id);
 
         $networknames_id = $networkName->add([
             'entities_id' => 0,
             'itemtype'    => 'NetworkPort',
-            'items_id'    => $networkports_unknown_id
+            'items_id'    => $networkports_unknown_id,
         ]);
         $this->assertGreaterThan(0, $networknames_id);
 
@@ -867,7 +869,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
             'entities_id' => 0,
             'itemtype' => 'NetworkName',
             'items_id' => $networknames_id,
-            'name' => '192.168.200.124'
+            'name' => '192.168.200.124',
         ]);
         $this->assertGreaterThan(0, $ipaddress_id);
 
@@ -926,7 +928,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
             'ifalias' => null,
             'portduplex' => null,
             'trunk' => 0,
-            'lastup' => null
+            'lastup' => null,
         ];
         $networkport = new \NetworkPort();
         $this->assertTrue($networkport->getFromDBByCrit(['name' => 'GigabitEthernet0/10']));
@@ -1061,7 +1063,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         // Another switch
         $networkequipments_other_id = $networkEquipment->add([
             'name'        => 'juniperswitch3',
-            'entities_id' => 0
+            'entities_id' => 0,
         ]);
         $this->assertGreaterThan(0, $networkequipments_other_id);
 
@@ -1072,7 +1074,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
             'entities_id'    => 0,
             'mac'            => '2c:6b:f5:98:f9:70',
             'logical_number' => 504,
-            'ifdescr' => 'ge-0/0/1.0'
+            'ifdescr' => 'ge-0/0/1.0',
         ]);
         $this->assertGreaterThan(0, $networkports_other_id);
 
@@ -1304,7 +1306,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
             'NetworkName_name'   => '',
             'NetworkName_fqdns_id' => 0,
             'NetworkName__ipaddresses' => [
-                '-1' => '10.226.164.55'
+                '-1' => '10.226.164.55',
             ],
 
         ]);
@@ -1453,7 +1455,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
             'NetworkName_name'   => '',
             'NetworkName_fqdns_id' => 0,
             'NetworkName__ipaddresses' => [
-                '-1' => '10.226.164.55'
+                '-1' => '10.226.164.55',
             ],
             'ifdescr'         => '27',
         ]);
@@ -1471,7 +1473,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
             'NetworkName_name'   => '',
             'NetworkName_fqdns_id' => 0,
             'NetworkName__ipaddresses' => [
-                '-1' => '10.226.164.55'
+                '-1' => '10.226.164.55',
             ],
             'ifdescr'         => '28',
         ]);
@@ -1489,7 +1491,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
             'NetworkName_name'   => '',
             'NetworkName_fqdns_id' => 0,
             'NetworkName__ipaddresses' => [
-                '-1' => '10.226.164.55'
+                '-1' => '10.226.164.55',
             ],
             'ifdescr'         => '29',
         ]);
@@ -2000,7 +2002,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
             'NetworkName_name'   => '',
             'NetworkName_fqdns_id' => 0,
             'NetworkName__ipaddresses' => [
-                '-1' => '172.16.100.252'
+                '-1' => '172.16.100.252',
             ],
         ]);
         $this->assertGreaterThan(0, $mngtports_id);
@@ -2099,22 +2101,22 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
           <QUERY>SNMPQUERY</QUERY>
         </REQUEST>";
 
-          // Import the switch into GLPI
-          $converter = new \Glpi\Inventory\Converter();
-          $data = json_decode($converter->convert($xml_source));
-          $inventory = new \Glpi\Inventory\Inventory($data);
+        // Import the switch into GLPI
+        $converter = new \Glpi\Inventory\Converter();
+        $data = json_decode($converter->convert($xml_source));
+        $inventory = new \Glpi\Inventory\Inventory($data);
 
-          $this->assertFalse($inventory->inError());
-          $this->assertSame([], $inventory->getErrors());
+        $this->assertFalse($inventory->inError());
+        $this->assertSame([], $inventory->getErrors());
 
-          // check sysdescr
-          $networkequipement = new \NetworkEquipment();
-          $found_np = $networkequipement->find(['name' => "ucs6248up-cluster-pa3-B"]);
-          $this->assertCount(1, $found_np);
-          $first_np = array_pop($found_np);
-          $this->assertSame("this a sysdescr", $first_np['sysdescr']);
+        // check sysdescr
+        $networkequipement = new \NetworkEquipment();
+        $found_np = $networkequipement->find(['name' => "ucs6248up-cluster-pa3-B"]);
+        $this->assertCount(1, $found_np);
+        $first_np = array_pop($found_np);
+        $this->assertSame("this a sysdescr", $first_np['sysdescr']);
 
-          $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
           <REQUEST>
             <CONTENT>
               <DEVICE>
@@ -2153,20 +2155,20 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
             <QUERY>SNMPQUERY</QUERY>
           </REQUEST>";
 
-          // Import the switch into GLPI
-          $converter = new \Glpi\Inventory\Converter();
-          $data = json_decode($converter->convert($xml_source));
-          $inventory = new \Glpi\Inventory\Inventory($data);
+        // Import the switch into GLPI
+        $converter = new \Glpi\Inventory\Converter();
+        $data = json_decode($converter->convert($xml_source));
+        $inventory = new \Glpi\Inventory\Inventory($data);
 
-          $this->assertFalse($inventory->inError());
-          $this->assertSame([], $inventory->getErrors());
+        $this->assertFalse($inventory->inError());
+        $this->assertSame([], $inventory->getErrors());
 
-          // check sysdescr
-          $networkequipement = new \NetworkEquipment();
-          $found_np = $networkequipement->find(['name' => "ucs6248up-cluster-pa3-B"]);
-          $this->assertCount(1, $found_np);
-          $first_np = array_pop($found_np);
-          $this->assertSame("this a updated sysdescr", $first_np['sysdescr']);
+        // check sysdescr
+        $networkequipement = new \NetworkEquipment();
+        $found_np = $networkequipement->find(['name' => "ucs6248up-cluster-pa3-B"]);
+        $this->assertCount(1, $found_np);
+        $first_np = array_pop($found_np);
+        $this->assertSame("this a updated sysdescr", $first_np['sysdescr']);
     }
 
     public function testSwitchMacConnection1()
@@ -2233,7 +2235,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
         $computers_id = $computer->add([
             'name'   => 'pc002',
             'serial' => 'ggheb7ne7',
-            'entities_id' => 0
+            'entities_id' => 0,
         ]);
         $this->assertGreaterThan(0, $computers_id);
 
@@ -2703,7 +2705,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
                          }
                       ]
                    }
-                }'
+                }',
             ],
             ['json_source' =>
                 '{
@@ -2723,7 +2725,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
                          }
                       ]
                    }
-                }'
+                }',
             ],
             ['json_source' =>
                 '{
@@ -2742,7 +2744,7 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
                          }
                       ]
                    }
-                }'
+                }',
             ],
         ];
     }
@@ -2783,7 +2785,8 @@ Compiled Mon 23-Jul-12 13:22 by prod_rel_team</COMMENTS>
 
         $networkEquipment = getItemByTypeName('NetworkEquipment', '_test_networkequipment_1');
 
-        $asset = new \Glpi\Inventory\Asset\NetworkPort($networkEquipment, (array)$json->content->network_ports);
+        $asset = new \Glpi\Inventory\Asset\NetworkPort($networkEquipment, (array) $json->content->network_ports);
+        $asset->setMainAsset(new \Glpi\Inventory\MainAsset\NetworkEquipment($networkEquipment, []));
 
         $result = $asset->prepare();
         $this->assertCount(1, $result);
@@ -3183,7 +3186,7 @@ Compiled Wed 25-Jan-23 16:15 by mcpre</COMMENTS>
 
         $server_serial = [
             'DKFJG3541DF' => 43, //42  Gi1/0/x + 1 -> Gi0/0
-            'FOC2637YAPH' => 42  //42  Gi2/0/x
+            'FOC2637YAPH' => 42,  //42  Gi2/0/x
         ];
 
         foreach ($server_serial as $serial => $nb_port) {
@@ -3224,7 +3227,7 @@ Compiled Wed 25-Jan-23 16:15 by mcpre</COMMENTS>
         $server_serial = [
             '18OL0530E253' => 51, //42
             '17OL07000107' => 27,  //42
-            '17OL07000020' => 27  //42
+            '17OL07000020' => 27,  //42
         ];
 
         foreach ($server_serial as $serial => $nb_port) {
@@ -3290,5 +3293,789 @@ Compiled Wed 25-Jan-23 16:15 by mcpre</COMMENTS>
         // reload NetworkPortAggregate and check if dynamic
         $networkport->getFromDB($networkport_id);
         $this->assertEquals(1, $networkport->fields['is_dynamic']);
+    }
+
+    public function testKeepManualNetworkPort()
+    {
+        // create NetworkEquipment manually
+        $networkEquipment = new \NetworkEquipment();
+        $networkequipments_id = $networkEquipment->add([
+            'name'        => 'SWITCH.network.teclib.org',
+            'serial'      => 'DKFJG3541DF',
+            'entities_id' => 0,
+        ]);
+        $this->assertGreaterThan(0, $networkequipments_id);
+
+        // create NetworkPortEthernet manually (which will not be taken over by the inventory and will therefore remain at is_dynamic = 0)
+        $networkport = new \NetworkPort();
+        $networkport_id = $networkport->add([
+            'name'                => 'ETH1254',
+            'logical_number'      => '0',
+            'instantiation_type'  => 'NetworkPortEthernet',
+            'items_id'            => $networkequipments_id,
+            'itemtype'            => 'NetworkEquipment',
+            'mac'                 => '08:f3:fb:a1:04:00',
+            'entities_id'         => 0,
+        ]);
+
+        $this->assertGreaterThan(0, $networkport_id);
+
+        // reload NetworkPortEthernet and check if exist and not dynamic
+        $this->assertTrue($networkport->getFromDB($networkport_id));
+        $this->assertEquals(0, $networkport->fields['is_dynamic']);
+
+        // do inventory
+        $xml_source = file_get_contents(FIXTURE_DIR . '/inventories/cisco-C9300.xml');
+        // Import the switch(es) into GLPI
+        $converter = new \Glpi\Inventory\Converter();
+        $data = json_decode($converter->convert($xml_source));
+        $inventory = new \Glpi\Inventory\Inventory($data);
+
+        if ($inventory->inError()) {
+            foreach ($inventory->getErrors() as $error) {
+                var_dump($error);
+            }
+        }
+        $this->assertFalse($inventory->inError());
+        $this->assertSame([], $inventory->getErrors());
+
+        // reload NetworkPortEthernet and check if still exist and not dynamic
+        $this->assertTrue($networkport->getFromDB($networkport_id));
+        $this->assertEquals(0, $networkport->fields['is_dynamic']);
+    }
+
+    public function testStackRemoval()
+    {
+        $stack_1_serial = '6A6921XXXXXYX';
+        $stack_1_name = 'Netgear - Unit 1 - 1';
+        $stack_1_ports = 4; // 3x1/0/x + management port
+        $stack_1_port_names = '@^(Management)|(1/0/\d)@';
+        $stack_2_serial = '6A6921XXXXXYY';
+        $stack_2_name = 'Netgear - Unit 2 - 2';
+        $stack_2_ports = 6; // 5x2/0/x + management port
+        $stack_2_port_names = '@^(Management)|(2/0/\d)@';
+        $stack_3_serial = '6A6921XXXXXYZ';
+        $stack_3_name = 'Netgear - Unit 3 - 3';
+        $stack_3_ports = 7; // 6x3/0/x + management port
+        $stack_3_port_names = '@^(Management)|(3/0/\d)@';
+
+        //3 stacks: first one (1/0/x) with 3 ports, second one (2/0/x) with 5 ports and third one (3/0/x) with 6 ports
+        $xml_source = '<?xml version="1.0" encoding="UTF-8"?>
+<REQUEST>
+  <CONTENT>
+    <DEVICE>
+      <COMPONENTS>
+        <COMPONENT>
+          <CONTAINEDININDEX>0</CONTAINEDININDEX>
+          <FRU>2</FRU>
+          <INDEX>1</INDEX>
+          <NAME>Stack</NAME>
+          <TYPE>stack</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>1</CONTAINEDININDEX>
+          <DESCRIPTION>M4300-12X12F ProSAFE 12-port 10GBASE-T and 12-port 10G SFP+</DESCRIPTION>
+          <FRU>1</FRU>
+          <INDEX>1</INDEX>
+          <MODEL>M4300-12X12F</MODEL>
+          <NAME>Unit 1</NAME>
+          <SERIAL>' . $stack_1_serial . '</SERIAL>
+          <STACK_NUMBER>1</STACK_NUMBER>
+          <TYPE>chassis</TYPE>
+          <VERSION>12.0.17.10</VERSION>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>1</CONTAINEDININDEX>
+          <DESCRIPTION>M4300-12X12F ProSAFE 12-port 10GBASE-T and 12-port 10G SFP+</DESCRIPTION>
+          <FRU>1</FRU>
+          <INDEX>2</INDEX>
+          <MODEL>M4300-12X12F</MODEL>
+          <NAME>Unit 2</NAME>
+          <SERIAL>' . $stack_2_serial . '</SERIAL>
+          <STACK_NUMBER>2</STACK_NUMBER>
+          <TYPE>chassis</TYPE>
+          <VERSION>12.0.17.10</VERSION>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>1</CONTAINEDININDEX>
+          <DESCRIPTION>M4300-12X12F ProSAFE 12-port 10GBASE-T and 12-port 10G SFP+</DESCRIPTION>
+          <FRU>1</FRU>
+          <INDEX>3</INDEX>
+          <MODEL>M4300-12X12F</MODEL>
+          <NAME>Unit 3</NAME>
+          <SERIAL>' . $stack_3_serial . '</SERIAL>
+          <STACK_NUMBER>3</STACK_NUMBER>
+          <TYPE>chassis</TYPE>
+          <VERSION>12.0.17.10</VERSION>
+        </COMPONENT>
+      </COMPONENTS>
+      <FIRMWARES>
+        <DESCRIPTION>device firmware</DESCRIPTION>
+        <MANUFACTURER>Netgear</MANUFACTURER>
+        <NAME>M4300-12X12F</NAME>
+        <TYPE>device</TYPE>
+        <VERSION>12.0.17.10</VERSION>
+      </FIRMWARES>
+      <INFO>
+        <COMMENTS>M4300-12X12F ProSAFE 12-port 10GBASE-T and 12-port 10G SFP+, 12.0.17.10, B1.0.0.17</COMMENTS>
+        <FIRMWARE>12.0.17.10</FIRMWARE>
+        <ID>0</ID>
+        <IPS>
+          <IP>10.0.0.1</IP>
+        </IPS>
+        <LOCATION>Far far from home</LOCATION>
+        <MAC>3a:01:02:03:04:00</MAC>
+        <MANUFACTURER>Netgear</MANUFACTURER>
+        <MODEL>M4300-12X12F</MODEL>
+        <NAME>Netgear</NAME>
+        <SERIAL>6A6921XXXXXYZ</SERIAL>
+        <TYPE>NETWORKING</TYPE>
+        <UPTIME>223 days, 6:07:13.00</UPTIME>
+      </INFO>
+      <PORTS>
+        <PORT>
+          <IFDESCR>Unit: 1 Slot: 0 Port: 1 10G - Level</IFDESCR>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>0</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>0:00:00.00</IFLASTCHANGE>
+          <IFMTU>9198</IFMTU>
+          <IFNAME>1/0/1</IFNAME>
+          <IFNUMBER>1</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>0</IFOUTOCTETS>
+          <IFSPEED>10000000000</IFSPEED>
+          <IFSTATUS>6</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>3a:01:02:03:04:00</MAC>
+        </PORT>
+        <PORT>
+          <IFDESCR>Unit: 1 Slot: 0 Port: 2 10G - Level</IFDESCR>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>0</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>0:00:00.00</IFLASTCHANGE>
+          <IFMTU>9198</IFMTU>
+          <IFNAME>1/0/2</IFNAME>
+          <IFNUMBER>2</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>0</IFOUTOCTETS>
+          <IFSPEED>10000000000</IFSPEED>
+          <IFSTATUS>6</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>3a:01:02:03:04:00</MAC>
+        </PORT>
+        <PORT>
+          <IFDESCR>Unit: 1 Slot: 0 Port: 3 10G - Level</IFDESCR>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>0</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>0:00:00.00</IFLASTCHANGE>
+          <IFMTU>9198</IFMTU>
+          <IFNAME>1/0/3</IFNAME>
+          <IFNUMBER>3</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>0</IFOUTOCTETS>
+          <IFSPEED>10000000000</IFSPEED>
+          <IFSTATUS>6</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>3a:01:02:03:04:00</MAC>
+        </PORT>
+        <PORT>
+          <IFDESCR>Unit: 2 Slot: 0 Port: 1 10G - Level</IFDESCR>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>3768468168</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>0:02:04.00</IFLASTCHANGE>
+          <IFMTU>9198</IFMTU>
+          <IFNAME>2/0/1</IFNAME>
+          <IFNUMBER>97</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>4160161415</IFOUTOCTETS>
+          <IFSPEED>10000000000</IFSPEED>
+          <IFSTATUS>1</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>3a:01:02:03:04:00</MAC>
+        </PORT>
+        <PORT>
+          <IFDESCR>Unit: 2 Slot: 0 Port: 2 10G - Level</IFDESCR>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>4158163026</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>0:02:04.00</IFLASTCHANGE>
+          <IFMTU>9198</IFMTU>
+          <IFNAME>2/0/2</IFNAME>
+          <IFNUMBER>98</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>703920570</IFOUTOCTETS>
+          <IFSPEED>10000000000</IFSPEED>
+          <IFSTATUS>1</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>3a:01:02:03:04:00</MAC>
+        </PORT>
+        <PORT>
+          <IFDESCR>Unit: 2 Slot: 0 Port: 3 10G - Level</IFDESCR>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>3816253697</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>0:02:04.00</IFLASTCHANGE>
+          <IFMTU>9198</IFMTU>
+          <IFNAME>2/0/3</IFNAME>
+          <IFNUMBER>99</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>2880655425</IFOUTOCTETS>
+          <IFSPEED>10000000000</IFSPEED>
+          <IFSTATUS>1</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>3a:01:02:03:04:00</MAC>
+        </PORT>
+        <PORT>
+          <IFDESCR>Unit: 2 Slot: 0 Port: 4 10G - Level</IFDESCR>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>1914410530</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>0:02:05.00</IFLASTCHANGE>
+          <IFMTU>9198</IFMTU>
+          <IFNAME>2/0/4</IFNAME>
+          <IFNUMBER>100</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>1782843975</IFOUTOCTETS>
+          <IFSPEED>10000000000</IFSPEED>
+          <IFSTATUS>1</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>3a:01:02:03:04:00</MAC>
+        </PORT>
+        <PORT>
+          <IFDESCR>Unit: 2 Slot: 0 Port: 5 10G - Level</IFDESCR>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>0</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>0:00:00.00</IFLASTCHANGE>
+          <IFMTU>9198</IFMTU>
+          <IFNAME>2/0/5</IFNAME>
+          <IFNUMBER>101</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>0</IFOUTOCTETS>
+          <IFSPEED>10000000000</IFSPEED>
+          <IFSTATUS>2</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>3a:01:02:03:04:00</MAC>
+        </PORT>
+        <PORT>
+          <IFDESCR>Unit: 3 Slot: 0 Port: 1 10G - Level</IFDESCR>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>0</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>0:00:00.00</IFLASTCHANGE>
+          <IFMTU>9198</IFMTU>
+          <IFNAME>3/0/1</IFNAME>
+          <IFNUMBER>193</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>0</IFOUTOCTETS>
+          <IFSPEED>10000000000</IFSPEED>
+          <IFSTATUS>2</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>3a:01:02:03:04:00</MAC>
+        </PORT>
+        <PORT>
+          <IFDESCR>Unit: 3 Slot: 0 Port: 2 10G - Level</IFDESCR>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>0</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>0:00:00.00</IFLASTCHANGE>
+          <IFMTU>9198</IFMTU>
+          <IFNAME>3/0/2</IFNAME>
+          <IFNUMBER>194</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>0</IFOUTOCTETS>
+          <IFSPEED>10000000000</IFSPEED>
+          <IFSTATUS>2</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>3a:01:02:03:04:00</MAC>
+        </PORT>
+        <PORT>
+          <IFDESCR>Unit: 3 Slot: 0 Port: 3 10G - Level</IFDESCR>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>0</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>0:00:00.00</IFLASTCHANGE>
+          <IFMTU>9198</IFMTU>
+          <IFNAME>3/0/3</IFNAME>
+          <IFNUMBER>195</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>0</IFOUTOCTETS>
+          <IFSPEED>10000000000</IFSPEED>
+          <IFSTATUS>2</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>3a:01:02:03:04:00</MAC>
+        </PORT>
+        <PORT>
+          <IFDESCR>Unit: 3 Slot: 0 Port: 4 10G - Level</IFDESCR>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>0</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>0:00:00.00</IFLASTCHANGE>
+          <IFMTU>9198</IFMTU>
+          <IFNAME>3/0/4</IFNAME>
+          <IFNUMBER>196</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>0</IFOUTOCTETS>
+          <IFSPEED>0</IFSPEED>
+          <IFSTATUS>2</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>3a:01:02:03:04:00</MAC>
+        </PORT>
+        <PORT>
+          <IFDESCR>Unit: 3 Slot: 0 Port: 5 10G - Level</IFDESCR>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>0</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>0:00:00.00</IFLASTCHANGE>
+          <IFMTU>9198</IFMTU>
+          <IFNAME>3/0/5</IFNAME>
+          <IFNUMBER>197</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>0</IFOUTOCTETS>
+          <IFSPEED>10000000000</IFSPEED>
+          <IFSTATUS>2</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>3a:01:02:03:04:00</MAC>
+        </PORT>
+        <PORT>
+          <IFDESCR>Unit: 3 Slot: 0 Port: 6 10G - Level</IFDESCR>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>0</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>0:00:00.00</IFLASTCHANGE>
+          <IFMTU>9198</IFMTU>
+          <IFNAME>3/0/6</IFNAME>
+          <IFNUMBER>198</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>0</IFOUTOCTETS>
+          <IFSPEED>10000000000</IFSPEED>
+          <IFSTATUS>2</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>3a:01:02:03:04:00</MAC>
+        </PORT>
+      </PORTS>
+    </DEVICE>
+    <MODULEVERSION>6.6</MODULEVERSION>
+    <PROCESSNUMBER>1</PROCESSNUMBER>
+  </CONTENT>
+  <DEVICEID>foo</DEVICEID>
+  <QUERY>SNMPQUERY</QUERY>
+</REQUEST>';
+
+        //inventory
+        $inventory = $this->doInventory($xml_source, true);
+
+        $networkEquipment = new \NetworkEquipment();
+        $networkPort      = new \NetworkPort();
+
+        $this->assertSame(
+            $stack_1_ports + $stack_2_ports + $stack_3_ports, // 3x1/0/x + 5x2/0/x + 6x3/0/x + 3 management ports
+            countElementsInTable($networkPort->getTable()),
+            'Number of ports is incorrect'
+        );
+
+        //first stack
+        $this->assertTrue(
+            $networkEquipment->getFromDBByCrit(['serial' => $stack_1_serial]),
+            "First stack doesn't exist"
+        );
+        $this->assertSame($stack_1_name, $networkEquipment->fields['name']);
+        $stack_1_id = $networkEquipment->fields['id'];
+        $this->assertCount(
+            $stack_1_ports, //3x1/0/x + 1 management port
+            $ports = $networkPort->find([
+                'itemtype' => $networkEquipment->getType(),
+                'items_id' => $networkEquipment->getID(),
+            ])
+        );
+        foreach ($ports as $port) {
+            $this->assertMatchesRegularExpression(
+                $stack_1_port_names,
+                $port['name'],
+            );
+        }
+
+        //Second stack
+        $this->assertTrue(
+            $networkEquipment->getFromDBByCrit(['serial' => $stack_2_serial]),
+            "Second stack doesn't exist"
+        );
+        $this->assertSame($stack_2_name, $networkEquipment->fields['name']);
+        $stack_2_id = $networkEquipment->fields['id'];
+        $this->assertCount(
+            $stack_2_ports, //5x2/0/x + 1 management port
+            $ports = $networkPort->find([
+                'itemtype' => $networkEquipment->getType(),
+                'items_id' => $networkEquipment->getID(),
+            ])
+        );
+        foreach ($ports as $port) {
+            $this->assertMatchesRegularExpression(
+                $stack_2_port_names,
+                $port['name'],
+            );
+        }
+
+        //third stack
+        $this->assertTrue(
+            $networkEquipment->getFromDBByCrit(['serial' => $stack_3_serial]),
+            "Third stack doesn't exist"
+        );
+        $this->assertSame($stack_3_name, $networkEquipment->fields['name']);
+        $stack_3_id = $networkEquipment->fields['id'];
+        $this->assertCount(
+            $stack_3_ports, //6x3/0/x + 1 management port
+            $ports = $networkPort->find([
+                'itemtype' => $networkEquipment->getType(),
+                'items_id' => $networkEquipment->getID(),
+            ])
+        );
+        foreach ($ports as $port) {
+            $this->assertMatchesRegularExpression(
+                $stack_3_port_names,
+                $port['name'],
+            );
+        }
+
+        //2 stacks left, the second one (2/0/x) with 5 ports and the third one (3/0/x) with 6 ports
+        $xml_source = '<?xml version="1.0" encoding="UTF-8"?>
+<REQUEST>
+  <CONTENT>
+    <DEVICE>
+      <COMPONENTS>
+        <COMPONENT>
+          <CONTAINEDININDEX>0</CONTAINEDININDEX>
+          <FRU>2</FRU>
+          <INDEX>1</INDEX>
+          <NAME>Stack</NAME>
+          <TYPE>stack</TYPE>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>1</CONTAINEDININDEX>
+          <DESCRIPTION>M4300-12X12F ProSAFE 12-port 10GBASE-T and 12-port 10G SFP+</DESCRIPTION>
+          <FRU>1</FRU>
+          <INDEX>2</INDEX>
+          <MODEL>M4300-12X12F</MODEL>
+          <NAME>Unit 2</NAME>
+          <SERIAL>' . $stack_2_serial . '</SERIAL>
+          <STACK_NUMBER>2</STACK_NUMBER>
+          <TYPE>chassis</TYPE>
+          <VERSION>12.0.17.10</VERSION>
+        </COMPONENT>
+        <COMPONENT>
+          <CONTAINEDININDEX>1</CONTAINEDININDEX>
+          <DESCRIPTION>M4300-12X12F ProSAFE 12-port 10GBASE-T and 12-port 10G SFP+</DESCRIPTION>
+          <FRU>1</FRU>
+          <INDEX>3</INDEX>
+          <MODEL>M4300-12X12F</MODEL>
+          <NAME>Unit 3</NAME>
+          <SERIAL>' . $stack_3_serial . '</SERIAL>
+          <STACK_NUMBER>3</STACK_NUMBER>
+          <TYPE>chassis</TYPE>
+          <VERSION>12.0.17.10</VERSION>
+        </COMPONENT>
+      </COMPONENTS>
+      <FIRMWARES>
+        <DESCRIPTION>device firmware</DESCRIPTION>
+        <MANUFACTURER>Netgear</MANUFACTURER>
+        <NAME>M4300-12X12F</NAME>
+        <TYPE>device</TYPE>
+        <VERSION>12.0.17.10</VERSION>
+      </FIRMWARES>
+      <INFO>
+        <COMMENTS>M4300-12X12F ProSAFE 12-port 10GBASE-T and 12-port 10G SFP+, 12.0.17.10, B1.0.0.17</COMMENTS>
+        <FIRMWARE>12.0.17.10</FIRMWARE>
+        <ID>0</ID>
+        <IPS>
+          <IP>10.0.0.1</IP>
+        </IPS>
+        <LOCATION>Far far from home</LOCATION>
+        <MAC>3a:01:02:03:04:00</MAC>
+        <MANUFACTURER>Netgear</MANUFACTURER>
+        <MODEL>M4300-12X12F</MODEL>
+        <NAME>Netgear</NAME>
+        <SERIAL>6A6921XXXXXYZ</SERIAL>
+        <TYPE>NETWORKING</TYPE>
+        <UPTIME>223 days, 6:07:13.00</UPTIME>
+      </INFO>
+      <PORTS>
+        <PORT>
+          <IFDESCR>Unit: 1 Slot: 0 Port: 1 10G - Level</IFDESCR>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>0</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>0:00:00.00</IFLASTCHANGE>
+          <IFMTU>9198</IFMTU>
+          <IFNAME>1/0/1</IFNAME>
+          <IFNUMBER>1</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>0</IFOUTOCTETS>
+          <IFSPEED>10000000000</IFSPEED>
+          <IFSTATUS>6</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>3a:01:02:03:04:00</MAC>
+        </PORT>
+        <PORT>
+          <IFDESCR>Unit: 1 Slot: 0 Port: 2 10G - Level</IFDESCR>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>0</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>0:00:00.00</IFLASTCHANGE>
+          <IFMTU>9198</IFMTU>
+          <IFNAME>1/0/2</IFNAME>
+          <IFNUMBER>2</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>0</IFOUTOCTETS>
+          <IFSPEED>10000000000</IFSPEED>
+          <IFSTATUS>6</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>3a:01:02:03:04:00</MAC>
+        </PORT>
+        <PORT>
+          <IFDESCR>Unit: 1 Slot: 0 Port: 3 10G - Level</IFDESCR>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>0</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>0:00:00.00</IFLASTCHANGE>
+          <IFMTU>9198</IFMTU>
+          <IFNAME>1/0/3</IFNAME>
+          <IFNUMBER>3</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>0</IFOUTOCTETS>
+          <IFSPEED>10000000000</IFSPEED>
+          <IFSTATUS>6</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>3a:01:02:03:04:00</MAC>
+        </PORT>
+        <PORT>
+          <IFDESCR>Unit: 2 Slot: 0 Port: 1 10G - Level</IFDESCR>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>3768468168</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>0:02:04.00</IFLASTCHANGE>
+          <IFMTU>9198</IFMTU>
+          <IFNAME>2/0/1</IFNAME>
+          <IFNUMBER>97</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>4160161415</IFOUTOCTETS>
+          <IFSPEED>10000000000</IFSPEED>
+          <IFSTATUS>1</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>3a:01:02:03:04:00</MAC>
+        </PORT>
+        <PORT>
+          <IFDESCR>Unit: 2 Slot: 0 Port: 2 10G - Level</IFDESCR>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>4158163026</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>0:02:04.00</IFLASTCHANGE>
+          <IFMTU>9198</IFMTU>
+          <IFNAME>2/0/2</IFNAME>
+          <IFNUMBER>98</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>703920570</IFOUTOCTETS>
+          <IFSPEED>10000000000</IFSPEED>
+          <IFSTATUS>1</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>3a:01:02:03:04:00</MAC>
+        </PORT>
+        <PORT>
+          <IFDESCR>Unit: 2 Slot: 0 Port: 3 10G - Level</IFDESCR>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>3816253697</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>0:02:04.00</IFLASTCHANGE>
+          <IFMTU>9198</IFMTU>
+          <IFNAME>2/0/3</IFNAME>
+          <IFNUMBER>99</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>2880655425</IFOUTOCTETS>
+          <IFSPEED>10000000000</IFSPEED>
+          <IFSTATUS>1</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>3a:01:02:03:04:00</MAC>
+        </PORT>
+        <PORT>
+          <IFDESCR>Unit: 2 Slot: 0 Port: 4 10G - Level</IFDESCR>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>1914410530</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>0:02:05.00</IFLASTCHANGE>
+          <IFMTU>9198</IFMTU>
+          <IFNAME>2/0/4</IFNAME>
+          <IFNUMBER>100</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>1782843975</IFOUTOCTETS>
+          <IFSPEED>10000000000</IFSPEED>
+          <IFSTATUS>1</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>3a:01:02:03:04:00</MAC>
+        </PORT>
+        <PORT>
+          <IFDESCR>Unit: 2 Slot: 0 Port: 5 10G - Level</IFDESCR>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>0</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>0:00:00.00</IFLASTCHANGE>
+          <IFMTU>9198</IFMTU>
+          <IFNAME>2/0/5</IFNAME>
+          <IFNUMBER>101</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>0</IFOUTOCTETS>
+          <IFSPEED>10000000000</IFSPEED>
+          <IFSTATUS>2</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>3a:01:02:03:04:00</MAC>
+        </PORT>
+        <PORT>
+          <IFDESCR>Unit: 3 Slot: 0 Port: 1 10G - Level</IFDESCR>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>0</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>0:00:00.00</IFLASTCHANGE>
+          <IFMTU>9198</IFMTU>
+          <IFNAME>3/0/1</IFNAME>
+          <IFNUMBER>193</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>0</IFOUTOCTETS>
+          <IFSPEED>10000000000</IFSPEED>
+          <IFSTATUS>2</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>3a:01:02:03:04:00</MAC>
+        </PORT>
+        <PORT>
+          <IFDESCR>Unit: 3 Slot: 0 Port: 2 10G - Level</IFDESCR>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>0</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>0:00:00.00</IFLASTCHANGE>
+          <IFMTU>9198</IFMTU>
+          <IFNAME>3/0/2</IFNAME>
+          <IFNUMBER>194</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>0</IFOUTOCTETS>
+          <IFSPEED>10000000000</IFSPEED>
+          <IFSTATUS>2</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>3a:01:02:03:04:00</MAC>
+        </PORT>
+        <PORT>
+          <IFDESCR>Unit: 3 Slot: 0 Port: 3 10G - Level</IFDESCR>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>0</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>0:00:00.00</IFLASTCHANGE>
+          <IFMTU>9198</IFMTU>
+          <IFNAME>3/0/3</IFNAME>
+          <IFNUMBER>195</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>0</IFOUTOCTETS>
+          <IFSPEED>10000000000</IFSPEED>
+          <IFSTATUS>2</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>3a:01:02:03:04:00</MAC>
+        </PORT>
+        <PORT>
+          <IFDESCR>Unit: 3 Slot: 0 Port: 4 10G - Level</IFDESCR>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>0</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>0:00:00.00</IFLASTCHANGE>
+          <IFMTU>9198</IFMTU>
+          <IFNAME>3/0/4</IFNAME>
+          <IFNUMBER>196</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>0</IFOUTOCTETS>
+          <IFSPEED>0</IFSPEED>
+          <IFSTATUS>2</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>3a:01:02:03:04:00</MAC>
+        </PORT>
+        <PORT>
+          <IFDESCR>Unit: 3 Slot: 0 Port: 5 10G - Level</IFDESCR>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>0</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>0:00:00.00</IFLASTCHANGE>
+          <IFMTU>9198</IFMTU>
+          <IFNAME>3/0/5</IFNAME>
+          <IFNUMBER>197</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>0</IFOUTOCTETS>
+          <IFSPEED>10000000000</IFSPEED>
+          <IFSTATUS>2</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>3a:01:02:03:04:00</MAC>
+        </PORT>
+        <PORT>
+          <IFDESCR>Unit: 3 Slot: 0 Port: 6 10G - Level</IFDESCR>
+          <IFINERRORS>0</IFINERRORS>
+          <IFINOCTETS>0</IFINOCTETS>
+          <IFINTERNALSTATUS>1</IFINTERNALSTATUS>
+          <IFLASTCHANGE>0:00:00.00</IFLASTCHANGE>
+          <IFMTU>9198</IFMTU>
+          <IFNAME>3/0/6</IFNAME>
+          <IFNUMBER>198</IFNUMBER>
+          <IFOUTERRORS>0</IFOUTERRORS>
+          <IFOUTOCTETS>0</IFOUTOCTETS>
+          <IFSPEED>10000000000</IFSPEED>
+          <IFSTATUS>2</IFSTATUS>
+          <IFTYPE>6</IFTYPE>
+          <MAC>3a:01:02:03:04:00</MAC>
+        </PORT>
+      </PORTS>
+    </DEVICE>
+    <MODULEVERSION>6.6</MODULEVERSION>
+    <PROCESSNUMBER>1</PROCESSNUMBER>
+  </CONTENT>
+  <DEVICEID>foo</DEVICEID>
+  <QUERY>SNMPQUERY</QUERY>
+</REQUEST>';
+
+        $this->doInventory($xml_source, true);
+
+        $this->assertTrue(
+            $networkEquipment->getFromDBByCrit(['serial' => $stack_2_serial]),
+            "Second stack doesn't exist"
+        );
+        $this->assertSame($stack_2_name, $networkEquipment->fields['name']);
+        $this->assertSame($stack_2_id, $networkEquipment->fields['id']);
+        $this->assertCount(
+            $stack_2_ports,
+            $ports = $networkPort->find([
+                'itemtype' => $networkEquipment->getType(),
+                'items_id' => $networkEquipment->getID(),
+            ])
+        );
+        foreach ($ports as $port) {
+            $this->assertMatchesRegularExpression(
+                $stack_2_port_names,
+                $port['name'],
+            );
+        }
+
+        $this->assertTrue(
+            $networkEquipment->getFromDBByCrit(['serial' => $stack_3_serial]),
+            "Third stack doesn't exist"
+        );
+        $this->assertSame($stack_3_name, $networkEquipment->fields['name']);
+        $this->assertSame($stack_3_id, $networkEquipment->fields['id']);
+        $this->assertCount(
+            $stack_3_ports,
+            $ports = $networkPort->find([
+                'itemtype' => $networkEquipment->getType(),
+                'items_id' => $networkEquipment->getID(),
+            ])
+        );
+        foreach ($ports as $port) {
+            $this->assertMatchesRegularExpression(
+                $stack_3_port_names,
+                $port['name'],
+            );
+        }
     }
 }

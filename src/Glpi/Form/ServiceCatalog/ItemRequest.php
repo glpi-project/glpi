@@ -37,6 +37,7 @@ namespace Glpi\Form\ServiceCatalog;
 
 use Glpi\Form\AccessControl\FormAccessParameters;
 use Glpi\Form\Category;
+use Glpi\Form\ServiceCatalog\SortStrategy\SortStrategyEnum;
 
 final class ItemRequest
 {
@@ -45,9 +46,9 @@ final class ItemRequest
         public string $filter = "",
         public ?Category $category = null,
         public int $page = 1,
-        public int $items_per_page = ServiceCatalogManager::ITEMS_PER_PAGE
-    ) {
-    }
+        public int $items_per_page = ServiceCatalogManager::ITEMS_PER_PAGE,
+        public SortStrategyEnum $sort_strategy = SortStrategyEnum::POPULARITY
+    ) {}
 
     public function getFormAccessParameters(): FormAccessParameters
     {
@@ -62,5 +63,10 @@ final class ItemRequest
     public function getCategory(): ?Category
     {
         return $this->category;
+    }
+
+    public function getSortStrategy(): SortStrategyEnum
+    {
+        return $this->sort_strategy;
     }
 }

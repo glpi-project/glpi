@@ -6,7 +6,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -94,15 +93,15 @@ describe('Form preview', config, () => {
     * This test case checks the behavior of the form preview when there are unsaved changes in the sections.
     */
     it('Test form preview unsaved changes handling in sections', () => {
-        // Add a new question
-        cy.findByRole('button', { 'name': 'Add a new question' }).click();
+        // Add a question
+        cy.findByRole('button', { 'name': 'Add a question' }).click();
         checkPreviewButton();
 
         // Focus question
         cy.findByRole('textbox', { 'name': 'Question name' }).click();
 
-        // Add a new section
-        cy.findByRole('button', { 'name': 'Add a new section' }).click();
+        // Add a section
+        cy.findByRole('button', { 'name': 'Add a section' }).click();
         checkPreviewButton();
 
         cy.findAllByRole('region', { 'name': 'Form section' }).first().within(() => {
@@ -144,8 +143,8 @@ describe('Form preview', config, () => {
             cy.findByRole('textbox', { 'name': 'Question name' }).click();
         };
 
-        // Add a new question
-        cy.findByRole('button', { 'name': 'Add a new question' }).click();
+        // Add a question
+        cy.findByRole('button', { 'name': 'Add a question' }).click();
         check();
 
         // Edit the question name
@@ -194,8 +193,8 @@ describe('Form preview', config, () => {
             cy.findByRole('textbox', { 'name': 'Comment title' }).click();
         };
 
-        // Add a new comment
-        cy.findByRole('button', { 'name': 'Add a new comment' }).click();
+        // Add a comment
+        cy.findByRole('button', { 'name': 'Add a comment' }).click();
 
         // Edit the comment name
         cy.findByRole('textbox', { 'name': 'Comment title' }).type('Test comment');

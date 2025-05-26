@@ -39,7 +39,6 @@ use Glpi\Asset\AssetDefinitionManager;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 use Glpi\Dropdown\DropdownDefinitionManager;
-use Glpi\Features\DCBreadcrumb;
 use Glpi\Features\AssignableItem;
 use Glpi\Form\Category;
 use Glpi\Plugin\Hooks;
@@ -47,8 +46,8 @@ use Glpi\SocketModel;
 
 class Dropdown
 {
-   //Empty value displayed in a dropdown
-    const EMPTY_VALUE = '-----';
+    //Empty value displayed in a dropdown
+    public const EMPTY_VALUE = '-----';
 
     /**
      * List of standard itemtypes options
@@ -129,10 +128,10 @@ class Dropdown
         $params['condition']            = [];
         $params['rand']                 = mt_rand();
         $params['displaywith']          = [];
-       //Parameters about choice 0
-       //Empty choice's label
+        //Parameters about choice 0
+        //Empty choice's label
         $params['emptylabel']           = self::EMPTY_VALUE;
-       //Display emptychoice ?
+        //Display emptychoice ?
         $params['display_emptychoice']  = ($itemtype != 'Entity');
         $params['placeholder']          = '';
         $params['display']              = true;
@@ -168,7 +167,7 @@ class Dropdown
             unset($params['value']);
         }
 
-       // Check default value for dropdown : need to be a numeric (or null)
+        // Check default value for dropdown : need to be a numeric (or null)
         if (
             isset($params['value'])
             && ((strlen($params['value']) == 0) || !is_numeric($params['value']) && $params['value'] != 'mygroups')
@@ -192,7 +191,7 @@ class Dropdown
         $names = [];
         if (!$params['multiple'] && isset($params['toadd'][$params['value']])) {
             $name = $params['toadd'][$params['value']];
-        } else if (
+        } elseif (
             !$params['multiple']
             && ($params['value'] > 0 || ($itemtype == "Entity" && $params['value'] >= 0))
         ) {
@@ -202,7 +201,7 @@ class Dropdown
                 $name    = $dropdown_name;
                 $comment = $dropdown_comment;
             }
-        } else if ($params['multiple']) {
+        } elseif ($params['multiple']) {
             foreach ($params['values'] as $value) {
                 if (isset($params['toadd'][$value])) {
                     // Specific case, value added by the "toadd" param
@@ -236,13 +235,13 @@ class Dropdown
             return $output;
         }
 
-       // Manage entity_sons
+        // Manage entity_sons
         if (
             !($params['entity'] < 0)
             && $params['entity_sons']
         ) {
             if (is_array($params['entity'])) {
-               // translation not needed - only for debug
+                // translation not needed - only for debug
                 $output .= "entity_sons options is not available with entity option as array";
             } else {
                 $params['entity'] = getSonsOf('glpi_entities', $params['entity']);
@@ -254,10 +253,10 @@ class Dropdown
 
         $field_id = Html::cleanId("dropdown_" . $params['name'] . $params['rand']);
 
-       // Manage condition
+        // Manage condition
         if (!empty($params['condition'])) {
-           // Put condition in session and replace it by its key
-           // This is made to prevent passing to many parameters when calling the ajax script
+            // Put condition in session and replace it by its key
+            // This is made to prevent passing to many parameters when calling the ajax script
             $params['condition'] = static::addNewCondition($params['condition']);
         }
 
@@ -327,7 +326,7 @@ class Dropdown
             $add_item_icon .= '</div>';
         }
 
-       // Display comment
+        // Display comment
         $icon_array = [];
         if ($params['comments']) {
             $comment_id      = Html::cleanId("comment_" . $params['name'] . $params['rand']);
@@ -336,7 +335,7 @@ class Dropdown
             $breadcrumb_id   = Html::cleanId("dc_breadcrumb_" . $params['name'] . $params['rand']);
             $options_tooltip = ['contentid' => $comment_id,
                 'linkid'    => $link_id,
-                'display'   => false
+                'display'   => false,
             ];
 
             if ($item->canView()) {
@@ -386,10 +385,10 @@ class Dropdown
                 && !isset($_REQUEST['_in_modal'])
                 && $params['addicon']
             ) {
-                  $icon_array[] = $add_item_icon;
+                $icon_array[] = $add_item_icon;
             }
 
-           // Supplier Links
+            // Supplier Links
             if ($itemtype == "Supplier") {
                 /** @var Supplier $item */
                 if ($item->getFromDB($params['value'])) {
@@ -400,7 +399,7 @@ class Dropdown
                 }
             }
 
-           // Location icon
+            // Location icon
             if ($itemtype == 'Location') {
                 $location_icon = "<div role='button' class='btn btn-outline-secondary' onclick='showMapForLocation(this)'
                                        data-fid='$field_id' title='" . __s('Display on map') . "' data-bs-toggle='tooltip'>";
@@ -421,7 +420,7 @@ class Dropdown
                 }
             }
 
-           // KB links
+            // KB links
             if (
                 $item->isField('knowbaseitemcategories_id') && Session::haveRightsOr('knowbase', [READ, KnowbaseItem::READFAQ])
                 && method_exists($item, 'getLinks')
@@ -565,12 +564,12 @@ class Dropdown
                                     'AND' => [
                                         'namet.itemtype'  => getItemTypeForTable($table),
                                         'namet.language'  => $_SESSION['glpilanguage'],
-                                        'namet.field'     => 'name'
-                                    ]
-                                ]
-                            ]
-                        ]
-                    ]
+                                        'namet.field'     => 'name',
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
                 ];
             }
 
@@ -580,7 +579,7 @@ class Dropdown
                     $SELECTNAME,
                 ],
                 'FROM'   => $table,
-                'WHERE'  => ["$table.id" => $id]
+                'WHERE'  => ["$table.id" => $id],
             ] + $JOIN;
             $iterator = $DB->request($criteria);
 
@@ -595,12 +594,12 @@ class Dropdown
                 switch ($table) {
                     case "glpi_computers":
                         if (empty($name)) {
-                             $name = "($id)";
+                            $name = "($id)";
                         }
                         break;
 
                     case "glpi_contacts":
-                       //TRANS: %1$s is the name, %2$s is the firstname
+                        //TRANS: %1$s is the name, %2$s is the firstname
                         $name = sprintf(__('%1$s %2$s'), $name, $data["firstname"]);
                         break;
 
@@ -658,7 +657,7 @@ class Dropdown
             ],
             'FROM'      => $table,
             'LEFT JOIN' => [],
-            'WHERE'     => ["$table.id" => $id]
+            'WHERE'     => ["$table.id" => $id],
         ];
 
         if (!$DB->fieldExists($table, 'comment')) {
@@ -678,10 +677,10 @@ class Dropdown
                         'AND' => [
                             'comment_translations.itemtype' => $itemtype,
                             'comment_translations.language' => $_SESSION['glpilanguage'],
-                            'comment_translations.field'    => 'comment'
-                        ]
-                    ]
-                ]
+                            'comment_translations.field'    => 'comment',
+                        ],
+                    ],
+                ],
             ];
         } else {
             $criteria['SELECT'][] = new QueryExpression("'' AS " . $DB->quoteName('translated_comment'));
@@ -701,10 +700,10 @@ class Dropdown
                         'AND' => [
                             'completename_translations.itemtype' => $itemtype,
                             'completename_translations.language' => $_SESSION['glpilanguage'],
-                            'completename_translations.field'    => 'completename'
-                        ]
-                    ]
-                ]
+                            'completename_translations.field'    => 'completename',
+                        ],
+                    ],
+                ],
             ];
         } else {
             $criteria['SELECT'][] = new QueryExpression("'' AS " . $DB->quoteName('translated_completename'));
@@ -851,11 +850,11 @@ class Dropdown
                 $iterator = $DB->request([
                     'SELECT' => ['id', $field],
                     'FROM'   => $table,
-                    'WHERE'  => ['id' => $ids]
+                    'WHERE'  => ['id' => $ids],
                 ]);
 
                 foreach ($iterator as $data) {
-                     $tabs[$data['id']] = $data[$field];
+                    $tabs[$data['id']] = $data[$field];
                 }
             }
         }
@@ -943,7 +942,7 @@ class Dropdown
         $iterator = $DB->request([
             'SELECT'          => $p['field'],
             'DISTINCT'        => true,
-            'FROM'            => getTableForItemType($itemtype_ref)
+            'FROM'            => getTableForItemType($itemtype_ref),
         ]);
 
         $tabs = [];
@@ -959,7 +958,7 @@ class Dropdown
      *
      * @param string  $myname      the name of the HTML select
      * @param mixed   $value       the preselected value we want
-     * @param string  $store_path  path where icons are stored
+     * @param string  $store_path  path where icons are stored (No longer used)
      * @param boolean $display     display of get string ? (true by default)
      *
      *
@@ -967,71 +966,77 @@ class Dropdown
      *    void if param display=true
      *    string if param display=false (HTML code)
      **/
-    public static function dropdownIcons($myname, $value, $store_path, $display = true, $options = [])
+    public static function dropdownIcons($myname, $value, $store_path = '', $display = true, $options = [])
     {
+        if (!empty($store_path)) {
+            Toolbox::deprecated('The store_path parameter is no longer used.');
+        }
+        $icon_path = GLPI_ROOT . '/public/pics/icones';
+        if ($dh = @opendir($icon_path)) {
+            $files = [];
 
-        if (is_dir($store_path)) {
-            if ($dh = opendir($store_path)) {
-                $files = [];
-
-                while (($file = readdir($dh)) !== false) {
-                    $files[] = $file;
-                }
-
-                closedir($dh);
-                sort($files);
-
-                $values = [];
-                foreach ($files as $file) {
-                    if (preg_match("/\.png$/i", $file)) {
-                        $values[$file] = $file;
-                    }
-                }
-                $rand = mt_rand();
-                self::showFromArray(
-                    $myname,
-                    $values,
-                    array_merge(
-                        [
-                            'value'                 => $value,
-                            'display_emptychoice'   => true,
-                            'display'               => $display,
-                            'noselect2'             => true, // we will instanciate it later
-                            'rand'                  => $rand,
-                        ],
-                        $options
-                    )
-                );
-
-                /** @var array $CFG_GLPI */
-                global $CFG_GLPI;
-
-                // templates for select2 dropdown
-                $js = <<<JAVASCRIPT
-                $(function() {
-                    const formatFormIcon = function(icon) {
-                        if (!icon.id || icon.id == '0') {
-                            return icon.text;
-                        }
-                        var img = '<span><img alt="" src="{$CFG_GLPI['typedoc_icon_dir']}/'+icon.id+'" />';
-                        var label = '<span>'+icon.text+'</span>';
-                        return $(img+'&nbsp;'+label);
-                    };
-                    $("#dropdown_{$myname}{$rand}").select2({
-                        width: '60%',
-                        templateSelection: formatFormIcon,
-                        templateResult: formatFormIcon
-                    });
-                });
-JAVASCRIPT;
-                echo Html::scriptBlock($js);
-            } else {
-               //TRANS: %s is the store path
-                printf(__('Error reading directory %s'), $store_path);
+            while (($file = readdir($dh)) !== false) {
+                $files[] = $file;
             }
+
+            closedir($dh);
+            sort($files);
+
+            $values = [];
+            foreach ($files as $file) {
+                if (preg_match("/\.png$/i", $file)) {
+                    $values[$file] = $file;
+                }
+            }
+            $rand = mt_rand();
+            self::showFromArray(
+                $myname,
+                $values,
+                array_merge(
+                    [
+                        'value'                 => $value,
+                        'display_emptychoice'   => true,
+                        'display'               => $display,
+                        'noselect2'             => true, // we will instanciate it later
+                        'rand'                  => $rand,
+                    ],
+                    $options
+                )
+            );
+
+            /** @var array $CFG_GLPI */
+            global $CFG_GLPI;
+
+            // templates for select2 dropdown
+            $js = <<<JAVASCRIPT
+            $(function() {
+                const formatFormIcon = function(icon) {
+                    if (!icon.id || icon.id == '0') {
+                        return icon.text;
+                    }
+                    var img = '<span><img alt="" src="{$CFG_GLPI['typedoc_icon_dir']}/'+icon.id+'" />';
+                    var label = '<span>'+icon.text+'</span>';
+                    return $(img+'&nbsp;'+label);
+                };
+                $("#dropdown_{$myname}{$rand}").select2({
+                    width: '60%',
+                    templateSelection: formatFormIcon,
+                    templateResult: formatFormIcon
+                });
+            });
+JAVASCRIPT;
+            echo Html::scriptBlock($js);
         } else {
-           //TRANS: %s is the store path
-            printf(__('Error: %s is not a directory'), $store_path);
+            $error_msg = __('Error reading icon directory');
+            echo <<<HTML
+            <div class="alert alert-danger">
+                <span class="fs-4 alert-title">
+                    $error_msg
+                </span>
+            </div>
+HTML;
+
+            trigger_error(sprintf('Error reading directory %s', $icon_path), E_USER_WARNING);
         }
     }
 
@@ -1044,7 +1049,7 @@ JAVASCRIPT;
     {
         $elements = [-12, -11, -10, -9, -8, -7, -6, -5, -4, -3.5, -3, -2, -1, 0,
             '+1', '+2', '+3', '+3.5', '+4', '+4.5', '+5', '+5.5', '+6', '+6.5', '+7',
-            '+8', '+9', '+9.5', '+10', '+11', '+12', '+13'
+            '+8', '+9', '+9.5', '+10', '+11', '+12', '+13',
         ];
 
         $values = [];
@@ -1097,7 +1102,7 @@ JAVASCRIPT;
         $options = [];
 
         if (!array_key_exists('use_checkbox', $params)) {
-           // TODO: switch to true when Html::showCheckbox() is validated
+            // TODO: switch to true when Html::showCheckbox() is validated
             $params['use_checkbox'] = false;
         }
         if ($params['use_checkbox']) {
@@ -1108,7 +1113,7 @@ JAVASCRIPT;
             }
 
             $options = ['name' => $name,
-                'id'   => Html::cleanId("dropdown_" . $name . $rand)
+                'id'   => Html::cleanId("dropdown_" . $name . $rand),
             ];
 
             switch ($restrict_to) {
@@ -1257,7 +1262,7 @@ JAVASCRIPT;
                     'PDUType' => null,
                     'PassiveDCEquipmentType' => null,
                     'ClusterType' => null,
-                    'DatabaseInstanceType' => null
+                    'DatabaseInstanceType' => null,
                 ] + array_fill_keys(AssetDefinitionManager::getInstance()->getAssetTypesClassesNames(), null),
 
                 _n('Model', 'Models', Session::getPluralNumber()) => [
@@ -1268,7 +1273,7 @@ JAVASCRIPT;
                     'PeripheralModel' => null,
                     'PhoneModel' => null,
 
-                  // Devices models :
+                    // Devices models :
                     'DeviceCameraModel' => null,
                     'DeviceCaseModel' => null,
                     'DeviceControlModel' => null,
@@ -1293,7 +1298,7 @@ JAVASCRIPT;
                 _n('Virtual machine', 'Virtual machines', Session::getPluralNumber()) => [
                     'VirtualMachineType' => null,
                     'VirtualMachineSystem' => null,
-                    'VirtualMachineState' => null
+                    'VirtualMachineState' => null,
                 ],
 
                 __('Management') => [
@@ -1304,12 +1309,12 @@ JAVASCRIPT;
                 ],
 
                 __('Tools') => [
-                    'KnowbaseItemCategory' => null
+                    'KnowbaseItemCategory' => null,
                 ],
 
                 _n('Calendar', 'Calendars', Session::getPluralNumber()) => [
                     'Calendar' => null,
-                    'Holiday' => null
+                    'Holiday' => null,
                 ],
 
                 OperatingSystem::getTypeName(Session::getPluralNumber()) => [
@@ -1320,7 +1325,7 @@ JAVASCRIPT;
                     'OperatingSystemEdition' => null,
                     'OperatingSystemKernel' => null,
                     'OperatingSystemKernelVersion' => null,
-                    'AutoUpdateSystem' => null
+                    'AutoUpdateSystem' => null,
                 ],
 
                 __('Networking') => [
@@ -1346,45 +1351,45 @@ JAVASCRIPT;
                     'IPNetwork' => null,
                     'FQDN' => null,
                     'WifiNetwork' => null,
-                    'NetworkName' => null
+                    'NetworkName' => null,
                 ],
 
                 _n('Software', 'Software', 1) => [
-                    'SoftwareCategory' => null
+                    'SoftwareCategory' => null,
                 ],
 
                 User::getTypeName(1) => [
                     'UserTitle' => null,
-                    'UserCategory' => null
+                    'UserCategory' => null,
                 ],
 
                 __('Authorizations assignment rules') => [
-                    'RuleRightParameter' => null
+                    'RuleRightParameter' => null,
                 ],
 
                 __('Fields unicity') => [
-                    'Fieldblacklist' => null
+                    'Fieldblacklist' => null,
                 ],
 
                 __('External authentications') => [
-                    'SsoVariable' => null
+                    'SsoVariable' => null,
                 ],
                 __('Power management') => [
-                    'Plug' => null
+                    'Plug' => null,
                 ],
                 __('Appliances') => [
                     'ApplianceType' => null,
                     'ApplianceEnvironment' => null,
                 ],
                 DeviceCamera::getTypeName(1) => [
-                    'Resolution'     => null,
-                    'ImageFormat'  => null
+                    'ImageResolution' => null,
+                    'ImageFormat'  => null,
                 ],
                 __('Others') => [
                     'USBVendor' => null,
                     'PCIVendor' => null,
                     WebhookCategory::class => null,
-                ]
+                ],
 
             ]; //end $opt
 
@@ -1407,7 +1412,7 @@ JAVASCRIPT;
                     if ($tmp = getItemForItemtype($key)) {
                         if ($check_rights && !$tmp::canView()) {
                             unset($optgroup[$label][$key]);
-                        } else if ($val === null) {
+                        } elseif ($val === null) {
                             $val = $key::getTypeName(Session::getPluralNumber());
                         }
                     } else {
@@ -1595,16 +1600,16 @@ JAVASCRIPT;
 
         $begin = 0;
         $end   = 24;
-       // Check if the $step is Ok for the $value field
+        // Check if the $step is Ok for the $value field
         $split = explode(":", $p['value']);
 
-       // Valid value XX:YY ou XX:YY:ZZ
+        // Valid value XX:YY ou XX:YY:ZZ
         if ((count($split) == 2) || (count($split) == 3)) {
             $min = $split[1];
 
-           // Problem
+            // Problem
             if (($min % $p['step']) != 0) {
-               // set minimum step
+                // set minimum step
                 $p['step'] = 5;
             }
         }
@@ -1638,7 +1643,7 @@ JAVASCRIPT;
                 }
             }
         }
-       // Last item
+        // Last item
         $val = $end . ":00";
         $values[$val] = $val;
         if (($p['value'] == $val . ":00") || ($p['value'] == $val)) {
@@ -1674,10 +1679,10 @@ JAVASCRIPT;
         $params['rand']                = mt_rand();
         $params['on_change']           = '';
         $params['plural']              = false;
-       //Parameters about choice 0
-       //Empty choice's label
+        //Parameters about choice 0
+        //Empty choice's label
         $params['emptylabel']          = self::EMPTY_VALUE;
-       //Display emptychoice ?
+        //Display emptychoice ?
         $params['display_emptychoice'] = true;
         $params['checkright']          = false;
         $params['toupdate']            = '';
@@ -1848,7 +1853,7 @@ JAVASCRIPT;
             'specific_tags_items_id_dropdown' => $params['specific_tags_items_id_dropdown'],
         ];
 
-       // manage condition
+        // manage condition
         if ($params['onlyglobal']) {
             $p_ajax['condition'] = static::addNewCondition(['is_global' => 1]);
         }
@@ -1883,8 +1888,8 @@ JAVASCRIPT;
 
         $out .= "<br><span id='$show_id'></span>\n";
 
-       // We check $options as the caller will set $options['default_itemtype'] only if it needs a
-       // default itemtype and the default value can be '' thus empty won't be valid !
+        // We check $options as the caller will set $options['default_itemtype'] only if it needs a
+        // default itemtype and the default value can be '' thus empty won't be valid !
         if (array_key_exists('default_itemtype', $options)) {
             $out .= "<script type='text/javascript' >\n";
             $out .= "$(function() {";
@@ -1974,7 +1979,7 @@ JAVASCRIPT;
         }
 
         $field_id = Html::cleanId("dropdown_" . $myname . $p['rand']);
-        $valuekey = Toolbox::isFloat($p['value']) ? (string)$p['value'] : $p['value'];
+        $valuekey = Toolbox::isFloat($p['value']) ? (string) $p['value'] : $p['value'];
         if (!isset($p['toadd'][$valuekey])) {
             $decimals = Toolbox::isFloat($p['value']) ? Toolbox::getDecimalNumbers($p['step']) : 0;
             $valuename = self::getValueWithUnit($p['value'], $p['unit'], $decimals);
@@ -1992,7 +1997,7 @@ JAVASCRIPT;
             'step'                => $p['step'],
             'toadd'               => $p['toadd'],
             'specific_tags'       => $p['specific_tags'],
-            'class'               => $p['class']
+            'class'               => $p['class'],
         ];
 
         $out   = Html::jsAjaxDropdown(
@@ -2032,31 +2037,31 @@ JAVASCRIPT;
 
         switch ($unit) {
             case 'year':
-               //TRANS: %s is a number of years
+                //TRANS: %s is a number of years
                 return sprintf(_n('%s year', '%s years', $value), $formatted_number);
 
             case 'month':
-               //TRANS: %s is a number of months
+                //TRANS: %s is a number of months
                 return sprintf(_n('%s month', '%s months', $value), $formatted_number);
 
             case 'day':
-               //TRANS: %s is a number of days
+                //TRANS: %s is a number of days
                 return sprintf(_n('%s day', '%s days', $value), $formatted_number);
 
             case 'hour':
-               //TRANS: %s is a number of hours
+                //TRANS: %s is a number of hours
                 return sprintf(_n('%s hour', '%s hours', $value), $formatted_number);
 
             case 'minute':
-               //TRANS: %s is a number of minutes
+                //TRANS: %s is a number of minutes
                 return sprintf(_n('%s minute', '%s minutes', $value), $formatted_number);
 
             case 'second':
-               //TRANS: %s is a number of seconds
+                //TRANS: %s is a number of seconds
                 return sprintf(_n('%s second', '%s seconds', $value), $formatted_number);
 
             case 'millisecond':
-               //TRANS: %s is a number of milliseconds
+                //TRANS: %s is a number of milliseconds
                 return sprintf(_n('%s millisecond', '%s milliseconds', $value), $formatted_number);
 
             case 'rack_unit':
@@ -2121,7 +2126,7 @@ JAVASCRIPT;
             }
         }
 
-       // Manage min :
+        // Manage min :
         $params['min'] = floor($params['min'] / $params['step']) * $params['step'];
 
         if ($params['min'] == 0) {
@@ -2132,7 +2137,7 @@ JAVASCRIPT;
             $params['max'] = max($params['value'], $params['max']);
         }
 
-       // Floor with MINUTE_TIMESTAMP for rounded purpose
+        // Floor with MINUTE_TIMESTAMP for rounded purpose
         if (empty($params['value'])) {
             $params['value'] = 0;
         }
@@ -2141,8 +2146,8 @@ JAVASCRIPT;
             && $params['addfirstminutes']
         ) {
             $params['value'] = floor(($params['value']) / MINUTE_TIMESTAMP) * MINUTE_TIMESTAMP;
-        } else if (!in_array($params['value'], $params['toadd'])) {
-           // Round to a valid step except if value is already valid (defined in values to add)
+        } elseif (!in_array($params['value'], $params['toadd'])) {
+            // Round to a valid step except if value is already valid (defined in values to add)
             $params['value'] = floor(($params['value']) / $params['step']) * $params['step'];
         }
 
@@ -2191,11 +2196,11 @@ JAVASCRIPT;
             if ($day > 0) {
                 if (($hour > 0) || ($minute > 0)) {
                     if ($minute < 10) {
-                         $minute = '0' . $minute;
+                        $minute = '0' . $minute;
                     }
 
-                   //TRANS: %1$d is the number of days, %2$d the number of hours,
-                   //       %3$s the number of minutes : display 1 day 3h15
+                    //TRANS: %1$d is the number of days, %2$d the number of hours,
+                    //       %3$s the number of minutes : display 1 day 3h15
                     $values[$i] = sprintf(
                         _n('%1$d day %2$dh%3$s', '%1$d days %2$dh%3$s', $day),
                         $day,
@@ -2205,12 +2210,12 @@ JAVASCRIPT;
                 } else {
                     $values[$i] = sprintf(_n('%d day', '%d days', $day), $day);
                 }
-            } else if ($hour > 0 || $minute > 0) {
+            } elseif ($hour > 0 || $minute > 0) {
                 if ($minute < 10) {
                     $minute = '0' . $minute;
                 }
 
-               //TRANS: %1$d the number of hours, %2$s the number of minutes : display 3h15
+                //TRANS: %1$d the number of hours, %2$s the number of minutes : display 3h15
                 $values[$i] = sprintf(__('%1$dh%2$s'), $hour, $minute);
             }
         }
@@ -2310,7 +2315,7 @@ JAVASCRIPT;
         if ($param['other'] !== false) {
             $param['on_change'] .= "displayOtherSelectOptions(this, \"$other_select_option\");";
 
-           // If $param['other'] is a string, then we must highlight "other" option
+            // If $param['other'] is a string, then we must highlight "other" option
             if (is_string($param['other'])) {
                 if (!$param["multiple"]) {
                     $param['values'] = [$other_select_option];
@@ -2332,7 +2337,7 @@ JAVASCRIPT;
         }
 
         $output = '';
-       // readonly mode
+        // readonly mode
         $field_id = Html::cleanId("dropdown_" . $name . $param['rand']);
         if ($param['readonly']) {
             $to_display = [];
@@ -2342,7 +2347,7 @@ JAVASCRIPT;
                     $to_display[] = htmlescape($elements[$value]);
                 }
             }
-            $output .= '<span class="form-control" readonly style="width: ' .  htmlescape($param["width"]) . '"';
+            $output .= '<span class="form-control" readonly style="width: ' . htmlescape($param["width"]) . '"';
             if ($param['tooltip']) {
                 $output .= ' title="' . htmlescape($param['tooltip']) . '"';
             }
@@ -2409,7 +2414,7 @@ JAVASCRIPT;
             $output .= '>';
             $max_option_size = 0;
             foreach ($elements as $key => $val) {
-               // optgroup management
+                // optgroup management
                 if (is_array($val)) {
                     $opt_goup = htmlescape($key);
                     if ($max_option_size < strlen($opt_goup)) {
@@ -2433,7 +2438,7 @@ JAVASCRIPT;
                     foreach ($val as $key2 => $val2) {
                         if (!isset($param['used'][$key2])) {
                             $output .= "<option value='" . htmlescape($key2) . "'";
-                           // Do not use in_array : trouble with 0 and empty value
+                            // Do not use in_array : trouble with 0 and empty value
                             foreach ($param['values'] as $value) {
                                 if (strcmp($key2, $value) === 0) {
                                     $output .= " selected";
@@ -2443,7 +2448,7 @@ JAVASCRIPT;
                             if ($optgroup_tooltips && isset($optgroup_tooltips[$key2])) {
                                 $output .= ' title="' . htmlescape($optgroup_tooltips[$key2]) . '"';
                             }
-                            $output .= ">" .  htmlescape($val2) . "</option>";
+                            $output .= ">" . htmlescape($val2) . "</option>";
                             if ($max_option_size < strlen($val2)) {
                                 $max_option_size = strlen($val2);
                             }
@@ -2453,7 +2458,7 @@ JAVASCRIPT;
                 } else {
                     if (!isset($param['used'][$key])) {
                         $output .= "<option value='" . htmlescape($key) . "'";
-                       // Do not use in_array : trouble with 0 and empty value
+                        // Do not use in_array : trouble with 0 and empty value
                         foreach ($param['values'] as $value) {
                             if (strcmp($key, $value) === 0) {
                                 $output .= " selected";
@@ -2492,7 +2497,7 @@ JAVASCRIPT;
         }
 
         if (!$param['noselect2']) {
-           // Width set on select
+            // Width set on select
             $adapt_params = [
                 'width'             => $param["width"],
                 'dropdownCssClass'  => $param["dropdownCssClass"],
@@ -2504,7 +2509,7 @@ JAVASCRIPT;
         }
 
         if ($param["multiple"]) {
-           // Hack for All / None because select2 does not provide it
+            // Hack for All / None because select2 does not provide it
             $select   = __('All');
             $deselect = __('None');
             $output  .= "<div class='invisible' id='selectallbuttons_" . htmlescape($field_id) . "'>";
@@ -2555,17 +2560,17 @@ JAVASCRIPT;
 
         $tab[MINUTE_TIMESTAMP] = sprintf(_n('%d minute', '%d minutes', 1), 1);
 
-       // Minutes
+        // Minutes
         for ($i = 5; $i < 60; $i += 5) {
             $tab[$i * MINUTE_TIMESTAMP] = sprintf(_n('%d minute', '%d minutes', $i), $i);
         }
 
-       // Heures
+        // Heures
         for ($i = 1; $i < 24; $i++) {
             $tab[$i * HOUR_TIMESTAMP] = sprintf(_n('%d hour', '%d hours', $i), $i);
         }
 
-       // Jours
+        // Jours
         $tab[DAY_TIMESTAMP] = __('Each day');
         for ($i = 2; $i < 7; $i++) {
             $tab[$i * DAY_TIMESTAMP] = sprintf(_n('%d day', '%d days', $i), $i);
@@ -2575,7 +2580,7 @@ JAVASCRIPT;
         $tab[MONTH_TIMESTAMP] = __('Each month');
 
         Dropdown::showFromArray($name, $tab, $options + [
-            'value' => $value
+            'value' => $value,
         ]);
     }
 
@@ -2624,7 +2629,7 @@ JAVASCRIPT;
                     '',
                     '',
                     [__('Do you really want to use unitary management for this item?'),
-                        __('Duplicate the element as many times as there are connections')
+                        __('Duplicate the element as many times as there are connections'),
                     ]
                 );
                 echo "&nbsp;";
@@ -2637,7 +2642,7 @@ JAVASCRIPT;
             if ($params['management_restrict'] == 2) {
                 $rand = mt_rand();
                 $values = [MANAGEMENT_UNITARY => __('Unit management'),
-                    MANAGEMENT_GLOBAL  => __('Global management')
+                    MANAGEMENT_GLOBAL  => __('Global management'),
                 ];
                 Dropdown::showFromArray($params['name'], $values, [
                     'value' => $params['value'],
@@ -2645,13 +2650,13 @@ JAVASCRIPT;
                     'width' => $params['width'],
                 ]);
             } else {
-               // Templates edition
+                // Templates edition
                 if (!empty($params['withtemplate'])) {
                     echo "<input type='hidden' name='is_global' value='" .
                         htmlescape($params['management_restrict']) . "'>";
-                    echo (!$params['management_restrict'] ? __s('Unit management') : __s('Global management'));
+                    echo(!$params['management_restrict'] ? __s('Unit management') : __s('Global management'));
                 } else {
-                    echo (!$params['value'] ? __s('Unit management') : __s('Global management'));
+                    echo(!$params['value'] ? __s('Unit management') : __s('Global management'));
                 }
             }
         }
@@ -2764,7 +2769,7 @@ JAVASCRIPT;
         $values['-' . Search::XLSX_OUTPUT]          = __('All pages as Office Open XML (.xlsx)');
 
         if ($itemtype != "Stat") {
-           // Do not show this option for stat page
+            // Do not show this option for stat page
             $values['-' . Search::NAMES_OUTPUT] = __('Copy names to clipboard');
         }
 
@@ -2815,7 +2820,7 @@ JAVASCRIPT;
             $values[$i] = $i;
         }
         $values[9999999] = 9999999;
-       // Propose max input vars -10
+        // Propose max input vars -10
         $max             = Toolbox::get_max_input_vars();
         if ($max > 10) {
             $values[$max - 10] = $max - 10;
@@ -2826,7 +2831,7 @@ JAVASCRIPT;
             $values,
             ['on_change' => $onchange,
                 'value'     => $list_limit,
-                'display'   => $display
+                'display'   => $display,
             ]
         );
     }
@@ -2847,7 +2852,7 @@ JAVASCRIPT;
          */
         global $CFG_GLPI, $DB;
 
-       // check if asked itemtype is the one originally requested by the form
+        // check if asked itemtype is the one originally requested by the form
         if (!Session::validateIDOR($post)) {
             return;
         }
@@ -2864,13 +2869,13 @@ JAVASCRIPT;
             $entities = [];
             if (is_array($decoded)) {
                 foreach ($decoded as $value) {
-                    $entities[] = (int)$value;
+                    $entities[] = (int) $value;
                 }
             }
             $post["entity_restrict"] = Session::getMatchingActiveEntities($entities);
         }
 
-       // Security
+        // Security
         if (!($item = getItemForItemtype($post['itemtype']))) {
             return;
         }
@@ -2894,7 +2899,7 @@ JAVASCRIPT;
         }
 
         if (isset($post['condition']) && !empty($post['condition']) && !is_array($post['condition'])) {
-           // Retreive conditions from SESSION using its key
+            // Retreive conditions from SESSION using its key
             $key = $post['condition'];
             if (isset($_SESSION['glpicondition']) && isset($_SESSION['glpicondition'][$key])) {
                 $post['condition'] = $_SESSION['glpicondition'][$key];
@@ -2971,7 +2976,7 @@ JAVASCRIPT;
             $one_item = $post['_one_id'];
         }
 
-       // Count real items returned
+        // Count real items returned
         $count = 0;
         if ($item instanceof CommonTreeDropdown) {
             if (isset($post['parent_id']) && $post['parent_id'] != '') {
@@ -2989,8 +2994,8 @@ JAVASCRIPT;
 
                     $swhere = [
                         "OR" => [
-                            "$table.completename" => ['LIKE', $search]
-                        ]
+                            "$table.completename" => ['LIKE', $search],
+                        ],
                     ];
                     if ($item->isField('code')) {
                         $swhere["OR"]["$table.code"] = ['LIKE', $search];
@@ -3003,13 +3008,12 @@ JAVASCRIPT;
                     }
 
                     if (
-                        $_SESSION['glpiis_ids_visible']
-                        && is_numeric($post['searchText']) && (int)$post['searchText'] == $post['searchText']
+                        $_SESSION['glpiis_ids_visible'] && preg_match('/^\d+$/', $post['searchText']) === 1
                     ) {
                         $swhere[$table . '.' . $item->getIndexName()] = ['LIKE', "%{$post['searchText']}%"];
                     }
 
-                   // search also in displaywith columns
+                    // search also in displaywith columns
                     if ($displaywith && count($post['displaywith'])) {
                         foreach ($post['displaywith'] as $with) {
                             $swhere["$table.$with"] = ['LIKE', $search];
@@ -3022,14 +3026,14 @@ JAVASCRIPT;
 
             $multi = false;
 
-           // Manage multiple Entities dropdowns
+            // Manage multiple Entities dropdowns
             $order = ["$table.completename"];
 
-           // No multi if get one item
+            // No multi if get one item
             if ($item->isEntityAssign()) {
                 $recur = $item->maybeRecursive();
 
-               // Entities are not really recursive : do not display parents
+                // Entities are not really recursive : do not display parents
                 if ($post['itemtype'] == 'Entity') {
                     $recur = false;
                 }
@@ -3043,27 +3047,27 @@ JAVASCRIPT;
                     );
 
                     if (is_array($post["entity_restrict"]) && (count($post["entity_restrict"]) > 1)) {
-                          $multi = true;
+                        $multi = true;
                     }
                 } else {
-                   // If private item do not use entity
+                    // If private item do not use entity
                     if (!$item->maybePrivate()) {
                         $where = $where + getEntitiesRestrictCriteria($table, '', '', $recur);
 
                         if (count($_SESSION['glpiactiveentities']) > 1) {
-                             $multi = true;
+                            $multi = true;
                         }
                     } else {
                         $multi = false;
                     }
                 }
 
-               // Force recursive items to multi entity view
+                // Force recursive items to multi entity view
                 if ($recur) {
                     $multi = true;
                 }
 
-               // no multi view for entitites
+                // no multi view for entitites
                 if ($post['itemtype'] == "Entity") {
                     $multi = false;
                 }
@@ -3072,8 +3076,8 @@ JAVASCRIPT;
                     $ljoin['glpi_entities'] = [
                         'ON' => [
                             'glpi_entities' => 'id',
-                            $table          => 'entities_id'
-                        ]
+                            $table          => 'entities_id',
+                        ],
                     ];
                     array_unshift($order, "glpi_entities.completename");
                 }
@@ -3089,10 +3093,10 @@ JAVASCRIPT;
                             'AND' => [
                                 'namet.itemtype'  => $post['itemtype'],
                                 'namet.language'  => $_SESSION['glpilanguage'],
-                                'namet.field'     => 'completename'
-                            ]
-                        ]
-                    ]
+                                'namet.field'     => 'completename',
+                            ],
+                        ],
+                    ],
                 ];
             }
             if (Session::haveTranslations($post['itemtype'], 'name')) {
@@ -3104,10 +3108,10 @@ JAVASCRIPT;
                             'AND' => [
                                 'namet2.itemtype' => $post['itemtype'],
                                 'namet2.language' => $_SESSION['glpilanguage'],
-                                'namet2.field'    => 'name'
-                            ]
-                        ]
-                    ]
+                                'namet2.field'    => 'name',
+                            ],
+                        ],
+                    ],
                 ];
             }
             if (Session::haveTranslations($post['itemtype'], 'comment')) {
@@ -3119,17 +3123,17 @@ JAVASCRIPT;
                             'AND' => [
                                 'commentt.itemtype'  => $post['itemtype'],
                                 'commentt.language'  => $_SESSION['glpilanguage'],
-                                'commentt.field'     => 'comment'
-                            ]
-                        ]
-                    ]
+                                'commentt.field'     => 'comment',
+                            ],
+                        ],
+                    ],
                 ];
             }
 
             if ($start > 0 && $multi) {
-               //we want to load last entry of previous page
-               //(and therefore one more result) to check if
-               //entity name must be displayed again
+                //we want to load last entry of previous page
+                //(and therefore one more result) to check if
+                //entity name must be displayed again
                 --$start;
                 ++$limit;
             }
@@ -3141,19 +3145,19 @@ JAVASCRIPT;
                 'WHERE'    => $where,
                 'ORDER'    => $order,
                 'START'    => $start,
-                'LIMIT'    => $limit
+                'LIMIT'    => $limit,
             ];
             if (count($ljoin)) {
                 $criteria['LEFT JOIN'] = $ljoin;
             }
             $iterator = $DB->request($criteria);
 
-           // Empty search text : display first
+            // Empty search text : display first
             if ($post['page'] == 1 && empty($post['searchText'])) {
                 if ($post['display_emptychoice']) {
                     $datas[] = [
                         'id' => 0,
-                        'text' => $post['emptylabel']
+                        'text' => $post['emptylabel'],
                     ];
                 }
             }
@@ -3163,7 +3167,7 @@ JAVASCRIPT;
                     foreach ($toadd as $key => $val) {
                         $datas[] = [
                             'id' => $key,
-                            'text' => $val
+                            'text' => $val,
                         ];
                     }
                 }
@@ -3171,7 +3175,7 @@ JAVASCRIPT;
             $last_level_displayed = [];
             $datastoadd           = [];
 
-           // Ignore first item for all pages except first page
+            // Ignore first item for all pages except first page
             $firstitem = (($post['page'] > 1));
             $firstitem_entity = -1;
             $prev             = -1;
@@ -3190,7 +3194,7 @@ JAVASCRIPT;
                         $multi
                         && ($data["entities_id"] != $prev)
                     ) {
-                       // Do not do it for first item for next page load
+                        // Do not do it for first item for next page load
                         if (!$firstitem) {
                             if ($prev >= 0) {
                                 if (count($datastoadd)) {
@@ -3206,7 +3210,7 @@ JAVASCRIPT;
                         if ($firstitem) {
                             $firstitem_entity = $prev;
                         }
-                       // Reset last level displayed :
+                        // Reset last level displayed :
                         $datastoadd = [];
                     }
 
@@ -3221,7 +3225,7 @@ JAVASCRIPT;
                     } else { // Need to check if parent is the good one
                         // Do not do if only get one item
                         if (($level > 1)) {
-                           // Last parent is not the good one need to display arbo
+                            // Last parent is not the good one need to display arbo
                             if (
                                 !isset($last_level_displayed[$level - 1])
                                 || ($last_level_displayed[$level - 1] != $data[$item->getForeignKeyField()])
@@ -3230,7 +3234,7 @@ JAVASCRIPT;
                                 $work_parentID = $data[$item->getForeignKeyField()];
                                 $parent_datas  = [];
                                 do {
-                               // Get parent
+                                    // Get parent
                                     if ($item->getFromDB($work_parentID)) {
                                         // Do not do for first item for next page load
                                         if (!$firstitem) {
@@ -3239,15 +3243,15 @@ JAVASCRIPT;
                                             $selection_text = $title;
 
                                             if (isset($item->fields["comment"])) {
-                                                 $addcomment
-                                                 = DropdownTranslation::getTranslatedValue(
-                                                     $ID,
-                                                     $post['itemtype'],
-                                                     'comment',
-                                                     $_SESSION['glpilanguage'],
-                                                     $item->fields['comment']
-                                                 );
-                                                 $title = sprintf(__('%1$s - %2$s'), $title, $addcomment);
+                                                $addcomment
+                                                = DropdownTranslation::getTranslatedValue(
+                                                    $ID,
+                                                    $post['itemtype'],
+                                                    'comment',
+                                                    $_SESSION['glpilanguage'],
+                                                    $item->fields['comment']
+                                                );
+                                                $title = sprintf(__('%1$s - %2$s'), $title, $addcomment);
                                             }
                                             $output2 = DropdownTranslation::getTranslatedValue(
                                                 $item->fields['id'],
@@ -3259,8 +3263,8 @@ JAVASCRIPT;
 
                                             $temp = ['id'       => $work_parentID,
                                                 'text'     => $output2,
-                                                'level'    => (int)$work_level,
-                                                'disabled' => true
+                                                'level'    => (int) $work_level,
+                                                'disabled' => true,
                                             ];
                                             if ($post['permit_select_parent']) {
                                                 $temp['title'] = $title;
@@ -3280,7 +3284,7 @@ JAVASCRIPT;
                                       && (!isset($last_level_displayed[$work_level])
                                       || ($last_level_displayed[$work_level] != $work_parentID))
                                 );
-                              // Add parents
+                                // Add parents
                                 foreach ($parent_datas as $val) {
                                     $datastoadd[] = $val;
                                 }
@@ -3289,7 +3293,7 @@ JAVASCRIPT;
                         $last_level_displayed[$level] = $data['id'];
                     }
 
-                   // Do not do for first item for next page load
+                    // Do not do for first item for next page load
                     if (!$firstitem) {
                         if (
                             $_SESSION["glpiis_ids_visible"]
@@ -3326,9 +3330,9 @@ JAVASCRIPT;
                         $datastoadd[] = [
                             'id' => $ID,
                             'text' => $outputval,
-                            'level' => (int)$level,
+                            'level' => (int) $level,
                             'title' => $title,
-                            'selection_text' => $selection_text
+                            'selection_text' => $selection_text,
                         ];
                         $count++;
                     }
@@ -3338,7 +3342,7 @@ JAVASCRIPT;
 
             if ($multi) {
                 if (count($datastoadd)) {
-                   // On paging mode do not add entity information each time
+                    // On paging mode do not add entity information each time
                     if ($prev == $firstitem_entity) {
                         $datas = array_merge($datas, $datastoadd);
                     } else {
@@ -3356,7 +3360,7 @@ JAVASCRIPT;
             }
         } else { // Not a dropdowntree
             $multi = false;
-           // No multi if get one item
+            // No multi if get one item
             if ($item->isEntityAssign()) {
                 $multi = $item->maybeRecursive();
 
@@ -3372,7 +3376,7 @@ JAVASCRIPT;
                         $multi = true;
                     }
                 } else {
-                   // Do not use entity if may be private
+                    // Do not use entity if may be private
                     if (!$item->maybePrivate()) {
                         $where = $where + getEntitiesRestrictCriteria($table, '', '', $multi);
 
@@ -3388,7 +3392,7 @@ JAVASCRIPT;
             $field = "name";
             if ($item instanceof CommonDevice) {
                 $field = "designation";
-            } else if ($item instanceof Item_Devices) {
+            } elseif ($item instanceof Item_Devices) {
                 $field = "itemtype";
             }
 
@@ -3397,7 +3401,7 @@ JAVASCRIPT;
                 $orwhere = ["$table.$field" => ['LIKE', $search]];
 
                 if (
-                    $_SESSION['glpiis_ids_visible'] && (int) $post['searchText'] === $post['searchText']
+                    $_SESSION['glpiis_ids_visible'] && preg_match('/^\d+$/', $post['searchText']) === 1
                 ) {
                     $orwhere[$table . '.' . $item::getIndexName()] = ['LIKE', "{$post['searchText']}%"];
                 }
@@ -3413,7 +3417,7 @@ JAVASCRIPT;
                     $orwhere['glpi_softwares.name'] = ['LIKE', $search];
                 }
 
-               // search also in displaywith columns
+                // search also in displaywith columns
                 if ($displaywith && count($post['displaywith'])) {
                     foreach ($post['displaywith'] as $with) {
                         $orwhere["$table.$with"] = ['LIKE', $search];
@@ -3433,10 +3437,10 @@ JAVASCRIPT;
                             'AND' => [
                                 'namet.itemtype'  => $post['itemtype'],
                                 'namet.language'  => $_SESSION['glpilanguage'],
-                                'namet.field'     => $field
-                            ]
-                        ]
-                    ]
+                                'namet.field'     => $field,
+                            ],
+                        ],
+                    ],
                 ];
             }
             if (Session::haveTranslations($post['itemtype'], 'comment')) {
@@ -3448,10 +3452,10 @@ JAVASCRIPT;
                             'AND' => [
                                 'commentt.itemtype'  => $post['itemtype'],
                                 'commentt.language'  => $_SESSION['glpilanguage'],
-                                'commentt.field'     => 'comment'
-                            ]
-                        ]
-                    ]
+                                'commentt.field'     => 'comment',
+                            ],
+                        ],
+                    ],
                 ];
             }
 
@@ -3465,14 +3469,14 @@ JAVASCRIPT;
                                 params: [
                                     QueryFunction::ifnull('name', new QueryExpression($DB::quoteValue(''))),
                                     new QueryExpression($DB::quoteValue(' ')),
-                                    QueryFunction::ifnull('firstname', new QueryExpression($DB::quoteValue('')))
+                                    QueryFunction::ifnull('firstname', new QueryExpression($DB::quoteValue(''))),
                                 ],
-                                alias:$field
+                                alias: $field
                             ),
                             "$table.comment",
-                            "$table.id"
+                            "$table.id",
                         ],
-                        'FROM'   => $table
+                        'FROM'   => $table,
                     ];
                     break;
 
@@ -3490,10 +3494,10 @@ JAVASCRIPT;
                             'glpi_softwares'  => [
                                 'ON' => [
                                     'glpi_softwarelicenses' => 'softwares_id',
-                                    'glpi_softwares'        => 'id'
-                                ]
-                            ]
-                        ]
+                                    'glpi_softwares'        => 'id',
+                                ],
+                            ],
+                        ],
                     ];
                     break;
 
@@ -3506,10 +3510,10 @@ JAVASCRIPT;
                             'glpi_profilerights' => [
                                 'ON' => [
                                     'glpi_profilerights' => 'profiles_id',
-                                    $table               => 'id'
-                                ]
-                            ]
-                        ]
+                                    $table               => 'id',
+                                ],
+                            ],
+                        ],
                     ];
                     break;
 
@@ -3517,7 +3521,7 @@ JAVASCRIPT;
                     $criteria = [
                         'SELECT' => array_merge(["$table.*"], $addselect),
                         'DISTINCT'        => true,
-                        'FROM'            => $table
+                        'FROM'            => $table,
                     ];
                     if (count($ljoin)) {
                         $criteria['LEFT JOIN'] = $ljoin;
@@ -3526,13 +3530,13 @@ JAVASCRIPT;
                     $visibility = KnowbaseItem::getVisibilityCriteria();
                     if (count($visibility['LEFT JOIN'])) {
                         $criteria['LEFT JOIN'] = array_merge(
-                            (isset($criteria['LEFT JOIN']) ? $criteria['LEFT JOIN'] : []),
+                            ($criteria['LEFT JOIN'] ?? []),
                             $visibility['LEFT JOIN']
                         );
-                       //Do not use where??
-                       /*if (isset($visibility['WHERE'])) {
-                         $where = $visibility['WHERE'];
-                       }*/
+                        //Do not use where??
+                        /*if (isset($visibility['WHERE'])) {
+                          $where = $visibility['WHERE'];
+                        }*/
                     }
                     break;
 
@@ -3559,15 +3563,15 @@ JAVASCRIPT;
                     if (count($visibility['LEFT JOIN'])) {
                         $ljoin = array_merge($ljoin, $visibility['LEFT JOIN']);
                         if (isset($visibility['WHERE'])) {
-                             $where[] = $visibility['WHERE'];
+                            $where[] = $visibility['WHERE'];
                         }
                     }
-                   //no break to reach default case.
+                    //no break to reach default case.
 
                 default:
                     $criteria = [
                         'SELECT' => array_merge(["$table.*"], $addselect),
-                        'FROM'   => $table
+                        'FROM'   => $table,
                     ];
                     if (count($ljoin)) {
                         $criteria['LEFT JOIN'] = $ljoin;
@@ -3580,7 +3584,7 @@ JAVASCRIPT;
                     'DISTINCT' => true,
                     'WHERE'    => $where,
                     'START'    => $start,
-                    'LIMIT'    => $limit
+                    'LIMIT'    => $limit,
                 ]
             );
 
@@ -3596,12 +3600,12 @@ JAVASCRIPT;
 
             $iterator = $DB->request($criteria);
 
-           // Display first if no search
+            // Display first if no search
             if ($post['page'] == 1 && empty($post['searchText'])) {
                 if (!isset($post['display_emptychoice']) || $post['display_emptychoice']) {
                     $datas[] = [
                         'id' => 0,
-                        'text' => $post["emptylabel"]
+                        'text' => $post["emptylabel"],
                     ];
                 }
             }
@@ -3610,7 +3614,7 @@ JAVASCRIPT;
                     foreach ($toadd as $key => $val) {
                         $datas[] = [
                             'id' => $key,
-                            'text' => $val
+                            'text' => $val,
                         ];
                     }
                 }
@@ -3641,14 +3645,14 @@ JAVASCRIPT;
 
                     if (isset($data['transname']) && !empty($data['transname'])) {
                         $outputval = $data['transname'];
-                    } else if ($field == 'itemtype' && class_exists($data['itemtype'])) {
+                    } elseif ($field == 'itemtype' && class_exists($data['itemtype'])) {
                         $tmpitem = new $data[$field]();
                         if ($tmpitem->getFromDB($data['items_id'])) {
                             $outputval = sprintf(__('%1$s - %2$s'), $tmpitem->getTypeName(), $tmpitem->getName());
                         } else {
                             $outputval = $tmpitem->getTypeName();
                         }
-                    } else if ($item instanceof CommonDCModelDropdown) {
+                    } elseif ($item instanceof CommonDCModelDropdown) {
                         $outputval = sprintf(__('%1$s - %2$s'), $data[$field], $data['product_number']);
                     } else {
                         $outputval = $data[$field] ?? "";
@@ -3670,7 +3674,7 @@ JAVASCRIPT;
                         $_SESSION["glpiis_ids_visible"]
                         || (strlen($outputval) == 0)
                     ) {
-                       //TRANS: %1$s is the name, %2$s the ID
+                        //TRANS: %1$s is the name, %2$s the ID
                         $outputval = sprintf(__('%1$s (%2$s)'), $outputval, $ID);
                     }
                     if ($displaywith) {
@@ -3692,7 +3696,7 @@ JAVASCRIPT;
                     $datastoadd[] = [
                         'id' => $ID,
                         'text' => $outputval,
-                        'title' => $title
+                        'title' => $title,
                     ];
                     $count++;
                 }
@@ -3756,7 +3760,7 @@ JAVASCRIPT;
          */
         global $CFG_GLPI, $DB;
 
-       // check if asked itemtype is the one originaly requested by the form
+        // check if asked itemtype is the one originaly requested by the form
         if (!Session::validateIDOR($post)) {
             return;
         }
@@ -3781,7 +3785,7 @@ JAVASCRIPT;
             }
         }
 
-       // Make a select box
+        // Make a select box
         $table = getTableForItemType($post["itemtype"]);
         if (!$item = getItemForItemtype($post['itemtype'])) {
             return;
@@ -3801,7 +3805,7 @@ JAVASCRIPT;
             $where['OR'] = [
                 "$table.name"        => ['LIKE', $search],
                 "$table.otherserial" => ['LIKE', $search],
-                "$table.serial"      => ['LIKE', $search]
+                "$table.serial"      => ['LIKE', $search],
             ];
         }
 
@@ -3839,10 +3843,10 @@ JAVASCRIPT;
             $where[] = [
                 'OR' => [
                     [
-                        $relation_table . '.id' => null
+                        $relation_table . '.id' => null,
                     ],
-                    "$table.is_global" => 1
-                ]
+                    "$table.is_global" => 1,
+                ],
             ];
         }
         if (!empty($used)) {
@@ -3855,7 +3859,7 @@ JAVASCRIPT;
                 "$table.name AS name",
                 "$table.serial AS serial",
                 "$table.otherserial AS otherserial",
-                "$table.entities_id AS entities_id"
+                "$table.entities_id AS entities_id",
             ],
             'DISTINCT'        => true,
             'FROM'            => $table,
@@ -3863,28 +3867,28 @@ JAVASCRIPT;
                 $relation_table  => [
                     'ON' => [
                         $table          => 'id',
-                        $relation_table => 'items_id_peripheral' , [
+                        $relation_table => 'items_id_peripheral', [
                             'AND' => [
-                                $relation_table . '.itemtype_peripheral' => $post['itemtype']
-                            ]
-                        ]
-                    ]
-                ]
+                                $relation_table . '.itemtype_peripheral' => $post['itemtype'],
+                            ],
+                        ],
+                    ],
+                ],
             ],
             'WHERE'           => $where,
             'ORDERBY'         => ['entities_id', 'name ASC'],
             'LIMIT'           => $limit,
-            'START'           => $start
+            'START'           => $start,
         ];
 
         $iterator = $DB->request($criteria);
 
         $results = [];
-       // Display first if no search
+        // Display first if no search
         if (empty($post['searchText'])) {
             $results[] = [
                 'id' => 0,
-                'text' => Dropdown::EMPTY_VALUE
+                'text' => Dropdown::EMPTY_VALUE,
             ];
         }
         if (count($iterator)) {
@@ -3896,7 +3900,7 @@ JAVASCRIPT;
                     if (count($datatoadd)) {
                         $results[] = [
                             'text' => Dropdown::getDropdownName("glpi_entities", $prev),
-                            'children' => $datatoadd
+                            'children' => $datatoadd,
                         ];
                     }
                     $prev = $data["entities_id"];
@@ -3920,7 +3924,7 @@ JAVASCRIPT;
                 }
                 $datatoadd[] = [
                     'id' => $ID,
-                    'text' => $output
+                    'text' => $output,
                 ];
             }
 
@@ -3928,7 +3932,7 @@ JAVASCRIPT;
                 if (count($datatoadd)) {
                     $results[] = [
                         'text' => Dropdown::getDropdownName("glpi_entities", $prev),
-                        'children' => $datatoadd
+                        'children' => $datatoadd,
                     ];
                 }
             } else {
@@ -3958,14 +3962,14 @@ JAVASCRIPT;
          */
         global $CFG_GLPI, $DB;
 
-       // Security
+        // Security
         if (!$DB->tableExists($post['table'])) {
             return;
         }
 
         $itemtypeisplugin = isPluginItemType($post['itemtype']);
 
-       // check if asked itemtype is the one originaly requested by the form
+        // check if asked itemtype is the one originaly requested by the form
         if (!Session::validateIDOR($post)) {
             return;
         }
@@ -4002,7 +4006,7 @@ JAVASCRIPT;
         if (isset($_POST['searchText']) && (strlen($post['searchText']) > 0)) {
             $search = ['LIKE', Search::makeTextSearchValue($post['searchText'])];
             $orwhere = $item->isField('name') ? [
-                'name'   => $search
+                'name'   => $search,
             ] : [];
             if (is_int($post['searchText']) || (is_string($post['searchText'] && ctype_digit($post['searchText'])))) {
                 $orwhere[] = ['id' => $post['searchText']];
@@ -4020,7 +4024,7 @@ JAVASCRIPT;
             $where[] = ['OR' => $orwhere];
         }
 
-       // If software or plugins : filter to display only the objects that are allowed to be visible in Helpdesk
+        // If software or plugins : filter to display only the objects that are allowed to be visible in Helpdesk
         $filterHelpdesk = in_array($post['itemtype'], $CFG_GLPI["helpdesk_visible_types"]);
 
         if (
@@ -4042,7 +4046,7 @@ JAVASCRIPT;
                 $entity = '';
             }
 
-           // allow opening ticket on recursive object (printer, software, ...)
+            // allow opening ticket on recursive object (printer, software, ...)
             $recursive = $item->maybeRecursive();
             $where     = $where + getEntitiesRestrictCriteria($post['table'], '', $entity, $recursive);
         }
@@ -4060,16 +4064,16 @@ JAVASCRIPT;
             'WHERE'  => $where,
             'ORDER'  => $item->getNameField(),
             'LIMIT'  => $limit,
-            'START'  => $start
+            'START'  => $start,
         ]);
 
         $results = [];
 
-       // Display first if no search
+        // Display first if no search
         if ($post['page'] == 1 && empty($post['searchText'])) {
             $results[] = [
                 'id' => 0,
-                'text' => Dropdown::EMPTY_VALUE
+                'text' => Dropdown::EMPTY_VALUE,
             ];
         }
         $count = 0;
@@ -4096,7 +4100,7 @@ JAVASCRIPT;
 
                 $results[] = [
                     'id' => $data['id'],
-                    'text' => $output
+                    'text' => $output,
                 ];
                 $count++;
             }
@@ -4143,14 +4147,14 @@ JAVASCRIPT;
         }
 
         $data = [];
-       // Count real items returned
+        // Count real items returned
         $count = 0;
 
         if ($post['page'] == 1) {
             if (count($toadd)) {
                 foreach ($toadd as $key => $val) {
                     $data[] = ['id' => $key,
-                        'text' => (string)$val
+                        'text' => (string) $val,
                     ];
                 }
             }
@@ -4167,7 +4171,7 @@ JAVASCRIPT;
         }
 
         if (!isset($post['max'])) {
-           //limit max entries to avoid loop issues
+            //limit max entries to avoid loop issues
             $post['max'] = $CFG_GLPI['dropdown_max'] * $post['step'];
         }
 
@@ -4189,7 +4193,7 @@ JAVASCRIPT;
                     $txt = Dropdown::getValueWithUnit($i, $post['unit'], $decimals);
                 }
                 $data[] = ['id' => $i,
-                    'text' => (string)$txt
+                    'text' => (string) $txt,
                 ];
                 $count++;
             }
@@ -4198,7 +4202,7 @@ JAVASCRIPT;
                 $value = -1;
                 if (isset($post['min']) && $value < $post['min']) {
                     $value = $post['min'];
-                } else if (isset($post['max']) && $value > $post['max']) {
+                } elseif (isset($post['max']) && $value > $post['max']) {
                     $value = $post['max'];
                 }
 
@@ -4209,7 +4213,7 @@ JAVASCRIPT;
                 }
                 $data[] = [
                     'id' => $value,
-                    'text' => (string)$txt
+                    'text' => (string) $txt,
                 ];
                 $count++;
             }
@@ -4234,7 +4238,7 @@ JAVASCRIPT;
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-       // check if asked itemtype is the one originaly requested by the form
+        // check if asked itemtype is the one originaly requested by the form
         if (!Session::validateIDOR($post + ['itemtype' => 'User', 'right' => ($post['right'] ?? "")])) {
             return;
         }
@@ -4243,7 +4247,7 @@ JAVASCRIPT;
             $post['right'] = "all";
         }
 
-       // Default view : Nobody
+        // Default view : Nobody
         if (!isset($post['all'])) {
             $post['all'] = 0;
         }
@@ -4279,9 +4283,9 @@ JAVASCRIPT;
             }
 
             $start  = intval(($post['page'] - 1) * $post['page_limit']);
-            $searchText = (isset($post['searchText']) ? $post['searchText'] : null);
-            $inactive_deleted = isset($post['inactive_deleted']) ? $post['inactive_deleted'] : 0;
-            $with_no_right = isset($post['with_no_right']) ? $post['with_no_right'] : 0;
+            $searchText = ($post['searchText'] ?? null);
+            $inactive_deleted = $post['inactive_deleted'] ?? 0;
+            $with_no_right = $post['with_no_right'] ?? 0;
             $result = User::getSqlSearchResult(
                 false,
                 $post['right'],
@@ -4290,7 +4294,7 @@ JAVASCRIPT;
                 $used,
                 $searchText,
                 $start,
-                (int)$post['page_limit'],
+                (int) $post['page_limit'],
                 $inactive_deleted,
                 $with_no_right
             );
@@ -4298,7 +4302,7 @@ JAVASCRIPT;
 
         $users = [];
 
-       // Count real items returned
+        // Count real items returned
         $count = 0;
         $logins = [];
         if (count($result)) {
@@ -4315,17 +4319,17 @@ JAVASCRIPT;
 
         $results = [];
 
-       // Display first if empty search
+        // Display first if empty search
         if ($post['page'] == 1 && empty($post['searchText'])) {
             if ($post['all'] == 0 && $post['display_emptychoice']) {
                 $results[] = [
                     'id' => 0,
-                    'text' => Dropdown::EMPTY_VALUE
+                    'text' => Dropdown::EMPTY_VALUE,
                 ];
-            } else if ($post['all'] == 1) {
+            } elseif ($post['all'] == 1) {
                 $results[] = [
                     'id' => 0,
-                    'text' => __('All')
+                    'text' => __('All'),
                 ];
             }
         }
@@ -4342,7 +4346,7 @@ JAVASCRIPT;
                 $results[] = [
                     'id' => $ID,
                     'text' => $output,
-                    'title' => $title
+                    'title' => $title,
                 ];
                 $count++;
             }
@@ -4385,7 +4389,7 @@ JAVASCRIPT;
             $entity_restrict = Session::getMatchingActiveEntities($entity_restrict);
         }
 
-       // prevent instanciation of bad classes
+        // prevent instanciation of bad classes
         if (!is_subclass_of($post['itiltemplate_class'], 'ITILTemplate')) {
             return false;
         }
@@ -4462,7 +4466,7 @@ JAVASCRIPT;
             }
         }
 
-       // extract entities from groups (present in special `text` key)
+        // extract entities from groups (present in special `text` key)
         $possible_entities = array_column($results, "text");
 
         if (
@@ -4502,7 +4506,7 @@ JAVASCRIPT;
                         $results[$entity_index]['children'] = array_merge($results[$entity_index]['children'], $supplier['children']);
                     }
                 } else {
-                 // otherwise create a new entry
+                    // otherwise create a new entry
                     $results[] = $supplier;
                 }
             }

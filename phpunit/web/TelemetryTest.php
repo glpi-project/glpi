@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -57,7 +56,7 @@ class TelemetryTest extends DbTestCase
         $this->assertEquals(
             [
                 'glpi',
-                'system'
+                'system',
             ],
             array_keys($infos)
         );
@@ -69,7 +68,7 @@ class TelemetryTest extends DbTestCase
                 'plugins',
                 'default_language',
                 'install_mode',
-                'usage'
+                'usage',
             ],
             array_keys($infos['glpi'])
         );
@@ -79,7 +78,7 @@ class TelemetryTest extends DbTestCase
                 'db',
                 'web_server',
                 'php',
-                'os'
+                'os',
             ],
             array_keys($infos['system'])
         );

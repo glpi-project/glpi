@@ -34,19 +34,12 @@
 
 namespace Glpi\Controller\Config\Helpdesk;
 
-use CommonDBTM;
-use Config;
-use Glpi\Controller\AbstractController;
 use Glpi\Exception\Http\AccessDeniedHttpException;
-use Glpi\Exception\Http\BadRequestHttpException;
-use Glpi\Exception\Http\NotFoundHttpException;
-use Glpi\Helpdesk\Tile\TileInterface;
-use Session;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-final class ShowEditTileFormController extends AbstractController
+final class ShowEditTileFormController extends AbstractTileController
 {
     #[Route(
         "/Config/Helpdesk/ShowEditTileForm",
@@ -56,25 +49,11 @@ final class ShowEditTileFormController extends AbstractController
     public function __invoke(Request $request): Response
     {
         // Validate itemtype
-        $tile_itemtype = $request->query->getString('tile_itemtype');
-        if (
-            !is_a($tile_itemtype, TileInterface::class, true)
-            || !is_a($tile_itemtype, CommonDBTM::class, true)
-        ) {
-            throw new BadRequestHttpException();
-        }
-        if (!$tile_itemtype::canView()) {
-            throw new AccessDeniedHttpException();
-        }
-
-        // Validate id
-        $tile_id = $request->query->getInt('tile_id');
-        $tile = $tile_itemtype::getById($tile_id);
-        if (!$tile) {
-            throw new NotFoundHttpException();
-        }
-
-        if (!$tile::canView() || !$tile->canViewItem()) {
+        $tile = $this->getAndValidateTileFromRequest(
+            $request->query->getString('tile_itemtype'),
+            $request->query->getInt('tile_id'),
+        );
+        if (!$tile::canUpdate() || !$tile->canUpdateItem()) {
             throw new AccessDeniedHttpException();
         }
 

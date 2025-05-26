@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -50,7 +49,7 @@ if (!$DB->fieldExists($table, $field_to_add)) {
         $field_to_add,
         'fkey',
         [
-            'after' => 'id'
+            'after' => 'id',
         ]
     );
     $migration->addKey($table, $field_to_add);
@@ -64,7 +63,7 @@ if (!$DB->fieldExists($table, $field_to_add)) {
         'bool',
         [
             'update' => 1,
-            'after' => 'entities_id'
+            'after' => 'entities_id',
         ]
     );
     $migration->addKey($table, $field_to_add);

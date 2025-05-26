@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -66,7 +65,7 @@ class NetworkCardTest extends AbstractInventoryAsset
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
                 'expected'  => '{"description": "lo", "ipaddress": "127.0.0.1", "ipmask": "255.0.0.0", "ipsubnet": "127.0.0.0", "status": "up", "type": "loopback", "virtualdev": true, "mac": "00:00:00:00:00:00"}',
-                'virtual'   => true
+                'virtual'   => true,
             ], [
                 'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
@@ -87,7 +86,7 @@ class NetworkCardTest extends AbstractInventoryAsset
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
                 'expected'  => '{"description": "lo", "ipaddress6": "::1", "ipmask6": "fff0::", "ipsubnet6": "::", "status": "up", "type": "loopback", "virtualdev": true, "mac": "00:00:00:00:00:00"}',
-                'virtual'   => true
+                'virtual'   => true,
             ], [
                 'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
@@ -116,7 +115,7 @@ class NetworkCardTest extends AbstractInventoryAsset
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
                 'expected'  => '{"description": "wlp58s0", "driver": "iwlwifi", "ipaddress": "192.168.1.119", "ipgateway": "192.168.1.1", "ipmask": "255.255.255.0", "ipsubnet": "192.168.1.0", "pciid": "8086:24F3:8086:0050", "pcislot": "0000:3a:00.0", "status": "up", "type": "wifi", "virtualdev": false, "wifi_bssid": "58:6D:8F:C2:19:BF", "wifi_mode": "Managed", "wifi_ssid": "teclib", "wifi_version": "802.11", "mac": "44:85:00:2b:90:bc"}',
-                'virtual'   => false
+                'virtual'   => false,
             ], [
                 'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
@@ -144,7 +143,7 @@ class NetworkCardTest extends AbstractInventoryAsset
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
                 'expected'  => '{"description": "wlp58s0", "driver": "iwlwifi", "ipaddress6": "fe80::92a4:26c6:99dd:2d60", "ipmask6": "ffff:ffff:ffff:ffff::", "ipsubnet6": "fe80::", "pciid": "8086:24F3:8086:0050", "pcislot": "0000:3a:00.0", "status": "up", "type": "wifi", "virtualdev": false, "wifi_bssid": "58:6D:8F:C2:19:BF", "wifi_mode": "Managed", "wifi_ssid": "teclib", "wifi_version": "802.11", "mac": "44:85:00:2b:90:bc"}',
-                'virtual'   => false
+                'virtual'   => false,
             ], [
                 'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
@@ -166,7 +165,7 @@ class NetworkCardTest extends AbstractInventoryAsset
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
                 'expected'  => '{"description": "virbr0", "ipaddress": "192.168.122.1", "ipmask": "255.255.255.0", "ipsubnet": "192.168.122.0", "status": "up", "type": "bridge", "virtualdev": true, "mac": "52:54:00:fa:20:0e"}',
-                'virtual'   => true
+                'virtual'   => true,
             ], [
                 'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
@@ -184,7 +183,7 @@ class NetworkCardTest extends AbstractInventoryAsset
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
                 'expected'  => '{"description": "virbr0-nic", "speed": "10", "status": "down", "virtualdev": true, "mac": "52:54:00:fa:20:0e"}',
-                'virtual'   => true
+                'virtual'   => true,
             ], [
                 'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
@@ -204,7 +203,7 @@ class NetworkCardTest extends AbstractInventoryAsset
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
                 'expected'  => '{"description": "tun0", "ipaddress": "192.168.11.47", "ipmask": "255.255.255.0", "ipsubnet": "192.168.11.0", "speed": "10", "status": "up", "virtualdev": true}',
-                'virtual'   => true
+                'virtual'   => true,
             ], [
                 'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
@@ -224,8 +223,8 @@ class NetworkCardTest extends AbstractInventoryAsset
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
                 'expected'  => '{"description": "tun0", "ipaddress6": "fe80::c33a:59c7:61c5:339e", "ipmask6": "ffff:ffff:ffff:ffff::", "ipsubnet6": "fe80::", "speed": "10", "status": "up", "virtualdev": true}',
-                'virtual'   => true
-            ]
+                'virtual'   => true,
+            ],
         ];
     }
 
@@ -238,7 +237,7 @@ class NetworkCardTest extends AbstractInventoryAsset
 
         $computer = getItemByTypeName('Computer', '_test_pc01');
         $asset = new \Glpi\Inventory\Asset\NetworkCard($computer, $json->content->networks);
-        $asset->setExtraData((array)$json->content);
+        $asset->setExtraData((array) $json->content);
         $conf = new \Glpi\Inventory\Conf();
         $asset->checkConf($conf);
         $result = $asset->prepare();
@@ -254,7 +253,7 @@ class NetworkCardTest extends AbstractInventoryAsset
 
         $computer = getItemByTypeName('Computer', '_test_pc01');
         $asset = new \Glpi\Inventory\Asset\NetworkCard($computer, $json->content->networks);
-        $asset->setExtraData((array)$json->content);
+        $asset->setExtraData((array) $json->content);
         $this->login();
         $conf = new \Glpi\Inventory\Conf();
         $this->assertTrue($conf->saveConf(['component_networkcardvirtual' => 0]));
@@ -276,14 +275,14 @@ class NetworkCardTest extends AbstractInventoryAsset
     {
         $computer = getItemByTypeName('Computer', '_test_pc01');
 
-       //first, check there are no controller linked to this computer
+        //first, check there are no controller linked to this computer
         $idn = new \Item_DeviceNetworkCard();
-                 $this->assertFalse(
-                     $idn->getFromDbByCrit(['items_id' => $computer->fields['id'], 'itemtype' => 'Computer']),
-                     'A network card is already linked to computer!'
-                 );
+        $this->assertFalse(
+            $idn->getFromDbByCrit(['items_id' => $computer->fields['id'], 'itemtype' => 'Computer']),
+            'A network card is already linked to computer!'
+        );
 
-       //convert data
+        //convert data
         $expected = $this->assetProvider()[0];
 
         $converter = new \Glpi\Inventory\Converter();
@@ -292,13 +291,13 @@ class NetworkCardTest extends AbstractInventoryAsset
 
         $computer = getItemByTypeName('Computer', '_test_pc01');
         $asset = new \Glpi\Inventory\Asset\NetworkCard($computer, $json->content->networks);
-        $asset->setExtraData((array)$json->content);
+        $asset->setExtraData((array) $json->content);
         $conf = new \Glpi\Inventory\Conf();
         $asset->checkConf($conf);
         $result = $asset->prepare();
         $this->assertEquals(json_decode($expected['expected']), $result[0]);
 
-       //handle
+        //handle
         $asset->handleLinks();
         $asset->handle();
         $this->assertTrue(
@@ -709,20 +708,20 @@ class NetworkCardTest extends AbstractInventoryAsset
 
         $computer = getItemByTypeName('Computer', '_test_pc01');
 
-       //first, check there are no controller linked to this computer
+        //first, check there are no controller linked to this computer
         $idn = new \Item_DeviceNetworkCard();
-                 $this->assertFalse(
-                     $idn->getFromDbByCrit(['items_id' => $computer->fields['id'], 'itemtype' => 'Computer']),
-                     'A network card is already linked to computer!'
-                 );
+        $this->assertFalse(
+            $idn->getFromDbByCrit(['items_id' => $computer->fields['id'], 'itemtype' => 'Computer']),
+            'A network card is already linked to computer!'
+        );
 
-       //convert data
+        //convert data
         $converter = new \Glpi\Inventory\Converter();
         $data = $converter->convert($xml);
         $json = json_decode($data);
 
         $asset = new \Glpi\Inventory\Asset\NetworkCard($computer, $json->content->networks);
-        $asset->setExtraData((array)$json->content);
+        $asset->setExtraData((array) $json->content);
         $conf = new \Glpi\Inventory\Conf();
         $asset->checkConf($conf);
         $result = $asset->prepare();
@@ -819,17 +818,17 @@ class NetworkCardTest extends AbstractInventoryAsset
   <QUERY>INVENTORY</QUERY>
 </REQUEST>";
 
-       //create manually a computer, with 3 network cards
+        //create manually a computer, with 3 network cards
         $computers_id = $computer->add([
             'name'   => 'pc002',
             'serial' => 'ggheb7ne7',
-            'entities_id' => 0
+            'entities_id' => 0,
         ]);
         $this->assertGreaterThan(0, $computers_id);
 
         $manufacturer = new \Manufacturer();
         $manufacturers_id = $manufacturer->add([
-            'name' => 'Intel Corporation'
+            'name' => 'Intel Corporation',
         ]);
         $this->assertGreaterThan(0, $manufacturers_id);
 
@@ -837,7 +836,7 @@ class NetworkCardTest extends AbstractInventoryAsset
             'designation' => '82540EM Gigabit Ethernet Controller',
             'manufacturers_id' => $manufacturers_id,
             'mac_default' => '08:00:27:16:9C:60',
-            'entities_id'  => 0
+            'entities_id'  => 0,
         ]);
         $this->assertGreaterThan(0, $card_1_id);
 
@@ -845,7 +844,7 @@ class NetworkCardTest extends AbstractInventoryAsset
             'items_id'     => $computers_id,
             'itemtype'     => 'Computer',
             'devicenetworkcards_id' => $card_1_id,
-            'mac' => '08:00:27:16:9C:60'
+            'mac' => '08:00:27:16:9C:60',
         ]);
         $this->assertGreaterThan(0, $item_card_1_id);
 
@@ -853,7 +852,7 @@ class NetworkCardTest extends AbstractInventoryAsset
             'designation' => 'Ethernet Connection I219-LM',
             'manufacturers_id' => $manufacturers_id,
             'mac_default' => '18:db:f2:29:99:35',
-            'entities_id'  => 0
+            'entities_id'  => 0,
         ]);
         $this->assertGreaterThan(0, $card_2_id);
 
@@ -861,7 +860,7 @@ class NetworkCardTest extends AbstractInventoryAsset
             'items_id'     => $computers_id,
             'itemtype'     => 'Computer',
             'devicenetworkcards_id' => $card_2_id,
-            'mac' => '18:db:f2:29:99:35'
+            'mac' => '18:db:f2:29:99:35',
         ]);
         $this->assertGreaterThan(0, $item_card_2_id);
 
@@ -869,14 +868,14 @@ class NetworkCardTest extends AbstractInventoryAsset
             'designation' => 'Me Ethernet Controller',
             'manufacturers_id' => $manufacturers_id,
             'mac_default' => '00:b1:00:00:00',
-            'entities_id'  => 0
+            'entities_id'  => 0,
         ]);
         $this->assertGreaterThan(0, $card_3_id);
 
         $item_card_3_id = $item_net->add([
             'items_id'     => $computers_id,
             'itemtype'     => 'Computer',
-            'devicenetworkcards_id' => $card_3_id
+            'devicenetworkcards_id' => $card_3_id,
         ]);
         $this->assertGreaterThan(0, $item_card_3_id);
 
@@ -886,22 +885,22 @@ class NetworkCardTest extends AbstractInventoryAsset
             $this->assertEquals(0, $card['is_dynamic']);
         }
 
-       //computer inventory knows only 2 network cards
+        //computer inventory knows only 2 network cards
         $this->doInventory($xml_source, true);
 
-       //we still have 3 network cards
+        //we still have 3 network cards
         $cards = $device_net->find();
         $this->assertCount(3, $cards);
 
-       //we still have 3 network cards items linked to the computer
+        //we still have 3 network cards items linked to the computer
         $cards = $item_net->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
         $this->assertCount(3, $cards);
 
-       //network cards present in the inventory source are now dynamic
+        //network cards present in the inventory source are now dynamic
         $cards = $item_net->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
         $this->assertCount(2, $cards);
 
-       //network card not present in the inventory is still not dynamic
+        //network card not present in the inventory is still not dynamic
         $cards = $item_net->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 0]);
         $this->assertCount(1, $cards);
 
@@ -953,19 +952,19 @@ class NetworkCardTest extends AbstractInventoryAsset
 
         $this->doInventory($xml_source, true);
 
-       //we still have 3 network cards
+        //we still have 3 network cards
         $cards = $device_net->find();
         $this->assertCount(3, $cards);
 
-       //we now have 2 network cards linked to computer only
+        //we now have 2 network cards linked to computer only
         $cards = $item_net->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
         $this->assertCount(2, $cards);
 
-       //network card present in the inventory source is still dynamic
+        //network card present in the inventory source is still dynamic
         $cards = $item_net->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
         $this->assertCount(1, $cards);
 
-       //network card not present in the inventory is still not dynamic
+        //network card not present in the inventory is still not dynamic
         $cards = $item_net->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 0]);
         $this->assertCount(1, $cards);
 

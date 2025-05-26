@@ -6,7 +6,6 @@
  # http://glpi-project.org
  #
  # @copyright 2015-2025 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -136,14 +135,14 @@
             }
         });
         $('#mainformtable input[name="system_name"]').on('input', () => {
-            const reserved_names = {{ reserved_system_names|json_encode()|raw }}.map((n) => n.toLowerCase());
-            const existing_names = {{ existing_system_names|json_encode()|raw }}.map((n) => n.toLowerCase());
-            const system_name = $('#mainformtable input[name="system_name"]').val().toLowerCase();
+            const reserved_system_names_pattern = {{ reserved_system_names_pattern|raw }};
+            const existing_names = {{ existing_system_names|json_encode()|raw }};
+            const system_name = $('#mainformtable input[name="system_name"]').val();
             const system_name_pattern = /^{{ constant('Glpi\\CustomObject\\AbstractDefinition::SYSTEM_NAME_PATTERN')|raw }}$/;
 
-            if (reserved_names.includes(system_name) || system_name.endsWith('type') || system_name.endsWith('model')) {
+            if (reserved_system_names_pattern.test(system_name) === true) {
                 $('#mainformtable input[name="system_name"]').get(0).setCustomValidity(__('The system name is a reserved name. Please enter a different label or manually change the system name.'));
-            } else if (existing_names.includes(system_name)) {
+            } else if (existing_names.map((n) => n.toLowerCase()).includes(system_name.toLowerCase())) {
                 $('#mainformtable input[name="system_name"]').get(0).setCustomValidity(__('The system name is already in use. Please enter a different label or manually change the system name.'));
             } else if (system_name_pattern.test(system_name) === false) {
                 {# See pattern used in \Glpi\CustomObject\AbstractDefinition::prepareInput() #}

@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -41,8 +40,14 @@ use Problem;
 final class FormDestinationProblem extends AbstractCommonITILFormDestination
 {
     #[Override]
-    public static function getTargetItemtype(): string
+    public function getTargetItemtype(): string
     {
         return Problem::class;
+    }
+
+    #[Override]
+    public function getWeight(): int
+    {
+        return 30;
     }
 }

@@ -6,7 +6,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -40,14 +39,18 @@ describe('Request source configuration', () => {
         cy.createFormWithAPI().visitFormTab('Form');
 
         // Add a default question
-        cy.findByRole('button', { 'name': "Add a new question" }).click();
+        cy.findByRole('button', { 'name': "Add a question" }).click();
         cy.findByRole('button', { 'name': 'Save' }).click();
+
+        // Check alert
+        cy.checkAndCloseAlert('Item successfully updated');
 
         // Go to destination tab
         cy.findByRole('tab', { 'name': "Items to create 1" }).click();
     });
 
     it('can use all possibles configuration options', () => {
+        cy.openAccordionItem('Destination fields accordion', 'Properties');
         cy.findByRole('region', { 'name': "Request source configuration" }).as("config");
         cy.get('@config').getDropdownByLabelText('Request source').as("source_dropdown");
 
@@ -67,6 +70,7 @@ describe('Request source configuration', () => {
 
         cy.findByRole('button', { 'name': 'Update item' }).click();
         cy.checkAndCloseAlert('Item successfully updated');
+        cy.openAccordionItem('Destination fields accordion', 'Properties');
         cy.get('@source_dropdown').should('have.text', 'Specific request source');
         cy.get('@specific_request_source_id_dropdown').should('have.text', 'E-Mail');
     });
@@ -83,7 +87,7 @@ describe('Request source configuration', () => {
             .invoke('removeAttr', 'target') // Cypress can't handle tab changes
             .click();
 
-        cy.findByRole('button', { 'name': 'Send form' }).click();
+        cy.findByRole('button', { 'name': 'Submit' }).click();
         cy.findByRole('link', { 'name': 'My test form' }).click();
 
         // Check ticket values

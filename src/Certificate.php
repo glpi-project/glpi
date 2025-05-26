@@ -102,7 +102,7 @@ class Certificate extends CommonDBTM
 
         $tab[] = [
             'id'                 => 'common',
-            'name'               => __('Characteristics')
+            'name'               => __('Characteristics'),
         ];
 
         $tab[] = [
@@ -120,7 +120,7 @@ class Certificate extends CommonDBTM
             'field'              => 'id',
             'name'               => __('ID'),
             'massiveaction'      => false, // implicit field is id
-            'datatype'           => 'number'
+            'datatype'           => 'number',
         ];
 
         $tab[] = [
@@ -146,7 +146,7 @@ class Certificate extends CommonDBTM
             'table'              => 'glpi_certificatetypes',
             'field'              => 'name',
             'name'               => _n('Type', 'Types', 1),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -161,7 +161,7 @@ class Certificate extends CommonDBTM
             'table'              => $this->getTable(),
             'field'              => 'is_autosign',
             'name'               => __('Self-signed'),
-            'datatype'           => 'bool'
+            'datatype'           => 'bool',
         ];
 
         $tab[] = [
@@ -178,7 +178,7 @@ class Certificate extends CommonDBTM
             'table'              => $this->getTable(),
             'field'              => 'command',
             'name'               => __('Command used'),
-            'datatype'           => 'text'
+            'datatype'           => 'text',
         ];
 
         $tab[] = [
@@ -186,7 +186,7 @@ class Certificate extends CommonDBTM
             'table'              => $this->getTable(),
             'field'              => 'certificate_request',
             'name'               => __('Certificate request (CSR)'),
-            'datatype'           => 'text'
+            'datatype'           => 'text',
         ];
 
         $tab[] = [
@@ -194,7 +194,7 @@ class Certificate extends CommonDBTM
             'table'              => $this->getTable(),
             'field'              => 'certificate_item',
             'name'               => self::getTypeName(1),
-            'datatype'           => 'text'
+            'datatype'           => 'text',
         ];
 
         $tab[] = [
@@ -206,15 +206,15 @@ class Certificate extends CommonDBTM
             'massiveaction'      => false,
             'forcegroupby'       => true,
             'additionalfields'   => ['itemtype'],
-            'joinparams'         => ['jointype' => 'child']
+            'joinparams'         => ['jointype' => 'child'],
         ];
 
         $tab[] = [
             'id'                 => '15',
             'table'              => $this->getTable(),
             'field'              => 'comment',
-            'name'               => __('Comments'),
-            'datatype'           => 'text'
+            'name'               => _n('Comment', 'Comments', Session::getPluralNumber()),
+            'datatype'           => 'text',
         ];
 
         $tab[] = [
@@ -246,7 +246,7 @@ class Certificate extends CommonDBTM
             'field'              => 'date_mod',
             'name'               => __('Last update'),
             'datatype'           => 'datetime',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -254,7 +254,7 @@ class Certificate extends CommonDBTM
             'table'              => 'glpi_manufacturers',
             'field'              => 'name',
             'name'               => Manufacturer::getTypeName(1),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -264,7 +264,7 @@ class Certificate extends CommonDBTM
             'linkfield'          => 'users_id_tech',
             'name'               => __('Technician in charge'),
             'datatype'           => 'dropdown',
-            'right'              => 'own_ticket'
+            'right'              => 'own_ticket',
         ];
 
         $tab[] = [
@@ -273,7 +273,7 @@ class Certificate extends CommonDBTM
             'field'              => 'completename',
             'name'               => __('Status'),
             'datatype'           => 'dropdown',
-            'condition'          => $this->getStateVisibilityCriteria()
+            'condition'          => $this->getStateVisibilityCriteria(),
         ];
 
         $tab[] = [
@@ -288,13 +288,13 @@ class Certificate extends CommonDBTM
                     'table'              => 'glpi_groups_items',
                     'joinparams'         => [
                         'jointype'           => 'itemtype_item',
-                        'condition'          => ['NEWTABLE.type' => Group_Item::GROUP_TYPE_TECH]
-                    ]
-                ]
+                        'condition'          => ['NEWTABLE.type' => Group_Item::GROUP_TYPE_TECH],
+                    ],
+                ],
             ],
             'forcegroupby'       => true,
             'massiveaction'      => false,
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -314,7 +314,7 @@ class Certificate extends CommonDBTM
             'field'              => 'name',
             'name'               => User::getTypeName(1),
             'datatype'           => 'dropdown',
-            'right'              => 'all'
+            'right'              => 'all',
         ];
 
         $tab[] = [
@@ -328,13 +328,13 @@ class Certificate extends CommonDBTM
                     'table'              => 'glpi_groups_items',
                     'joinparams'         => [
                         'jointype'           => 'itemtype_item',
-                        'condition'          => ['NEWTABLE.type' => Group_Item::GROUP_TYPE_NORMAL]
-                    ]
-                ]
+                        'condition'          => ['NEWTABLE.type' => Group_Item::GROUP_TYPE_NORMAL],
+                    ],
+                ],
             ],
             'forcegroupby'       => true,
             'massiveaction'      => false,
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -347,8 +347,8 @@ class Certificate extends CommonDBTM
             'datatype'           => 'count',
             'massiveaction'      => false,
             'joinparams'         => [
-                'jointype'           => 'child'
-            ]
+                'jointype'           => 'child',
+            ],
         ];
 
         $tab[] = [
@@ -356,7 +356,7 @@ class Certificate extends CommonDBTM
             'table'              => 'glpi_entities',
             'field'              => 'completename',
             'name'               => Entity::getTypeName(1),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -364,7 +364,7 @@ class Certificate extends CommonDBTM
             'table'              => $this->getTable(),
             'field'              => 'is_recursive',
             'name'               => __('Child entities'),
-            'datatype'           => 'bool'
+            'datatype'           => 'bool',
         ];
 
         $tab[] = [
@@ -373,10 +373,10 @@ class Certificate extends CommonDBTM
             'field'              => 'date_creation',
             'name'               => __('Creation date'),
             'datatype'           => 'datetime',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
-       // add objectlock search options
+        // add objectlock search options
         $tab = array_merge($tab, ObjectLock::rawSearchOptionsToAdd(get_class($this)));
         $tab = array_merge($tab, Notepad::rawSearchOptionsToAdd());
 
@@ -397,14 +397,14 @@ class Certificate extends CommonDBTM
                 'table'              => Certificate_Item::getTable(),
                 'joinparams'         => [
                     'jointype'           => 'itemtype_item',
-                    'specific_itemtype'  => $itemtype
-                ]
-            ]
+                    'specific_itemtype'  => $itemtype,
+                ],
+            ],
         ];
 
         $tab[] = [
             'id'                 => 'certificate',
-            'name'               => $name
+            'name'               => $name,
         ];
 
         $tab[] = [
@@ -415,7 +415,7 @@ class Certificate extends CommonDBTM
             'datatype'           => 'itemlink',
             'forcegroupby'       => true,
             'massiveaction'      => false,
-            'joinparams'         => $joinparams
+            'joinparams'         => $joinparams,
         ];
 
         $tab[] = [
@@ -426,7 +426,7 @@ class Certificate extends CommonDBTM
             'name'               => __('Serial number'),
             'forcegroupby'       => true,
             'massiveaction'      => false,
-            'joinparams'         => $joinparams
+            'joinparams'         => $joinparams,
         ];
 
         $tab[] = [
@@ -437,7 +437,7 @@ class Certificate extends CommonDBTM
             'name'               => __('Inventory number'),
             'forcegroupby'       => true,
             'massiveaction'      => false,
-            'joinparams'         => $joinparams
+            'joinparams'         => $joinparams,
         ];
 
         $tab[] = [
@@ -451,20 +451,20 @@ class Certificate extends CommonDBTM
             'joinparams'         => [
                 'beforejoin'         => [
                     'table'              => self::getTable(),
-                    'joinparams'         => $joinparams
-                ]
-            ]
+                    'joinparams'         => $joinparams,
+                ],
+            ],
         ];
 
         $tab[] = [
             'id'                 => '1305',
             'table'              => self::getTable(),
             'field'              => 'comment',
-            'name'               => __('Comments'),
+            'name'               => _n('Comment', 'Comments', Session::getPluralNumber()),
             'forcegroupby'       => true,
             'datatype'           => 'text',
             'massiveaction'      => false,
-            'joinparams'         => $joinparams
+            'joinparams'         => $joinparams,
         ];
 
         $tab[] = [
@@ -476,7 +476,7 @@ class Certificate extends CommonDBTM
             'datatype'           => 'date',
             'emptylabel'         => __('Never expire'),
             'massiveaction'      => false,
-            'joinparams'         => $joinparams
+            'joinparams'         => $joinparams,
         ];
 
         return $tab;
@@ -491,20 +491,20 @@ class Certificate extends CommonDBTM
         $ong = [];
         $this->addDefaultFormTab($ong)
          ->addStandardTab(__CLASS__, $ong, $options)
-         ->addStandardTab('Certificate_Item', $ong, $options)
-         ->addStandardTab('Domain_Item', $ong, $options)
-         ->addStandardTab('Infocom', $ong, $options)
-         ->addStandardTab('Contract_Item', $ong, $options)
-         ->addStandardTab('Document_Item', $ong, $options)
-         ->addStandardTab('KnowbaseItem_Item', $ong, $options)
-         ->addStandardTab('Item_Ticket', $ong, $options)
-         ->addStandardTab('Item_Problem', $ong, $options)
-         ->addStandardTab('Change_Item', $ong, $options)
-         ->addStandardTab('Item_Project', $ong, $options)
-         ->addStandardTab('ManualLink', $ong, $options)
-         ->addStandardTab('Lock', $ong, $options)
-         ->addStandardTab('Notepad', $ong, $options)
-         ->addStandardTab('Log', $ong, $options);
+         ->addStandardTab(Certificate_Item::class, $ong, $options)
+         ->addStandardTab(Domain_Item::class, $ong, $options)
+         ->addStandardTab(Infocom::class, $ong, $options)
+         ->addStandardTab(Contract_Item::class, $ong, $options)
+         ->addStandardTab(Document_Item::class, $ong, $options)
+         ->addStandardTab(KnowbaseItem_Item::class, $ong, $options)
+         ->addStandardTab(Item_Ticket::class, $ong, $options)
+         ->addStandardTab(Item_Problem::class, $ong, $options)
+         ->addStandardTab(Change_Item::class, $ong, $options)
+         ->addStandardTab(Item_Project::class, $ong, $options)
+         ->addStandardTab(ManualLink::class, $ong, $options)
+         ->addStandardTab(Lock::class, $ong, $options)
+         ->addStandardTab(Notepad::class, $ong, $options)
+         ->addStandardTab(Log::class, $ong, $options);
 
         return $ong;
     }
@@ -592,7 +592,7 @@ class Certificate extends CommonDBTM
                 Dropdown::showSelectItemFromItemtypes(['items_id_name' => 'item_item',
                     'itemtype_name' => 'typeitem',
                     'itemtypes'     => self::getTypes(true),
-                    'checkright'   => true
+                    'checkright'   => true,
                 ]);
                 echo Html::submit(_x('button', 'Post'), ['name' => 'massiveaction']);
                 return true;
@@ -624,13 +624,13 @@ class Certificate extends CommonDBTM
                 foreach ($ids as $id) {
                     $input = ['certificates_id' => $input['certificates_id'],
                         'items_id'        => $id,
-                        'itemtype'        => $item->getType()
+                        'itemtype'        => $item->getType(),
                     ];
                     if ($certif_item->can(-1, UPDATE, $input)) {
                         if ($certif_item->add($input)) {
-                             $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
+                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_OK);
                         } else {
-                             $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
+                            $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
                         }
                     } else {
                         $ma->itemDone($item->getType(), $id, MassiveAction::ACTION_KO);
@@ -645,7 +645,7 @@ class Certificate extends CommonDBTM
                     if ($item->can($key, UPDATE)) {
                         $values = ['certificates_id' => $key,
                             'items_id' => $input["item_item"],
-                            'itemtype' => $input['typeitem']
+                            'itemtype' => $input['typeitem'],
                         ];
                         if ($certif_item->add($values)) {
                             $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
@@ -745,10 +745,10 @@ class Certificate extends CommonDBTM
                                     date: QueryFunction::now(),
                                     interval: $repeat,
                                     interval_unit: 'SECOND'
-                                )
-                            ]
+                                ),
+                            ],
                         ],
-                    ]
+                    ],
                 ];
             } else {
                 $where_date = ['glpi_alerts.date' => null];
@@ -770,8 +770,8 @@ class Certificate extends CommonDBTM
                                         'glpi_alerts.type'     => Alert::END,
                                     ],
                                 ],
-                            ]
-                        ]
+                            ],
+                        ],
                     ],
                     'WHERE'     => [
                         $where_date,
@@ -782,8 +782,8 @@ class Certificate extends CommonDBTM
                         ],
                         [
                             'RAW' => [
-                                'DATEDIFF(' . DBmysql::quoteName('glpi_certificates.date_expiration') . ', CURDATE())' => ['<', $before]
-                            ]
+                                'DATEDIFF(' . DBmysql::quoteName('glpi_certificates.date_expiration') . ', CURDATE())' => ['<', $before],
+                            ],
                         ],
                         'glpi_certificates.entities_id' => $entity,
                     ],

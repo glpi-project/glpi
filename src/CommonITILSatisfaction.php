@@ -145,7 +145,7 @@ abstract class CommonITILSatisfaction extends CommonDBTM
         if ((int) $this->fields["type"] === self::TYPE_EXTERNAL) {
             $url = Entity::generateLinkSatisfaction($item);
             TemplateRenderer::getInstance()->display('/components/itilobject/itilsatisfaction.html.twig', [
-                'url' => $url
+                'url' => $url,
             ]);
         } else { // for internal inquest => form
             $config_suffix = $item->getType() === 'Ticket' ? '' : ('_' . strtolower($item->getType()));
@@ -234,7 +234,7 @@ abstract class CommonITILSatisfaction extends CommonDBTM
             // Send notification only if fields related to reply are updated.
             $answer_updates = array_filter(
                 $this->updates,
-                fn ($field) => in_array($field, ['satisfaction', 'comment'])
+                fn($field) => in_array($field, ['satisfaction', 'comment'])
             );
 
             /** @var CommonDBTM $itemtype */
@@ -334,7 +334,7 @@ abstract class CommonITILSatisfaction extends CommonDBTM
                 $options['value'] = $values[$field];
                 $typeinquest = [
                     self::TYPE_INTERNAL => __('Internal survey'),
-                    self::TYPE_EXTERNAL => __('External survey')
+                    self::TYPE_EXTERNAL => __('External survey'),
                 ];
                 return Dropdown::showFromArray($name, $typeinquest, $options);
         }
@@ -364,7 +364,7 @@ abstract class CommonITILSatisfaction extends CommonDBTM
 
         $tab[] = [
             'id'                 => 'satisfaction',
-            'name'               => __('Satisfaction survey')
+            'name'               => __('Satisfaction survey'),
         ];
 
         $tab[] = [
@@ -376,9 +376,9 @@ abstract class CommonITILSatisfaction extends CommonDBTM
             'searchtype'         => ['equals', 'notequals'],
             'searchequalsonfield' => true,
             'joinparams'         => [
-                'jointype'           => 'child'
+                'jointype'           => 'child',
             ],
-            'datatype'           => 'specific'
+            'datatype'           => 'specific',
         ];
 
         $tab[] = [
@@ -389,8 +389,8 @@ abstract class CommonITILSatisfaction extends CommonDBTM
             'datatype'           => 'datetime',
             'massiveaction'      => false,
             'joinparams'         => [
-                'jointype'           => 'child'
-            ]
+                'jointype'           => 'child',
+            ],
         ];
 
         $tab[] = [
@@ -401,8 +401,8 @@ abstract class CommonITILSatisfaction extends CommonDBTM
             'datatype'           => 'datetime',
             'massiveaction'      => false,
             'joinparams'         => [
-                'jointype'           => 'child'
-            ]
+                'jointype'           => 'child',
+            ],
         ];
 
         $tab[] = [
@@ -413,7 +413,7 @@ abstract class CommonITILSatisfaction extends CommonDBTM
             'datatype'           => 'number',
             'massiveaction'      => false,
             'joinparams'         => [
-                'jointype'           => 'child'
+                'jointype'           => 'child',
             ],
             'additionalfields' => ['TABLE.entities_id'],
         ];
@@ -422,12 +422,12 @@ abstract class CommonITILSatisfaction extends CommonDBTM
             'id'                 => 63 + $base_id,
             'table'              => $table,
             'field'              => 'comment',
-            'name'               => __('Comments'),
+            'name'               => _n('Comment', 'Comments', Session::getPluralNumber()),
             'datatype'           => 'text',
             'massiveaction'      => false,
             'joinparams'         => [
-                'jointype'           => 'child'
-            ]
+                'jointype'           => 'child',
+            ],
         ];
 
         $sql = "WITH RECURSIVE entity_tree AS (
@@ -470,7 +470,7 @@ abstract class CommonITILSatisfaction extends CommonDBTM
             'maybefuture'        => true,
             'massiveaction'      => false,
             'joinparams'         => [
-                'jointype'           => 'child'
+                'jointype'           => 'child',
             ],
             'usehaving'          => true,
             'nometa'             => true,
@@ -482,7 +482,7 @@ abstract class CommonITILSatisfaction extends CommonDBTM
                     interval_unit: 'DAY',
                 ),
                 false_expression: new QueryExpression($DB::quoteValue(''))
-            )
+            ),
         ];
 
         return $tab;

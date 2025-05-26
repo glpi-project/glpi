@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -41,7 +40,6 @@ use Group;
 use Group_User;
 use NotificationEvent;
 use NotificationTarget;
-use PHPUnit\Framework\Attributes\DataProvider;
 use QueuedNotification;
 use User;
 
@@ -125,7 +123,7 @@ class NotificationTest extends DbTestCase
 
         // Activate only new followup notification
         $success = $DB->update(\Notification::getTable(), ['is_active' => false], [
-            'name' => ['<>', $target_notification]
+            'name' => ['<>', $target_notification],
         ]);
         $this->assertTrue($success);
         $this->assertEquals(
@@ -149,7 +147,7 @@ class NotificationTest extends DbTestCase
                 "field"      => 7,                      // Category
                 "searchtype" => "equals",
                 "value"      => $cat_B->fields['id'],
-            ]
+            ],
         ]);
         $this->assertTrue($success);
 
@@ -200,7 +198,7 @@ HTML,
             ],
             '_prefix_filename' => [
                 $prefix,
-            ]
+            ],
         ]);
         $this->assertGreaterThan(0, $ticket_id);
         $ticket_img = new \Document();
@@ -234,7 +232,7 @@ HTML,
             ],
             '_prefix_filename' => [
                 $prefix,
-            ]
+            ],
         ]);
         $this->assertGreaterThan(0, $followup_id);
         $followup_img = new \Document();
@@ -267,7 +265,7 @@ HTML,
             ],
             '_prefix_filename' => [
                 $prefix,
-            ]
+            ],
         ]);
         $this->assertGreaterThan(0, $task_id);
         $task_img = new \Document();
@@ -432,7 +430,7 @@ HTML,
         $this->login();
 
         // Mock mailer transport
-        $transport = new class () extends \Symfony\Component\Mailer\Transport\AbstractTransport {
+        $transport = new class extends \Symfony\Component\Mailer\Transport\AbstractTransport {
             public $sent_email;
 
             protected function doSend(\Symfony\Component\Mailer\SentMessage $message): void
@@ -557,7 +555,7 @@ HTML,
         global $DB, $CFG_GLPI;
 
         // Test users
-        list($user_root, $user_sub) = $this->createItems(User::class, [
+        [$user_root, $user_sub] = $this->createItems(User::class, [
             [
                 'name'         => "User_root_entity",
                 '_useremails'  => [-1 => "user_root@teclib.com"],
@@ -587,7 +585,7 @@ HTML,
             [
                 'users_id'  => $user_sub->getID(),
                 'groups_id' => $group->getID(),
-            ]
+            ],
         ]);
 
         // Set up notifications
@@ -643,7 +641,7 @@ HTML,
 
         $provider = $this->testEntityRestrictionProvider();
         foreach ($provider as $row) {
-            list($contract, $expected_queue) = $row;
+            [$contract, $expected_queue] = $row;
 
             // Clear notification queue
             $DB->delete(QueuedNotification::getTable(), [1]);
@@ -664,7 +662,7 @@ HTML,
                         'states_id' => $contract->fields['states_id'],
                         'begin_date' => $contract->fields['begin_date'],
                         'duration' => $contract->fields['duration'],
-                    ]
+                    ],
                 ],
             ]);
 

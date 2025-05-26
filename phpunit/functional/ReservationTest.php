@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -36,6 +35,7 @@
 namespace tests\units;
 
 use DbTestCase;
+use Glpi\Asset\Capacity;
 use Glpi\Asset\Capacity\IsReservableCapacity;
 use PHPUnit\Framework\Attributes\DataProvider;
 
@@ -46,7 +46,7 @@ class ReservationTest extends DbTestCase
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        $this->initAssetDefinition(capacities: [IsReservableCapacity::class]);
+        $this->initAssetDefinition(capacities: [new Capacity(name: IsReservableCapacity::class)]);
 
         $this->login(); // tab will be available only if corresponding right is available in the current session
 
@@ -120,7 +120,7 @@ class ReservationTest extends DbTestCase
         \Reservation::handleAddForm([
             "itemtype"  => "Computer",
             "items" => [
-                0       => (string) $res_item->fields["id"]
+                0       => (string) $res_item->fields["id"],
             ],
             "resa" => [
                 "begin" => "2023-11-02 00:00:00",
@@ -134,7 +134,7 @@ class ReservationTest extends DbTestCase
                 ],
             ],
             "users_id"  => getItemByTypeName('User', TU_USER, true),
-            "comment"   => ""
+            "comment"   => "",
         ]);
         $this->assertEquals(5, count($reservation->find()));
     }
@@ -153,7 +153,7 @@ class ReservationTest extends DbTestCase
             [
                 'begin'                   => "2023-11-03 00:00:00",
                 'end'                     => "2023-11-04 00:00:00",
-            ]
+            ],
         ];
     }
 

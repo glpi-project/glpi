@@ -6,7 +6,6 @@
  # http://glpi-project.org
  #
  # @copyright 2015-2025 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -58,7 +57,7 @@
          {{ include('components/user/link_with_tooltip.html.twig', {
             'users_id': users_id,
             'user_object': user_object,
-            'enable_anonymization': anonym_user
+            'enable_anonymization': anonym_user ?? false
          }, with_context = false) }}
       {% endset %}
       {% set group_span %}
@@ -71,14 +70,14 @@
       {% endset %}
 
       {{ __('Created: %1$s by %2$s for the group %3$s')|format(date_span, creator_span, group_span)|raw }}
-   {% elseif entry['type'] == 'ITILReminder' %}
+   {% elseif entry is defined and entry['type'] == 'ITILReminder' %}
       {{ date_span|raw }}
    {% else %}
       {% if users_id > 0 %}
          {% set creator_span %}
             {{ include('components/user/link_with_tooltip.html.twig', {
                'users_id': users_id,
-               'enable_anonymization': anonym_user
+               'enable_anonymization': anonym_user ?? false
             }, with_context = false) }}
          {% endset %}
 
@@ -112,7 +111,7 @@
       {% set editor_span %}
          {{ include('components/user/link_with_tooltip.html.twig', {
             'users_id': users_id_editor,
-            'user_object': users_id == users_id_editor ? user_object : null,
+            'user_object': users_id == users_id_editor ? user_object ?? null : null,
             'enable_anonymization': anonym_editor
          }, with_context = false) }}
       {% endset %}

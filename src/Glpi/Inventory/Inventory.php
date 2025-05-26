@@ -273,7 +273,7 @@ class Inventory
             $converter = new Converter();
             $schema = $converter->getSchema()->build();
 
-            $properties = array_keys((array)$schema->properties->content->properties);
+            $properties = array_keys((array) $schema->properties->content->properties);
             $properties = array_filter(
                 $properties,
                 function ($property_name) {
@@ -310,7 +310,7 @@ class Inventory
             foreach ($properties as $property) {
                 if (property_exists($contents, $property)) {
                     $data[$property] = $contents->$property;
-                } else if (in_array($property, $empty_props)) {
+                } elseif (in_array($property, $empty_props)) {
                     $data[$property] = [];
                 }
             }
@@ -472,7 +472,7 @@ class Inventory
                 $filename = GLPI_INVENTORY_DIR . '/' . $this->conf->buildInventoryFileName($itemtype, $id, $ext);
                 $subdir = dirname($filename);
                 if (!is_dir($subdir)) {
-                    mkdir($subdir, 0755, true);
+                    mkdir($subdir, 0o755, true);
                 }
                 if ($this->inventory_tmpfile !== false) {
                     copy($this->inventory_tmpfile, $filename);
@@ -504,7 +504,7 @@ class Inventory
      */
     public function inError(): bool
     {
-        return (bool)count($this->errors);
+        return (bool) count($this->errors);
     }
 
     public static function getMenuContent()
@@ -517,7 +517,7 @@ class Inventory
             Agent::class,
             Lockedfield::class,
             RefusedEquipment::class,
-            SNMPCredential::class
+            SNMPCredential::class,
         ];
         $links = [];
         foreach ($classes as $class) {
@@ -541,7 +541,7 @@ class Inventory
                 'page'  => Agent::getSearchURL(false),
                 'links' => [
                     'search' => '/front/agent.php',
-                ] + $links
+                ] + $links,
             ];
         }
 
@@ -551,8 +551,8 @@ class Inventory
                 'title' => Lockedfield::getTypeName(Session::getPluralNumber()),
                 'page'  => Lockedfield::getSearchURL(false),
                 'links' => [
-                    "<i class=\"ti ti-plus\" title=\"" . __('Add global lock') . "\"></i><span class='d-none d-xxl-block'>" . __('Add global lock') . "</span>" => Lockedfield::getFormURL(false)
-                ] + $links
+                    "<i class=\"ti ti-plus\" title=\"" . __('Add global lock') . "\"></i><span class='d-none d-xxl-block'>" . __('Add global lock') . "</span>" => Lockedfield::getFormURL(false),
+                ] + $links,
             ];
         }
 
@@ -561,7 +561,7 @@ class Inventory
                 'icon'  => RefusedEquipment::getIcon(),
                 'title' => RefusedEquipment::getTypeName(Session::getPluralNumber()),
                 'page'  => RefusedEquipment::getSearchURL(false),
-                'links' => $links
+                'links' => $links,
             ];
         }
 
@@ -573,7 +573,7 @@ class Inventory
                 'links' => [
                     'add' => '/front/snmpcredential.form.php',
                     'search' => '/front/snmpcredential.php',
-                ] + $links
+                ] + $links,
             ];
         }
 
@@ -595,7 +595,18 @@ class Inventory
         if (class_exists($main_class)) {
             return $main_class;
         }
-        return $class_ns . 'GenericAsset';
+
+        //not found, so we have a generic asset. Let's retrieve its MainAsset class
+        if ($this->item instanceof \Glpi\Asset\Asset) {
+            $main_class = $this->item
+                ->getDefinition()
+                ->getCapacityConfiguration(\Glpi\Asset\Capacity\IsInventoriableCapacity::class)
+                ->getValue('inventory_mainasset');
+        }
+        if ($main_class === null || !class_exists($main_class)) {
+            $main_class = $class_ns . 'GenericAsset';
+        }
+        return $main_class;
     }
 
     /**
@@ -721,7 +732,7 @@ class Inventory
                         $assettype = $this->processExtraInventoryData($key);
                     }
                     if ($assettype === false) {
-                     //unhandled
+                        //unhandled
                         throw new \RuntimeException("Unhandled schema entry $key");
                     }
                     break;
@@ -729,7 +740,7 @@ class Inventory
 
             if ($assettype !== false) {
                 //handle if asset type has been found.
-                $asset = new $assettype($this->item, (array)$value);
+                $asset = new $assettype($this->item, (array) $value);
                 $asset->setMainAsset($this->mainasset);
                 if ($asset->checkConf($this->conf)) {
                     $asset->setAgent($this->getAgent());
@@ -792,7 +803,7 @@ class Inventory
             'mem'       => memory_get_usage(),
             'mem_real'  => memory_get_usage(true),
             'mem_peak'  => memory_get_peak_usage(),
-            'extra'     => $extra
+            'extra'     => $extra,
 
         ];
     }
@@ -819,10 +830,10 @@ class Inventory
                             $output .= "\t\tMemory usage:        ";
                             break;
                         case 'mem_real':
-                             $output .= "\t\tMemory usage (real): ";
+                            $output .= "\t\tMemory usage (real): ";
                             break;
                         case 'mem_peak':
-                             $output .= "\t\tMemory peak:         ";
+                            $output .= "\t\tMemory peak:         ";
                             break;
                     }
 
@@ -831,7 +842,7 @@ class Inventory
                             _n('%s second', '%s seconds', $value),
                             $value
                         );
-                    } else if ($key != 'extra') {
+                    } elseif ($key != 'extra') {
                         $output .= Toolbox::getSize($value);
                     }
                     $output .= "\n";
@@ -905,7 +916,7 @@ class Inventory
 
         $time_limit = 60 * 60 * 12;//12 hours
         foreach ($temp_files as $temp_file) {
-           //drop only inventory files that have been created more than 12 hours ago
+            //drop only inventory files that have been created more than 12 hours ago
             if (time() - filemtime($temp_file) >= $time_limit) {
                 unlink($temp_file);
                 $message = sprintf(__('File %1$s has been removed'), $temp_file);
@@ -954,7 +965,7 @@ class Inventory
 
             $ids = [];
             foreach ($inventory_files as $inventory_file) {
-                 $ids[preg_replace("/\\.(" . implode('|', $conf->knownInventoryExtensions()) . ")\$/i", '', $inventory_file->getFileName())] = $inventory_file;
+                $ids[preg_replace("/\\.(" . implode('|', $conf->knownInventoryExtensions()) . ")\$/i", '', $inventory_file->getFileName())] = $inventory_file;
             }
 
             if (!count($ids)) {
@@ -965,12 +976,12 @@ class Inventory
             $iterator = $DB->request([
                 'SELECT'  => 'id',
                 'FROM'    => $itemtype::getTable(),
-                'WHERE'   => ['id' => array_keys($ids)]
+                'WHERE'   => ['id' => array_keys($ids)],
             ]);
 
             if (count($iterator) === count($ids)) {
-                 //all assets are still present, we're done
-                 return;
+                //all assets are still present, we're done
+                return;
             }
 
             //find missing assets

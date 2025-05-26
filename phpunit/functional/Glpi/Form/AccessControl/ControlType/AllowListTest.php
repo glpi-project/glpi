@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -91,14 +90,15 @@ class AllowListTest extends \DbTestCase
         // The rendered content should be validated by an E2E test.
         $form = $this->createForm(
             (new FormBuilder())
+                ->setUseDefaultAccessPolicies(false)
                 ->addAccessControl(
-                    \Glpi\Form\AccessControl\ControlType\AllowList::class,
+                    AllowList::class,
                     $this->getFullyConfiguredAllowListConfig()
                 )
         );
         $access_control = $this->getAccessControl(
             $form,
-            \Glpi\Form\AccessControl\ControlType\AllowList::class
+            AllowList::class
         );
         $this->assertNotEmpty($allow_list->renderConfigForm($access_control));
     }
@@ -134,7 +134,7 @@ class AllowListTest extends \DbTestCase
                 'profiles_id-7',
                 'profiles_id-8',
                 'profiles_id-9',
-            ]
+            ],
         ]);
         $this->assertInstanceOf(AllowListConfig::class, $config);
         $this->assertEquals([1, 2, 3], $config->getUserIds());

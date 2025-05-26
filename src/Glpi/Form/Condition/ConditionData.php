@@ -34,14 +34,10 @@
 
 namespace Glpi\Form\Condition;
 
-use Glpi\Form\Export\Context\ConfigWithForeignKeysInterface;
-use Glpi\Form\Export\Context\ForeignKey\QuestionForeignKeyHandler;
-use Glpi\Form\Export\Specification\ConditionDataSpecification;
-use Glpi\Form\Export\Specification\ContentSpecificationInterface;
 use JsonSerializable;
 use Override;
 
-final class ConditionData implements JsonSerializable, ConfigWithForeignKeysInterface
+final class ConditionData implements JsonSerializable
 {
     public function __construct(
         private string $item_uuid,
@@ -49,8 +45,7 @@ final class ConditionData implements JsonSerializable, ConfigWithForeignKeysInte
         private ?string $value_operator,
         private mixed $value,
         private ?string $logic_operator = null,
-    ) {
-    }
+    ) {}
 
     /**
      * Itemtype + uuid, used for dropdowns to allow selecting type + item using
@@ -84,7 +79,7 @@ final class ConditionData implements JsonSerializable, ConfigWithForeignKeysInte
 
     public function getValueOperator(): ?ValueOperator
     {
-        // No follback here as an empty value is valid if the condition is not
+        // No fallback here as an empty value is valid if the condition is not
         // fully specified yet.
         return ValueOperator::tryFrom($this->value_operator ?? "");
     }
@@ -99,18 +94,6 @@ final class ConditionData implements JsonSerializable, ConfigWithForeignKeysInte
             'value_operator' => $this->value_operator,
             'value'          => $this->value,
             'logic_operator' => $this->logic_operator,
-        ];
-    }
-
-    #[Override]
-    public static function listForeignKeysHandlers(ContentSpecificationInterface $content_spec): array
-    {
-        if (!$content_spec instanceof ConditionDataSpecification) {
-            return [];
-        }
-
-        return [
-            new QuestionForeignKeyHandler('item_uuid', 'uuid'),
         ];
     }
 }

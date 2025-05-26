@@ -6,7 +6,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -60,21 +59,21 @@ describe('Associated items configuration', () => {
 
     function addQuestionsAndSaveForm() {
         // Add a question of type Item
-        cy.findByRole('button', {'name': "Add a new question"}).click();
+        cy.findByRole('button', {'name': "Add a question"}).click();
         cy.focused().type("My item question");
         cy.getDropdownByLabelText('Question type').selectDropdownValue('Item');
         cy.getDropdownByLabelText('Question sub type').selectDropdownValue('GLPI Objects');
         cy.getDropdownByLabelText('Select an itemtype').selectDropdownValue('Computers');
 
         // Add a question of type User Device with default configuration
-        cy.findByRole('button', {'name': "Add a new question"}).click();
+        cy.findByRole('button', {'name': "Add a question"}).click();
         cy.focused().type("My user device question");
         cy.getDropdownByLabelText('Question type').selectDropdownValue('Item');
         cy.getDropdownByLabelText('Question sub type').selectDropdownValue('User Devices');
         cy.findByRole('checkbox', {'name': 'Allow multiple devices'}).should('not.be.checked');
 
         // Add a question of type User Device with multiple devices allowed
-        cy.findByRole('button', {'name': "Add a new question"}).click();
+        cy.findByRole('button', {'name': "Add a question"}).click();
         cy.focused().type("My multiple user device question");
         cy.getDropdownByLabelText('Question type').selectDropdownValue('Item');
         cy.getDropdownByLabelText('Question sub type').selectDropdownValue('User Devices');
@@ -93,6 +92,7 @@ describe('Associated items configuration', () => {
         addQuestionsAndSaveForm();
 
         // Retrieve configuration section
+        cy.openAccordionItem('Destination fields accordion', 'Associated items');
         cy.findByRole('region', {'name': "Associated items configuration"}).as("config");
         cy.get('@config').getDropdownByLabelText('Associated items').as("associated_items_dropdown");
 
@@ -119,6 +119,7 @@ describe('Associated items configuration', () => {
 
         cy.findByRole('button', {'name': 'Update item'}).click();
         cy.checkAndCloseAlert('Item successfully updated');
+        cy.openAccordionItem('Destination fields accordion', 'Associated items');
         cy.get('@associated_items_dropdown').should('have.text', 'Specific items');
         cy.get('@config').getDropdownByLabelText('Select the itemtype of the item to associate...').eq(0).should('have.text', 'Computers');
         cy.get('@form_id').then((form_id) => {
@@ -134,6 +135,7 @@ describe('Associated items configuration', () => {
 
         cy.findByRole('button', {'name': 'Update item'}).click();
         cy.checkAndCloseAlert('Item successfully updated');
+        cy.openAccordionItem('Destination fields accordion', 'Associated items');
         cy.get('@associated_items_dropdown').should('have.text', 'Answer from specific questions');
         cy.get('@specific_answers_dropdown').should('have.text', '×My item question×My user device question×My multiple user device question');
 
@@ -142,6 +144,7 @@ describe('Associated items configuration', () => {
 
         cy.findByRole('button', {'name': 'Update item'}).click();
         cy.checkAndCloseAlert('Item successfully updated');
+        cy.openAccordionItem('Destination fields accordion', 'Associated items');
         cy.get('@associated_items_dropdown').should('have.text', 'All valid "Item" answers');
     });
 
@@ -162,7 +165,7 @@ describe('Associated items configuration', () => {
             cy.getDropdownByLabelText("My user device question").selectDropdownValue(`Computers - My Assigned computer - ${form_id}`);
             cy.getDropdownByLabelText("My multiple user device question").selectDropdownValue(`Monitors - My Assigned monitor - ${  form_id}`);
         });
-        cy.findByRole('button', {'name': 'Send form'}).click();
+        cy.findByRole('button', {'name': 'Submit'}).click();
         cy.findByRole('link', {'name': 'My test form'}).click();
 
         // Check ticket linked items
@@ -188,6 +191,7 @@ describe('Associated items configuration', () => {
         cy.findByRole('tab', { 'name': "Items to create 1" }).click();
 
         // Retrieve configuration section
+        cy.openAccordionItem('Destination fields accordion', 'Associated items');
         cy.findByRole('region', {'name': "Associated items configuration"}).as("config");
         cy.get('@config').getDropdownByLabelText('Associated items').as("associated_items_dropdown");
 
@@ -226,6 +230,7 @@ describe('Associated items configuration', () => {
         // Update form destination and check persisted values
         cy.findByRole('button', {'name': 'Update item'}).click();
         cy.checkAndCloseAlert('Item successfully updated');
+        cy.openAccordionItem('Destination fields accordion', 'Associated items');
         cy.get('@associated_items_dropdown').should('have.text', 'Specific items');
         cy.get('@form_id').then((form_id) => {
             cy.get('@config').find('[data-glpi-associated-items-specific-values-extra-field-item]').eq(0)
@@ -254,6 +259,7 @@ describe('Associated items configuration', () => {
         cy.findByRole('tab', { 'name': "Items to create 1" }).click();
 
         // Retrieve configuration section
+        cy.openAccordionItem('Destination fields accordion', 'Associated items');
         cy.findByRole('region', {'name': "Associated items configuration"}).as("config");
         cy.get('@config').getDropdownByLabelText('Associated items').as("associated_items_dropdown");
 

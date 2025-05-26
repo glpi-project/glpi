@@ -52,7 +52,7 @@
                 {% endif %}
             </h2>
             <div class="row">
-                <div class="col-lg-9 col-12">
+                <div class="col-lg-10 col-12">
                     {{ fields.textareaField(
                         'description',
                         item.fields.description,
@@ -66,7 +66,7 @@
                     ) }}
                 </div>
 
-                <div class="col-lg-3 col-12">
+                <div class="col-lg-2 col-12">
                     {{ fields.illustrationField(
                         'illustration',
                         item.getServiceCatalogItemIllustration(),
@@ -74,6 +74,7 @@
                         {
                             'is_horizontal': false,
                             'full_width' : true,
+                            'extra_css_classes': 'illustration-selector-extra-margin',
                         }
                     ) }}
                 </div>

@@ -6,7 +6,6 @@
  # http://glpi-project.org
  #
  # @copyright 2015-2025 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -41,20 +40,21 @@
         'disabled': false,
         'multiple': false,
         'required': false,
+        'maxlength': null,
         'is_disclosable': false,
         'is_copyable': false,
         'clearable': false,
     }|merge(options) %}
 
-    {% if options.fields_template.isMandatoryField(name) %}
+    {% if options.fields_template.isMandatoryField(name)|default(false) %}
         {% set options = options|merge({'required': true}) %}
     {% endif %}
 
-    {% if options.fields_template.isReadonlyField(name) %}
+    {% if options.fields_template.isReadonlyField(name)|default(false) %}
         {% set options = options|merge({'readonly': true}) %}
     {% endif %}
 
-   {% if (options.is_disclosable or options.is_copyable) and id is null %}
+   {% if (options.is_disclosable or options.is_copyable) and options.id is null %}
       {% set options = options|merge({
          id: name|slug ~ '_' ~ random()
       }) %}
@@ -118,6 +118,10 @@
 
 
 {% macro text(name, value, options = {}) %}
+    {% set options = {
+        'copyable': false,
+    }|merge(options) %}
+
     {% if options.copyable %}
         <div class="copy_to_clipboard_wrapper">
     {% endif %}
@@ -148,7 +152,7 @@
 
 {% macro color(name, value, options = {}) %}
     {% set options = {
-        id: name ~ '_' ~ options.rand
+        id: name ~ '_' ~ (options.rand ?? random()),
     }|merge(options) %}
 
     {{ _self.input(name, value, options|merge({
@@ -212,13 +216,20 @@
     {% set options = {
         'rand': random(),
         'enableTime': false,
-        'checkIsExpired ': false,
+        'checkIsExpired': false,
         'clearable': false,
+        'input_addclass': '',
+        'readonly': false,
+        'maybeempty': false,
     }|merge(options) %}
 
     {% set options = {
         'id': name|slug ~ '_' ~ options.rand
     }|merge(options) %}
+
+    {% if options.fields_template.isReadonlyField(name)|default(false) %}
+        {% set options = options|merge({'readonly': true}) %}
+    {% endif %}
 
     {% if value == 'NULL' %}
       {% set value = null %}
@@ -253,8 +264,8 @@
             </button>
             {# maybeempty has no distinct purpose, but it was here first #}
             {% if options.clearable or options.maybeempty %}
-                <button type="button" class="btn btn-outline-secondary btn-sm" data-toggle title="{{ __('Clear') }}">
-                    <i class="ti ti-circle-x" data-clear></i>
+                <button type="button" class="btn btn-outline-secondary btn-sm" data-toggle data-clear title="{{ __('Clear') }}">
+                    <i class="ti ti-circle-x"></i>
                 </button>
             {% endif %}
         {% endif %}
@@ -321,9 +332,10 @@
         'aria_label': "",
         'statusbar': true,
         'content_style': "",
+        'input_addclass': '',
     }|merge(options) %}
 
-    {% if options.fields_template.isMandatoryField(name) %}
+    {% if options.fields_template.isMandatoryField(name)|default(false) %}
         {% set options = {'required': true}|merge(options) %}
     {% endif %}
     {% set options = options|merge({
@@ -370,7 +382,7 @@
         </script>
     {% endif %}
 
-    {% if options.mention_options.enabled and config('use_notifications') %}
+    {% if options.mention_options.enabled|default(false) and config('use_notifications') %}
         <script>
             $(function() {
                 const user_mention = new GLPI.RichText.UserMention(
@@ -439,13 +451,14 @@
 
 {% macro label(label, id, options = {}, class = 'form-label') %}
     {% set options = {
-        locked: false,
-        locked_value: null,
-        tpl_mark: null
+        'locked': false,
+        'locked_value': null,
+        'tpl_mark': null,
+        'helper': false
     }|merge(options) %}
 
     {% set required_mark = '' %}
-    {% if options.fields_template.isMandatoryField(options.name) or options.required %}
+    {% if (options.name is defined and options.fields_template.isMandatoryField(options.name)|default(false)) or options.required ?? false %}
         {% set required_mark = '<span class="required">*</span>' %}
     {% endif %}
 

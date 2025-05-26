@@ -33,49 +33,51 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\Environment;
 use Glpi\Form\Form;
 use Glpi\Inventory\Conf;
 use Glpi\RichText\UserMention;
 use Glpi\Socket;
 
+use function Safe\json_encode;
+
 // Use anonymous class so we can have constants that define special values without polluting the global table
 // and adding unnecessary variables to IDE autocomplete data that may result in errors
-$empty_data_builder = new class
-{
+$empty_data_builder = new class {
     /** @var int Self-service profile ID */
-    const PROFILE_SELF_SERVICE = 1;
+    public const PROFILE_SELF_SERVICE = 1;
     /** @var int Observer profile ID */
-    const PROFILE_OBSERVER     = 2;
+    public const PROFILE_OBSERVER     = 2;
     /** @var int Admin profile ID */
-    const PROFILE_ADMIN        = 3;
+    public const PROFILE_ADMIN        = 3;
     /** @var int Super-admin profile ID */
-    const PROFILE_SUPER_ADMIN  = 4;
+    public const PROFILE_SUPER_ADMIN  = 4;
     /** @var int Hotliner profile ID */
-    const PROFILE_HOTLINER     = 5;
+    public const PROFILE_HOTLINER     = 5;
     /** @var int Technician profile ID */
-    const PROFILE_TECHNICIAN   = 6;
+    public const PROFILE_TECHNICIAN   = 6;
     /** @var int Supervisor profile ID */
-    const PROFILE_SUPERVISOR   = 7;
+    public const PROFILE_SUPERVISOR   = 7;
     /** @var int Read-only profile ID */
-    const PROFILE_READ_ONLY    = 8;
+    public const PROFILE_READ_ONLY    = 8;
 
-    const USER_GLPI            = 2;
-    const USER_POST_ONLY       = 3;
-    const USER_TECH            = 4;
-    const USER_NORMAL          = 5;
-    const USER_SYSTEM          = 6;
+    public const USER_GLPI            = 2;
+    public const USER_POST_ONLY       = 3;
+    public const USER_TECH            = 4;
+    public const USER_NORMAL          = 5;
+    public const USER_SYSTEM          = 6;
 
     /** @var int Value indicating no rights */
-    const RIGHT_NONE           = 0;
+    public const RIGHT_NONE           = 0;
 
     public function getEmptyData(): array
     {
         $tables = [];
 
         // API need to be enabled to ease e2e testing
-        $is_testing = GLPI_ENVIRONMENT_TYPE === "testing";
-        $enable_api = $is_testing ? "1" : "0";
-        $enable_api_login_credentials = $is_testing ? "1" : "0";
+        $add_e2e_data = Environment::get()->shouldAddExtraE2EDataDuringInstallation();
+        $enable_api = $add_e2e_data ? "1" : "0";
+        $enable_api_login_credentials = $add_e2e_data ? "1" : "0";
 
         $tables['glpi_apiclients'] = [
             [
@@ -363,6 +365,7 @@ $empty_data_builder = new class
             'projecttask_unstarted_states_id' => 0,
             'projecttask_inprogress_states_id' => 0,
             'projecttask_completed_states_id' => 0,
+            'non_reusable_passwords_count' => 1,
         ];
 
         $tables['glpi_configs'] = [];
@@ -882,7 +885,7 @@ $empty_data_builder = new class
                 'frequency' => DAY_TIMESTAMP,
                 'param' => null,
                 'state' => CronTask::STATE_WAITING,
-                'mode' => CronTask::MODE_INTERNAL,
+                'mode' => CronTask::MODE_EXTERNAL,
                 'lastrun' => null,
                 'logs_lifetime' => 30,
                 'hourmin' => 0,
@@ -894,7 +897,7 @@ $empty_data_builder = new class
                 'frequency' => DAY_TIMESTAMP,
                 'param' => null,
                 'state' => CronTask::STATE_DISABLE,
-                'mode' => CronTask::MODE_INTERNAL,
+                'mode' => CronTask::MODE_EXTERNAL,
                 'lastrun' => null,
                 'logs_lifetime' => 30,
                 'hourmin' => 0,
@@ -906,7 +909,7 @@ $empty_data_builder = new class
                 'frequency' => MINUTE_TIMESTAMP,
                 'param' => 50,
                 'state' => CronTask::STATE_WAITING,
-                'mode' => CronTask::MODE_INTERNAL,
+                'mode' => CronTask::MODE_EXTERNAL,
                 'lastrun' => null,
                 'logs_lifetime' => 30,
                 'hourmin' => 0,
@@ -918,7 +921,7 @@ $empty_data_builder = new class
                 'frequency' => DAY_TIMESTAMP,
                 'param' => 30,
                 'state' => CronTask::STATE_WAITING,
-                'mode' => CronTask::MODE_INTERNAL,
+                'mode' => CronTask::MODE_EXTERNAL,
                 'lastrun' => null,
                 'logs_lifetime' => 30,
                 'hourmin' => 0,
@@ -930,7 +933,7 @@ $empty_data_builder = new class
                 'frequency' => DAY_TIMESTAMP,
                 'param' => 7,
                 'state' => CronTask::STATE_WAITING,
-                'mode' => CronTask::MODE_INTERNAL,
+                'mode' => CronTask::MODE_EXTERNAL,
                 'lastrun' => null,
                 'logs_lifetime' => 30,
                 'hourmin' => 0,
@@ -954,12 +957,12 @@ $empty_data_builder = new class
                 'frequency' => WEEK_TIMESTAMP,
                 'param' => null,
                 'state' => CronTask::STATE_DISABLE,
-                'mode' => CronTask::MODE_INTERNAL,
+                'mode' => CronTask::MODE_EXTERNAL,
                 'lastrun' => null,
                 'logs_lifetime' => 30,
                 'hourmin' => 0,
                 'hourmax' => 24,
-            ]
+            ],
         ];
 
         $dashboards_data = require __DIR__ . "/migrations/update_9.4.x_to_9.5.0/dashboards.php";
@@ -2511,6 +2514,8 @@ $empty_data_builder = new class
                 'is_location_autoclean' => '0',
                 'state_autoclean_mode' => '0',
                 'show_tickets_properties_on_helpdesk' => 0,
+                'custom_helpdesk_home_scene_left' => '',
+                'custom_helpdesk_home_scene_right' => '',
             ],
         ];
 
@@ -4579,7 +4584,7 @@ $empty_data_builder = new class
                 'items_id'         => '1',
                 'type'             => '1',
                 'notifications_id' => '82',
-            ]
+            ],
         ];
 
         $tables['glpi_notificationtemplates'] = [
@@ -5662,7 +5667,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
 &lt;p&gt;##lang.document.weblink## : ##document.weblink##&lt;/p&gt; ##ENDFOREACHdocuments##&lt;/p&gt;
 ##FOREACHtargets## &lt;p&gt;##lang.target.itemtype## : ##target.type##&lt;/p&gt;
 &lt;p&gt;##lang.target.name## : ##target.name##&lt;/p&gt;
-&lt;p&gt;##lang.target.url## : ##target.url##&lt;/p&gt; ##ENDFOREACHtargets##'
+&lt;p&gt;##lang.target.url## : ##target.url##&lt;/p&gt; ##ENDFOREACHtargets##',
             ],
         ];
 
@@ -9397,8 +9402,8 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
         $tables['glpi_agenttypes'] = [
             [
                 'id' => 1,
-                'name' => 'Core'
-            ]
+                'name' => 'Core',
+            ],
         ];
 
         $tables[SNMPCredential::getTable()] = [
@@ -9406,19 +9411,19 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'id' => 1,
                 'name' => 'Public community v1',
                 'snmpversion' => 1,
-                'community' => 'public'
+                'community' => 'public',
             ],
             [
                 'id' => 2,
                 'name' => 'Public community v2c',
                 'snmpversion' => 2,
-                'community' => 'public'
-            ]
+                'community' => 'public',
+            ],
         ];
 
         // Test environment data
-        if ($is_testing) {
-            $root_entity = array_filter($tables['glpi_entities'], static fn ($e) => $e['id'] === 0);
+        if ($add_e2e_data) {
+            $root_entity = array_filter($tables['glpi_entities'], static fn($e) => $e['id'] === 0);
             $root_entity = current($root_entity);
 
             // Main E2E test entity
@@ -9452,7 +9457,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
             $tables['glpi_entities'][] = $e2e_subentity2;
 
             // New e2e super-admin user (login: e2e_tests, password: glpi)
-            $default_glpi_user = array_filter($tables['glpi_users'], static fn ($u) => $u['id'] === self::USER_GLPI);
+            $default_glpi_user = array_filter($tables['glpi_users'], static fn($u) => $u['id'] === self::USER_GLPI);
             $e2e_user = array_shift($default_glpi_user);
             $e2e_user = array_replace($e2e_user, [
                 'id' => 7,
@@ -9518,6 +9523,17 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
                 'entities_id' => 1,
                 'is_recursive' => 1,
                 'is_dynamic' => 0,
+            ];
+
+            $tables['glpi_oauthclients'][] = [
+                'name' => 'Test E2E OAuth Client',
+                'redirect_uri' => json_encode(["/api.php/oauth2/redirection"]),
+                'grants' => json_encode(['authorization_code']),
+                'scopes' => json_encode(['api', 'user']),
+                'is_active' => 1,
+                'is_confidential' => 1,
+                'identifier' => '9246d35072ff62193330003a8106d947fafe5ac036d11a51ebc7ca11b9bc135e',
+                'secret' => (new GLPIKey())->encrypt('d2c4f3b8a0e1f7b5c6a9d1e4f3b8a0e1f7b5c6a9d1e4f3b8a0e1f7b5c6a9d1'),
             ];
         }
 

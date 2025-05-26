@@ -64,7 +64,7 @@ class TicketTypeFilter extends AbstractFilter
 
         if ((int) $value > 0) {
             $criteria["WHERE"] = [
-                "$table.type" => (int) $value
+                "$table.type" => (int) $value,
             ];
         }
 
@@ -80,7 +80,7 @@ class TicketTypeFilter extends AbstractFilter
                 'link'       => 'AND',
                 'field'      => self::getSearchOptionID($table, 'type', $table),
                 'searchtype' => 'equals',
-                'value'      => (int) $value
+                'value'      => (int) $value,
             ];
         }
         return $criteria;
@@ -95,7 +95,7 @@ class TicketTypeFilter extends AbstractFilter
             Ticket::class,
             [
                 'condition' => ['id' => -1],
-                'toadd'     => Ticket::getTypes()
+                'toadd'     => Ticket::getTypes(),
             ]
         );
     }

@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+require_once(__DIR__ . '/_check_webserver_config.php');
+
 use Glpi\Event;
 
 /** @var array $CFG_GLPI */
@@ -63,7 +65,7 @@ if (isset($_POST["add"])) {
         }
     }
     Html::back();
-} else if (isset($_POST["purge"])) {
+} elseif (isset($_POST["purge"])) {
     $alias->check($_POST['id'], PURGE);
     $item = $alias->getItem();
     $alias->delete($_POST, 1);
@@ -80,7 +82,7 @@ if (isset($_POST["add"])) {
     } else {
         Html::redirect($CFG_GLPI["root_doc"] . "/front/central.php");
     }
-} else if (isset($_POST["update"])) {
+} elseif (isset($_POST["update"])) {
     $alias->check($_POST["id"], UPDATE);
     $alias->update($_POST);
 
@@ -100,10 +102,6 @@ if (isset($_GET['_in_modal'])) {
     $alias->showForm($_GET["id"], $_GET);
     Html::popFooter();
 } else {
-    if (!isset($_GET["id"])) {
-        $_GET["id"] = "";
-    }
-
     Session::checkRight("internet", UPDATE);
 
     $menus = ['assets'];

@@ -46,28 +46,35 @@ parameters:
         - GLPI_NETWORK_SERVICES
         - GLPI_PICTURE_DIR
         - GLPI_PLUGIN_DOC_DIR
+        - GLPI_PLUGINS_DIRECTORIES
         - GLPI_RSS_DIR
         - GLPI_SERVERSIDE_URL_ALLOWLIST
         - GLPI_SESSION_DIR
-        - GLPI_STRICT_DEPRECATED
+        - GLPI_SKIP_UPDATES
+        - GLPI_STRICT_ENV
+        - GLPI_SYSTEM_CRON
         - GLPI_TELEMETRY_URI
         - GLPI_TEXT_MAXSIZE
         - GLPI_THEMES_DIR
         - GLPI_TMP_DIR
         - GLPI_UPLOAD_DIR
+        - GLPI_USE_CSRF_CHECK
         - GLPI_USER_AGENT_EXTRA_COMMENTS
         - GLPI_VAR_DIR
         - GLPI_WEBHOOK_ALLOW_RESPONSE_SAVING
-        - PLUGINS_DIRECTORIES
         - TU_USER
     ignoreErrors:
         - '~Instantiated class XHProfRuns_Default not found~'
         - '~Instantiation of deprecated class Glpi\\Http\\HeaderlessStreamedResponse~'
-        - { message: '~LDAP\\Connection~', reportUnmatched: false }
         -
-            message: '~/(downstream\.php|config_db\.php|config_db_slave\.php)" is not a file or it does not exist.~'
+            message: '~LDAP\\Connection~'
+            reportUnmatched: false
+        -
+            message: '~/(xhprof_runs\.php|xhprof_lib\.php|downstream\.php|local_define\.php|config_db\.php|config_db_slave\.php)" is not a file or it does not exist.~'
             reportUnmatched: false
 rules:
+    - Glpi\Tools\PHPStan\ForbidExitRule
+    - Glpi\Tools\PHPStan\ForbidHttpResponseCodeRule
     - GlpiProject\Tools\PHPStan\Rules\GlobalVarTypeRule
 
 # Copy and uncomment this content into a "phpstan.neon" file to add your own config values

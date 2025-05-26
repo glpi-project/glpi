@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -38,6 +37,7 @@ namespace tests\units\Glpi\Asset\Capacity;
 use DbTestCase;
 use DisplayPreference;
 use Entity;
+use Glpi\Asset\Capacity;
 use Item_Rack;
 use Log;
 use Rack;
@@ -52,21 +52,21 @@ class IsRackableCapacityTest extends DbTestCase
 
         $definition_1 = $this->initAssetDefinition(
             capacities: [
-                \Glpi\Asset\Capacity\IsRackableCapacity::class,
-                \Glpi\Asset\Capacity\HasNotepadCapacity::class,
+                new Capacity(name: \Glpi\Asset\Capacity\IsRackableCapacity::class),
+                new Capacity(name: \Glpi\Asset\Capacity\HasNotepadCapacity::class),
             ]
         );
         $classname_1  = $definition_1->getAssetClassName();
         $definition_2 = $this->initAssetDefinition(
             capacities: [
-                \Glpi\Asset\Capacity\HasHistoryCapacity::class,
+                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
             ]
         );
         $classname_2  = $definition_2->getAssetClassName();
         $definition_3 = $this->initAssetDefinition(
             capacities: [
-                \Glpi\Asset\Capacity\IsRackableCapacity::class,
-                \Glpi\Asset\Capacity\HasHistoryCapacity::class,
+                new Capacity(name: \Glpi\Asset\Capacity\IsRackableCapacity::class),
+                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
             ]
         );
         $classname_3  = $definition_3->getAssetClassName();
@@ -110,15 +110,15 @@ class IsRackableCapacityTest extends DbTestCase
 
         $definition_1 = $this->initAssetDefinition(
             capacities: [
-                \Glpi\Asset\Capacity\IsRackableCapacity::class,
-                \Glpi\Asset\Capacity\HasHistoryCapacity::class,
+                new Capacity(name: \Glpi\Asset\Capacity\IsRackableCapacity::class),
+                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
             ]
         );
         $classname_1  = $definition_1->getAssetClassName();
         $definition_2 = $this->initAssetDefinition(
             capacities: [
-                \Glpi\Asset\Capacity\IsRackableCapacity::class,
-                \Glpi\Asset\Capacity\HasHistoryCapacity::class,
+                new Capacity(name: \Glpi\Asset\Capacity\IsRackableCapacity::class),
+                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
             ]
         );
         $classname_2  = $definition_2->getAssetClassName();
@@ -141,7 +141,7 @@ class IsRackableCapacityTest extends DbTestCase
         $rack = $this->createItem(\Rack::class, [
             'name' => 'rack 1',
             'entities_id' => $root_entity_id,
-            'number_units' => 40
+            'number_units' => 40,
         ]);
         $rack_item_1 = $this->createItem(
             Item_Rack::class,
@@ -149,7 +149,7 @@ class IsRackableCapacityTest extends DbTestCase
                 'itemtype'     => $item_1::getType(),
                 'items_id'     => $item_1->getID(),
                 'racks_id'     => $rack->getID(),
-                'position'     => 1
+                'position'     => 1,
             ]
         );
         $this->updateItem(Item_Rack::class, $rack_item_1->getID(), ['position' => 11]);
@@ -159,7 +159,7 @@ class IsRackableCapacityTest extends DbTestCase
                 'itemtype'     => $item_2::getType(),
                 'items_id'     => $item_2->getID(),
                 'racks_id'     => $rack->getID(),
-                'position'     => 2
+                'position'     => 2,
             ]
         );
         $this->updateItem(Item_Rack::class, $rack_item_2->getID(), ['position' => 12]);
@@ -194,7 +194,7 @@ class IsRackableCapacityTest extends DbTestCase
                     'itemtype'      => Rack::class,
                     'itemtype_link' => $classname_1,
                 ],
-            ]
+            ],
         ];
         $item_2_logs_criteria = [
             'OR' => [
@@ -210,7 +210,7 @@ class IsRackableCapacityTest extends DbTestCase
                     'itemtype'      => Rack::class,
                     'itemtype_link' => $classname_2,
                 ],
-            ]
+            ],
         ];
 
         // Ensure relation, display preferences and logs exists, and class is registered to global config
@@ -242,7 +242,7 @@ class IsRackableCapacityTest extends DbTestCase
         $entity_id = $this->getTestRootEntity(true);
 
         $definition = $this->initAssetDefinition(
-            capacities: [\Glpi\Asset\Capacity\IsRackableCapacity::class]
+            capacities: [new Capacity(name: \Glpi\Asset\Capacity\IsRackableCapacity::class)]
         );
 
         $asset = $this->createItem($definition->getAssetClassName(), [
@@ -258,7 +258,7 @@ class IsRackableCapacityTest extends DbTestCase
         $racks_id = $this->createItem(Rack::class, [
             'name' => 'rack 1',
             'entities_id' => $entity_id,
-            'number_units' => 40
+            'number_units' => 40,
         ])->getID();
         $this->createItem(
             Item_Rack::class,
@@ -280,7 +280,7 @@ class IsRackableCapacityTest extends DbTestCase
 
         $definition = $this->initAssetDefinition(
             system_name: 'TestAsset',
-            capacities: [\Glpi\Asset\Capacity\IsRackableCapacity::class]
+            capacities: [new Capacity(name: \Glpi\Asset\Capacity\IsRackableCapacity::class)]
         );
         $capacity = new \Glpi\Asset\Capacity\IsRackableCapacity();
 
@@ -310,13 +310,13 @@ class IsRackableCapacityTest extends DbTestCase
         $rack = $this->createItem(Rack::class, [
             'name' => 'Test rack',
             'entities_id' => $entity_id,
-            'number_units' => 40
+            'number_units' => 40,
         ]);
         $this->createItem(Item_Rack::class, [
             'itemtype' => $definition->getAssetClassName(),
             'items_id' => $asset1->getID(),
             'racks_id' => $rack->getID(),
-            'position' => 1
+            'position' => 1,
         ]);
 
         // Check that the capacity usage description is correct
@@ -330,7 +330,7 @@ class IsRackableCapacityTest extends DbTestCase
             'itemtype' => $definition->getAssetClassName(),
             'items_id' => $asset2->getID(),
             'racks_id' => $rack->getID(),
-            'position' => 2
+            'position' => 2,
         ]);
 
         // Check that the capacity usage description is correct

@@ -37,7 +37,6 @@ namespace Glpi\Form\QuestionType;
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\JsonFieldInterface;
-use Glpi\Form\Condition\ConditionHandler\ConditionHandlerInterface;
 use Glpi\Form\Condition\ConditionHandler\RequestTypeConditionHandler;
 use Glpi\Form\Condition\UsedAsCriteriaInterface;
 use Glpi\Form\Migration\FormQuestionDataConverterInterface;
@@ -93,7 +92,7 @@ TWIG;
         return $twig->renderFromStringTemplate($template, [
             'init'               => $question != null,
             'value'              => $this->getDefaultValue($question),
-            'request_types'      => Ticket::getTypes()
+            'request_types'      => Ticket::getTypes(),
         ]);
     }
 
@@ -127,13 +126,13 @@ TWIG;
     }
 
     #[Override]
-    public function formatRawAnswer(mixed $answer): string
+    public function formatRawAnswer(mixed $answer, Question $question): string
     {
         return Ticket::getTicketTypeName($answer);
     }
 
     #[Override]
-    public function getCategory(): QuestionTypeCategory
+    public function getCategory(): QuestionTypeCategoryInterface
     {
         return QuestionTypeCategory::REQUEST_TYPE;
     }
@@ -157,10 +156,10 @@ TWIG;
     }
 
     #[Override]
-    public function getConditionHandler(
+    public function getConditionHandlers(
         ?JsonFieldInterface $question_config
-    ): ConditionHandlerInterface {
-        return new RequestTypeConditionHandler();
+    ): array {
+        return array_merge(parent::getConditionHandlers($question_config), [new RequestTypeConditionHandler()]);
     }
 
     #[Override]

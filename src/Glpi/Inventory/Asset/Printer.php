@@ -116,7 +116,7 @@ class Printer extends InventoryAsset
                 'itemtype'     => \Printer::class,
                 'name'         => $val->name,
                 'serial'       => $val->serial ?? '',
-                'is_dynamic'   => 1
+                'is_dynamic'   => 1,
             ];
             $data = $rule->processAllRules($input, [], ['class' => $this, 'return' => true]);
             if (isset($data['found_inventories'])) {
@@ -144,7 +144,7 @@ class Printer extends InventoryAsset
                     'items_id'  => $items_id,
                     'itemtype'  => $itemtype,
                     'agents_id' => $agents_id,
-                    'method'    => 'inventory'
+                    'method'    => 'inventory',
                 ];
                 $rulesmatched->add($inputrulelog, [], false);
                 $rulesmatched->cleanOlddata(end($printers), 'Printer');
@@ -155,16 +155,16 @@ class Printer extends InventoryAsset
         $iterator = $DB->request([
             'SELECT'    => [
                 'glpi_printers.id',
-                $relation_table . '.id AS link_id'
+                $relation_table . '.id AS link_id',
             ],
             'FROM'      => $relation_table,
             'LEFT JOIN' => [
                 'glpi_printers' => [
                     'FKEY' => [
                         'glpi_printers' => 'id',
-                        $relation_table => 'items_id_peripheral'
-                    ]
-                ]
+                        $relation_table => 'items_id_peripheral',
+                    ],
+                ],
             ],
             'WHERE'     => [
                 'itemtype_peripheral'           => \Printer::class,
@@ -172,8 +172,8 @@ class Printer extends InventoryAsset
                 'items_id_asset'                => $this->item->fields['id'],
                 'entities_id'                   => $entities_id,
                 $relation_table . '.is_dynamic' => 1,
-                'glpi_printers.is_global'       => 0
-            ]
+                'glpi_printers.is_global'       => 0,
+            ],
         ]);
 
         foreach ($iterator as $data) {
@@ -206,7 +206,7 @@ class Printer extends InventoryAsset
                 'items_id_asset' => $this->item->fields['id'],
                 'itemtype_peripheral' => \Printer::class,
                 'items_id_peripheral' => $printers_id,
-                'is_dynamic'   => 1
+                'is_dynamic'   => 1,
             ];
             $this->addOrMoveItem($input);
         }

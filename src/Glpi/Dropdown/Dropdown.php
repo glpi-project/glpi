@@ -103,7 +103,7 @@ abstract class Dropdown extends CommonTreeDropdown
             [
                 'item'   => $this,
                 'params' => $options,
-                'additional_fields' => $this->getAdditionalFields()
+                'additional_fields' => $this->getAdditionalFields(),
             ]
         );
         return true;

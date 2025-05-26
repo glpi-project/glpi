@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -57,28 +56,28 @@ class LogCsvExportTest extends \CsvTestCase
         $this->assertTrue(
             $computer->update([
                 'id'   => $id,
-                'name' => 'testExportToCsv 2'
+                'name' => 'testExportToCsv 2',
             ])
         );
 
         $this->assertTrue(
             $computer->update([
                 'id'   => $id,
-                'name' => 'testExportToCsv 3'
+                'name' => 'testExportToCsv 3',
             ])
         );
 
         $this->assertTrue(
             $computer->update([
                 'id'   => $id,
-                'name' => 'testExportToCsv 4'
+                'name' => 'testExportToCsv 4',
             ])
         );
 
         $this->assertTrue(
             $computer->update([
                 'id'   => $id,
-                'name' => 'testExportToCsv 5'
+                'name' => 'testExportToCsv 5',
             ])
         );
 
@@ -90,15 +89,15 @@ class LogCsvExportTest extends \CsvTestCase
 
         return [
             [
-            // Case 1: no filter
+                // Case 1: no filter
                 'export'   => new Core_LogCsvExport($computer, []),
                 'expected' => [
                     'filename' => $filename,
                     'cols'     => $cols,
-                    'rows'     => 5
-                ]
+                    'rows'     => 5,
+                ],
             ],[
-            // Case 2: only creation
+                // Case 2: only creation
                 'export'   => new Core_LogCsvExport(
                     $computer,
                     ['linked_actions' => [\Log::HISTORY_CREATE_ITEM]]
@@ -106,10 +105,10 @@ class LogCsvExportTest extends \CsvTestCase
                 'expected' => [
                     'filename' => $filename,
                     'cols'     => $cols,
-                    'rows'     => 1
-                ]
+                    'rows'     => 1,
+                ],
             ],[
-            // Case 3: only updates
+                // Case 3: only updates
                 'export'   => new Core_LogCsvExport(
                     $computer,
                     ['linked_actions' => [0]]
@@ -117,11 +116,11 @@ class LogCsvExportTest extends \CsvTestCase
                 'expected' => [
                     'filename' => $filename,
                     'cols'     => $cols,
-                    'rows'     => 4
-                ]
+                    'rows'     => 4,
+                ],
             ],
             [
-            // Case 4: only updates on name
+                // Case 4: only updates on name
                 'export'   => new Core_LogCsvExport(
                     $computer,
                     ['affected_fields' => ["id_search_option::1"]]
@@ -129,8 +128,8 @@ class LogCsvExportTest extends \CsvTestCase
                 'expected' => [
                     'filename' => $filename,
                     'cols'     => $cols,
-                    'rows'     => 4
-                ]
+                    'rows'     => 4,
+                ],
             ],
         ];
     }

@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -58,40 +57,40 @@ class CommonDBTMTest extends DbTestCase
 
         $ne_id = $networkequipment->add([
             'entities_id' => 0,
-            'name'        => 'switch'
+            'name'        => 'switch',
         ]);
         $this->assertGreaterThan(0, $ne_id);
 
-       // Add 5 ports
-        $port1 = (int)$networkport->add([
+        // Add 5 ports
+        $port1 = (int) $networkport->add([
             'name'         => 'if0/1',
             'logicial_number' => 1,
             'items_id' => $ne_id,
             'itemtype' => 'NetworkEquipment',
             'entities_id'  => 0,
         ]);
-        $port2 = (int)$networkport->add([
+        $port2 = (int) $networkport->add([
             'name'         => 'if0/2',
             'logicial_number' => 2,
             'items_id' => $ne_id,
             'itemtype' => 'NetworkEquipment',
             'entities_id'  => 0,
         ]);
-        $port3 = (int)$networkport->add([
+        $port3 = (int) $networkport->add([
             'name'         => 'if0/3',
             'logicial_number' => 3,
             'items_id' => $ne_id,
             'itemtype' => 'NetworkEquipment',
             'entities_id'  => 0,
         ]);
-        $port4 = (int)$networkport->add([
+        $port4 = (int) $networkport->add([
             'name'         => 'if0/4',
             'logicial_number' => 4,
             'items_id' => $ne_id,
             'itemtype' => 'NetworkEquipment',
             'entities_id'  => 0,
         ]);
-        $port5 = (int)$networkport->add([
+        $port5 = (int) $networkport->add([
             'name'         => 'if0/5',
             'logicial_number' => 5,
             'items_id' => $ne_id,
@@ -105,20 +104,20 @@ class CommonDBTMTest extends DbTestCase
         $this->assertGreaterThan(0, $port4);
         $this->assertGreaterThan(0, $port5);
 
-       // add an aggregate port use port 3 and 4
-        $aggport = (int)$networkportaggregate->add([
+        // add an aggregate port use port 3 and 4
+        $aggport = (int) $networkportaggregate->add([
             'networkports_id' => $port5,
             'networkports_id_list' => [$port3, $port4],
         ]);
 
         $this->assertGreaterThan(0, $aggport);
-       // Try update to use 2 and 4
+        // Try update to use 2 and 4
         $this->assertTrue($networkportaggregate->update([
             'networkports_id' => $port5,
             'networkports_id_list' => [$port2, $port4],
         ]));
 
-       // Try update with id not exist, it will return false
+        // Try update with id not exist, it will return false
         $this->assertFalse($networkportaggregate->update([
             'networkports_id' => $port3,
             'networkports_id_list' => [$port2, $port4],
@@ -133,17 +132,17 @@ class CommonDBTMTest extends DbTestCase
                 \Entity::getTable() => [
                     'FKEY' => [
                         \Entity::getTable() => 'id',
-                        \Computer::getTable() => \Entity::getForeignKeyField()
-                    ]
-                ]
+                        \Computer::getTable() => \Entity::getForeignKeyField(),
+                    ],
+                ],
             ],
             'WHERE' => ['AND' => [
-                'contact' => 'johndoe'
+                'contact' => 'johndoe',
             ],
                 \Entity::getTable() . '.name' => '_test_root_entity',
-            ]
+            ],
         ]);
-       // the instance must be populated
+        // the instance must be populated
         $this->assertFalse($instance->isNewItem());
 
         $instance = new \Computer();
@@ -164,7 +163,7 @@ class CommonDBTMTest extends DbTestCase
         global $DB;
         $result = $DB->request([
             'FROM'   => \Computer::getTable(),
-            'LIMIT'  => 1
+            'LIMIT'  => 1,
         ])->current();
 
         $this->assertArrayHasKey('name', $result);
@@ -273,21 +272,21 @@ class CommonDBTMTest extends DbTestCase
         global $DB;
 
         //insert case
-        $res = (int)$DB->updateOrInsert(
+        $res = (int) $DB->updateOrInsert(
             \Computer::getTable(),
             [
                 'name'   => 'serial-to-change',
-                'serial' => 'serial-one'
+                'serial' => 'serial-one',
             ],
             [
-                'name'   => 'serial-to-change'
+                'name'   => 'serial-to-change',
             ]
         );
         $this->assertGreaterThan(0, $res);
 
         $check = $DB->request([
             'FROM'   => \Computer::getTable(),
-            'WHERE'  => ['name' => 'serial-to-change']
+            'WHERE'  => ['name' => 'serial-to-change'],
         ])->current();
         $this->assertSame('serial-one', $check['serial']);
 
@@ -296,23 +295,23 @@ class CommonDBTMTest extends DbTestCase
             \Computer::getTable(),
             [
                 'name'   => 'serial-to-change',
-                'serial' => 'serial-changed'
+                'serial' => 'serial-changed',
             ],
             [
-                'name'   => 'serial-to-change'
+                'name'   => 'serial-to-change',
             ]
         );
         $this->assertTrue($res);
 
         $check = $DB->request([
             'FROM'   => \Computer::getTable(),
-            'WHERE'  => ['name' => 'serial-to-change']
+            'WHERE'  => ['name' => 'serial-to-change'],
         ])->current();
         $this->assertSame('serial-changed', $check['serial']);
 
         $this->assertGreaterThan(
             0,
-            (int)$DB->insert(
+            (int) $DB->insert(
                 \Computer::getTable(),
                 ['name' => 'serial-to-change']
             )
@@ -323,10 +322,10 @@ class CommonDBTMTest extends DbTestCase
             \Computer::getTable(),
             [
                 'name'   => 'serial-to-change',
-                'serial' => 'serial-changed'
+                'serial' => 'serial-changed',
             ],
             [
-                'name'   => 'serial-to-change'
+                'name'   => 'serial-to-change',
             ],
             false
         );
@@ -338,10 +337,10 @@ class CommonDBTMTest extends DbTestCase
             \Computer::getTable(),
             [
                 'name'   => 'serial-to-change',
-                'serial' => 'serial-changed'
+                'serial' => 'serial-changed',
             ],
             [
-                'name'   => 'serial-to-change'
+                'name'   => 'serial-to-change',
             ]
         );
     }
@@ -351,20 +350,20 @@ class CommonDBTMTest extends DbTestCase
         global $DB;
 
         //insert case
-        $res = (int)$DB->updateOrInsert(
+        $res = (int) $DB->updateOrInsert(
             \Computer::getTable(),
             [
-                'serial' => 'serial-one'
+                'serial' => 'serial-one',
             ],
             [
-                'name'   => 'serial-to-change'
+                'name'   => 'serial-to-change',
             ]
         );
         $this->assertGreaterThan(0, $res);
 
         $check = $DB->request([
             'FROM'   => \Computer::getTable(),
-            'WHERE'  => ['name' => 'serial-to-change']
+            'WHERE'  => ['name' => 'serial-to-change'],
         ])->current();
         $this->assertSame('serial-one', $check['serial']);
 
@@ -372,23 +371,23 @@ class CommonDBTMTest extends DbTestCase
         $res = $DB->updateOrInsert(
             \Computer::getTable(),
             [
-                'serial' => 'serial-changed'
+                'serial' => 'serial-changed',
             ],
             [
-                'name'   => 'serial-to-change'
+                'name'   => 'serial-to-change',
             ]
         );
         $this->assertTrue($res);
 
         $check = $DB->request([
             'FROM'   => \Computer::getTable(),
-            'WHERE'  => ['name' => 'serial-to-change']
+            'WHERE'  => ['name' => 'serial-to-change'],
         ])->current();
         $this->assertSame('serial-changed', $check['serial']);
 
         $this->assertGreaterThan(
             0,
-            (int)$DB->insert(
+            (int) $DB->insert(
                 \Computer::getTable(),
                 ['name' => 'serial-to-change']
             )
@@ -398,10 +397,10 @@ class CommonDBTMTest extends DbTestCase
         $res = $DB->updateOrInsert(
             \Computer::getTable(),
             [
-                'serial' => 'serial-changed'
+                'serial' => 'serial-changed',
             ],
             [
-                'name'   => 'serial-to-change'
+                'name'   => 'serial-to-change',
             ],
             false
         );
@@ -412,10 +411,10 @@ class CommonDBTMTest extends DbTestCase
         $DB->updateOrInsert(
             \Computer::getTable(),
             [
-                'serial' => 'serial-changed'
+                'serial' => 'serial-changed',
             ],
             [
-                'name'   => 'serial-to-change'
+                'name'   => 'serial-to-change',
             ]
         );
     }
@@ -435,30 +434,30 @@ class CommonDBTMTest extends DbTestCase
 
         $printer = new \Printer();
 
-        $id[0] = (int)$printer->add([
+        $id[0] = (int) $printer->add([
             'name'         => "Printer 1",
             'entities_id'  => $ent0,
-            'is_recursive' => 0
+            'is_recursive' => 0,
         ]);
         $this->assertGreaterThan(0, $id[0]);
 
-        $id[1] = (int)$printer->add([
+        $id[1] = (int) $printer->add([
             'name'         => "Printer 2",
             'entities_id'  => $ent0,
-            'is_recursive' => 1
+            'is_recursive' => 1,
         ]);
         $this->assertGreaterThan(0, $id[1]);
 
-        $id[2] = (int)$printer->add([
+        $id[2] = (int) $printer->add([
             'name'         => "Printer 3",
             'entities_id'  => $ent1,
-            'is_recursive' => 1
+            'is_recursive' => 1,
         ]);
         $this->assertGreaterThan(0, $id[2]);
 
-        $id[3] = (int)$printer->add([
+        $id[3] = (int) $printer->add([
             'name'         => "Printer 4",
-            'entities_id'  => $ent2
+            'entities_id'  => $ent2,
         ]);
         $this->assertGreaterThan(0, $id[3]);
 
@@ -530,178 +529,178 @@ class CommonDBTMTest extends DbTestCase
         $ent1 = getItemByTypeName('Entity', '_test_child_1', true);
         $ent2 = getItemByTypeName('Entity', '_test_child_2', true);
 
-       // Super admin
+        // Super admin
         $this->login('glpi', 'glpi');
         $this->assertEquals(4, $_SESSION['glpiactiveprofile']['id']);
         $this->assertEquals(255, $_SESSION['glpiactiveprofile']['contact_enterprise']);
 
-       // See all
+        // See all
         $this->assertTrue(\Session::changeActiveEntities('all'));
 
-       // Create some contacts
+        // Create some contacts
         $contact = new \Contact();
 
-        $idc[0] = (int)$contact->add([
+        $idc[0] = (int) $contact->add([
             'name'         => "Contact 1",
             'entities_id'  => $ent0,
-            'is_recursive' => 0
+            'is_recursive' => 0,
         ]);
         $this->assertGreaterThan(0, $idc[0]);
 
-        $idc[1] = (int)$contact->add([
+        $idc[1] = (int) $contact->add([
             'name'         => "Contact 2",
             'entities_id'  => $ent0,
-            'is_recursive' => 1
+            'is_recursive' => 1,
         ]);
         $this->assertGreaterThan(0, $idc[1]);
 
-        $idc[2] = (int)$contact->add([
+        $idc[2] = (int) $contact->add([
             'name'         => "Contact 3",
             'entities_id'  => $ent1,
-            'is_recursive' => 1
+            'is_recursive' => 1,
         ]);
         $this->assertGreaterThan(0, $idc[2]);
 
-        $idc[3] = (int)$contact->add([
+        $idc[3] = (int) $contact->add([
             'name'         => "Contact 4",
-            'entities_id'  => $ent2
+            'entities_id'  => $ent2,
         ]);
         $this->assertGreaterThan(0, $idc[3]);
         ;
 
-       // Create some suppliers
+        // Create some suppliers
         $supplier = new \Supplier();
 
-        $ids[0] = (int)$supplier->add([
+        $ids[0] = (int) $supplier->add([
             'name'         => "Supplier 1",
             'entities_id'  => $ent0,
-            'is_recursive' => 0
+            'is_recursive' => 0,
         ]);
         $this->assertGreaterThan(0, $ids[0]);
 
-        $ids[1] = (int)$supplier->add([
+        $ids[1] = (int) $supplier->add([
             'name'         => "Supplier 2",
             'entities_id'  => $ent0,
-            'is_recursive' => 1
+            'is_recursive' => 1,
         ]);
         $this->assertGreaterThan(0, $ids[1]);
 
-        $ids[2] = (int)$supplier->add([
+        $ids[2] = (int) $supplier->add([
             'name'         => "Supplier 3",
-            'entities_id'  => $ent1
+            'entities_id'  => $ent1,
         ]);
         $this->assertGreaterThan(0, $ids[2]);
 
-        $ids[3] = (int)$supplier->add([
+        $ids[3] = (int) $supplier->add([
             'name'         => "Supplier 4",
-            'entities_id'  => $ent2
+            'entities_id'  => $ent2,
         ]);
         $this->assertGreaterThan(0, $ids[3]);
 
-       // Relation
+        // Relation
         $rel = new \Contact_Supplier();
         $input = [
             'contacts_id' =>  $idc[0], // root
-            'suppliers_id' => $ids[0]  //root
+            'suppliers_id' => $ids[0],  //root
         ];
         $this->assertTrue($rel->can(-1, CREATE, $input));
 
-        $idr[0] = (int)$rel->add($input);
+        $idr[0] = (int) $rel->add($input);
         $this->assertGreaterThan(0, $idr[0]);
         $this->assertTrue($rel->can($idr[0], READ));
         $this->assertTrue($rel->canEdit($idr[0]));
 
         $input = [
             'contacts_id' =>  $idc[0], // root
-            'suppliers_id' => $ids[1]  // root + rec
+            'suppliers_id' => $ids[1],  // root + rec
         ];
         $this->assertTrue($rel->can(-1, CREATE, $input));
-        $idr[1] = (int)$rel->add($input);
+        $idr[1] = (int) $rel->add($input);
         $this->assertGreaterThan(0, $idr[1]);
         $this->assertTrue($rel->can($idr[1], READ));
         $this->assertTrue($rel->canEdit($idr[1]));
 
         $input = [
             'contacts_id' =>  $idc[0], // root
-            'suppliers_id' => $ids[2]  // child 1
+            'suppliers_id' => $ids[2],  // child 1
         ];
         $this->assertFalse($rel->can(-1, CREATE, $input));
 
         $input = [
             'contacts_id' =>  $idc[0], // root
-            'suppliers_id' => $ids[3]  // child 2
+            'suppliers_id' => $ids[3],  // child 2
         ];
         $this->assertFalse($rel->can(-1, CREATE, $input));
 
         $input = [
             'contacts_id' =>  $idc[1], // root + rec
-            'suppliers_id' => $ids[0]  // root
+            'suppliers_id' => $ids[0],  // root
         ];
         $this->assertTrue($rel->can(-1, CREATE, $input));
-        $idr[2] = (int)$rel->add($input);
+        $idr[2] = (int) $rel->add($input);
         $this->assertGreaterThan(0, $idr[2]);
         $this->assertTrue($rel->can($idr[2], READ));
         $this->assertTrue($rel->canEdit($idr[2]));
 
         $input = [
             'contacts_id' =>  $idc[1], // root + rec
-            'suppliers_id' => $ids[1]  // root + rec
+            'suppliers_id' => $ids[1],  // root + rec
         ];
         $this->assertTrue($rel->can(-1, CREATE, $input));
-        $idr[3] = (int)$rel->add($input);
+        $idr[3] = (int) $rel->add($input);
         $this->assertGreaterThan(0, $idr[3]);
         $this->assertTrue($rel->can($idr[3], READ));
         $this->assertTrue($rel->canEdit($idr[3]));
 
         $input = [
             'contacts_id' =>  $idc[1], // root + rec
-            'suppliers_id' => $ids[2]  // child 1
+            'suppliers_id' => $ids[2],  // child 1
         ];
         $this->assertTrue($rel->can(-1, CREATE, $input));
-        $idr[4] = (int)$rel->add($input);
+        $idr[4] = (int) $rel->add($input);
         $this->assertGreaterThan(0, $idr[4]);
         $this->assertTrue($rel->can($idr[4], READ));
         $this->assertTrue($rel->canEdit($idr[4]));
 
         $input = [
             'contacts_id' =>  $idc[1], // root + rec
-            'suppliers_id' => $ids[3]  // child 2
+            'suppliers_id' => $ids[3],  // child 2
         ];
         $this->assertTrue($rel->can(-1, CREATE, $input));
-        $idr[5] = (int)$rel->add($input);
+        $idr[5] = (int) $rel->add($input);
         $this->assertGreaterThan(0, $idr[5]);
         $this->assertTrue($rel->can($idr[5], READ));
         $this->assertTrue($rel->canEdit($idr[5]));
 
         $input = [
             'contacts_id' =>  $idc[2], // Child 1
-            'suppliers_id' => $ids[0]  // root
+            'suppliers_id' => $ids[0],  // root
         ];
         $this->assertFalse($rel->can(-1, CREATE, $input));
 
         $input = [
             'contacts_id' =>  $idc[2], // Child 1
-            'suppliers_id' => $ids[1]  // root + rec
+            'suppliers_id' => $ids[1],  // root + rec
         ];
         $this->assertTrue($rel->can(-1, CREATE, $input));
-        $idr[6] = (int)$rel->add($input);
+        $idr[6] = (int) $rel->add($input);
         $this->assertGreaterThan(0, $idr[6]);
         $this->assertTrue($rel->can($idr[6], READ));
         $this->assertTrue($rel->canEdit($idr[6]));
 
         $input = [
             'contacts_id' =>  $idc[2], // Child 1
-            'suppliers_id' => $ids[2]  // Child 1
+            'suppliers_id' => $ids[2],  // Child 1
         ];
         $this->assertTrue($rel->can(-1, CREATE, $input));
-        $idr[7] = (int)$rel->add($input);
+        $idr[7] = (int) $rel->add($input);
         $this->assertGreaterThan(0, $idr[7]);
         $this->assertTrue($rel->can($idr[7], READ));
         $this->assertTrue($rel->canEdit($idr[7]));
 
         $input = [
             'contacts_id' =>  $idc[2], // Child 1
-            'suppliers_id' => $ids[3]  // Child 2
+            'suppliers_id' => $ids[3],  // Child 2
         ];
         $this->assertFalse($rel->can(-1, CREATE, $input));
 
@@ -727,50 +726,50 @@ class CommonDBTMTest extends DbTestCase
 
         $input = [
             'contacts_id' =>  $idc[0], // root
-            'suppliers_id' => $ids[0]  // root
+            'suppliers_id' => $ids[0],  // root
         ];
         $this->assertFalse($rel->can(-1, CREATE, $input));
 
         $input = [
             'contacts_id'  =>  $idc[0],// root
-            'suppliers_id' => $ids[1]  // root + rec
+            'suppliers_id' => $ids[1],  // root + rec
         ];
         $this->assertFalse($rel->can(-1, CREATE, $input));
 
         $input = [
             'contacts_id'  =>  $idc[1],// root + rec
-            'suppliers_id' => $ids[0]  // root
+            'suppliers_id' => $ids[0],  // root
         ];
         $this->assertFalse($rel->can(-1, CREATE, $input));
 
         $input = [
             'contacts_id' =>  $idc[3], // Child 2
-            'suppliers_id' => $ids[0]  // root
+            'suppliers_id' => $ids[0],  // root
         ];
         $this->assertFalse($rel->can(-1, CREATE, $input));
 
         $input = [
             'contacts_id'  =>  $idc[3],// Child 2
-            'suppliers_id' => $ids[1]  // root + rec
+            'suppliers_id' => $ids[1],  // root + rec
         ];
         $this->assertTrue($rel->can(-1, CREATE, $input));
-        $idr[7] = (int)$rel->add($input);
+        $idr[7] = (int) $rel->add($input);
         $this->assertGreaterThan(0, $idr[7]);
         $this->assertTrue($rel->can($idr[7], READ));
         $this->assertTrue($rel->canEdit($idr[7]));
 
         $input = [
             'contacts_id' =>  $idc[3], // Child 2
-            'suppliers_id' => $ids[2]  // Child 1
+            'suppliers_id' => $ids[2],  // Child 1
         ];
         $this->assertFalse($rel->can(-1, CREATE, $input));
 
         $input = [
             'contacts_id' =>  $idc[3], // Child 2
-            'suppliers_id' => $ids[3]  // Child 2
+            'suppliers_id' => $ids[3],  // Child 2
         ];
         $this->assertTrue($rel->can(-1, CREATE, $input));
-        $idr[8] = (int)$rel->add($input);
+        $idr[8] = (int) $rel->add($input);
         $this->assertGreaterThan(0, $idr[8]);
         $this->assertTrue($rel->can($idr[8], READ));
         $this->assertTrue($rel->canEdit($idr[8]));
@@ -788,15 +787,15 @@ class CommonDBTMTest extends DbTestCase
         $ent2 = getItemByTypeName('Entity', '_test_child_2', true);
 
         $entity = new \Entity();
-        $ent3 = (int)$entity->add([
+        $ent3 = (int) $entity->add([
             'name'         => '_test_child_2_subchild_1',
-            'entities_id'  => $ent2
+            'entities_id'  => $ent2,
         ]);
         $this->assertGreaterThan(0, $ent3);
 
-        $ent4 = (int)$entity->add([
+        $ent4 = (int) $entity->add([
             'name'         => '_test_child_2_subchild_2',
-            'entities_id'  => $ent2
+            'entities_id'  => $ent2,
         ]);
         $this->assertGreaterThan(0, $ent4);
 
@@ -848,12 +847,12 @@ class CommonDBTMTest extends DbTestCase
         $bkp_current = $_SESSION['glpi_currenttime'];
         $_SESSION['glpi_currenttime'] = '2000-01-01 00:00:00';
 
-       //test with date set
+        //test with date set
         $computerID = $computer->add([
             'name'            => 'Computer01 \'',
             'date_creation'   => '2018-01-01 11:22:33',
             'date_mod'        => '2018-01-01 22:33:44',
-            'entities_id'     => $ent0
+            'entities_id'     => $ent0,
         ]);
         $this->assertSame("Computer01 '", $computer->fields['name']);
 
@@ -869,7 +868,7 @@ class CommonDBTMTest extends DbTestCase
         //test with default date
         $computerID = $computer->add([
             'name'            => 'Computer01 \'',
-            'entities_id'     => $ent0
+            'entities_id'     => $ent0,
         ]);
         $this->assertSame("Computer01 '", $computer->fields['name']);
 
@@ -897,7 +896,7 @@ class CommonDBTMTest extends DbTestCase
             'name'            => 'Computer01',
             'date_creation'   => '2018-01-01 11:22:33',
             'date_mod'        => '2018-01-01 22:33:44',
-            'entities_id'     => $ent0
+            'entities_id'     => $ent0,
         ]);
         $this->assertSame("Computer01", $computer->fields['name']);
 
@@ -950,14 +949,14 @@ class CommonDBTMTest extends DbTestCase
         $this->assertGreaterThan(0, count($DB->getTimezones()));
 
         //login with default TZ
-        $this->login();
+        $this->realLogin();
         //add a Computer with creation and update dates
         $comp = new \Computer();
         $cid = $comp->add([
             'name'            => 'Computer with timezone',
             'date_creation'   => '2019-03-04 10:00:00',
             'date_mod'        => '2019-03-04 10:00:00',
-            'entities_id'     => 0
+            'entities_id'     => 0,
         ]);
         $this->assertGreaterThan(0, $cid);
 
@@ -967,11 +966,11 @@ class CommonDBTMTest extends DbTestCase
         $user = getItemByTypeName('User', 'glpi');
         $this->assertTrue($user->update(['id' => $user->fields['id'], 'timezone' => 'Europe/Paris']));
 
-       //check tz is set
+        //check tz is set
         $this->assertTrue($user->getFromDB($user->fields['id']));
         $this->assertSame('Europe/Paris', $user->fields['timezone']);
 
-        $this->login('glpi', 'glpi');
+        $this->realLogin('glpi', 'glpi');
         $this->assertTrue($comp->getFromDB($cid));
         $this->assertMatchesRegularExpression('/2019-03-04 1[12]:00:00/', $comp->fields['date_creation']);
     }
@@ -981,18 +980,18 @@ class CommonDBTMTest extends DbTestCase
         $project = new \Project();
         $project_id_1 = $project->add([
             'name' => 'Project 1',
-            'auto_percent_done' => 1
+            'auto_percent_done' => 1,
         ]);
         $this->assertGreaterThan(0, (int) $project_id_1);
         $project_id_2 = $project->add([
             'name' => 'Project 2',
             'auto_percent_done' => 1,
-            'projects_id' => $project_id_1
+            'projects_id' => $project_id_1,
         ]);
         $this->assertGreaterThan(0, (int) $project_id_2);
         $project_id_3 = $project->add([
             'name' => 'Project 3',
-            'projects_id' => $project_id_2
+            'projects_id' => $project_id_2,
         ]);
         $this->assertGreaterThan(0, (int) $project_id_3);
         $project_id_4 = $project->add([
@@ -1243,7 +1242,7 @@ class CommonDBTMTest extends DbTestCase
 
         return [
             [
-            // Case 1: no entites field -> no change
+                // Case 1: no entites field -> no change
                 'data'            => ['test' => "test"],
                 'parent_id'       => 999,
                 'parent_itemtype' => SoftwareVersion::class,
@@ -1251,7 +1250,7 @@ class CommonDBTMTest extends DbTestCase
                 'expected'        => ['test' => "test"],
             ],
             [
-            // Case 2: entity is allowed -> no change
+                // Case 2: entity is allowed -> no change
                 'data'            => $sv1->fields,
                 'parent_id'       => $sv1->fields['softwares_id'],
                 'parent_itemtype' => SoftwareVersion::class,
@@ -1259,7 +1258,7 @@ class CommonDBTMTest extends DbTestCase
                 'expected'        => $sv1->fields,
             ],
             [
-            // Case 3: entity is not allowed -> change to parent entity
+                // Case 3: entity is not allowed -> change to parent entity
                 'data'            => $sv2->fields, // SV with modified entity
                 'parent_id'       => $sv2->fields['softwares_id'],
                 'parent_itemtype' => SoftwareVersion::class,
@@ -1267,7 +1266,7 @@ class CommonDBTMTest extends DbTestCase
                 'expected'        => $sv1->fields, // SV with correct entity
             ],
             [
-            // Case 4: can't load parent -> no change
+                // Case 4: can't load parent -> no change
                 'data'            => $sv3->fields,
                 'parent_id'       => 99999,
                 'parent_itemtype' => SoftwareVersion::class,
@@ -1422,7 +1421,7 @@ class CommonDBTMTest extends DbTestCase
             $computers_id1 = $computer->add([
                 'name' => __FUNCTION__ . '01',
                 'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
-                'uuid' => '76873749-0813-482f-ac20-eb7102ed3367'
+                'uuid' => '76873749-0813-482f-ac20-eb7102ed3367',
             ])
         );
 
@@ -1431,13 +1430,13 @@ class CommonDBTMTest extends DbTestCase
             $computers_id2 = $computer->add([
                 'name' => __FUNCTION__ . '02',
                 'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
-                'uuid' => '81fb7b20-a404-4d1e-aafa-4255b7614eae'
+                'uuid' => '81fb7b20-a404-4d1e-aafa-4255b7614eae',
             ])
         );
 
         $this->assertFalse($computer->update([
             'id' => $computers_id2,
-            'uuid' => '76873749-0813-482f-ac20-eb7102ed3367'
+            'uuid' => '76873749-0813-482f-ac20-eb7102ed3367',
         ]));
 
         $err_msg = 'Impossible record for UUID = 76873749-0813-482f-ac20-eb7102ed3367<br>Other item exist<br>[<a href="/glpi/front/computer.form.php?id=' . $computers_id1 . '" title="testCheckUnicity01">testCheckUnicity01</a> - ID: ' . $computers_id1 . ' - Serial number:  - Entity: Root entity &gt; _test_root_entity]';
@@ -1446,10 +1445,91 @@ class CommonDBTMTest extends DbTestCase
         $this->assertFalse($computer->add([
             'name' => __FUNCTION__ . '03',
             'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
-            'uuid' => '76873749-0813-482f-ac20-eb7102ed3367'
+            'uuid' => '76873749-0813-482f-ac20-eb7102ed3367',
         ]));
 
         $this->hasSessionMessages(1, [$err_msg]);
+    }
+
+    public function testSkipCheckUnicityWithTemplate()
+    {
+        $this->login();
+
+        // create field unicity rule
+        // for Computer itemtype and name field
+        $field_unicity = new \FieldUnicity();
+        $this->assertGreaterThan(
+            0,
+            $field_unicity->add([
+                'name' => 'name uniqueness',
+                'itemtype' => 'Computer',
+                '_fields' => ['name'],
+                'is_active' => 1,
+                'action_refuse' => 1,
+                'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+            ])
+        );
+        //create computer with name should be possible
+        $computer = new \Computer();
+        $this->assertGreaterThan(
+            0,
+            $computers_id = $computer->add([
+                'name' => __FUNCTION__ . '01',
+                'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+            ])
+        );
+
+        // check if no error message is set in session
+        $this->hasNoSessionMessages([ERROR]);
+
+        //create template with same name should be possible
+        $template = new \Computer();
+        $this->assertGreaterThan(
+            0,
+            $templates_id = $template->add([
+                'name' => __FUNCTION__ . '01',
+                'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+                'is_template' => 1,
+            ])
+        );
+
+        // check if no error message is set in session
+        $this->hasNoSessionMessages([ERROR]);
+
+        // update template with same name should be possible
+        $this->assertTrue(
+            $template->update([
+                'id' => $templates_id,
+                'name' => __FUNCTION__ . '01',
+                'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+                'comment' => 'a comment',
+            ])
+        );
+
+        // check if no error message is set in session
+        $this->hasNoSessionMessages([ERROR]);
+
+        //create computer with same name should not be possible (because of first computer)
+        $this->assertFalse(
+            $computer->add([
+                'name' => __FUNCTION__ . '01',
+                'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+            ])
+        );
+        $err_msg = 'Impossible record for Name = ' . __FUNCTION__ . '01<br>Other item exist<br>[<a href="/glpi/front/computer.form.php?id=' . $computers_id . '" title="' . __FUNCTION__ . '01">' . __FUNCTION__ . '01</a> - ID: ' . $computers_id . ' - Serial number:  - Entity: Root entity &gt; _test_root_entity]';
+        $this->hasSessionMessages(ERROR, [$err_msg]);
+
+        // purge all computer to check if uniqueness is checked against template when creating a new computer
+        $computer->delete(['id' => $computers_id], true);
+
+        //create computer with same name of template should be possible
+        $this->assertGreaterThan(
+            0,
+            $computers_id = $computer->add([
+                'name' => __FUNCTION__ . '01',
+                'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+            ])
+        );
     }
 
     public function testAddFilesWithNewFile()
@@ -1471,7 +1551,7 @@ class CommonDBTMTest extends DbTestCase
             ],
             '_prefix_filename' => [
                 0 => '65292dc32d6a87.46654965',
-            ]
+            ],
         ];
         $item->input = $input;
         $item->addFiles($input);
@@ -1510,7 +1590,7 @@ class CommonDBTMTest extends DbTestCase
             ],
             '_prefix_filename' => [
                 0 => '6079908c4be820.58460925',
-            ]
+            ],
         ]);
         $this->assertGreaterThan(0, $init_document_id);
 
@@ -1534,7 +1614,7 @@ class CommonDBTMTest extends DbTestCase
             ],
             '_prefix_filename' => [
                 0 => '65292dc32d6a87.22222222',
-            ]
+            ],
         ];
         $item->input = $input;
         $item->addFiles($input);
@@ -1769,7 +1849,7 @@ class CommonDBTMTest extends DbTestCase
     {
         return [
             [\CartridgeItem::class], [\Computer::class], [\ConsumableItem::class], [\Monitor::class], [\NetworkEquipment::class],
-            [\Peripheral::class], [\Phone::class], [\Printer::class], [\Software::class]
+            [\Peripheral::class], [\Phone::class], [\Printer::class], [\Software::class],
         ];
     }
 
@@ -1799,7 +1879,7 @@ class CommonDBTMTest extends DbTestCase
             $groups_id = $group->add([
                 'name' => __FUNCTION__,
                 'entities_id' => $this->getTestRootEntity(true),
-                'is_recursive' => 1
+                'is_recursive' => 1,
             ])
         );
         $group_user = new \Group_User();
@@ -1899,7 +1979,7 @@ class CommonDBTMTest extends DbTestCase
             $groups_id = $group->add([
                 'name' => __FUNCTION__,
                 'entities_id' => $this->getTestRootEntity(true),
-                'is_recursive' => 1
+                'is_recursive' => 1,
             ])
         );
         $group_user = new \Group_User();

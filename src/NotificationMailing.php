@@ -64,10 +64,10 @@ class NotificationMailing implements NotificationInterface
      **/
     public static function isUserAddressValid($address, $options = ['checkdns' => false])
     {
-       //drop sanitize...
+        //drop sanitize...
         $isValid = GLPIMailer::validateAddress($address);
 
-        $checkdns = (isset($options['checkdns']) ? $options['checkdns'] :  false);
+        $checkdns = ($options['checkdns'] ?? false);
         if ($checkdns) {
             $domain    = substr($address, strrpos($address, '@') + 1);
             if (
@@ -112,6 +112,7 @@ class NotificationMailing implements NotificationInterface
         $text = __('This is a test email.') . "\n-- \n" . $CFG_GLPI["mailing_signature"];
         $recipient = $CFG_GLPI['admin_email'];
         if (defined('GLPI_FORCE_MAIL')) {
+            Toolbox::deprecated('Usage of the `GLPI_FORCE_MAIL` constant is deprecated. Please use a mail catcher service instead.');
             //force recipient to configured email address
             $recipient = GLPI_FORCE_MAIL;
             //add original email address to message body
@@ -188,7 +189,7 @@ class NotificationMailing implements NotificationInterface
             Session::addMessageAfterRedirect(__s('Error inserting email to queue'), true, ERROR);
             return false;
         } else {
-           //TRANS to be written in logs %1$s is the to email / %2$s is the subject of the mail
+            //TRANS to be written in logs %1$s is the to email / %2$s is the subject of the mail
             Toolbox::logInFile(
                 "mail",
                 sprintf(

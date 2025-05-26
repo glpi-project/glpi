@@ -54,8 +54,8 @@ class Printer_CartridgeInfo extends CommonDBChild
         $iterator = $DB->request([
             'FROM'   => static::getTable(),
             'WHERE'  => [
-                self::$items_id => $printer->fields['id']
-            ]
+                self::$items_id => $printer->fields['id'],
+            ],
         ]);
 
         $info = [];
@@ -88,7 +88,7 @@ class Printer_CartridgeInfo extends CommonDBChild
                     _sx('%1$s remaining page', '%1$s remaining pages', $pages),
                     $pages
                 );
-            } else if ($value === 'OK') {
+            } elseif ($value === 'OK') {
                 $value = __s('OK');
             }
 
@@ -98,7 +98,7 @@ class Printer_CartridgeInfo extends CommonDBChild
                     'percent_text'      => $value,
                     'background-color'  => $bar_color,
                     'text-color'        => $text_color,
-                    'text'              => ''
+                    'text'              => '',
                 ];
 
 
@@ -122,28 +122,27 @@ HTML;
             }
             $entries[] = [
                 'property' => $tags[$property]['name'] ?? $property,
-                'value'    => $out
+                'value'    => $out,
             ];
         }
 
         if (count($entries)) {
             TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
                 'is_tab' => true,
-                'nopager' => true,
                 'nofilter' => true,
                 'nosort' => true,
                 'super_header' => self::getTypeName(Session::getPluralNumber()),
                 'columns' => [
                     'property' => __('Property'),
-                    'value' => __('Value')
+                    'value' => __('Value'),
                 ],
                 'formatters' => [
-                    'value' => 'raw_html'
+                    'value' => 'raw_html',
                 ],
                 'entries' => $entries,
                 'total_number' => count($entries),
                 'filtered_number' => count($entries),
-                'showmassiveactions' => false
+                'showmassiveactions' => false,
             ]);
         }
     }
@@ -154,7 +153,7 @@ HTML;
 
         $tab[] = [
             'id' => strtolower(self::getType()),
-            'name' => self::getTypeName(1)
+            'name' => self::getTypeName(1),
         ];
 
         $tab[] = [
@@ -166,13 +165,13 @@ HTML;
             'massiveaction'     => false,
             'nosearch'          => true,
             'joinparams'        => [
-                'jointype' => 'child'
+                'jointype' => 'child',
             ],
             'additionalfields'  => ['property', 'value'],
             'forcegroupby'      => true,
             'aggregate'         => true,
             'searchtype'        => ['contains'],
-            'nosort'            => true
+            'nosort'            => true,
         ];
 
         $tab[] = [
@@ -184,13 +183,13 @@ HTML;
             'massiveaction'     => false,
             'nosearch'          => true,
             'joinparams'        => [
-                'jointype' => 'child'
+                'jointype' => 'child',
             ],
             'additionalfields'  => ['property', 'value'],
             'forcegroupby'      => true,
             'aggregate'         => true,
             'searchtype'        => ['contains'],
-            'nosort'            => true
+            'nosort'            => true,
         ];
 
         return $tab;
@@ -225,7 +224,7 @@ HTML;
             $twig_params = [
                 'color_translated' => $color_translations[$color] ?? ucwords($color),
                 'color' => $color_aliases[$color] ?? $color,
-                'status' => is_numeric($data['value']) ? $data['value'] . '%' : $data['value']
+                'status' => is_numeric($data['value']) ? $data['value'] . '%' : $data['value'],
             ];
             // language=Twig
             return TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG

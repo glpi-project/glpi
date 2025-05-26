@@ -34,15 +34,17 @@
 
 namespace Glpi\Kernel;
 
-use GLPI;
+use Glpi\Application\Environment;
 use Glpi\Application\SystemConfigurator;
-use Glpi\Http\Listener\PluginsRouterListener;
+use Override;
 use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
 use Symfony\Bundle\TwigBundle\TwigBundle;
 use Symfony\Bundle\WebProfilerBundle\WebProfilerBundle;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
@@ -65,12 +67,12 @@ final class Kernel extends BaseKernel
         $configurator = new SystemConfigurator($this->getProjectDir(), $env);
         $this->logger = $configurator->getLogger();
 
-        $env = GLPI_ENVIRONMENT_TYPE;
+        $env = Environment::get();
         parent::__construct(
-            $env,
+            $env->value,
             // `debug: true` will ensure that cache is recompiled everytime a corresponding resource is updated.
             // Reserved for dev/test environments as it consumes many disk I/O.
-            debug: in_array($env, [GLPI::ENV_DEVELOPMENT, GLPI::ENV_TESTING], true)
+            debug: $env->shouldExpectResourcesToChange(),
         );
     }
 
@@ -79,35 +81,56 @@ final class Kernel extends BaseKernel
         $this->triggerGlobalsDeprecation();
     }
 
+    /**
+     * Returns the cache root directory.
+     */
+    public static function getCacheRootDir(): string
+    {
+        // FIXME: Inject it as a DI parameter when corresponding services will be instanciated from the DI system.
+        return GLPI_CACHE_DIR . '/' . GLPI_FILES_VERSION . '-' . Environment::get()->value;
+    }
+
+    #[Override()]
     public function getProjectDir(): string
     {
         return \dirname(__DIR__, 3);
     }
 
+    #[Override()]
     public function getCacheDir(): string
     {
-        return GLPI_CACHE_DIR . '/app/' . $this->environment;
+        return self::getCacheRootDir() . '/app';
     }
 
+    #[Override()]
     public function getLogDir(): string
     {
         return GLPI_LOG_DIR;
     }
 
+    #[Override()]
     public function registerBundles(): iterable
     {
         $bundles = [];
 
         $bundles[] = new FrameworkBundle();
 
-        if ($this->environment === 'development') {
-            $bundles[] = new WebProfilerBundle();
-            $bundles[] = new TwigBundle();
+        if (Environment::get()->shouldEnableExtraDevAndDebugTools()) {
+            $dev_bundles_classes = [
+                WebProfilerBundle::class,
+                TwigBundle::class,
+            ];
+            foreach ($dev_bundles_classes as $bundle_class) {
+                if (\class_exists($bundle_class)) {
+                    $bundles[] = new $bundle_class();
+                }
+            }
         }
 
         return $bundles;
     }
 
+    #[Override()]
     public function boot(): void
     {
         $dispatch_postboot = !$this->booted;
@@ -120,6 +143,29 @@ final class Kernel extends BaseKernel
         if ($dispatch_postboot) {
             $this->container->get('event_dispatcher')->dispatch(new PostBootEvent());
         }
+    }
+
+    #[Override()]
+    protected function buildContainer(): ContainerBuilder
+    {
+        // Exit with a clear message if there is a missing write access that would prevent the Symfony container
+        // to be built. This prevent to have a useless generic messages and no available logs when both the cache
+        // and the log dirs are not writable.
+        foreach ([$this->getCacheDir(), $this->getBuildDir(), $this->getLogDir()] as $dir) {
+            if (
+                (is_dir($dir) === false && @mkdir($dir, recursive: true) === false)
+                || is_writable($dir) === false
+            ) {
+                $filesystem = new Filesystem();
+                $relative_path = $filesystem->makePathRelative($dir, $this->getProjectDir());
+
+                echo sprintf('Unable to write in the `%s` directory.', $relative_path) . PHP_EOL;
+                echo 'Files ACL must be fixed.' . PHP_EOL;
+                exit(1); // @phpstan-ignore glpi.forbidExit (Script execution should be stopped to prevent further errors)
+            }
+        }
+
+        return parent::buildContainer();
     }
 
     protected function configureContainer(ContainerConfigurator $container): void

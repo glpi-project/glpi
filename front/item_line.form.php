@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+require_once(__DIR__ . '/_check_webserver_config.php');
+
 use Glpi\Exception\Http\BadRequestHttpException;
 
 Session::checkCentralAccess();
@@ -49,7 +51,7 @@ if (isset($_POST['update'])) {
         $url = $item_line->getFormURLWithID($_POST['id']);
     }
     Html::redirect($url);
-} else if (isset($_POST['add'])) {
+} elseif (isset($_POST['add'])) {
     $item_line->check(-1, CREATE, $_POST);
     $item_line->add($_POST);
     if (isset($_POST['_from']) && $_POST['_from'] === 'item') {
@@ -58,7 +60,7 @@ if (isset($_POST['update'])) {
         $url = $line->getFormURLWithID($_POST['lines_id']);
     }
     Html::redirect($url);
-} else if (isset($_POST['purge'])) {
+} elseif (isset($_POST['purge'])) {
     $item_line->check($_POST['id'], PURGE);
     $item_line->delete($_POST, 1);
     if (isset($_POST['_from']) && $_POST['_from'] === 'item') {
@@ -76,16 +78,16 @@ if (!isset($_REQUEST['line']) && !isset($_REQUEST['id']) && !isset($_REQUEST['it
 $params = [];
 if (isset($_REQUEST['id'])) {
     $params['id'] = $_REQUEST['id'];
-} else if (isset($_REQUEST['line'])) {
+} elseif (isset($_REQUEST['line'])) {
     $params = [
         'lines_id'  => $_REQUEST['line'],
-        '_from'     => 'line'
+        '_from'     => 'line',
     ];
-} else if (isset($_REQUEST['items_id'])) {
+} elseif (isset($_REQUEST['items_id'])) {
     $params = [
         'itemtype'  => $_REQUEST['itemtype'],
         'items_id'  => $_REQUEST['items_id'],
-        '_from'     => 'item'
+        '_from'     => 'item',
     ];
 }
 

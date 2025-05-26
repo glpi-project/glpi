@@ -47,12 +47,12 @@ return $config
         // 'src' Loaded from the autoloader
     ], false)
 
-    ->ignoreUnknownClasses(['DbTestCase'])
+    ->ignoreUnknownClasses(['DB', 'DbTestCase'])
 
     // Ignore errors on extensions that are suggested but not required
     ->ignoreErrorsOnExtensionAndPaths('ext-exif', [
         'src/Document.php',
-        'src/UploadHandler.php'
+        'src/UploadHandler.php',
     ], [ErrorType::SHADOW_DEPENDENCY])
     ->ignoreErrorsOnExtensionAndPaths('ext-pcntl', ['src/CronTask.php'], [ErrorType::SHADOW_DEPENDENCY])
     ->ignoreErrorsOnExtensionAndPaths('ext-posix', ['front/cron.php'], [ErrorType::SHADOW_DEPENDENCY])
@@ -61,10 +61,11 @@ return $config
     ->ignoreErrorsOnExtension('ext-zend-opcache', [ErrorType::SHADOW_DEPENDENCY])
     ->ignoreErrorsOnPackage('paragonie/sodium_compat', [ErrorType::UNUSED_DEPENDENCY])
 
-    // Bundles are only loaded in a conditional block that checks if the environment is dev
+    // Only loaded in a conditional block that checks if the environment is dev
     ->ignoreErrorsOnPackages([
         'symfony/twig-bundle',
-        'symfony/web-profiler-bundle'
+        'symfony/web-profiler-bundle',
+        'alisqi/twigqi',
     ], [ErrorType::DEV_DEPENDENCY_IN_PROD])
 
     ->ignoreErrorsOnExtension('ext-bcmath', [ErrorType::UNUSED_DEPENDENCY]) // Required by tc-lib-barcode

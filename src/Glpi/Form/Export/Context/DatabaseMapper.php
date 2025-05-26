@@ -36,8 +36,10 @@
 namespace Glpi\Form\Export\Context;
 
 use CommonDBTM;
+use Glpi\Form\Comment;
 use Glpi\Form\Export\Specification\DataRequirementSpecification;
 use Glpi\Form\Question;
+use Glpi\Form\Section;
 use InvalidArgumentException;
 
 final class DatabaseMapper
@@ -77,7 +79,7 @@ final class DatabaseMapper
             // Can't recover from this point, it is the serializer
             // responsability to validate that all requirements are found in the
             // context before attempting to import the forms.
-            throw new \LogicException();
+            throw new \LogicException("Unknown item: {$itemtype}::{$name}");
         }
 
         return $this->values[$itemtype][$name];
@@ -135,7 +137,11 @@ final class DatabaseMapper
 
     private function contextExist(string $itemtype, string $name): bool
     {
-        if ($itemtype === Question::class) {
+        if (
+            $itemtype === Question::class
+            || $itemtype === Comment::class
+            || $itemtype === Section::class
+        ) {
             return true;
         }
 
@@ -157,7 +163,7 @@ final class DatabaseMapper
             'FROM' => $item::getTable(),
         ];
         $condition = [
-            'name' => $name
+            'name' => $name,
         ];
 
         // Check entities

@@ -64,7 +64,7 @@ class StateFilter extends AbstractFilter
 
         if ((int) $value > 0) {
             $criteria["WHERE"] = [
-                "$table.states_id" => (int) $value
+                "$table.states_id" => (int) $value,
             ];
         }
 
@@ -80,7 +80,7 @@ class StateFilter extends AbstractFilter
                 'link'       => 'AND',
                 'field'      => self::getSearchOptionID($table, 'states_id', 'glpi_states'),
                 'searchtype' => 'equals',
-                'value'      => (int) $value
+                'value'      => (int) $value,
             ];
         }
 

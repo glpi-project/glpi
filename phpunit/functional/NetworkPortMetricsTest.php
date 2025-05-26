@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -47,7 +46,7 @@ class NetworkPortMetricsTest extends DbTestCase
         $neteq = new \NetworkEquipment();
         $neteq_id = $neteq->add([
             'name'   => 'My network equipment',
-            'entities_id'  => 0
+            'entities_id'  => 0,
         ]);
         $this->assertGreaterThan(0, $neteq_id);
 
@@ -63,14 +62,14 @@ class NetworkPortMetricsTest extends DbTestCase
             'items_id'     => $neteq_id,
             'itemtype'     => $neteq->getType(),
             'is_dynamic'   => 1,
-            'ifmtu'        => 1000
+            'ifmtu'        => 1000,
         ];
 
         $netport = new \NetworkPort();
         $netports_id = $netport->add($port);
         $this->assertGreaterThan(0, $netports_id);
 
-       //create port, check if metrics has been addded
+        //create port, check if metrics has been addded
         $metrics = new \NetworkPortMetrics();
         $values = $metrics->getMetrics($netport);
         $this->assertCount(1, $values);
@@ -89,7 +88,7 @@ class NetworkPortMetricsTest extends DbTestCase
         ];
         $this->assertEquals($expected, $value);
 
-       //update port, check metrics
+        //update port, check metrics
         $port['ifmtu'] = 1500;
         $port['ifinbytes'] = 1056823325;
         $port['ifoutbytes'] = 2159528910;
@@ -115,13 +114,13 @@ class NetworkPortMetricsTest extends DbTestCase
         ];
         $this->assertEquals($expected, $updated_value);
 
-       //check logs => no bytes nor errors
+        //check logs => no bytes nor errors
         global $DB;
         $iterator = $DB->request([
             'FROM'   => \Log::getTable(),
             'WHERE'  => [
-                'itemtype'  => 'NetworkPort'
-            ]
+                'itemtype'  => 'NetworkPort',
+            ],
         ]);
 
         $this->assertSame(2, count($iterator));

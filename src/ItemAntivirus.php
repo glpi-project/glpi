@@ -40,7 +40,7 @@ use Glpi\Application\View\TemplateRenderer;
  */
 class ItemAntivirus extends CommonDBChild
 {
-   // From CommonDBChild
+    // From CommonDBChild
     public static $itemtype = 'itemtype';
     public static $items_id = 'items_id';
     public $dohistory       = true;
@@ -56,7 +56,7 @@ class ItemAntivirus extends CommonDBChild
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
 
-       // can exists for template
+        // can exists for template
         if ($item::canView()) {
             $nb = 0;
             if ($_SESSION['glpishow_count_on_tabs']) {
@@ -84,8 +84,8 @@ class ItemAntivirus extends CommonDBChild
 
         $ong = [];
         $this->addDefaultFormTab($ong);
-        $this->addStandardTab('Lock', $ong, $options);
-        $this->addStandardTab('Log', $ong, $options);
+        $this->addStandardTab(Lock::class, $ong, $options);
+        $this->addStandardTab(Log::class, $ong, $options);
 
         return $ong;
     }
@@ -97,7 +97,7 @@ class ItemAntivirus extends CommonDBChild
 
         $tab[] = [
             'id'                 => 'common',
-            'name'               => __('Characteristics')
+            'name'               => __('Characteristics'),
         ];
 
         $tab[] = [
@@ -134,7 +134,7 @@ class ItemAntivirus extends CommonDBChild
             'name'               => _n('Type', 'Types', 1),
             'datatype'           => 'itemtypename',
             'itemtype_list'      => 'itemantivirus_types',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         return $tab;
@@ -148,7 +148,7 @@ class ItemAntivirus extends CommonDBChild
 
         $tab[] = [
             'id'                 => 'antivirus',
-            'name'               => $name
+            'name'               => $name,
         ];
 
         $tab[] = [
@@ -161,7 +161,7 @@ class ItemAntivirus extends CommonDBChild
             'massiveaction'      => false,
             'datatype'           => 'dropdown',
             'joinparams'         => [
-                'jointype'           => 'itemtype_item'
+                'jointype'           => 'itemtype_item',
             ],
             'searchtype'         => ['contains'],
         ];
@@ -176,8 +176,8 @@ class ItemAntivirus extends CommonDBChild
             'massiveaction'      => false,
             'datatype'           => 'text',
             'joinparams'         => [
-                'jointype'           => 'itemtype_item'
-            ]
+                'jointype'           => 'itemtype_item',
+            ],
         ];
 
         $tab[] = [
@@ -188,12 +188,12 @@ class ItemAntivirus extends CommonDBChild
             'name'               => __('Active'),
             'datatype'           => 'bool',
             'joinparams'         => [
-                'jointype'           => 'itemtype_item'
+                'jointype'           => 'itemtype_item',
             ],
             'massiveaction'      => false,
             'forcegroupby'       => true,
             'usehaving'          => true,
-            'searchtype'         => ['equals']
+            'searchtype'         => ['equals'],
         ];
 
         $tab[] = [
@@ -204,12 +204,12 @@ class ItemAntivirus extends CommonDBChild
             'name'               => __('Is up to date'),
             'datatype'           => 'bool',
             'joinparams'         => [
-                'jointype'           => 'itemtype_item'
+                'jointype'           => 'itemtype_item',
             ],
             'massiveaction'      => false,
             'forcegroupby'       => true,
             'usehaving'          => true,
-            'searchtype'         => ['equals']
+            'searchtype'         => ['equals'],
         ];
 
         $tab[] = [
@@ -222,8 +222,8 @@ class ItemAntivirus extends CommonDBChild
             'massiveaction'      => false,
             'datatype'           => 'text',
             'joinparams'         => [
-                'jointype'           => 'itemtype_item'
-            ]
+                'jointype'           => 'itemtype_item',
+            ],
         ];
 
         $tab[] = [
@@ -236,8 +236,8 @@ class ItemAntivirus extends CommonDBChild
             'massiveaction'      => false,
             'datatype'           => 'date',
             'joinparams'         => [
-                'jointype'           => 'itemtype_item'
-            ]
+                'jointype'           => 'itemtype_item',
+            ],
         ];
 
         return $tab;
@@ -342,7 +342,6 @@ class ItemAntivirus extends CommonDBChild
         }
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'is_tab' => true,
-            'nopager' => true,
             'nofilter' => true,
             'nosort' => true,
             'columns' => [

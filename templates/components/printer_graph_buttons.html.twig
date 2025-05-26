@@ -6,7 +6,6 @@
  # http://glpi-project.org
  #
  # @copyright 2015-2025 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -37,18 +36,18 @@
     'rand': random()
 } %}
 
-{% if not timerange_presets %}
+{% if timerange_presets is not defined %}
     {% set timerange_presets = {
         'P1D': __('Last day'),
-        'P1W': __('Last 7 days'),
-        'P1M': __('Last 30 days'),
+        'P1W': __('Last %s days')|format(7),
+        'P1M': __('Last %s days')|format(30),
         'P3M': __('Last quarter'),
         'P1Y': __('Last year'),
         'P1000Y': __('All time'),
     } %}
 {% endif %}
 
-{% if not format_presets %}
+{% if format_presets is not defined %}
     {% set format_presets = {
         'dynamic': __('Dynamic distribution'),
         'daily': __('Daily'),
@@ -136,7 +135,7 @@
             </li>
         </ul>
     </div>
-    <a href="{{ path(export_url) }}" target="_blank" class="btn btn-sm btn-icon btn-ghost-secondary me-0 me-sm-1 px-2" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ __('Export data in CSV') }}">
+    <a href="{{ path(export_url) }}" target="_blank" class="btn btn-sm btn-icon btn-ghost-secondary me-0 me-sm-1 px-2" data-bs-toggle="tooltip" data-bs-placement="bottom" title="{{ __('Export to CSV') }}">
          <i class="ti fs-2 ti-file-download"></i>
       </a>
 </div>

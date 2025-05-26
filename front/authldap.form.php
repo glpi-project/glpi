@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+require_once(__DIR__ . '/_check_webserver_config.php');
+
 /** @var array $CFG_GLPI */
 global $CFG_GLPI;
 
@@ -47,8 +49,8 @@ if (!isset($_GET['id'])) {
 if (isset($_POST["update"])) {
     $config_ldap->update($_POST);
     Html::back();
-} else if (isset($_POST["add"])) {
-   //If no name has been given to this configuration, then go back to the page without adding
+} elseif (isset($_POST["add"])) {
+    //If no name has been given to this configuration, then go back to the page without adding
     if ($_POST["name"] != "") {
         if ($newID = $config_ldap->add($_POST)) {
             if (AuthLDAP::testLDAPConnection($newID)) {
@@ -61,11 +63,11 @@ if (isset($_POST["update"])) {
         }
     }
     Html::back();
-} else if (isset($_POST["purge"])) {
+} elseif (isset($_POST["purge"])) {
     $config_ldap->delete($_POST, 1);
     $_SESSION['glpi_authconfig'] = 1;
     $config_ldap->redirectToList();
-} else if (isset($_POST["add_replicate"])) {
+} elseif (isset($_POST["add_replicate"])) {
     $replicate = new AuthLdapReplicate();
     unset($_POST["next"]);
     unset($_POST["id"]);

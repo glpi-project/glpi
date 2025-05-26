@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -36,8 +35,30 @@
 namespace tests\units\Glpi\Form\QuestionType;
 
 use DbTestCase;
+use Glpi\Form\QuestionType\QuestionTypeAssignee;
+use Glpi\Form\QuestionType\QuestionTypeCategoryInterface;
+use Glpi\Form\QuestionType\QuestionTypeCheckbox;
+use Glpi\Form\QuestionType\QuestionTypeDateTime;
+use Glpi\Form\QuestionType\QuestionTypeDropdown;
+use Glpi\Form\QuestionType\QuestionTypeEmail;
+use Glpi\Form\QuestionType\QuestionTypeFile;
 use Glpi\Form\QuestionType\QuestionTypeInterface;
 use Glpi\Form\QuestionType\QuestionTypeCategory;
+use Glpi\Form\QuestionType\QuestionTypeItem;
+use Glpi\Form\QuestionType\QuestionTypeItemDropdown;
+use Glpi\Form\QuestionType\QuestionTypeLongText;
+use Glpi\Form\QuestionType\QuestionTypeNumber;
+use Glpi\Form\QuestionType\QuestionTypeObserver;
+use Glpi\Form\QuestionType\QuestionTypeRadio;
+use Glpi\Form\QuestionType\QuestionTypeRequester;
+use Glpi\Form\QuestionType\QuestionTypeRequestType;
+use Glpi\Form\QuestionType\QuestionTypeShortText;
+use Glpi\Form\QuestionType\QuestionTypesManager;
+use Glpi\Form\QuestionType\QuestionTypeUrgency;
+use Glpi\Form\QuestionType\QuestionTypeUserDevice;
+use GlpiPlugin\Tester\Form\QuestionTypeColor;
+use GlpiPlugin\Tester\Form\QuestionTypeRange;
+use GlpiPlugin\Tester\Form\TesterCategory;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 final class QuestionTypesManagerTest extends DbTestCase
@@ -49,7 +70,7 @@ final class QuestionTypesManagerTest extends DbTestCase
      */
     public function testGetDefaultTypeClass(): void
     {
-        $manager = \Glpi\Form\QuestionType\QuestionTypesManager::getInstance();
+        $manager = QuestionTypesManager::getInstance();
         $default_type = $manager->getDefaultTypeClass();
         $this->assertNotEmpty($default_type);
 
@@ -73,7 +94,7 @@ final class QuestionTypesManagerTest extends DbTestCase
      */
     public function testGetCategories(): void
     {
-        $manager = \Glpi\Form\QuestionType\QuestionTypesManager::getInstance();
+        $manager = QuestionTypesManager::getInstance();
         $categories = $manager->getCategories();
 
         $expected_categories = [
@@ -88,6 +109,9 @@ final class QuestionTypesManagerTest extends DbTestCase
             QuestionTypeCategory::CHECKBOX,
             QuestionTypeCategory::DROPDOWN,
             QuestionTypeCategory::ITEM,
+
+            // Plugins categories should be detected too
+            new TesterCategory(),
         ];
 
         // Manual array comparison, `isEqualTo`  doesn't seem to work properly
@@ -104,97 +128,105 @@ final class QuestionTypesManagerTest extends DbTestCase
     public static function getTypesForCategoryProvider(): iterable
     {
         yield [
-            QuestionTypeCategory::SHORT_ANSWER,
-            [
-                new \Glpi\Form\QuestionType\QuestionTypeShortText(),
-                new \Glpi\Form\QuestionType\QuestionTypeEmail(),
-                new \Glpi\Form\QuestionType\QuestionTypeNumber(),
-            ]
+            'category' => QuestionTypeCategory::SHORT_ANSWER,
+            'expected_types' => [
+                (new QuestionTypeShortText())->getName(),
+                (new QuestionTypeEmail())->getName(),
+                (new QuestionTypeNumber())->getName(),
+            ],
         ];
 
         yield [
-            QuestionTypeCategory::LONG_ANSWER,
-            [
-                new \Glpi\Form\QuestionType\QuestionTypeLongText(),
-            ]
+            'category' => QuestionTypeCategory::LONG_ANSWER,
+            'expected_types' => [
+                (new QuestionTypeLongText())->getName(),
+            ],
         ];
 
         yield [
-            QuestionTypeCategory::DATE_AND_TIME,
-            [
-                new \Glpi\Form\QuestionType\QuestionTypeDateTime(),
-            ]
+            'category' => QuestionTypeCategory::DATE_AND_TIME,
+            'expected_types' => [
+                (new QuestionTypeDateTime())->getName(),
+            ],
         ];
 
         yield [
-            QuestionTypeCategory::ACTORS,
-            [
-                new \Glpi\Form\QuestionType\QuestionTypeRequester(),
-                new \Glpi\Form\QuestionType\QuestionTypeObserver(),
-                new \Glpi\Form\QuestionType\QuestionTypeAssignee(),
-            ]
+            'category' => QuestionTypeCategory::ACTORS,
+            'expected_types' => [
+                (new QuestionTypeRequester())->getName(),
+                (new QuestionTypeObserver())->getName(),
+                (new QuestionTypeAssignee())->getName(),
+            ],
         ];
 
         yield [
-            QuestionTypeCategory::URGENCY,
-            [
-                new \Glpi\Form\QuestionType\QuestionTypeUrgency(),
-            ]
+            'category' => QuestionTypeCategory::URGENCY,
+            'expected_types' => [
+                (new QuestionTypeUrgency())->getName(),
+            ],
         ];
 
         yield [
-            QuestionTypeCategory::REQUEST_TYPE,
-            [
-                new \Glpi\Form\QuestionType\QuestionTypeRequestType(),
-            ]
+            'category' => QuestionTypeCategory::REQUEST_TYPE,
+            'expected_types' => [
+                (new QuestionTypeRequestType())->getName(),
+            ],
         ];
 
         yield [
-            QuestionTypeCategory::FILE,
-            [
-                new \Glpi\Form\QuestionType\QuestionTypeFile(),
-            ]
+            'category' => QuestionTypeCategory::FILE,
+            'expected_types' => [
+                (new QuestionTypeFile())->getName(),
+            ],
         ];
 
         yield [
-            QuestionTypeCategory::RADIO,
-            [
-                new \Glpi\Form\QuestionType\QuestionTypeRadio(),
-            ]
+            'category' => QuestionTypeCategory::RADIO,
+            'expected_types' => [
+                (new QuestionTypeRadio())->getName(),
+            ],
         ];
 
         yield [
-            QuestionTypeCategory::CHECKBOX,
-            [
-                new \Glpi\Form\QuestionType\QuestionTypeCheckbox(),
-            ]
+            'category' => QuestionTypeCategory::CHECKBOX,
+            'expected_types' => [
+                (new QuestionTypeCheckbox())->getName(),
+            ],
         ];
 
         yield [
-            QuestionTypeCategory::DROPDOWN,
-            [
-                new \Glpi\Form\QuestionType\QuestionTypeDropdown(),
-            ]
+            'category' => QuestionTypeCategory::DROPDOWN,
+            'expected_types' => [
+                (new QuestionTypeDropdown())->getName(),
+            ],
         ];
 
         yield [
-            QuestionTypeCategory::ITEM,
-            [
-                new \Glpi\Form\QuestionType\QuestionTypeItem(),
-                new \Glpi\Form\QuestionType\QuestionTypeUserDevice(),
-                new \Glpi\Form\QuestionType\QuestionTypeItemDropdown(),
-            ]
+            'category' => QuestionTypeCategory::ITEM,
+            'expected_types' => [
+                (new QuestionTypeItem())->getName(),
+                (new QuestionTypeUserDevice())->getName(),
+                (new QuestionTypeItemDropdown())->getName(),
+            ],
+        ];
+
+        yield [
+            'category' => new TesterCategory(),
+            'expected_types' => [
+                (new QuestionTypeRange())->getName(),
+                (new QuestionTypeColor())->getName(),
+            ],
         ];
     }
 
     #[DataProvider('getTypesForCategoryProvider')]
     public function testGetTypesForCategory(
-        QuestionTypeCategory $category,
+        QuestionTypeCategoryInterface $category,
         array $expected_types
     ): void {
-        $manager = \Glpi\Form\QuestionType\QuestionTypesManager::getInstance();
-        $types = $manager->getTypesForCategory($category);
-        $types = array_values($types); // Remove special keys
+        $manager = QuestionTypesManager::getInstance();
+        $types = $manager->getQuestionTypesDropdownValuesForCategory($category);
+        $types = array_values($types); // Ignore keys
 
         $this->assertEquals($expected_types, $types);
     }
@@ -210,7 +242,7 @@ final class QuestionTypesManagerTest extends DbTestCase
      */
     public function testEnsureAllCategoriesAreTested(): void
     {
-        $manager = \Glpi\Form\QuestionType\QuestionTypesManager::getInstance();
+        $manager = QuestionTypesManager::getInstance();
         $provider_data = iterator_to_array($this->getTypesForCategoryProvider());
 
         $this->assertCount(

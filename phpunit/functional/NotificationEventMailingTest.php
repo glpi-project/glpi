@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -36,7 +35,6 @@
 namespace tests\units;
 
 use DbTestCase;
-use Monolog\Logger;
 use Psr\Log\LogLevel;
 
 /* Test for inc/notificationeventajax.class.php */
@@ -69,7 +67,7 @@ class NotificationEventMailingTest extends DbTestCase
         $this->assertSame('email', \NotificationEventMailing::getTargetField($data));
         $expected = [
             'users_id'  => $uid,
-            'email'     => TU_USER . '@glpi.com'
+            'email'     => TU_USER . '@glpi.com',
         ];
         $this->assertSame($expected, $data);
     }
@@ -87,7 +85,7 @@ class NotificationEventMailingTest extends DbTestCase
             [
                 'email'     => $CFG_GLPI['admin_email'],
                 'name'      => $CFG_GLPI['admin_email_name'],
-                'language'  => $CFG_GLPI['language']
+                'language'  => $CFG_GLPI['language'],
             ],
             \NotificationEventMailing::getAdminData()
         );
@@ -110,7 +108,7 @@ class NotificationEventMailingTest extends DbTestCase
             $entity1->update([
                 'id'                 => $entity1->getId(),
                 'admin_email'        => 'entadmin@localhost',
-                'admin_email_name'   => 'Entity admin ONE'
+                'admin_email_name'   => 'Entity admin ONE',
             ])
         );
 
@@ -121,7 +119,7 @@ class NotificationEventMailingTest extends DbTestCase
             $entity2->update([
                 'id'                 => $entity2->getId(),
                 'admin_email'        => 'entadmin2localhost',
-                'admin_email_name'   => 'Entity admin TWO'
+                'admin_email_name'   => 'Entity admin TWO',
             ])
         );
 
@@ -130,7 +128,7 @@ class NotificationEventMailingTest extends DbTestCase
                 'name'     => '',
                 'email'    => 'admsys@localhost',
                 'language' => 'en_GB',
-            ]
+            ],
         ];
         $this->assertEquals($entity0_result, \NotificationEventMailing::getEntityAdminsData(0));
         $entity1_result = [
@@ -138,7 +136,7 @@ class NotificationEventMailingTest extends DbTestCase
                 'name'     => 'Entity admin ONE',
                 'email'    => 'entadmin@localhost',
                 'language' => 'en_GB',
-            ]
+            ],
         ];
         $this->assertEquals($entity1_result, \NotificationEventMailing::getEntityAdminsData($entity1->getID()));
         $this->assertEquals($entity1_result, \NotificationEventMailing::getEntityAdminsData($sub_entity1->getID()));

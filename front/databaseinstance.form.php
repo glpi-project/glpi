@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+require_once(__DIR__ . '/_check_webserver_config.php');
+
 use Glpi\Event;
 
 Session::checkRight('database', READ);
@@ -120,6 +122,6 @@ if (isset($_POST["add"])) {
 } else {
     $menus = ["management", "database", "DatabaseInstance"];
     DatabaseInstance::displayFullPageForItem($_GET['id'], $menus, [
-        'withtemplate' => $_GET['withtemplate']
+        'withtemplate' => $_GET['withtemplate'],
     ]);
 }

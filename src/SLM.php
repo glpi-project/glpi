@@ -41,7 +41,7 @@ use Glpi\Application\View\TemplateRenderer;
  **/
 class SLM extends CommonDBTM
 {
-   // From CommonDBTM
+    // From CommonDBTM
     public $dohistory                   = true;
 
     protected static $forward_entity_to = ['SLA', 'OLA'];
@@ -73,9 +73,9 @@ class SLM extends CommonDBTM
         $ong = [];
         $this->addDefaultFormTab($ong);
         $this->addImpactTab($ong, $options);
-        $this->addStandardTab('SLA', $ong, $options);
-        $this->addStandardTab('OLA', $ong, $options);
-        $this->addStandardTab('Log', $ong, $options);
+        $this->addStandardTab(SLA::class, $ong, $options);
+        $this->addStandardTab(OLA::class, $ong, $options);
+        $this->addStandardTab(Log::class, $ong, $options);
 
         return $ong;
     }
@@ -129,8 +129,8 @@ class SLM extends CommonDBTM
                         'SELECT' => 'id',
                         'FROM'   => $child_class::getTable(),
                         'WHERE'  => [
-                            static::getForeignKeyField() => $this->getID()
-                        ]
+                            static::getForeignKeyField() => $this->getID(),
+                        ],
                     ]
                 );
                 foreach ($child_iterator as $child_data) {
@@ -166,8 +166,10 @@ class SLM extends CommonDBTM
     public function showForm($ID, array $options = [])
     {
         $twig_params = [
-            'item' => $this,
-            'params' => $options,
+            'item'        => $this,
+            'params'      => $options,
+            'empty_label' => __('24/7'),
+            'toadd_label' => __('Calendar of the ticket'),
         ];
         // language=Twig
         echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
@@ -176,9 +178,9 @@ class SLM extends CommonDBTM
             
             {% block more_fields %}
                 {{ fields.dropdownField('Calendar', 'calendars_id', item.fields['use_ticket_calendar'] ? -1 : item.fields['calendars_id'], 'Calendar'|itemtype_name(1), {
-                    emptylabel: __('24/7'),
+                    emptylabel: empty_label,
                     toadd: {
-                        (-1): __('Calendar of the ticket')
+                        (-1): toadd_label
                     }
                 }) }}
             {% endblock %}
@@ -192,7 +194,7 @@ TWIG, $twig_params);
 
         $tab[] = [
             'id'                 => 'common',
-            'name'               => __('Characteristics')
+            'name'               => __('Characteristics'),
         ];
 
         $tab[] = [
@@ -210,7 +212,7 @@ TWIG, $twig_params);
             'field'              => 'id',
             'name'               => __('ID'),
             'massiveaction'      => false,
-            'datatype'           => 'number'
+            'datatype'           => 'number',
         ];
 
         $tab[] = [
@@ -218,15 +220,15 @@ TWIG, $twig_params);
             'table'              => 'glpi_calendars',
             'field'              => 'name',
             'name'               => _n('Calendar', 'Calendars', 1),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
             'id'                 => '16',
             'table'              => static::getTable(),
             'field'              => 'comment',
-            'name'               => __('Comments'),
-            'datatype'           => 'text'
+            'name'               => _n('Comment', 'Comments', Session::getPluralNumber()),
+            'datatype'           => 'text',
         ];
 
         return $tab;

@@ -31,7 +31,6 @@
  * ---------------------------------------------------------------------
  */
 
-$item_margin: 3px;
 $toolbar_height: 40px;
 $filter_height: 62px;
 $break_phones: 700px;
@@ -407,8 +406,9 @@ $break_tablet: 1400px;
                 .flatpickr {
                     position: relative;
 
-                    a[data-clear] {
+                    button[data-clear] {
                         display: none;
+                        border: none;
                     }
 
                     &::after {
@@ -525,7 +525,7 @@ $break_tablet: 1400px;
                             display: none;
                         }
 
-                        a[data-clear] {
+                        button[data-clear] {
                             display: inline-block;
                             color: #509ee3;
                         }
@@ -562,13 +562,14 @@ $break_tablet: 1400px;
     .grid-guide {
         display: none;
         position: absolute;
-        top: calc(#{$toolbar_height} + #{$filter_height} + 16px);
+        bottom: var(--gs-cell-height);
         width: calc(100% + 1px);
         border: 1px solid var(--tblr-body-bg);
         border-width: 0 1px 1px 0;
         background-image:
             linear-gradient(to right, var(--tblr-body-bg) 1px, transparent 1px),
             linear-gradient(to bottom, var(--tblr-body-bg) 1px, transparent 1px);
+        background-size: var(--gs-cell-height) var(--gs-cell-height);
 
         .cell-add {
             opacity: 0;
@@ -576,6 +577,8 @@ $break_tablet: 1400px;
             position: relative;
             cursor: pointer;
             border: 2px dashed #777;
+            width: var(--gs-cell-height);
+            height: var(--gs-cell-height);
 
             &:hover {
                 opacity: 1;
@@ -635,11 +638,6 @@ $break_tablet: 1400px;
                         opacity: 1;
                     }
                 }
-            }
-
-            .placeholder-content {
-                left: $item_margin;
-                right: $item_margin;
             }
 
             .loading-card {

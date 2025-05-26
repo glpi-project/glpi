@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -65,7 +64,7 @@ if (!$DB->fieldExists('glpi_itemantiviruses', 'items_id')) {
         'items_id',
         "int {$default_key_sign} NOT NULL DEFAULT '0'",
         [
-            'after' => 'itemtype'
+            'after' => 'itemtype',
         ]
     );
     $migration->migrationOneTable('glpi_itemantiviruses');

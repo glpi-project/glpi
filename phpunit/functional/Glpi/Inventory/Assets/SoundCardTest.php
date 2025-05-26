@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -60,8 +59,8 @@ class SoundCardTest extends AbstractInventoryAsset
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-                'expected'  => '{"description": "rev 21", "manufacturer": "Intel Corporation Sunrise Point-LP HD Audio", "name": "Audio device", "designation": "Audio device", "manufacturers_id": "Intel Corporation Sunrise Point-LP HD Audio", "comment": "rev 21", "is_dynamic": 1}'
-            ]
+                'expected'  => '{"description": "rev 21", "manufacturer": "Intel Corporation Sunrise Point-LP HD Audio", "name": "Audio device", "designation": "Audio device", "manufacturers_id": "Intel Corporation Sunrise Point-LP HD Audio", "comment": "rev 21", "is_dynamic": 1}',
+            ],
         ];
     }
 
@@ -74,7 +73,7 @@ class SoundCardTest extends AbstractInventoryAsset
 
         $computer = getItemByTypeName('Computer', '_test_pc01');
         $asset = new \Glpi\Inventory\Asset\SoundCard($computer, $json->content->sounds);
-        $asset->setExtraData((array)$json->content);
+        $asset->setExtraData((array) $json->content);
         $result = $asset->prepare();
         $this->assertEquals(json_decode($expected), $result[0]);
     }
@@ -83,14 +82,14 @@ class SoundCardTest extends AbstractInventoryAsset
     {
         $computer = getItemByTypeName('Computer', '_test_pc01');
 
-       //first, check there are no soundcard linked to this computer
+        //first, check there are no soundcard linked to this computer
         $ids = new \Item_DeviceSoundCard();
-                 $this->assertFalse(
-                     $ids->getFromDbByCrit(['items_id' => $computer->fields['id'], 'itemtype' => 'Computer']),
-                     'A soundcard is already linked to computer!'
-                 );
+        $this->assertFalse(
+            $ids->getFromDbByCrit(['items_id' => $computer->fields['id'], 'itemtype' => 'Computer']),
+            'A soundcard is already linked to computer!'
+        );
 
-       //convert data
+        //convert data
         $expected = $this->assetProvider()[0];
 
         $converter = new \Glpi\Inventory\Converter();
@@ -99,11 +98,11 @@ class SoundCardTest extends AbstractInventoryAsset
 
         $computer = getItemByTypeName('Computer', '_test_pc01');
         $asset = new \Glpi\Inventory\Asset\SoundCard($computer, $json->content->sounds);
-        $asset->setExtraData((array)$json->content);
+        $asset->setExtraData((array) $json->content);
         $result = $asset->prepare();
         $this->assertEquals(json_decode($expected['expected']), $result[0]);
 
-       //handle
+        //handle
         $asset->handleLinks();
         $asset->handle();
         $this->assertTrue(
@@ -144,64 +143,64 @@ class SoundCardTest extends AbstractInventoryAsset
   <QUERY>INVENTORY</QUERY>
 </REQUEST>";
 
-       //create manually a computer, with 3 sound cards
+        //create manually a computer, with 3 sound cards
         $computers_id = $computer->add([
             'name'   => 'pc002',
             'serial' => 'ggheb7ne7',
-            'entities_id' => 0
+            'entities_id' => 0,
         ]);
         $this->assertGreaterThan(0, $computers_id);
 
         $manufacturer = new \Manufacturer();
         $manufacturers_id = $manufacturer->add([
-            'name' => 'Intel Corporation'
+            'name' => 'Intel Corporation',
         ]);
         $this->assertGreaterThan(0, $manufacturers_id);
 
         $sound_1_id = $device_sound->add([
             'designation' => 'Audio device',
             'manufacturers_id' => $manufacturers_id,
-            'entities_id'  => 0
+            'entities_id'  => 0,
         ]);
         $this->assertGreaterThan(0, $sound_1_id);
 
         $item_sound_1_id = $item_sound->add([
             'items_id'     => $computers_id,
             'itemtype'     => 'Computer',
-            'devicesoundcards_id' => $sound_1_id
+            'devicesoundcards_id' => $sound_1_id,
         ]);
         $this->assertGreaterThan(0, $item_sound_1_id);
 
         $manufacturers_id = $manufacturer->add([
-            'name' => 'Realtek'
+            'name' => 'Realtek',
         ]);
         $this->assertGreaterThan(0, $manufacturers_id);
 
         $sound_2_id = $device_sound->add([
             'designation' => 'Realtek High Definition Audio',
             'manufacturers_id' => $manufacturers_id,
-            'entities_id'  => 0
+            'entities_id'  => 0,
         ]);
         $this->assertGreaterThan(0, $sound_2_id);
 
         $item_sound_2_id = $item_sound->add([
             'items_id'     => $computers_id,
             'itemtype'     => 'Computer',
-            'devicesoundcards_id' => $sound_2_id
+            'devicesoundcards_id' => $sound_2_id,
         ]);
         $this->assertGreaterThan(0, $item_sound_2_id);
 
         $sound_3_id = $device_sound->add([
             'designation' => 'My Sound Card',
             'manufacturers_id' => $manufacturers_id,
-            'entities_id'  => 0
+            'entities_id'  => 0,
         ]);
         $this->assertGreaterThan(0, $sound_3_id);
 
         $item_sound_3_id = $item_sound->add([
             'items_id'     => $computers_id,
             'itemtype'     => 'Computer',
-            'devicesoundcards_id' => $sound_3_id
+            'devicesoundcards_id' => $sound_3_id,
         ]);
         $this->assertGreaterThan(0, $item_sound_3_id);
 
@@ -211,26 +210,26 @@ class SoundCardTest extends AbstractInventoryAsset
             $this->assertEquals(0, $sound['is_dynamic']);
         }
 
-       //computer inventory knows only "Intel" and "Realtek" sound cards
+        //computer inventory knows only "Intel" and "Realtek" sound cards
         $this->doInventory($xml_source, true);
 
-       //we still have 3 sound cards
+        //we still have 3 sound cards
         $sounds = $device_sound->find();
         $this->assertCount(3, $sounds);
 
-       //we still have 3 sound cards items linked to the computer
+        //we still have 3 sound cards items linked to the computer
         $sounds = $item_sound->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
         $this->assertCount(3, $sounds);
 
-       //sound cards present in the inventory source are now dynamic
+        //sound cards present in the inventory source are now dynamic
         $sounds = $item_sound->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
         $this->assertCount(2, $sounds);
 
-       //sound card not present in the inventory is still not dynamic
+        //sound card not present in the inventory is still not dynamic
         $sounds = $item_sound->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 0]);
         $this->assertCount(1, $sounds);
 
-       //Redo inventory, but with removed "Realtek" sound card
+        //Redo inventory, but with removed "Realtek" sound card
         $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
@@ -253,19 +252,19 @@ class SoundCardTest extends AbstractInventoryAsset
 
         $this->doInventory($xml_source, true);
 
-       //we still have 3 sound cards
+        //we still have 3 sound cards
         $sounds = $device_sound->find();
         $this->assertCount(3, $sounds);
 
-       //we now have 2 sound cards linked to computer only
+        //we now have 2 sound cards linked to computer only
         $sounds = $item_sound->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
         $this->assertCount(2, $sounds);
 
-       //sound card present in the inventory source is still dynamic
+        //sound card present in the inventory source is still dynamic
         $sounds = $item_sound->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
         $this->assertCount(1, $sounds);
 
-       //sound card not present in the inventory is still not dynamic
+        //sound card not present in the inventory is still not dynamic
         $sounds = $item_sound->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 0]);
         $this->assertCount(1, $sounds);
     }

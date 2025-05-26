@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+require_once(__DIR__ . '/_check_webserver_config.php');
+
 use Glpi\Event;
 
 Session::checkCentralAccess();
@@ -65,7 +67,7 @@ if (isset($_POST["add"])) {
         }
     }
     Html::back();
-} else if (isset($_POST["purge"])) {
+} elseif (isset($_POST["purge"])) {
     $mgmt->check($_POST["id"], PURGE);
 
     if ($mgmt->delete($_POST, 1)) {
@@ -83,7 +85,7 @@ if (isset($_POST["add"])) {
     $item->getFromDB($mgmt->fields['items_id']);
     Html::redirect($itemtype::getFormURLWithID($mgmt->fields['items_id']) .
                   ($item->fields['is_template'] ? "&withtemplate=1" : ""));
-} else if (isset($_POST["update"])) {
+} elseif (isset($_POST["update"])) {
     $mgmt->check($_POST["id"], UPDATE);
 
     if ($mgmt->update($_POST)) {
@@ -104,13 +106,13 @@ if (isset($_POST["add"])) {
     }
     if (!$mgmt->isNewItem()) {
         $itemtype = $mgmt->fields['itemtype'];
-    } else if ($_GET['itemtype'] != '') {
+    } elseif ($_GET['itemtype'] != '') {
         $itemtype = $_GET['itemtype'];
     }
 
     $menus = ["assets", $itemtype];
     Item_RemoteManagement::displayFullPageForItem($_GET["id"], $menus, [
         'items_id'  => $_GET["items_id"],
-        'itemtype'  => $_GET['itemtype']
+        'itemtype'  => $_GET['itemtype'],
     ]);
 }

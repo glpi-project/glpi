@@ -6,7 +6,6 @@
  # http://glpi-project.org
  #
  # @copyright 2015-2025 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -31,9 +30,9 @@
  # ---------------------------------------------------------------------
  #}
 
-<div>
+<div class="ms-2">
     <button
-        class="btn btn-sm btn-primary me-1 {{ show_save ? "" : "d-none" }}"
+        class="btn btn-primary me-1 {{ show_save ? "" : "d-none" }}"
         type="submit"
         name="save_filters"
     >
@@ -43,7 +42,7 @@
     </button>
 
     <button
-        class="btn btn-sm btn-outline-danger me-1 {{ show_delete ? "" : "d-none" }}"
+        class="btn btn-outline-danger me-1 {{ show_delete ? "" : "d-none" }}"
         name="delete_filters"
     >
         <i class="ti ti-trash"></i>
@@ -101,9 +100,10 @@
             contentType: false, // Needed when using FormData object
         }).done(function() {
             glpi_toast_info("{{ __("Filter saved") }}");
-
+    {% if delete_action_id is defined %}
             // Show delete button if it wasn't already enabled
             $("#{{ delete_action_id }}").removeClass('d-none');
+    {% endif %}
 
             // Add badge to menu to hint that a filter have been set
             const tab = $("a.nav-link[href*='CriteriaFilter']");

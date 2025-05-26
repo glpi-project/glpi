@@ -35,8 +35,6 @@
 
 namespace Glpi\Api\HL\Middleware;
 
-use Glpi\Api\HL\RoutePath;
-use Glpi\Http\Request;
 use Glpi\Http\Response;
 
 interface RequestMiddlewareInterface

@@ -77,7 +77,7 @@ abstract class CommonITILRecurrent extends CommonDropdown
         $tabnum = 1,
         $withtemplate = 0
     ) {
-       // Tabs on CommonITILRecurrent items
+        // Tabs on CommonITILRecurrent items
         if ($item instanceof self) {
             switch ($tabnum) {
                 // First tab : display next creation date
@@ -92,12 +92,12 @@ abstract class CommonITILRecurrent extends CommonDropdown
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-       // Only display tab if user can read ITILTemplates
+        // Only display tab if user can read ITILTemplates
         if (!Session::haveRight('itiltemplate', READ)) {
             return '';
         }
 
-       // Tabs on CommonITILRecurrent items
+        // Tabs on CommonITILRecurrent items
         if ($item instanceof self) {
             $ong = [];
             $ong[1] = _n('Information', 'Information', Session::getPluralNumber());
@@ -117,7 +117,7 @@ abstract class CommonITILRecurrent extends CommonDropdown
         $ong = [];
         $this->addDefaultFormTab($ong);
         $this->addStandardTab(static::class, $ong, $options);
-        $this->addStandardTab('Log', $ong, $options);
+        $this->addStandardTab(Log::class, $ong, $options);
 
         return $ong;
     }
@@ -163,25 +163,25 @@ abstract class CommonITILRecurrent extends CommonDropdown
                 'name'  => 'is_active',
                 'label' => __('Active'),
                 'type'  => 'bool',
-                'list'  => false
+                'list'  => false,
             ],
             [
                 'name'  => static::getTemplateClass()::getForeignKeyField(),
                 'label' => static::getTemplateClass()::getTypeName(1),
                 'type'  => 'dropdownValue',
-                'list'  => true
+                'list'  => true,
             ],
             [
                 'name'  => 'begin_date',
                 'label' => __('Start date'),
                 'type'  => 'datetime',
-                'list'  => false
+                'list'  => false,
             ],
             [
                 'name'  => 'end_date',
                 'label' => __('End date'),
                 'type'  => 'datetime',
-                'list'  => false
+                'list'  => false,
             ],
             [
                 'name'  => 'periodicity',
@@ -189,20 +189,20 @@ abstract class CommonITILRecurrent extends CommonDropdown
                 'type'  => 'specific_timestamp',
                 'min'   => DAY_TIMESTAMP,
                 'step'  => DAY_TIMESTAMP,
-                'max'   => 2 * MONTH_TIMESTAMP
+                'max'   => 2 * MONTH_TIMESTAMP,
             ],
             [
                 'name'  => 'create_before',
                 'label' => __('Preliminary creation'),
                 'type'  => 'timestamp',
                 'max'   => 2 * WEEK_TIMESTAMP,
-                'step'  => HOUR_TIMESTAMP
+                'step'  => HOUR_TIMESTAMP,
             ],
             [
                 'name'  => 'calendars_id',
                 'label' => _n('Calendar', 'Calendars', 1),
                 'type'  => 'dropdownValue',
-                'list'  => true
+                'list'  => true,
             ],
         ];
     }
@@ -251,28 +251,28 @@ abstract class CommonITILRecurrent extends CommonDropdown
     {
         $possible_values = [];
 
-       // Hours
+        // Hours
         for ($i = 1; $i < 24; $i++) {
             $possible_values[$i * HOUR_TIMESTAMP] = sprintf(_n('%d hour', '%d hours', $i), $i);
         }
 
-       // Days
+        // Days
         for ($i = 1; $i <= 30; $i++) {
             $possible_values[$i * DAY_TIMESTAMP] = sprintf(_n('%d day', '%d days', $i), $i);
         }
 
-       // Months
+        // Months
         for ($i = 1; $i < 12; $i++) {
             $possible_values[$i . 'MONTH'] = sprintf(_n('%d month', '%d months', $i), $i);
         }
 
-       // Years
+        // Years
         for ($i = 1; $i < 11; $i++) {
             $possible_values[$i . 'YEAR'] = sprintf(_n('%d year', '%d years', $i), $i);
         }
 
         Dropdown::showFromArray('periodicity', $possible_values, [
-            'value' => $this->fields['periodicity']
+            'value' => $this->fields['periodicity'],
         ]);
     }
 
@@ -285,7 +285,7 @@ abstract class CommonITILRecurrent extends CommonDropdown
             'table'    => $this->getTable(),
             'field'    => 'is_active',
             'name'     => __('Active'),
-            'datatype' => 'bool'
+            'datatype' => 'bool',
         ];
 
         $tab[] = [
@@ -293,7 +293,7 @@ abstract class CommonITILRecurrent extends CommonDropdown
             'table'    => static::getTemplateClass()::getTable(),
             'field'    => 'name',
             'name'     => static::getTemplateClass()::getTypeName(1),
-            'datatype' => 'itemlink'
+            'datatype' => 'itemlink',
         ];
 
         $tab[] = [
@@ -301,7 +301,7 @@ abstract class CommonITILRecurrent extends CommonDropdown
             'table'    => $this->getTable(),
             'field'    => 'begin_date',
             'name'     => __('Start date'),
-            'datatype' => 'datetime'
+            'datatype' => 'datetime',
         ];
 
         $tab[] = [
@@ -309,7 +309,7 @@ abstract class CommonITILRecurrent extends CommonDropdown
             'table'    => $this->getTable(),
             'field'    => 'end_date',
             'name'     => __('End date'),
-            'datatype' => 'datetime'
+            'datatype' => 'datetime',
         ];
 
         $tab[] = [
@@ -317,7 +317,7 @@ abstract class CommonITILRecurrent extends CommonDropdown
             'table'    => $this->getTable(),
             'field'    => 'periodicity',
             'name'     => __('Periodicity'),
-            'datatype' => 'specific'
+            'datatype' => 'specific',
         ];
 
         $tab[] = [
@@ -325,7 +325,7 @@ abstract class CommonITILRecurrent extends CommonDropdown
             'table'    => $this->getTable(),
             'field'    => 'create_before',
             'name'     => __('Preliminary creation'),
-            'datatype' => 'timestamp'
+            'datatype' => 'timestamp',
         ];
 
         $tab[] = [
@@ -333,7 +333,7 @@ abstract class CommonITILRecurrent extends CommonDropdown
             'table'    => 'glpi_calendars',
             'field'    => 'name',
             'name'     => _n('Calendar', 'Calendars', 1),
-            'datatype' => 'itemlink'
+            'datatype' => 'itemlink',
         ];
 
         return $tab;
@@ -346,7 +346,7 @@ abstract class CommonITILRecurrent extends CommonDropdown
     {
         if (!is_null($this->fields['next_creation_date'])) {
             echo "<div class='center'>";
-           //TRANS: %s is the date of next creation
+            //TRANS: %s is the date of next creation
             echo sprintf(
                 __s('Next creation on %s'),
                 Html::convDateTime($this->fields['next_creation_date'])
@@ -381,13 +381,13 @@ abstract class CommonITILRecurrent extends CommonDropdown
         $periodicity_pattern = '/([0-9]+)(MONTH|YEAR)/';
 
         if ($begin_date === null || DateTime::createFromFormat('Y-m-d H:i:s', $begin_date) === false) {
-           // Invalid begin date.
+            // Invalid begin date.
             return 'NULL';
         }
 
         $has_end_date = $end_date !== null && DateTime::createFromFormat('Y-m-d H:i:s', $end_date) !== false;
         if ($has_end_date && strtotime($end_date) < $now) {
-           // End date is in past.
+            // End date is in past.
             return 'NULL';
         }
 
@@ -395,26 +395,26 @@ abstract class CommonITILRecurrent extends CommonDropdown
             !is_int($periodicity) && !preg_match('/^\d+$/', $periodicity)
             && !preg_match($periodicity_pattern, $periodicity)
         ) {
-           // Invalid periodicity.
+            // Invalid periodicity.
             return 'NULL';
         }
 
-       // Compute periodicity values
+        // Compute periodicity values
         $periodicity_as_interval = null;
         $periodicity_in_seconds = $periodicity;
         $matches = [];
         if (preg_match($periodicity_pattern, $periodicity, $matches)) {
             $periodicity_as_interval = "{$matches[1]} {$matches[2]}";
-            $periodicity_in_seconds  = (int)$matches[1]
+            $periodicity_in_seconds  = (int) $matches[1]
             * MONTH_TIMESTAMP
             * ('YEAR' === $matches[2] ? 12 : 1);
-        } else if ($periodicity % DAY_TIMESTAMP == 0) {
+        } elseif ($periodicity % DAY_TIMESTAMP == 0) {
             $periodicity_as_interval = ($periodicity / DAY_TIMESTAMP) . ' DAY';
         } else {
             $periodicity_as_interval = ($periodicity / HOUR_TIMESTAMP) . ' HOUR';
         }
 
-       // Check that anticipated creation delay is greater than periodicity.
+        // Check that anticipated creation delay is greater than periodicity.
         if ($create_before > $periodicity_in_seconds) {
             Session::addMessageAfterRedirect(
                 __s('Invalid frequency. It must be greater than the preliminary creation.'),
@@ -428,33 +428,33 @@ abstract class CommonITILRecurrent extends CommonDropdown
         $is_calendar_valid = $calendars_id && $calendar->getFromDB($calendars_id) && $calendar->hasAWorkingDay();
 
         if (!$is_calendar_valid || $periodicity_in_seconds >= DAY_TIMESTAMP) {
-           // Compute next occurrence without using the calendar if calendar is not valid
-           // or if periodicity is at least one day.
+            // Compute next occurrence without using the calendar if calendar is not valid
+            // or if periodicity is at least one day.
 
-           // First occurrence of creation
+            // First occurrence of creation
             $occurence_time = strtotime($begin_date);
             $creation_time  = $occurence_time - $create_before;
 
-           // Add steps while creation time is in past
+            // Add steps while creation time is in past
             while ($creation_time < $now) {
                 $creation_time  = strtotime("+ $periodicity_as_interval", $creation_time);
                 $occurence_time = $creation_time + $create_before;
 
-               // Stop if end date reached
+                // Stop if end date reached
                 if ($has_end_date && $occurence_time > strtotime($end_date)) {
                     return 'NULL';
                 }
             }
 
             if ($is_calendar_valid) {
-               // Jump to next working day if occurrence is outside working days.
+                // Jump to next working day if occurrence is outside working days.
                 while (
                     $calendar->isHoliday(date('Y-m-d', $occurence_time))
                     || !$calendar->isAWorkingDay($occurence_time)
                 ) {
                     $occurence_time = strtotime('+ 1 day', $occurence_time);
                 }
-               // Jump to next working hour if occurrence is outside working hours.
+                // Jump to next working hour if occurrence is outside working hours.
                 if (!$calendar->isAWorkingHour($occurence_time)) {
                     // On the first iteration, we work with the start of the day
                     $tmp_search_time = date('Y-m-d', $occurence_time);
@@ -477,7 +477,7 @@ abstract class CommonITILRecurrent extends CommonDropdown
                 $creation_time  = $occurence_time - $create_before;
             }
         } else {
-           // Base computation on calendar if calendar is valid
+            // Base computation on calendar if calendar is valid
 
             $occurence_date = $calendar->computeEndDate(
                 $begin_date,
@@ -496,9 +496,9 @@ abstract class CommonITILRecurrent extends CommonDropdown
                 $occurence_time = strtotime($occurence_date);
                 $creation_time  = $occurence_time - $create_before;
 
-               // Stop if end date reached
+                // Stop if end date reached
                 if ($has_end_date && $occurence_time > strtotime($end_date)) {
-                     return 'NULL';
+                    return 'NULL';
                 }
             };
         }
@@ -534,7 +534,7 @@ abstract class CommonITILRecurrent extends CommonDropdown
             }
         }
 
-       // Set date to creation date
+        // Set date to creation date
         $input['date'] = date('Y-m-d H:i:s', $this->getCreateTime());
         if (isset($predefined['date'])) {
             $input['date'] = Html::computeGenericDateTimeSearch(
@@ -544,7 +544,7 @@ abstract class CommonITILRecurrent extends CommonDropdown
             );
         }
 
-       // Compute time_to_resolve if predefined based on create date
+        // Compute time_to_resolve if predefined based on create date
         if (isset($predefined['time_to_resolve'])) {
             $input['time_to_resolve'] = Html::computeGenericDateTimeSearch(
                 $predefined['time_to_resolve'],
@@ -584,12 +584,12 @@ abstract class CommonITILRecurrent extends CommonDropdown
         /** @var ITILTemplate */
         $template = new $template_class();
 
-       // Create item based on specified template and entity information
+        // Create item based on specified template and entity information
         if ($template->getFromDB($this->fields[$tmpl_fk])) {
-           // Get default values for item
+            // Get default values for item
             $input = $concrete_class::getDefaultValues($this->fields['entities_id']);
 
-           // Apply itiltemplates predefined values
+            // Apply itiltemplates predefined values
             /** @var ITILTemplatePredefinedField */
             $fields = new $fields_class();
             $predefined = $fields->getPredefinedFields($this->fields[$tmpl_fk], true);
@@ -599,7 +599,7 @@ abstract class CommonITILRecurrent extends CommonDropdown
                 $input['_do_not_compute_status'] = true;
             }
 
-           // Set entity
+            // Set entity
             $input['entities_id'] = $this->fields['entities_id'];
             $input['_auto_import'] = true;
 
@@ -652,7 +652,7 @@ abstract class CommonITILRecurrent extends CommonDropdown
             Log::HISTORY_LOG_SIMPLE_MESSAGE
         );
 
-       // Compute next creation date
+        // Compute next creation date
         $input = [
             'id'                 => $this->getId(),
             'next_creation_date' => $this->computeNextCreationDate(
@@ -661,7 +661,7 @@ abstract class CommonITILRecurrent extends CommonDropdown
                 $this->fields['periodicity'],
                 $this->fields['create_before'],
                 $this->fields['calendars_id']
-            )
+            ),
         ];
         $this->update($input);
 
@@ -699,7 +699,7 @@ abstract class CommonITILRecurrent extends CommonDropdown
                 'FROM'   => $item_class::getTable(),
                 'WHERE'  => [
                     'ticketrecurrents_id' =>  $this->getId(),
-                ]
+                ],
             ]);
             foreach ($iterator as $data) {
                 if (!array_key_exists($data['itemtype'], $items)) {

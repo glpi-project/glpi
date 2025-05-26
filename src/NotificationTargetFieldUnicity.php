@@ -45,7 +45,7 @@ class NotificationTargetFieldUnicity extends NotificationTarget
     public function addDataForTemplate($event, $options = [])
     {
 
-       //User who tries to add or update an item in DB
+        //User who tries to add or update an item in DB
         $action = ($options['action_user'] ? __('Add the item') : __('Update the item'));
         $this->data['##unicity.action_type##'] = $action;
         $this->data['##unicity.action_user##'] = $options['action_user'];
@@ -83,13 +83,13 @@ class NotificationTargetFieldUnicity extends NotificationTarget
             'unicity.date'        => _n('Date', 'Dates', 1),
             'unicity.itemtype'    => _n('Type', 'Types', 1),
             'unicity.entity'      => Entity::getTypeName(1),
-            'unicity.action'      => __('Alert on duplicate record')
+            'unicity.action'      => __('Alert on duplicate record'),
         ];
 
         foreach ($tags as $tag => $label) {
             $this->addTagToList(['tag'   => $tag,
                 'label' => $label,
-                'value' => true
+                'value' => true,
             ]);
         }
 

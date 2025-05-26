@@ -36,6 +36,7 @@ namespace Glpi\Controller;
 
 use Config;
 use DBConnection;
+use Glpi\Application\Environment;
 use Glpi\Error\ErrorUtils;
 use Html;
 use Session;
@@ -59,7 +60,7 @@ class ErrorController extends AbstractController
         $status_code = $exception instanceof HttpExceptionInterface ? $exception->getStatusCode() : 500;
 
         $title      = _n('Error', 'Errors', 1);
-        $message    = __('An unexpected error has occurred.');
+        $message    = __('An unexpected error occurred');
         $link_text  = null;
         $link_url   = null;
 
@@ -100,7 +101,7 @@ class ErrorController extends AbstractController
         $trace = null;
         if (
             (
-                GLPI_ENVIRONMENT_TYPE === 'development'
+                Environment::get()->shouldEnableExtraDevAndDebugTools()
                 || isset($_SESSION['glpi_use_mode']) && $_SESSION['glpi_use_mode'] == Session::DEBUG_MODE
             )
         ) {

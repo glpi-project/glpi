@@ -35,9 +35,7 @@
 
 namespace Glpi\Api\HL\Middleware;
 
-use Glpi\Api\HL\RoutePath;
 use Glpi\Http\JSONResponse;
-use Glpi\Http\Request;
 use Glpi\Http\Response;
 use GuzzleHttp\Psr7\Utils;
 use Symfony\Component\DomCrawler\Crawler;

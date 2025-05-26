@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -36,7 +35,6 @@
 namespace tests\units\Glpi\Api\HL\Controller;
 
 use Glpi\Http\Request;
-use Glpi\OAuth\Server;
 
 class GraphQLControllerTest extends \HLAPITestCase
 {
@@ -48,7 +46,7 @@ class GraphQLControllerTest extends \HLAPITestCase
         $this->api->call($request, function ($call) {
             /** @var \HLAPICallAsserter $call */
             $call->response
-                ->status(fn ($status) => $this->assertEquals(200, $status))
+                ->status(fn($status) => $this->assertEquals(200, $status))
                 ->jsonContent(function ($content) {
                     $this->assertGreaterThan(150, $content['data']['__schema']['types']);
                     $types = $content['data']['__schema']['types'];
@@ -70,7 +68,7 @@ class GraphQLControllerTest extends \HLAPITestCase
         $this->api->call($request, function ($call) {
             /** @var \HLAPICallAsserter $call */
             $call->response
-                ->status(fn ($status) => $this->assertEquals(200, $status))
+                ->status(fn($status) => $this->assertEquals(200, $status))
                 ->jsonContent(function ($content) {
                     $types = $content['data']['__schema']['types'];
                     foreach ($types as $type) {
@@ -85,7 +83,7 @@ class GraphQLControllerTest extends \HLAPITestCase
         $this->api->call($request, function ($call) {
             /** @var \HLAPICallAsserter $call */
             $call->response
-                ->status(fn ($status) => $this->assertEquals(200, $status))
+                ->status(fn($status) => $this->assertEquals(200, $status))
                 ->jsonContent(function ($content) {
                     $types = $content['data']['__schema']['types'];
                     foreach ($types as $type) {
@@ -105,7 +103,7 @@ class GraphQLControllerTest extends \HLAPITestCase
         $this->api->call($request, function ($call) {
             /** @var \HLAPICallAsserter $call */
             $call->response
-                ->status(fn ($status) => $this->assertEquals(200, $status))
+                ->status(fn($status) => $this->assertEquals(200, $status))
                 ->jsonContent(function ($content) {
                     $this->assertCount(1, $content['data']);
                     $this->assertCount(1, $content['data']['Computer']);
@@ -123,7 +121,7 @@ class GraphQLControllerTest extends \HLAPITestCase
         $this->api->call($request, function ($call) {
             /** @var \HLAPICallAsserter $call */
             $call->response
-                ->status(fn ($status) => $this->assertEquals(200, $status))
+                ->status(fn($status) => $this->assertEquals(200, $status))
                 ->jsonContent(function ($content) {
                     $this->assertCount(1, $content['data']);
                     $this->assertGreaterThan(2, count($content['data']['Computer']));
@@ -139,7 +137,7 @@ class GraphQLControllerTest extends \HLAPITestCase
         $this->api->call($request, function ($call) {
             /** @var \HLAPICallAsserter $call */
             $call->response
-                ->status(fn ($status) => $this->assertEquals(200, $status))
+                ->status(fn($status) => $this->assertEquals(200, $status))
                 ->jsonContent(function ($content) {
                     $this->assertCount(1, $content['data']);
                     $this->assertCount(9, $content['data']['Computer']);
@@ -156,11 +154,11 @@ class GraphQLControllerTest extends \HLAPITestCase
         $printer_model = new \PrinterModel();
         $this->assertGreaterThan(0, $printer_model->add([
             'name' => '_test_printer_model',
-            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true)
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
         ]));
         $this->assertGreaterThan(0, (new \CartridgeItem_PrinterModel())->add([
             'cartridgeitems_id' => \getItemByTypeName(\CartridgeItem::class, '_test_cartridgeitem01', true),
-            'printermodels_id'  => $printer_model->getID()
+            'printermodels_id'  => $printer_model->getID(),
         ]));
 
         // product_number is not available this way via the REST API, but should be available here as the partial schema gets replaced by the full schema
@@ -168,7 +166,7 @@ class GraphQLControllerTest extends \HLAPITestCase
         $this->api->call($request, function ($call) {
             /** @var \HLAPICallAsserter $call */
             $call->response
-                ->status(fn ($status) => $this->assertEquals(200, $status))
+                ->status(fn($status) => $this->assertEquals(200, $status))
                 ->jsonContent(function ($content) {
                     $this->assertCount(1, $content['data']);
                     $this->assertArrayHasKey('id', $content['data']['CartridgeItem'][0]);
@@ -191,13 +189,13 @@ class GraphQLControllerTest extends \HLAPITestCase
             'name' => __FUNCTION__,
             'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
             'is_visible_computer' => 1,
-            'is_visible_monitor' => 0
+            'is_visible_monitor' => 0,
         ]));
         $computer = new \Computer();
         $this->assertGreaterThan(0, $computers_id = $computer->add([
             'name' => __FUNCTION__,
             'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
-            'states_id' => $states_id
+            'states_id' => $states_id,
         ]));
 
         $this->login();
@@ -219,7 +217,7 @@ GRAPHQL);
         $this->api->call($request, function ($call) {
             /** @var \HLAPICallAsserter $call */
             $call->response
-                ->status(fn ($status) => $this->assertEquals(200, $status))
+                ->status(fn($status) => $this->assertEquals(200, $status))
                 ->jsonContent(function ($content) {
                     $this->assertCount(1, $content['data']);
                     $this->assertCount(1, $content['data']['Computer']);

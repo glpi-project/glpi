@@ -37,31 +37,27 @@
     is_horizontal: false,
 }) }}
 
-<div class="row">
-    <div class="col-lg-9 col-12">
-        {{ fields.textareaField(
-            'description',
-            tile.getDescription(),
-            __('Description'), {
-                full_width: true,
-                is_horizontal: false,
-                enable_richtext: true,
-            }
-        ) }}
-    </div>
+{{ fields.textareaField(
+    'description',
+    tile.getDescription(),
+    __('Description'), {
+        full_width: true,
+        is_horizontal: false,
+        enable_richtext: true,
+    }
+) }}
 
-    <div class="col-lg-3 col-12">
-        {{ fields.illustrationField(
-            'illustration',
-            tile.getIllustration(),
-            __('Illustration'),
-            {
-                is_horizontal: false,
-                full_width : true,
-            }
-        ) }}
-    </div>
-</div>
+{{ fields.illustrationField(
+    'illustration',
+    tile.getIllustration(),
+    __('Illustration'),
+    {
+        is_horizontal: false,
+        full_width : true,
+        backdrop: false,
+        extra_css_classes: 'illustration-selector-extra-margin',
+    }
+) }}
 
 {{ fields.dropdownArrayField(
     'page',

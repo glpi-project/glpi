@@ -51,7 +51,7 @@ trait ParentStatus
     {
         $needupdateparent = false;
 
-       // Set pending reason data on parent and self if not already set
+        // Set pending reason data on parent and self if not already set
         if ($input['pending'] ?? 0) {
             $parent_pending_reason = PendingReason_Item::getForItem($this->input['_job']);
             if (
@@ -91,7 +91,7 @@ trait ParentStatus
                 '_accepted' => true,
             ];
 
-           // Use update method for history
+            // Use update method for history
             $parentitem->update($update);
         }
 
@@ -110,13 +110,13 @@ trait ParentStatus
             }
         }
 
-       //manage reopening of ITILObject
+        //manage reopening of ITILObject
         $reopened = false;
         if (!isset($input['_status'])) {
             $input['_status'] = $parentitem->fields["status"];
         }
-       // if reopen set (from followup form or mailcollector)
-       // and status is reopenable and not changed in form
+        // if reopen set (from followup form or mailcollector)
+        // and status is reopenable and not changed in form
         $is_set_pending = $input['pending'] ?? 0;
         if (
             isset($input["_reopen"])
@@ -133,7 +133,7 @@ trait ParentStatus
                     || ($parentitem->countSuppliers(CommonITILActor::ASSIGN) > 0)
                 )
             ) {
-               //check if lifecycle allowed new status
+                //check if lifecycle allowed new status
                 if (
                     (
                         Session::isCron()
@@ -155,7 +155,7 @@ trait ParentStatus
                     }
                 }
             } else {
-               //check if lifecycle allowed new status
+                //check if lifecycle allowed new status
                 if (
                     (
                         Session::isCron()
@@ -172,7 +172,7 @@ trait ParentStatus
             if ($needupdateparent) {
                 $update['id'] = $parentitem->fields['id'];
 
-               // Use update method for history
+                // Use update method for history
                 $parentitem->update($update);
                 $reopened     = true;
             }
@@ -216,7 +216,7 @@ trait ParentStatus
             }
         }
 
-       //change ITILObject status only if input change
+        //change ITILObject status only if input change
         if (
             !$reopened
             && $input['_status'] != $parentitem->fields['status']
@@ -224,10 +224,10 @@ trait ParentStatus
             $update['status'] = $input['_status'];
             $update['id']     = $parentitem->fields['id'];
 
-           // don't notify on ITILObject - update event
+            // don't notify on ITILObject - update event
             $update['_disablenotif'] = true;
 
-           // Use update method for history
+            // Use update method for history
             $parentitem->update($update);
         }
     }

@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+require_once(__DIR__ . '/../_check_webserver_config.php');
+
 use Glpi\Form\AccessControl\FormAccessControl;
 
 /**
@@ -72,7 +74,7 @@ try {
     );
 
     Session::addMessageAfterRedirect(
-        __('An unexpected error occured.'),
+        __('An unexpected error occurred'),
         false,
         ERROR
     );

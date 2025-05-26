@@ -49,8 +49,7 @@ class RoutingExtension extends AbstractExtension
 {
     public function __construct(
         private readonly ?UrlGeneratorInterface $router = null
-    ) {
-    }
+    ) {}
 
     public function getFunctions(): array
     {

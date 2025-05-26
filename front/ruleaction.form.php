@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+require_once(__DIR__ . '/_check_webserver_config.php');
+
 /**
  * @since 0.85
  */
@@ -46,12 +48,12 @@ if (isset($_POST["add"])) {
     $action->add($_POST);
 
     Html::back();
-} else if (isset($_POST["update"])) {
+} elseif (isset($_POST["update"])) {
     $action->check($_POST['id'], UPDATE);
     $action->update($_POST);
 
     Html::back();
-} else if (isset($_POST["purge"])) {
+} elseif (isset($_POST["purge"])) {
     $action->check($_POST['id'], PURGE);
     $action->delete($_POST, 1);
 

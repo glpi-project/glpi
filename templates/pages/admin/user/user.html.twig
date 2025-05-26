@@ -40,22 +40,27 @@
 } %}
 
 {% set internal_auth = item.fields['authtype'] == constant('Auth::DB_GLPI') %}
-{% set external_auth = not internal_auth %}
+{% set external_auth = not item.isNewItem() and not internal_auth %}
 {# Simple form used when creating users from a ticket #}
 {% set simple_form = params.simplified_form|default(false) %}
 {% set is_my_form = item.getID() == session('glpiID') %}
 {# Preference form = My Settings page #}
 {% set is_preference_form = is_preference_form|default(false) %}
 {% set target = path(is_preference_form ? '/front/preference.php' : '/front/user.form.php') %}
+{% set higher_rights = higher_rights|default(false) %}
 
-<div class="asset {{ bg }}">
+<div class="asset">
     <form id="main-form" name="asset_form" method="post" action="{{ target }}" enctype="multipart/form-data" data-submit-once>
+        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
+
         <div class="card-body d-flex flex-wrap">
             <div class="col-12 col-xxl-12 flex-column">
                 <div class="d-flex flex-row flex-wrap flex-xl-nowrap">
                     <div class="row flex-row align-items-start flex-grow-1">
                         <div class="row flex-row">
-                            <input type="hidden" name="id" value="{{ session('glpiID') }}" />
+                            {% if not item.isNewItem() %}
+                                <input type="hidden" name="id" value="{{ item.getID() }}" />
+                            {% endif %}
                             {% if (item.isNewItem() or internal_auth) and not is_preference_form %}
                                 {{ fields.textField('name', item.fields['name'], __('Login')) }}
                             {% else %}
@@ -250,7 +255,7 @@
                                 {{ fields.textField('phone2', item.fields['phone2'], __('Phone 2')) }}
                             {% endif %}
 
-                            {% if not item.isNewItem() and (caneditpassword or is_preference_form) %}
+                            {% if not item.isNewItem() and ((caneditpassword ?? false) or is_preference_form) %}
                                 {{ fields.smallTitle(__('Passwords and access keys')) }}
                                 {{ fields.passwordField('api_token', item.fields['api_token'], __('API token'), {
                                     can_regenerate: true,
@@ -272,6 +277,14 @@
                                             {{ modals.modal(__('Change password'), include('pages/admin/user/change_other_password.html.twig', {full_width: true}), {
                                                 id: 'modal_password_' ~ rand_field,
                                             }) }}
+                                            <script>
+                                                $('#modal_password_{{ rand_field }} input').on('keypress', function(e) {
+                                                    // Prevent enter key in password fields in modal from submitting form
+                                                    if (e.originalEvent.key === 'Enter') {
+                                                        e.preventDefault();
+                                                    }
+                                                });
+                                            </script>
                                             <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#modal_password_{{ rand_field }}">
                                                 <i class="ti ti-lock"></i>
                                                 {{ __('Change password') }}
@@ -304,7 +317,7 @@
             {% if no_form_buttons is not defined or no_form_buttons == false %}
                 {{ include('components/form/buttons.html.twig') }}
             {% endif %}
-            {% if params['formfooter'] is null or params['formfooter'] == true %}
+            {% if params['formfooter'] ?? true %}
                 <div class="card-footer mx-n2 mb-n2">
                     {{ include('components/form/dates.html.twig') }}
                 </div>

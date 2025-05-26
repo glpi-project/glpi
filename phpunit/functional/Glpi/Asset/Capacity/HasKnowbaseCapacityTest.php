@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -37,6 +36,7 @@ namespace tests\units\Glpi\Asset\Capacity;
 
 use DbTestCase;
 use Entity;
+use Glpi\Asset\Capacity;
 use Glpi\PHPUnit\Tests\Glpi\Asset\CapacityUsageTestTrait;
 use KnowbaseItem;
 use KnowbaseItem_Item;
@@ -60,21 +60,21 @@ class HasKnowbaseCapacityTest extends DbTestCase
 
         $definition_1 = $this->initAssetDefinition(
             capacities: [
-                \Glpi\Asset\Capacity\HasKnowbaseCapacity::class,
-                \Glpi\Asset\Capacity\HasNotepadCapacity::class,
+                new Capacity(name: \Glpi\Asset\Capacity\HasKnowbaseCapacity::class),
+                new Capacity(name: \Glpi\Asset\Capacity\HasNotepadCapacity::class),
             ]
         );
         $classname_1  = $definition_1->getAssetClassName();
         $definition_2 = $this->initAssetDefinition(
             capacities: [
-                \Glpi\Asset\Capacity\HasHistoryCapacity::class,
+                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
             ]
         );
         $classname_2  = $definition_2->getAssetClassName();
         $definition_3 = $this->initAssetDefinition(
             capacities: [
-                \Glpi\Asset\Capacity\HasKnowbaseCapacity::class,
-                \Glpi\Asset\Capacity\HasHistoryCapacity::class,
+                new Capacity(name: \Glpi\Asset\Capacity\HasKnowbaseCapacity::class),
+                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
             ]
         );
         $classname_3  = $definition_3->getAssetClassName();
@@ -113,15 +113,15 @@ class HasKnowbaseCapacityTest extends DbTestCase
 
         $definition_1 = $this->initAssetDefinition(
             capacities: [
-                \Glpi\Asset\Capacity\HasKnowbaseCapacity::class,
-                \Glpi\Asset\Capacity\HasHistoryCapacity::class,
+                new Capacity(name: \Glpi\Asset\Capacity\HasKnowbaseCapacity::class),
+                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
             ]
         );
         $classname_1  = $definition_1->getAssetClassName();
         $definition_2 = $this->initAssetDefinition(
             capacities: [
-                \Glpi\Asset\Capacity\HasKnowbaseCapacity::class,
-                \Glpi\Asset\Capacity\HasHistoryCapacity::class,
+                new Capacity(name: \Glpi\Asset\Capacity\HasKnowbaseCapacity::class),
+                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
             ]
         );
         $classname_2  = $definition_2->getAssetClassName();
@@ -195,7 +195,7 @@ class HasKnowbaseCapacityTest extends DbTestCase
     public function testCloneAsset()
     {
         $definition = $this->initAssetDefinition(
-            capacities: [\Glpi\Asset\Capacity\HasKnowbaseCapacity::class]
+            capacities: [new Capacity(name: \Glpi\Asset\Capacity\HasKnowbaseCapacity::class)]
         );
         $class = $definition->getAssetClassName();
         $entity = $this->getTestRootEntity(true);
@@ -247,7 +247,7 @@ class HasKnowbaseCapacityTest extends DbTestCase
         yield [
             'target_classname' => KnowbaseItem::class,
             'relation_classname' => KnowbaseItem_Item::class,
-            'expected' => '%d knowbase items attached to %d assets'
+            'expected' => '%d knowbase items attached to %d assets',
         ];
     }
 }

@@ -6,7 +6,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -38,7 +37,7 @@ describe('Entity configuration', () => {
 
         // Create form with a single "entity" question
         cy.createFormWithAPI().as('form_id').visitFormTab('Form');
-        cy.findByRole('button', { 'name': "Add a new question" }).click();
+        cy.findByRole('button', { 'name': "Add a question" }).click();
         cy.focused().type("My entity question");
         cy.getDropdownByLabelText('Question type').selectDropdownValue('Item');
         cy.getDropdownByLabelText('Question sub type').selectDropdownValue('GLPI Objects');
@@ -53,6 +52,7 @@ describe('Entity configuration', () => {
     });
 
     it('can use all possibles configuration options', () => {
+        cy.openAccordionItem('Destination fields accordion', 'Properties');
         cy.findByRole('region', { 'name': "Entity configuration" }).as("config");
         cy.get('@config').getDropdownByLabelText('Entity').as("entity_dropdown");
 
@@ -70,12 +70,14 @@ describe('Entity configuration', () => {
         cy.get('@entity_dropdown').selectDropdownValue('Active entity of the form filler');
         cy.findByRole('button', { 'name': 'Update item' }).click();
         cy.checkAndCloseAlert('Item successfully updated');
+        cy.openAccordionItem('Destination fields accordion', 'Properties');
         cy.get('@entity_dropdown').should('have.text', 'Active entity of the form filler');
 
         // Switch to "From form"
         cy.get('@entity_dropdown').selectDropdownValue('From form');
         cy.findByRole('button', { 'name': 'Update item' }).click();
         cy.checkAndCloseAlert('Item successfully updated');
+        cy.openAccordionItem('Destination fields accordion', 'Properties');
         cy.get('@entity_dropdown').should('have.text', 'From form');
 
         // Switch to "Specific entity"
@@ -85,6 +87,7 @@ describe('Entity configuration', () => {
 
         cy.findByRole('button', { 'name': 'Update item' }).click();
         cy.checkAndCloseAlert('Item successfully updated');
+        cy.openAccordionItem('Destination fields accordion', 'Properties');
         cy.get('@entity_dropdown').should('have.text', 'Specific entity');
         cy.get('@specific_entity_dropdown').should('have.text', 'Root entity > E2ETestEntity');
 
@@ -95,6 +98,7 @@ describe('Entity configuration', () => {
 
         cy.findByRole('button', { 'name': 'Update item' }).click();
         cy.checkAndCloseAlert('Item successfully updated');
+        cy.openAccordionItem('Destination fields accordion', 'Properties');
         cy.get('@entity_dropdown').should('have.text', 'Answer from a specific question');
         cy.get('@specific_answer_type_dropdown').should('have.text', 'My entity question');
 
@@ -102,6 +106,7 @@ describe('Entity configuration', () => {
         cy.get('@entity_dropdown').selectDropdownValue('Answer to last "Entity" item question');
         cy.findByRole('button', { 'name': 'Update item' }).click();
         cy.checkAndCloseAlert('Item successfully updated');
+        cy.openAccordionItem('Destination fields accordion', 'Properties');
         cy.get('@entity_dropdown').should('have.text', 'Answer to last "Entity" item question');
     });
 
@@ -128,7 +133,7 @@ describe('Entity configuration', () => {
         cy.get('@form_id').then((form_id) => {
             cy.getDropdownByLabelText("My entity question").selectDropdownValue(`»E2ETestEntityForFormDestinationField-${form_id}`);
         });
-        cy.findByRole('button', { 'name': 'Send form' }).click();
+        cy.findByRole('button', { 'name': 'Submit' }).click();
         cy.findByRole('link', { 'name': 'My test form' }).click();
 
         // Check ticket values

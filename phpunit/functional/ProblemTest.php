@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -36,6 +35,7 @@
 namespace tests\units;
 
 use DbTestCase;
+use Problem;
 
 /* Test for inc/problem.class.php */
 
@@ -74,7 +74,7 @@ class ProblemTest extends DbTestCase
         $this->assertFalse($entity->isNewID($entityId));
 
         $entity->getFromDB($entityId);
-        $this->assertEquals(\Entity::CONFIG_NEVER, (int)$entity->fields['auto_assign_mode']);
+        $this->assertEquals(\Entity::CONFIG_NEVER, (int) $entity->fields['auto_assign_mode']);
 
         // Login again to access the new entity
         $this->login('glpi', 'glpi');
@@ -230,7 +230,7 @@ class ProblemTest extends DbTestCase
         $task = new \ProblemTask();
         $this->assertGreaterThan(
             0,
-            (int)$task->add([
+            (int) $task->add([
                 'problems_id'   => $problem_id,
                 'content'      => 'A simple Task',
                 'date'         => '2015-01-01 00:00:00',
@@ -239,7 +239,7 @@ class ProblemTest extends DbTestCase
 
         $this->assertGreaterThan(
             0,
-            (int)$task->add([
+            (int) $task->add([
                 'problems_id'   => $problem_id,
                 'content'      => 'A simple Task',
                 'date'         => $last_task_date,
@@ -248,7 +248,7 @@ class ProblemTest extends DbTestCase
 
         $this->assertGreaterThan(
             0,
-            (int)$task->add([
+            (int) $task->add([
                 'problems_id'   => $problem_id,
                 'content'      => 'A simple Task',
                 'date'         => '2016-01-01 00:00:00',
@@ -258,7 +258,7 @@ class ProblemTest extends DbTestCase
         $solution = new \ITILSolution();
         $this->assertGreaterThan(
             0,
-            (int)$solution->add([
+            (int) $solution->add([
                 'itemtype'  => $problem::getType(),
                 'items_id' => $problem_id,
                 'content'    => 'solution content',
@@ -269,7 +269,7 @@ class ProblemTest extends DbTestCase
 
         $this->assertGreaterThan(
             0,
-            (int)$followup->add([
+            (int) $followup->add([
                 'itemtype'  => $problem::getType(),
                 'items_id'  => $problem_id,
                 'add_reopen'   => '1',
@@ -280,7 +280,7 @@ class ProblemTest extends DbTestCase
 
         $this->assertGreaterThan(
             0,
-            (int)$solution->add([
+            (int) $solution->add([
                 'itemtype'  => $problem::getType(),
                 'items_id' => $problem_id,
                 'content'    => 'solution content',
@@ -294,7 +294,7 @@ class ProblemTest extends DbTestCase
                 'field' => 2,
                 'searchtype' => 'contains',
                 'value' => $problem_id,
-            ]
+            ],
         ];
         $data   = \Search::getDatas($problem->getType(), ["criteria" => $criteria], [72,73,74]);
         $this->assertSame(1, $data['data']['totalcount']);
@@ -306,5 +306,21 @@ class ProblemTest extends DbTestCase
         $this->assertEquals($last_task_date, $problem_with_so['ITEM_Problem_73']);
         $this->assertTrue(array_key_exists('ITEM_Problem_74', $problem_with_so));
         $this->assertEquals($last_solution_date, $problem_with_so['ITEM_Problem_74']);
+    }
+
+    public function testShowFormNewItem(): void
+    {
+        // Arrange: prepare an empty problem
+        $problem = new Problem();
+        $problem->getEmpty();
+
+        // Act: render form for a new problem
+        $this->login();
+        ob_start();
+        $problem->showForm($problem->getID());
+        $html = ob_get_clean();
+
+        // Assert: make sure some html was generated
+        $this->assertNotEmpty($html);
     }
 }

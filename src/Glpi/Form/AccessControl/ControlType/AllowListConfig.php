@@ -35,51 +35,21 @@
 
 namespace Glpi\Form\AccessControl\ControlType;
 
-use AbstractRightsDropdown;
 use Glpi\DBAL\JsonFieldInterface;
-use Glpi\Form\Export\Context\ForeignKey\ForeignKeyArrayHandler;
-use Glpi\Form\Export\Context\ConfigWithForeignKeysInterface;
-use Glpi\Form\Export\Specification\ContentSpecificationInterface;
-use Group;
 use Override;
-use Profile;
-use User;
 
-final class AllowListConfig implements
-    JsonFieldInterface,
-    ConfigWithForeignKeysInterface
+final class AllowListConfig implements JsonFieldInterface
 {
     // Serialized keys names
-    private const KEY_USER_IDS = 'user_ids';
-    private const KEY_GROUP_IDS = 'group_ids';
-    private const KEY_PROFILE_IDS = 'profile_ids';
+    public const KEY_USER_IDS = 'user_ids';
+    public const KEY_GROUP_IDS = 'group_ids';
+    public const KEY_PROFILE_IDS = 'profile_ids';
 
     public function __construct(
         private array $user_ids = [],
         private array $group_ids = [],
         private array $profile_ids = [],
-    ) {
-    }
-
-    #[Override]
-    public static function listForeignKeysHandlers(ContentSpecificationInterface $content_spec): array
-    {
-        return [
-            new ForeignKeyArrayHandler(
-                key: self::KEY_USER_IDS,
-                itemtype  : User::class,
-                ignored_values: [AbstractRightsDropdown::ALL_USERS],
-            ),
-            new ForeignKeyArrayHandler(
-                key: self::KEY_GROUP_IDS,
-                itemtype  : Group::class,
-            ),
-            new ForeignKeyArrayHandler(
-                key: self::KEY_PROFILE_IDS,
-                itemtype  : Profile::class,
-            ),
-        ];
-    }
+    ) {}
 
     #[Override]
     public static function jsonDeserialize(array $data): self

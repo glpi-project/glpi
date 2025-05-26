@@ -224,7 +224,7 @@ jobs:
     if: github.repository == 'glpi-project/glpi' || github.event_name != 'schedule'
     name: "E2E and web tests using latest PHP and MariaDB versions"
     runs-on: "ubuntu-latest"
-    timeout-minutes: 60
+    timeout-minutes: 90
     env:
       COMPOSE_FILE: ".github/actions/docker-compose-app.yml:.github/actions/docker-compose-services.yml"
       APPLICATION_ROOT: "${{ github.workspace }}"

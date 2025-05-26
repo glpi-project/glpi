@@ -6,7 +6,6 @@
  # http://glpi-project.org
  #
  # @copyright 2015-2025 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -147,10 +146,10 @@
       config['non_reusable_passwords_count'],
       {
          '1': __('Last password'),
-         '2': __('Last 2 passwords'),
-         '3': __('Last 3 passwords'),
-         '4': __('Last 4 passwords'),
-         '5': __('Last 5 passwords')
+         '2': __('Last %s passwords')|format(2),
+         '3': __('Last %s passwords')|format(3),
+         '4': __('Last %s passwords')|format(4),
+         '5': __('Last %s passwords')|format(5)
       },
       __('Prevent users from reusing previous passwords'),
        field_options|merge({

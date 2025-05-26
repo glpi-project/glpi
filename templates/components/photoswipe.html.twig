@@ -6,7 +6,6 @@
  # http://glpi-project.org
  #
  # @copyright 2015-2025 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -38,19 +37,20 @@
 {% set imgs = imgs|default({}) %}
 {% set galleryclass = gallery_class|default('') %}
 {% set gallery_type = gallery_type|default('') %}
+{% set gallery_item_class = gallery_item_class|default('') %}
 
 {% if gallery_type == 'horizontal' %}
    <div class="col-12">
       <div class="d-flex flex-row overflow-auto pswp-horizontal-gallery pswp-img{{ rand }} {{ gallery_item_class }}" itemscope itemtype="https://schema.org/ImageGallery">
          {% for img in imgs %}
             <div class="{{ img['gallery_item_class']|default('') }}">
-            {% if img['pre_figure_content'] %}
+            {% if img['pre_figure_content'] is defined %}
                {{ img['pre_figure_content']|raw }}
             {% endif %}
             <figure itemprop="associatedMedia" itemscope itemtype="https://schema.org/ImageObject" class="d-flex flex-column me-2">
-                  {% if img['_video'] %}
+                  {% if img['_video'] ?? false %}
                      <span class="bg-black pswp-trigger pointer d-flex justify-content-center align-items-center">
-                        <i class="fas fa-video"></i>
+                        <i class="ti ti-video-filled"></i>
                      </span>
                   {% else %}
                      <a href="{{ img['src']|escape }}" itemprop="contentUrl" data-index="0">

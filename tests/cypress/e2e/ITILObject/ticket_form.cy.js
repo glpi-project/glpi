@@ -6,7 +6,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -139,5 +138,25 @@ describe("Ticket Form", () => {
                 cy.get('textarea[name="content"]').awaitTinyMCE().should('contain.text', content.trim());
             });
         });
+    });
+
+    it('Enter key in requester field reloads new ticket form', () => {
+        cy.visit(`/front/ticket.form.php`);
+
+        // intercept form submit
+        cy.intercept('POST', '/front/ticket.form.php').as('submit');
+
+        // Need to manually trigger the enter key event as 'typing' {enter} is not matching real-life behavior
+        cy.findByLabelText('Requester').next().find('.select2-search__field').type('tec');
+        cy.get('.select2-results__option--highlighted').contains('tech');
+        cy.findByLabelText('Requester').next().find('.select2-search__field').trigger('keydown', {
+            key: 'Enter',
+            code: 'Enter',
+            which: 13,
+        });
+
+        // We should still be creating a new ticket, but the form should have been 'submitted'
+        cy.wait('@submit').its('response.statusCode').should('eq', 200);
+        cy.url().should('match', /\/front\/ticket\.form\.php$/);
     });
 });

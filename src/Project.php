@@ -39,7 +39,6 @@ use Glpi\DBAL\QueryFunction;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\DBAL\QueryUnion;
 use Glpi\Plugin\Hooks;
-use Glpi\RichText\RichText;
 use Glpi\Team\Team;
 
 /**
@@ -53,14 +52,14 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
     use Glpi\Features\Clonable;
     use Glpi\Features\Teamwork;
 
-   // From CommonDBTM
+    // From CommonDBTM
     public $dohistory                   = true;
     protected static $forward_entity_to = ['ProjectCost', 'ProjectTask'];
     public static $rightname                   = 'project';
     protected $usenotepad               = true;
 
-    const READMY                        = 1;
-    const READALL                       = 1024;
+    public const READMY                        = 1;
+    public const READALL                       = 1024;
 
     protected $team                     = [];
 
@@ -74,7 +73,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
             Itil_Project::class,
             Contract_Item::class,
             Notepad::class,
-            KnowbaseItem_Item::class
+            KnowbaseItem_Item::class,
         ];
     }
 
@@ -110,11 +109,12 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
         }
         return (Session::haveRight(self::$rightname, self::READALL)
               || (Session::haveRight(self::$rightname, self::READMY)
-                  && (($this->fields["users_id"] === Session::getLoginUserID())
+                  && (
+                      ($this->fields["users_id"] === Session::getLoginUserID())
                       || $this->isInTheManagerGroup()
                       || $this->isInTheTeam()
                   ))
-              );
+        );
     }
 
     /**
@@ -153,7 +153,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
                             static::getTable(),
                             [
                                 static::getForeignKeyField() => $item->getID(),
-                                'is_deleted'                => 0
+                                'is_deleted'                => 0,
                             ]
                         );
                     }
@@ -189,17 +189,17 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
         $ong = [];
         $this->addDefaultFormTab($ong);
         $this->addImpactTab($ong, $options);
-        $this->addStandardTab('ProjectTask', $ong, $options);
-        $this->addStandardTab('ProjectTeam', $ong, $options);
+        $this->addStandardTab(ProjectTask::class, $ong, $options);
+        $this->addStandardTab(ProjectTeam::class, $ong, $options);
         $this->addStandardTab(__CLASS__, $ong, $options);
-        $this->addStandardTab('ProjectCost', $ong, $options);
-        $this->addStandardTab('Itil_Project', $ong, $options);
-        $this->addStandardTab('Item_Project', $ong, $options);
-        $this->addStandardTab('Document_Item', $ong, $options);
-        $this->addStandardTab('Contract_Item', $ong, $options);
-        $this->addStandardTab('Notepad', $ong, $options);
-        $this->addStandardTab('KnowbaseItem_Item', $ong, $options);
-        $this->addStandardTab('Log', $ong, $options);
+        $this->addStandardTab(ProjectCost::class, $ong, $options);
+        $this->addStandardTab(Itil_Project::class, $ong, $options);
+        $this->addStandardTab(Item_Project::class, $ong, $options);
+        $this->addStandardTab(Document_Item::class, $ong, $options);
+        $this->addStandardTab(Contract_Item::class, $ong, $options);
+        $this->addStandardTab(Notepad::class, $ong, $options);
+        $this->addStandardTab(KnowbaseItem_Item::class, $ong, $options);
+        $this->addStandardTab(Log::class, $ong, $options);
 
         return $ong;
     }
@@ -227,8 +227,8 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
                 'page'  => ProjectTask::getMyTasksURL(false),
                 'links' => [
                     'search' => ProjectTask::getMyTasksURL(false),
-                ]
-            ]
+                ],
+            ],
         ];
     }
 
@@ -394,8 +394,8 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
         $join['glpi_projectteams'] = [
             'ON' => [
                 'glpi_projectteams'  => 'projects_id',
-                'glpi_projects'      => 'id'
-            ]
+                'glpi_projects'      => 'id',
+            ],
         ];
 
         $teamtable = 'glpi_projectteams';
@@ -403,14 +403,14 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
             'glpi_projects.users_id'   => Session::getLoginUserID(),
             [
                 "$teamtable.itemtype"   => 'User',
-                "$teamtable.items_id"   => Session::getLoginUserID()
-            ]
+                "$teamtable.items_id"   => Session::getLoginUserID(),
+            ],
         ];
         if (count($_SESSION['glpigroups'])) {
             $ors['glpi_projects.groups_id'] = $_SESSION['glpigroups'];
             $ors[] = [
                 "$teamtable.itemtype"   => 'Group',
-                "$teamtable.items_id"   => $_SESSION['glpigroups']
+                "$teamtable.items_id"   => $_SESSION['glpigroups'],
             ];
         }
 
@@ -420,7 +420,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
 
         $criteria = [
             'LEFT JOIN' => $join,
-            'WHERE'     => $where
+            'WHERE'     => $where,
         ];
 
         return $criteria;
@@ -501,7 +501,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
 
         $tab[] = [
             'id'                 => 'common',
-            'name'               => __('Characteristics')
+            'name'               => __('Characteristics'),
         ];
 
         $tab[] = [
@@ -520,7 +520,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
             'field'              => 'id',
             'name'               => __('ID'),
             'massiveaction'      => false,
-            'datatype'           => 'number'
+            'datatype'           => 'number',
         ];
 
         $tab[] = [
@@ -540,8 +540,8 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
             'datatype'           => 'itemlink',
             'massiveaction'      => false,
             'joinparams'         => [
-                'condition'       => [new QueryExpression('1=1')]
-            ]
+                'condition'       => [new QueryExpression('1=1')],
+            ],
         ];
 
         $tab[] = [
@@ -551,7 +551,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
             'name'               => __('Description'),
             'massiveaction'      => false,
             'datatype'           => 'text',
-            'htmltext'           => true
+            'htmltext'           => true,
         ];
 
         $tab[] = [
@@ -560,7 +560,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
             'field'              => 'priority',
             'name'               => __('Priority'),
             'searchtype'         => 'equals',
-            'datatype'           => 'specific'
+            'datatype'           => 'specific',
         ];
 
         $tab[] = [
@@ -568,7 +568,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
             'table'              => 'glpi_projecttypes',
             'field'              => 'name',
             'name'               => _n('Type', 'Types', 1),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -586,7 +586,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
             'field'              => 'date',
             'name'               => __('Creation date'),
             'datatype'           => 'datetime',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -598,7 +598,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
             'unit'               => '%',
             'min'                => 0,
             'max'                => 100,
-            'step'               => 5
+            'step'               => 5,
         ];
 
         $plugin = new Plugin();
@@ -608,7 +608,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
                 'table'              => static::getTable(),
                 'field'              => 'show_on_global_gantt',
                 'name'               => __('Show on global Gantt'),
-                'datatype'           => 'bool'
+                'datatype'           => 'bool',
             ];
         }
 
@@ -619,7 +619,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
             'linkfield'          => 'users_id',
             'name'               => _n('Manager', 'Managers', 1),
             'datatype'           => 'dropdown',
-            'right'              => 'see_project'
+            'right'              => 'see_project',
         ];
 
         $tab[] = [
@@ -629,7 +629,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
             'linkfield'          => 'groups_id',
             'name'               => __('Manager group'),
             'condition'          => ['is_manager' => 1],
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -637,7 +637,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
             'table'              => static::getTable(),
             'field'              => 'plan_start_date',
             'name'               => __('Planned start date'),
-            'datatype'           => 'datetime'
+            'datatype'           => 'datetime',
         ];
 
         $tab[] = [
@@ -645,7 +645,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
             'table'              => static::getTable(),
             'field'              => 'plan_end_date',
             'name'               => __('Planned end date'),
-            'datatype'           => 'datetime'
+            'datatype'           => 'datetime',
         ];
 
         $tab[] = [
@@ -656,7 +656,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
             'datatype'           => 'specific',
             'nosearch'           => true,
             'massiveaction'      => false,
-            'nosort'             => true
+            'nosort'             => true,
         ];
 
         $tab[] = [
@@ -664,7 +664,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
             'table'              => static::getTable(),
             'field'              => 'real_start_date',
             'name'               => __('Real start date'),
-            'datatype'           => 'datetime'
+            'datatype'           => 'datetime',
         ];
 
         $tab[] = [
@@ -672,7 +672,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
             'table'              => static::getTable(),
             'field'              => 'real_end_date',
             'name'               => __('Real end date'),
-            'datatype'           => 'datetime'
+            'datatype'           => 'datetime',
         ];
 
         $tab[] = [
@@ -683,15 +683,15 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
             'datatype'           => 'specific',
             'nosearch'           => true,
             'massiveaction'      => false,
-            'nosort'             => true
+            'nosort'             => true,
         ];
 
         $tab[] = [
             'id'                 => '16',
             'table'              => static::getTable(),
             'field'              => 'comment',
-            'name'               => __('Comments'),
-            'datatype'           => 'text'
+            'name'               => _n('Comment', 'Comments', Session::getPluralNumber()),
+            'datatype'           => 'text',
         ];
 
         $tab[] = [
@@ -700,7 +700,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
             'field'              => 'date_mod',
             'name'               => __('Last update'),
             'datatype'           => 'datetime',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -720,7 +720,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
             'field'              => 'date_creation',
             'name'               => __('Creation date'),
             'datatype'           => 'datetime',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -728,7 +728,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
             'table'              => 'glpi_entities',
             'field'              => 'completename',
             'name'               => Entity::getTypeName(1),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -736,7 +736,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
             'table'              => static::getTable(),
             'field'              => 'is_recursive',
             'name'               => __('Child entities'),
-            'datatype'           => 'bool'
+            'datatype'           => 'bool',
         ];
 
         $tab[] = [
@@ -755,7 +755,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
                 'beforejoin'         => [
                     'table'        => static::getTable(),
                     'joinparams'   => [
-                        'jointype'  => 'child'
+                        'jointype'  => 'child',
                     ],
                 ],
             ],
@@ -781,8 +781,8 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
                 'massiveaction'      => false,
                 'joinparams'         => [
                     'jointype'           => 'child',
-                    'condition'          => "AND NEWTABLE.`itemtype` = '$itil_type'"
-                ]
+                    'condition'          => "AND NEWTABLE.`itemtype` = '$itil_type'",
+                ],
             ];
             $index++;
         }
@@ -806,9 +806,9 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
                     'table'      => ProjectTeam::getTable(),
                     'joinparams' => [
                         'jointype' => 'child',
-                    ]
-                ]
-            ]
+                    ],
+                ],
+            ],
         ];
 
         $tab[] = [
@@ -825,9 +825,9 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
                     'table'      => ProjectTeam::getTable(),
                     'joinparams' => [
                         'jointype' => 'child',
-                    ]
-                ]
-            ]
+                    ],
+                ],
+            ],
         ];
 
         $tab[] = [
@@ -844,9 +844,9 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
                     'table'      => ProjectTeam::getTable(),
                     'joinparams' => [
                         'jointype' => 'child',
-                    ]
-                ]
-            ]
+                    ],
+                ],
+            ],
         ];
 
         $tab[] = [
@@ -863,9 +863,9 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
                     'table'      => ProjectTeam::getTable(),
                     'joinparams' => [
                         'jointype' => 'child',
-                    ]
-                ]
-            ]
+                    ],
+                ],
+            ],
         ];
 
         $tab[] = [
@@ -883,8 +883,8 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
             'forcegroupby'       => true,
             'splititems'         => true,
             'joinparams'         => [
-                'jointype'  => 'child'
-            ]
+                'jointype'  => 'child',
+            ],
         ];
 
         $tab[] = [
@@ -897,8 +897,8 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
             'forcegroupby'       => true,
             'splititems'         => true,
             'joinparams'         => [
-                'jointype'  => 'child'
-            ]
+                'jointype'  => 'child',
+            ],
         ];
 
         $tab[] = [
@@ -918,9 +918,9 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
                     'table'      => ProjectTask::getTable(),
                     'joinparams' => [
                         'jointype' => 'child',
-                    ]
-                ]
-            ]
+                    ],
+                ],
+            ],
         ];
 
         $tab[] = [
@@ -939,9 +939,9 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
                     'table'      => ProjectTask::getTable(),
                     'joinparams' => [
                         'jointype' => 'child',
-                    ]
-                ]
-            ]
+                    ],
+                ],
+            ],
         ];
 
         $tab[] = [
@@ -954,8 +954,8 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
             'forcegroupby'       => true,
             'splititems'         => true,
             'joinparams'         => [
-                'jointype'  => 'child'
-            ]
+                'jointype'  => 'child',
+            ],
         ];
 
         $tab[] = [
@@ -968,8 +968,8 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
             'forcegroupby'       => true,
             'splititems'         => true,
             'joinparams'         => [
-                'jointype'  => 'child'
-            ]
+                'jointype'  => 'child',
+            ],
         ];
 
         $tab[] = [
@@ -986,8 +986,8 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
             'forcegroupby'       => true,
             'splititems'         => true,
             'joinparams'         => [
-                'jointype'  => 'child'
-            ]
+                'jointype'  => 'child',
+            ],
         ];
 
         $tab[] = [
@@ -1000,8 +1000,8 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
             'forcegroupby'       => true,
             'splititems'         => true,
             'joinparams'         => [
-                'jointype'  => 'child'
-            ]
+                'jointype'  => 'child',
+            ],
         ];
 
         $tab[] = [
@@ -1014,8 +1014,8 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
             'forcegroupby'       => true,
             'splititems'         => true,
             'joinparams'         => [
-                'jointype'  => 'child'
-            ]
+                'jointype'  => 'child',
+            ],
         ];
 
         $tab[] = [
@@ -1028,8 +1028,8 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
             'forcegroupby'       => true,
             'splititems'         => true,
             'joinparams'         => [
-                'jointype'  => 'child'
-            ]
+                'jointype'  => 'child',
+            ],
         ];
 
         $tab[] = [
@@ -1042,8 +1042,8 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
             'forcegroupby'       => true,
             'splititems'         => true,
             'joinparams'         => [
-                'jointype'  => 'child'
-            ]
+                'jointype'  => 'child',
+            ],
         ];
 
         $tab[] = [
@@ -1061,8 +1061,8 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
             'forcegroupby'       => true,
             'splititems'         => true,
             'joinparams'         => [
-                'jointype'  => 'child'
-            ]
+                'jointype'  => 'child',
+            ],
         ];
 
         $tab[] = [
@@ -1080,22 +1080,22 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
             'forcegroupby'       => true,
             'splititems'         => true,
             'joinparams'         => [
-                'jointype'  => 'child'
-            ]
+                'jointype'  => 'child',
+            ],
         ];
 
         $tab[] = [
             'id'                 => '125',
             'table'              => ProjectTask::getTable(),
             'field'              => 'comment',
-            'name'               => __('Comments'),
+            'name'               => _n('Comment', 'Comments', Session::getPluralNumber()),
             'datatype'           => 'text',
             'massiveaction'      => false,
             'forcegroupby'       => true,
             'splititems'         => true,
             'joinparams'         => [
-                'jointype'  => 'child'
-            ]
+                'jointype'  => 'child',
+            ],
         ];
 
         $tab[] = [
@@ -1108,11 +1108,11 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
             'forcegroupby'       => true,
             'splititems'         => true,
             'joinparams'         => [
-                'jointype'  => 'child'
-            ]
+                'jointype'  => 'child',
+            ],
         ];
 
-       // add objectlock search options
+        // add objectlock search options
         $tab = array_merge($tab, ObjectLock::rawSearchOptionsToAdd(get_class($this)));
 
         $tab = array_merge($tab, Notepad::rawSearchOptionsToAdd());
@@ -1150,7 +1150,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
                 'priority' => 'badge',
                 'users_id' => 'raw_html',
                 'groups_id' => 'raw_html',
-            ]
+            ],
         ];
     }
 
@@ -1170,7 +1170,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
         $item = new static();
         $state_iterator = $DB->request([
             'SELECT' => ['id', 'color'],
-            'FROM'   => 'glpi_projectstates'
+            'FROM'   => 'glpi_projectstates',
         ]);
         $state_colors = [];
         foreach ($state_iterator as $state) {
@@ -1187,7 +1187,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
             $entry['name'] = $item->getLink();
             $entry['status'] = [
                 'content' => Dropdown::getDropdownName('glpi_projectstates', $item->fields['projectstates_id']),
-                'color' => $state_colors[$item->fields['projectstates_id']] ?? ''
+                'color' => $state_colors[$item->fields['projectstates_id']] ?? '',
             ];
             $entry['date'] = Html::convDateTime($item->fields['date']);
             $entry['date_mod'] = Html::convDateTime($item->fields['date_mod']);
@@ -1199,7 +1199,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
             }
             $entry['priority'] = [
                 'content' => CommonITILObject::getPriorityName($item->fields["priority"]),
-                'color' => $_SESSION["glpipriority_" . $item->fields["priority"]]
+                'color' => $_SESSION["glpipriority_" . $item->fields["priority"]],
             ];
             if ($item->fields['users_id']) {
                 if (!isset($users[$item->fields['users_id']])) {
@@ -1211,7 +1211,7 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
                             $user->getInfoCard(),
                             [
                                 'link'    => $user->getLinkURL(),
-                                'display' => false
+                                'display' => false,
                             ]
                         )
                     );
@@ -1319,8 +1319,8 @@ class Project extends CommonDBTM implements ExtraVisibilityCriteria
             'FROM'   => static::getTable(),
             'WHERE'  => [
                 static::getForeignKeyField()   => $ID,
-                'is_deleted'                  => 0
-            ]
+                'is_deleted'                  => 0,
+            ],
         ]);
         $canedit = $this->can($ID, UPDATE);
         $entries_to_fetch = [];
@@ -1338,7 +1338,7 @@ TWIG, ['projects_id' => $ID, 'label' => __('Create a sub project from this proje
             $entries_to_fetch[] = [
                 'item_id' => $ID,
                 'id' => $data['id'],
-                'itemtype' => static::class
+                'itemtype' => static::class,
             ];
         }
 
@@ -1346,7 +1346,6 @@ TWIG, ['projects_id' => $ID, 'label' => __('Create a sub project from this proje
         $entries = self::getDatatableEntries($entries_to_fetch);
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'is_tab' => true,
-            'nopager' => true,
             'nofilter' => true,
             'nosort' => true,
             'columns' => $header['columns'],
@@ -1358,7 +1357,7 @@ TWIG, ['projects_id' => $ID, 'label' => __('Create a sub project from this proje
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
                 'container'     => 'mass' . static::class . mt_rand(),
-            ]
+            ],
         ]);
     }
 
@@ -1437,8 +1436,8 @@ TWIG, ['projects_id' => $ID, 'label' => __('Create a sub project from this proje
                             $project->fields['entities_id']
                         )
                         : $project->fields['entities_id']),
-                    'checkright'      => true
-                ]
+                    'checkright'      => true,
+                ],
             ];
             // language=Twig
             echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
@@ -1468,7 +1467,7 @@ TWIG, $twig_params);
                             'itemtype' => 'ProjectTeam',
                             'id' => $data['id'],
                             'type' => $item::getTypeName(1),
-                            'member' => $item->getLink()
+                            'member' => $item->getLink(),
                         ];
                     }
                 }
@@ -1477,15 +1476,14 @@ TWIG, $twig_params);
 
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'is_tab' => true,
-            'nopager' => true,
             'nofilter' => true,
             'nosort' => true,
             'columns' => [
                 'type' => _n('Type', 'Types', 1),
-                'member' => _n('Member', 'Members', 1)
+                'member' => _n('Member', 'Members', 1),
             ],
             'formatters' => [
-                'member' => 'raw_html'
+                'member' => 'raw_html',
             ],
             'entries' => $entries,
             'total_number' => count($entries),
@@ -1493,8 +1491,8 @@ TWIG, $twig_params);
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
-                'container'     => 'mass' . static::class . mt_rand()
-            ]
+                'container'     => 'mass' . static::class . mt_rand(),
+            ],
         ]);
 
         return true;
@@ -1506,7 +1504,7 @@ TWIG, $twig_params);
         global $DB;
 
         $items = [
-            -1 => __('Global')
+            -1 => __('Global'),
         ];
         $criteria = [
             'is_template' => 0,
@@ -1519,16 +1517,16 @@ TWIG, $twig_params);
                     'OR' => [
                         ['is_finished' => 0],
                         ['is_finished' => 'null'],
-                    ]
-                ]
+                    ],
+                ],
             ];
             $joins = [
                 'glpi_projectstates' => [
                     'FKEY' => [
                         'glpi_projectstates' => 'id',
-                        'glpi_projects'      => 'projectstates_id'
-                    ]
-                ]
+                        'glpi_projects'      => 'projectstates_id',
+                    ],
+                ],
             ];
         }
         $criteria += getEntitiesRestrictCriteria(self::getTable(), '', '', 'auto');
@@ -1537,26 +1535,26 @@ TWIG, $twig_params);
                 'glpi_projects.id',
                 'glpi_projects.name',
                 'glpi_projects.is_deleted',
-                'glpi_projectstates.is_finished'
+                'glpi_projectstates.is_finished',
             ],
             'DISTINCT' => true,
             'FROM'     => 'glpi_projects',
             'LEFT JOIN' => $joins,
-            'WHERE'     => $criteria
+            'WHERE'     => $criteria,
         ], self::getVisibilityCriteria()));
         foreach ($iterator as $data) {
             $items[$data['id']] = $data['name'];
         }
 
         if ($current_id > -1 && !isset($items[$current_id])) {
-           // Current Kanban is not in the list yet
+            // Current Kanban is not in the list yet
             $iterator = $DB->request([
                 'SELECT'   => [
                     'glpi_projects.id',
                     'glpi_projects.name',
                 ],
                 'FROM'     => 'glpi_projects',
-                'WHERE'     => ['id' => $current_id]
+                'WHERE'     => ['id' => $current_id],
             ]);
             if ($iterator->count()) {
                 $data = $iterator->current();
@@ -1590,10 +1588,10 @@ TWIG, $twig_params);
                             'AND' => [
                                 'namet2.itemtype' => ProjectState::getType(),
                                 'namet2.language' => $_SESSION['glpilanguage'],
-                                'namet2.field'    => 'name'
-                            ]
-                        ]
-                    ]
+                                'namet2.field'    => 'name',
+                            ],
+                        ],
+                    ],
                 ];
             }
 
@@ -1601,7 +1599,7 @@ TWIG, $twig_params);
                 'SELECT'   => array_merge([ProjectState::getTable() . ".*"], $addselect),
                 'DISTINCT' => true,
                 'FROM'     => ProjectState::getTable(),
-                'WHERE'    => $restrict
+                'WHERE'    => $restrict,
             ];
             if (count($ljoin)) {
                 $criteria['LEFT JOIN'] = $ljoin;
@@ -1620,7 +1618,7 @@ TWIG, $twig_params);
             }
 
             // sort by name ASC
-            uasort($result, static fn ($a, $b) => strnatcasecmp($a['name'], $b['name']));
+            uasort($result, static fn($a, $b) => strnatcasecmp($a['name'], $b['name']));
         }
 
         return $result;
@@ -1644,23 +1642,23 @@ TWIG, $twig_params);
         $required_project_fields = [
             'id', 'name', 'content', 'plan_start_date', 'plan_end_date', 'real_start_date',
             'real_end_date', 'percent_done', 'projects_id', 'projectstates_id', 'is_deleted',
-            'date_creation'
+            'date_creation',
         ];
         $request = [
             'SELECT' => [
-                'glpi_projectstates.is_finished'
+                'glpi_projectstates.is_finished',
             ],
             'FROM'   => 'glpi_projects',
             'LEFT JOIN' => [
                 'glpi_projectstates' => [
                     'FKEY' => [
                         'glpi_projects'   => 'projectstates_id',
-                        'glpi_projectstates' => 'id'
-                    ]
-                ]
+                        'glpi_projectstates' => 'id',
+                    ],
+                ],
             ] + $project_visibility['LEFT JOIN'],
             'WHERE'     => $project_visibility['WHERE'] + [
-                'is_template' => 0
+                'is_template' => 0,
             ],
         ];
         foreach ($required_project_fields as $field) {
@@ -1677,7 +1675,7 @@ TWIG, $twig_params);
             $projects[$data['id']] = $data;
         }
         $project_ids = array_map(
-            static fn ($e) => $e['id'],
+            static fn($e) => $e['id'],
             array_filter($projects, static function ($e) use ($ID) {
                 // Filter tasks of closed projects in Global view
                 return ($ID > 0 || !$e['is_finished']);
@@ -1685,7 +1683,7 @@ TWIG, $twig_params);
         );
         $projectteams = count($project_ids) ? $projectteam->find(['projects_id' => $project_ids]) : [];
 
-       // Get sub-tasks
+        // Get sub-tasks
         $projecttask = new ProjectTask();
         $projecttaskteam = new ProjectTaskTeam();
         $project_task_criteria = [
@@ -1693,7 +1691,7 @@ TWIG, $twig_params);
             'projects_id' => ($ID <= 0 && count($project_ids)) ? $project_ids : $ID,
         ];
         $projecttasks = $projecttask->find($project_task_criteria + $criteria);
-        $projecttask_ids = array_map(static fn ($e) => $e['id'], $projecttasks);
+        $projecttask_ids = array_map(static fn($e) => $e['id'], $projecttasks);
         $projecttaskteams = count($projecttask_ids) ? $projecttaskteam->find(['projecttasks_id' => $projecttask_ids]) : [];
 
         // Build team member data
@@ -1702,12 +1700,12 @@ TWIG, $twig_params);
             'User' => ['id', 'name', 'firstname', 'realname'],
             'Group' => ['id', 'name'],
             'Supplier' => ['id', 'name'],
-            'Contact' => ['id', 'name', 'firstname']
+            'Contact' => ['id', 'name', 'firstname'],
         ];
         $all_members = [];
         foreach ($supported_teamtypes as $itemtype => $fields) {
             $all_ids = array_map(
-                static fn ($e) => $e['items_id'],
+                static fn($e) => $e['items_id'],
                 array_filter(array_merge($projectteams, $projecttaskteams), static function ($e) use ($itemtype) {
                     return ($e['itemtype'] === $itemtype);
                 })
@@ -1718,12 +1716,12 @@ TWIG, $twig_params);
                     'SELECT'    => $fields,
                     'FROM'      => $itemtable,
                     'WHERE'     => [
-                        "{$itemtable}.id"   => $all_ids
-                    ]
+                        "{$itemtable}.id"   => $all_ids,
+                    ],
                 ]);
-                 $all_members[$itemtype] = [];
+                $all_members[$itemtype] = [];
                 foreach ($all_items as $data) {
-                     $all_members[$itemtype][] = $data;
+                    $all_members[$itemtype][] = $data;
                 }
             } else {
                 $all_members[$itemtype] = [];
@@ -1734,7 +1732,7 @@ TWIG, $twig_params);
             $item = array_merge($subproject, [
                 '_itemtype' => 'Project',
                 '_team'     => [],
-                '_steps'    => ProjectTask::getAllForProject($subproject['id'])
+                '_steps'    => ProjectTask::getAllForProject($subproject['id']),
             ]);
             if ($ID <= 0 && $subproject['projects_id'] > 0) {
                 if (isset($projects[$subproject['projects_id']])) {
@@ -1758,7 +1756,7 @@ TWIG, $twig_params);
                             return ($e['id'] === $teammember['items_id']);
                         });
                         if (count($matches)) {
-                             $item['_team'][] = array_merge($teammember, reset($matches));
+                            $item['_team'][] = array_merge($teammember, reset($matches));
                         }
                         break;
                     case 'User':
@@ -1767,12 +1765,12 @@ TWIG, $twig_params);
                             return ($e['id'] === $teammember['items_id']);
                         });
                         if (count($contact_matches)) {
-                              $match = reset($contact_matches);
-                              // contact -> name, user -> realname
-                              $realname = $teammember['itemtype'] === 'User' ? $match['realname'] : $match['name'];
-                              $name = $teammember['itemtype'] === 'User' ? $match['name'] : '';
-                              $match['name'] = formatUserName($match['id'], $name, $realname, $match['firstname']);
-                              $item['_team'][] = array_merge($teammember, $match);
+                            $match = reset($contact_matches);
+                            // contact -> name, user -> realname
+                            $realname = $teammember['itemtype'] === 'User' ? $match['realname'] : $match['name'];
+                            $name = $teammember['itemtype'] === 'User' ? $match['name'] : '';
+                            $match['name'] = formatUserName($match['id'], $name, $realname, $match['firstname']);
+                            $item['_team'][] = array_merge($teammember, $match);
                         }
                         break;
                 }
@@ -1785,7 +1783,7 @@ TWIG, $twig_params);
                 '_itemtype' => 'ProjectTask',
                 '_team' => [],
                 '_steps' => ProjectTask::getAllForProjectTask($subtask['id']),
-                'type' => $subtask['projecttasktypes_id']
+                'type' => $subtask['projecttasktypes_id'],
             ]);
             if ($ID <= 0) {
                 $item['_parents_id'] = $projects[$subtask['projects_id']]['id'];
@@ -1807,7 +1805,7 @@ TWIG, $twig_params);
                             return ($e['id'] === $teammember['items_id']);
                         });
                         if (count($matches)) {
-                             $item['_team'][] = array_merge($teammember, reset($matches));
+                            $item['_team'][] = array_merge($teammember, reset($matches));
                         }
                         break;
                     case 'User':
@@ -1816,13 +1814,13 @@ TWIG, $twig_params);
                             return ($e['id'] === $teammember['items_id']);
                         });
                         if (count($contact_matches)) {
-                              $match = reset($contact_matches);
+                            $match = reset($contact_matches);
                             if ($teammember['itemtype'] === 'User') {
                                 $match['name'] = formatUserName($match['id'], $match['name'], $match['realname'], $match['firstname']);
                             } else {
                                 $match['name'] = formatUserName($match['id'], '', $match['name'], $match['firstname']);
                             }
-                             $item['_team'][] = array_merge($teammember, $match);
+                            $item['_team'][] = array_merge($teammember, $match);
                         }
                         break;
                 }
@@ -1844,13 +1842,13 @@ TWIG, $twig_params);
         if (empty($column_ids) || $get_default || in_array(0, $column_ids, false)) {
             $columns[0] = [
                 'name'         => __('No status'),
-                '_protected'   => true
+                '_protected'   => true,
             ];
         }
         $criteria = [];
         if (!empty($column_ids)) {
             $criteria = [
-                'projectstates_id'   => $column_ids
+                'projectstates_id'   => $column_ids,
             ];
         }
         $items      = self::getDataToDisplayOnKanban($ID, $criteria);
@@ -1882,7 +1880,7 @@ TWIG, $twig_params);
                 $content .= $plugin_content_pre['content'];
             }
             $content .= "</div>";
-           // Core content
+            // Core content
             $content .= "<div class='kanban-core-content'>";
             if (isset($item['_parents_id'])) {
                 $childref = $itemtype === 'Project' ? __('Subproject') : __('Subtask');
@@ -1900,15 +1898,15 @@ TWIG, $twig_params);
                 $content .= reset($typematches)['name'] . '&nbsp;';
             }
             if (array_key_exists('is_milestone', $item) && $item['is_milestone']) {
-                $content .= "&nbsp;<i class='fas fa-map-signs' title='" . __s('Milestone') . "'></i>&nbsp;";
+                $content .= "&nbsp;<i class='ti ti-directions-filled' title='" . __s('Milestone') . "'></i>&nbsp;";
             }
             if (isset($item['_steps']) && count($item['_steps'])) {
-                $done = count(array_filter($item['_steps'], static fn ($step) => (int) $step['percent_done'] === 100));
+                $done = count(array_filter($item['_steps'], static fn($step) => (int) $step['percent_done'] === 100));
                 $total = count($item['_steps']);
                 $content .= "<div class='flex-break'></div>";
                 $content .= sprintf(__s('%s / %s tasks complete'), $done, $total);
             }
-           // Percent Done
+            // Percent Done
             $content .= "<div class='flex-break'></div>";
             $content .= Html::progress(100, $item['percent_done']);
 
@@ -1930,7 +1928,7 @@ TWIG, $twig_params);
             $card['_metadata'] = [];
             $card['due_date'] = $item['plan_end_date'] ? Html::convDateTime($item['plan_end_date']) : '';
             $metadata_values = ['name', 'content', 'is_milestone', 'plan_start_date', 'plan_end_date', 'real_start_date', 'real_end_date',
-                'planned_duration', 'effective_duration', 'percent_done', 'is_deleted', 'date_creation'
+                'planned_duration', 'effective_duration', 'percent_done', 'is_deleted', 'date_creation',
             ];
             foreach ($metadata_values as $metadata_value) {
                 if (isset($item[$metadata_value])) {
@@ -1945,7 +1943,7 @@ TWIG, $twig_params);
             $card['_metadata'] = Plugin::doHookFunction(Hooks::KANBAN_ITEM_METADATA, [
                 'itemtype' => $itemtype,
                 'items_id' => $item['id'],
-                'metadata' => $card['_metadata']
+                'metadata' => $card['_metadata'],
             ])['metadata'];
             $columns[$item['projectstates_id']]['items'][] = $card;
         }
@@ -2001,18 +1999,18 @@ TWIG, $twig_params);
             'fields' => [
                 'projects_id'  => [
                     'type'   => 'hidden',
-                    'value'  => $ID
+                    'value'  => $ID,
                 ],
                 'name'   => [
-                    'placeholder'  => __('Name')
+                    'placeholder'  => __('Name'),
                 ],
                 'content'   => [
                     'placeholder'  => __('Content'),
-                    'type'         => 'textarea'
+                    'type'         => 'textarea',
                 ],
                 'users_id'  => [
                     'type'         => 'hidden',
-                    'value'        => $_SESSION['glpiID']
+                    'value'        => $_SESSION['glpiID'],
                 ],
                 'entities_id' => [
                     'type'   => 'hidden',
@@ -2020,12 +2018,12 @@ TWIG, $twig_params);
                 ],
                 'is_recursive' => [
                     'type'   => 'hidden',
-                    'value'  => $ID > 0 ? $project->fields["is_recursive"] : 0
-                ]
+                    'value'  => $ID > 0 ? $project->fields["is_recursive"] : 0,
+                ],
             ],
             'team_itemtypes'  => self::getTeamItemtypes(),
             'team_roles'      => $team_roles,
-            'allow_create'    => self::canCreate()
+            'allow_create'    => self::canCreate(),
         ];
 
         $team_role_ids = static::getTeamRoles();
@@ -2043,22 +2041,22 @@ TWIG, $twig_params);
             'fields' => [
                 'projects_id'  => [
                     'type'   => 'hidden',
-                    'value'  => $ID
+                    'value'  => $ID,
                 ],
                 'name'   => [
-                    'placeholder'  => __('Name')
+                    'placeholder'  => __('Name'),
                 ],
                 'content'   => [
                     'placeholder'  => __('Content'),
-                    'type'         => 'textarea'
+                    'type'         => 'textarea',
                 ],
                 'projecttasktemplates_id' => [
                     'type'   => 'hidden',
-                    'value'  => 0
+                    'value'  => 0,
                 ],
                 'projecttasks_id' => [
                     'type'   => 'hidden',
-                    'value'  => 0
+                    'value'  => 0,
                 ],
                 'entities_id' => [
                     'type'   => 'hidden',
@@ -2066,13 +2064,13 @@ TWIG, $twig_params);
                 ],
                 'is_recursive' => [
                     'type'   => 'hidden',
-                    'value'  => $ID > 0 ? $project->fields["is_recursive"] : 0
-                ]
+                    'value'  => $ID > 0 ? $project->fields["is_recursive"] : 0,
+                ],
             ],
             'team_itemtypes'  => ProjectTask::getTeamItemtypes(),
             'team_roles'      => $team_roles,
             'allow_create'    => ProjectTask::canCreate(),
-            'allow_bulk_add'  => $ID > 0
+            'allow_bulk_add'  => $ID > 0,
         ];
         if ($ID <= 0) {
             $supported_itemtypes['ProjectTask']['fields']['projects_id'] = [
@@ -2085,34 +2083,34 @@ TWIG, $twig_params);
                             ProjectState::getTable() => [
                                 'ON' => [
                                     ProjectState::getTable() => 'id',
-                                    self::getTable() => 'projectstates_id'
-                                ]
-                            ]
+                                    self::getTable() => 'projectstates_id',
+                                ],
+                            ],
                         ],
                         'WHERE' => [
-                            'is_finished'   => false
-                        ]
-                    ]
-                ])
+                            'is_finished'   => false,
+                        ],
+                    ],
+                ]),
             ];
         }
         $column_field = [
             'id' => 'projectstates_id',
             'extra_fields' => [
                 'color'  => [
-                    'type'   => 'color'
-                ]
-            ]
+                    'type'   => 'color',
+                ],
+            ],
         ];
 
         $canmodify_view = ($ID === 0 || $project->canModifyGlobalState());
         $rights = [
             'create_item'                    => self::canCreate() || ProjectTask::canCreate(),
             'delete_item'                    => self::canDelete() || ProjectTask::canDelete(),
-            'create_column'                  => (bool)ProjectState::canCreate(),
+            'create_column'                  => (bool) ProjectState::canCreate(),
             'modify_view'                    => $ID === 0 || $project->canModifyGlobalState(),
-            'order_card'                     => (bool)$project->canOrderKanbanCard($ID),
-            'create_card_limited_columns'    => $canmodify_view ? [] : [0]
+            'order_card'                     => (bool) $project->canOrderKanbanCard($ID),
+            'create_card_limited_columns'    => $canmodify_view ? [] : [0],
         ];
 
         TemplateRenderer::getInstance()->display('components/kanban/kanban.html.twig', [
@@ -2123,50 +2121,50 @@ TWIG, $twig_params);
             'column_field'                => $column_field,
             'item'                        => [
                 'itemtype'  => 'Project',
-                'items_id'  => $ID
+                'items_id'  => $ID,
             ],
             'supported_filters'           => [
                 'title' => [
                     'description' => _x('filters', 'The title of the item'),
-                    'supported_prefixes' => ['!', '#'] // Support exclusions and regex
+                    'supported_prefixes' => ['!', '#'], // Support exclusions and regex
                 ],
                 'type' => [
                     'description' => _x('filters', 'The type of the item'),
-                    'supported_prefixes' => ['!'] // Support exclusions only
+                    'supported_prefixes' => ['!'], // Support exclusions only
                 ],
                 'milestone' => [
                     'description' => _x('filters', 'If the item represents a milestone or not'),
-                    'supported_prefixes' => ['!']
+                    'supported_prefixes' => ['!'],
                 ],
                 'content' => [
                     'description' => _x('filters', 'The content of the item'),
-                    'supported_prefixes' => ['!', '#']
+                    'supported_prefixes' => ['!', '#'],
                 ],
                 'deleted' => [
                     'description' => _x('filters', 'If the item is deleted or not'),
-                    'supported_prefixes' => ['!']
+                    'supported_prefixes' => ['!'],
                 ],
                 'team' => [
                     'description' => _x('filters', 'A team member for the item'),
-                    'supported_prefixes' => ['!']
+                    'supported_prefixes' => ['!'],
                 ],
                 'user' => [
                     'description' => _x('filters', 'A user in the team of the item'),
-                    'supported_prefixes' => ['!']
+                    'supported_prefixes' => ['!'],
                 ],
                 'group' => [
                     'description' => _x('filters', 'A group in the team of the item'),
-                    'supported_prefixes' => ['!']
+                    'supported_prefixes' => ['!'],
                 ],
                 'supplier' => [
                     'description' => _x('filters', 'A supplier in the team of the item'),
-                    'supported_prefixes' => ['!']
+                    'supported_prefixes' => ['!'],
                 ],
                 'contact' => [
                     'description' => _x('filters', 'A contact in the team of the item'),
-                    'supported_prefixes' => ['!']
+                    'supported_prefixes' => ['!'],
                 ],
-            ] + self::getKanbanPluginFilters(static::getType())
+            ] + self::getKanbanPluginFilters(static::getType()),
         ]);
     }
 
@@ -2182,7 +2180,7 @@ TWIG, $twig_params);
     {
         return [
             Team::ROLE_OWNER,
-            Team::ROLE_MEMBER
+            Team::ROLE_MEMBER,
         ];
     }
 
@@ -2206,7 +2204,7 @@ TWIG, $twig_params);
         $result = $project_team->add([
             'projects_id'  => $this->getID(),
             'itemtype'     => $itemtype,
-            'items_id'     => $items_id
+            'items_id'     => $items_id,
         ]);
         return (bool) $result;
     }
@@ -2217,7 +2215,7 @@ TWIG, $twig_params);
         $result = $project_team->deleteByCriteria([
             'projects_id'  => $this->getID(),
             'itemtype'     => $itemtype,
-            'items_id'     => $items_id
+            'items_id'     => $items_id,
         ]);
         return (bool) $result;
     }
@@ -2260,33 +2258,33 @@ TWIG, $twig_params);
                 ProjectState::getTable() => [
                     'FKEY' => [
                         ProjectState::getTable() => 'id',
-                        self::getTable() => 'projectstates_id'
-                    ]
-                ]
+                        self::getTable() => 'projectstates_id',
+                    ],
+                ],
             ],
             'WHERE' => [
                 ['OR' => ['groups_id' => $groups_id]],
                 [
                     'OR' => [
                         [ProjectState::getTable() . '.is_finished' => 0],
-                        [ProjectState::getTable() . '.is_finished' => null]
-                    ]
+                        [ProjectState::getTable() . '.is_finished' => null],
+                    ],
                 ],
                 ['NOT' => ['is_template' => 1]],
-            ]
+            ],
         ];
 
         if ($search_in_team) {
             $team_sub_query = new QuerySubQuery([
                 'SELECT' => [
-                    'projects_id'
+                    'projects_id',
                 ],
                 'FROM' => ProjectTeam::getTable(),
                 'WHERE' => [
                     'OR' => [
-                        ['itemtype' => 'Group', 'items_id' => $groups_id]
-                    ]
-                ]
+                        ['itemtype' => 'Group', 'items_id' => $groups_id],
+                    ],
+                ],
             ]);
 
             $req['WHERE'][0]['OR'][self::getTable() . '.id'] = $team_sub_query;
@@ -2322,30 +2320,30 @@ TWIG, $twig_params);
                 ProjectState::getTable() => [
                     'FKEY' => [
                         ProjectState::getTable() => 'id',
-                        self::getTable() => 'projectstates_id'
-                    ]
-                ]
+                        self::getTable() => 'projectstates_id',
+                    ],
+                ],
             ],
             'WHERE' => [
                 ['OR' => ['users_id' => $users_id]],
                 [
                     'OR' => [
                         [ProjectState::getTable() . '.is_finished' => 0],
-                        [ProjectState::getTable() . '.is_finished' => null]
-                    ]
+                        [ProjectState::getTable() . '.is_finished' => null],
+                    ],
                 ],
                 ['NOT' => ['is_template' => 1]],
-            ]
+            ],
         ];
 
         $groups_sub_query = new QuerySubQuery([
             'SELECT' => [
-                'groups_id'
+                'groups_id',
             ],
             'FROM' => Group_User::getTable(),
             'WHERE' => [
-                'users_id' => $users_id
-            ]
+                'users_id' => $users_id,
+            ],
         ]);
 
         if ($search_in_groups) {
@@ -2354,7 +2352,7 @@ TWIG, $twig_params);
 
         if ($search_in_team) {
             $crit = [
-                ['itemtype' => 'User', 'items_id' => $users_id]
+                ['itemtype' => 'User', 'items_id' => $users_id],
             ];
 
             if ($search_in_groups) {
@@ -2363,12 +2361,12 @@ TWIG, $twig_params);
 
             $team_sub_query = new QuerySubQuery([
                 'SELECT' => [
-                    'projects_id'
+                    'projects_id',
                 ],
                 'FROM' => ProjectTeam::getTable(),
                 'WHERE' => [
-                    'OR' => $crit
-                ]
+                    'OR' => $crit,
+                ],
             ]);
 
             $req['WHERE'][0]['OR'][self::getTable() . '.id'] = $team_sub_query;
@@ -2410,22 +2408,22 @@ TWIG, $twig_params);
                             'link' => 'AND',
                             'field' => ($itemtype === 'User') ? 87 : 88, // 87 = Project teams - Users, 88 = Project teams - Groups
                             'searchtype' => 'equals',
-                            'value' => ($itemtype === 'User') ? 'myself' : 'mygroups'
+                            'value' => ($itemtype === 'User') ? 'myself' : 'mygroups',
                         ],
                         [
                             'link' => 'OR',
                             'field' => ($itemtype === 'User') ? 24 : 49, // 24 = Project Manager, 49 = Project Manager group
                             'searchtype' => 'equals',
-                            'value' => ($itemtype === 'User') ? 'myself' : 'mygroups'
-                        ]
-                    ]
-                ]
-            ]
+                            'value' => ($itemtype === 'User') ? 'myself' : 'mygroups',
+                        ],
+                    ],
+                ],
+            ],
         ];
 
         // Retrieve finished project states to exclude them from the search
         $project_states = (new ProjectState())->find([
-            'is_finished' => 1
+            'is_finished' => 1,
         ]);
 
         foreach ($project_states as $state) {
@@ -2433,11 +2431,11 @@ TWIG, $twig_params);
                 'link' => 'AND',
                 'field' => 12,
                 'searchtype' => 'notequals',
-                'value' => $state['id']
+                'value' => $state['id'],
             ];
         }
 
-        $displayed_row_count = min(count($projects_id), (int)$_SESSION['glpidisplay_count_on_home']);
+        $displayed_row_count = min(count($projects_id), (int) $_SESSION['glpidisplay_count_on_home']);
 
         $twig_params = [
             'class'       => 'table table-borderless table-striped table-hover card-table',
@@ -2450,28 +2448,28 @@ TWIG, $twig_params);
                             htmlescape(self::getSearchURL() . '?' . Toolbox::append_params($options)),
                             Html::makeTitle(__('Ongoing projects'), $displayed_row_count, count($projects_id))
                         ),
-                    ]
+                    ],
                 ],
                 [
                     [
                         'content' => __s('Name'),
-                        'style'   => 'width: 30%'
+                        'style'   => 'width: 30%',
                     ],
                     [
                         'content' => _sn('State', 'States', 1),
-                        'style'   => 'width: 30%'
+                        'style'   => 'width: 30%',
                     ],
                     [
                         'content' => __s('Priority'),
-                        'style'   => 'width: 30%'
+                        'style'   => 'width: 30%',
                     ],
                     [
                         'content' => __s('Percent done'),
-                        'style'   => 'width: 10%'
-                    ]
-                ]
+                        'style'   => 'width: 10%',
+                    ],
+                ],
             ],
-            'rows' => []
+            'rows' => [],
         ];
 
         foreach ($projects_id as $key => $raw_project) {
@@ -2505,9 +2503,9 @@ TWIG, $twig_params);
                         ),
                     ],
                     [
-                        'content' => Html::getProgressBar((float)$project->fields['percent_done'])
-                    ]
-                ]
+                        'content' => Html::getProgressBar((float) $project->fields['percent_done']),
+                    ],
+                ],
             ];
         }
 
@@ -2533,22 +2531,22 @@ TWIG, $twig_params);
 
         $query1 = new QuerySubQuery([
             'SELECT' => [
-                'percent_done'
+                'percent_done',
             ],
             'FROM'   => self::getTable(),
             'WHERE'  => [
                 'projects_id'  => $ID,
-                'is_deleted'   => 0
-            ]
+                'is_deleted'   => 0,
+            ],
         ]);
         $query2 = new QuerySubQuery([
             'SELECT' => [
-                'percent_done'
+                'percent_done',
             ],
             'FROM'   => ProjectTask::getTable(),
             'WHERE'  => [
-                'projects_id' => $ID
-            ]
+                'projects_id' => $ID,
+            ],
         ]);
         $union = new QueryUnion([$query1, $query2], false, 'all_items');
         $iterator = $DB->request([
@@ -2557,9 +2555,9 @@ TWIG, $twig_params);
                     expression: QueryFunction::avg('percent_done'),
                     type: 'UNSIGNED',
                     alias: 'percent_done'
-                )
+                ),
             ],
-            'FROM'   => $union
+            'FROM'   => $union,
         ]);
 
         if ($iterator->count()) {
@@ -2571,7 +2569,7 @@ TWIG, $twig_params);
 
         $project->update([
             'id'           => $ID,
-            'percent_done' => $percent_done
+            'percent_done' => $percent_done,
         ]);
         return true;
     }
@@ -2599,10 +2597,10 @@ TWIG, $twig_params);
                 'beforejoin'         => [
                     'table'              => $link_table,
                     'joinparams'         => [
-                        'jointype'           => 'itemtype_item'
-                    ]
-                ]
-            ]
+                        'jointype'           => 'itemtype_item',
+                    ],
+                ],
+            ],
         ];
 
         return $tab;

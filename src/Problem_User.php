@@ -36,7 +36,7 @@
 /// Class Problem_User
 class Problem_User extends CommonITILActor
 {
-   // From CommonDBRelation
+    // From CommonDBRelation
     public static $itemtype_1 = 'Problem';
     public static $items_id_1 = 'problems_id';
     public static $itemtype_2 = 'User';

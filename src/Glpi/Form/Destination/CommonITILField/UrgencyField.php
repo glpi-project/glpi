@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -39,15 +38,18 @@ use CommonITILObject;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AnswersSet;
+use Glpi\Form\Destination\AbstractCommonITILFormDestination;
 use Glpi\Form\Destination\AbstractConfigField;
+use Glpi\Form\Export\Context\DatabaseMapper;
 use Glpi\Form\Form;
 use Glpi\Form\Migration\DestinationFieldConverterInterface;
 use Glpi\Form\Migration\FormMigration;
+use Glpi\Form\Question;
 use Glpi\Form\QuestionType\QuestionTypeUrgency;
 use InvalidArgumentException;
 use Override;
 
-class UrgencyField extends AbstractConfigField implements DestinationFieldConverterInterface
+final class UrgencyField extends AbstractConfigField implements DestinationFieldConverterInterface
 {
     #[Override]
     public function getLabel(): string
@@ -152,12 +154,18 @@ class UrgencyField extends AbstractConfigField implements DestinationFieldConver
                     specific_urgency_value: $rawData['urgency_question']
                 );
             case 3: // PluginFormcreatorAbstractItilTarget::URGENCY_RULE_ANSWER
+                $mapped_item = $migration->getMappedItemTarget(
+                    'PluginFormcreatorQuestion',
+                    $rawData['urgency_question']
+                );
+
+                if ($mapped_item === null) {
+                    throw new InvalidArgumentException("Question not found in a target form");
+                }
+
                 return new UrgencyFieldConfig(
                     strategy: UrgencyFieldStrategy::SPECIFIC_ANSWER,
-                    specific_question_id: $migration->getMappedItemTarget(
-                        'PluginFormcreatorQuestion',
-                        $rawData['urgency_question']
-                    )['items_id']
+                    specific_question_id: $mapped_item['items_id']
                 );
         }
 
@@ -177,13 +185,13 @@ class UrgencyField extends AbstractConfigField implements DestinationFieldConver
         // Get the urgency levels
         $urgency_levels = array_combine(
             range(1, 5),
-            array_map(fn ($urgency) => CommonITILObject::getUrgencyName($urgency), range(1, 5))
+            array_map(fn($urgency) => CommonITILObject::getUrgencyName($urgency), range(1, 5))
         );
 
         // Filter out the urgency levels that are not enabled
         $urgency_levels = array_filter(
             $urgency_levels,
-            fn ($key) => (($CFG_GLPI['urgency_mask'] & (1 << $key)) > 0),
+            fn($key) => (($CFG_GLPI['urgency_mask'] & (1 << $key)) > 0),
             ARRAY_FILTER_USE_KEY
         );
 
@@ -215,5 +223,23 @@ class UrgencyField extends AbstractConfigField implements DestinationFieldConver
     public function getCategory(): Category
     {
         return Category::PROPERTIES;
+    }
+
+    #[Override]
+    public static function prepareDynamicConfigDataForImport(
+        array $config,
+        AbstractCommonITILFormDestination $destination,
+        DatabaseMapper $mapper,
+    ): array {
+        // Check if a specific question is defined
+        if (isset($config[UrgencyFieldConfig::SPECIFIC_QUESTION_ID])) {
+            // Insert id
+            $config[UrgencyFieldConfig::SPECIFIC_QUESTION_ID] = $mapper->getItemId(
+                Question::class,
+                $config[UrgencyFieldConfig::SPECIFIC_QUESTION_ID],
+            );
+        }
+
+        return $config;
     }
 }

@@ -34,7 +34,6 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
-use Glpi\Cache\CacheManager;
 use Glpi\System\Requirement\DbConfiguration;
 use Glpi\System\Requirement\DbEngine;
 use Glpi\System\Requirement\DbTimezones;
@@ -43,11 +42,8 @@ use Glpi\Toolbox\Filesystem;
 
 /**
  * @var array $CFG_GLPI
- * @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE
  */
-global $CFG_GLPI, $GLPI_CACHE;
-
-$GLPI_CACHE = (new CacheManager())->getInstallerCacheInstance();
+global $CFG_GLPI;
 
 if (isset($_POST["language"]) && isset($CFG_GLPI["languages"][$_POST["language"]])) {
     $_SESSION["glpilanguage"] = $_POST["language"];
@@ -57,7 +53,7 @@ if (isset($_POST["language"]) && isset($CFG_GLPI["languages"][$_POST["language"]
 //Print a correct  Html header for application
 function header_html($etape)
 {
-   // Send UTF8 Headers
+    // Send UTF8 Headers
     header("Content-Type: text/html; charset=UTF-8");
 
     TemplateRenderer::getInstance()->display('layout/parts/head.html.twig', [
@@ -79,9 +75,6 @@ function header_html($etape)
         'js_modules' => [],
         'custom_header_tags' => [],
     ]);
-
-    // CFG
-    echo Html::getCoreVariablesForJavascript();
 
     echo "<body>";
     echo "<div id='principal'>";
@@ -105,15 +98,15 @@ function choose_language()
     /** @var array $CFG_GLPI */
     global $CFG_GLPI;
 
-   // fix missing param for js drodpown
+    // fix missing param for js drodpown
     $CFG_GLPI['ajax_limit_count'] = 15;
 
     TemplateRenderer::getInstance()->display('install/choose_language.html.twig', [
         'languages_dropdown'  => Dropdown::showLanguages('language', [
             'display' => false,
             'value'   => $_SESSION['glpilanguage'],
-            'width'   => '100%'
-        ])
+            'width'   => '100%',
+        ]),
     ]);
 }
 
@@ -169,7 +162,7 @@ function step3($host, $user, $password, $update)
 
     mysqli_report(MYSQLI_REPORT_OFF);
 
-   //Check if the port is in url
+    //Check if the port is in url
     $hostport = explode(":", $host);
     if (count($hostport) < 2) {
         $link = new mysqli($hostport[0], $user, $password);
@@ -185,20 +178,20 @@ function step3($host, $user, $password, $update)
         $_SESSION['db_access'] = [
             'host'     => $host,
             'user'     => $user,
-            'password' => $password
+            'password' => $password,
         ];
 
         $db = new class ($link) extends DBmysql {
             public function __construct($dbh)
             {
-                  $this->dbh = $dbh;
+                $this->dbh = $dbh;
             }
         };
 
         $engine_requirement = new DbEngine($db);
         $config_requirement = new DbConfiguration($db);
 
-       // get databases
+        // get databases
         if (
             $engine_requirement->isValidated() && $config_requirement->isValidated()
             && $DB_list = $link->query("SHOW DATABASES")
@@ -208,7 +201,7 @@ function step3($host, $user, $password, $update)
                     !in_array($row['Database'], [
                         "information_schema",
                         "mysql",
-                        "performance_schema"
+                        "performance_schema",
                     ])
                 ) {
                     $databases[] = $row['Database'];
@@ -217,7 +210,7 @@ function step3($host, $user, $password, $update)
         }
     }
 
-   // display html
+    // display html
     TemplateRenderer::getInstance()->display('install/step3.html.twig', [
         'update'             => $update,
         'link'               => $link,
@@ -242,7 +235,7 @@ function step4($databasename, $newdatabasename)
     $user     = $_SESSION['db_access']['user'];
     $password = $_SESSION['db_access']['password'];
 
-   //display the form to return to the previous step.
+    //display the form to return to the previous step.
     echo "<h3>" . __s('Initialization of the database') . "</h3>";
     echo "<br />";
 
@@ -260,7 +253,7 @@ function step4($databasename, $newdatabasename)
         Html::closeForm();
     };
 
-   //Display the form to go to the next page
+    //Display the form to go to the next page
     $next_form = function (bool $disabled = false) {
         echo "<form action='install.php' method='post' class='d-inline'>";
         echo "<input type='hidden' name='install' value='Etape_4'>";
@@ -271,7 +264,7 @@ function step4($databasename, $newdatabasename)
         Html::closeForm();
     };
 
-   //create security key
+    //create security key
     $glpikey = new GLPIKey();
     if (!$glpikey->generate(update_db: false)) {
         echo "<p><strong>" . __s('Security key cannot be generated!') . "</strong></p>";
@@ -279,7 +272,7 @@ function step4($databasename, $newdatabasename)
         return;
     }
 
-   //Check if the port is in url
+    //Check if the port is in url
     $hostport = explode(":", $host);
     mysqli_report(MYSQLI_REPORT_OFF);
     if (count($hostport) < 2) {
@@ -355,11 +348,10 @@ function step4($databasename, $newdatabasename)
         echo \sprintf(
             <<<HTML
                 <script defer type="module">
-                    import { init_database } from '%s/js/modules/GlpiInstall.js';
+                    import { init_database } from '/js/modules/GlpiInstall.js';
                     init_database("%s");
                 </script>
-            HTML,
-            $CFG_GLPI['root_doc'],
+HTML,
             \Glpi\Controller\InstallController::PROGRESS_KEY_INIT_DATABASE,
         );
     } else { // can't create config_db file
@@ -401,7 +393,7 @@ function step8()
     $DB = new DB();
 
     if (isset($_POST['send_stats'])) {
-       //user has accepted to send telemetry infos; activate cronjob
+        //user has accepted to send telemetry infos; activate cronjob
         $DB->update(
             'glpi_crontasks',
             ['state' => 1],
@@ -419,17 +411,7 @@ function step8()
         ['value' => $url_base],
         [
             'context'   => 'core',
-            'name'      => 'url_base'
-        ]
-    );
-
-    $url_base_api = "$url_base/apirest.php/";
-    $DB->update(
-        'glpi_configs',
-        ['value' => $url_base_api],
-        [
-            'context'   => 'core',
-            'name'      => 'url_base_api'
+            'name'      => 'url_base',
         ]
     );
 
@@ -518,12 +500,11 @@ if (!isset($_SESSION['can_process_install']) || !isset($_POST["install"])) {
     // It is mandatory to validate that installation endpoints are not used outside installation process
     // to alter the GLPI database or configuration.
     $_SESSION['can_process_install'] = true;
-    $_SESSION['is_installing'] = true;
 
     header_html(__("Select your language"));
     choose_language();
 } else {
-   // DB clean
+    // DB clean
     if (isset($_POST["db_pass"])) {
         $_POST["db_pass"] = rawurldecode($_POST["db_pass"]);
     }
@@ -543,7 +524,7 @@ if (!isset($_SESSION['can_process_install']) || !isset($_POST["install"])) {
 
         case "Etape_0": // choice ok , go check system
             checkConfigFile();
-           //TRANS %s is step number
+            //TRANS %s is step number
             header_html(sprintf(__('Step %d'), 0));
             $_SESSION["Test_session_GLPI"] = 1;
             step1($_POST["update"]);

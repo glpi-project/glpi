@@ -32,14 +32,10 @@
 
 {% import 'components/form/fields_macros.html.twig' as fields %}
 
-<section class="container-narrow ms-0 mt-2" aria-labelledby="add-tile-header">
-    <h1 id="add-tile-header" class="fs-2 mb-1">
-        {{ __("Add a new tile") }}
-    </h1>
-
+<section class="container-narrow" aria-labelledby="add-tile-header">
     <form>
         {{ fields.dropdownArrayField(
-            '_itemtype',
+            '_itemtype_tile',
             '',
             possible_tiles_dropdown_values,
             _n('Type', 'Types', 1),
@@ -65,17 +61,8 @@
         <div class="d-flex mt-4 mb-3">
             <button
                 type="button"
-                class="btn btn-outline-secondary ms-auto w-auto d-flex align-items-center"
-                data-glpi-helpdesk-config-add-tile-cancel
-            >
-                <i class="ti ti-cancel me-1"></i>
-                <span>{{ __("Cancel") }}<span>
-            </button>
-            <button
-                type="button"
-                class="btn btn-primary ms-2 w-auto d-flex align-items-center"
+                class="btn btn-primary ms-2 w-auto d-none align-items-center"
                 data-glpi-helpdesk-config-add-tile-submit
-                disabled
             >
                 <i
                     class="ti ti-plus me-1"
@@ -85,7 +72,7 @@
                     class="ti ti-loader-2 fa-spin me-1 d-none"
                     data-glpi-helpdesk-config-add-tile-submit-spinner-icon
                 ></i>
-                <span>{{ __("Add tile") }}<span>
+                <span>{{ __("Add tile") }}</span>
             </button>
         </div>
     </form>

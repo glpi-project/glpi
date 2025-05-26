@@ -6,7 +6,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -44,8 +43,8 @@ describe('Actor form question type', () => {
             const tab = 'Glpi\\Form\\Form$main';
             cy.visit(`/front/form/form.form.php?id=${form_id}&forcetab=${tab}`);
 
-            // Add a new question
-            cy.findByRole("button", { name: "Add a new question" }).should('exist').click();
+            // Add a question
+            cy.findByRole("button", { name: "Add a question" }).should('exist').click();
 
             // Set the question name
             cy.findByRole("textbox", { name: "Question name" }).should('exist').type("Test actor question");
@@ -193,7 +192,7 @@ describe('Actor form question type', () => {
             }
 
             function addNewQuestion(questionName, subType, alias) {
-                cy.findByRole("button", { name: "Add a new question" }).should('exist').click();
+                cy.findByRole("button", { name: "Add a question" }).should('exist').click();
                 cy.findAllByRole('region', { name: 'Question details' }).last().as(alias);
                 cy.get(`@${alias}`).findByRole("textbox", { name: "Question name" }).should('exist').type(questionName);
                 cy.get(`@${alias}`).getDropdownByLabelText('Question type').selectDropdownValue('Actors');
@@ -233,7 +232,7 @@ describe('Actor form question type', () => {
             .click();
 
         // Submit the form
-        cy.findByRole('button', { 'name': 'Send form' }).click();
+        cy.findByRole('button', { 'name': 'Submit' }).click();
 
         // Check the form was submitted
         cy.checkAndCloseAlert('Item successfully created');
@@ -249,7 +248,7 @@ describe('Actor form question type', () => {
             .click();
 
         // Submit the form
-        cy.findByRole('button', { 'name': 'Send form' }).click();
+        cy.findByRole('button', { 'name': 'Submit' }).click();
 
         // Check the form was submitted
         cy.checkAndCloseAlert('Item successfully created');

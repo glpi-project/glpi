@@ -30,19 +30,19 @@
  * ---------------------------------------------------------------------
  */
 
-/* global sortable, glpi_toast_info, glpi_toast_error, getAjaxCsrfToken */
+/* global sortable, glpi_toast_info, glpi_toast_error, getAjaxCsrfToken, bootstrap */
 
 export class GlpiHelpdeskConfigController
 {
     #container;
-    #is_reordering_tiles;
-    #profile_id;
+    #itemtype_item;
+    #items_id_item;
 
-    constructor(container, profile_id)
+    constructor(container, itemtype_item, items_id_item)
     {
         this.#container = container;
-        this.#is_reordering_tiles = false;
-        this.#profile_id = profile_id;
+        this.#itemtype_item = itemtype_item;
+        this.#items_id_item = items_id_item;
         this.#enableSortable();
         this.#initEventsHandlers();
     }
@@ -59,6 +59,7 @@ export class GlpiHelpdeskConfigController
                 <div class="card my-2 flex-grow-1 border-primary border-dashed border-2 rounded opacity-50">
                 </div>
             </div>`,
+            handle: '[data-glpi-helpdesk-config-tile-handle]',
 
             // We don't need a class but it won't work if this param is empty.
             placeholderClass: "not-a-real-class",
@@ -66,46 +67,32 @@ export class GlpiHelpdeskConfigController
             // Specify target items to make sure we exclude the special "add tile" item.
             items: "[data-glpi-draggable-item]",
         });
-
-        sortable(tiles_container)[0].addEventListener('sortstart', () => {
-            if (this.#is_reordering_tiles) {
-                return;
-            }
-
-            this.#is_reordering_tiles = true;
-            this.#showReorderUI();
-        });
     }
 
     #initEventsHandlers()
     {
-        // Watch for tile reordering actions
-        this.#container
-            .querySelector('[data-glpi-helpdesk-config-reorder-action-cancel')
-            .addEventListener('click', async () => {
-                await this.#reloadTiles();
-                this.#hideReorderUI();
-                this.#is_reordering_tiles = false;
-            })
-        ;
         this.#container
             .querySelector('[data-glpi-helpdesk-config-reorder-action-save')
             .addEventListener('click', async() => {
                 await this.#saveTilesOrder();
-                this.#hideReorderUI();
-                this.#is_reordering_tiles = false;
             })
         ;
 
         // Watch for tile deletion
         this.#container.addEventListener('click', (e) => {
-            const delete_button = e.target.closest('[data-glpi-helpdesk-config-action-delete]');
+            const delete_button = e.target.closest(
+                '[data-glpi-helpdesk-config-action-delete]'
+            );
             if (delete_button === null) {
                 return;
             }
 
-            const tile = delete_button.closest('[data-glpi-helpdesk-config-tile-container]');
-            this.#deleteTile(tile);
+            const data = delete_button.dataset;
+            this.#deleteTile(
+                e.target.closest('form'),
+                data.glpiHelpdeskConfigActionDeleteId,
+                data.glpiHelpdeskConfigActionDeleteItemtype,
+            );
         });
 
         // Watch for tile edition
@@ -119,45 +106,32 @@ export class GlpiHelpdeskConfigController
             this.#showEditTileForm(tile);
         });
         this.#container.addEventListener('click', (e) => {
-            const cancel_button = e.target.closest('[data-glpi-helpdesk-config-edit-tile-cancel]');
-            if (cancel_button === null) {
-                return;
-            }
-
-            this.#cancelTileEdit();
-        });
-        this.#container.addEventListener('click', (e) => {
-            const save_button = e.target.closest('[data-glpi-helpdesk-config-edit-tile-save]');
+            const save_button = e.target.closest(
+                '[data-glpi-helpdesk-config-edit-tile-save]'
+            );
             if (save_button === null) {
                 return;
             }
-
             this.#saveTileEdit(e.target.closest('form'));
         });
 
         // Watch for tile creation
         this.#container.addEventListener('click', (e) => {
-            const edit_button = e.target.closest('[data-glpi-helpdesk-config-action-new-tile]');
+            const edit_button = e.target.closest(
+                '[data-glpi-helpdesk-config-action-new-tile]'
+            );
             if (edit_button === null) {
                 return;
             }
-
             this.#showAddTileForm();
         });
         this.#container.addEventListener('click', (e) => {
-            const cancel_button = e.target.closest('[data-glpi-helpdesk-config-add-tile-cancel]');
-            if (cancel_button === null) {
-                return;
-            }
-
-            this.#cancelAddTile();
-        });
-        this.#container.addEventListener('click', (e) => {
-            const submit_button = e.target.closest('[data-glpi-helpdesk-config-add-tile-submit]');
+            const submit_button = e.target.closest(
+                '[data-glpi-helpdesk-config-add-tile-submit]'
+            );
             if (submit_button === null) {
                 return;
             }
-
             this.#saveNewTile(e.target.closest('form'));
         });
 
@@ -167,85 +141,13 @@ export class GlpiHelpdeskConfigController
         });
     }
 
-    #showReorderUI()
-    {
-        this.#container
-            .querySelector('[data-glpi-helpdesk-config-reorder-actions]')
-            .classList
-            .remove('d-none')
-        ;
-        this.#container
-            .querySelectorAll('[data-glpi-helpdesk-config-extra-actions]')
-            .forEach((dots) => {
-                dots.classList.add('d-none');
-            })
-        ;
-        this.#container
-            .querySelectorAll('[data-glpi-helpdesk-config-tile]')
-            .forEach((tile_body) => {
-                tile_body.classList.add('border-2');
-                tile_body.classList.add('border-dashed');
-            })
-        ;
-        this.#container
-            .querySelector('[data-glpi-helpdesk-config-action-new-tile]')
-            .classList
-            .add('d-none')
-        ;
-    }
-
-    #hideReorderUI()
-    {
-        this.#container
-            .querySelector('[data-glpi-helpdesk-config-reorder-actions]')
-            .classList
-            .add('d-none')
-        ;
-        this.#container
-            .querySelectorAll('[data-glpi-helpdesk-config-extra-actions]')
-            .forEach((dots) => {
-                dots.classList.remove('d-none');
-            })
-        ;
-        this.#container
-            .querySelectorAll('[data-glpi-helpdesk-config-tile]')
-            .forEach((tile_body) => {
-                tile_body.classList.remove('border-2');
-                tile_body.classList.remove('border-dashed');
-            })
-        ;
-        this.#container
-            .querySelector('[data-glpi-helpdesk-config-action-new-tile]')
-            .classList
-            .remove('d-none')
-        ;
-    }
-
-    async #reloadTiles()
-    {
-        try {
-            const url = `${CFG_GLPI.root_doc}/Config/Helpdesk/FetchTiles`;
-            const url_params = new URLSearchParams({
-                profile_id: this.#profile_id,
-            });
-            const response = await fetch(`${url}?${url_params}`);
-            if (!response.ok) {
-                throw new Error(response.status);
-            }
-
-            this.#getTilesContainerDiv().innerHTML = await response.text();
-        } catch (e) {
-            glpi_toast_error(__('An unexpected error occurred.'));
-            console.error(e);
-        }
-    }
-
     async #saveTilesOrder()
     {
         try {
             // Set up form data
             const form_data = new FormData();
-            form_data.append('profile_id', this.#profile_id);
+            form_data.append('itemtype_item', this.#itemtype_item);
+            form_data.append('items_id_item', this.#items_id_item);
             this.#getTilesOrder()
                 .forEach((id) => form_data.append("order[]", id))
             ;
@@ -270,7 +172,7 @@ export class GlpiHelpdeskConfigController
             this.#getTilesContainerDiv().innerHTML = await response.text();
             glpi_toast_info(__("Configuration updated successfully."));
         } catch (e) {
-            glpi_toast_error(__('An unexpected error occurred.'));
+            glpi_toast_error(__('An unexpected error occurred'));
             console.error(e);
         }
     }
@@ -278,11 +180,11 @@ export class GlpiHelpdeskConfigController
     #getTilesOrder()
     {
         const nodes = this.#container
-            .querySelectorAll('[data-glpi-helpdesk-config-tile-profile-id]')
+            .querySelectorAll('[data-glpi-helpdesk-config-item-tile-id]')
         ;
 
         return [...nodes].map((node) => {
-            return node.dataset.glpiHelpdeskConfigTileProfileId;
+            return node.dataset.glpiHelpdeskConfigItemTileId;
         });
     }
 
@@ -291,39 +193,46 @@ export class GlpiHelpdeskConfigController
         return this.#container.querySelector("[data-glpi-helpdesk-config-tiles");
     }
 
-    #getDefaultViewDiv()
+    #getFormTileDiv()
     {
-        return this.#container.querySelector("[data-glpi-helpdesk-config-default-view");
+        return this.#container.querySelector('[data-glpi-helpdesk-config-tile-form');
     }
 
-    #getEditTileViewDiv()
+    #getFormTileLoadingIndicatorDiv()
     {
-        return this.#container.querySelector("[data-glpi-helpdesk-config-edit-view");
+        return this.#container.querySelector(
+            '[data-glpi-helpdesk-config-tile-form-loading'
+        );
     }
 
-    #getAddTileViewDiv()
+    #getFormTileHeader()
     {
-        return this.#container.querySelector("[data-glpi-helpdesk-config-add-view");
+        return this.#container.querySelector(
+            '[data-glpi-helpdesk-config-tile-form-title'
+        );
     }
 
-    async #deleteTile(tile_container)
+    async #deleteTile(form, id, itemtype)
     {
-        // Hide content immediatly (optimistic UI)
-        tile_container.classList.add('d-none');
+        // Show spinner and disable buttons
+        form.querySelector(
+            '[data-glpi-helpdesk-config-delete-tile-icon]'
+        ).classList.remove('d-none');
+        form.querySelector(
+            '[data-glpi-helpdesk-config-delete-tile-spinner-icon]'
+        ).classList.add('d-none');
+        form.querySelector(
+            '[data-glpi-helpdesk-config-edit-tile-save]'
+        ).disabled = true;
+        form.querySelector(
+            '[data-glpi-helpdesk-config-action-delete]'
+        ).disabled = true;
 
         try {
-            const tile = tile_container.querySelector('[data-glpi-helpdesk-config-tile]');
-
             // Set up form data
             const form_data = new FormData();
-            form_data.append(
-                'tile_id',
-                tile.dataset.glpiHelpdeskConfigTileId
-            );
-            form_data.append(
-                'tile_itemtype',
-                tile.dataset.glpiHelpdeskConfigTileItemtype
-            );
+            form_data.append('tile_id', id);
+            form_data.append('tile_itemtype', itemtype);
 
             // Send request
             const url = `${CFG_GLPI.root_doc}/Config/Helpdesk/DeleteTile`;
@@ -342,10 +251,11 @@ export class GlpiHelpdeskConfigController
             }
 
             glpi_toast_info(__("Configuration updated successfully."));
-            tile_container.remove();
+
+            this.#getTilesContainerDiv().innerHTML = await response.text();
+            bootstrap.Offcanvas.getInstance('#tile-form-offcanvas').hide();
         } catch (e) {
-            glpi_toast_error(__('An unexpected error occurred.'));
-            tile_container.classList.remove('d-none');
+            glpi_toast_error(__('An unexpected error occurred'));
             console.error(e);
         }
     }
@@ -353,6 +263,9 @@ export class GlpiHelpdeskConfigController
     async #showEditTileForm(tile_container)
     {
         try {
+            this.#getFormTileLoadingIndicatorDiv().classList.remove('d-none');
+            this.#getFormTileDiv().classList.add('d-none');
+
             const tile = tile_container.querySelector('[data-glpi-helpdesk-config-tile]');
 
             const url = `${CFG_GLPI.root_doc}/Config/Helpdesk/ShowEditTileForm`;
@@ -369,34 +282,31 @@ export class GlpiHelpdeskConfigController
 
             // Note: we use jQuery instead of raw JS here because we need scripts
             // to be executed for richtext input initialization
-            $(this.#getEditTileViewDiv()).html(await response.text());
+            $(this.#getFormTileDiv()).html(await response.text());
 
-            this.#getEditTileViewDiv().classList.remove('d-none');
-            this.#getDefaultViewDiv().classList.add('d-none');
+            this.#getFormTileHeader().innerHTML = __("Edit tile");
+            this.#getFormTileDiv().classList.remove('d-none');
+            this.#getFormTileLoadingIndicatorDiv().classList.add('d-none');
         } catch (e) {
-            glpi_toast_error(__('An unexpected error occurred.'));
+            glpi_toast_error(__('An unexpected error occurred'));
             console.error(e);
         }
     }
 
-    #cancelTileEdit()
-    {
-        this.#getEditTileViewDiv().classList.add('d-none');
-        this.#getEditTileViewDiv().innerHTML = "";
-        this.#getDefaultViewDiv().classList.remove('d-none');
-    }
-
     async #saveTileEdit(form)
     {
-        // Show spinner and disable button
+        // Show spinner and disable buttons
         form.querySelector(
             '[data-glpi-helpdesk-config-edit-tile-save-spinner-icon]'
         ).classList.remove('d-none');
         form.querySelector(
-            '[data-glpi-helpdesk-config-edit-tile-save-plus-icon]'
+            '[data-glpi-helpdesk-config-edit-tile-save-icon]'
         ).classList.add('d-none');
         form.querySelector(
             '[data-glpi-helpdesk-config-edit-tile-save]'
+        ).disabled = true;
+        form.querySelector(
+            '[data-glpi-helpdesk-config-action-delete]'
         ).disabled = true;
 
         try {
@@ -429,10 +339,9 @@ export class GlpiHelpdeskConfigController
             glpi_toast_info(__("Configuration updated successfully."));
 
             this.#getTilesContainerDiv().innerHTML = await response.text();
-            this.#getEditTileViewDiv().classList.add('d-none');
-            this.#getDefaultViewDiv().classList.remove('d-none');
+            bootstrap.Offcanvas.getInstance('#tile-form-offcanvas').hide();
         } catch (e) {
-            glpi_toast_error(__('An unexpected error occurred.'));
+            glpi_toast_error(__('An unexpected error occurred'));
             console.error(e);
         }
     }
@@ -440,6 +349,9 @@ export class GlpiHelpdeskConfigController
     async #showAddTileForm()
     {
         try {
+            this.#getFormTileLoadingIndicatorDiv().classList.remove('d-none');
+            this.#getFormTileDiv().classList.add('d-none');
+
             const url = `${CFG_GLPI.root_doc}/Config/Helpdesk/ShowAddTileForm`;
             const response = await fetch(url);
 
@@ -450,21 +362,15 @@ export class GlpiHelpdeskConfigController
 
             // Note: we use jQuery instead of raw JS here because we need scripts
             // to be executed for richtext input initialization
-            $(this.#getAddTileViewDiv()).html(await response.text());
+            $(this.#getFormTileDiv()).html(await response.text());
 
-            this.#getAddTileViewDiv().classList.remove('d-none');
-            this.#getDefaultViewDiv().classList.add('d-none');
+            this.#getFormTileHeader().innerHTML = __("Add tile");
+            this.#getFormTileDiv().classList.remove('d-none');
+            this.#getFormTileLoadingIndicatorDiv().classList.add('d-none');
         } catch (e) {
-            glpi_toast_error(__('An unexpected error occurred.'));
+            glpi_toast_error(__('An unexpected error occurred'));
             console.error(e);
         }
-    }
-
-    #cancelAddTile()
-    {
-        this.#getAddTileViewDiv().classList.add('d-none');
-        this.#getAddTileViewDiv().innerHTML = "";
-        this.#getDefaultViewDiv().classList.remove('d-none');
     }
 
     async #saveNewTile(form)
@@ -490,7 +396,8 @@ export class GlpiHelpdeskConfigController
 
             // Set up form data
             const form_data = new FormData(form);
-            form_data.append('_profile_id', this.#profile_id);
+            form_data.append('_itemtype_item', this.#itemtype_item);
+            form_data.append('_items_id_item', this.#items_id_item);
 
             // Send request
             const url = `${CFG_GLPI.root_doc}/Config/Helpdesk/AddTile`;
@@ -511,10 +418,9 @@ export class GlpiHelpdeskConfigController
             glpi_toast_info(__("Configuration updated successfully."));
 
             this.#getTilesContainerDiv().innerHTML = await response.text();
-            this.#getAddTileViewDiv().classList.add('d-none');
-            this.#getDefaultViewDiv().classList.remove('d-none');
+            bootstrap.Offcanvas.getInstance('#tile-form-offcanvas').hide();
         } catch (e) {
-            glpi_toast_error(__('An unexpected error occurred.'));
+            glpi_toast_error(__('An unexpected error occurred'));
             console.error(e);
         }
     }
@@ -528,9 +434,11 @@ export class GlpiHelpdeskConfigController
 
         // Enabled submit button if a type is selected
         if (type == 0) {
-            submit_button.disabled = true;
+            submit_button.classList.add('d-none');
+            submit_button.classList.remove('d-flex');
         } else {
-            submit_button.disabled = false;
+            submit_button.classList.remove('d-none');
+            submit_button.classList.add('d-flex');
         }
 
         // Show the correct form

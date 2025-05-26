@@ -48,6 +48,10 @@ class SoftwareLicense_User extends CommonDBRelation
     public static $itemtype_2 = 'SoftwareLicense';
     public static $items_id_2 = 'softwarelicenses_id';
 
+    public static $checkItem_1_Rights = self::DONT_CHECK_ITEM_RIGHTS;
+
+    public static $checkItem_2_Rights = self::HAVE_SAME_RIGHT_ON_ITEM;
+
     public static function getTypeName($nb = 0)
     {
         return SoftwareLicense::getTypeName($nb);
@@ -143,7 +147,7 @@ TWIG, $twig_params);
                 'itemtype'  => self::class,
                 'id'        => $data['linkid'],
                 'row_class' => $data['is_deleted'] ? 'table-danger' : '',
-                'number'    => $data['number']
+                'number'    => $data['number'],
             ];
             $license = new SoftwareLicense();
             $license->getFromResultSet($data);
@@ -173,7 +177,6 @@ TWIG, $twig_params);
 
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'is_tab' => true,
-            'nopager' => true,
             'nofilter' => true,
             'nosort' => true,
             'columns' => [
@@ -193,7 +196,7 @@ TWIG, $twig_params);
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
                 'container'     => 'mass' . static::class . $rand,
-            ]
+            ],
         ]);
     }
 }

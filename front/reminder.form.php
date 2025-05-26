@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+require_once(__DIR__ . '/_check_webserver_config.php');
+
 use Glpi\Event;
 
 if (!isset($_GET["id"])) {
@@ -56,7 +58,7 @@ if (isset($_POST["add"])) {
         }
     }
     Html::back();
-} else if (isset($_POST["purge"])) {
+} elseif (isset($_POST["purge"])) {
     $remind->check($_POST["id"], PURGE);
     $remind->delete($_POST, 1);
     Event::log(
@@ -72,7 +74,7 @@ if (isset($_POST["add"])) {
     } else {
         Html::back();
     }
-} else if (isset($_POST["update"])) {
+} elseif (isset($_POST["update"])) {
     $remind->check($_POST["id"], UPDATE);   // Right to update the reminder
 
     $remind->update($_POST);
@@ -85,7 +87,7 @@ if (isset($_POST["add"])) {
         sprintf(__('%s updates an item'), $_SESSION["glpiname"])
     );
     Html::back();
-} else if (isset($_POST["addvisibility"])) {
+} elseif (isset($_POST["addvisibility"])) {
     if (
         isset($_POST["_type"]) && !empty($_POST["_type"])
         && isset($_POST["reminders_id"]) && $_POST["reminders_id"]

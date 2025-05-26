@@ -70,12 +70,12 @@ abstract class CommonDBConnexity extends CommonDBTM
 {
     use Glpi\Features\Clonable;
 
-    const DONT_CHECK_ITEM_RIGHTS  = 1; // Don't check the parent => always can*Child
-    const HAVE_VIEW_RIGHT_ON_ITEM = 2; // canXXXChild = true if parent::canView == true
-    const HAVE_SAME_RIGHT_ON_ITEM = 3; // canXXXChild = true if parent::canXXX == true
+    public const DONT_CHECK_ITEM_RIGHTS  = 1; // Don't check the parent => always can*Child
+    public const HAVE_VIEW_RIGHT_ON_ITEM = 2; // canXXXChild = true if parent::canView == true
+    public const HAVE_SAME_RIGHT_ON_ITEM = 3; // canXXXChild = true if parent::canXXX == true
 
     public static $canDeleteOnItemClean          = true;
-   /// Disable auto forwarding information about entities ?
+    /// Disable auto forwarding information about entities ?
     public static $disableAutoEntityForwarding   = false;
 
 
@@ -119,7 +119,7 @@ abstract class CommonDBConnexity extends CommonDBTM
         if ($criteria !== null) {
             $input = [
                 '_no_history'     => true,
-                '_disablenotif'       => true
+                '_disablenotif'       => true,
             ];
 
             $iterator = $DB->request($criteria);
@@ -261,7 +261,7 @@ abstract class CommonDBConnexity extends CommonDBTM
                         return $item;
                     }
                 }
-            } else if ($getEmpty) {
+            } elseif ($getEmpty) {
                 if ($item->getEmpty()) {
                     return $item;
                 }
@@ -289,7 +289,7 @@ abstract class CommonDBConnexity extends CommonDBTM
     public function checkAttachedItemChangesAllowed(array $input, array $fields)
     {
 
-       // Merge both arrays to ensure all the fields are defined for the following checks
+        // Merge both arrays to ensure all the fields are defined for the following checks
         $input = array_merge($this->fields, $input);
 
         $have_to_check = false;
@@ -306,9 +306,9 @@ abstract class CommonDBConnexity extends CommonDBTM
         if ($have_to_check) {
             $new_item = clone $this;
 
-           // Solution 1 : If we cannot create the new item or delete the old item,
-           // then we cannot update the item
-            unset($new_item->fields);
+            // Solution 1 : If we cannot create the new item or delete the old item,
+            // then we cannot update the item
+            $new_item->fields = [];
 
             if (
                 $new_item->can(-1, CREATE, $input)
@@ -329,12 +329,12 @@ abstract class CommonDBConnexity extends CommonDBTM
             );
             return false;
 
-           // Solution 2 : simple check ! Can we update the item with new values ?
-           // if (!$new_item->can($input['id'], 'w')) {
-           //    Session::addMessageAfterRedirect(__('Cannot update item: not enough right on the parent(s) item(s)'),
-           //                                     INFO, true);
-           //    return false;
-           // }
+            // Solution 2 : simple check ! Can we update the item with new values ?
+            // if (!$new_item->can($input['id'], 'w')) {
+            //    Session::addMessageAfterRedirect(__('Cannot update item: not enough right on the parent(s) item(s)'),
+            //                                     INFO, true);
+            //    return false;
+            // }
         }
 
         return true;
@@ -412,12 +412,12 @@ abstract class CommonDBConnexity extends CommonDBTM
         ?CommonDBTM &$item = null
     ) {
 
-       // Do not get it twice
+        // Do not get it twice
         $connexityItem = $item;
         if (is_null($connexityItem)) {
             $connexityItem = $this->getConnexityItem($itemtype, $items_id);
 
-           // Set value in $item to reuse it on future calls
+            // Set value in $item to reuse it on future calls
             if ($connexityItem instanceof CommonDBTM) {
                 $item = $this->getConnexityItem($itemtype, $items_id);
             }
@@ -428,7 +428,7 @@ abstract class CommonDBConnexity extends CommonDBTM
                     $methodNotItem = 'canView';
                     $methodItem    = 'canViewItem';
                 }
-               // here, we can check item's global rights
+                // here, we can check item's global rights
                 if (preg_match('/^itemtype/', $itemtype)) {
                     if (!$connexityItem->$methodNotItem()) {
                         return false;
@@ -436,7 +436,7 @@ abstract class CommonDBConnexity extends CommonDBTM
                 }
                 return $connexityItem->$methodItem();
             } else {
-               // if we cannot get the parent, then we throw an exception
+                // if we cannot get the parent, then we throw an exception
                 throw new CommonDBConnexityItemNotFound();
             }
         }
@@ -521,12 +521,12 @@ abstract class CommonDBConnexity extends CommonDBTM
             'reaffect'      => false,
             'itemtypes'     => [],
             'normalized'    => ['affect'   => ['affect'],
-                'unaffect' => ['unaffect']
+                'unaffect' => ['unaffect'],
             ],
             'action_name'   => [
                 'affect'   => _sx('button', 'Associate'),
-                'unaffect' => _sx('button', 'Dissociate')
-            ]
+                'unaffect' => _sx('button', 'Dissociate'),
+            ],
         ];
     }
 
@@ -544,15 +544,15 @@ abstract class CommonDBConnexity extends CommonDBTM
             if (!$itemtype::$mustBeAttached) {
                 $unaffect = true;
                 $affect   = true;
-            } else if ($specificities['reaffect']) {
+            } elseif ($specificities['reaffect']) {
                 $affect = true;
             }
-        } else if (is_a($itemtype, 'CommonDBRelation', true)) {
+        } elseif (is_a($itemtype, 'CommonDBRelation', true)) {
             $specificities = $itemtype::getConnexityMassiveActionsSpecificities();
             if ((!$itemtype::$mustBeAttached_1) || (!$itemtype::$mustBeAttached_2)) {
                 $unaffect = true;
                 $affect   = true;
-            } else if ($specificities['reaffect']) {
+            } elseif ($specificities['reaffect']) {
                 $affect = true;
             }
         } else {
@@ -604,7 +604,7 @@ abstract class CommonDBConnexity extends CommonDBTM
         if (count($itemtypes_affect) > count($itemtypes_unaffect)) {
             $normalized_action = 'affect';
             $itemtypes         = $itemtypes_affect;
-        } else if (count($itemtypes_affect) < count($itemtypes_unaffect)) {
+        } elseif (count($itemtypes_affect) < count($itemtypes_unaffect)) {
             $normalized_action = 'unaffect';
             $itemtypes         = $itemtypes_unaffect;
         } else {
@@ -617,8 +617,8 @@ abstract class CommonDBConnexity extends CommonDBTM
                     if (is_a($itemtype, 'CommonDBRelation', true)) {
                         $peer_field = "peer[$itemtype]";
                         if ((!$itemtype::$mustBeAttached_1) && (!$itemtype::$mustBeAttached_2)) {
-                             // Should never occur ... But we must care !
-                             $values = [];
+                            // Should never occur ... But we must care !
+                            $values = [];
                             if (
                                 (empty($itemtype::$itemtype_1))
                                  || (preg_match('/^itemtype/', $itemtype::$itemtype_1))
@@ -640,9 +640,9 @@ abstract class CommonDBConnexity extends CommonDBTM
                             echo htmlescape(sprintf(__('Select a peer for %s:'), $itemtype::getTypeName()));
                             Dropdown::showFromArray($peer_field, $values);
                             echo "<br>\n";
-                        } else if (!$itemtype::$mustBeAttached_1) {
-                              echo "<input type='hidden' name='" . htmlescape($peer_field) . "' value='0'>";
-                        } else if (!$itemtype::$mustBeAttached_2) {
+                        } elseif (!$itemtype::$mustBeAttached_1) {
+                            echo "<input type='hidden' name='" . htmlescape($peer_field) . "' value='0'>";
+                        } elseif (!$itemtype::$mustBeAttached_2) {
                             echo "<input type='hidden' name='" . htmlescape($peer_field) . "' value='1'>";
                         }
                     }
@@ -746,13 +746,13 @@ abstract class CommonDBConnexity extends CommonDBTM
         $action        = $ma->getAction();
         $input         = $ma->getInput();
 
-       // First, get normalized action : affect or unaffect
+        // First, get normalized action : affect or unaffect
         if (in_array($action, $specificities['normalized']['affect'])) {
             $normalized_action = 'affect';
-        } else if (in_array($action, $specificities['normalized']['unaffect'])) {
+        } elseif (in_array($action, $specificities['normalized']['unaffect'])) {
             $normalized_action = 'unaffect';
         } else {
-           // If we cannot get normalized action, then, its not for this method !
+            // If we cannot get normalized action, then, its not for this method !
             parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
             return;
         }
@@ -764,7 +764,7 @@ abstract class CommonDBConnexity extends CommonDBTM
                         if ($item instanceof CommonDBRelation) {
                             if (isset($input['peer'][$item->getType()])) {
                                 if ($item->affectRelation($key, $input['peer'][$item->getType()])) {
-                                       $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
+                                    $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
                                 } else {
                                     $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
                                     $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
@@ -773,7 +773,7 @@ abstract class CommonDBConnexity extends CommonDBTM
                                 $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_KO);
                                 $ma->addMessage($item->getErrorMessage(ERROR_ON_ACTION));
                             }
-                        } else if ($item instanceof CommonDBChild) {
+                        } elseif ($item instanceof CommonDBChild) {
                             if ($item->affectChild($key)) {
                                 $ma->itemDone($item->getType(), $key, MassiveAction::ACTION_OK);
                             } else {
@@ -819,7 +819,7 @@ abstract class CommonDBConnexity extends CommonDBTM
                         $ma->addMessage($item->getErrorMessage(ERROR_NOT_FOUND));
                         return;
                     }
-                     $input2[$peertype] = $input['peertype'];
+                    $input2[$peertype] = $input['peertype'];
                 } else {
                     if ($peertype != $input['peertype']) {
                         $ma->itemDone($item->getType(), $ids, MassiveAction::ACTION_KO);

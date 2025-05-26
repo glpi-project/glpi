@@ -214,7 +214,7 @@ export class ProgressIndicator
             const now = new Date().getTime();
             const updated_at = new Date(json['updated_at']).getTime();
             const diff = now - updated_at;
-            const max_diff = 1000 * 20; // 20 seconds timeout
+            const max_diff = 1000 * 60; // 60 seconds timeout
             if (diff > max_diff) {
                 this.#display_message(
                     'error',
@@ -239,7 +239,7 @@ export class ProgressIndicator
         } catch (err) {
             this.#display_message(
                 'error',
-                __('An unexpected error has occurred.')
+                __('An unexpected error occurred')
             );
             this.#error_callback();
             this.#show_progress_failure();

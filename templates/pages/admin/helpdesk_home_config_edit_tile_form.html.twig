@@ -30,11 +30,7 @@
  # ---------------------------------------------------------------------
  #}
 
-<section class="container-narrow ms-0 mt-2" aria-labelledby="edit-tile-header">
-    <h1 id="edit-tile-header" class="fs-2 mb-1">
-        {{ __("Edit tile") }}
-    </h1>
-
+<section class="container-narrow" aria-labelledby="edit-tile-header">
     <form>
         {{ include(tile.getConfigFieldsTemplate(), {tile: tile}, with_context = false) }}
 
@@ -45,11 +41,20 @@
         <div class="d-flex mt-4 mb-3">
             <button
                 type="button"
-                class="btn btn-outline-secondary ms-auto w-auto d-flex align-items-center"
-                data-glpi-helpdesk-config-edit-tile-cancel
+                class="btn btn-outline-danger ms-auto w-auto d-flex align-items-center"
+                data-glpi-helpdesk-config-action-delete
+                data-glpi-helpdesk-config-action-delete-id="{{ tile.getDatabaseId() }}"
+                data-glpi-helpdesk-config-action-delete-itemtype="{{ get_class(tile) }}"
             >
-                <i class="ti ti-cancel me-1"></i>
-                <span>{{ __("Cancel") }}<span>
+                <i
+                    class="ti ti-trash me-1"
+                    data-glpi-helpdesk-config-delete-tile-icon
+                ></i>
+                <i
+                    class="ti ti-loader-2 fa-spin me-1 d-none"
+                    data-glpi-helpdesk-config-delete-tile-spinner-icon
+                ></i>
+                <span>{{ __("Delete tile") }}<span>
             </button>
             <button
                 type="button"
@@ -57,14 +62,14 @@
                 data-glpi-helpdesk-config-edit-tile-save
             >
                 <i
-                    class="ti ti-plus me-1"
-                    data-glpi-helpdesk-config-edit-tile-save-plus-icon
+                    class="ti ti-device-floppy me-1"
+                    data-glpi-helpdesk-config-edit-tile-save-icon
                 ></i>
                 <i
                     class="ti ti-loader-2 fa-spin me-1 d-none"
                     data-glpi-helpdesk-config-edit-tile-save-spinner-icon
                 ></i>
-                <span>{{ __("Save changes") }}<span>
+                <span>{{ __("Save changes") }}</span>
             </button>
         </div>
     </form>

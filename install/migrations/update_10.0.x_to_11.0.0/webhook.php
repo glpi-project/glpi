@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -87,7 +86,7 @@ if (!$DB->tableExists('glpi_webhooks')) {
 if (!$DB->fieldExists('glpi_webhooks', 'webhookcategories_id')) {
     // Dev migration
     $migration->addField('glpi_webhooks', 'webhookcategories_id', 'fkey', [
-        'after' => 'comment'
+        'after' => 'comment',
     ]);
     $migration->addKey('glpi_webhooks', 'webhookcategories_id', 'webhookcategories_id');
 }
@@ -152,20 +151,20 @@ if (!$DB->tableExists('glpi_queuedwebhooks')) {
 // Entity, ID, Webhook, Itemtype, Items ID, URL, Creation date
 $ADDTODISPLAYPREF[QueuedWebhook::class] = [80, 2, 22, 20, 21, 7, 30, 16];
 
-CronTask::register('QueuedWebhook', 'queuedwebhook', MINUTE_TIMESTAMP, [
-    'state' => CronTask::STATE_WAITING,
-    'mode'  => CronTask::MODE_INTERNAL,
-    'hourmin' => 0,
-    'hourmax' => 24,
-    'logs_lifetime' => 30,
-    'param' => 50 // Limit for webhooks to send per cron task run
-]);
+$migration->addCrontask(
+    'QueuedWebhook',
+    'queuedwebhook',
+    MINUTE_TIMESTAMP,
+    param: 50, // Limit for webhooks to send per cron task run
+);
 
-CronTask::register('QueuedWebhook', 'queuedwebhookclean', DAY_TIMESTAMP, [
-    'state' => CronTask::STATE_WAITING,
-    'mode'  => CronTask::MODE_INTERNAL,
-    'hourmin' => 0,
-    'hourmax' => 6,
-    'logs_lifetime' => 30,
-    'param' => 30 // webhooks older than 30 days will be deleted
-]);
+$migration->addCrontask(
+    'QueuedWebhook',
+    'queuedwebhookclean',
+    DAY_TIMESTAMP,
+    param: 30, // webhooks older than 30 days will be deleted
+    options: [
+        'hourmin' => 0,
+        'hourmax' => 6,
+    ]
+);

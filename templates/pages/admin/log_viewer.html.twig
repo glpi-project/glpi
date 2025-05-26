@@ -6,7 +6,6 @@
  # http://glpi-project.org
  #
  # @copyright 2015-2025 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -53,7 +52,7 @@
 {% macro log_entries(log_entries) %}
     {% if log_entries|length %}
         {% for log_entry in log_entries %}{{ _self.log_entry(log_entry) }}{% endfor %}
-    {% elseif not only_content %}
+    {% else %}
         <div class="empty">
             <div class="empty-icon display-6" style="display: contents">
                 <i class="ti ti-mood-empty"></i>

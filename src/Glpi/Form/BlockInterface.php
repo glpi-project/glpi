@@ -35,7 +35,11 @@
 
 namespace Glpi\Form;
 
-interface BlockInterface
+use Glpi\ItemTranslation\Context\ProvideTranslationsInterface;
+
+interface BlockInterface extends ProvideTranslationsInterface
 {
     public function displayBlockForEditor(): void;
+
+    public function getUntitledLabel(): string;
 }

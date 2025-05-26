@@ -89,6 +89,49 @@
     // It is safer than directly interacting the "display: none" class as it might
     // conflict with other features that hide items like the section pagination.
     [data-glpi-form-renderer-hidden-by-condition] {
-        display: none;
+        display: none !important;
+    }
+
+    .input-group {
+        > div:not(.d-none) {
+            &:has(> span.select2-container) {
+                &:not(:first-child) {
+                    .select2-selection {
+                        border-top-left-radius: 0 !important;
+                        border-bottom-left-radius: 0 !important;
+                    }
+                }
+
+                &:not(:last-of-type) {
+                    .select2-selection {
+                        border-top-right-radius: 0 !important;
+                        border-bottom-right-radius: 0 !important;
+                    }
+                }
+            }
+        }
+    }
+
+    // Handle invalid states for specific inputs (select2 and tinymce)
+    [data-glpi-form-renderer-question] {
+        &:has(select.is-invalid) {
+            .select2-container--default .select2-selection {
+                border-color: var(--tblr-form-invalid-border-color) !important;
+            }
+        }
+
+        &:has(textarea.is-invalid) {
+            .tox.tox-tinymce {
+                border-color: var(--tblr-form-invalid-border-color) !important;
+            }
+        }
+
+        .invalid-tooltip {
+            position: relative;
+            background-color: unset;
+            color: var(--tblr-form-invalid-color);
+            padding: unset;
+            margin-top: .25rem;
+        }
     }
 }

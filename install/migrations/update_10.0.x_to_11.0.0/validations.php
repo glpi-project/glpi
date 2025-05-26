@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -48,7 +47,7 @@ foreach ($validation_tables as $validation_table) {
     if (!$DB->fieldExists($validation_table, 'itemtype_target')) {
         $migration->addField($validation_table, 'itemtype_target', 'varchar(255) NOT NULL', [
             'after'     => 'users_id_validate',
-            'update'    => "'User'"
+            'update'    => "'User'",
         ]);
         $needed_migration = true;
     }

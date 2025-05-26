@@ -73,7 +73,7 @@ final class GenerateFormForeachIllustrationsCommand extends AbstractCommand
     private function demoFormExistsForIllustration(string $illustration): bool
     {
         $forms = (new Form())->find([
-            'description' => "Demo form for the '$illustration' illustration."
+            'description' => "Demo form for the '$illustration' illustration.",
         ]);
 
         return count($forms) > 0;

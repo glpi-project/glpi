@@ -157,8 +157,8 @@ class GLPIPDF extends TCPDF
         $include_fct = function ($font_path) use (&$list) {
             include $font_path;
 
-            $name = $name ?? null;
-            $type = $type ?? null;
+            $name ??= null;
+            $type ??= null;
             if ($name === null) {
                 return; // Not a font file
             }

@@ -40,7 +40,7 @@ use Glpi\Application\View\TemplateRenderer;
  */
 class Certificate_Item extends CommonDBRelation
 {
-   // From CommonDBRelation
+    // From CommonDBRelation
     public static $itemtype_1    = "Certificate";
     public static $items_id_1    = 'certificates_id';
     public static $take_entity_1 = false;
@@ -68,7 +68,7 @@ class Certificate_Item extends CommonDBRelation
     {
         $temp = new self();
         $temp->deleteByCriteria(['itemtype' => $item->getType(),
-            'items_id' => $item->getField('id')
+            'items_id' => $item->getField('id'),
         ]);
     }
 
@@ -90,7 +90,7 @@ class Certificate_Item extends CommonDBRelation
                     $nb = self::countForMainItem($item);
                 }
                 return self::createTabEntry(_n('Associated item', 'Associated items', Session::getPluralNumber()), $nb, $item::getType(), 'ti ti-package');
-            } else if (
+            } elseif (
                 in_array($item->getType(), Certificate::getTypes(true))
                 && Certificate::canView()
             ) {
@@ -121,7 +121,7 @@ class Certificate_Item extends CommonDBRelation
 
         if ($item->getType() == 'Certificate') {
             self::showForCertificate($item);
-        } else if (in_array($item->getType(), Certificate::getTypes(true))) {
+        } elseif (in_array($item->getType(), Certificate::getTypes(true))) {
             self::showForItem($item);
         }
         return true;
@@ -141,7 +141,7 @@ class Certificate_Item extends CommonDBRelation
         $certificates = $certificate->find([
             'certificates_id' => $certificates_id,
             'itemtype'        => $itemtype,
-            'items_id'        => $items_id
+            'items_id'        => $items_id,
         ]);
         if (count($certificates) != 1) {
             return false;
@@ -164,7 +164,7 @@ class Certificate_Item extends CommonDBRelation
 
         $this->add(['certificates_id' => $values["certificates_id"],
             'items_id'        => $values["items_id"],
-            'itemtype'        => $values["itemtype"]
+            'itemtype'        => $values["itemtype"],
         ]);
     }
 
@@ -224,7 +224,7 @@ class Certificate_Item extends CommonDBRelation
                         )
                         : $certificate->fields['entities_id']),
                     'checkright'      => true,
-                ]
+                ],
             ];
             // language=Twig
             echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
@@ -271,7 +271,7 @@ TWIG, $twig_params);
                             'type' => $itemtype_name,
                             'name' => $item->getLink(),
                             'serial' => $data['serial'],
-                            'otherserial' => $data['otherserial']
+                            'otherserial' => $data['otherserial'],
                         ];
 
                         if (Session::isMultiEntitiesMode()) {
@@ -295,12 +295,11 @@ TWIG, $twig_params);
 
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'is_tab' => true,
-            'nopager' => true,
             'nofilter' => true,
             'nosort' => true,
             'columns' => $columns,
             'formatters' => [
-                'name' => 'raw_html'
+                'name' => 'raw_html',
             ],
             'entries' => $entries,
             'total_number' => count($entries),
@@ -309,7 +308,7 @@ TWIG, $twig_params);
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
                 'container'     => 'mass' . static::class . mt_rand(),
-            ]
+            ],
         ]);
     }
 
@@ -363,8 +362,8 @@ TWIG, $twig_params);
                 'dropdown_params' => [
                     'entity' => $item->fields['entities_id'],
                     'is_recursive' => $is_recursive,
-                    'used' => $used
-                ]
+                    'used' => $used,
+                ],
             ];
             // language=Twig
             echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
@@ -414,7 +413,7 @@ TWIG, $twig_params);
                 'dns_name' => $data['dns_name'],
                 'dns_suffix' => $data['dns_suffix'],
                 'date_creation' => $data['date_creation'],
-                'status' => Dropdown::getDropdownName("glpi_states", $data["states_id"])
+                'status' => Dropdown::getDropdownName("glpi_states", $data["states_id"]),
             ];
             if (Session::isMultiEntitiesMode()) {
                 $entry['entity'] = Dropdown::getDropdownName("glpi_entities", $data['entities_id']);
@@ -426,7 +425,7 @@ TWIG, $twig_params);
                 && $data["date_expiration"] <= date('Y-m-d')
             ) {
                 $expiration = "<span class='table-deleted'>{$expiration}</span>";
-            } else if (empty($data["date_expiration"])) {
+            } elseif (empty($data["date_expiration"])) {
                 $expiration = __s('Does not expire');
             }
             $entry['date_expiration'] = $expiration;
@@ -448,14 +447,13 @@ TWIG, $twig_params);
 
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'is_tab' => true,
-            'nopager' => true,
             'nofilter' => true,
             'nosort' => true,
             'columns' => $columns,
             'formatters' => [
                 'name' => 'raw_html',
                 'date_creation' => 'date',
-                'date_expiration' => 'raw_html'
+                'date_expiration' => 'raw_html',
             ],
             'entries' => $entries,
             'total_number' => count($entries),
@@ -464,7 +462,7 @@ TWIG, $twig_params);
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
                 'container'     => 'mass' . static::class . mt_rand(),
-            ]
+            ],
         ]);
 
         return true;

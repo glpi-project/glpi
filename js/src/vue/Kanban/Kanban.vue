@@ -6,7 +6,7 @@
     import { Rights } from "./Rights.js";
     import Column from "./Column.vue";
     import {computed, nextTick, onMounted, ref, watch} from "vue";
-    import SearchInput from "../../../modules/SearchTokenizer/SearchInput.js";
+    import SearchInput from "./SearchInput.js";
     import {TeamBadgeProvider} from "./TeamBadgeProvider.js";
 
     const props = defineProps({
@@ -112,54 +112,6 @@
                 window.location = url;
             });
         }
-    });
-
-    onMounted(() => {
-        emit('kanban:pre_init');
-        loadState().then(() => {
-            $(() => {
-                $.ajax({
-                    type: 'GET',
-                    url: CFG_GLPI.root_doc + '/ajax/kanban.php',
-                    data: {
-                        action: 'get_kanbans',
-                        itemtype: props.item.itemtype,
-                        items_id: props.item.items_id,
-                    }
-                }).then((kanbans) => {
-                    all_kanbans.value = kanbans;
-                    kanban_switcher.value = props.item.items_id <= 0 ? -1 : props.item.items_id;
-                });
-            });
-            filter_input = new SearchInput($(`#${props.element_id} input[name="filter"]`), {
-                allowed_tags: props.supported_filters,
-                on_result_change: (e, result) => {
-                    filters.value = {
-                        _text: ''
-                    };
-                    filters.value._text = result.getFullPhrase();
-                    result.getTaggedTerms().forEach(t => filters.value[t.tag] = {
-                        term: t.term || '',
-                        exclusion: t.exclusion || false,
-                        prefix: t.prefix
-                    });
-                },
-                tokenizer_options: {
-                    custom_prefixes: {
-                        '#': { // Regex prefix
-                            label: __('Regex'),
-                            token_color: '#00800080'
-                        }
-                    }
-                }
-            });
-            refreshSearchTokenizer();
-            refreshSortables();
-            initMutationObserver();
-            refresh(true);
-            backgroundRefresh();
-            emit('kanban:post_init');
-        });
     });
 
     function initMutationObserver() {
@@ -1328,6 +1280,51 @@
         return ordered.filter((c) => c.visible !== false);
 
         return ordered;
+    });
+
+    emit('kanban:pre_init');
+    await loadState();
+    await $.ajax({
+        type: 'GET',
+        url: CFG_GLPI.root_doc + '/ajax/kanban.php',
+        data: {
+            action: 'get_kanbans',
+            itemtype: props.item.itemtype,
+            items_id: props.item.items_id,
+        }
+    }).then((kanbans) => {
+        all_kanbans.value = kanbans;
+        kanban_switcher.value = props.item.items_id <= 0 ? -1 : props.item.items_id;
+    });
+    filter_input = new SearchInput($(`#${props.element_id} input[name="filter"]`), {
+        allowed_tags: props.supported_filters,
+        on_result_change: (e, result) => {
+            filters.value = {
+                _text: ''
+            };
+            filters.value._text = result.getFullPhrase();
+            result.getTaggedTerms().forEach(t => filters.value[t.tag] = {
+                term: t.term || '',
+                exclusion: t.exclusion || false,
+                prefix: t.prefix
+            });
+        },
+        tokenizer_options: {
+            custom_prefixes: {
+                '#': { // Regex prefix
+                    label: __('Regex'),
+                    token_color: '#00800080'
+                }
+            }
+        }
+    });
+    refreshSearchTokenizer();
+    refreshSortables();
+    await refresh(true);
+    backgroundRefresh();
+    onMounted(() => {
+        initMutationObserver();
+        emit('kanban:post_init');
     });
 </script>
 

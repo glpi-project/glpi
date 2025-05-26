@@ -40,8 +40,8 @@ Html::header_nocache();
 
 // Should be defined by other files that include this file.
 // See: change_item.php, item_problem.php, item_ticket.php and item_ticketrecurrent.php
-$obj = $obj ?? null;
-$item_obj = $item_obj ?? null;
+$obj ??= null;
+$item_obj ??= null;
 if (!($obj instanceof CommonDBTM) || !($item_obj instanceof CommonItilObject_Item)) {
     throw new BadRequestHttpException();
 }
@@ -49,7 +49,7 @@ if (!($obj instanceof CommonDBTM) || !($item_obj instanceof CommonItilObject_Ite
 switch ($_GET['action']) {
     case 'add':
         if (isset($_GET['my_items']) && !empty($_GET['my_items'])) {
-            list($_GET['itemtype'], $_GET['items_id']) = explode('_', $_GET['my_items']);
+            [$_GET['itemtype'], $_GET['items_id']] = explode('_', $_GET['my_items']);
         }
         if (isset($_GET['items_id']) && isset($_GET['itemtype']) && !empty($_GET['items_id'])) {
             $_GET['params']['items_id'][$_GET['itemtype']][$_GET['items_id']] = $_GET['items_id'];
@@ -66,7 +66,7 @@ switch ($_GET['action']) {
                 $deleted  = $relation->deleteByCriteria([
                     $obj_fkey  => $_GET['params']['id'],
                     'items_id' => $_GET['items_id'],
-                    'itemtype' => $_GET['itemtype']
+                    'itemtype' => $_GET['itemtype'],
                 ]);
             }
             if ($deleted) {

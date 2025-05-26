@@ -91,7 +91,7 @@ describe('Actors configuration', () => {
                     });
 
                     // Create actor question
-                    cy.findByRole('button', {'name': "Add a new question"}).click();
+                    cy.findByRole('button', {'name': "Add a question"}).click();
                     cy.focused().type(`My ${actorConfig.name} question`);
                     cy.getDropdownByLabelText('Question type').selectDropdownValue('Actors');
                     cy.getDropdownByLabelText('Question sub type').selectDropdownValue(`${actorConfig.name}s`);
@@ -100,12 +100,15 @@ describe('Actors configuration', () => {
                     cy.checkAndCloseAlert('Item successfully updated');
 
                     // Create computer question
-                    cy.findByRole('button', {'name': "Add a new question"}).click();
+                    cy.findByRole('button', {'name': "Add a question"}).click();
                     cy.focused().type("My Computer question");
                     cy.getDropdownByLabelText('Question type').selectDropdownValue('Item');
                     cy.getDropdownByLabelText('Question sub type').selectDropdownValue('GLPI Objects');
                     cy.getDropdownByLabelText("Select an itemtype").selectDropdownValue('Computers');
                     cy.findByRole('button', {'name': 'Save'}).click();
+
+                    // Check alert
+                    cy.checkAndCloseAlert('Item successfully updated');
 
                     // Go to destination tab
                     cy.findByRole('tab', { 'name': "Items to create 1" }).click();
@@ -116,6 +119,7 @@ describe('Actors configuration', () => {
                 const regionName = `${actorConfig.name}s configuration`;
                 const dropdownLabel = `${actorConfig.name}s`;
 
+                cy.openAccordionItem('Destination fields accordion', 'Actors');
                 cy.findByRole('region', { 'name': regionName }).as("config");
                 cy.get('@config').getDropdownByLabelText(dropdownLabel).as("dropdown");
 
@@ -161,6 +165,7 @@ describe('Actors configuration', () => {
 
                     cy.findByRole('button', { 'name': 'Update item' }).click();
                     cy.checkAndCloseAlert('Item successfully updated');
+                    cy.openAccordionItem('Destination fields accordion', 'Actors');
                     cy.get('@dropdown').should('have.text', option);
                 });
             });
@@ -169,6 +174,7 @@ describe('Actors configuration', () => {
                 const regionName = `${actorConfig.name}s configuration`;
                 const dropdownLabel = `${actorConfig.name}s`;
 
+                cy.openAccordionItem('Destination fields accordion', 'Actors');
                 cy.findByRole('region', { 'name': regionName }).as("config");
                 cy.get('@config').getDropdownByLabelText(dropdownLabel).as("dropdown");
 
@@ -182,7 +188,7 @@ describe('Actors configuration', () => {
                 cy.findByRole('link', { 'name': "Preview" })
                     .invoke('removeAttr', 'target')
                     .click();
-                cy.findByRole('button', { 'name': 'Send form' }).click();
+                cy.findByRole('button', { 'name': 'Submit' }).click();
                 cy.findByRole('link', { 'name': 'My test form' }).click();
 
                 // Verify actor in ticket

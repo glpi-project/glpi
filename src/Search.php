@@ -56,15 +56,15 @@ class Search
      * @var int
      * @see GLOBAL_SEARCH
      */
-    const GLOBAL_DISPLAY_COUNT = 10;
+    public const GLOBAL_DISPLAY_COUNT = 10;
 
-   // EXPORT TYPE
+    // EXPORT TYPE
     /**
      * The global search view (Search across many item types).
      * This is NOT the same as the AllAssets view which is just a special itemtype.
      * @var int
      */
-    const GLOBAL_SEARCH        = -1;
+    public const GLOBAL_SEARCH        = -1;
 
     /**
      * The standard view.
@@ -74,55 +74,55 @@ class Search
      * - Browse
      * @var int
      */
-    const HTML_OUTPUT          = 0;
+    public const HTML_OUTPUT          = 0;
 
     /**
      * PDF export format (Landscape mode)
      * @var int
      */
-    const PDF_OUTPUT_LANDSCAPE = 2;
+    public const PDF_OUTPUT_LANDSCAPE = 2;
 
     /**
      * CSV export format
      * @var int
      */
-    const CSV_OUTPUT           = 3;
+    public const CSV_OUTPUT           = 3;
 
     /**
      * PDF export format (Portrait mode)
      * @var int
      */
-    const PDF_OUTPUT_PORTRAIT  = 4;
+    public const PDF_OUTPUT_PORTRAIT  = 4;
 
     /**
      * Names list export format
      * @var int
      */
-    const NAMES_OUTPUT         = 5;
+    public const NAMES_OUTPUT         = 5;
 
     /**
      * ODS export
      * @var int
      */
-    const ODS_OUTPUT = 6;
+    public const ODS_OUTPUT = 6;
 
     /**
      * XLSX export
      * @var int
      */
-    const XLSX_OUTPUT = 7;
+    public const XLSX_OUTPUT = 7;
 
     /**
      * Placeholder for a <br> line break
      * @var string
      */
-    const LBBR = '#LBBR#';
+    public const LBBR = '#LBBR#';
 
     /**
      * Placeholder for a <hr> line break
      * @var string
      */
-    const LBHR = '#LBHR#';
+    public const LBHR = '#LBHR#';
 
     /**
      * Separator used to separate values of a same element in CONCAT MySQL function.
@@ -130,7 +130,7 @@ class Search
      * @var string
      * @see LONGSEP
      */
-    const SHORTSEP = '$#$';
+    public const SHORTSEP = '$#$';
 
     /**
      * Separator used to separate each element in GROUP_CONCAT MySQL function.
@@ -138,13 +138,13 @@ class Search
      * @var string
      * @see SHORTSEP
      */
-    const LONGSEP  = '$$##$$';
+    public const LONGSEP  = '$$##$$';
 
     /**
      * Placeholder for a null value
      * @var string
      */
-    const NULLVALUE = '__NULL__';
+    public const NULLVALUE = '__NULL__';
 
     /**
      * The output format for the search results
@@ -637,7 +637,7 @@ class Search
      * @param string  $val          Item num in the request
      * @param integer $meta         Is a meta search (meta=2 in search.class.php) (default 0)
      *
-     * @return string|false Where string or false if an error occured or if there was no valid WHERE string that could be created.
+     * @return string|false Where string or false if an error occurred or if there was no valid WHERE string that could be created.
      **/
     public static function addWhere($link, $nott, $itemtype, $ID, $searchtype, $val, $meta = 0)
     {

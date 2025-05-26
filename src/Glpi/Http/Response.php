@@ -45,17 +45,17 @@ class Response extends \GuzzleHttp\Psr7\Response
     /**
      * "application/json" content type.
      */
-    const CONTENT_TYPE_JSON = 'application/json';
+    public const CONTENT_TYPE_JSON = 'application/json';
 
     /**
      * "text/html" content type.
      */
-    const CONTENT_TYPE_TEXT_HTML = 'text/html';
+    public const CONTENT_TYPE_TEXT_HTML = 'text/html';
 
     /**
      * "text/plain" content type.
      */
-    const CONTENT_TYPE_TEXT_PLAIN = 'text/plain';
+    public const CONTENT_TYPE_TEXT_PLAIN = 'text/plain';
 
     /**
      * Send the given HTTP code then die with the error message in the given format.
@@ -88,9 +88,12 @@ class Response extends \GuzzleHttp\Psr7\Response
         Toolbox::logDebug($message);
 
         echo($output);
-        exit(1);
+        exit(1); // @phpstan-ignore glpi.forbidExit (Deprecated scope)
     }
 
+    /**
+     * @deprecated 11.0.0
+     */
     public function sendHeaders(): Response
     {
         if (headers_sent()) {
@@ -100,16 +103,22 @@ class Response extends \GuzzleHttp\Psr7\Response
         foreach ($headers as $name => $values) {
             header(sprintf('%s: %s', $name, implode(', ', $values)), true);
         }
-        http_response_code($this->getStatusCode());
+        http_response_code($this->getStatusCode()); // @phpstan-ignore glpi.forbidHttpResponseCode (Deprecated scope)
         return $this;
     }
 
+    /**
+     * @deprecated 11.0.0
+     */
     public function sendContent(): Response
     {
         echo $this->getBody();
         return $this;
     }
 
+    /**
+     * @deprecated 11.0.0
+     */
     public function send(): Response
     {
         return $this->sendHeaders()

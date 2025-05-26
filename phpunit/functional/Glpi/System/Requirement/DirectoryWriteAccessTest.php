@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -45,7 +44,7 @@ class DirectoryWriteAccessTest extends \GLPITestCase
 {
     public function testCheckOnExistingWritableDir()
     {
-        vfsStream::setup('root', 0777, []);
+        vfsStream::setup('root', 0o777, []);
         $path = vfsStream::url('root');
 
         $instance = new DirectoryWriteAccess($path);
@@ -58,7 +57,7 @@ class DirectoryWriteAccessTest extends \GLPITestCase
 
     public function testCheckOnUnexistingDir()
     {
-        vfsStream::setup('root', 0777, []);
+        vfsStream::setup('root', 0o777, []);
         $path = vfsStream::url('root/not-existing');
 
         $instance = new DirectoryWriteAccess($path);

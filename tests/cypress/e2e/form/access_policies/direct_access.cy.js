@@ -6,7 +6,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -36,6 +35,7 @@ describe('Form access policy', () => {
         cy.createWithAPI('Glpi\\Form\\Form', {
             'name': 'Test form for the access policy form suite',
             'is_active': true,
+            '_init_access_policies': false,
         }).as('form_id');
 
         cy.login();
@@ -83,7 +83,7 @@ describe('Form access policy', () => {
             cy.visit(direct_access_url);
 
             // Check if the form title is displayed
-            cy.findByRole('heading', { 'name': 'Test form for the access policy form suite' }).should('exist');
+            cy.findByRole('heading', { 'name': 'Form title' }).should('exist').contains('Test form for the access policy form suite');
         });
     });
 
@@ -154,7 +154,7 @@ describe('Form access policy', () => {
             cy.visit(direct_access_url);
 
             // Check if the form title is displayed
-            cy.findByRole('heading', { 'name': 'Test form for the access policy form suite' }).should('exist');
+            cy.findByRole('heading', { 'name': 'Form title' }).should('exist').contains('Test form for the access policy form suite');
         });
     });
 
@@ -180,13 +180,13 @@ describe('Form access policy', () => {
         // Retrieve the direct access URL
         cy.findByRole('textbox', { 'name': 'Direct access URL' }).should('exist').as('direct_access_url');
 
-        // Add a new question
+        // Add a question
         cy.get('@form_id').then((form_id) => {
             const tab = 'Glpi\\Form\\Form$main';
             cy.visit(`/front/form/form.form.php?id=${form_id}&forcetab=${tab}`);
 
-            // Add a new question
-            cy.findByRole('button', { 'name': 'Add a new question' }).click();
+            // Add a question
+            cy.findByRole('button', { 'name': 'Add a question' }).click();
 
             // Set the question title
             cy.focused().type('Actor question title');
@@ -194,8 +194,8 @@ describe('Form access policy', () => {
             // Select the actor question type
             cy.findByRole('combobox', { 'name': 'Short answer' }).select('Actors');
 
-            // Add a new question
-            cy.findByRole('button', { 'name': 'Add a new question' }).click();
+            // Add a question
+            cy.findByRole('button', { 'name': 'Add a question' }).click();
 
             // Set the question title
             cy.focused().type('Short answer question title');
@@ -217,7 +217,7 @@ describe('Form access policy', () => {
             cy.visit(direct_access_url);
 
             // Check if the form title is displayed
-            cy.findByRole('heading', { 'name': 'Test form for the access policy form suite' }).should('exist');
+            cy.findByRole('heading', { 'name': 'Form title' }).should('exist').contains('Test form for the access policy form suite');
 
             // Check if the actor question is hidden
             cy.findByRole('heading', { 'name': 'Actor question title' }).should('not.exist');
@@ -247,7 +247,7 @@ describe('Form access policy', () => {
             const tab = 'Glpi\\Form\\Form$main';
             cy.visit(`/front/form/form.form.php?id=${form_id}&forcetab=${tab}`);
         });
-        cy.findByRole('button', { 'name': 'Add a new question' }).click();
+        cy.findByRole('button', { 'name': 'Add a question' }).click();
         cy.focused().type('Question 1');
         cy.findByRole('button', { 'name': 'Save' }).click();
         cy.findByRole('alert').should('contain.text', 'Item successfully updated');
@@ -258,9 +258,9 @@ describe('Form access policy', () => {
             .invoke('val')
             .then((direct_access_url) => {
                 cy.visit(direct_access_url);
-                cy.findByRole('heading', { 'name': 'Test form for the access policy form suite' }).should('exist');
+                cy.findByRole('heading', { 'name': 'Form title' }).should('exist');
                 cy.findByRole('textbox', { 'name': 'Question 1' }).type('My answer');
-                cy.findByRole('button', { 'name': 'Send form' }).click();
+                cy.findByRole('button', { 'name': 'Submit' }).click();
                 cy.findByRole('alert').should('contain.text', 'Item successfully created');
             })
         ;

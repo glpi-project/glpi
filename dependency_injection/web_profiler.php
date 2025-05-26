@@ -34,15 +34,20 @@
 
 namespace Symfony\Component\DependencyInjection\Loader\Configurator;
 
+use Symfony\Bundle\WebProfilerBundle\WebProfilerBundle;
+
 return static function (ContainerConfigurator $container): void {
-    if ($container->env() !== 'development') {
+    if (!\Glpi\Application\Environment::get()->shouldEnableExtraDevAndDebugTools()) {
         // Don't use the web profiler elsewhere than dev.
         return;
     }
 
-    $container->extension('web_profiler', [
-        'toolbar' => true,
-    ]);
+    if (\class_exists(WebProfilerBundle::class)) {
+        $container->extension('web_profiler', [
+            'toolbar' => true,
+        ]);
+    }
+
     $container->extension('framework', [
         'profiler' => ['only_exceptions' => false],
     ]);

@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -43,11 +42,9 @@ use Glpi\Form\Destination\CommonITILField\ITILActorFieldConfig;
 use Glpi\Form\Destination\CommonITILField\RequesterFieldConfig;
 use Glpi\Form\Destination\CommonITILField\ITILActorFieldStrategy;
 use Glpi\Form\Destination\CommonITILField\RequesterField;
-use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\Form;
 use Glpi\Form\QuestionType\QuestionTypeActorsExtraDataConfig;
 use Glpi\Form\QuestionType\QuestionTypeRequester;
-use Glpi\PHPUnit\Tests\Glpi\Form\Destination\CommonITILField\AbstractDestinationFieldTest;
 use Glpi\Tests\FormBuilder;
 use Group;
 use Override;
@@ -143,7 +140,7 @@ final class RequesterFieldTest extends AbstractActorFieldTest
             'name'                => 'testRequesterFormFillerSupervisor User',
             'password'            => 'testRequesterFormFillerSupervisor User',
             'password2'           => 'testRequesterFormFillerSupervisor User',
-            'users_id_supervisor' => $supervisor->getID()
+            'users_id_supervisor' => $supervisor->getID(),
         ], ['password', 'password2']);
 
         $form = $this->createAndGetFormWithMultipleActorsQuestions();
@@ -194,7 +191,7 @@ final class RequesterFieldTest extends AbstractActorFieldTest
             config: new RequesterFieldConfig(
                 strategies: [ITILActorFieldStrategy::SPECIFIC_VALUES],
                 specific_itilactors_ids: [
-                    User::getForeignKeyField() . '-' . $user->getID()
+                    User::getForeignKeyField() . '-' . $user->getID(),
                 ]
             ),
             answers: [],
@@ -208,7 +205,7 @@ final class RequesterFieldTest extends AbstractActorFieldTest
                 strategies: [ITILActorFieldStrategy::SPECIFIC_VALUES],
                 specific_itilactors_ids: [
                     User::getForeignKeyField() . '-' . $user->getID(),
-                    Group::getForeignKeyField() . '-' . $group->getID()
+                    Group::getForeignKeyField() . '-' . $group->getID(),
                 ]
             ),
             answers: [],
@@ -250,7 +247,7 @@ final class RequesterFieldTest extends AbstractActorFieldTest
                 strategies: [ITILActorFieldStrategy::SPECIFIC_ANSWERS],
                 specific_question_ids: [
                     $this->getQuestionId($form, "Requester 1"),
-                    $this->getQuestionId($form, "Requester 2")
+                    $this->getQuestionId($form, "Requester 2"),
                 ]
             ),
             answers: [
@@ -364,7 +361,7 @@ final class RequesterFieldTest extends AbstractActorFieldTest
                 strategies: [ITILActorFieldStrategy::FROM_TEMPLATE, ITILActorFieldStrategy::SPECIFIC_VALUES],
                 specific_itilactors_ids: [
                     User::getForeignKeyField() . '-' . $user2->getID(),
-                    Group::getForeignKeyField() . '-' . $group->getID()
+                    Group::getForeignKeyField() . '-' . $group->getID(),
                 ]
             ),
             answers: [],
@@ -382,11 +379,11 @@ final class RequesterFieldTest extends AbstractActorFieldTest
                     'actor_role'  => 1, // Requester
                     'actor_type'  => 1, // PluginFormcreatorTarget_Actor::ACTOR_TYPE_CREATOR
                     'actor_value' => 0,
-                ]
+                ],
             ],
             'field_config' => new RequesterFieldConfig(
                 strategies: [ITILActorFieldStrategy::FORM_FILLER],
-            )
+            ),
         ];
 
         yield 'Form validator' => [
@@ -396,9 +393,9 @@ final class RequesterFieldTest extends AbstractActorFieldTest
                     'actor_role'  => 1, // Requester
                     'actor_type'  => 2, // PluginFormcreatorTarget_Actor::ACTOR_TYPE_VALIDATOR
                     'actor_value' => 0,
-                ]
+                ],
             ],
-            'field_config' => fn ($migration, $form) => (new RequesterField())->getDefaultConfig($form)
+            'field_config' => fn($migration, $form) => (new RequesterField())->getDefaultConfig($form),
         ];
 
         yield 'Specific person' => [
@@ -413,7 +410,7 @@ final class RequesterFieldTest extends AbstractActorFieldTest
                     'actor_role'  => 1, // Requester
                     'actor_type'  => 3, // PluginFormcreatorTarget_Actor::ACTOR_TYPE_PERSON
                     'actor_value' => getItemByTypeName(User::class, 'tech', true),
-                ]
+                ],
             ],
             'field_config' => new RequesterFieldConfig(
                 strategies: [ITILActorFieldStrategy::SPECIFIC_VALUES],
@@ -421,9 +418,9 @@ final class RequesterFieldTest extends AbstractActorFieldTest
                     'User' => [
                         getItemByTypeName(User::class, 'glpi', true),
                         getItemByTypeName(User::class, 'tech', true),
-                    ]
+                    ],
                 ]
-            )
+            ),
         ];
 
         yield 'Person from the question' => [
@@ -433,15 +430,15 @@ final class RequesterFieldTest extends AbstractActorFieldTest
                     'actor_role'  => 1, // Requester
                     'actor_type'  => 4, // PluginFormcreatorTarget_Actor::ACTOR_TYPE_QUESTION_PERSON
                     'actor_value' => 75,
-                ]
+                ],
             ],
-            'field_config' => fn ($migration, $form) => new RequesterFieldConfig(
+            'field_config' => fn($migration, $form) => new RequesterFieldConfig(
                 strategies: [ITILActorFieldStrategy::SPECIFIC_ANSWERS],
                 specific_question_ids: [
                     $migration->getMappedItemTarget('PluginFormcreatorQuestion', 75)['items_id']
-                    ?? throw new \Exception("Question not found")
+                    ?? throw new \Exception("Question not found"),
                 ]
-            )
+            ),
         ];
 
         yield 'Specific group' => [
@@ -456,7 +453,7 @@ final class RequesterFieldTest extends AbstractActorFieldTest
                     'actor_role'  => 1, // Requester
                     'actor_type'  => 5, // PluginFormcreatorTarget_Actor::ACTOR_TYPE_GROUP
                     'actor_value' => getItemByTypeName(Group::class, '_test_group_2', true),
-                ]
+                ],
             ],
             'field_config' => new RequesterFieldConfig(
                 strategies: [ITILActorFieldStrategy::SPECIFIC_VALUES],
@@ -464,9 +461,9 @@ final class RequesterFieldTest extends AbstractActorFieldTest
                     'Group' => [
                         getItemByTypeName(Group::class, '_test_group_1', true),
                         getItemByTypeName(Group::class, '_test_group_2', true),
-                    ]
+                    ],
                 ]
-            )
+            ),
         ];
 
         yield 'Group from the question' => [
@@ -476,15 +473,15 @@ final class RequesterFieldTest extends AbstractActorFieldTest
                     'actor_role'  => 1, // Requester
                     'actor_type'  => 6, // PluginFormcreatorTarget_Actor::ACTOR_TYPE_QUESTION_GROUP
                     'actor_value' => 76,
-                ]
+                ],
             ],
-            'field_config' => fn ($migration, $form) => new RequesterFieldConfig(
+            'field_config' => fn($migration, $form) => new RequesterFieldConfig(
                 strategies: [ITILActorFieldStrategy::SPECIFIC_ANSWERS],
                 specific_question_ids: [
                     $migration->getMappedItemTarget('PluginFormcreatorQuestion', 76)['items_id']
-                    ?? throw new \Exception("Question not found")
+                    ?? throw new \Exception("Question not found"),
                 ]
-            )
+            ),
         ];
 
         yield 'Actors from the question' => [
@@ -494,15 +491,15 @@ final class RequesterFieldTest extends AbstractActorFieldTest
                     'actor_role'  => 1, // Requester
                     'actor_type'  => 9, // PluginFormcreatorTarget_Actor::ACTOR_TYPE_QUESTION_ACTORS
                     'actor_value' => 77,
-                ]
+                ],
             ],
-            'field_config' => fn ($migration, $form) => new RequesterFieldConfig(
+            'field_config' => fn($migration, $form) => new RequesterFieldConfig(
                 strategies: [ITILActorFieldStrategy::SPECIFIC_ANSWERS],
                 specific_question_ids: [
                     $migration->getMappedItemTarget('PluginFormcreatorQuestion', 77)['items_id']
-                    ?? throw new \Exception("Question not found")
+                    ?? throw new \Exception("Question not found"),
                 ]
-            )
+            ),
         ];
 
         yield 'Group from an object' => [
@@ -512,9 +509,9 @@ final class RequesterFieldTest extends AbstractActorFieldTest
                     'actor_role'  => 1, // Requester
                     'actor_type'  => 10, // PluginFormcreatorTarget_Actor::ACTOR_TYPE_GROUP_FROM_OBJECT
                     'actor_value' => 0,
-                ]
+                ],
             ],
-            'field_config' => fn ($migration, $form) => (new RequesterField())->getDefaultConfig($form)
+            'field_config' => fn($migration, $form) => (new RequesterField())->getDefaultConfig($form),
         ];
 
         yield 'Tech group from an object' => [
@@ -524,9 +521,9 @@ final class RequesterFieldTest extends AbstractActorFieldTest
                     'actor_role'  => 1, // Requester
                     'actor_type'  => 11, // PluginFormcreatorTarget_Actor::ACTOR_TYPE_TECH_GROUP_FROM_OBJECT
                     'actor_value' => 0,
-                ]
+                ],
             ],
-            'field_config' => fn ($migration, $form) => (new RequesterField())->getDefaultConfig($form)
+            'field_config' => fn($migration, $form) => (new RequesterField())->getDefaultConfig($form),
         ];
 
         yield 'Form author\'s supervisor' => [
@@ -536,9 +533,9 @@ final class RequesterFieldTest extends AbstractActorFieldTest
                     'actor_role'  => 1, // Requester
                     'actor_type'  => 12, // PluginFormcreatorTarget_Actor::ACTOR_TYPE_SUPERVISOR
                     'actor_value' => 0,
-                ]
+                ],
             ],
-            'field_config' => fn ($migration, $form) => (new RequesterField())->getDefaultConfig($form)
+            'field_config' => fn($migration, $form) => (new RequesterField())->getDefaultConfig($form),
         ];
     }
 
@@ -562,7 +559,7 @@ final class RequesterFieldTest extends AbstractActorFieldTest
             'glpi_plugin_formcreator_targets_actors',
             [
                 'itemtype' => 'PluginFormcreatorTargetTicket',
-                'items_id' => $destination_id
+                'items_id' => $destination_id,
             ]
         );
 
@@ -571,7 +568,7 @@ final class RequesterFieldTest extends AbstractActorFieldTest
                 'glpi_plugin_formcreator_targets_actors',
                 array_merge($fields, [
                     'itemtype' => 'PluginFormcreatorTargetTicket',
-                    'items_id' => $destination_id
+                    'items_id' => $destination_id,
                 ])
             ));
         }

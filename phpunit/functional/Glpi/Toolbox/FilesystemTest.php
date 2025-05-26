@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -47,26 +46,26 @@ class FilesystemTest extends \GLPITestCase
         $instance = new \Glpi\Toolbox\Filesystem();
 
         // Files can be written when they not exists and directory is writable
-        $config_dir->chmod(0700);
+        $config_dir->chmod(0o700);
         $this->assertTrue($instance->canWriteFile(vfsStream::url('config/config_db.php')));
         $this->assertTrue($instance->canWriteFile(vfsStream::url('config/whatever.yml')));
         $this->assertTrue($instance->canWriteFiles([vfsStream::url('config/config_db.php'), vfsStream::url('config/whatever.yml')]));
 
         // Files cannot be written when they not exists and directory is not writable
-        $config_dir->chmod(0500);
+        $config_dir->chmod(0o500);
         $this->assertFalse($instance->canWriteFile(vfsStream::url('config/config_db.php')));
         $this->assertFalse($instance->canWriteFile(vfsStream::url('config/whatever.yml')));
         $this->assertFalse($instance->canWriteFiles([vfsStream::url('config/config_db.php'), vfsStream::url('config/whatever.yml')]));
 
         // Files cannot be written when they exist but are not writable (even if directory is writable)
-        $config_dir->chmod(0700);
-        $file1 = vfsStream::newFile('config_db.php', 0400)->at($config_dir)->setContent('<?php //my config file');
+        $config_dir->chmod(0o700);
+        $file1 = vfsStream::newFile('config_db.php', 0o400)->at($config_dir)->setContent('<?php //my config file');
         $this->assertFalse($instance->canWriteFile(vfsStream::url('config/config_db.php')));
         $this->assertTrue($instance->canWriteFile(vfsStream::url('config/whatever.yml')));
         $this->assertFalse($instance->canWriteFiles([vfsStream::url('config/config_db.php'), vfsStream::url('config/whatever.yml')]));
 
         // Files can be written when they exist and are writable (even if directory is not writable)
-        $file1->chmod(0666);
+        $file1->chmod(0o666);
         $this->assertTrue($instance->canWriteFile(vfsStream::url('config/config_db.php')));
         $this->assertTrue($instance->canWriteFile(vfsStream::url('config/whatever.yml')));
         $this->assertTrue($instance->canWriteFiles([vfsStream::url('config/config_db.php'), vfsStream::url('config/whatever.yml')]));

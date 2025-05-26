@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -35,7 +34,6 @@
 
 namespace tests\units;
 
-use Monolog\Logger;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Psr\Log\LogLevel;
 
@@ -129,29 +127,29 @@ class DBTest extends \GLPITestCase
             [
                 'table', [
                     'field'  => 'value',
-                    'other'  => 'doe'
+                    'other'  => 'doe',
                 ],
-                'INSERT INTO `table` (`field`, `other`) VALUES (\'value\', \'doe\')'
+                'INSERT INTO `table` (`field`, `other`) VALUES (\'value\', \'doe\')',
             ], [
                 '`table`', [
                     '`field`'  => 'value',
-                    '`other`'  => 'doe'
+                    '`other`'  => 'doe',
                 ],
-                'INSERT INTO `table` (`field`, `other`) VALUES (\'value\', \'doe\')'
+                'INSERT INTO `table` (`field`, `other`) VALUES (\'value\', \'doe\')',
             ], [
                 'table', [
                     'field'  => new \Glpi\DBAL\QueryParam(),
-                    'other'  => new \Glpi\DBAL\QueryParam()
+                    'other'  => new \Glpi\DBAL\QueryParam(),
                 ],
-                'INSERT INTO `table` (`field`, `other`) VALUES (?, ?)'
+                'INSERT INTO `table` (`field`, `other`) VALUES (?, ?)',
             ], [
                 'table', new \Glpi\DBAL\QuerySubQuery([
                     'SELECT' => ['id', 'name'],
                     'FROM' => 'other',
-                    'WHERE' => ['NOT' => ['name' => null]]
+                    'WHERE' => ['NOT' => ['name' => null]],
                 ]),
-                'INSERT INTO `table` (SELECT `id`, `name` FROM `other` WHERE NOT (`name` IS NULL))'
-            ]/*, [
+                'INSERT INTO `table` (SELECT `id`, `name` FROM `other` WHERE NOT (`name` IS NULL))',
+            ],/*, [
                 'table', [
                     'field'  => new \QueryParam('field'),
                     'other'  => new \QueryParam('other')
@@ -174,36 +172,36 @@ class DBTest extends \GLPITestCase
             [
                 'table', [
                     'field'  => 'value',
-                    'other'  => 'doe'
+                    'other'  => 'doe',
                 ], [
-                    'id'  => 1
+                    'id'  => 1,
                 ],
                 [],
-                'UPDATE `table` SET `field` = \'value\', `other` = \'doe\' WHERE `id` = \'1\''
+                'UPDATE `table` SET `field` = \'value\', `other` = \'doe\' WHERE `id` = \'1\'',
             ], [
                 'table', [
-                    'field'  => 'value'
+                    'field'  => 'value',
                 ], [
-                    'id'  => [1, 2]
+                    'id'  => [1, 2],
                 ],
                 [],
-                'UPDATE `table` SET `field` = \'value\' WHERE `id` IN (\'1\', \'2\')'
+                'UPDATE `table` SET `field` = \'value\' WHERE `id` IN (\'1\', \'2\')',
             ], [
                 'table', [
-                    'field'  => 'value'
+                    'field'  => 'value',
                 ], [
-                    'NOT'  => ['id' => [1, 2]]
+                    'NOT'  => ['id' => [1, 2]],
                 ],
                 [],
-                'UPDATE `table` SET `field` = \'value\' WHERE  NOT (`id` IN (\'1\', \'2\'))'
+                'UPDATE `table` SET `field` = \'value\' WHERE  NOT (`id` IN (\'1\', \'2\'))',
             ], [
                 'table', [
-                    'field'  => new \Glpi\DBAL\QueryParam()
+                    'field'  => new \Glpi\DBAL\QueryParam(),
                 ], [
-                    'NOT' => ['id' => [new \Glpi\DBAL\QueryParam(), new \Glpi\DBAL\QueryParam()]]
+                    'NOT' => ['id' => [new \Glpi\DBAL\QueryParam(), new \Glpi\DBAL\QueryParam()]],
                 ],
                 [],
-                'UPDATE `table` SET `field` = ? WHERE  NOT (`id` IN (?, ?))'
+                'UPDATE `table` SET `field` = ? WHERE  NOT (`id` IN (?, ?))',
             ], [
                 /*'table', [
                     'field'  => new \QueryParam('field')
@@ -214,47 +212,47 @@ class DBTest extends \GLPITestCase
                 'UPDATE `table` SET `field` = :field WHERE  NOT (`id` IN (:idone, :idtwo))'
             ], [*/
                 'table', [
-                    'field'  => new \Glpi\DBAL\QueryExpression(\DBmysql::quoteName('field') . ' + 1')
+                    'field'  => new \Glpi\DBAL\QueryExpression(\DBmysql::quoteName('field') . ' + 1'),
                 ], [
-                    'id'  => [1, 2]
+                    'id'  => [1, 2],
                 ],
                 [],
-                'UPDATE `table` SET `field` = `field` + 1 WHERE `id` IN (\'1\', \'2\')'
+                'UPDATE `table` SET `field` = `field` + 1 WHERE `id` IN (\'1\', \'2\')',
             ], [
                 'table', [
-                    'field'  => new \Glpi\DBAL\QueryExpression(\DBmysql::quoteName('field') . ' + 1')
+                    'field'  => new \Glpi\DBAL\QueryExpression(\DBmysql::quoteName('field') . ' + 1'),
                 ], [
-                    'id'  => [1, 2]
+                    'id'  => [1, 2],
                 ],
                 [],
-                'UPDATE `table` SET `field` = `field` + 1 WHERE `id` IN (\'1\', \'2\')'
+                'UPDATE `table` SET `field` = `field` + 1 WHERE `id` IN (\'1\', \'2\')',
             ], [
                 'table', [
-                    'field'  => 'value'
+                    'field'  => 'value',
                 ], [
-                    'id'  => [1, 2]
+                    'id'  => [1, 2],
                 ],
                 [
                     'LEFT JOIN' => [
                         'another_table' => [
                             'ON' => [
                                 'table'         => 'foreign_id',
-                                'another_table' => 'id'
-                            ]
+                                'another_table' => 'id',
+                            ],
                         ],
                         'table_3' => [
                             'ON' => [
                                 'another_table' => 'some_id',
-                                'table_3'       => 'id'
-                            ]
-                        ]
-                    ]
+                                'table_3'       => 'id',
+                            ],
+                        ],
+                    ],
                 ],
                 'UPDATE `table`'
                 . ' LEFT JOIN `another_table` ON (`table`.`foreign_id` = `another_table`.`id`)'
                 . ' LEFT JOIN `table_3` ON (`another_table`.`some_id` = `table_3`.`id`)'
-                . ' SET `field` = \'value\' WHERE `id` IN (\'1\', \'2\')'
-            ]
+                . ' SET `field` = \'value\' WHERE `id` IN (\'1\', \'2\')',
+            ],
         ];
     }
 
@@ -277,28 +275,28 @@ class DBTest extends \GLPITestCase
         return [
             [
                 'table', [
-                    'id'  => 1
+                    'id'  => 1,
                 ],
                 [],
-                'DELETE `table` FROM `table` WHERE `id` = \'1\''
+                'DELETE `table` FROM `table` WHERE `id` = \'1\'',
             ], [
                 'table', [
-                    'id'  => [1, 2]
+                    'id'  => [1, 2],
                 ],
                 [],
-                'DELETE `table` FROM `table` WHERE `id` IN (\'1\', \'2\')'
+                'DELETE `table` FROM `table` WHERE `id` IN (\'1\', \'2\')',
             ], [
                 'table', [
-                    'NOT'  => ['id' => [1, 2]]
+                    'NOT'  => ['id' => [1, 2]],
                 ],
                 [],
-                'DELETE `table` FROM `table` WHERE  NOT (`id` IN (\'1\', \'2\'))'
+                'DELETE `table` FROM `table` WHERE  NOT (`id` IN (\'1\', \'2\'))',
             ], [
                 'table', [
-                    'NOT'  => ['id' => [new \Glpi\DBAL\QueryParam(), new \Glpi\DBAL\QueryParam()]]
+                    'NOT'  => ['id' => [new \Glpi\DBAL\QueryParam(), new \Glpi\DBAL\QueryParam()]],
                 ],
                 [],
-                'DELETE `table` FROM `table` WHERE  NOT (`id` IN (?, ?))'
+                'DELETE `table` FROM `table` WHERE  NOT (`id` IN (?, ?))',
             ], [
                 /*'table', [
                     'NOT'  => ['id' => [new \QueryParam('idone'), new \QueryParam('idtwo')]]
@@ -307,28 +305,28 @@ class DBTest extends \GLPITestCase
                 'DELETE `table` FROM `table` WHERE  NOT (`id` IN (:idone, :idtwo))'
             ], [*/
                 'table', [
-                    'id'  => 1
+                    'id'  => 1,
                 ],
                 [
                     'LEFT JOIN' => [
                         'another_table' => [
                             'ON' => [
                                 'table'         => 'foreign_id',
-                                'another_table' => 'id'
-                            ]
+                                'another_table' => 'id',
+                            ],
                         ],
                         'table_3' => [
                             'ON' => [
                                 'another_table' => 'some_id',
-                                'table_3'       => 'id'
-                            ]
-                        ]
-                    ]
+                                'table_3'       => 'id',
+                            ],
+                        ],
+                    ],
                 ],
                 'DELETE `table` FROM `table`'
                 . ' LEFT JOIN `another_table` ON (`table`.`foreign_id` = `another_table`.`id`)'
                 . ' LEFT JOIN `table_3` ON (`another_table`.`some_id` = `table_3`.`id`)'
-                . ' WHERE `id` = \'1\''
+                . ' WHERE `id` = \'1\'',
             ],
         ];
     }
@@ -370,7 +368,7 @@ class DBTest extends \GLPITestCase
         $excluded_tables = [
             'glpi_assets_assets', 'glpi_assets_assetmodels', 'glpi_assets_assettypes',
             'glpi_appliancerelations', 'glpi_dropdowns_dropdowns', 'glpi_oauth_access_tokens', 'glpi_oauth_auth_codes',
-            'glpi_oauth_refresh_tokens', 'glpi_stencils',
+            'glpi_oauth_refresh_tokens', 'glpi_stencils', 'glpi_itemtranslations_itemtranslations',
         ];
 
         //check if each table has a corresponding itemtype
@@ -410,8 +408,8 @@ class DBTest extends \GLPITestCase
 OTHER EXPRESSION;
 ",
                 'expected'  => "SQL EXPRESSION;
-OTHER EXPRESSION;"
-            ]
+OTHER EXPRESSION;",
+            ],
         ];
     }
 
@@ -430,8 +428,8 @@ OTHER EXPRESSION;"
         return array_merge([
             [
                 'sql'       => "SQL;\n-- comment;\n\nSQL2;",
-                'expected'  => "SQL;\n\nSQL2;"
-            ]
+                'expected'  => "SQL;\n\nSQL2;",
+            ],
         ], self::commentsProvider());
     }
 
@@ -452,7 +450,7 @@ OTHER EXPRESSION;"
                 )
 SQL,
             'db_properties' => [],
-            'warning' => null
+            'warning' => null,
         ];
 
         // Warnings related to MyISAM usage
@@ -463,7 +461,7 @@ SQL,
             '   ENGINE  =    MYISAM  ', // uppercase with lots of spaces
             " ENGINE = 'MyISAM'", // surrounded by quotes
             "ROW_FORMAT=DYNAMIC ENGINE=MyISAM", // preceded by another option
-            "ENGINE=MyISAM ROW_FORMAT=DYNAMIC" // followed by another option
+            "ENGINE=MyISAM ROW_FORMAT=DYNAMIC", // followed by another option
         ];
 
         foreach ($myisam_declarations as $table_options) {
@@ -475,7 +473,7 @@ SQL,
                     ){$table_options}
 SQL,
                 'db_properties' => [],
-                'warning' => 'Usage of "MyISAM" engine is discouraged, please use "InnoDB" engine.'
+                'warning' => 'Usage of "MyISAM" engine is discouraged, please use "InnoDB" engine.',
             ];
         }
 
@@ -489,9 +487,9 @@ SQL,
                 )
 SQL,
             'db_properties' => [
-                'allow_datetime' => true
+                'allow_datetime' => true,
             ],
-            'warning' => null
+            'warning' => null,
         ];
         yield [
             'sql' => <<<SQL
@@ -502,9 +500,9 @@ SQL,
                 )
 SQL,
             'db_properties' => [
-                'allow_datetime' => false
+                'allow_datetime' => false,
             ],
-            'warning' => 'Usage of "DATETIME" fields is discouraged, please use "TIMESTAMP" fields instead.'
+            'warning' => 'Usage of "DATETIME" fields is discouraged, please use "TIMESTAMP" fields instead.',
         ];
 
         // Warnings related to 'utf8mb4' usage when DB not yet migrated to 'utf8mb4'
@@ -516,9 +514,9 @@ SQL,
                 ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = utf8 COLLATE = utf8_unicode_ci
 SQL,
             'db_properties' => [
-                'use_utf8mb4' => false
+                'use_utf8mb4' => false,
             ],
-            'warning' => null
+            'warning' => null,
         ];
         yield [
             'sql' => <<<SQL
@@ -528,9 +526,9 @@ SQL,
                 ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci
 SQL,
             'db_properties' => [
-                'use_utf8mb4' => false
+                'use_utf8mb4' => false,
             ],
-            'warning' => 'Usage of "utf8mb4" charset/collation detected, should be "utf8"'
+            'warning' => 'Usage of "utf8mb4" charset/collation detected, should be "utf8"',
         ];
 
         // Warnings related to 'utf8' usage when DB has been migrated to 'utf8mb4'
@@ -542,9 +540,9 @@ SQL,
                 ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = utf8 COLLATE = utf8_unicode_ci
 SQL,
             'db_properties' => [
-                'use_utf8mb4' => true
+                'use_utf8mb4' => true,
             ],
-            'warning' => 'Usage of "utf8" charset/collation detected, should be "utf8mb4"'
+            'warning' => 'Usage of "utf8" charset/collation detected, should be "utf8mb4"',
         ];
         yield [
             'sql' => <<<SQL
@@ -554,9 +552,9 @@ SQL,
                 ) ENGINE = InnoDB ROW_FORMAT = DYNAMIC DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci
 SQL,
             'db_properties' => [
-                'use_utf8mb4' => true
+                'use_utf8mb4' => true,
             ],
-            'warning' => null
+            'warning' => null,
         ];
 
         // Warnings related to usage of signed integers in primary/foreign key fields.
@@ -582,9 +580,9 @@ SQL,
                     )
 SQL,
                 'db_properties' => [
-                    'allow_signed_keys' => true
+                    'allow_signed_keys' => true,
                 ],
-                'warning' => null // No warning as we allow signed keys
+                'warning' => null, // No warning as we allow signed keys
             ];
             yield [
                 'sql' => <<<SQL
@@ -595,7 +593,7 @@ SQL,
                     )
 SQL,
                 'db_properties' => [
-                    'allow_signed_keys' => false
+                    'allow_signed_keys' => false,
                 ],
                 'warning' => $warning_field !== null
                     ? sprintf('Usage of signed integers in primary or foreign keys is discouraged, please use unsigned integers instead in `{$table}`.`%s`.', $warning_field)
@@ -620,7 +618,7 @@ SQL,
                     )
 SQL,
                 'db_properties' => [
-                    'allow_signed_keys' => false
+                    'allow_signed_keys' => false,
                 ],
                 'warning' => sprintf('Usage of signed integers in primary or foreign keys is discouraged, please use unsigned integers instead in `{$table}`.`id`.'),
             ];
@@ -667,13 +665,13 @@ SQL,
         $DB->setSavepoint('save0', false);
         $computers_id_0 = $computer->add([
             'name'        => 'computer0',
-            'entities_id' => 0
+            'entities_id' => 0,
         ]);
         $this->assertGreaterThan(0, $computers_id_0);
         $DB->setSavepoint('save1', false);
         $computers_id_1 = $computer->add([
             'name'        => 'computer1',
-            'entities_id' => 0
+            'entities_id' => 0,
         ]);
         $this->assertGreaterThan(0, $computers_id_1);
         $this->assertTrue($computer->getFromDB($computers_id_1));
@@ -771,8 +769,8 @@ SQL,
     public function testDecodeFetchResult(string $method, mixed $row, mixed $expected)
     {
         if ($method === 'fetchObject') {
-            $row = is_array($row) ? (object)$row : $row;
-            $expected = is_array($expected) ? (object)$expected : $expected;
+            $row = is_array($row) ? (object) $row : $row;
+            $expected = is_array($expected) ? (object) $expected : $expected;
         }
 
         $mysqli_result = $this->createMock(\mysqli_result::class);
@@ -790,23 +788,23 @@ SQL,
                 'tablename',
                 'TABLE',
                 false,
-                'DROP TABLE `tablename`'
+                'DROP TABLE `tablename`',
             ], [
                 'viewname',
                 'VIEW',
                 false,
-                'DROP VIEW `viewname`'
+                'DROP VIEW `viewname`',
             ], [
                 'tablename',
                 'TABLE',
                 true,
-                'DROP TABLE IF EXISTS `tablename`'
+                'DROP TABLE IF EXISTS `tablename`',
             ], [
                 'viewname',
                 'VIEW',
                 true,
-                'DROP VIEW IF EXISTS `viewname`'
-            ]
+                'DROP VIEW IF EXISTS `viewname`',
+            ],
         ];
     }
 

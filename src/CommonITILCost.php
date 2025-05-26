@@ -100,7 +100,7 @@ abstract class CommonITILCost extends CommonDBChild
 
         $tab[] = [
             'id'                 => 'common',
-            'name'               => __('Characteristics')
+            'name'               => __('Characteristics'),
         ];
 
         $tab[] = [
@@ -119,15 +119,15 @@ abstract class CommonITILCost extends CommonDBChild
             'field'              => 'id',
             'name'               => __('ID'),
             'massiveaction'      => false,
-            'datatype'           => 'number'
+            'datatype'           => 'number',
         ];
 
         $tab[] = [
             'id'                 => '16',
             'table'              => static::getTable(),
             'field'              => 'comment',
-            'name'               => __('Comments'),
-            'datatype'           => 'text'
+            'name'               => _n('Comment', 'Comments', Session::getPluralNumber()),
+            'datatype'           => 'text',
         ];
 
         $tab[] = [
@@ -135,7 +135,7 @@ abstract class CommonITILCost extends CommonDBChild
             'table'              => static::getTable(),
             'field'              => 'begin_date',
             'name'               => __('Begin date'),
-            'datatype'           => 'datetime'
+            'datatype'           => 'datetime',
         ];
 
         $tab[] = [
@@ -143,7 +143,7 @@ abstract class CommonITILCost extends CommonDBChild
             'table'              => static::getTable(),
             'field'              => 'end_date',
             'name'               => __('End date'),
-            'datatype'           => 'datetime'
+            'datatype'           => 'datetime',
         ];
 
         $tab[] = [
@@ -151,7 +151,7 @@ abstract class CommonITILCost extends CommonDBChild
             'table'              => static::getTable(),
             'field'              => 'actiontime',
             'name'               => __('Duration'),
-            'datatype'           => 'timestamp'
+            'datatype'           => 'timestamp',
         ];
 
         $tab[] = [
@@ -159,7 +159,7 @@ abstract class CommonITILCost extends CommonDBChild
             'table'              => static::getTable(),
             'field'              => 'cost_time',
             'name'               => __('Time cost'),
-            'datatype'           => 'decimal'
+            'datatype'           => 'decimal',
         ];
 
         $tab[] = [
@@ -167,7 +167,7 @@ abstract class CommonITILCost extends CommonDBChild
             'table'              => static::getTable(),
             'field'              => 'cost_fixed',
             'name'               => __('Fixed cost'),
-            'datatype'           => 'decimal'
+            'datatype'           => 'decimal',
         ];
 
         $tab[] = [
@@ -175,7 +175,7 @@ abstract class CommonITILCost extends CommonDBChild
             'table'              => static::getTable(),
             'field'              => 'cost_material',
             'name'               => __('Material cost'),
-            'datatype'           => 'decimal'
+            'datatype'           => 'decimal',
         ];
 
         $tab[] = [
@@ -183,7 +183,7 @@ abstract class CommonITILCost extends CommonDBChild
             'table'              => Budget::getTable(),
             'field'              => 'name',
             'name'               => Budget::getTypeName(1),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -192,7 +192,7 @@ abstract class CommonITILCost extends CommonDBChild
             'field'              => 'completename',
             'name'               => Entity::getTypeName(1),
             'massiveaction'      => false,
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         return $tab;
@@ -207,7 +207,7 @@ abstract class CommonITILCost extends CommonDBChild
 
         $tab[] = [
             'id'                 => 'cost',
-            'name'               => _n('Cost', 'Costs', 1)
+            'name'               => _n('Cost', 'Costs', 1),
         ];
 
         $tab[] = [
@@ -220,7 +220,7 @@ abstract class CommonITILCost extends CommonDBChild
             'usehaving'          => true,
             'massiveaction'      => false,
             'joinparams'         => [
-                'jointype'           => 'child'
+                'jointype'           => 'child',
             ],
             'computation'        => new QueryExpression(
                 '(' . QueryFunction::sum(
@@ -242,7 +242,7 @@ abstract class CommonITILCost extends CommonDBChild
             'usehaving'          => true,
             'massiveaction'      => false,
             'joinparams'         => [
-                'jointype'           => 'child'
+                'jointype'           => 'child',
             ],
             'computation'        => new QueryExpression(
                 '(' . QueryFunction::sum(
@@ -264,8 +264,8 @@ abstract class CommonITILCost extends CommonDBChild
             'usehaving'          => true,
             'massiveaction'      => false,
             'joinparams'         => [
-                'jointype'           => 'child'
-            ]
+                'jointype'           => 'child',
+            ],
         ];
 
         $tab[] = [
@@ -278,7 +278,7 @@ abstract class CommonITILCost extends CommonDBChild
             'usehaving'          => true,
             'massiveaction'      => false,
             'joinparams'         => [
-                'jointype'           => 'child'
+                'jointype'           => 'child',
             ],
             'computation'        => new QueryExpression(
                 '(' . QueryFunction::sum(
@@ -299,7 +299,7 @@ abstract class CommonITILCost extends CommonDBChild
             'usehaving'          => true,
             'massiveaction'      => false,
             'joinparams'         => [
-                'jointype'           => 'child'
+                'jointype'           => 'child',
             ],
             'computation'        => new QueryExpression(
                 '(' . QueryFunction::sum(
@@ -327,7 +327,7 @@ abstract class CommonITILCost extends CommonDBChild
             return false;
         }
 
-       // Set actiontime to
+        // Set actiontime to
         $this->fields['actiontime']
                     = max(
                         0,
@@ -370,7 +370,7 @@ abstract class CommonITILCost extends CommonDBChild
         $result = $DB->request([
             'SELECT' => ['SUM' => 'actiontime AS sumtime'],
             'FROM'   => static::getTable(),
-            'WHERE'  => [static::$items_id => $items_id]
+            'WHERE'  => [static::$items_id => $items_id],
         ])->current();
         return $result['sumtime'];
     }
@@ -388,12 +388,12 @@ abstract class CommonITILCost extends CommonDBChild
         $result = $DB->request([
             'FROM'   => static::getTable(),
             'WHERE'  => [
-                static::$items_id => $items_id
+                static::$items_id => $items_id,
             ],
             'ORDER'  => [
                 'end_date DESC',
-                'id DESC'
-            ]
+                'id DESC',
+            ],
         ])->current();
         return $result;
     }
@@ -415,7 +415,7 @@ abstract class CommonITILCost extends CommonDBChild
         if ($ID > 0) {
             $this->check($ID, READ);
         } else {
-           // Create item
+            // Create item
             $options[static::$items_id] = $options['parent']->fields["id"];
             $this->check(-1, CREATE, $options);
             $this->initBasedOnPrevious();
@@ -439,7 +439,7 @@ abstract class CommonITILCost extends CommonDBChild
             'parent_id' => $item->getID(),
             'params' => [
                 'canedit' => $this->canUpdateItem(),
-            ]
+            ],
         ]);
 
         return true;
@@ -488,13 +488,13 @@ abstract class CommonITILCost extends CommonDBChild
         $iterator = $DB->request([
             'SELECT' => [
                 static::$items_id, 'id', 'name', 'begin_date', 'end_date', 'actiontime',
-                'budgets_id', 'cost_time', 'cost_fixed', 'cost_material', 'comment'
+                'budgets_id', 'cost_time', 'cost_fixed', 'cost_material', 'comment',
             ],
             'FROM'   => static::getTable(),
             'WHERE'  => [
-                static::$items_id   => $items_ids
+                static::$items_id   => $items_ids,
             ],
-            'ORDER'  => 'begin_date'
+            'ORDER'  => 'begin_date',
         ]);
 
         $rand   = mt_rand();
@@ -625,7 +625,7 @@ TWIG, $twig_params);
         ];
         if ($forproject) {
             $columns = [
-                'ticket' => Ticket::getTypeName(1)
+                'ticket' => Ticket::getTypeName(1),
             ] + $columns;
             $footer = [
                 'ticket' => '',
@@ -635,7 +635,6 @@ TWIG, $twig_params);
             'datatable_id' => 'datatable_costs' . $ID . $rand,
             'is_tab' => true,
             'nofilter' => true,
-            'nopager' => true,
             'super_header' => $super_header,
             'columns' => $columns,
             'formatters' => [
@@ -703,14 +702,14 @@ JS);
                     'actiontime',
                     'cost_time',
                     'cost_fixed',
-                    'cost_material'
+                    'cost_material',
                 ],
                 'FROM'      => getTableForItemType($type),
                 'WHERE'     => [
                     static::$items_id      => $ID,
                 ],
                 'ORDER'     => [
-                    'begin_date'
+                    'begin_date',
                 ],
             ]
         );
@@ -719,7 +718,7 @@ JS);
             'actiontime'   => 0,
             'costfixed'    => 0,
             'costtime'     => 0,
-            'costmaterial' => 0
+            'costmaterial' => 0,
         ];
 
         foreach ($result as $data) {

@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -36,6 +35,8 @@
 namespace tests\units\Glpi\Form;
 
 use AbstractRightsDropdown;
+use Entity;
+use Entity_KnowbaseItem;
 use Glpi\Form\AccessControl\ControlType\AllowList;
 use Glpi\Form\AccessControl\ControlType\AllowListConfig;
 use Glpi\Form\AccessControl\FormAccessParameters;
@@ -44,12 +45,12 @@ use Glpi\Form\ServiceCatalog\ItemRequest;
 use Glpi\Form\ServiceCatalog\ServiceCatalogItemInterface;
 use Glpi\Form\ServiceCatalog\ServiceCatalogManager;
 use Glpi\Form\Form;
-use Glpi\Session\SessionInfo;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
 use KnowbaseItem;
 use Override;
 use PHPUnit\Framework\Attributes\DataProvider;
+use Session;
 use User;
 
 final class ServiceCatalogManagerTest extends \DbTestCase
@@ -84,15 +85,16 @@ final class ServiceCatalogManagerTest extends \DbTestCase
             (new FormBuilder("Inactive form 3"))->setIsActive(false),
         ];
         foreach ($builders as $builder) {
-            $builder->allowAllUsers();
             $this->createForm($builder);
         }
 
         // Act: get the forms from the catalog manager and extract their names
-        $access_parameters = $this->getDefaultParametersForTestUser();
-        $item_request = new ItemRequest(access_parameters: $access_parameters);
+        $this->login();
+        $item_request = new ItemRequest(
+            new FormAccessParameters(Session::getCurrentSessionInfo())
+        );
         $forms = self::$manager->getItems($item_request)['items'];
-        $forms_names = array_map(fn (Form $form) => $form->fields['name'], $forms);
+        $forms_names = array_map(fn(Form $form) => $form->fields['name'], $forms);
 
         // Assert: only active forms must be found.
         $this->assertEquals([
@@ -111,16 +113,17 @@ final class ServiceCatalogManagerTest extends \DbTestCase
             (new FormBuilder("Not pinned form 2"))->setIsPinned(false),
         ];
         foreach ($builders as $builder) {
-            $builder->allowAllUsers();
             $builder->setIsActive(true);
             $this->createForm($builder);
         }
 
         // Act: get the forms from the catalog manager and extract their names
-        $access_parameters = $this->getDefaultParametersForTestUser();
-        $item_request = new ItemRequest(access_parameters: $access_parameters);
+        $this->login();
+        $item_request = new ItemRequest(
+            new FormAccessParameters(Session::getCurrentSessionInfo())
+        );
         $forms = self::$manager->getItems($item_request)['items'];
-        $forms_names = array_map(fn (Form $form) => $form->fields['name'], $forms);
+        $forms_names = array_map(fn(Form $form) => $form->fields['name'], $forms);
 
         // Assert: pinned forms must be displayed first
         $this->assertEquals([
@@ -146,25 +149,26 @@ final class ServiceCatalogManagerTest extends \DbTestCase
             (new FormBuilder("child 2"))->setCategory($category_2->getID()),
         ];
         foreach ($builders as $builder) {
-            $builder->allowAllUsers();
             $builder->setIsActive(true);
             $this->createForm($builder);
         }
 
         // Act: get the forms from the catalog manager and extract their names
-        $access_parameters = $this->getDefaultParametersForTestUser();
-        $item_request = new ItemRequest(access_parameters: $access_parameters);
+        $this->login();
+        $item_request = new ItemRequest(
+            new FormAccessParameters(Session::getCurrentSessionInfo())
+        );
         $forms = self::$manager->getItems($item_request)['items'];
-        $forms_names = array_map(fn (ServiceCatalogItemInterface $item) => $item->getServiceCatalogItemTitle(), $forms);
+        $forms_names = array_map(fn(ServiceCatalogItemInterface $item) => $item->getServiceCatalogItemTitle(), $forms);
 
         // Assert: forms must be ordered by name
         $this->assertEquals([
+            "BBB",
+            "QQQ",
+            // Categories are always at the top
             "AAA",
             "CCC",
             "ZZZ",
-            // Categories are always at the end
-            "BBB",
-            "QQQ",
         ], $forms_names);
     }
 
@@ -180,16 +184,17 @@ final class ServiceCatalogManagerTest extends \DbTestCase
             (new FormBuilder("A Not pinned form"))->setIsPinned(false),
         ];
         foreach ($builders as $builder) {
-            $builder->allowAllUsers();
             $builder->setIsActive(true);
             $this->createForm($builder);
         }
 
         // Act: get the forms from the catalog manager and extract their names
-        $access_parameters = $this->getDefaultParametersForTestUser();
-        $item_request = new ItemRequest(access_parameters: $access_parameters);
+        $this->login();
+        $item_request = new ItemRequest(
+            new FormAccessParameters(Session::getCurrentSessionInfo())
+        );
         $forms = self::$manager->getItems($item_request)['items'];
-        $forms_names = array_map(fn (ServiceCatalogItemInterface $item) => $item->getServiceCatalogItemTitle(), $forms);
+        $forms_names = array_map(fn(ServiceCatalogItemInterface $item) => $item->getServiceCatalogItemTitle(), $forms);
 
         // Assert: pinned forms must be displayed first, then forms are ordered by name
         $this->assertEquals([
@@ -206,6 +211,8 @@ final class ServiceCatalogManagerTest extends \DbTestCase
     {
         // Arrange: create a form with an active policy
         $builder = new FormBuilder("Form with active policy");
+        $builder->setUseDefaultAccessPolicies(false);
+        $builder->setUseDefaultAccessPolicies(false);
         $builder->addAccessControl(
             strategy: AllowList::class,
             config: new AllowListConfig(
@@ -217,10 +224,12 @@ final class ServiceCatalogManagerTest extends \DbTestCase
         $this->createForm($builder);
 
         // Act: get the forms from the catalog manager and extract their names
-        $access_parameters = $this->getDefaultParametersForTestUser();
-        $item_request = new ItemRequest(access_parameters: $access_parameters);
+        $this->login();
+        $item_request = new ItemRequest(
+            new FormAccessParameters(Session::getCurrentSessionInfo())
+        );
         $forms = self::$manager->getItems($item_request)['items'];
-        $forms_names = array_map(fn (Form $form) => $form->fields['name'], $forms);
+        $forms_names = array_map(fn(Form $form) => $form->fields['name'], $forms);
 
         // Assert: our form must be found
         $this->assertEquals(["Form with active policy"], $forms_names);
@@ -231,13 +240,16 @@ final class ServiceCatalogManagerTest extends \DbTestCase
         // Arrange: create a form without any policies
         $builder = new FormBuilder("Form without policies");
         $builder->setIsActive(true);
+        $builder->setUseDefaultAccessPolicies(false);
         $this->createForm($builder);
 
         // Act: get the forms from the catalog manager and extract their names
-        $access_parameters = $this->getDefaultParametersForTestUser();
-        $item_request = new ItemRequest(access_parameters: $access_parameters);
+        $this->login();
+        $item_request = new ItemRequest(
+            new FormAccessParameters(Session::getCurrentSessionInfo())
+        );
         $forms = self::$manager->getItems($item_request)['items'];
-        $forms_names = array_map(fn (Form $form) => $form->fields['name'], $forms);
+        $forms_names = array_map(fn(Form $form) => $form->fields['name'], $forms);
 
         // Assert: our form must not be found
         $this->assertEquals([], $forms_names);
@@ -247,6 +259,7 @@ final class ServiceCatalogManagerTest extends \DbTestCase
     {
         // Arrange: create a form with an inactive policy
         $builder = new FormBuilder("Form with inactive policy");
+        $builder->setUseDefaultAccessPolicies(false);
         $builder->addAccessControl(
             strategy: AllowList::class,
             config: new AllowListConfig(
@@ -258,10 +271,12 @@ final class ServiceCatalogManagerTest extends \DbTestCase
         $this->createForm($builder);
 
         // Act: get the forms from the catalog manager and extract their names
-        $access_parameters = $this->getDefaultParametersForTestUser();
-        $item_request = new ItemRequest(access_parameters: $access_parameters);
+        $this->login();
+        $item_request = new ItemRequest(
+            new FormAccessParameters(Session::getCurrentSessionInfo())
+        );
         $forms = self::$manager->getItems($item_request)['items'];
-        $forms_names = array_map(fn (Form $form) => $form->fields['name'], $forms);
+        $forms_names = array_map(fn(Form $form) => $form->fields['name'], $forms);
 
         // Assert: our form must not be found
         $this->assertEquals([], $forms_names);
@@ -278,21 +293,25 @@ final class ServiceCatalogManagerTest extends \DbTestCase
         yield 'glpi' => [
             'config'   => $allow_list,
             'user'     => 'glpi',
+            'password' => 'glpi',
             'expected' => false,
         ];
         yield 'tech' => [
             'config'   => $allow_list,
             'user'     => 'tech',
+            'password' => 'tech',
             'expected' => true,
         ];
         yield 'normal' => [
             'config'   => $allow_list,
             'user'     => 'normal',
+            'password' => 'normal',
             'expected' => true,
         ];
         yield 'post-only' => [
             'config'   => $allow_list,
             'user'     => 'post-only',
+            'password' => 'postonly',
             'expected' => false,
         ];
     }
@@ -301,10 +320,13 @@ final class ServiceCatalogManagerTest extends \DbTestCase
     public function testOnlyFormThatMatchAllowListCriteriaAreFound(
         AllowListConfig $config,
         string $user,
+        string $password,
         bool $expected,
     ): void {
         // Arrange: create a form with an allow list
         $builder = new FormBuilder();
+        $builder->setEntitiesId(0);
+        $builder->setUseDefaultAccessPolicies(false);
         $builder->addAccessControl(
             strategy: AllowList::class,
             config: $config,
@@ -314,11 +336,10 @@ final class ServiceCatalogManagerTest extends \DbTestCase
         $this->createForm($builder);
 
         // Act: as the specified user, get the number of forms from the catalog manager
-        $session_info = new SessionInfo(
-            user_id: getItemByTypeName(User::class, $user, true),
+        $this->login($user, $password);
+        $item_request = new ItemRequest(
+            new FormAccessParameters(Session::getCurrentSessionInfo())
         );
-        $access_parameters = new FormAccessParameters($session_info, []);
-        $item_request = new ItemRequest(access_parameters: $access_parameters);
         $forms = self::$manager->getItems($item_request)['items'];
         $nb_forms = count($forms);
 
@@ -407,22 +428,58 @@ final class ServiceCatalogManagerTest extends \DbTestCase
         foreach ($forms_data as $form_data) {
             $builder = new FormBuilder($form_data['name']);
             $builder->setDescription($form_data['description']);
-            $builder->allowAllUsers();
             $builder->setIsActive(true);
             $this->createForm($builder);
         }
 
         // Act: filter the forms
-        $access_parameters = $this->getDefaultParametersForTestUser();
+        $this->login();
         $item_request = new ItemRequest(
-            access_parameters: $access_parameters,
+            access_parameters: new FormAccessParameters(
+                Session::getCurrentSessionInfo()
+            ),
             filter: $filter,
         );
         $forms = self::$manager->getItems($item_request)['items'];
 
         // Assert: only the expected forms must be found
-        $forms_names = array_map(fn (Form $form) => $form->fields['name'], $forms);
+        $forms_names = array_map(fn(Form $form) => $form->fields['name'], $forms);
         $this->assertEquals($expected_forms_names, $forms_names);
+    }
+
+    public function testOnlyFormsFromVisibleEntitiesAreFound(): void
+    {
+        $test_entity_id = $this->getTestRootEntity(only_id: true);
+
+        // Act: create multiple forms with different entity configuration
+        $builder = new FormBuilder("Root + recursive");
+        $builder->setEntitiesId(0);
+        $builder->setIsRecursive(true);
+        $this->createForm($builder);
+
+        $builder = new FormBuilder("Root");
+        $builder->setEntitiesId(0);
+        $builder->setIsRecursive(false);
+        $this->createForm($builder);
+
+        $builder = new FormBuilder("Test entity");
+        $builder->setEntitiesId($test_entity_id);
+        $builder->setIsRecursive(false);
+        $this->createForm($builder);
+
+        // Act: get the forms from the service catalog
+        $this->login();
+        $item_request = new ItemRequest(
+            new FormAccessParameters(Session::getCurrentSessionInfo())
+        );
+        $forms = self::$manager->getItems($item_request)['items'];
+
+        // Assert: only the forms visible from the test entity should be found
+        $forms_names = array_map(fn(Form $form) => $form->fields['name'], $forms);
+        $this->assertEquals([
+            "Root + recursive",
+            "Test entity",
+        ], $forms_names);
     }
 
     public function testRootContent(): void
@@ -440,25 +497,26 @@ final class ServiceCatalogManagerTest extends \DbTestCase
             (new FormBuilder("Form from category B"))->setCategory($category_b->getID()),
         ];
         foreach ($builders as $builder) {
-            $builder->allowAllUsers();
             $builder->setIsActive(true);
             $this->createForm($builder);
         }
 
         // Act: get the root items from the catalog manager and extract their names
-        $access_parameters = $this->getDefaultParametersForTestUser();
-        $item_request = new ItemRequest(access_parameters: $access_parameters);
+        $this->login();
+        $item_request = new ItemRequest(
+            new FormAccessParameters(Session::getCurrentSessionInfo())
+        );
         $items = self::$manager->getItems($item_request)['items'];
         $items_names = array_map(
-            fn (ServiceCatalogItemInterface $item) => $item->getServiceCatalogItemTitle(),
+            fn(ServiceCatalogItemInterface $item) => $item->getServiceCatalogItemTitle(),
             $items
         );
 
         // Assert: only root items must be found
         $this->assertEquals([
+            "Category A",
             "Root form 1",
             "Root form 2",
-            "Category A",
         ], $items_names);
     }
 
@@ -477,27 +535,28 @@ final class ServiceCatalogManagerTest extends \DbTestCase
             (new FormBuilder("Form from category B"))->setCategory($category_b->getID()),
         ];
         foreach ($builders as $builder) {
-            $builder->allowAllUsers();
             $builder->setIsActive(true);
             $this->createForm($builder);
         }
 
         // Act: get the items from the category A and extract their names
-        $access_parameters = $this->getDefaultParametersForTestUser();
+        $this->login();
         $item_request = new ItemRequest(
-            access_parameters: $access_parameters,
+            access_parameters: new FormAccessParameters(
+                Session::getCurrentSessionInfo()
+            ),
             category: $category_a,
         );
         $items = self::$manager->getItems($item_request)['items'];
         $items_names = array_map(
-            fn (ServiceCatalogItemInterface $item) => $item->getServiceCatalogItemTitle(),
+            fn(ServiceCatalogItemInterface $item) => $item->getServiceCatalogItemTitle(),
             $items
         );
 
         // Assert: only forms and categories inside "Category A" must be found.
         $this->assertEquals([
-            "Form from category A",
             "Category B",
+            "Form from category A",
         ], $items_names);
     }
 
@@ -515,20 +574,21 @@ final class ServiceCatalogManagerTest extends \DbTestCase
             (new FormBuilder("Form from category C2"))->setCategory($category_c2->getID()),
         ];
         foreach ($builders as $builder) {
-            $builder->allowAllUsers();
             $builder->setIsActive(true);
             $this->createForm($builder);
         }
 
         // Act: get the items using a filter
-        $access_parameters = $this->getDefaultParametersForTestUser();
+        $this->login();
         $item_request = new ItemRequest(
-            access_parameters: $access_parameters,
+            access_parameters: new FormAccessParameters(
+                Session::getCurrentSessionInfo()
+            ),
             filter: 'C',
         );
         $items = self::$manager->getItems($item_request)['items'];
         $items_names = array_map(
-            fn (ServiceCatalogItemInterface $item) => $item->getServiceCatalogItemTitle(),
+            fn(ServiceCatalogItemInterface $item) => $item->getServiceCatalogItemTitle(),
             $items
         );
 
@@ -563,17 +623,18 @@ final class ServiceCatalogManagerTest extends \DbTestCase
             (new FormBuilder("Form from category D1"))->setCategory($category_d1->getID()),
         ];
         foreach ($builders as $builder) {
-            $builder->allowAllUsers();
             $builder->setIsActive(true);
             $this->createForm($builder);
         }
 
         // Act: get the root items
-        $access_parameters = $this->getDefaultParametersForTestUser();
-        $item_request = new ItemRequest(access_parameters: $access_parameters);
+        $this->login();
+        $item_request = new ItemRequest(
+            new FormAccessParameters(Session::getCurrentSessionInfo()),
+        );
         $items = self::$manager->getItems($item_request)['items'];
         $items_names = array_map(
-            fn (ServiceCatalogItemInterface $item) => $item->getServiceCatalogItemTitle(),
+            fn(ServiceCatalogItemInterface $item) => $item->getServiceCatalogItemTitle(),
             $items
         );
 
@@ -599,7 +660,7 @@ final class ServiceCatalogManagerTest extends \DbTestCase
                 'is_faq'                  => 1,
                 'show_in_service_catalog' => 1,
                 'forms_categories_id'     => $category->getID(),
-                'users_id'                => \Session::getLoginUserID(),
+                'users_id'                => Session::getLoginUserID(),
             ]),
             $this->createItem(KnowbaseItem::class, [
                 'name'                    => 'KB Item 2',
@@ -607,7 +668,7 @@ final class ServiceCatalogManagerTest extends \DbTestCase
                 'is_faq'                  => 1,
                 'show_in_service_catalog' => 1,
                 'forms_categories_id'     => 0,                            // Root level
-                'users_id'                => \Session::getLoginUserID(),
+                'users_id'                => Session::getLoginUserID(),
             ]),
             $this->createItem(KnowbaseItem::class, [
                 'name'                    => 'KB Item 3',
@@ -615,16 +676,18 @@ final class ServiceCatalogManagerTest extends \DbTestCase
                 'is_faq'                  => 1,
                 'show_in_service_catalog' => 0,
                 'forms_categories_id'     => 0,                            // Root level
-                'users_id'                => \Session::getLoginUserID(),
+                'users_id'                => Session::getLoginUserID(),
             ]),
         ];
 
         // Get the root items
-        $access_parameters = $this->getDefaultParametersForTestUser();
-        $item_request = new ItemRequest(access_parameters: $access_parameters);
+        $this->login();
+        $item_request = new ItemRequest(
+            new FormAccessParameters(Session::getCurrentSessionInfo()),
+        );
         $items = self::$manager->getItems($item_request)['items'];
         $items_names = array_map(
-            fn (ServiceCatalogItemInterface $item) => $item->getServiceCatalogItemTitle(),
+            fn(ServiceCatalogItemInterface $item) => $item->getServiceCatalogItemTitle(),
             $items
         );
 
@@ -635,13 +698,16 @@ final class ServiceCatalogManagerTest extends \DbTestCase
         $this->assertNotContains('KB Item 3', $items_names);
 
         // Get the items from the category
+        $this->login();
         $item_request = new ItemRequest(
-            access_parameters: $access_parameters,
+            access_parameters: new FormAccessParameters(
+                Session::getCurrentSessionInfo()
+            ),
             category: $category,
         );
         $items = self::$manager->getItems($item_request)['items'];
         $items_names = array_map(
-            fn (ServiceCatalogItemInterface $item) => $item->getServiceCatalogItemTitle(),
+            fn(ServiceCatalogItemInterface $item) => $item->getServiceCatalogItemTitle(),
             $items
         );
 
@@ -664,7 +730,7 @@ final class ServiceCatalogManagerTest extends \DbTestCase
                 'description'             => 'Server knowledge',
                 'is_faq'                  => 1,
                 'show_in_service_catalog' => 1,
-                'users_id'                => \Session::getLoginUserID(),
+                'users_id'                => Session::getLoginUserID(),
             ]),
             $this->createItem(KnowbaseItem::class, [
                 'name'                    => 'User Guide KB',
@@ -672,7 +738,7 @@ final class ServiceCatalogManagerTest extends \DbTestCase
                 'description'             => 'User documentation',
                 'is_faq'                  => 1,
                 'show_in_service_catalog' => 1,
-                'users_id'                => \Session::getLoginUserID(),
+                'users_id'                => Session::getLoginUserID(),
             ]),
             $this->createItem(KnowbaseItem::class, [
                 'name'                    => 'Hidden KB',
@@ -680,19 +746,21 @@ final class ServiceCatalogManagerTest extends \DbTestCase
                 'description'             => 'Hidden documentation',
                 'is_faq'                  => 1,
                 'show_in_service_catalog' => 0,  // Not shown in service catalog
-                'users_id'                => \Session::getLoginUserID(),
+                'users_id'                => Session::getLoginUserID(),
             ]),
         ];
 
         // Search with a filter matching name
-        $access_parameters = $this->getDefaultParametersForTestUser();
+        $this->login();
         $item_request = new ItemRequest(
-            access_parameters: $access_parameters,
+            access_parameters: new FormAccessParameters(
+                Session::getCurrentSessionInfo()
+            ),
             filter: 'Technical',
         );
         $items = self::$manager->getItems($item_request)['items'];
         $items_names = array_map(
-            fn (ServiceCatalogItemInterface $item) => $item->getServiceCatalogItemTitle(),
+            fn(ServiceCatalogItemInterface $item) => $item->getServiceCatalogItemTitle(),
             $items
         );
 
@@ -703,12 +771,14 @@ final class ServiceCatalogManagerTest extends \DbTestCase
 
         // Search with a filter matching description
         $item_request = new ItemRequest(
-            access_parameters: $access_parameters,
+            access_parameters: new FormAccessParameters(
+                Session::getCurrentSessionInfo()
+            ),
             filter: 'documentation',
         );
         $items = self::$manager->getItems($item_request)['items'];
         $items_names = array_map(
-            fn (ServiceCatalogItemInterface $item) => $item->getServiceCatalogItemTitle(),
+            fn(ServiceCatalogItemInterface $item) => $item->getServiceCatalogItemTitle(),
             $items
         );
 
@@ -719,12 +789,14 @@ final class ServiceCatalogManagerTest extends \DbTestCase
 
         // Search with a filter matching content
         $item_request = new ItemRequest(
-            access_parameters: $access_parameters,
+            access_parameters: new FormAccessParameters(
+                Session::getCurrentSessionInfo()
+            ),
             filter: 'servers',
         );
         $items = self::$manager->getItems($item_request)['items'];
         $items_names = array_map(
-            fn (ServiceCatalogItemInterface $item) => $item->getServiceCatalogItemTitle(),
+            fn(ServiceCatalogItemInterface $item) => $item->getServiceCatalogItemTitle(),
             $items
         );
 
@@ -735,12 +807,14 @@ final class ServiceCatalogManagerTest extends \DbTestCase
 
         // Verify hidden KB isn't shown even with matching filter
         $item_request = new ItemRequest(
-            access_parameters: $access_parameters,
+            access_parameters: new FormAccessParameters(
+                Session::getCurrentSessionInfo()
+            ),
             filter: 'Hidden',
         );
         $items = self::$manager->getItems($item_request)['items'];
         $items_names = array_map(
-            fn (ServiceCatalogItemInterface $item) => $item->getServiceCatalogItemTitle(),
+            fn(ServiceCatalogItemInterface $item) => $item->getServiceCatalogItemTitle(),
             $items
         );
 
@@ -760,7 +834,7 @@ final class ServiceCatalogManagerTest extends \DbTestCase
                 'is_faq'                  => 1,
                 'is_pinned'               => 0,
                 'show_in_service_catalog' => 1,
-                'users_id'                => \Session::getLoginUserID(),
+                'users_id'                => Session::getLoginUserID(),
             ]),
             $this->createItem(KnowbaseItem::class, [
                 'name'                    => 'Pinned KB',
@@ -768,7 +842,7 @@ final class ServiceCatalogManagerTest extends \DbTestCase
                 'is_faq'                  => 1,
                 'is_pinned'               => 1,
                 'show_in_service_catalog' => 1,
-                'users_id'                => \Session::getLoginUserID(),
+                'users_id'                => Session::getLoginUserID(),
             ]),
             $this->createItem(KnowbaseItem::class, [
                 'name'                    => 'Hidden KB',
@@ -776,13 +850,14 @@ final class ServiceCatalogManagerTest extends \DbTestCase
                 'is_faq'                  => 1,
                 'is_pinned'               => 1,
                 'show_in_service_catalog' => 0, // Not shown in service catalog
-                'users_id'                => \Session::getLoginUserID(),
+                'users_id'                => Session::getLoginUserID(),
             ]),
         ];
 
         // Get all items
-        $access_parameters = $this->getDefaultParametersForTestUser();
-        $item_request = new ItemRequest(access_parameters: $access_parameters);
+        $item_request = new ItemRequest(
+            new FormAccessParameters(Session::getCurrentSessionInfo()),
+        );
         $items = self::$manager->getItems($item_request)['items'];
 
         // Extract just the KB items from results (filtering out categories)
@@ -792,7 +867,7 @@ final class ServiceCatalogManagerTest extends \DbTestCase
 
         // Get the names in order
         $items_names = array_map(
-            fn ($item) => $item->getServiceCatalogItemTitle(),
+            fn($item) => $item->getServiceCatalogItemTitle(),
             array_values($kb_items)
         );
 
@@ -801,13 +876,72 @@ final class ServiceCatalogManagerTest extends \DbTestCase
         $this->assertNotContains('Hidden KB', $items_names);
     }
 
+    public function testOnlyKBFromVisibleEntitiesAreFound(): void
+    {
+        $test_entity_id = $this->getTestRootEntity(only_id: true);
+
+        // Act: create multiple KB with different entity configuration
+        $kb1 = $this->createItem(KnowbaseItem::class, [
+            'name'                    => 'KB root + recursive',
+            'answer'                  => 'My answer',
+            'is_faq'                  => true,
+            'show_in_service_catalog' => true,
+            'users_id'                => 2, // Important: not our current user
+        ]);
+        $this->createItem(Entity_KnowbaseItem::class, [
+            KnowbaseItem::getForeignKeyField() => $kb1->getID(),
+            Entity::getForeignKeyField()       => 0,
+            'is_recursive'                     => true,
+        ]);
+
+        $kb2 = $this->createItem(KnowbaseItem::class, [
+            'name'                    => 'KB root',
+            'answer'                  => 'My answer',
+            'is_faq'                  => true,
+            'show_in_service_catalog' => true,
+            'users_id'                => 2, // Important: not our current user
+        ]);
+        $this->createItem(Entity_KnowbaseItem::class, [
+            KnowbaseItem::getForeignKeyField() => $kb2->getID(),
+            Entity::getForeignKeyField()       => 0,
+            'is_recursive'                     => false,
+        ]);
+
+        $kb3 = $this->createItem(KnowbaseItem::class, [
+            'name'                    => 'KB test entity',
+            'answer'                  => 'My answer',
+            'is_faq'                  => true,
+            'show_in_service_catalog' => true,
+            'users_id'                => 2, // Important: not our current user
+        ]);
+        $this->createItem(Entity_KnowbaseItem::class, [
+            KnowbaseItem::getForeignKeyField() => $kb3->getID(),
+            Entity::getForeignKeyField()       => $this->getTestRootEntity(true),
+            'is_recursive'                     => true,
+        ]);
+
+        // Act: get the KB from the service catalog
+        $this->login('post-only', 'postonly'); // Need to be a non-admin.
+        $this->setEntity($this->getTestRootEntity(true), true);
+        $item_request = new ItemRequest(
+            new FormAccessParameters(Session::getCurrentSessionInfo())
+        );
+        $kbs = self::$manager->getItems($item_request)['items'];
+
+        // Assert: only the kb visible from the test entity should be found
+        $kb_names = array_map(fn(KnowbaseItem $kb) => $kb->fields['name'], $kbs);
+        $this->assertEquals([
+            "KB root + recursive",
+            "KB test entity",
+        ], $kb_names);
+    }
+
     public function testMixedFormsAndKnowledgeBaseItems(): void
     {
         $this->login();
 
         // Create a form
         $builder = new FormBuilder("Test Form");
-        $builder->allowAllUsers();
         $builder->setIsActive(true);
         $builder->setIsPinned(true);
         $this->createForm($builder);
@@ -819,15 +953,16 @@ final class ServiceCatalogManagerTest extends \DbTestCase
             'is_faq'                  => 1,
             'is_pinned'               => 0,
             'show_in_service_catalog' => 1,
-            'users_id'                => \Session::getLoginUserID(),
+            'users_id'                => Session::getLoginUserID(),
         ]);
 
         // Get all items
-        $access_parameters = $this->getDefaultParametersForTestUser();
-        $item_request = new ItemRequest(access_parameters: $access_parameters);
+        $item_request = new ItemRequest(
+            new FormAccessParameters(Session::getCurrentSessionInfo()),
+        );
         $items = self::$manager->getItems($item_request)['items'];
         $items_names = array_map(
-            fn (ServiceCatalogItemInterface $item) => $item->getServiceCatalogItemTitle(),
+            fn(ServiceCatalogItemInterface $item) => $item->getServiceCatalogItemTitle(),
             $items
         );
 

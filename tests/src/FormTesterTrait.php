@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -35,8 +34,8 @@
 
 namespace Glpi\Tests;
 
+use CommonDBTM;
 use Glpi\Form\AccessControl\FormAccessControl;
-use Glpi\Form\AccessControl\FormAccessParameters;
 use Glpi\Form\AnswersHandler\AnswersHandler;
 use Glpi\Form\AnswersSet;
 use Glpi\Form\Comment;
@@ -47,9 +46,7 @@ use Glpi\Form\Form;
 use Glpi\Form\Question;
 use Glpi\Form\Section;
 use Glpi\Form\Tag\Tag;
-use Glpi\Session\SessionInfo;
-use Glpi\Tests\FormBuilder;
-use Profile;
+use Glpi\Form\FormTranslation;
 use RuntimeException;
 use Session;
 use Ticket;
@@ -81,7 +78,9 @@ trait FormTesterTrait
             'is_draft'              => $builder->getIsDraft(),
             'is_pinned'             => $builder->getIsPinned(),
             'forms_categories_id'   => $builder->getCategory(),
-            '_do_not_init_sections' => true, // We will handle sections ourselves
+            'usage_count'           => $builder->getUsageCount(),
+            '_init_sections'        => false,  // We will handle sections ourselves
+            '_init_access_policies' => $builder->getUseDefaultAccessPolicies(),
         ]);
 
         $section_rank = 0;
@@ -105,6 +104,7 @@ trait FormTesterTrait
                     'description'       => $question_data['description'],
                     'default_value'     => $question_data['default_value'],
                     'extra_data'        => $question_data['extra_data'],
+                    'horizontal_rank'   => $question_data['horizontal_rank'],
                     'vertical_rank'     => $question_rank++,
                 ], [
                     'default_value', // The default value can be formatted by the question type
@@ -131,7 +131,6 @@ trait FormTesterTrait
                     'itemtype'       => $itemtype,
                     'name'           => $destination_data['name'],
                     'config'         => $destination_data['config'],
-                    'is_mandatory'   => $destination_data['is_mandatory'],
                 ], ['config']);
             }
         }
@@ -144,6 +143,46 @@ trait FormTesterTrait
                 '_config'        => $params['config'],
                 'is_active'      => $params['is_active'],
             ]);
+        }
+
+        // Add visibility conditions on form
+        if (!empty($builder->getSubmitButtonVisibility())) {
+            $form_conditions = array_map(function ($condition) use ($form) {
+                // Find the correct UUID
+                if ($condition['item_type'] == Type::SECTION) {
+                    $item = Section::getById($this->getSectionId(
+                        $form,
+                        $condition['item_name']
+                    ));
+                } elseif ($condition['item_type'] == Type::QUESTION) {
+                    $item = Question::getById($this->getQuestionId(
+                        $form,
+                        $condition['item_name']
+                    ));
+                } elseif ($condition['item_type'] == Type::COMMENT) {
+                    $item = Comment::getById($this->getCommentId(
+                        $form,
+                        $condition['item_name']
+                    ));
+                } else {
+                    throw new RuntimeException("Unknown type");
+                }
+                $item_uuid = $item->fields['uuid'];
+
+                return [
+                    'item'           => $condition['item_type']->value . "-" . $item_uuid,
+                    'item_type'      => $condition['item_type'],
+                    'item_uuid'      => $item_uuid,
+                    'value'          => $condition['value'],
+                    'value_operator' => $condition['value_operator']->value,
+                    'logic_operator' => $condition['logic_operator']->value,
+                ];
+            }, $builder->getSubmitButtonVisibility()['conditions']);
+
+            $this->updateItem(Form::class, $form->getID(), [
+                'submit_button_visibility_strategy' => $builder->getSubmitButtonVisibility()['strategy'],
+                'submit_button_conditions'          => json_encode($form_conditions),
+            ], ['submit_button_conditions']);
         }
 
         // Add visibility conditions on questions
@@ -187,6 +226,50 @@ trait FormTesterTrait
                 'visibility_strategy' => $params['strategy'],
                 'conditions' => json_encode($params['conditions']),
             ], ['conditions']);
+        }
+
+        // Add validation conditions on questions
+        foreach ($builder->getQuestionValidation() as $name => $params) {
+            // Find the correct question
+            $id = $this->getQuestionId($form, $name);
+
+            $params['conditions'] = array_map(function ($condition) use ($form) {
+                // Find the correct UUID
+                if ($condition['item_type'] == Type::QUESTION) {
+                    $item = Question::getById($this->getQuestionId(
+                        $form,
+                        $condition['item_name']
+                    ));
+                } else {
+                    throw new RuntimeException("Unknown type");
+                }
+                $item_uuid = $item->fields['uuid'];
+
+                return [
+                    'item'           => $condition['item_type']->value . "-" . $item_uuid,
+                    'item_type'      => $condition['item_type'],
+                    'item_uuid'      => $item_uuid,
+                    'value'          => $condition['value'],
+                    'value_operator' => $condition['value_operator']->value,
+                    'logic_operator' => $condition['logic_operator']->value,
+                ];
+            }, $params['conditions']);
+
+            // Add validation strategy
+            if (isset($params['validation_strategy'])) {
+                // Update item with validation strategy
+                $this->updateItem(Question::class, $id, [
+                    'validation_strategy' => $params['validation_strategy'],
+                ]);
+            }
+
+            // Update item with conditions
+            if (isset($params['conditions'])) {
+                // Update item with conditions
+                $this->updateItem(Question::class, $id, [
+                    'validation_conditions' => json_encode($params['conditions']),
+                ], ['validation_conditions']);
+            }
         }
 
         // Add visibility conditions on comments
@@ -541,6 +624,42 @@ trait FormTesterTrait
         return $comment;
     }
 
+    protected function addTranslationToForm(
+        CommonDBTM $item,
+        string $language,
+        string $key,
+        string $translation,
+    ): void {
+        $form_translation = new FormTranslation();
+        if (
+            $form_translation->getFromDBByCrit([
+                FormTranslation::$itemtype => $item->getType(),
+                FormTranslation::$items_id  => $item->getID(),
+                'language'                  => $language,
+                'key'                       => $key,
+            ]) === false
+        ) {
+            $form_translation = $this->createItem(FormTranslation::class, [
+                FormTranslation::$itemtype => $item->getType(),
+                FormTranslation::$items_id  => $item->getID(),
+                'language'                  => $language,
+                'key'                       => $key,
+                'translations'              => '',
+            ], ['translations']);
+        }
+
+        $this->updateItem(
+            FormTranslation::class,
+            $form_translation->getID(),
+            [
+                'translations' => [
+                    'one' => $translation,
+                ],
+            ],
+            ['translations']
+        );
+    }
+
     protected function sendFormAndGetAnswerSet(
         Form $form,
         array $answers = [],
@@ -580,23 +699,6 @@ trait FormTesterTrait
         $ticket = current($created_items);
         $this->assertInstanceOf(Ticket::class, $ticket);
         return $ticket;
-    }
-
-    /**
-     * Get the default parameters containing a mocked session of the TU_USER
-     * user and no URL parameters.
-     *
-     * @return FormAccessParameters
-     */
-    protected function getDefaultParametersForTestUser(): FormAccessParameters
-    {
-        $session_info = new SessionInfo(
-            user_id: getItemByTypeName(User::class, TU_USER, true),
-            group_ids: [],
-            profile_id: getItemByTypeName(Profile::class, "Super-Admin", true),
-        );
-
-        return new FormAccessParameters($session_info, []);
     }
 
     private function exportForm(Form $form): string
@@ -643,7 +745,7 @@ trait FormTesterTrait
             $form = new Form();
             $form->update([
                 'id' => $row['id'],
-                'is_active' => false
+                'is_active' => false,
             ]);
         }
     }

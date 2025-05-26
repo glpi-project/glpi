@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+require_once(__DIR__ . '/_check_webserver_config.php');
+
 /** @var \DBmysql $DB */
 global $DB;
 
@@ -43,8 +45,8 @@ if (isset($_GET["lID"])) {
         'SELECT' => ['id', 'link', 'data'],
         'FROM'   => 'glpi_links',
         'WHERE'  => [
-            'id' => $_GET['lID']
-        ]
+            'id' => $_GET['lID'],
+        ],
     ]);
 
     if (count($iterator) == 1) {
@@ -60,14 +62,14 @@ if (isset($_GET["lID"])) {
                 if (isset($_GET['rank']) && isset($content_filename[$_GET['rank']])) {
                     $filename = $content_filename[$_GET['rank']];
                 } else {
-                   // first one (the same for all IP)
+                    // first one (the same for all IP)
                     $filename = reset($content_filename);
                 }
 
                 if (isset($_GET['rank']) && isset($content_data[$_GET['rank']])) {
                     $data = $content_data[$_GET['rank']];
                 } else {
-                   // first one (probably missing arg)
+                    // first one (probably missing arg)
                     $data = reset($content_data);
                 }
                 header("Content-disposition: filename=\"$filename\"");

@@ -44,6 +44,7 @@ use GLPINetwork;
 use NotificationEvent;
 use Plugin;
 use Session;
+use Symfony\Component\HttpFoundation\Response;
 use Toolbox;
 use wapmorgan\UnifiedArchive\Formats;
 use wapmorgan\UnifiedArchive\UnifiedArchive;
@@ -62,38 +63,38 @@ class Controller extends CommonGLPI
      * Prompt to replace the classic plugins page with the Marketplace
      * @var int
      */
-    const MP_REPLACE_ASK   = 1;
+    public const MP_REPLACE_ASK   = 1;
     /**
      * Replace the classic plugins page with the Marketplace
      * @var int
      */
-    const MP_REPLACE_YES   = 2;
+    public const MP_REPLACE_YES   = 2;
     /**
      * Do not replace the classic plugins page with the Marketplace
      * @var int
      */
-    const MP_REPLACE_NEVER = 3;
+    public const MP_REPLACE_NEVER = 3;
 
     /**
      * Disable all access to the Marketplace.
      * @var int
      */
-    const MP_MODE_DISABLED = 0;
+    public const MP_MODE_DISABLED = 0;
     /**
      * Allow access to the Marketplace via the CLI only.
      * @var int
      */
-    const MP_MODE_CLI_ONLY = 1;
+    public const MP_MODE_CLI_ONLY = 1;
     /**
      * Allow access to the Marketplace via the web interface only.
      * @var int
      */
-    const MP_MODE_WEB_ONLY = 2;
+    public const MP_MODE_WEB_ONLY = 2;
     /**
      * Allow access to the Marketplace via both the CLI and the web interface.
      * @var int
      */
-    const MP_MODE_FULL     = 3;
+    public const MP_MODE_FULL     = 3;
 
     public function __construct(string $plugin_key = "")
     {
@@ -210,7 +211,7 @@ class Controller extends CommonGLPI
 
         // Some plugins archives may be huge, as they may embed some binaries.
         // Upgrade memory limit to 512M, which should be enough.
-        $memory_limit = (int)Toolbox::getMemoryLimit();
+        $memory_limit = (int) Toolbox::getMemoryLimit();
         if ($memory_limit > 0 && $memory_limit < (512 * 1024 * 1024)) {
             ini_set('memory_limit', '512M');
         }
@@ -248,7 +249,7 @@ class Controller extends CommonGLPI
             // to prevent message like 'Plugin "xxx" version changed. It has been deactivated as its update process has to be launched.'.
             $plugin_inst->update([
                 'id'    => $plugin_inst->fields['id'],
-                'state' => Plugin::NOTUPDATED
+                'state' => Plugin::NOTUPDATED,
             ]);
         }
 
@@ -269,10 +270,8 @@ class Controller extends CommonGLPI
 
     /**
      * Get plugin archive from its download URL and serve it to the browser.
-     *
-     * @return void
      */
-    public function proxifyPluginArchive(): void
+    public function proxifyPluginArchive(): Response
     {
         // close session to prevent blocking other requests
         session_write_close();
@@ -281,7 +280,9 @@ class Controller extends CommonGLPI
         $plugin = $api->getPlugin($this->plugin_key, true);
 
         if (!array_key_exists('installation_url', $plugin) || empty($plugin['installation_url'])) {
-            return;
+            $exception = new HttpException(500);
+            $exception->setMessageToDisplay(__('Unable to download plugin archive.'));
+            throw $exception;
         }
 
         $url      = $plugin['installation_url'];
@@ -294,7 +295,7 @@ class Controller extends CommonGLPI
             throw $exception;
         }
 
-        Toolbox::sendFile($dest, $filename);
+        return Toolbox::getFileAsResponse($dest, $filename);
     }
 
     /**
@@ -308,7 +309,7 @@ class Controller extends CommonGLPI
 
         // Compute marketplace dir priority
         $marketplace_priority = null;
-        foreach (PLUGINS_DIRECTORIES as $position => $base_dir) {
+        foreach (GLPI_PLUGINS_DIRECTORIES as $position => $base_dir) {
             if (realpath($base_dir) !== false && realpath($base_dir) === realpath(GLPI_MARKETPLACE_DIR)) {
                 $marketplace_priority = -$position;
                 break;
@@ -317,7 +318,7 @@ class Controller extends CommonGLPI
 
         $found_outside_marketplace = false;
         $found_dir_priority        = null;
-        foreach (PLUGINS_DIRECTORIES as $position => $base_dir) {
+        foreach (GLPI_PLUGINS_DIRECTORIES as $position => $base_dir) {
             if (file_exists($base_dir . '/' . $this->plugin_key . '/setup.php')) {
                 $found_outside_marketplace = true;
                 $found_dir_priority = -$position;
@@ -330,7 +331,7 @@ class Controller extends CommonGLPI
                 // Plugin has been found outside marketplace and marketplace priority is lower than its parent directory
                 // -> disallow plugin update from marketplace as it cannot be loaded from there.
                 return false;
-            } else if ($found_in_marketplace_dir) {
+            } elseif ($found_in_marketplace_dir) {
                 // Plugin has been found on marketplace and marketplace priority is higher than other location
                 // -> allow plugin update from marketplace as it is already loaded from there.
                 return is_writable(GLPI_MARKETPLACE_DIR . '/' . $this->plugin_key) && !self::hasVcsDirectory($this->plugin_key);
@@ -434,7 +435,7 @@ class Controller extends CommonGLPI
             }
 
             NotificationEvent::raiseEvent('checkpluginsupdate', new self(), [
-                'plugins' => $updates
+                'plugins' => $updates,
             ]);
         }
 
@@ -660,7 +661,7 @@ class Controller extends CommonGLPI
         $plugin->checkPluginState($this->plugin_key);
         $plugin->getFromDBbyDir($this->plugin_key);
 
-       // reload plugins
+        // reload plugins
         $plugin->init(true);
 
         ob_end_clean();

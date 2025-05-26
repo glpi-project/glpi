@@ -35,7 +35,6 @@
 
 namespace Glpi\Inventory\Asset;
 
-use CommonDBTM;
 use Glpi\Inventory\Conf;
 
 class HardDrive extends Device
@@ -47,7 +46,7 @@ class HardDrive extends Device
             'interface'     => 'interfacetypes_id',
             'type'          => 'deviceharddrivetypes_id',
             'manufacturer'  => 'manufacturers_id',
-            'model'         => 'designation'
+            'model'         => 'designation',
         ];
 
         foreach ($this->data as &$val) {

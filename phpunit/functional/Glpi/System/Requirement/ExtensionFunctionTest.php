@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -44,7 +43,7 @@ class ExtensionFunctionTest extends \GLPITestCase
         $instance = new ExtensionFunction('simplexml', 'simplexml_load_string');
         $this->assertTrue($instance->isValidated());
         $this->assertEquals(
-            ['simplexml extension is installed.'],
+            ['simplexml extension is installed'],
             $instance->getValidationMessages()
         );
     }
@@ -54,7 +53,7 @@ class ExtensionFunctionTest extends \GLPITestCase
         $instance = new ExtensionFunction('fake_ext', 'fake_extension_function');
         $this->assertFalse($instance->isValidated());
         $this->assertEquals(
-            ['fake_ext extension is missing.'],
+            ['fake_ext extension is missing'],
             $instance->getValidationMessages()
         );
     }
@@ -64,7 +63,7 @@ class ExtensionFunctionTest extends \GLPITestCase
         $instance = new ExtensionFunction('fake_ext', 'fake_extension_function', true);
         $this->assertFalse($instance->isValidated());
         $this->assertEquals(
-            ['fake_ext extension is not present.'],
+            ['fake_ext extension is not present'],
             $instance->getValidationMessages()
         );
     }

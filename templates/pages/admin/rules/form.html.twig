@@ -6,7 +6,6 @@
  # http://glpi-project.org
  #
  # @copyright 2015-2025 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -46,7 +45,7 @@
     {{ fields.textField('description', item.fields['description'], __('Description')) }}
     {{ fields.dropdownArrayField('match', item.fields['match'], match_operators, __('Logical operator')) }}
 
-    {% if not short %}
+    {% if not (short ?? false) %}
         {{ fields.dropdownYesNo('is_active', item.fields['is_active'], __('Active')) }}
         {% if conditions|length > 0 %}
             {{ fields.dropdownArrayField('condition', item.fields['condition'], conditions, __('Use rule for')) }}

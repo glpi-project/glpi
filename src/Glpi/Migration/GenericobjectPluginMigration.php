@@ -171,7 +171,7 @@ class GenericobjectPluginMigration extends AbstractPluginMigration
                     'name',
                     'comment',
                     'date_mod',
-                    'date_creation'
+                    'date_creation',
                 ];
 
                 if (!$this->db->tableExists($item_table)) {
@@ -204,7 +204,7 @@ class GenericobjectPluginMigration extends AbstractPluginMigration
                         'name',
                         'comment',
                         'date_mod',
-                        'date_creation'
+                        'date_creation',
                     ];
                 }
             }
@@ -510,7 +510,7 @@ class GenericobjectPluginMigration extends AbstractPluginMigration
                         $asset_definition->getID(),
                     )
                 );
-                throw new \RuntimeException('An error occured during the item update.');
+                throw new \RuntimeException('An error occurred during the item update.');
             }
 
             // Update profiles configuration
@@ -537,7 +537,7 @@ class GenericobjectPluginMigration extends AbstractPluginMigration
                                 $profile_data['id'],
                             )
                         );
-                        throw new \RuntimeException('An error occured during the item update.');
+                        throw new \RuntimeException('An error occurred during the item update.');
                     }
                 }
             }
@@ -551,7 +551,7 @@ class GenericobjectPluginMigration extends AbstractPluginMigration
                         'field' => 'itemtype',
                         'from'  => $plugin_itemtype,
                         'to'    => $asset_definition->getAssetClassName(),
-                    ]
+                    ],
                 ]
             );
 
@@ -608,7 +608,7 @@ class GenericobjectPluginMigration extends AbstractPluginMigration
 
         foreach ($dropdown_mapping as $plugin_itemtype => $dropdown_class) {
             $this->progress_indicator?->setProgressBarMessage(
-                sprintf(__('Importing "%s"...'), $dropdown_class::getTypeName())
+                sprintf(__('Importing %s...'), $dropdown_class::getTypeName())
             );
 
             $dropdown_iterator = $this->db->request(['FROM' => $this->getExpectedTableForPluginClassName($plugin_itemtype)]);
@@ -734,35 +734,6 @@ class GenericobjectPluginMigration extends AbstractPluginMigration
                 ]);
 
                 foreach ($assets_iterator as $asset_data) {
-                    // Consider an asset with the same name, in the same entity, and created at the same datetime
-                    // as the same as the asset we are importing.
-                    $reconciliation_criteria = [
-                        'name'          => $asset_data['name'],
-                        'entities_id'   => $asset_data['entities_id'],
-                        'date_creation' => $asset_data['date_creation'],
-                    ] + $asset_class::getSystemSQLCriteria();
-
-                    // Check if the asset is outdated before trying to import it.
-                    // If it is outdated, we must not try to handle its child items (e.g. groups and domains relations) import.
-                    $existing_asset = new $asset_class();
-                    if (
-                        $existing_asset->getFromDBByCrit($reconciliation_criteria)
-                        && \strtotime($asset_data['date_mod']) < \strtotime($existing_asset->fields['date_mod'])
-                    ) {
-                        $this->result->markItemAsReused($asset_class, $existing_asset->getID());
-                        $this->result->addMessage(
-                            MessageType::Debug,
-                            sprintf(
-                                __('%s "%s" (%d) is most recent on GLPI side, its update has been skipped.'),
-                                $asset_class::getTypeName(1),
-                                $existing_asset->getFriendlyName() ?: NOT_AVAILABLE,
-                                $existing_asset->getID(),
-                            )
-                        );
-                        $this->progress_indicator?->advance();
-                        continue;
-                    }
-
                     $input = [];
 
                     $asset_fkeys_specs = [];
@@ -816,7 +787,6 @@ class GenericobjectPluginMigration extends AbstractPluginMigration
                     $asset = $this->importItem(
                         $asset_class,
                         input: $input,
-                        reconciliation_criteria: $reconciliation_criteria
                     );
 
                     $this->mapItem(
@@ -850,7 +820,6 @@ class GenericobjectPluginMigration extends AbstractPluginMigration
                             $this->importItem(
                                 Group_Item::class,
                                 input: $group_input,
-                                reconciliation_criteria: $group_input,
                             );
                         }
                     }
@@ -865,7 +834,6 @@ class GenericobjectPluginMigration extends AbstractPluginMigration
                         $this->importItem(
                             Domain_Item::class,
                             input: $domain_input,
-                            reconciliation_criteria: $domain_input,
                         );
                     }
 
@@ -964,7 +932,7 @@ class GenericobjectPluginMigration extends AbstractPluginMigration
      * Return the list of capacities for the given GenericObject type.
      *
      * @param array<string, mixed> $type_data A row from the `glpi_plugin_genericobject_types` table.
-     * @return array<int, class-string<\Glpi\Asset\Capacity\AbstractCapacity>>
+     * @return array<int, array{name: class-string<\Glpi\Asset\Capacity\AbstractCapacity>}>
      */
     private function getCapacities(array $type_data): array
     {
@@ -986,7 +954,7 @@ class GenericobjectPluginMigration extends AbstractPluginMigration
         $capacities = [];
         foreach ($mapping as $fieldname => $capacity) {
             if ($type_data[$fieldname]) {
-                $capacities[] = $capacity;
+                $capacities[] = ['name' => $capacity];
             }
         }
 

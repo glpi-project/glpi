@@ -48,9 +48,16 @@
     </div>
 
     <script defer type="module">
-        import {
-            GlpiFormConditionEditorController
-        } from '{{ js_path('js/modules/Forms/ConditionEditorController.js') }}';
+        import { GlpiFormConditionVisibilityEditorController } from '/js/modules/Forms/ConditionVisibilityEditorController.js';
+
+        // Load form sections state from backend
+        const sections = [];
+        {% for section_data in form.getSectionsStateForConditionEditor() %}
+            sections.push({
+                uuid: '{{ section_data.getUuid()|escape('js') }}',
+                name: '{{ section_data.getName()|escape('js') }}',
+            });
+        {% endfor %}
 
         // Load form questions state from backend
         const questions = [];
@@ -59,16 +66,28 @@
                 uuid: '{{ question_data.getUuid()|escape('js') }}',
                 name: '{{ question_data.getName()|escape('js') }}',
                 type: '{{ get_class(question_data.getType())|escape('js') }}',
+                extra_data: {{ question_data.getExtraData()|json_encode|raw }},
+            });
+        {% endfor %}
+
+        // Load form comments state from backend
+        const comments = [];
+        {% for comment_data in form.getCommentsStateForConditionEditor() %}
+            comments.push({
+                uuid: '{{ comment_data.getUuid()|escape('js') }}',
+                name: '{{ comment_data.getName()|escape('js') }}',
             });
         {% endfor %}
 
         // Initialize controller
         const parent_container = document.getElementById('{{ container_id }}');
-        const controller = new GlpiFormConditionEditorController(
+        const controller = new GlpiFormConditionVisibilityEditorController(
             parent_container.querySelector('[data-glpi-conditions-editor-container]'),
             null,
             null,
+            sections,
             questions,
+            comments,
         );
         controller.renderEditor();
     </script>

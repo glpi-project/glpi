@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,10 +32,10 @@
  * ---------------------------------------------------------------------
  */
 
- /**
- * @var \DBmysql $DB
- * @var \Migration $migration
- */
+/**
+* @var \DBmysql $DB
+* @var \Migration $migration
+*/
 
 /**
  * The search options for the different levels of toner and drum (1 per color)
@@ -54,7 +53,7 @@ foreach (
     $num = $dpref['num'] < 1408 ? 1400 : 1401;
 
     $migration->addPostQuery($DB->buildDelete('glpi_displaypreferences', [
-        'id' => $dpref['id']
+        'id' => $dpref['id'],
     ]));
     if (!isset($appliedPreferences[$dpref['users_id']][$num])) {
         $migration->addPostQuery($DB->buildInsert(
@@ -87,7 +86,7 @@ if (!$DB->fieldExists($table, 'interface')) {
         'users_id',
         'itemtype',
         'num',
-        'interface'
+        'interface',
     ], 'unicity', 'UNIQUE');
 
     // Force the migration of this table to be executed immediately because new preferences

@@ -34,28 +34,13 @@
 
 namespace Glpi\Controller\Config\Helpdesk;
 
-use CommonDBTM;
-use Config;
-use Glpi\Controller\AbstractController;
 use Glpi\Exception\Http\AccessDeniedHttpException;
-use Glpi\Exception\Http\BadRequestHttpException;
-use Glpi\Exception\Http\NotFoundHttpException;
-use Glpi\Helpdesk\Tile\TileInterface;
-use Glpi\Helpdesk\Tile\TilesManager;
-use Session;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-final class DeleteTileController extends AbstractController
+final class DeleteTileController extends AbstractTileController
 {
-    private TilesManager $tiles_manager;
-
-    public function __construct()
-    {
-        $this->tiles_manager = new TilesManager();
-    }
-
     #[Route(
         "/Config/Helpdesk/DeleteTile",
         name: "glpi_config_helpdesk_delete_tile",
@@ -63,33 +48,29 @@ final class DeleteTileController extends AbstractController
     )]
     public function __invoke(Request $request): Response
     {
-        // Read parameters
-        $tile_id = $request->request->getInt('tile_id');
-        $tile_itemtype = $request->request->getString('tile_itemtype');
-
-        // Validate parameters
-        if (
-            $tile_id == 0
-            || !is_a($tile_itemtype, TileInterface::class, true)
-            || !is_a($tile_itemtype, CommonDBTM::class, true)
-        ) {
-            throw new BadRequestHttpException();
-        }
-        if (!$tile_itemtype::canPurge()) {
+        // Validate tile
+        $tile = $this->getAndValidateTileFromRequest(
+            $request->request->getString('tile_itemtype'),
+            $request->request->getInt('tile_id'),
+        );
+        if (!$tile::canPurge() || !$tile->canPurgeItem()) {
             throw new AccessDeniedHttpException();
         }
 
-        // Try to load the given tile
-        $tile = $tile_itemtype::getById($tile_id);
-        if (!$tile) {
-            throw new NotFoundHttpException();
-        }
-        if (!$tile->canDeleteItem()) {
-            throw new AccessDeniedHttpException();
-        }
+        // Validate linked item
+        $linked_item = $this->getAndValidateLinkedItemFromDatabase($tile);
 
-        // Delete tile and return an empty response
+        // Delete tile
         $this->tiles_manager->deleteTile($tile);
-        return new Response();
+
+        // Re-render the tile list
+        $tiles = $this->tiles_manager->getTilesForItem($linked_item);
+        return $this->render('pages/admin/helpdesk_home_config_tiles.html.twig', [
+            'tiles_manager' => $this->tiles_manager,
+            'tiles' => $tiles,
+            // If we reach this point, the item was editable so we must keep
+            // displaying the controls.
+            'editable' => true,
+        ]);
     }
 }

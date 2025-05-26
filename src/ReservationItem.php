@@ -42,7 +42,7 @@ use Glpi\DBAL\QueryFunction;
  **/
 class ReservationItem extends CommonDBChild
 {
-   /// From CommonDBChild
+    /// From CommonDBChild
     public static $itemtype          = 'itemtype';
     public static $items_id          = 'items_id';
 
@@ -50,7 +50,7 @@ class ReservationItem extends CommonDBChild
 
     public static $rightname                = 'reservation';
 
-    const RESERVEANITEM              = 1024;
+    public const RESERVEANITEM              = 1024;
 
     public $get_item_to_display_tab  = false;
     public $showdebug                = false;
@@ -107,7 +107,7 @@ class ReservationItem extends CommonDBChild
     {
         return $this->getFromDBByCrit([
             static::getTable() . '.itemtype'  => $itemtype,
-            static::getTable() . '.items_id'  => $ID
+            static::getTable() . '.items_id'  => $ID,
         ]);
     }
 
@@ -132,8 +132,8 @@ class ReservationItem extends CommonDBChild
             'id'                 => '4',
             'table'              => static::getTable(),
             'field'              => 'comment',
-            'name'               => __('Comments'),
-            'datatype'           => 'text'
+            'name'               => _n('Comment', 'Comments', Session::getPluralNumber()),
+            'datatype'           => 'text',
         ];
 
         $tab[] = [
@@ -141,12 +141,12 @@ class ReservationItem extends CommonDBChild
             'table'              => static::getTable(),
             'field'              => 'is_active',
             'name'               => __('Active'),
-            'datatype'           => 'bool'
+            'datatype'           => 'bool',
         ];
 
         $tab[] = [
             'id'                 => 'common',
-            'name'               => __('Characteristics')
+            'name'               => __('Characteristics'),
         ];
 
         $tab[] = [
@@ -157,8 +157,8 @@ class ReservationItem extends CommonDBChild
             'datatype'           => 'itemlink',
             'massiveaction'      => false,
             'addobjectparams'    => [
-                'forcetab'           => 'Reservation$1'
-            ]
+                'forcetab'           => 'Reservation$1',
+            ],
         ];
 
         $tab[] = [
@@ -167,7 +167,7 @@ class ReservationItem extends CommonDBChild
             'field'              => 'id',
             'name'               => __('ID'),
             'massiveaction'      => false,
-            'datatype'           => 'number'
+            'datatype'           => 'number',
         ];
 
         $tab[] = [
@@ -179,11 +179,11 @@ class ReservationItem extends CommonDBChild
             'massiveaction'      => false,
             'nosearch'           => true,
             'nosort'             => true,
-            'additionalfields'   => ['is_active']
+            'additionalfields'   => ['is_active'],
         ];
 
         $loc = Location::rawSearchOptionsToAdd();
-       // Force massive actions to false
+        // Force massive actions to false
         foreach ($loc as &$val) {
             $val['massiveaction'] = false;
         }
@@ -194,16 +194,16 @@ class ReservationItem extends CommonDBChild
             'table'              => 'reservation_types',
             'field'              => 'otherserial',
             'name'               => __('Inventory number'),
-            'datatype'           => 'string'
+            'datatype'           => 'string',
         ];
 
         $tab[] = [
             'id'                 => '16',
             'table'              => 'reservation_types',
             'field'              => 'comment',
-            'name'               => __('Comments'),
+            'name'               => _n('Comment', 'Comments', Session::getPluralNumber()),
             'datatype'           => 'text',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -213,7 +213,7 @@ class ReservationItem extends CommonDBChild
             'name'               => User::getTypeName(1),
             'datatype'           => 'dropdown',
             'right'              => 'all',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -222,7 +222,7 @@ class ReservationItem extends CommonDBChild
             'field'              => 'completename',
             'name'               => Group::getTypeName(1),
             'datatype'           => 'dropdown',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -231,7 +231,7 @@ class ReservationItem extends CommonDBChild
             'field'              => 'date_mod',
             'name'               => __('Last update'),
             'datatype'           => 'datetime',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -240,7 +240,7 @@ class ReservationItem extends CommonDBChild
             'field'              => 'name',
             'name'               => Manufacturer::getTypeName(1),
             'datatype'           => 'dropdown',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -251,7 +251,7 @@ class ReservationItem extends CommonDBChild
             'name'               => __('Technician in charge'),
             'datatype'           => 'dropdown',
             'right'              => 'interface',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -260,7 +260,7 @@ class ReservationItem extends CommonDBChild
             'field'              => 'completename',
             'name'               => Entity::getTypeName(1),
             'massiveaction'      => false,
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         return $tab;
@@ -275,11 +275,11 @@ class ReservationItem extends CommonDBChild
                 'name'               => __('Reservable'),
                 'field'              => 'is_active',
                 'joinparams'         => [
-                    'jointype' => 'itemtype_item'
+                    'jointype' => 'itemtype_item',
                 ],
                 'datatype'           => 'bool',
-                'massiveaction'      => false
-            ]
+                'massiveaction'      => false,
+            ],
         ];
     }
 
@@ -293,7 +293,7 @@ class ReservationItem extends CommonDBChild
             return false;
         }
         if ($item->getID()) {
-           // Recursive type case => need entity right
+            // Recursive type case => need entity right
             if ($item->isRecursive()) {
                 if (!Session::haveAccessToEntity($item->fields["entities_id"])) {
                     return false;
@@ -433,8 +433,8 @@ TWIG, $twig_params);
             'DISTINCT'        => true,
             'FROM'            => 'glpi_reservationitems',
             'WHERE'           => [
-                'is_active' => 1
-            ] + getEntitiesRestrictCriteria('glpi_reservationitems', 'entities_id', $_SESSION['glpiactiveentities'], true)
+                'is_active' => 1,
+            ] + getEntitiesRestrictCriteria('glpi_reservationitems', 'entities_id', $_SESSION['glpiactiveentities'], true),
         ]);
 
         foreach ($iterator as $data) {
@@ -447,29 +447,29 @@ TWIG, $twig_params);
         $iterator = $DB->request([
             'SELECT'    => [
                 'glpi_peripheraltypes.name',
-                'glpi_peripheraltypes.id'
+                'glpi_peripheraltypes.id',
             ],
             'FROM'      => 'glpi_peripheraltypes',
             'LEFT JOIN' => [
                 'glpi_peripherals'      => [
                     'ON' => [
                         'glpi_peripheraltypes'  => 'id',
-                        'glpi_peripherals'      => 'peripheraltypes_id'
-                    ]
+                        'glpi_peripherals'      => 'peripheraltypes_id',
+                    ],
                 ],
                 'glpi_reservationitems' => [
                     'ON' => [
                         'glpi_reservationitems' => 'items_id',
-                        'glpi_peripherals'      => 'id'
-                    ]
-                ]
+                        'glpi_peripherals'      => 'id',
+                    ],
+                ],
             ],
             'WHERE'     => [
                 'itemtype'           => 'Peripheral',
                 'is_active'          => 1,
-                'peripheraltypes_id' => ['>', 0]
+                'peripheraltypes_id' => ['>', 0],
             ] + getEntitiesRestrictCriteria('glpi_reservationitems', 'entities_id', $_SESSION['glpiactiveentities'], true),
-            'ORDERBY'   => 'glpi_peripheraltypes.name'
+            'ORDERBY'   => 'glpi_peripheraltypes.name',
         ]);
 
         foreach ($iterator as $ptype) {
@@ -479,7 +479,7 @@ TWIG, $twig_params);
 
         TemplateRenderer::getInstance()->display('pages/tools/find_available_reservation.html.twig', [
             'reservation_types' => $reservation_types,
-            'default_location' => (int)($_POST['locations_id'] ?? User::getById(Session::getLoginUserID())->fields['locations_id'] ?? 0)
+            'default_location' => (int) ($_POST['locations_id'] ?? User::getById(Session::getLoginUserID())->fields['locations_id'] ?? 0),
         ]);
         echo "</div>";
 
@@ -509,7 +509,7 @@ TWIG, $twig_params);
                     "$itemtable.entities_id AS entities_id",
                     $otherserial,
                     'glpi_locations.id AS location',
-                    'glpi_reservationitems.items_id AS items_id'
+                    'glpi_reservationitems.items_id AS items_id',
                 ],
                 'FROM'   => self::getTable(),
                 'INNER JOIN'   => [
@@ -518,19 +518,19 @@ TWIG, $twig_params);
                             'glpi_reservationitems' => 'items_id',
                             $itemtable              => 'id', [
                                 'AND' => [
-                                    'glpi_reservationitems.itemtype' => $itemtype
-                                ]
-                            ]
-                        ]
-                    ]
+                                    'glpi_reservationitems.itemtype' => $itemtype,
+                                ],
+                            ],
+                        ],
+                    ],
                 ],
                 'LEFT JOIN'    =>  [
                     'glpi_locations'  => [
                         'ON'  => [
                             $itemtable        => 'locations_id',
-                            'glpi_locations'  => 'id'
-                        ]
-                    ]
+                            'glpi_locations'  => 'id',
+                        ],
+                    ],
                 ],
                 'WHERE'        => [
                     'glpi_reservationitems.is_active'   => 1,
@@ -538,8 +538,8 @@ TWIG, $twig_params);
                 ] + getEntitiesRestrictCriteria($itemtable, '', $_SESSION['glpiactiveentities'], $item->maybeRecursive()),
                 'ORDERBY'      => [
                     "$itemtable.entities_id",
-                    "$itemtable.$itemname"
-                ]
+                    "$itemtable.$itemname",
+                ],
             ];
 
             $begin = $_POST['reserve']["begin"];
@@ -551,10 +551,10 @@ TWIG, $twig_params);
                         'glpi_reservations'     => 'reservationitems_id', [
                             'AND' => [
                                 'glpi_reservations.end'    => ['>', $begin],
-                                'glpi_reservations.begin'  => ['<', $end]
-                            ]
-                        ]
-                    ]
+                                'glpi_reservations.begin'  => ['<', $end],
+                            ],
+                        ],
+                    ],
                 ];
                 $criteria['WHERE'][] = ['glpi_reservations.id' => null];
             }
@@ -568,15 +568,15 @@ TWIG, $twig_params);
                     $criteria['LEFT JOIN']['glpi_peripheraltypes'] = [
                         'ON' => [
                             'glpi_peripherals'      => 'peripheraltypes_id',
-                            'glpi_peripheraltypes'  => 'id'
-                        ]
+                            'glpi_peripheraltypes'  => 'id',
+                        ],
                     ];
                     $criteria['WHERE'][] = ["$itemtable.peripheraltypes_id" => $tmp[1]];
                 }
             }
 
             // Filter locations if location was provided/submitted
-            if ((int)($_POST['locations_id'] ?? 0) > 0) {
+            if ((int) ($_POST['locations_id'] ?? 0) > 0) {
                 $criteria['WHERE'][] = [
                     'glpi_locations.id' => getSonsOf('glpi_locations', (int) $_POST['locations_id']),
                 ];
@@ -597,7 +597,7 @@ TWIG, $twig_params);
 
                 $typename = $item::getTypeName();
                 if ($itemtype === Peripheral::class) {
-                     $item->getFromDB($row['items_id']);
+                    $item->getFromDB($row['items_id']);
                     if (
                         isset($item->fields["peripheraltypes_id"])
                          && ((int) $item->fields["peripheraltypes_id"] !== 0)
@@ -641,7 +641,7 @@ TWIG, $twig_params);
         $columns = [
             'checkbox' => [
                 'label' => Html::getCheckAllAsCheckbox('nosearch'),
-                'raw_header' => true
+                'raw_header' => true,
             ],
             'item' => self::getTypeName(1),
             'location' => Location::getTypeName(1),
@@ -653,7 +653,6 @@ TWIG, $twig_params);
         $columns['calendar'] = __("Booking calendar");
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'is_tab' => true,
-            'nopager' => true,
             'nofilter' => true,
             'nosort' => true,
             'columns' => $columns,
@@ -670,14 +669,15 @@ TWIG, $twig_params);
         ]);
 
         if ($ok && Session::haveRight("reservation", self::RESERVEANITEM)) {
-            echo "<i class='fas fa-level-up-alt fa-flip-horizontal fs-2 mx-2'></i>";
+            echo "<i class='ti ti-corner-left-up mx-3'></i>";
             echo "<th colspan='" . ($showentity ? "5" : "4") . "'>";
             if (isset($_POST['reserve'])) {
                 echo Html::hidden('begin', ['value' => $_POST['reserve']["begin"]]);
                 echo Html::hidden('end', ['value'   => $_POST['reserve']["end"]]);
             }
             echo Html::submit(_x('button', 'Book'), [
-                'icon'  => 'fas fs-2 fa-calendar-plus',
+                'class' => 'btn btn-primary mt-2 mb-2',
+                'icon'  => 'ti ti-calendar-plus',
             ]);
         }
 
@@ -724,12 +724,12 @@ TWIG, $twig_params);
         foreach (Entity::getEntitiesToNotify('use_reservations_alert') as $entity => $value) {
             $secs = $value * HOUR_TIMESTAMP;
 
-           // Reservation already begin and reservation ended in $value hours
+            // Reservation already begin and reservation ended in $value hours
             $criteria = [
                 'SELECT' => [
                     'glpi_reservationitems.*',
                     'glpi_reservations.end AS end',
-                    'glpi_reservations.id AS resaid'
+                    'glpi_reservations.id AS resaid',
                 ],
                 'FROM'   => 'glpi_reservations',
                 'LEFT JOIN' => [
@@ -739,17 +739,17 @@ TWIG, $twig_params);
                             'glpi_alerts'        => 'items_id', [
                                 'AND' => [
                                     'glpi_alerts.itemtype'  => 'Reservation',
-                                    'glpi_alerts.type'      => Alert::END
-                                ]
-                            ]
-                        ]
+                                    'glpi_alerts.type'      => Alert::END,
+                                ],
+                            ],
+                        ],
                     ],
                     'glpi_reservationitems' => [
                         'ON'  => [
                             'glpi_reservations'     => 'reservationitems_id',
-                            'glpi_reservationitems' => 'id'
-                        ]
-                    ]
+                            'glpi_reservationitems' => 'id',
+                        ],
+                    ],
                 ],
                 'WHERE'     => [
                     'glpi_reservationitems.entities_id' => $entity,
@@ -758,8 +758,8 @@ TWIG, $twig_params);
                             ' < ' . QueryFunction::unixTimestamp()
                     ),
                     'glpi_reservations.begin'  => ['<', QueryFunction::now()],
-                    'glpi_alerts.date'         => null
-                ]
+                    'glpi_alerts.date'         => null,
+                ],
             ];
             $iterator = $DB->request($criteria);
 
@@ -790,7 +790,7 @@ TWIG, $twig_params);
                     "alert",
                     new Reservation(),
                     ['entities_id' => $entity,
-                        'items'       => $items
+                        'items'       => $items,
                     ]
                 )
             ) {
@@ -804,7 +804,7 @@ TWIG, $twig_params);
                         $message
                     ));
                 } else {
-                   //TRANS: %1$s is a name, %2$s is text of message
+                    //TRANS: %1$s is a name, %2$s is text of message
                     Session::addMessageAfterRedirect(htmlescape(sprintf(
                         __('%1$s: %2$s'),
                         Dropdown::getDropdownName(
@@ -825,7 +825,7 @@ TWIG, $twig_params);
                 }
             } else {
                 $entityname = Dropdown::getDropdownName('glpi_entities', $entity);
-               //TRANS: %s is entity name
+                //TRANS: %s is entity name
                 $msg = sprintf(__('%1$s: %2$s'), $entityname, __('Send reservation alert failed'));
                 if ($task) {
                     $task->log($msg);
@@ -917,7 +917,7 @@ TWIG, $twig_params);
             $result = self::getAvailableItems($post['idtable']);
 
             if ($result->count() === 0) {
-                 echo __s('No reservable item!');
+                echo __s('No reservable item!');
             } else {
                 $items = [];
                 foreach ($result as $row) {
@@ -950,7 +950,7 @@ TWIG, $twig_params);
         $criteria = self::getAvailableItemsCriteria($itemtype);
         $criteria['SELECT'] = [
             "$reservation_table.id",
-            "$item_table.name"
+            "$item_table.name",
         ];
 
         return $DB->request($criteria);
@@ -996,13 +996,13 @@ TWIG, $twig_params);
                         $reservation_table => 'items_id',
                         $item_table => 'id',
                         ['AND' => ["$reservation_table.itemtype" => $itemtype]],
-                    ]
-                ]
+                    ],
+                ],
             ],
             'WHERE' => [
                 "$reservation_table.is_active"   => 1,
                 "$item_table.is_deleted"  => 0,
-            ]
+            ],
         ];
 
         if ($item->isEntityAssign()) {

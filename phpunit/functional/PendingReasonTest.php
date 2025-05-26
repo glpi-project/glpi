@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -60,7 +59,7 @@ class PendingReasonTest extends DbTestCase
     {
         return [
             [
-            // Case 1: no auto bump
+                // Case 1: no auto bump
                 'fields' => [
                     'pendingreason' => [
                         'calendars_id' => 1,
@@ -69,10 +68,10 @@ class PendingReasonTest extends DbTestCase
                         'followup_frequency' => 0,
                     ],
                 ],
-                'expected' => false
+                'expected' => false,
             ],
             [
-            // Case 2: max bump reached
+                // Case 2: max bump reached
                 'fields' => [
                     'pendingreason' => [
                         'calendars_id' => 1,
@@ -81,12 +80,12 @@ class PendingReasonTest extends DbTestCase
                         'followup_frequency'          => 60,
                         'followups_before_resolution' => 2,
                         'bump_count'                  => 2,
-                    ]
+                    ],
                 ],
-                'expected' => false
+                'expected' => false,
             ],
             [
-            // Case 3: first bump
+                // Case 3: first bump
                 'fields' => [
                     'pendingreason' => [
                         'calendars_id' => 1,
@@ -96,12 +95,12 @@ class PendingReasonTest extends DbTestCase
                         'followups_before_resolution' => 2,
                         'bump_count'                  => 0,
                         'last_bump_date'              => '2021-02-25 12:00:00',
-                    ]
+                    ],
                 ],
-                'expected' => date('2021-02-25 12:01:00')
+                'expected' => date('2021-02-25 12:01:00'),
             ],
             [
-            // Case 4: second or more bump
+                // Case 4: second or more bump
                 'fields' => [
                     'pendingreason' => [
                         'calendars_id' => 1,
@@ -111,12 +110,12 @@ class PendingReasonTest extends DbTestCase
                         'followups_before_resolution' => 7,
                         'bump_count'                  => 5,
                         'last_bump_date'              => '2021-02-25 13:00:00',
-                    ]
+                    ],
                 ],
-                'expected' => '2021-02-25 13:01:00'
+                'expected' => '2021-02-25 13:01:00',
             ],
             [
-            // Case 5: first with weekend
+                // Case 5: first with weekend
                 'fields' => [
                     'pendingreason' => [
                         'calendars_id' => 1,
@@ -126,12 +125,12 @@ class PendingReasonTest extends DbTestCase
                         'followups_before_resolution' => 7,
                         'bump_count'                  => 0,
                         'last_bump_date'              => '2023-04-07 13:00:00',
-                    ]
+                    ],
                 ],
-                'expected' => '2023-04-10 13:00:00'
+                'expected' => '2023-04-10 13:00:00',
             ],
             [
-            // Case 6: first with xmas holidays
+                // Case 6: first with xmas holidays
                 'fields' => [
                     'calendar_holiday' => [
                         'calendars_id' => 1,
@@ -145,12 +144,12 @@ class PendingReasonTest extends DbTestCase
                         'followups_before_resolution' => 7,
                         'bump_count'                  => 0,
                         'last_bump_date'              => '2018-12-28 13:00:00',
-                    ]
+                    ],
                 ],
                 'expected' => '2019-01-07 13:00:00',
             ],
             [
-            // Case 7: no followup
+                // Case 7: no followup
                 'fields' => [
                     'pendingreason' => [
                         'calendars_id' => 1,
@@ -160,10 +159,10 @@ class PendingReasonTest extends DbTestCase
                         'followups_before_resolution' => -1,
                         'bump_count'                  => 0,
                         'last_bump_date'              => '2018-12-28 13:00:00',
-                    ]
+                    ],
                 ],
                 'expected' => false,
-            ]
+            ],
         ];
     }
 
@@ -187,7 +186,7 @@ class PendingReasonTest extends DbTestCase
     {
         return [
             [
-            // Case 1: no auto bump
+                // Case 1: no auto bump
                 'fields' => [
                     'pendingreason' => [
                         'calendars_id' => 1,
@@ -195,12 +194,12 @@ class PendingReasonTest extends DbTestCase
                     'pendingreason_item' => [
                         'followup_frequency'          => 0,
                         'followups_before_resolution' => 2,
-                    ]
+                    ],
                 ],
-                'expected' => false
+                'expected' => false,
             ],
             [
-            // Case 2: no auto solve
+                // Case 2: no auto solve
                 'fields' => [
                     'pendingreason' => [
                         'calendars_id' => 1,
@@ -208,12 +207,12 @@ class PendingReasonTest extends DbTestCase
                     'pendingreason_item' => [
                         'followup_frequency'          => 60,
                         'followups_before_resolution' => 0,
-                    ]
+                    ],
                 ],
-                'expected' => false
+                'expected' => false,
             ],
             [
-            // Case 3: 0/5 bump occurred yet
+                // Case 3: 0/5 bump occurred yet
                 'fields' => [
                     'pendingreason' => [
                         'calendars_id' => 1,
@@ -223,12 +222,12 @@ class PendingReasonTest extends DbTestCase
                         'followups_before_resolution' => 5,
                         'bump_count'                  => 0,
                         'last_bump_date'              => '2021-02-25 14:00:00',
-                    ]
+                    ],
                 ],
-                'expected' => '2021-02-25 14:06:00'
+                'expected' => '2021-02-25 14:06:00',
             ],
             [
-            // Case 4: 1/5 bump occurred
+                // Case 4: 1/5 bump occurred
                 'fields' => [
                     'pendingreason' => [
                         'calendars_id' => 1,
@@ -238,12 +237,12 @@ class PendingReasonTest extends DbTestCase
                         'followups_before_resolution' => 5,
                         'bump_count'                  => 1,
                         'last_bump_date'              => '2021-02-25 15:00:00',
-                    ]
+                    ],
                 ],
-                'expected' => '2021-02-25 15:05:00'
+                'expected' => '2021-02-25 15:05:00',
             ],
             [
-            // Case 5: 2/5 bump occurred
+                // Case 5: 2/5 bump occurred
                 'fields' => [
                     'pendingreason' => [
                         'calendars_id' => 1,
@@ -253,12 +252,12 @@ class PendingReasonTest extends DbTestCase
                         'followups_before_resolution' => 5,
                         'bump_count'                  => 2,
                         'last_bump_date'              => '2021-02-25 16:00:00',
-                    ]
+                    ],
                 ],
-                'expected' => '2021-02-25 16:04:00'
+                'expected' => '2021-02-25 16:04:00',
             ],
             [
-            // Case 5: 3/5 bump occurred
+                // Case 5: 3/5 bump occurred
                 'fields' => [
                     'pendingreason' => [
                         'calendars_id' => 1,
@@ -268,12 +267,12 @@ class PendingReasonTest extends DbTestCase
                         'followups_before_resolution' => 5,
                         'bump_count'                  => 3,
                         'last_bump_date'              => '2021-02-25 17:00:00',
-                    ]
+                    ],
                 ],
-                'expected' => '2021-02-25 17:03:00'
+                'expected' => '2021-02-25 17:03:00',
             ],
             [
-            // Case 5: 4/5 bump occurred
+                // Case 5: 4/5 bump occurred
                 'fields' => [
                     'pendingreason' => [
                         'calendars_id' => 1,
@@ -283,12 +282,12 @@ class PendingReasonTest extends DbTestCase
                         'followups_before_resolution' => 5,
                         'bump_count'                  => 4,
                         'last_bump_date'              => '2021-02-25 18:00:00',
-                    ]
+                    ],
                 ],
-                'expected' => '2021-02-25 18:02:00'
+                'expected' => '2021-02-25 18:02:00',
             ],
             [
-            // Case 5: 5/5 bump occurred
+                // Case 5: 5/5 bump occurred
                 'fields' => [
                     'pendingreason' => [
                         'calendars_id' => 1,
@@ -298,12 +297,12 @@ class PendingReasonTest extends DbTestCase
                         'followups_before_resolution' => 5,
                         'bump_count'                  => 5,
                         'last_bump_date'              => '2021-02-25 19:00:00',
-                    ]
+                    ],
                 ],
-                'expected' => '2021-02-25 19:01:00'
+                'expected' => '2021-02-25 19:01:00',
             ],
             [
-            // Case 6: 0/8 bump occured with weekend between
+                // Case 6: 0/8 bump occurred with weekend between
                 'fields' => [
                     'pendingreason' => [
                         'calendars_id' => 1,
@@ -313,11 +312,11 @@ class PendingReasonTest extends DbTestCase
                         'followups_before_resolution' => 8,
                         'bump_count'                  => 0,
                         'last_bump_date'              => '2023-04-07 13:00:00',
-                    ]
+                    ],
                 ],
-                'expected' => '2023-04-20 13:00:00'
+                'expected' => '2023-04-20 13:00:00',
             ],
-            // Case 7: 0/8 bump occured with xmas holidays between
+            // Case 7: 0/8 bump occurred with xmas holidays between
             [
                 'fields' => [
                     'calendar_holiday' => [
@@ -332,12 +331,12 @@ class PendingReasonTest extends DbTestCase
                         'followups_before_resolution' => 8,
                         'bump_count'                  => 0,
                         'last_bump_date'              => '2018-12-21 13:00:00',
-                    ]
+                    ],
                 ],
                 'expected' => '2019-01-10 13:00:00',
             ],
             [
-            // Case 8: no bumps before resolution
+                // Case 8: no bumps before resolution
                 'fields' => [
                     'pendingreason' => [
                         'calendars_id' => 1,
@@ -405,11 +404,11 @@ class PendingReasonTest extends DbTestCase
                 'items_id' => $item->getID(),
                 'itemtype' => $item::getType(),
             ];
-        } else if ($action_item instanceof TicketTask) {
+        } elseif ($action_item instanceof TicketTask) {
             return ['tickets_id' => $item->getID()];
-        } else if ($action_item instanceof ChangeTask) {
+        } elseif ($action_item instanceof ChangeTask) {
             return ['changes_id' => $item->getID()];
-        } else if ($action_item instanceof ProblemTask) {
+        } elseif ($action_item instanceof ProblemTask) {
             return ['problems_id' => $item->getID()];
         }
 
@@ -439,7 +438,7 @@ class PendingReasonTest extends DbTestCase
         // Check that no pending item exist
         $this->assertFalse(PendingReason_Item::getForItem($item));
 
-       // Add a new action with the "pending" flag set
+        // Add a new action with the "pending" flag set
         $actions_id = $action_item->add([
             'content' => 'test',
             'pending' => true,
@@ -513,7 +512,7 @@ class PendingReasonTest extends DbTestCase
             'content'             => 'Ticket',
             '_users_id_requester' => getItemByTypeName('User', 'post-only', true),
             '_users_id_assign'    => getItemByTypeName('User', TU_USER, true),
-            'entities_id'         => $entity
+            'entities_id'         => $entity,
         ]);
 
         // Set the ticket as pending with a reason
@@ -579,16 +578,16 @@ class PendingReasonTest extends DbTestCase
             [
                 Ticket::class => CommonITILObject::ASSIGNED,
                 Change::class => Change::EVALUATION,
-                Problem::class => CommonITILObject::OBSERVED
+                Problem::class => CommonITILObject::OBSERVED,
             ] as $itemtype => $status
         ) {
             $item = $this->createItem($itemtype, [
                 'name'                =>  $itemtype,
-                'content'             => "test " .  $itemtype,
+                'content'             => "test " . $itemtype,
                 'status'              => $status,
                 '_users_id_requester' => getItemByTypeName('User', 'post-only', true),
                 '_users_id_assign'    => getItemByTypeName('User', TU_USER, true),
-                'entities_id'         => $entity
+                'entities_id'         => $entity,
             ]);
 
             // Set the item as pending with a reason
@@ -643,10 +642,10 @@ class PendingReasonTest extends DbTestCase
 
         $_SESSION['glpi_currenttime'] = $current_date;
         // Create a set of pending reasons that will be reused in our test cases
-        list(
+        [
             $pending_reason1,
             $pending_reason2
-        ) = $this->createItems(\PendingReason::class, [
+        ] = $this->createItems(\PendingReason::class, [
             ['entities_id' => $entity, 'is_recursive' => true, 'name' => 'Pending 1'],
             ['entities_id' => $entity, 'is_recursive' => true, 'name' => 'Pending 2'],
         ]);
@@ -682,7 +681,7 @@ class PendingReasonTest extends DbTestCase
                 // Pending reason is attached to the last followup
                 'pending_timeline_index'      => 0,
                 'last_bump_date'              => $current_date,
-            ]
+            ],
         ];
 
         // Case 3: ticket with two tasks (of which the first is pending)
@@ -709,7 +708,7 @@ class PendingReasonTest extends DbTestCase
                 // Pending reason is attached to the last task
                 'pending_timeline_index'      => 0,
                 'last_bump_date'              => $current_date,
-            ]
+            ],
         ];
 
         // Case 4: ticket with two followups
@@ -742,7 +741,7 @@ class PendingReasonTest extends DbTestCase
                 // The pending reason is always attached to the last follow-up, the second one changes the value of the first one
                 'pending_timeline_index'      => 1,
                 'last_bump_date'              => $date2,
-            ]
+            ],
         ];
 
         // Case 5: ticket with two followups
@@ -764,7 +763,7 @@ class PendingReasonTest extends DbTestCase
             ],
             'expected' => [
                 'status' => CommonITILObject::INCOMING,
-            ]
+            ],
         ];
 
         // Case 6: ticket with 3 timeline items
@@ -800,7 +799,7 @@ class PendingReasonTest extends DbTestCase
                 // Pending reason is attached to the third timeline item
                 'pending_timeline_index'      => 2,
                 'last_bump_date'              => $date2,
-            ]
+            ],
         ];
 
         // Case 7: ticket with 2 timeline items
@@ -833,7 +832,7 @@ class PendingReasonTest extends DbTestCase
                 // Pending reason is attached to the first timeline item
                 'pending_timeline_index'      => 0,
                 'last_bump_date'              => $current_date,
-            ]
+            ],
         ];
 
         // Case 8: ticket with 2 timeline items
@@ -862,7 +861,7 @@ class PendingReasonTest extends DbTestCase
                 // Pending reason is attached to the last followup
                 'pending_timeline_index'      => 0,
                 'last_bump_date'              => $current_date,
-            ]
+            ],
         ];
 
         // Case 9: ticket with 2 timeline items
@@ -892,7 +891,7 @@ class PendingReasonTest extends DbTestCase
                 // Pending reason is attached to the last timeline item
                 'pending_timeline_index'      => 1,
                 'last_bump_date'              => $date2,
-            ]
+            ],
         ];
 
         // Case 10: ticket with 2 timeline items
@@ -924,7 +923,7 @@ class PendingReasonTest extends DbTestCase
                 // Pending reason is attached to the last timeline item
                 'pending_timeline_index'      => 1,
                 'last_bump_date'              => $date2,
-            ]
+            ],
         ];
 
         // Case 11: ticket with 2 timeline items
@@ -956,7 +955,7 @@ class PendingReasonTest extends DbTestCase
                 // Pending reason is attached to the last timeline item
                 'pending_timeline_index'      => 1,
                 'last_bump_date'              => $date2,
-            ]
+            ],
         ];
     }
 
@@ -1076,9 +1075,9 @@ class PendingReasonTest extends DbTestCase
         ]);
 
         // Create a set of pending reasons that will be reused in our test cases
-        list(
+        [
             $pending_reason1,
-        ) = $this->createItems(\PendingReason::class, [
+        ] = $this->createItems(\PendingReason::class, [
             ['entities_id' => $entity, 'is_recursive' => true, 'name' => 'Pending 1', 'itilfollowuptemplates_id' => $itilfollowuptemplate->getID(), 'solutiontemplates_id' => $itilsolutiontemplate->getID()],
         ]);
 
@@ -1102,7 +1101,7 @@ class PendingReasonTest extends DbTestCase
                 'followups_before_resolution' => 2,
                 'last_bump_date'              => $current_date,
                 'bump_count'                  => 0,
-            ]
+            ],
         ];
 
         // Case 2: task just published
@@ -1125,7 +1124,7 @@ class PendingReasonTest extends DbTestCase
                 'followups_before_resolution' => 2,
                 'last_bump_date'              => $current_date,
                 'bump_count'                  => 0,
-            ]
+            ],
         ];
 
         // Case 3: follow up published just before the bump date
@@ -1148,7 +1147,7 @@ class PendingReasonTest extends DbTestCase
                 'followups_before_resolution' => 2,
                 'last_bump_date'              => $date_before_bump,
                 'bump_count'                  => 0,
-            ]
+            ],
         ];
 
         // Case 4: follow up that will be bumped one time
@@ -1171,7 +1170,7 @@ class PendingReasonTest extends DbTestCase
                 'followups_before_resolution' => 2,
                 'last_bump_date'              => $current_date,
                 'bump_count'                  => 1,
-            ]
+            ],
         ];
 
         // Case 5: follow up that will be bumped two times
@@ -1194,7 +1193,7 @@ class PendingReasonTest extends DbTestCase
                 'followups_before_resolution' => 2,
                 'last_bump_date'              => $current_date,
                 'bump_count'                  => 2,
-            ]
+            ],
         ];
 
         // Case 6: follow up that will be bumped three times. Close the ticket
@@ -1217,7 +1216,7 @@ class PendingReasonTest extends DbTestCase
                 'followups_before_resolution' => 0,
                 'last_bump_date'              => $current_date,
                 'bump_count'                  => 3,
-            ]
+            ],
         ];
     }
 
@@ -1296,7 +1295,7 @@ class PendingReasonTest extends DbTestCase
             'entities_id' => $entities_id,
             'itemtype' => 'Ticket',
             'event' => 'pendingreason_add',
-            'is_active' => 1
+            'is_active' => 1,
         ]);
 
         $remove_notifications_id = $notification->add([
@@ -1304,7 +1303,7 @@ class PendingReasonTest extends DbTestCase
             'entities_id' => $entities_id,
             'itemtype' => 'Ticket',
             'event' => 'pendingreason_del',
-            'is_active' => 1
+            'is_active' => 1,
         ]);
 
         $autoclose_notifications_id = $notification->add([
@@ -1312,7 +1311,7 @@ class PendingReasonTest extends DbTestCase
             'entities_id' => $entities_id,
             'itemtype' => 'Ticket',
             'event' => 'pendingreason_close',
-            'is_active' => 1
+            'is_active' => 1,
         ]);
 
         $notification_template = new NotificationTemplate();
@@ -1376,17 +1375,17 @@ class PendingReasonTest extends DbTestCase
         $target->add([
             'notifications_id' => $add_notifications_id,
             'type' => 1, // User
-            'items_id' => 7 // Writer
+            'items_id' => 7, // Writer
         ]);
         $target->add([
             'notifications_id' => $remove_notifications_id,
             'type' => 1, // User
-            'items_id' => 7 // Writer
+            'items_id' => 7, // Writer
         ]);
         $target->add([
             'notifications_id' => $autoclose_notifications_id,
             'type' => 1, // User
-            'items_id' => 7 // Writer
+            'items_id' => 7, // Writer
         ]);
 
         $solutiontemplate = new SolutionTemplate();

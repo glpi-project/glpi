@@ -47,7 +47,7 @@ if (count($actor_keys) !== 1) {
 }
 
 $actor_key = reset($actor_keys);
-$actor_id  = (int)$_REQUEST[$actor_key];
+$actor_id  = (int) $_REQUEST[$actor_key];
 
 // check if user is allowed to see the item (only if not current connected user)
 if ($actor_id != Session::getLoginUserID()) {

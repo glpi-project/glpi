@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -55,7 +54,7 @@ class OAuthClientTest extends \DbTestCase
             ['::1/1', true],
             ['::1/129', false],
             ['::1/128', true],
-            ['2001:4860:4860::8888/32', true]
+            ['2001:4860:4860::8888/32', true],
         ];
     }
 
@@ -64,7 +63,7 @@ class OAuthClientTest extends \DbTestCase
     {
         $client = new \OAuthClient();
         $add_result = $client->prepareInputForAdd([
-            'allowed_ips' => $allowed_ips
+            'allowed_ips' => $allowed_ips,
         ]);
         if (!$is_valid) {
             $this->assertFalse($add_result);
@@ -74,7 +73,7 @@ class OAuthClientTest extends \DbTestCase
         }
 
         $update_result = $client->prepareInputForUpdate([
-            'allowed_ips' => $allowed_ips
+            'allowed_ips' => $allowed_ips,
         ]);
         if (!$is_valid) {
             $this->assertFalse($update_result);

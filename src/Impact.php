@@ -111,7 +111,7 @@ class Impact extends CommonGLPI
         ) {
             // Count is disabled in config OR no item loaded OR ITIL object -> no count
             $total = 0;
-        } else if ($is_enabled_asset) {
+        } elseif ($is_enabled_asset) {
             // If on an asset, get the number of its direct dependencies
             $total = count($DB->request([
                 'FROM'  => ImpactRelation::getTable(),
@@ -126,10 +126,10 @@ class Impact extends CommonGLPI
                             // Impacted item is our item AND source item is enabled
                             'itemtype_impacted' => get_class($item),
                             'items_id_impacted' => $item->fields['id'],
-                            'itemtype_source'   => self::getEnabledItemtypes()
-                        ]
-                    ]
-                ]
+                            'itemtype_source'   => self::getEnabledItemtypes(),
+                        ],
+                    ],
+                ],
             ]));
         }
 
@@ -179,7 +179,7 @@ class Impact extends CommonGLPI
                     $item = new $class();
                     foreach ($linked_item_ids as $linked_item_id) {
                         if (!$item->getFromDB($linked_item_id)) {
-                             continue;
+                            continue;
                         }
                         $items_data[] = [
                             'itemtype' => $itemtype,
@@ -190,7 +190,7 @@ class Impact extends CommonGLPI
                 }
             }
 
-           // No valid linked item were found, tab shouldn't be visible
+            // No valid linked item were found, tab shouldn't be visible
             if (empty($items_data)) {
                 return false;
             }
@@ -270,7 +270,7 @@ JS);
         echo '<div id="impact_list_view">';
         echo '<div class="impact-list-container">';
 
-       // One table will be printed for each direction
+        // One table will be printed for each direction
         $lists = [
             __("Impact")      => self::DIRECTION_FORWARD,
             __("Impacted by") => self::DIRECTION_BACKWARD,
@@ -288,7 +288,7 @@ JS);
             $has_impact = true;
             echo '<table class="tab_cadre_fixehov impact-list-group">';
 
-           // Header
+            // Header
             echo '<thead>';
             echo '<tr class="noHover">';
             echo '<th class="impact-list-header" colspan="6" width="90%"><h3>' . htmlescape($label) . '';
@@ -308,7 +308,7 @@ JS);
                 /** @var class-string $itemtype */
                 echo '<tbody>';
 
-               // Subheader
+                // Subheader
                 echo '<tr class="tab_bg_1">';
                 echo '<td class="left subheader impact-left" colspan="6">';
                 $total = count($items);
@@ -318,7 +318,7 @@ JS);
                 echo '</tr>';
 
                 foreach ($items as $itemtype_item) {
-                   // Content: one row per item
+                    // Content: one row per item
                     echo '<tr class=tab_bg_1><div></div>';
                     echo '<td class="impact-left" width="15%">';
                     echo '<div><a target="_blank" href="' .
@@ -374,11 +374,11 @@ JS);
 
         $can_update = $item->can($item->fields['id'], UPDATE);
 
-       // Toolbar
+        // Toolbar
         echo '<div class="impact-list-toolbar">';
         if ($has_impact) {
             echo '<a target="_blank" href="' . htmlescape($CFG_GLPI['root_doc']) . '/front/impactcsv.php?itemtype=' . htmlescape($impact_item->fields['itemtype']) . '&items_id=' . htmlescape($impact_item->fields['items_id']) . '">';
-            echo '<i class="ti ti-download impact-pointer impact-list-tools" title="' . __s('Export to csv') . '"></i>';
+            echo '<i class="ti ti-download impact-pointer impact-list-tools" title="' . __s('Export to CSV') . '"></i>';
             echo '</a>';
         }
         if ($can_update && $impact_context) {
@@ -386,7 +386,7 @@ JS);
         }
         echo '</div>';
 
-       // Settings dialog
+        // Settings dialog
         $setting_dialog = "";
         if ($can_update && $impact_context) {
             $rand = mt_rand();
@@ -420,14 +420,14 @@ JS);
 
         echo '</div>';
 
-       // Stop here if we do not need to generate scripts
+        // Stop here if we do not need to generate scripts
         if (!$scripts) {
             return;
         }
 
         $twig_params = [
             'itemtype' => $item::class,
-            'items_id' => $item->getID()
+            'items_id' => $item->getID(),
         ];
 
         // Hide / show handler
@@ -489,11 +489,11 @@ JS);
 TWIG, $twig_params);
 
         if ($can_update) {
-           // Handle settings actions
+            // Handle settings actions
             echo Html::scriptBlock('
             $("#impact-list-settings").click(function() {
                glpi_html_dialog({
-                  title: __("Settings"),
+                  title: ' . json_encode(__("Settings")) . ',
                   body: ' . ($setting_dialog || '{}') . ',
                });
             });
@@ -565,7 +565,7 @@ TWIG, $twig_params);
                     $priority = $itil_object['priority'];
                 }
             }
-            $extra = 'id="' . $id . '" style="background-color:' .  htmlescape($user->fields["priority_$priority"]) . '; cursor:pointer;"';
+            $extra = 'id="' . $id . '" style="background-color:' . htmlescape($user->fields["priority_$priority"]) . '; cursor:pointer;"';
 
             echo Html::scriptBlock(<<<JS
                 $(document).on("click", "#$id", () => {
@@ -606,7 +606,7 @@ JS);
 
         foreach ($sub_graph['nodes'] as $key => $vertex) {
             if ($key !== $start_node_id) {
-               // Set path for target node using BFS
+                // Set path for target node using BFS
                 $path = self::bfs(
                     $sub_graph,
                     $start_node,
@@ -616,7 +616,7 @@ JS);
 
                 // Add if path is not longer than the allowed value
                 if (count($path) - 1 <= $max_depth) {
-                     $sub_graph['nodes'][$key]['path'] = $path;
+                    $sub_graph['nodes'][$key]['path'] = $path;
                 }
             }
         }
@@ -773,7 +773,7 @@ JS);
         echo "</div>";
         echo "</div>";
 
-       // View selection
+        // View selection
         echo Html::scriptBlock("
          function showGraphView() {
             $('#impact_list_view').hide();
@@ -828,10 +828,10 @@ JS);
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-       // Dropdown values
+        // Dropdown values
         $values = [];
 
-       // Add a value in the dropdown for each items, grouped by type
+        // Add a value in the dropdown for each items, grouped by type
         foreach ($items as $item) {
             if (self::isEnabled($item['itemtype'])) {
                 // Add itemtype group if it doesn't exist in the dropdown yet
@@ -848,7 +848,7 @@ JS);
         Dropdown::showFromArray("impact_assets_selection_dropdown", $values);
         echo '<div class="impact-mb-2"></div>';
 
-       // Form interaction: load a new graph on value change
+        // Form interaction: load a new graph on value change
         echo Html::scriptBlock('
          $(function() {
             var selector = "select[name=impact_assets_selection_dropdown]";
@@ -891,45 +891,45 @@ JS);
         /** @var \DBmysql $DB */
         global $DB;
 
-       // Check if this type is enabled in config
+        // Check if this type is enabled in config
         if (!self::isEnabled($itemtype)) {
             throw new \InvalidArgumentException(
                 "itemtype ($itemtype) must be enabled in config"
             );
         }
 
-       // Check class exist and is a child of CommonDBTM
+        // Check class exist and is a child of CommonDBTM
         if (!is_subclass_of($itemtype, "CommonDBTM", true)) {
             throw new \InvalidArgumentException(
                 "itemtype ($itemtype) must be a valid child of CommonDBTM"
             );
         }
 
-       // Return empty result if the user doesn't have READ rights
+        // Return empty result if the user doesn't have READ rights
         if (!Session::haveRight($itemtype::$rightname, READ)) {
             return [
                 "items" => [],
-                "total" => 0
+                "total" => 0,
             ];
         }
 
-       // This array can't be empty since we will use it in the NOT IN part of the reqeust
+        // This array can't be empty since we will use it in the NOT IN part of the reqeust
         if (!count($used)) {
             $used[] = -1;
         }
 
-       // Search for items
+        // Search for items
         $table = $itemtype::getTable();
         $base_request = [
             'FROM'   => $table,
             'WHERE'  => [
                 'NOT' => [
-                    "$table.id" => $used
+                    "$table.id" => $used,
                 ],
-            ] + $itemtype::getSystemSQLCriteria()
+            ] + $itemtype::getSystemSQLCriteria(),
         ];
 
-       // Add friendly name search criteria
+        // Add friendly name search criteria
         $base_request['WHERE'] = array_merge(
             $base_request['WHERE'],
             $itemtype::getFriendlyNameSearchCriteria($filter)
@@ -1017,7 +1017,7 @@ JS);
 
         echo '<div class="impact-side-filter-itemtypes-items">';
         $itemtypes = array_keys($CFG_GLPI["impact_asset_types"]);
-       // Sort by translated itemtypes
+        // Sort by translated itemtypes
         usort($itemtypes, function ($a, $b) {
             /** @var class-string $a
              *  @var class-string $b */
@@ -1123,12 +1123,12 @@ JS);
 
         echo '<ul class="fs-1">';
         echo '<li id="save_impact" title="' . __s("Save") . '"><i class="ti ti-device-floppy"></i></li>';
-        echo '<li id="impact_undo" class="impact-disabled" title="' . __s("Undo") . '"><i class="fa-fw fas fa-undo"></i></li>';
-        echo '<li id="impact_redo" class="impact-disabled" title="' . __s("Redo") . '"><i class="fa-fw fas fa-redo"></i></li>';
+        echo '<li id="impact_undo" class="impact-disabled" title="' . __s("Undo") . '"><i class="ti ti-arrow-back-up"></i></li>';
+        echo '<li id="impact_redo" class="impact-disabled" title="' . __s("Redo") . '"><i class="ti ti-arrow-forward-up"></i></li>';
         echo '<li class="impact-separator"></li>';
         echo '<li id="add_node" title="' . __s("Add asset") . '"><i class="ti ti-plus"></i></li>';
         echo '<li id="add_edge" title="' . __s("Add relation") . '"><i class="ti ti-line"></i></li>';
-        echo '<li id="add_compound" title="' . __s("Add group") . '"><i class="far fa-object-group"></i></li>';
+        echo '<li id="add_compound" title="' . __s("Add group") . '"><i class="ti ti-augmented-reality"></i></li>';
         echo '<li id="delete_element" title="' . __s("Delete element") . '"><i class="ti ti-trash"></i></li>';
         echo '<li class="impact-separator"></li>';
         echo '<li id="export_graph" title="' . __s("Download") . '"><i class="ti ti-download"></i></li>';
@@ -1172,7 +1172,7 @@ JS);
 
         return [
             'nodes' => $nodes,
-            'edges' => $edges
+            'edges' => $edges,
         ];
     }
 
@@ -1224,8 +1224,8 @@ JS);
             'FROM'   => ImpactRelation::getTable(),
             'WHERE'  => [
                 'itemtype_' . $target => $node::class,
-                'items_id_' . $target => $node->fields['id']
-            ]
+                'items_id_' . $target => $node->fields['id'],
+            ],
         ]);
 
         // Add current code to the graph if we found at least one impact relation
@@ -1234,12 +1234,12 @@ JS);
         }
         // Iterate on each relation found
         foreach ($relations as $related_item) {
-           // Do not explore disabled itemtypes
+            // Do not explore disabled itemtypes
             if (!self::isEnabled($related_item['itemtype_' . $source])) {
                 continue;
             }
 
-           // Add the related node
+            // Add the related node
             if (!($related_node = getItemForItemtype($related_item['itemtype_' . $source]))) {
                 continue;
             }
@@ -1247,11 +1247,11 @@ JS);
             $label = $related_item['name'];
             self::addNode($nodes, $related_node);
 
-           // Add or update the relation on the graph
+            // Add or update the relation on the graph
             $edgeID = self::getEdgeID($node, $related_node, $direction);
             self::addEdge($edges, $edgeID, $node, $related_node, $direction, $label);
 
-           // Keep exploring from this node unless we already went through it
+            // Keep exploring from this node unless we already went through it
             $related_node_id = self::getNodeID($related_node);
             if (!isset($explored_nodes[$related_node_id])) {
                 $explored_nodes[$related_node_id] = true;
@@ -1465,7 +1465,7 @@ JS);
             'source' => $from,
             'target' => $to,
             'flag'   => $direction,
-            'label' => $label
+            'label' => $label,
         ];
     }
 
@@ -1486,7 +1486,7 @@ JS);
             'is_slave'          => 1,
         ]);
 
-       // Load context if exist
+        // Load context if exist
         if ($params['impactcontexts_id']) {
             $impact_context = ImpactContext::findForImpactItem($impact_item);
 
@@ -1697,13 +1697,13 @@ TWIG, $twig_params);
             'OR' => [
                 [
                     'itemtype_source' => get_class($item),
-                    'items_id_source' => $item->fields['id']
+                    'items_id_source' => $item->fields['id'],
                 ],
                 [
                     'itemtype_impacted' => get_class($item),
-                    'items_id_impacted' => $item->fields['id']
+                    'items_id_impacted' => $item->fields['id'],
                 ],
-            ]
+            ],
         ]);
 
         // Remove associated ImpactItem
@@ -1728,26 +1728,26 @@ TWIG, $twig_params);
             ]);
 
             $DB->delete(ImpactContext::getTable(), [
-                'id' => $impact_item->fields['impactcontexts_id']
+                'id' => $impact_item->fields['impactcontexts_id'],
             ]);
         }
 
         // Delete group if less than two children remaining
         if ($impact_item->fields['parent_id'] !== 0) {
             $count = countElementsInTable(ImpactItem::getTable(), [
-                'parent_id' => $impact_item->fields['parent_id']
+                'parent_id' => $impact_item->fields['parent_id'],
             ]);
 
             if ($count < 2) {
                 $DB->update(ImpactItem::getTable(), [
                     'parent_id' => 0,
                 ], [
-                    'parent_id' => $impact_item->fields['parent_id']
+                    'parent_id' => $impact_item->fields['parent_id'],
                 ]);
 
-                 $DB->delete(ImpactCompound::getTable(), [
-                     'id' => $impact_item->fields['parent_id']
-                 ]);
+                $DB->delete(ImpactCompound::getTable(), [
+                    'id' => $impact_item->fields['parent_id'],
+                ]);
             }
         }
     }
@@ -1811,15 +1811,15 @@ TWIG, $twig_params);
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-       // Form head
+        // Form head
         $action = htmlescape(Toolbox::getItemTypeFormURL(Config::getType()));
         echo "<form name='form' action='$action' method='post'>";
 
-       // Table head
+        // Table head
         echo '<table class="tab_cadre_fixe">';
         echo '<tr><th colspan="2">' . __s('Impact analysis configuration') . '</th></tr>';
 
-       // First row: enabled itemtypes
+        // First row: enabled itemtypes
         $input_name = self::CONF_ENABLED;
         $values = $CFG_GLPI["impact_asset_types"];
         foreach ($values as $itemtype => $icon) {
@@ -1838,7 +1838,7 @@ TWIG, $twig_params);
         echo '<td>';
         Dropdown::showFromArray($input_name, $values, [
             'multiple' => true,
-            'values'   => $db_values
+            'values'   => $db_values,
         ]);
         echo "</td>";
 
@@ -1846,7 +1846,7 @@ TWIG, $twig_params);
 
         echo '</table>';
 
-       // Submit button
+        // Submit button
         echo '<div style="text-align:center">';
         echo Html::submit(__('Save'), ['name' => 'update', 'class' => 'btn btn-primary']);
         echo '</div>';

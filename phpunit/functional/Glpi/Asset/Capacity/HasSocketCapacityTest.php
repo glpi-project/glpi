@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -40,6 +39,7 @@ use Computer;
 use DbTestCase;
 use DisplayPreference;
 use Entity;
+use Glpi\Asset\Capacity;
 use Glpi\PHPUnit\Tests\Glpi\Asset\CapacityUsageTestTrait;
 use Glpi\Socket;
 use Log;
@@ -61,21 +61,20 @@ class HasSocketCapacityTest extends DbTestCase
 
         $definition_1 = $this->initAssetDefinition(
             capacities: [
-                \Glpi\Asset\Capacity\HasSocketCapacity::class,
-                \Glpi\Asset\Capacity\HasSocketCapacity::class,
+                new Capacity(name: \Glpi\Asset\Capacity\HasSocketCapacity::class),
             ]
         );
         $classname_1  = $definition_1->getAssetClassName();
         $definition_2 = $this->initAssetDefinition(
             capacities: [
-                \Glpi\Asset\Capacity\HasHistoryCapacity::class,
+                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
             ]
         );
         $classname_2  = $definition_2->getAssetClassName();
         $definition_3 = $this->initAssetDefinition(
             capacities: [
-                \Glpi\Asset\Capacity\HasSocketCapacity::class,
-                \Glpi\Asset\Capacity\HasHistoryCapacity::class,
+                new Capacity(name: \Glpi\Asset\Capacity\HasSocketCapacity::class),
+                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
             ]
         );
         $classname_3  = $definition_3->getAssetClassName();
@@ -129,15 +128,15 @@ class HasSocketCapacityTest extends DbTestCase
 
         $definition_1 = $this->initAssetDefinition(
             capacities: [
-                \Glpi\Asset\Capacity\HasHistoryCapacity::class,
-                \Glpi\Asset\Capacity\HasSocketCapacity::class,
+                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
+                new Capacity(name: \Glpi\Asset\Capacity\HasSocketCapacity::class),
             ]
         );
         $classname_1  = $definition_1->getAssetClassName();
         $definition_2 = $this->initAssetDefinition(
             capacities: [
-                \Glpi\Asset\Capacity\HasHistoryCapacity::class,
-                \Glpi\Asset\Capacity\HasSocketCapacity::class,
+                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
+                new Capacity(name: \Glpi\Asset\Capacity\HasSocketCapacity::class),
             ]
         );
         $classname_2  = $definition_2->getAssetClassName();
@@ -208,8 +207,8 @@ class HasSocketCapacityTest extends DbTestCase
                 [
                     'itemtype' => Socket::class,
                     'items_id' => $socket_1->getID(),
-                ]
-            ]
+                ],
+            ],
 
         ];
         $item_2_logs_criteria = [
@@ -218,8 +217,8 @@ class HasSocketCapacityTest extends DbTestCase
                 [
                     'itemtype' => Socket::class,
                     'items_id' => $socket_2->getID(),
-                ]
-            ]
+                ],
+            ],
         ];
 
         // Ensure relation, display preferences, and class is registered to global config
@@ -254,7 +253,7 @@ class HasSocketCapacityTest extends DbTestCase
     {
         $definition = $this->initAssetDefinition(
             capacities: [
-                \Glpi\Asset\Capacity\HasSocketCapacity::class,
+                new Capacity(name: \Glpi\Asset\Capacity\HasSocketCapacity::class),
             ]
         );
         $class = $definition->getAssetClassName();
@@ -292,7 +291,7 @@ class HasSocketCapacityTest extends DbTestCase
     {
         yield [
             'target_classname' => Socket::class,
-            'expected' => '%d sockets attached to %d assets'
+            'expected' => '%d sockets attached to %d assets',
         ];
     }
 }

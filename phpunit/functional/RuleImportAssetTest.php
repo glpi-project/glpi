@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -59,10 +58,10 @@ class RuleImportAssetTest extends DbTestCase
 
     public function rulepassed($items_id, $itemtype, $rules_id, $ports_id = [])
     {
-        $this->items_id = (int)$items_id;
+        $this->items_id = (int) $items_id;
         $this->itemtype = $itemtype;
-        $this->rules_id = (int)$rules_id;
-        $this->ports_id = (array)$ports_id;
+        $this->rules_id = (int) $rules_id;
+        $this->ports_id = (array) $ports_id;
     }
 
     protected function enableRule($name)
@@ -74,7 +73,7 @@ class RuleImportAssetTest extends DbTestCase
             ['is_active' => 1],
             [
                 'name'      => ['LIKE', "%$name%"],
-                'is_active' => 0
+                'is_active' => 0,
             ]
         );
     }
@@ -102,11 +101,11 @@ class RuleImportAssetTest extends DbTestCase
             $DB->update(
                 'glpi_rules',
                 [
-                    'ranking' => new \Glpi\DBAL\QueryExpression($DB->quoteName('ranking') . ' + 2')
+                    'ranking' => new \Glpi\DBAL\QueryExpression($DB->quoteName('ranking') . ' + 2'),
                 ],
                 [
                     'ranking'   => ['>', $r['ranking']],
-                    'sub_type'  => \RuleImportAsset::class
+                    'sub_type'  => \RuleImportAsset::class,
                 ]
             )
         );
@@ -119,7 +118,7 @@ class RuleImportAssetTest extends DbTestCase
         $input = [
             'itemtype' => 'Computer',
             'name'     => 'pc-01',
-            'entities_id' => 0
+            'entities_id' => 0,
         ];
         $ruleCollection = new \RuleImportAssetCollection();
         $rule = new \RuleImportAsset();
@@ -127,7 +126,7 @@ class RuleImportAssetTest extends DbTestCase
         $data = $ruleCollection->processAllRules($input, [], ['class' => $this]);
 
         $this->assertArrayHasKey('_ruleid', $data);
-        $_rule_id = (int)$data['_ruleid'];
+        $_rule_id = (int) $data['_ruleid'];
         $this->assertGreaterThan(0, $_rule_id);
 
         $this->assertTrue($rule->getFromDB($_rule_id));
@@ -141,19 +140,19 @@ class RuleImportAssetTest extends DbTestCase
         $input = [
             'itemtype' => 'Computer',
             'name'     => 'pc-01',
-            'entities_id'  => 0
+            'entities_id'  => 0,
         ];
         $ruleCollection = new \RuleImportAssetCollection();
         $rule = new \RuleImportAsset();
         $computer = new \Computer();
 
-        $computers_id = (int)$computer->add($input);
+        $computers_id = (int) $computer->add($input);
         $this->assertGreaterThan(0, $computers_id);
 
         $data = $ruleCollection->processAllRules($input, [], ['class' => $this]);
 
         $this->assertArrayHasKey('_ruleid', $data);
-        $_rule_id = (int)$data['_ruleid'];
+        $_rule_id = (int) $data['_ruleid'];
         $this->assertGreaterThan(0, $_rule_id);
 
         $this->assertTrue($rule->getFromDB($_rule_id));
@@ -167,7 +166,7 @@ class RuleImportAssetTest extends DbTestCase
         $input = [
             'itemtype' => 'Computer',
             'name'     => 'pc-01',
-            'entities_id'  => 0
+            'entities_id'  => 0,
         ];
         $ruleCollection = new \RuleImportAssetCollection();
         $rule = new \RuleImportAsset();
@@ -184,7 +183,7 @@ class RuleImportAssetTest extends DbTestCase
         $data = $ruleCollection->processAllRules($input, [], ['class' => $this]);
 
         $this->assertArrayHasKey('_ruleid', $data);
-        $_rule_id = (int)$data['_ruleid'];
+        $_rule_id = (int) $data['_ruleid'];
         $this->assertGreaterThan(0, $_rule_id);
 
         $this->assertTrue($rule->getFromDB($_rule_id));
@@ -204,7 +203,7 @@ class RuleImportAssetTest extends DbTestCase
             'name'     => 'pc-01',
             'serial'   => '75F4BF',
             'uuid'     => '01391796-50A4-0246-955B-417652A8AF14',
-            'entities_id' => 0
+            'entities_id' => 0,
         ];
         $ruleCollection = new \RuleImportAssetCollection();
         $rule = new \RuleImportAsset();
@@ -212,7 +211,7 @@ class RuleImportAssetTest extends DbTestCase
         $data = $ruleCollection->processAllRules($input, [], ['class' => $this]);
 
         $this->assertArrayHasKey('_ruleid', $data);
-        $_rule_id = (int)$data['_ruleid'];
+        $_rule_id = (int) $data['_ruleid'];
         $this->assertGreaterThan(0, $_rule_id);
 
         $this->assertTrue($rule->getFromDB($_rule_id));
@@ -232,13 +231,13 @@ class RuleImportAssetTest extends DbTestCase
             'name'     => 'pc-01',
             'serial'   => '75F4BF',
             'uuid'     => '01391796-50A4-0246-955B-417652A8AF14',
-            'entities_id' => 0
+            'entities_id' => 0,
         ];
         $ruleCollection = new \RuleImportAssetCollection();
         $rule = new \RuleImportAsset();
         $computer = new \Computer();
 
-        $computers_id = (int)$computer->add([
+        $computers_id = (int) $computer->add([
             'entities_id' => 0,
             'name'        => 'pc-02',
             'uuid'     => '01391796-50A4-0246-955B-417652A8AF14',
@@ -248,7 +247,7 @@ class RuleImportAssetTest extends DbTestCase
         $data = $ruleCollection->processAllRules($input, [], ['class' => $this]);
 
         $this->assertArrayHasKey('_ruleid', $data);
-        $_rule_id = (int)$data['_ruleid'];
+        $_rule_id = (int) $data['_ruleid'];
         $this->assertGreaterThan(0, $_rule_id);
 
         $this->assertTrue($rule->getFromDB($_rule_id));
@@ -264,19 +263,19 @@ class RuleImportAssetTest extends DbTestCase
             'name'     => 'pc-01',
             'serial'   => '75F4BF',
             'uuid'     => '01391796-50A4-0246-955B-417652A8AF14',
-            'entities_id' => 0
+            'entities_id' => 0,
         ];
         $ruleCollection = new \RuleImportAssetCollection();
         $rule = new \RuleImportAsset();
         $computer = new \Computer();
 
-        $computers_id = (int)$computer->add($input);
+        $computers_id = (int) $computer->add($input);
         $this->assertGreaterThan(0, $computers_id);
 
         $data = $ruleCollection->processAllRules($input, [], ['class' => $this]);
 
         $this->assertArrayHasKey('_ruleid', $data);
-        $_rule_id = (int)$data['_ruleid'];
+        $_rule_id = (int) $data['_ruleid'];
         $this->assertGreaterThan(0, $_rule_id);
 
         $this->assertTrue($rule->getFromDB($_rule_id));
@@ -291,7 +290,7 @@ class RuleImportAssetTest extends DbTestCase
             'itemtype' => 'Computer',
             'name'     => 'pc-01',
             'mac'      => ['d4:81:d7:7b:6c:21'],
-            'entities_id' => 0
+            'entities_id' => 0,
         ];
         $ruleCollection = new \RuleImportAssetCollection();
         $rule = new \RuleImportAsset();
@@ -300,7 +299,7 @@ class RuleImportAssetTest extends DbTestCase
         $data = $ruleCollection->processAllRules($input, [], ['class' => $this]);
 
         $this->assertArrayHasKey('_ruleid', $data);
-        $_rule_id = (int)$data['_ruleid'];
+        $_rule_id = (int) $data['_ruleid'];
         $this->assertGreaterThan(0, $_rule_id);
 
         $this->assertTrue($rule->getFromDB($_rule_id));
@@ -315,24 +314,24 @@ class RuleImportAssetTest extends DbTestCase
             'itemtype' => 'Computer',
             'name'     => 'pc-01',
             'mac'      => ['d4:81:d7:7b:6c:21'],
-            'entities_id' => 0
+            'entities_id' => 0,
         ];
         $ruleCollection = new \RuleImportAssetCollection();
         $rule = new \RuleImportAsset();
         $computer = new \Computer();
         $nport = new \NetworkPort();
 
-        $computers_id = (int)$computer->add([
+        $computers_id = (int) $computer->add([
             'entities_id' => 0,
             'name'        => 'pc-02', // to be sure the name rule not works before mac rule
         ]);
         $this->assertGreaterThan(0, $computers_id);
 
-        $ports_id = (int)$nport->add([
+        $ports_id = (int) $nport->add([
             'instantiation_type' => 'NetworkPortEthernet',
             'itemtype'           => 'Computer',
             'items_id'           => $computers_id,
-            'mac'                => 'd4:81:d7:7b:6c:21'
+            'mac'                => 'd4:81:d7:7b:6c:21',
         ]);
         $this->assertGreaterThan(0, $ports_id);
 
@@ -340,7 +339,7 @@ class RuleImportAssetTest extends DbTestCase
         $data = $ruleCollection->processAllRules($input, [], ['class' => $this]);
 
         $this->assertArrayHasKey('_ruleid', $data);
-        $_rule_id = (int)$data['_ruleid'];
+        $_rule_id = (int) $data['_ruleid'];
         $this->assertGreaterThan(0, $_rule_id);
 
         $this->assertTrue($rule->getFromDB($_rule_id));
@@ -357,7 +356,7 @@ class RuleImportAssetTest extends DbTestCase
      */
     private function addComputerIPRules()
     {
-       // Create rules
+        // Create rules
         $this->addAssetRule(
             "Computer update (by ip)",
             [
@@ -415,7 +414,7 @@ class RuleImportAssetTest extends DbTestCase
             'itemtype' => 'Computer',
             'name'     => 'pc-01',
             'ip'       => ['192.168.0.10'],
-            'entities_id' => 0
+            'entities_id' => 0,
         ];
         $ruleCollection = new \RuleImportAssetCollection();
         $rule = new \RuleImportAsset();
@@ -423,7 +422,7 @@ class RuleImportAssetTest extends DbTestCase
         $data = $ruleCollection->processAllRules($input, [], ['class' => $this]);
 
         $this->assertArrayHasKey('_ruleid', $data);
-        $_rule_id = (int)$data['_ruleid'];
+        $_rule_id = (int) $data['_ruleid'];
         $this->assertGreaterThan(0, $_rule_id);
 
         $this->assertTrue($rule->getFromDB($_rule_id));
@@ -439,20 +438,20 @@ class RuleImportAssetTest extends DbTestCase
             'itemtype' => 'Computer',
             'name'     => 'pc-01',
             'ip'       => ['192.168.0.10'],
-            'entities_id' => 0
+            'entities_id' => 0,
         ];
         $ruleCollection = new \RuleImportAssetCollection();
         $rule = new \RuleImportAsset();
         $computer = new \Computer();
         $networkPort = new \NetworkPort();
 
-        $computers_id = (int)$computer->add([
+        $computers_id = (int) $computer->add([
             'entities_id' => 0,
             'name'        => 'pc-02', // to be sure the name rule not works before mac rule
         ]);
         $this->assertGreaterThan(0, $computers_id);
 
-        $ports_id = (int)$networkPort->add([
+        $ports_id = (int) $networkPort->add([
             'instantiation_type' => 'NetworkPortEthernet',
             'itemtype'           => 'Computer',
             'items_id'           => $computers_id,
@@ -461,7 +460,7 @@ class RuleImportAssetTest extends DbTestCase
             'NetworkName_name'   => '',
             'NetworkName_fqdns_id' => 0,
             'NetworkName__ipaddresses' => [
-                '-1' => '192.168.0.10'
+                '-1' => '192.168.0.10',
             ],
         ]);
         $this->assertGreaterThan(0, $ports_id);
@@ -469,7 +468,7 @@ class RuleImportAssetTest extends DbTestCase
         $data = $ruleCollection->processAllRules($input, [], ['class' => $this]);
 
         $this->assertArrayHasKey('_ruleid', $data);
-        $_rule_id = (int)$data['_ruleid'];
+        $_rule_id = (int) $data['_ruleid'];
         $this->assertGreaterThan(0, $_rule_id);
 
         $this->assertTrue($rule->getFromDB($_rule_id));
@@ -487,7 +486,7 @@ class RuleImportAssetTest extends DbTestCase
      */
     private function addComputerIPLinkOnlyRules()
     {
-       // Create rules
+        // Create rules
         $this->addAssetRule(
             "Computer update (by ip)",
             [
@@ -523,7 +522,7 @@ class RuleImportAssetTest extends DbTestCase
             'itemtype' => 'Computer',
             'name'     => 'pc-01',
             'ip'       => ['192.168.0.10'],
-            'entities_id' => 0
+            'entities_id' => 0,
         ];
         $ruleCollection = new \RuleImportAssetCollection();
         $rule = new \RuleImportAsset();
@@ -531,12 +530,12 @@ class RuleImportAssetTest extends DbTestCase
         $data = $ruleCollection->processAllRules($input, [], ['class' => $this]);
 
         $this->assertArrayHasKey('_ruleid', $data);
-        $_rule_id = (int)$data['_ruleid'];
+        $_rule_id = (int) $data['_ruleid'];
         $this->assertGreaterThan(0, $_rule_id);
 
         $this->assertTrue($rule->getFromDB($_rule_id));
         $this->assertSame("Computer update (by ip)", $rule->fields['name']);
-       //do not exists in database, so not imported.
+        //do not exists in database, so not imported.
         $this->assertNull($this->items_id);
         $this->assertNull($this->itemtype);
     }
@@ -548,20 +547,20 @@ class RuleImportAssetTest extends DbTestCase
             'itemtype' => 'Computer',
             'name'     => 'pc-01',
             'ip'       => ['192.168.0.10'],
-            'entities_id' => 0
+            'entities_id' => 0,
         ];
         $ruleCollection = new \RuleImportAssetCollection();
         $rule = new \RuleImportAsset();
         $computer = new \Computer();
         $networkPort = new \NetworkPort();
 
-        $computers_id = (int)$computer->add([
+        $computers_id = (int) $computer->add([
             'entities_id' => 0,
             'name'        => 'pc-02', // to be sure the name rule not works before mac rule
         ]);
         $this->assertGreaterThan(0, $computers_id);
 
-        $ports_id = (int)$networkPort->add([
+        $ports_id = (int) $networkPort->add([
             'instantiation_type' => 'NetworkPortEthernet',
             'itemtype'           => 'Computer',
             'items_id'           => $computers_id,
@@ -570,7 +569,7 @@ class RuleImportAssetTest extends DbTestCase
             'NetworkName_name'   => '',
             'NetworkName_fqdns_id' => 0,
             'NetworkName__ipaddresses' => [
-                '-1' => '192.168.0.10'
+                '-1' => '192.168.0.10',
             ],
         ]);
         $this->assertGreaterThan(0, $ports_id);
@@ -578,7 +577,7 @@ class RuleImportAssetTest extends DbTestCase
         $data = $ruleCollection->processAllRules($input, [], ['class' => $this]);
 
         $this->assertArrayHasKey('_ruleid', $data);
-        $_rule_id = (int)$data['_ruleid'];
+        $_rule_id = (int) $data['_ruleid'];
         $this->assertGreaterThan(0, $_rule_id);
 
         $this->assertTrue($rule->getFromDB($_rule_id));
@@ -598,14 +597,14 @@ class RuleImportAssetTest extends DbTestCase
         $input = [
             'itemtype' => 'Computer',
             'name'     => 'pc-01',
-            'entities_id' => 0
+            'entities_id' => 0,
         ];
         $ruleCollection = new \RuleImportAssetCollection();
 
         $DB->update(
             $ruleCollection->getTable(),
             [
-                'is_active' => 0
+                'is_active' => 0,
             ],
             [
                 'is_active' => 1,
@@ -623,17 +622,17 @@ class RuleImportAssetTest extends DbTestCase
         return [
             [    // IP
                 'rdata'   => ['ip' => '192.168.0.10'],
-                'rname'  => 'Global constraint (name)'
+                'rname'  => 'Global constraint (name)',
             ], [ // IP+mac
                 'rdata'   => ['mac' => 'd4:81:d7:7b:6c:21', 'ip' => '192.168.0.10'],
-                'rname'  => 'Global constraint (name)'
+                'rname'  => 'Global constraint (name)',
             ], [ // IP+name
                 'rdata'   => ['name' => 'pc-01', 'ip' => '192.168.0.10'],
-                'rname'  => 'Global import denied'
+                'rname'  => 'Global import denied',
             ], [ // IP+mac+name
                 'rdata'   => ['name' => 'pc-01', 'mac' => 'd4:81:d7:7b:6c:21', 'ip' => '192.168.0.10'],
-                'rname'  => 'Global import denied'
-            ]
+                'rname'  => 'Global import denied',
+            ],
         ];
     }
 
@@ -652,7 +651,7 @@ class RuleImportAssetTest extends DbTestCase
         $data = $ruleCollection->processAllRules($rdata, [], ['class' => $this]);
 
         $this->assertArrayHasKey('_ruleid', $data);
-        $_rule_id = (int)$data['_ruleid'];
+        $_rule_id = (int) $data['_ruleid'];
         $this->assertGreaterThan(0, $_rule_id);
 
         $this->assertTrue($rule->getFromDB($_rule_id));
@@ -669,7 +668,7 @@ class RuleImportAssetTest extends DbTestCase
             'ifnumber' => '10102',
             'mac'      => '00:1a:6c:9a:fc:99',
             'name'     => 'network-01',
-            'entities_id' => 0
+            'entities_id' => 0,
         ];
         $ruleCollection = new \RuleImportAssetCollection();
         $rule = new \RuleImportAsset();
@@ -677,7 +676,7 @@ class RuleImportAssetTest extends DbTestCase
         $data = $ruleCollection->processAllRules($input, [], ['class' => $this]);
 
         $this->assertArrayHasKey('_ruleid', $data);
-        $_rule_id = (int)$data['_ruleid'];
+        $_rule_id = (int) $data['_ruleid'];
         $this->assertGreaterThan(0, $_rule_id);
 
         $this->assertTrue($rule->getFromDB($_rule_id));
@@ -696,20 +695,20 @@ class RuleImportAssetTest extends DbTestCase
             'ifnumber' => '10102',
             'mac'      => '00:1a:6c:9a:fc:99',
             'name'     => 'network-01',
-            'entities_id' => 0
+            'entities_id' => 0,
         ];
         $ruleCollection = new \RuleImportAssetCollection();
         $rule = new \RuleImportAsset();
         $networkEquipment = new \NetworkEquipment();
         $networkPort = new \NetworkPort();
 
-        $networkEquipments_id = (int)$networkEquipment->add([
+        $networkEquipments_id = (int) $networkEquipment->add([
             'entities_id' => 0,
             'name'        => 'network-02',
         ]);
         $this->assertGreaterThan(0, $networkEquipments_id);
 
-        $ports_id = (int)$networkPort->add([
+        $ports_id = (int) $networkPort->add([
             'mac'                => '00:1a:6c:9a:fc:99',
             'name'               => 'Gi0/1',
             'logical_number'     => '10101',
@@ -719,7 +718,7 @@ class RuleImportAssetTest extends DbTestCase
         ]);
         $this->assertGreaterThan(0, $ports_id);
 
-        $ports_id = (int)$networkPort->add([
+        $ports_id = (int) $networkPort->add([
             'mac'                => '00:1a:6c:9a:fc:99',
             'name'               => 'Gi0/2',
             'logical_number'     => '10102',
@@ -732,7 +731,7 @@ class RuleImportAssetTest extends DbTestCase
         $data = $ruleCollection->processAllRules($input, [], ['class' => $this]);
 
         $this->assertArrayHasKey('_ruleid', $data);
-        $_rule_id = (int)$data['_ruleid'];
+        $_rule_id = (int) $data['_ruleid'];
         $this->assertGreaterThan(0, $_rule_id);
 
         $this->assertTrue($rule->getFromDB($_rule_id));
@@ -742,7 +741,7 @@ class RuleImportAssetTest extends DbTestCase
         $this->assertEquals([$ports_id], $this->ports_id);
     }
 
-   //Above commented tests are related to SNMP inventory
+    //Above commented tests are related to SNMP inventory
     /**
      * Search device based on IP + ifdescr restricted on same port
      */
@@ -757,13 +756,13 @@ class RuleImportAssetTest extends DbTestCase
         $networkEquipment = new \NetworkEquipment();
         $networkPort = new \NetworkPort();
 
-        $networkEquipments_id = (int)$networkEquipment->add([
+        $networkEquipments_id = (int) $networkEquipment->add([
             'entities_id' => 0,
             'name'        => 'network-02',
         ]);
         $this->assertGreaterThan(0, $networkEquipments_id);
 
-        $ports_id_1 = (int)$networkPort->add([
+        $ports_id_1 = (int) $networkPort->add([
             'mac'                => '00:1a:6c:9a:fc:99',
             'name'               => 'Fa0/1',
             'logical_number'     => '10101',
@@ -775,13 +774,13 @@ class RuleImportAssetTest extends DbTestCase
             'NetworkName_name'   => '',
             'NetworkName_fqdns_id' => 0,
             'NetworkName__ipaddresses' => [
-                '-1' => '192.168.0.1'
+                '-1' => '192.168.0.1',
             ],
             'ifdescr' => 'FastEthernet0/1',
         ]);
         $this->assertGreaterThan(0, $ports_id_1);
 
-        $ports_id_2 = (int)$networkPort->add([
+        $ports_id_2 = (int) $networkPort->add([
             'mac'                => '00:1a:6c:9a:fc:98',
             'name'               => 'Fa0/2',
             'logical_number'     => '10102',
@@ -793,7 +792,7 @@ class RuleImportAssetTest extends DbTestCase
             'NetworkName_name'   => '',
             'NetworkName_fqdns_id' => 0,
             'NetworkName__ipaddresses' => [
-                '-1' => '192.168.0.2'
+                '-1' => '192.168.0.2',
             ],
             'ifdescr' => 'FastEthernet0/2',
         ]);
@@ -802,7 +801,7 @@ class RuleImportAssetTest extends DbTestCase
         $data = $ruleCollection->processAllRules($input, [], ['class' => $this]);
 
         $this->assertArrayHasKey('_ruleid', $data);
-        $_rule_id = (int)$data['_ruleid'];
+        $_rule_id = (int) $data['_ruleid'];
         $this->assertGreaterThan(0, $_rule_id);
 
         $this->assertTrue($rule->getFromDB($_rule_id));
@@ -817,12 +816,12 @@ class RuleImportAssetTest extends DbTestCase
         $input = [
             'ifdescr' => 'FastEthernet0/1',
             'ip'      => '192.168.0.2',
-            'entities_id' => 0
+            'entities_id' => 0,
         ];
         $data = $ruleCollection->processAllRules($input, [], ['class' => $this]);
 
         $this->assertArrayHasKey('_ruleid', $data);
-        $_rule_id = (int)$data['_ruleid'];
+        $_rule_id = (int) $data['_ruleid'];
         $this->assertGreaterThan(0, $_rule_id);
 
         $this->assertTrue($rule->getFromDB($_rule_id));
@@ -865,7 +864,7 @@ class RuleImportAssetTest extends DbTestCase
             'NetworkName_name'   => '',
             'NetworkName_fqdns_id' => 0,
             'NetworkName__ipaddresses' => [
-                '-1' => '192.168.0.1'
+                '-1' => '192.168.0.1',
             ],
             'ifdescr'         => 'FastEthernet0/1',
         ]);
@@ -884,7 +883,7 @@ class RuleImportAssetTest extends DbTestCase
             'NetworkName_name'   => '',
             'NetworkName_fqdns_id' => 0,
             'NetworkName__ipaddresses' => [
-                '-1' => '192.168.0.2'
+                '-1' => '192.168.0.2',
             ],
             'ifdescr'         => 'FastEthernet0/2',
         ]);
@@ -893,7 +892,7 @@ class RuleImportAssetTest extends DbTestCase
 
         $data = $ruleCollection->processAllRules($input, [], ['class' => $this]);
 
-        $this->assertGreaterThan(0, (int)$data['_ruleid']);
+        $this->assertGreaterThan(0, (int) $data['_ruleid']);
 
         $this->assertTrue($rule->getFromDB($data['_ruleid']));
         $this->assertSame('Global update (by ip+ifdescr not restricted port)', $rule->fields['name']);
@@ -909,20 +908,20 @@ class RuleImportAssetTest extends DbTestCase
     public function testSearchMac_nomoredata()
     {
         $input = [
-            'mac' => 'd4:81:b4:5a:a6:19'
+            'mac' => 'd4:81:b4:5a:a6:19',
         ];
         $ruleCollection = new \RuleImportAssetCollection();
         $rule = new \RuleImportAsset();
         $printer = new \Printer();
         $networkPort = new \NetworkPort();
 
-        $printers_id = (int)$printer->add([
+        $printers_id = (int) $printer->add([
             'entities_id' => 0,
             'name'        => 'network-02',
         ]);
         $this->assertGreaterThan(0, $printers_id);
 
-        $ports_id_1 = (int)$networkPort->add([
+        $ports_id_1 = (int) $networkPort->add([
             'mac'                => 'd4:81:b4:5a:a6:18',
             'name'               => 'Fa0/1',
             'logical_number'     => '10101',
@@ -932,7 +931,7 @@ class RuleImportAssetTest extends DbTestCase
         ]);
         $this->assertGreaterThan(0, $ports_id_1);
 
-        $ports_id_2 = (int)$networkPort->add([
+        $ports_id_2 = (int) $networkPort->add([
             'mac'                => 'd4:81:b4:5a:a6:19',
             'name'               => 'Fa0/2',
             'logical_number'     => '10102',
@@ -942,7 +941,7 @@ class RuleImportAssetTest extends DbTestCase
         ]);
         $this->assertGreaterThan(0, $ports_id_2);
 
-        $ports_id_3 = (int)$networkPort->add([
+        $ports_id_3 = (int) $networkPort->add([
             'mac'                => 'd4:81:b4:5a:a6:20',
             'name'               => 'Fa0/3',
             'logical_number'     => '10103',
@@ -955,7 +954,7 @@ class RuleImportAssetTest extends DbTestCase
         $data = $ruleCollection->processAllRules($input, [], ['class' => $this]);
 
         $this->assertArrayHasKey('_ruleid', $data);
-        $_rule_id = (int)$data['_ruleid'];
+        $_rule_id = (int) $data['_ruleid'];
         $this->assertGreaterThan(0, $_rule_id);
 
         $this->assertTrue($rule->getFromDB($_rule_id));
@@ -1003,13 +1002,13 @@ class RuleImportAssetTest extends DbTestCase
         foreach ($known as $k => $v) {
             $values[] = [
                 'value'     => $k,
-                'expected'  => $v
+                'expected'  => $v,
             ];
         }
 
         $values[] = [
             'value'     => 404,
-            'expected'  => ''
+            'expected'  => '',
         ];
 
         return $values;
@@ -1034,25 +1033,25 @@ class RuleImportAssetTest extends DbTestCase
             [
                 'criterion' => 'entityrestrict',
                 'expected'  => [
-                    \RuleImportAsset::PATTERN_ENTITY_RESTRICT => 'Yes'
-                ]
+                    \RuleImportAsset::PATTERN_ENTITY_RESTRICT => 'Yes',
+                ],
             ], [
                 'criterion' => 'link_criteria_port',
                 'expected'  => [
-                    \RuleImportAsset::PATTERN_NETWORK_PORT_RESTRICT => 'Yes'
-                ]
+                    \RuleImportAsset::PATTERN_NETWORK_PORT_RESTRICT => 'Yes',
+                ],
             ], [
                 'criterion' => 'only_these_criteria',
                 'expected'  => [
-                    \RuleImportAsset::PATTERN_ONLY_CRITERIA_RULE => 'Yes'
-                ]
+                    \RuleImportAsset::PATTERN_ONLY_CRITERIA_RULE => 'Yes',
+                ],
             ], [
                 'criterion' => 'any_other',
                 'expected'  => [
                     \RuleImportAsset::PATTERN_FIND => 'is already present',
-                    \RuleImportAsset::PATTERN_IS_EMPTY => 'is empty'
-                ]
-            ]
+                    \RuleImportAsset::PATTERN_IS_EMPTY => 'is empty',
+                ],
+            ],
         ];
     }
 
@@ -1078,14 +1077,14 @@ class RuleImportAssetTest extends DbTestCase
         unset($fields['date_mod']);
         $fields['name'] = $this->getUniqueString();
         $fields['serial'] = '75F4BFC';
-        $this->assertGreaterThan(0, (int)$computer->add($fields));
+        $this->assertGreaterThan(0, (int) $computer->add($fields));
 
         $input = [
             'itemtype' => 'Computer',
             'name'     => 'pc-02',
             'serial'   => '75F4BFC',
             'uuid'     => '01391796-50A4-0246-955B-417652A8AF14',
-            'entities_id' => 0
+            'entities_id' => 0,
         ];
 
         $ruleCollection = new \RuleImportAssetCollection();
@@ -1094,7 +1093,7 @@ class RuleImportAssetTest extends DbTestCase
         $data = $ruleCollection->processAllRules($input, [], ['class' => $this]);
 
         $this->assertArrayHasKey('_ruleid', $data);
-        $_rule_id = (int)$data['_ruleid'];
+        $_rule_id = (int) $data['_ruleid'];
         $this->assertGreaterThan(0, $_rule_id);
 
         $this->assertTrue($rule->getFromDB($_rule_id));
@@ -1109,7 +1108,7 @@ class RuleImportAssetTest extends DbTestCase
      */
     private function updateComputerAgentTagRules()
     {
-       // Create rules
+        // Create rules
         $this->addAssetRule(
             "Computer update (by name and tag)",
             [
@@ -1156,7 +1155,7 @@ class RuleImportAssetTest extends DbTestCase
 
         //create computer
         $computer = new \Computer();
-        $computers_id = (int)$computer->add([
+        $computers_id = (int) $computer->add([
             'entities_id' => 0,
             'name'        => 'pc-11',
         ]);
@@ -1165,7 +1164,7 @@ class RuleImportAssetTest extends DbTestCase
         //create linked agent
         $agent = new \Agent();
         $agenttype = $DB->request(['FROM' => \AgentType::getTable(), 'WHERE' => ['name' => 'Core']])->current();
-        $agents_id = (int)$agent->add([
+        $agents_id = (int) $agent->add([
             'deviceid' => 'my_specific_agent_deviceid',
             'tag' => 'my_specific_agent_tag',
             'itemtype' => "Computer",
@@ -1181,7 +1180,7 @@ class RuleImportAssetTest extends DbTestCase
             'tag'           => 'my_specific_agent_tag',
             'deviceid'     => 'my_specific_agent_deviceid',
             'ip'            => ['192.168.0.10'],
-            'entities_id'   => 0
+            'entities_id'   => 0,
         ];
         $ruleCollection = new \RuleImportAssetCollection();
         $rule = new \RuleImportAsset();
@@ -1189,12 +1188,50 @@ class RuleImportAssetTest extends DbTestCase
         $data = $ruleCollection->processAllRules($input, [], ['class' => $this]);
 
         $this->assertArrayHasKey('_ruleid', $data);
-        $_rule_id = (int)$data['_ruleid'];
+        $_rule_id = (int) $data['_ruleid'];
         $this->assertGreaterThan(0, $_rule_id);
 
         $this->assertTrue($rule->getFromDB($_rule_id));
         $this->assertSame("Computer update (by name and tag)", $rule->fields['name']);
         $this->assertSame($computers_id, $this->items_id);
         $this->assertSame('Computer', $this->itemtype);
+    }
+
+    public function testReconciliateWithAssetTemplate()
+    {
+
+        $computer = new \Computer();
+        $ruleCollection = new \RuleImportAssetCollection();
+
+        //create 'legacy' computer
+        $computers_id = (int) $computer->add([
+            'entities_id' => 0,
+            'name'        => 'pc-11',
+            'serial'      => '12345-65487-98765-45645',
+        ]);
+        $this->assertGreaterThan(0, $computers_id);
+
+        $input = [
+            'itemtype'      => 'Computer',
+            'name'          => 'pc-11',
+            'serial'        => '12345-65487-98765-45645',
+            'entities_id'   => 0,
+        ];
+
+        // execute rule engine
+        $data = $ruleCollection->processAllRules($input, [], ['class' => $this]);
+        // check tha rule engine found the computer
+        $this->assertSame($computers_id, $data["found_inventories"][0]);
+
+        // update computer to mark as template
+        $this->assertTrue($computer->update([
+            'id'            => $computers_id,
+            'is_template'   => 1,
+        ]));
+
+        // execute rule engine
+        $data = $ruleCollection->processAllRules($input, [], ['class' => $this]);
+        // check tha rule engine not found any computer
+        $this->assertSame(0, $data["found_inventories"][0]);
     }
 }

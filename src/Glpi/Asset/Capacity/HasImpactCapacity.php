@@ -36,6 +36,7 @@ namespace Glpi\Asset\Capacity;
 
 use CommonGLPI;
 use Config;
+use Glpi\Asset\CapacityConfig;
 use Impact;
 use ImpactItem;
 use ImpactRelation;
@@ -65,8 +66,8 @@ class HasImpactCapacity extends AbstractCapacity
         return countElementsInTable(ImpactRelation::getTable(), [
             'OR' => [
                 'itemtype_source' => $classname,
-                'itemtype_impacted' => $classname
-            ]
+                'itemtype_impacted' => $classname,
+            ],
         ]);
     }
 
@@ -104,7 +105,7 @@ class HasImpactCapacity extends AbstractCapacity
         return sprintf(__('%1$s impact relations involving %2$s assets'), $impact_count, $asset_count);
     }
 
-    public function onClassBootstrap(string $classname): void
+    public function onClassBootstrap(string $classname, CapacityConfig $config): void
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
@@ -117,7 +118,7 @@ class HasImpactCapacity extends AbstractCapacity
         CommonGLPI::registerStandardTab($classname, Impact::class, 2);
     }
 
-    public function onCapacityEnabled(string $classname): void
+    public function onCapacityEnabled(string $classname, CapacityConfig $config): void
     {
         $enabled_types = json_decode(Config::getConfigurationValue('core', Impact::CONF_ENABLED)) ?? [];
         if (!in_array($classname, $enabled_types, true)) {
@@ -126,7 +127,7 @@ class HasImpactCapacity extends AbstractCapacity
         }
     }
 
-    public function onCapacityDisabled(string $classname): void
+    public function onCapacityDisabled(string $classname, CapacityConfig $config): void
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
@@ -145,7 +146,7 @@ class HasImpactCapacity extends AbstractCapacity
                 'OR' => [
                     'itemtype_source' => $classname,
                     'itemtype_impacted' => $classname,
-                ]
+                ],
             ],
             force: true,
             history: false

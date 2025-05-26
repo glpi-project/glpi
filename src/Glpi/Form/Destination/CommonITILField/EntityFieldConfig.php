@@ -35,18 +35,12 @@
 
 namespace Glpi\Form\Destination\CommonITILField;
 
-use Entity;
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\Destination\ConfigFieldWithStrategiesInterface;
-use Glpi\Form\Export\Context\ConfigWithForeignKeysInterface;
-use Glpi\Form\Export\Context\ForeignKey\ForeignKeyHandler;
-use Glpi\Form\Export\Context\ForeignKey\QuestionForeignKeyHandler;
-use Glpi\Form\Export\Specification\ContentSpecificationInterface;
 use Override;
 
 final class EntityFieldConfig implements
     JsonFieldInterface,
-    ConfigWithForeignKeysInterface,
     ConfigFieldWithStrategiesInterface
 {
     // Unique reference to hardcoded names used for serialization and forms input names
@@ -58,17 +52,7 @@ final class EntityFieldConfig implements
         private EntityFieldStrategy $strategy,
         private ?int $specific_question_id = null,
         private ?int $specific_entity_id = null,
-    ) {
-    }
-
-    #[Override]
-    public static function listForeignKeysHandlers(ContentSpecificationInterface $content_spec): array
-    {
-        return [
-            new ForeignKeyHandler(self::SPECIFIC_ENTITY_ID, Entity::class),
-            new QuestionForeignKeyHandler(self::SPECIFIC_QUESTION_ID)
-        ];
-    }
+    ) {}
 
     #[Override]
     public static function jsonDeserialize(array $data): self

@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -38,16 +37,19 @@ namespace Glpi\Form\Destination\CommonITILField;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AnswersSet;
+use Glpi\Form\Destination\AbstractCommonITILFormDestination;
 use Glpi\Form\Destination\AbstractConfigField;
+use Glpi\Form\Export\Context\DatabaseMapper;
 use Glpi\Form\Form;
 use Glpi\Form\Migration\DestinationFieldConverterInterface;
 use Glpi\Form\Migration\FormMigration;
+use Glpi\Form\Question;
 use Glpi\Form\QuestionType\QuestionTypeRequestType;
 use InvalidArgumentException;
 use Override;
 use Ticket;
 
-class RequestTypeField extends AbstractConfigField implements DestinationFieldConverterInterface
+final class RequestTypeField extends AbstractConfigField implements DestinationFieldConverterInterface
 {
     #[Override]
     public function getLabel(): string
@@ -148,12 +150,18 @@ class RequestTypeField extends AbstractConfigField implements DestinationFieldCo
                     specific_request_type: $rawData['type_question']
                 );
             case 2: // PluginFormcreatorAbstractItilTarget::REQUESTTYPE_ANSWER
+                $mapped_item = $migration->getMappedItemTarget(
+                    'PluginFormcreatorQuestion',
+                    $rawData['type_question']
+                );
+
+                if ($mapped_item === null) {
+                    throw new InvalidArgumentException("Question not found in a target form");
+                }
+
                 return new RequestTypeFieldConfig(
                     strategy: RequestTypeFieldStrategy::SPECIFIC_ANSWER,
-                    specific_question_id: $migration->getMappedItemTarget(
-                        'PluginFormcreatorQuestion',
-                        $rawData['type_question']
-                    )['items_id'],
+                    specific_question_id: $mapped_item['items_id']
                 );
         }
 
@@ -184,12 +192,30 @@ class RequestTypeField extends AbstractConfigField implements DestinationFieldCo
     #[Override]
     public function getWeight(): int
     {
-        return 35;
+        return 30;
     }
 
     #[Override]
     public function getCategory(): Category
     {
         return Category::PROPERTIES;
+    }
+
+    #[Override]
+    public static function prepareDynamicConfigDataForImport(
+        array $config,
+        AbstractCommonITILFormDestination $destination,
+        DatabaseMapper $mapper,
+    ): array {
+        // Check if a specific question is defined
+        if (isset($config[RequestTypeFieldConfig::SPECIFIC_QUESTION_ID])) {
+            // Insert id
+            $config[RequestTypeFieldConfig::SPECIFIC_QUESTION_ID] = $mapper->getItemId(
+                Question::class,
+                $config[RequestTypeFieldConfig::SPECIFIC_QUESTION_ID],
+            );
+        }
+
+        return $config;
     }
 }

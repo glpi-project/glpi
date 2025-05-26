@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -54,7 +53,7 @@ class USBVendorTest extends DbTestCase
             $vendors->add([
                 'name'  => 'Something to test',
                 'vendorid'  => '01ef',
-                'deviceid'  => '02ef'
+                'deviceid'  => '02ef',
             ])
         );
 
@@ -86,7 +85,7 @@ class USBVendorTest extends DbTestCase
             0,
             $vendors->add([
                 'name'  => "Farnsworth's Electronics",
-                'vendorid'  => '0001'
+                'vendorid'  => '0001',
             ])
         );
         $this->assertSame(
@@ -116,7 +115,7 @@ class USBVendorTest extends DbTestCase
             $vendors->add([
                 'name'  => 'not the good one',
                 'vendorid'  => '0002',
-                'deviceid'  => '7778'
+                'deviceid'  => '7778',
             ])
         );
         $this->assertGreaterThan(
@@ -124,7 +123,7 @@ class USBVendorTest extends DbTestCase
             $vendors->add([
                 'name'  => 'Yeah, that works',
                 'vendorid'  => '0001',
-                'deviceid'  => '7778'
+                'deviceid'  => '7778',
             ])
         );
         $this->assertSame(

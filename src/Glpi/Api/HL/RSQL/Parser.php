@@ -92,57 +92,57 @@ final class Parser
                 [
                     'operator' => '==',
                     'description' => 'equivalent to',
-                    'sql_where_callable' => fn ($a, $b) => [
-                        [$this->db::quoteName($a) => $b]
+                    'sql_where_callable' => fn($a, $b) => [
+                        [$this->db::quoteName($a) => $b],
                     ],
                 ],
                 [
                     'operator' => '!=',
                     'description' => 'not equivalent to',
-                    'sql_where_callable' => fn ($a, $b) => [
-                        [$this->db::quoteName($a) => ['<>', $b]]
+                    'sql_where_callable' => fn($a, $b) => [
+                        [$this->db::quoteName($a) => ['<>', $b]],
                     ],
                 ],
                 [
                     'operator' => '=in=',
                     'description' => 'in',
-                    'sql_where_callable' => fn ($a, $b) => [
-                        [$this->db::quoteName($a) => $this->rsqlGroupToArray($b)]
+                    'sql_where_callable' => fn($a, $b) => [
+                        [$this->db::quoteName($a) => $this->rsqlGroupToArray($b)],
                     ],
                 ],
                 [
                     'operator' => '=out=',
                     'description' => 'not in',
-                    'sql_where_callable' => fn ($a, $b) => [
-                        ['NOT' => [$this->db::quoteName($a) => $this->rsqlGroupToArray($b)]]
+                    'sql_where_callable' => fn($a, $b) => [
+                        ['NOT' => [$this->db::quoteName($a) => $this->rsqlGroupToArray($b)]],
                     ],
                 ],
                 [
                     'operator' => '=lt=',
                     'description' => 'less than',
                     'sql_where_callable' => fn($a, $b) => [
-                        [$this->db::quoteName($a) => ['<', $b]]
+                        [$this->db::quoteName($a) => ['<', $b]],
                     ],
                 ],
                 [
                     'operator' => '=le=',
                     'description' => 'less than or equal to',
-                    'sql_where_callable' => fn ($a, $b) => [
-                        [$this->db::quoteName($a) => ['<=', $b]]
+                    'sql_where_callable' => fn($a, $b) => [
+                        [$this->db::quoteName($a) => ['<=', $b]],
                     ],
                 ],
                 [
                     'operator' => '=gt=',
                     'description' => 'greater than',
-                    'sql_where_callable' => fn ($a, $b) => [
-                        [$this->db::quoteName($a) => ['>', $b]]
+                    'sql_where_callable' => fn($a, $b) => [
+                        [$this->db::quoteName($a) => ['>', $b]],
                     ],
                 ],
                 [
                     'operator' => '=ge=',
                     'description' => 'greater than or equal to',
-                    'sql_where_callable' => fn ($a, $b) => [
-                        [$this->db::quoteName($a) => ['>=', $b]]
+                    'sql_where_callable' => fn($a, $b) => [
+                        [$this->db::quoteName($a) => ['>=', $b]],
                     ],
                 ],
                 [
@@ -152,8 +152,8 @@ final class Parser
                         $b = str_replace(['%', '*'], ['_', '%'], $b);
                         return [
                             [
-                                $this->db::quoteName($a) => ['LIKE', QueryFunction::cast(new QueryExpression($this->db->quote($b)), 'BINARY')]
-                            ]
+                                $this->db::quoteName($a) => ['LIKE', QueryFunction::cast(new QueryExpression($this->db->quote($b)), 'BINARY')],
+                            ],
                         ];
                     },
                 ],
@@ -163,47 +163,47 @@ final class Parser
                     'sql_where_callable' => function ($a, $b) {
                         $b = str_replace(['%', '*'], ['_', '%'], $b);
                         return [
-                            [$this->db::quoteName($a) => ['LIKE', $b]]
+                            [$this->db::quoteName($a) => ['LIKE', $b]],
                         ];
                     },
                 ],
                 [
                     'operator' => '=isnull=',
                     'description' => 'is null',
-                    'sql_where_callable' => fn ($a, $b) => [
-                        [$this->db::quoteName($a) => null]
+                    'sql_where_callable' => fn($a, $b) => [
+                        [$this->db::quoteName($a) => null],
                     ],
                 ],
                 [
                     'operator' => '=notnull=',
                     'description' => 'is not null',
-                    'sql_where_callable' => fn ($a, $b) => [
-                        ['NOT' => [$this->db::quoteName($a) => null]]
+                    'sql_where_callable' => fn($a, $b) => [
+                        ['NOT' => [$this->db::quoteName($a) => null]],
                     ],
                 ],
                 [
                     // Empty string or null
                     'operator' => '=empty=',
                     'description' => 'is empty',
-                    'sql_where_callable' => fn ($a, $b) => [
+                    'sql_where_callable' => fn($a, $b) => [
                         [
                             'OR' => [
                                 [$this->db::quoteName($a) => ''],
                                 [$this->db::quoteName($a) => null],
-                            ]
-                        ]
+                            ],
+                        ],
                     ],
                 ],
                 [
                     'operator' => '=notempty=',
                     'description' => 'is not empty',
-                    'sql_where_callable' => fn ($a, $b) => [
+                    'sql_where_callable' => fn($a, $b) => [
                         [
                             'AND' => [
                                 [$this->db::quoteName($a) => ['<>', '']],
                                 [$this->db::quoteName($a) => ['<>', null]],
-                            ]
-                        ]
+                            ],
+                        ],
                     ],
                 ],
             ];
@@ -221,7 +221,8 @@ final class Parser
         // We are building a SQL string instead of criteria array because it isn't worth the complexity or overhead.
         // Everything done here should be standard SQL. If there is a platform difference, it should be handled in the callables for each operator.
         // SQL already will process logical separators (AND, OR) in the correct order, so we don't need to worry about that.
-        $sql_string = '';
+        $sql_where_string = '';
+        $sql_having_string = '';
 
         $position = 0;
         $token_count = count($tokens);
@@ -244,7 +245,7 @@ final class Parser
                         'property' => null,
                         'field' => null,
                     ];
-                } else if (isset($flat_props[$value]['x-mapped-from'])) {
+                } elseif (isset($flat_props[$value]['x-mapped-from'])) {
                     // Mapped properties cannot be used in RSQL currently since they are calculated after the query is executed
                     $invalid_filters[$value] = Error::MAPPED_PROPERTY;
                     $buffer = [
@@ -257,7 +258,7 @@ final class Parser
                         'field' => $this->search->getSQLFieldForProperty($value),
                     ];
                 }
-            } else if ($type === Lexer::T_OPERATOR) {
+            } elseif ($type === Lexer::T_OPERATOR) {
                 if (!isset($operators[$value])) {
                     if ($buffer['property'] !== null) {
                         $invalid_filters[$buffer['property']] = Error::UNKNOWN_OPERATOR;
@@ -266,7 +267,7 @@ final class Parser
                 } else {
                     $buffer['operator'] = $operators[$value]['sql_where_callable'];
                 }
-            } else if ($type === Lexer::T_VALUE) {
+            } elseif ($type === Lexer::T_VALUE) {
                 if ($buffer['property'] !== null && $buffer['operator'] !== null && $buffer['field'] !== null) {
                     // Unquote value if it is quoted
                     if (preg_match('/^".*"$/', $value) || preg_match("/^'.*'$/", $value)) {
@@ -280,27 +281,34 @@ final class Parser
                         };
                     }
                     $criteria_array = $buffer['operator']($buffer['field'], $value);
-                    $sql_string .= $it->analyseCrit($criteria_array);
+                    if (isset($flat_props[$buffer['property']]['computation'])) {
+                        $sql_having_string .= $it->analyseCrit($criteria_array);
+                    } else {
+                        $sql_where_string .= $it->analyseCrit($criteria_array);
+                    }
                 }
                 $buffer = [];
-            } else if ($sql_string !== '' && ($type === Lexer::T_AND || $type === Lexer::T_OR)) {
-                $sql_string .= $type === Lexer::T_AND ? ' AND ' : ' OR ';
-            } else if ($type === Lexer::T_GROUP_OPEN) {
-                $sql_string .= '(';
-            } else if ($type === Lexer::T_GROUP_CLOSE) {
-                $sql_string .= ')';
+            } elseif ($sql_where_string !== '' && ($type === Lexer::T_AND || $type === Lexer::T_OR)) {
+                $sql_where_string .= $type === Lexer::T_AND ? ' AND ' : ' OR ';
+            } elseif ($type === Lexer::T_GROUP_OPEN) {
+                $sql_where_string .= '(';
+            } elseif ($type === Lexer::T_GROUP_CLOSE) {
+                $sql_where_string .= ')';
             }
             $position++;
         }
 
         // Remove any trailing ANDs and ORs (may be multiple in a row)
-        $sql_string = preg_replace('/(\sAND\s|\sOR\s)*$/', '', $sql_string);
+        $sql_where_string = preg_replace('/(\sAND\s|\sOR\s)*$/', '', $sql_where_string);
 
         // If the string is empty, return a criteria array that will return all results
-        if ($sql_string === '') {
-            $sql_string = '1';
+        if ($sql_where_string === '') {
+            $sql_where_string = '1';
+        }
+        if ($sql_having_string === '') {
+            $sql_having_string = '1';
         }
 
-        return new Result(new QueryExpression($sql_string), $invalid_filters);
+        return new Result(new QueryExpression($sql_where_string), new QueryExpression($sql_having_string), $invalid_filters);
     }
 }

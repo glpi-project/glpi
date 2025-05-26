@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -38,6 +37,7 @@ namespace tests\units\Glpi\Asset\Capacity;
 use DbTestCase;
 use DisplayPreference;
 use Entity;
+use Glpi\Asset\Capacity;
 use Glpi\PHPUnit\Tests\Glpi\Asset\CapacityUsageTestTrait;
 use Item_RemoteManagement;
 use Log;
@@ -59,21 +59,21 @@ class HasRemoteManagementCapacityTest extends DbTestCase
 
         $definition_1 = $this->initAssetDefinition(
             capacities: [
-                \Glpi\Asset\Capacity\HasRemoteManagementCapacity::class,
-                \Glpi\Asset\Capacity\HasNotepadCapacity::class,
+                new Capacity(name: \Glpi\Asset\Capacity\HasRemoteManagementCapacity::class),
+                new Capacity(name: \Glpi\Asset\Capacity\HasNotepadCapacity::class),
             ]
         );
         $classname_1  = $definition_1->getAssetClassName();
         $definition_2 = $this->initAssetDefinition(
             capacities: [
-                \Glpi\Asset\Capacity\HasHistoryCapacity::class,
+                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
             ]
         );
         $classname_2  = $definition_2->getAssetClassName();
         $definition_3 = $this->initAssetDefinition(
             capacities: [
-                \Glpi\Asset\Capacity\HasRemoteManagementCapacity::class,
-                \Glpi\Asset\Capacity\HasHistoryCapacity::class,
+                new Capacity(name: \Glpi\Asset\Capacity\HasRemoteManagementCapacity::class),
+                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
             ]
         );
         $classname_3  = $definition_3->getAssetClassName();
@@ -123,15 +123,15 @@ class HasRemoteManagementCapacityTest extends DbTestCase
 
         $definition_1 = $this->initAssetDefinition(
             capacities: [
-                \Glpi\Asset\Capacity\HasRemoteManagementCapacity::class,
-                \Glpi\Asset\Capacity\HasHistoryCapacity::class,
+                new Capacity(name: \Glpi\Asset\Capacity\HasRemoteManagementCapacity::class),
+                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
             ]
         );
         $classname_1  = $definition_1->getAssetClassName();
         $definition_2 = $this->initAssetDefinition(
             capacities: [
-                \Glpi\Asset\Capacity\HasRemoteManagementCapacity::class,
-                \Glpi\Asset\Capacity\HasHistoryCapacity::class,
+                new Capacity(name: \Glpi\Asset\Capacity\HasRemoteManagementCapacity::class),
+                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
             ]
         );
         $classname_2  = $definition_2->getAssetClassName();
@@ -218,7 +218,7 @@ class HasRemoteManagementCapacityTest extends DbTestCase
     public function testCloneAsset()
     {
         $definition = $this->initAssetDefinition(
-            capacities: [\Glpi\Asset\Capacity\HasRemoteManagementCapacity::class]
+            capacities: [new Capacity(name: \Glpi\Asset\Capacity\HasRemoteManagementCapacity::class)]
         );
         $class = $definition->getAssetClassName();
         $entity = $this->getTestRootEntity(true);
@@ -257,7 +257,7 @@ class HasRemoteManagementCapacityTest extends DbTestCase
     public static function provideIsUsed(): iterable
     {
         yield [
-            'target_classname' => Item_RemoteManagement::class
+            'target_classname' => Item_RemoteManagement::class,
         ];
     }
 
@@ -265,7 +265,7 @@ class HasRemoteManagementCapacityTest extends DbTestCase
     {
         yield [
             'target_classname' => Item_RemoteManagement::class,
-            'expected' => '%d remote management items attached to %d assets'
+            'expected' => '%d remote management items attached to %d assets',
         ];
     }
 }

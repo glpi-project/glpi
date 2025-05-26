@@ -6,7 +6,6 @@
  # http://glpi-project.org
  #
  # @copyright 2015-2025 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -38,7 +37,7 @@
 <div
     data-glpi-itildestination-field-config-display-condition="{{ CONFIG_SPECIFIC_VALUES }}"
     data-glpi-associated-items-specific-values-extra-field="{{ rand }}"
-    class="form-field col-12 col-sm-6 d-none"
+    class="form-field col-12 d-none"
 >
     {% set remove_button %}
         <button type="button" class="btn btn-outline rounded-0" data-glpi-remove-associated-item-button aria-label="{{ __('Remove item') }}">
@@ -157,7 +156,7 @@
 </div>
 
 <script>
-    import("{{ js_path('js/modules/Forms/FieldDestinationAssociatedItem.js') }}").then((m) => {
+    import("/js/modules/Forms/FieldDestinationAssociatedItem.js").then((m) => {
         new m.GlpiFormFieldDestinationAssociatedItem(
             $('[data-glpi-associated-items-specific-values-extra-field="{{ rand }}"]'),
             '{{ specific_values_extra_field.input_name ~ "[itemtype][]" }}',

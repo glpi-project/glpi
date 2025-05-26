@@ -34,7 +34,6 @@
 
 namespace Glpi\Form\Condition\ConditionHandler;
 
-use Glpi\Form\Condition\InputTemplateKey;
 use Glpi\Form\Condition\ValueOperator;
 use Override;
 
@@ -66,7 +65,7 @@ class NumberConditionHandler implements ConditionHandlerInterface
             'attributes' => [
                 'type' => 'number',
                 'step' => 'any',
-            ]
+            ],
         ];
     }
 

@@ -6,7 +6,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -38,7 +37,7 @@ describe('Title configuration', () => {
 
         // Create form with a single "request type" question
         cy.createFormWithAPI({"name": "My form name"}).visitFormTab('Form');
-        cy.findByRole('button', {'name': "Add a new question"}).click();
+        cy.findByRole('button', {'name': "Add a question"}).click();
         cy.focused().type("What is your name ?");
         cy.getDropdownByLabelText('Question type').selectDropdownValue('Short answer');
         cy.findByRole('button', {'name': 'Save'}).click();
@@ -49,12 +48,12 @@ describe('Title configuration', () => {
     });
 
     it('can configure the title field', () => {
-        cy.findByLabelText("Title").awaitTinyMCE().as("title_field");
+        cy.findByRole('region', {name: 'Title configuration'}).awaitTinyMCE().as("title_field");
         cy.get("@title_field").clear();
         cy.get("@title_field").type("My specific form name");
         cy.findByRole('button', {'name': 'Update item'}).click();
         cy.checkAndCloseAlert('Item successfully updated');
-        cy.findByLabelText("Title").awaitTinyMCE().as("title_field");
+        cy.findByRole('region', {name: 'Title configuration'}).awaitTinyMCE().as("title_field");
         cy.get("@title_field").contains("My specific form name");
     });
 
@@ -68,7 +67,7 @@ describe('Title configuration', () => {
 
         // Fill form
         cy.findByRole('textbox', {'name': "What is your name ?"}).type("John doe");
-        cy.findByRole('button', {'name': 'Send form'}).click();
+        cy.findByRole('button', {'name': 'Submit'}).click();
         cy.findByRole('link', {'name': 'My form name'}).click();
 
         // Check ticket values, default name should be the form name

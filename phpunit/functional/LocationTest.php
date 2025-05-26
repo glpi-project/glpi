@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -36,6 +35,7 @@
 namespace tests\units;
 
 use DbTestCase;
+use Glpi\Socket;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 /* Test for inc/location.class.php */
@@ -49,7 +49,7 @@ class LocationTest extends DbTestCase
             'name'         => 'inherit_geo_test_parent',
             'latitude'     => '48.8566',
             'longitude'    => '2.3522',
-            'altitude'     => '115'
+            'altitude'     => '115',
         ]);
         $this->assertGreaterThan(0, (int) $location1_id);
         $location2 = new \Location();
@@ -62,14 +62,14 @@ class LocationTest extends DbTestCase
         $this->assertEquals($location1->fields['longitude'], $location2->fields['longitude']);
         $this->assertEquals($location1->fields['altitude'], $location2->fields['altitude']);
 
-       // Make sure we don't overwrite data a user sets
+        // Make sure we don't overwrite data a user sets
         $location3 = new \Location();
         $location3_id = $location3->add([
             'locations_id' => $location1_id,
             'name'         => 'inherit_geo_test_child2',
             'latitude'     => '41.3851',
             'longitude'    => '2.1734',
-            'altitude'     => '39'
+            'altitude'     => '39',
         ]);
         $this->assertGreaterThan(0, (int) $location3_id);
         $this->assertEquals('41.3851', $location3->fields['latitude']);
@@ -88,7 +88,7 @@ class LocationTest extends DbTestCase
 
         // Try importing a location as a child of the location we just created
         $locations_id_2 = \Dropdown::importExternal('Location', 'testImportExternal_2', getItemByTypeName('Entity', '_test_root_entity', true), [
-            'locations_id' => $locations_id
+            'locations_id' => $locations_id,
         ]);
         $this->assertGreaterThan(0, (int) $locations_id_2);
         // Verify that the location was created
@@ -229,7 +229,7 @@ class LocationTest extends DbTestCase
                     [
                         'entities_id'   => $entity_id,
                         'name'          => 'Import by name',
-                    ]
+                    ],
                 ],
             ];
         }
@@ -334,7 +334,7 @@ class LocationTest extends DbTestCase
                 'entities_id'   => $sub_entity_id,
                 'name'          => 'Child name',
                 'locations_id'  => $parent_location->getID(),
-            ]
+            ],
         ];
 
         $count_before_import = countElementsInTable(\Location::getTable());
@@ -386,13 +386,13 @@ class LocationTest extends DbTestCase
             [
                 'entities_id'   => $sub_entity_id,
                 'name'          => 'Location level 2',
-                ['NOT' => ['locations_id' => $l1_location->getID()]]
+                ['NOT' => ['locations_id' => $l1_location->getID()]],
             ],
             [
                 'entities_id'   => $sub_entity_id,
                 'name'          => 'Location level 3',
-                ['NOT' => ['locations_id' => $l2_location->getID()]]
-            ]
+                ['NOT' => ['locations_id' => $l2_location->getID()]],
+            ],
         ];
         $count_before_import = countElementsInTable(\Location::getTable());
         $this->assertGreaterThan(0, $instance->import($input));
@@ -414,5 +414,21 @@ class LocationTest extends DbTestCase
             $item = new $type();
             $this->assertTrue($item->maybeLocated(), $type . ' cannot be located!');
         }
+    }
+
+    public function testTabs()
+    {
+        $this->login();
+        $location = $this->createItem(\Location::class, [
+            'name' => __FUNCTION__,
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+        $tabs = $location->defineTabs();
+        $this->assertArrayHasKey('Location$main', $tabs);
+        $this->assertStringContainsString('Locations', $tabs[\Location::class . '$1']);
+        $this->assertStringContainsString('Items', $tabs[\Location::class . '$2']);
+        $this->assertStringContainsString('Translations', $tabs[\DropdownTranslation::class . '$1']);
+        $this->assertStringContainsString('Sockets', $tabs[Socket::class . '$1']);
+        $this->assertStringContainsString('Documents', $tabs[\Document_Item::class . '$1']);
     }
 }

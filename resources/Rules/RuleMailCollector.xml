@@ -3,31 +3,31 @@
     <rule>
         <entities_id>Root entity</entities_id>
         <sub_type>RuleMailCollector</sub_type>
-        <ranking>3</ranking>
-        <name>Root</name>
-        <description></description>
-        <match>OR</match>
+        <ranking>1</ranking>
+        <name>GLPI notifications</name>
+        <description>Exclude emails corresponding to a GLPI notification</description>
+        <match>AND</match>
         <is_active>1</is_active>
         <comment></comment>
-        <is_recursive>0</is_recursive>
-        <uuid>glpi_rule_mail_collector_root</uuid>
+        <is_recursive>1</is_recursive>
+        <uuid>glpi_rule_mail_collector_glpi_notifications</uuid>
         <condition>0</condition>
         <date_creation></date_creation>
         <rulecriteria>
-            <criteria>subject</criteria>
+            <criteria>message_id</criteria>
             <condition>6</condition>
-            <pattern>/.*/</pattern>
+            <pattern>/GLPI(_(?&lt;uuid&gt;[a-z0-9]+))?(-(?&lt;itemtype&gt;[a-z]+))?(-(?&lt;items_id&gt;[0-9]+))?(\/(?&lt;event&gt;[a-z_]+))?(\.(?&lt;random&gt;[0-9]+\.[0-9]+))?@(?&lt;uname&gt;.+)/i</pattern>
         </rulecriteria>
         <ruleaction>
             <action_type>assign</action_type>
-            <field>entities_id</field>
-            <value>0</value>
+            <field>_refuse_email_no_response</field>
+            <value>1</value>
         </ruleaction>
     </rule>
     <rule>
         <entities_id>Root entity</entities_id>
         <sub_type>RuleMailCollector</sub_type>
-        <ranking>1</ranking>
+        <ranking>2</ranking>
         <name>X-Auto-Response-Suppress</name>
         <description>Exclude Auto-Reply emails using X-Auto-Response-Suppress header</description>
         <match>AND</match>
@@ -51,7 +51,7 @@
     <rule>
         <entities_id>Root entity</entities_id>
         <sub_type>RuleMailCollector</sub_type>
-        <ranking>2</ranking>
+        <ranking>3</ranking>
         <name>Auto-Reply Auto-Submitted</name>
         <description>Exclude Auto-Reply emails using Auto-Submitted header</description>
         <match>OR</match>
@@ -70,6 +70,30 @@
             <action_type>assign</action_type>
             <field>_refuse_email_no_response</field>
             <value>1</value>
+        </ruleaction>
+    </rule>
+    <rule>
+        <entities_id>Root entity</entities_id>
+        <sub_type>RuleMailCollector</sub_type>
+        <ranking>4</ranking>
+        <name>Root</name>
+        <description></description>
+        <match>OR</match>
+        <is_active>1</is_active>
+        <comment></comment>
+        <is_recursive>0</is_recursive>
+        <uuid>glpi_rule_mail_collector_root</uuid>
+        <condition>0</condition>
+        <date_creation></date_creation>
+        <rulecriteria>
+            <criteria>subject</criteria>
+            <condition>6</condition>
+            <pattern>/.*/</pattern>
+        </rulecriteria>
+        <ruleaction>
+            <action_type>assign</action_type>
+            <field>entities_id</field>
+            <value>0</value>
         </ruleaction>
     </rule>
 </rules>

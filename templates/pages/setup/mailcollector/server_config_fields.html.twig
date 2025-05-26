@@ -6,7 +6,6 @@
  # http://glpi-project.org
  #
  # @copyright 2015-2025 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -52,69 +51,51 @@
 ) }}
 
 {% set connection_options_fields %}
-   <div class="d-flex">
+   <div class="d-flex flex-wrap mb-n2">
       {% set type_value = connect_opts['type'] is not empty ? ('/' ~ connect_opts['type']) : '' %}
-      {{ fields.dropdownArrayField('server_type', type_value, protocol_choices, '', {
+      {% set options = {
          no_label: true,
          display_emptychoice: true,
-         field_class: 'me-2'
-      }) }}
+         field_class: 'me-2',
+         mb: 'mb-0',
+      } %}
+      {{ fields.dropdownArrayField('server_type', type_value, protocol_choices, '', options) }}
       {% set ssl_value = connect_opts['ssl'] ? '/ssl' : '' %}
       {{ fields.dropdownArrayField('server_ssl', ssl_value, {
          '/ssl': __('SSL')
-      }, '', {
-         no_label: true,
-         display_emptychoice: true,
-         field_class: 'me-2'
-      }) }}
+      }, '', options) }}
       {% set tls_value = connect_opts['tls'] is same as(true) ? '/tls' : (connect_opts['tls'] is same as (false) ? '/notls' : '') %}
       {{ fields.dropdownArrayField('server_tls', tls_value, {
          '/tls': __('TLS'),
          '/notls': __('NO-TLS')
-      }, '', {
-         no_label: true,
-         display_emptychoice: true,
-         field_class: 'me-2'
-      }) }}
+      }, '', options) }}
       {% set cert_value = connect_opts['validate-cert']is same as(true) ? '/validate-cert' : (connect_opts['validate-cert'] is same as(false) ? '/novalidate-cert' : '') %}
       {{ fields.dropdownArrayField('server_cert', cert_value, {
          '/novalidate-cert': __('NO-VALIDATE-CERT'),
          '/validate-cert': __('VALIDATE-CERT')
-      }, '', {
-         no_label: true,
-         display_emptychoice: true,
-         field_class: 'me-2'
-      }) }}
+      }, '', options) }}
       {{ fields.dropdownArrayField('server_rsh', connect_opts['norsh'] == true ? '/norsh' : '', {
          '/norsh': __('NORSH'),
-      }, '', {
-         no_label: true,
-         display_emptychoice: true,
-         field_class: 'me-2'
-      }) }}
+      }, '', options) }}
       {{ fields.dropdownArrayField('server_secure', connect_opts['secure'] == true ? '/secure' : '', {
          '/secure': __('SECURE'),
-      }, '', {
-         no_label: true,
-         display_emptychoice: true,
-         field_class: 'me-2'
-      }) }}
+      }, '', options) }}
       {{ fields.dropdownArrayField('server_debug', connect_opts['debug'] == true ? '/debug' : '', {
          '/debug': __('DEBUG'),
-      }, '', {
-         no_label: true,
-         display_emptychoice: true,
-         field_class: 'me-2'
-      }) }}
+      }, '', options) }}
    </div>
 {% endset %}
 {{ fields.htmlField(
    '',
    connection_options_fields,
-   __('Connection options')
+   __('Connection options'),
+   {
+      full_width: true,
+   }
 ) }}
 {% if connect_string is not empty %}
    {{ fields.htmlField('', connect_string, __('Connection string'), {
-      add_field_class: 'fw-bold'
+      add_field_class: 'fw-bold',
+      full_width: true,
    }) }}
 {% endif %}

@@ -65,12 +65,7 @@ abstract class AbstractController implements PublicService
     ): Response {
         $twig = TemplateRenderer::getInstance();
 
-        // We must use output buffering here as Html::header() and Html::footer()
-        // output content directly.
-        // TODO: fix header() and footer() methods and remove output buffering
-        ob_start();
-        $twig->display($view, $parameters);
-        $content = ob_get_clean();
+        $content = $twig->render($view, $parameters);
 
         $response->setContent($content);
         return $response;

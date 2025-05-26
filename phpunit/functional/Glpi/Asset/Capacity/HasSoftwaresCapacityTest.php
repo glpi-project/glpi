@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -38,6 +37,7 @@ namespace tests\units\Glpi\Asset\Capacity;
 use DbTestCase;
 use Entity;
 use Glpi\Asset\Asset;
+use Glpi\Asset\Capacity;
 use Item_SoftwareLicense;
 use Item_SoftwareVersion;
 use Log;
@@ -55,21 +55,21 @@ class HasSoftwaresCapacityTest extends DbTestCase
 
         $definition_1 = $this->initAssetDefinition(
             capacities: [
-                \Glpi\Asset\Capacity\HasSoftwaresCapacity::class,
-                \Glpi\Asset\Capacity\HasNotepadCapacity::class,
+                new Capacity(name: \Glpi\Asset\Capacity\HasSoftwaresCapacity::class),
+                new Capacity(name: \Glpi\Asset\Capacity\HasNotepadCapacity::class),
             ]
         );
         $classname_1  = $definition_1->getAssetClassName();
         $definition_2 = $this->initAssetDefinition(
             capacities: [
-                \Glpi\Asset\Capacity\HasHistoryCapacity::class,
+                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
             ]
         );
         $classname_2  = $definition_2->getAssetClassName();
         $definition_3 = $this->initAssetDefinition(
             capacities: [
-                \Glpi\Asset\Capacity\HasSoftwaresCapacity::class,
-                \Glpi\Asset\Capacity\HasHistoryCapacity::class,
+                new Capacity(name: \Glpi\Asset\Capacity\HasSoftwaresCapacity::class),
+                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
             ]
         );
         $classname_3  = $definition_3->getAssetClassName();
@@ -110,15 +110,15 @@ class HasSoftwaresCapacityTest extends DbTestCase
 
         $definition_1 = $this->initAssetDefinition(
             capacities: [
-                \Glpi\Asset\Capacity\HasSoftwaresCapacity::class,
-                \Glpi\Asset\Capacity\HasHistoryCapacity::class,
+                new Capacity(name: \Glpi\Asset\Capacity\HasSoftwaresCapacity::class),
+                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
             ]
         );
         $classname_1  = $definition_1->getAssetClassName();
         $definition_2 = $this->initAssetDefinition(
             capacities: [
-                \Glpi\Asset\Capacity\HasSoftwaresCapacity::class,
-                \Glpi\Asset\Capacity\HasHistoryCapacity::class,
+                new Capacity(name: \Glpi\Asset\Capacity\HasSoftwaresCapacity::class),
+                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
             ]
         );
         $classname_2  = $definition_2->getAssetClassName();
@@ -230,7 +230,7 @@ class HasSoftwaresCapacityTest extends DbTestCase
     public function testCloneAsset()
     {
         $definition = $this->initAssetDefinition(
-            capacities: [\Glpi\Asset\Capacity\HasSoftwaresCapacity::class]
+            capacities: [new Capacity(name: \Glpi\Asset\Capacity\HasSoftwaresCapacity::class)]
         );
         $class = $definition->getAssetClassName();
         $entity = $this->getTestRootEntity(true);
@@ -304,7 +304,7 @@ class HasSoftwaresCapacityTest extends DbTestCase
     public function testIsUsed(): void
     {
         $definition = $this->initAssetDefinition(
-            capacities: [\Glpi\Asset\Capacity\HasSoftwaresCapacity::class]
+            capacities: [new Capacity(name: \Glpi\Asset\Capacity\HasSoftwaresCapacity::class)]
         );
         $class    = $definition->getAssetClassName();
         $capacity = new \Glpi\Asset\Capacity\HasSoftwaresCapacity();
@@ -377,7 +377,7 @@ class HasSoftwaresCapacityTest extends DbTestCase
     public function testGetCapacityUsageDescription(): void
     {
         $definition = $this->initAssetDefinition(
-            capacities: [\Glpi\Asset\Capacity\HasSoftwaresCapacity::class]
+            capacities: [new Capacity(name: \Glpi\Asset\Capacity\HasSoftwaresCapacity::class)]
         );
         $class    = $definition->getAssetClassName();
         $capacity = new \Glpi\Asset\Capacity\HasSoftwaresCapacity();
@@ -458,7 +458,7 @@ class HasSoftwaresCapacityTest extends DbTestCase
         $assets_count   = 0;
         $software_count = 0;
         $this->assertEquals(
-            '0 software(s) attached to 0 assets',
+            '0 software attached to 0 assets',
             $capacity->getCapacityUsageDescription($class)
         );
 
@@ -483,13 +483,13 @@ class HasSoftwaresCapacityTest extends DbTestCase
                         'softwareversions_id' => $software1_version2->getID(),
                         'itemtype' => $asset->getType(),
                         'items_id' => $asset->getID(),
-                    ]
+                    ],
                 ]
             );
             $assets_count++;
 
             $this->assertEquals(
-                sprintf('%d software(s) attached to %d assets', $software_count, $assets_count),
+                sprintf('%d software attached to %d assets', $software_count, $assets_count),
                 $capacity->getCapacityUsageDescription($class)
             );
         }
@@ -521,7 +521,7 @@ class HasSoftwaresCapacityTest extends DbTestCase
             $assets_count++;
 
             $this->assertEquals(
-                sprintf('%d software(s) attached to %d assets', $software_count, $assets_count),
+                sprintf('%d software attached to %d assets', $software_count, $assets_count),
                 $capacity->getCapacityUsageDescription($class)
             );
         }
@@ -545,13 +545,13 @@ class HasSoftwaresCapacityTest extends DbTestCase
                         'softwarelicenses_id' => $software3_license2->getID(),
                         'itemtype' => $asset->getType(),
                         'items_id' => $asset->getID(),
-                    ]
+                    ],
                 ]
             );
             $assets_count++;
 
             $this->assertEquals(
-                sprintf('%d software(s) attached to %d assets', $software_count, $assets_count),
+                sprintf('%d software attached to %d assets', $software_count, $assets_count),
                 $capacity->getCapacityUsageDescription($class)
             );
         }

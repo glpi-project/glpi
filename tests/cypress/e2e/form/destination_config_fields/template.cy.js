@@ -6,7 +6,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -40,9 +39,12 @@ describe('Template configuration', () => {
         cy.createFormWithAPI().as('form_id').visitFormTab('Form');
 
         // Add a default question
-        cy.findByRole('button', {'name': "Add a new question"}).click();
+        cy.findByRole('button', {'name': "Add a question"}).click();
         cy.focused().type("My test question");
         cy.findByRole('button', {'name': 'Save'}).click();
+
+        // Check alert
+        cy.checkAndCloseAlert('Item successfully updated');
 
         // Create a ticket template
         cy.get('@form_id').then((form_id) => {
@@ -65,6 +67,7 @@ describe('Template configuration', () => {
     });
 
     it('can use all possibles configuration options', () => {
+        cy.openAccordionItem('Destination fields accordion', 'Properties');
         cy.findByRole('region', {'name': "Template configuration"}).as("config");
         cy.get('@config').getDropdownByLabelText('Template').as("template_dropdown");
 
@@ -87,6 +90,7 @@ describe('Template configuration', () => {
 
             cy.findByRole('button', {'name': 'Update item'}).click();
             cy.checkAndCloseAlert('Item successfully updated');
+            cy.openAccordionItem('Destination fields accordion', 'Properties');
             cy.get('@template_dropdown').should('have.text', 'Specific template');
             cy.get('@specific_template_id_dropdown').should('have.text', ticket_template_name);
         });
@@ -104,7 +108,7 @@ describe('Template configuration', () => {
         cy.findByRole('textbox', { 'name': 'My test question' }).type('My test answer');
 
         // Submit form
-        cy.findByRole('button', {'name': 'Send form'}).click();
+        cy.findByRole('button', {'name': 'Submit'}).click();
         cy.findByRole('link', {'name': 'My test form'}).click();
 
         // Check ticket values

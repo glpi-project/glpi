@@ -6,7 +6,6 @@
  # http://glpi-project.org
  #
  # @copyright 2015-2025 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -114,20 +113,10 @@
                         {{ fields.autoNameField(field['name'], item, field['label'], withtemplate, fields_params) }}
                     {% elseif type == 'textarea' %}
                         {{ fields.textareaField(field['name'], item.fields[field['name']], field['label'], fields_params) }}
-                    {% elseif type == 'richtext' %}
-                        {{ fields.textareaField(
-                            field['name'],
-                            item.fields[field['name']],
-                            field['label'],
-                            fields_params|merge({
-                                'enable_richtext': true,
-                                'enable_images': false,
-                            })
-                        ) }}
                     {% elseif type == 'illustration' %}
                         {{ fields.illustrationField(
                             field['name'],
-                            item.fields[field['name']],
+                            item.fields[field['name']]|default(constant('Glpi\\UI\\IllustrationManager::DEFAULT_ILLUSTRATION')),
                             field['label'],
                         ) }}
                     {% elseif type == 'integer' %}
@@ -195,7 +184,7 @@
                     {% elseif type == 'password' %}
                         {{ fields.passwordField(field['name'], item.fields[field['name']], field['label'], fields_params) }}
                     {% elseif type == 'tinymce' %}
-                        {% set fields_params = fields_params|merge({'enable_richtext': true, 'full_width': true}) %}
+                        {% set fields_params = {'enable_richtext': true, 'full_width': true}|merge(fields_params) %}
                         {{ fields.textareaField(field['name'], item.fields[field['name']], field['label'], fields_params) }}
                     {% elseif type == 'duration' %}
                         {% set toadd = [] %}

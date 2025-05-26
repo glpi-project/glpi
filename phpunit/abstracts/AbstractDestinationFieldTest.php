@@ -105,10 +105,10 @@ abstract class AbstractDestinationFieldTest extends DbTestCase
                         'glpi_plugin_formcreator_forms' => [
                             'ON' => [
                                 'glpi_plugin_formcreator_targettickets' => 'plugin_formcreator_forms_id',
-                                'glpi_plugin_formcreator_forms'         => 'id'
-                            ]
-                        ]
-                    ]
+                                'glpi_plugin_formcreator_forms'         => 'id',
+                            ],
+                        ],
+                    ],
                 ]
             ));
         }
@@ -122,7 +122,7 @@ abstract class AbstractDestinationFieldTest extends DbTestCase
         $form = getItemByTypeName(Form::class, 'Test form migration for targets');
         $destination = current(array_filter(
             $form->getDestinations(),
-            fn ($destination) => $destination->getConcreteDestinationItem() instanceof FormDestinationTicket
+            fn($destination) => $destination->getConcreteDestinationItem() instanceof FormDestinationTicket
         ));
 
         $this->assertNotFalse($destination);

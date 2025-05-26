@@ -6,7 +6,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -38,7 +37,7 @@ describe('SLA TTR configuration', () => {
 
         // Create form
         cy.createFormWithAPI().visitFormTab('Form');
-        cy.findByRole('button', {'name': "Add a new question"}).click();
+        cy.findByRole('button', {'name': "Add a question"}).click();
         cy.focused().type("My test question");
         cy.findByRole('button', {'name': 'Save'}).click();
         cy.checkAndCloseAlert('Item successfully updated');
@@ -60,8 +59,9 @@ describe('SLA TTR configuration', () => {
     });
 
     it('can use all possibles configuration options', () => {
-        cy.findByRole('region', { 'name': "SLA TTR configuration" }).as("config");
-        cy.get('@config').getDropdownByLabelText('SLA TTR').as("sla_ttr_dropdown");
+        cy.openAccordionItem('Destination fields accordion', 'Service levels');
+        cy.findByRole('region', { 'name': "TTR configuration" }).as("config");
+        cy.get('@config').getDropdownByLabelText('TTR').as("sla_ttr_dropdown");
 
         // Default value
         cy.get('@sla_ttr_dropdown').should(
@@ -73,6 +73,7 @@ describe('SLA TTR configuration', () => {
         cy.get('@sla_ttr_dropdown').selectDropdownValue('From template');
         cy.findByRole('button', { 'name': 'Update item' }).click();
         cy.checkAndCloseAlert('Item successfully updated');
+        cy.openAccordionItem('Destination fields accordion', 'Service levels');
         cy.get('@sla_ttr_dropdown').should('have.text', 'From template');
 
         // Switch to "Specific SLA"
@@ -85,6 +86,7 @@ describe('SLA TTR configuration', () => {
 
         cy.findByRole('button', { 'name': 'Update item' }).click();
         cy.checkAndCloseAlert('Item successfully updated');
+        cy.openAccordionItem('Destination fields accordion', 'Service levels');
         cy.get('@sla_ttr_dropdown').should('have.text', 'Specific SLA');
         cy.get('@slm_id').then((slm_id) => {
             const sla_name = `SLA TTR - ${slm_id}`;
@@ -94,8 +96,9 @@ describe('SLA TTR configuration', () => {
 
     it('can create ticket using default configuration', () => {
         // Switch to "Specific SLA"
-        cy.findByRole('region', { 'name': "SLA TTR configuration" }).as("config");
-        cy.get('@config').getDropdownByLabelText('SLA TTR').selectDropdownValue('Specific SLA');
+        cy.openAccordionItem('Destination fields accordion', 'Service levels');
+        cy.findByRole('region', { 'name': "TTR configuration" }).as("config");
+        cy.get('@config').getDropdownByLabelText('TTR').selectDropdownValue('Specific SLA');
         cy.get('@slm_id').then((slm_id) => {
             const sla_name = `SLA TTR - ${slm_id}`;
             cy.get('@config').getDropdownByLabelText('Select a SLA...').selectDropdownValue(sla_name);
@@ -114,7 +117,7 @@ describe('SLA TTR configuration', () => {
         cy.findByRole('textbox', { 'name': 'My test question' }).type('My test answer');
 
         // Submit form
-        cy.findByRole('button', { 'name': 'Send form' }).click();
+        cy.findByRole('button', { 'name': 'Submit' }).click();
         cy.findByRole('link', { 'name': 'My test form' }).click();
 
         // Check ticket values

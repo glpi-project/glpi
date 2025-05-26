@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -38,7 +37,11 @@ namespace Glpi\Form\Destination\CommonITILField;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AnswersSet;
+use Glpi\Form\Destination\AbstractCommonITILFormDestination;
 use Glpi\Form\Destination\AbstractConfigField;
+use Glpi\Form\Export\Context\DatabaseMapper;
+use Glpi\Form\Export\Serializer\DynamicExportDataField;
+use Glpi\Form\Export\Specification\DataRequirementSpecification;
 use Glpi\Form\Form;
 use Glpi\Form\Migration\DestinationFieldConverterInterface;
 use Glpi\Form\Migration\FormMigration;
@@ -46,7 +49,7 @@ use InvalidArgumentException;
 use ITILTemplate;
 use Override;
 
-class TemplateField extends AbstractConfigField implements DestinationFieldConverterInterface
+final class TemplateField extends AbstractConfigField implements DestinationFieldConverterInterface
 {
     private string $itil_template_class;
 
@@ -82,7 +85,8 @@ class TemplateField extends AbstractConfigField implements DestinationFieldConve
             throw new InvalidArgumentException("Unexpected config class");
         }
 
-        $parameters = [
+        $twig = TemplateRenderer::getInstance();
+        return $twig->render('pages/admin/form/itil_config_fields/template.html.twig', [
             // Possible configuration constant that will be used to to hide/show additional fields
             'CONFIG_SPECIFIC_TEMPLATE'  => TemplateFieldStrategy::SPECIFIC_TEMPLATE->value,
 
@@ -96,36 +100,7 @@ class TemplateField extends AbstractConfigField implements DestinationFieldConve
                 'input_name'      => $input_name . "[" . TemplateFieldConfig::TEMPLATE_ID . "]",
                 'possible_values' => $this->getTemplateValuesForDropdown($form),
             ],
-        ];
-
-        $template = <<<TWIG
-            {% import 'components/form/fields_macros.html.twig' as fields %}
-
-            <div
-                {% if main_config_field.value != CONFIG_SPECIFIC_TEMPLATE %}
-                    class="d-none"
-                {% endif %}
-                data-glpi-itildestination-field-config-display-condition="{{ CONFIG_SPECIFIC_TEMPLATE }}"
-            >
-                {{ fields.dropdownArrayField(
-                    specific_template_extra_field.input_name,
-                    specific_template_extra_field.value,
-                    specific_template_extra_field.possible_values,
-                    "",
-                    options|merge({
-                        field_class: '',
-                        mb: '',
-                        no_label: true,
-                        display_emptychoice: true,
-                        emptylabel: specific_template_extra_field.empty_label,
-                        aria_label: specific_template_extra_field.empty_label,
-                    })
-                ) }}
-            </div>
-TWIG;
-
-        $twig = TemplateRenderer::getInstance();
-        return $twig->renderFromStringTemplate($template, $parameters);
+        ]);
     }
 
     #[Override]
@@ -186,7 +161,7 @@ TWIG;
     #[Override]
     public function getWeight(): int
     {
-        return 30;
+        return 10;
     }
 
     #[Override]
@@ -206,5 +181,60 @@ TWIG;
         }
 
         return $this->getDefaultConfig($form);
+    }
+
+    #[Override]
+    public function exportDynamicConfig(
+        array $config,
+        AbstractCommonITILFormDestination $destination,
+    ): DynamicExportDataField {
+        $fallback = parent::exportDynamicConfig($config, $destination);
+
+        // Check if a template is defined
+        $template_id = $config[TemplateFieldConfig::TEMPLATE_ID] ?? null;
+        if ($template_id === null) {
+            return $fallback;
+        }
+
+        // Try to load template
+        $itil_itemtype = $destination->getTargetItemtype();
+        $template_type = $itil_itemtype::getTemplateClass();
+        $template = $template_type::getById($template_id);
+        if (!$template) {
+            return $fallback;
+        }
+
+        // Insert template name and requirement
+        $name = $template->getName();
+        $config[TemplateFieldConfig::TEMPLATE_ID] = $name;
+        $requirement = new DataRequirementSpecification($template_type, $name);
+
+        return new DynamicExportDataField($config, [$requirement]);
+    }
+
+    #[Override]
+    public static function prepareDynamicConfigDataForImport(
+        array $config,
+        AbstractCommonITILFormDestination $destination,
+        DatabaseMapper $mapper,
+    ): array {
+        // Check if a template is defined
+        if (!isset($config[TemplateFieldConfig::TEMPLATE_ID])) {
+            return parent::prepareDynamicConfigDataForImport(
+                $config,
+                $destination,
+                $mapper
+            );
+        }
+
+        // Insert id
+        $itil_itemtype = $destination->getTargetItemtype();
+        $template_type = $itil_itemtype::getTemplateClass();
+        $config[TemplateFieldConfig::TEMPLATE_ID] = $mapper->getItemId(
+            $template_type,
+            $config[TemplateFieldConfig::TEMPLATE_ID],
+        );
+
+        return $config;
     }
 }

@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -57,7 +56,7 @@ class SNMPCredentialTest extends \FrontBaseClass
                 'username' => 'snmpuser',
                 'auth_passphrase' => $auth_passphrase,
                 'priv_passphrase' => $priv_passphrase,
-                '_glpi_csrf_token' => $crawler->filter('input[name=_glpi_csrf_token]')->attr('value')
+                '_glpi_csrf_token' => $crawler->filter('input[name=_glpi_csrf_token]')->attr('value'),
             ]
         );
 

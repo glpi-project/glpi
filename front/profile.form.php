@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+require_once(__DIR__ . '/_check_webserver_config.php');
+
 use Glpi\Event;
 
 Session::checkRight("profile", READ);
@@ -59,7 +61,7 @@ if (isset($_POST["add"])) {
         }
     }
     Html::back();
-} else if (isset($_POST["purge"])) {
+} elseif (isset($_POST["purge"])) {
     $prof->check($_POST['id'], PURGE);
     if ($prof->delete($_POST, 1)) {
         Event::log(
@@ -74,7 +76,7 @@ if (isset($_POST["add"])) {
     } else {
         Html::back();
     }
-} else if (
+} elseif (
     isset($_POST["update"])
            || isset($_POST["interface"])
 ) {
@@ -94,5 +96,5 @@ if (isset($_POST["add"])) {
 
 $menus = ["admin", "profile"];
 Profile::displayFullPageForItem($_GET["id"], $menus, [
-    'formoptions'  => " data-track-changes='true'"
+    'formoptions'  => " data-track-changes='true'",
 ]);

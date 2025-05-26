@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+require_once(__DIR__ . '/_check_webserver_config.php');
+
 use Glpi\Event;
 
 Session::checkCentralAccess();
@@ -67,7 +69,7 @@ if (isset($_POST["add"])) {
         }
     }
     Html::back();
-} else if (isset($_POST["delete"])) {
+} elseif (isset($_POST["delete"])) {
     $item_vm->check($_POST["id"], DELETE);
     $item_vm->delete($_POST);
 
@@ -83,7 +85,7 @@ if (isset($_POST["add"])) {
     $asset->getFromDB($item_vm->fields['items_id']);
     Html::redirect($asset->getFormURLWithID($item_vm->fields['items_id']) .
                   ($asset->fields['is_template'] ? "&withtemplate=1" : ""));
-} else if (isset($_POST["purge"])) {
+} elseif (isset($_POST["purge"])) {
     $item_vm->check($_POST["id"], PURGE);
 
     if ($item_vm->delete($_POST, 1)) {
@@ -100,7 +102,7 @@ if (isset($_POST["add"])) {
     $asset->getFromDB($item_vm->fields['items_id']);
     Html::redirect($asset->getFormURLWithID($item_vm->fields['items_id']) .
                   ($asset->fields['is_template'] ? "&withtemplate=1" : ""));
-} else if (isset($_POST["update"])) {
+} elseif (isset($_POST["update"])) {
     $item_vm->check($_POST["id"], UPDATE);
 
     if ($item_vm->update($_POST)) {
@@ -114,7 +116,7 @@ if (isset($_POST["add"])) {
         );
     }
     Html::back();
-} else if (isset($_POST["restore"])) {
+} elseif (isset($_POST["restore"])) {
     $item_vm->check($_POST['id'], DELETE);
     if ($item_vm->restore($_POST)) {
         Event::log(
@@ -136,6 +138,6 @@ if (isset($_POST["add"])) {
 
     ItemVirtualMachine::displayFullPageForItem($_GET["id"], $menus, [
         'itemtype' => $_GET['itemtype'],
-        'items_id' => $_GET["items_id"]
+        'items_id' => $_GET["items_id"],
     ]);
 }

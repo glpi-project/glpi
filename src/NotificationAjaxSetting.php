@@ -69,8 +69,8 @@ class NotificationAjaxSetting extends NotificationSetting
                 'item' => $this,
                 'params' => [
                     'candel' => false,
-                    'addbuttons' => ['test_ajax_send' => __('Send a test browser notification to you')]
-                ]
+                    'addbuttons' => ['test_ajax_send' => __('Send a test browser notification to you')],
+                ],
             ]);
         } else {
             $twig_params = ['message' => __('Notifications are disabled.')];

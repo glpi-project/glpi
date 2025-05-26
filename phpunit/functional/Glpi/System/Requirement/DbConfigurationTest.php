@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -44,7 +43,7 @@ class DbConfigurationTest extends \GLPITestCase
     {
         return [
             [
-            // Default variables on MySQL 8.0
+                // Default variables on MySQL 8.0
                 'version'   => '8.0.24-standard',
                 'variables' => [
                     'innodb_page_size'    => 16384,
@@ -52,10 +51,10 @@ class DbConfigurationTest extends \GLPITestCase
                 'validated' => true,
                 'messages'  => [
                     'Database configuration is OK.',
-                ]
+                ],
             ],
             [
-            // "innodb_page_size=8k" config is valid too
+                // "innodb_page_size=8k" config is valid too
                 'version'   => '8.0.24-standard',
                 'variables' => [
                     'innodb_page_size'    => 8192,
@@ -63,10 +62,10 @@ class DbConfigurationTest extends \GLPITestCase
                 'validated' => true,
                 'messages'  => [
                     'Database configuration is OK.',
-                ]
+                ],
             ],
             [
-            // Incompatible variables on MySQL 8.0
+                // Incompatible variables on MySQL 8.0
                 'version'   => '8.0.24-standard',
                 'variables' => [
                     'innodb_page_size'    => 4096,
@@ -74,10 +73,10 @@ class DbConfigurationTest extends \GLPITestCase
                 'validated' => false,
                 'messages'  => [
                     '"innodb_page_size" must be >= 8KB.',
-                ]
+                ],
             ],
             [
-            // Default variables on MariaDB 10.5
+                // Default variables on MariaDB 10.5
                 'version'   => '10.5.8-MariaDB',
                 'variables' => [
                     'innodb_page_size'    => 16384,
@@ -85,10 +84,10 @@ class DbConfigurationTest extends \GLPITestCase
                 'validated' => true,
                 'messages'  => [
                     'Database configuration is OK.',
-                ]
+                ],
             ],
             [
-            // Incompatible variables on MariaDB 10.5
+                // Incompatible variables on MariaDB 10.5
                 'version'   => '10.5.8-MariaDB',
                 'variables' => [
                     'innodb_page_size'    => 4096,
@@ -96,7 +95,7 @@ class DbConfigurationTest extends \GLPITestCase
                 'validated' => false,
                 'messages'  => [
                     '"innodb_page_size" must be >= 8KB.',
-                ]
+                ],
             ],
         ];
     }

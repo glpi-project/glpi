@@ -6,7 +6,6 @@
  # http://glpi-project.org
  #
  # @copyright 2015-2025 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -199,6 +198,7 @@
                 name="update"
                 form="main-form"
                 title="{{ __("Save and preview") }}"
+                data-glpi-form-editor-on-click="queue-preview"
                 data-glpi-form-editor-save-and-preview-action
                 data-glpi-form-editor-preview-url="{{ path('/Form/Render/' ~ item.fields.id) }}"
             >
@@ -206,6 +206,11 @@
                 <span class="d-none d-xl-block">{{ __("Save and preview") }}</span>
             </button>
         </div>
+
+        {# Visibility dropdown #}
+        {{ include('pages/admin/form/submit_button_conditional_visibility_dropdown.html.twig', {
+            'item'      : item,
+        }, with_context = false) }}
 
         {# Move to trashbin form action #}
         {% if item.canDelete() %}
@@ -234,7 +239,7 @@
                 name="purge"
                 form="main-form"
             >
-                <i class="ti ti-trash me-1"></i>{{ __("Delete permanently") }}
+                <i class="ti ti-trash me-1"></i>{{ _x("button", "Delete permanently") }}
             </button>
         {% endif %}
 
@@ -286,6 +291,9 @@
     {# Form id #}
     <input type="hidden" name="id" value="{{ item.fields.id }}">
 
+    {# Form uuid #}
+    <input type="hidden" name="uuid" value="{{ item.fields.uuid }}">
+
     {# Special inputs to indicate that missing sections and question must be deleted #}
     <input type="hidden" name="_delete_missing_questions" value="1">
     <input type="hidden" name="_delete_missing_sections" value="1">
@@ -302,6 +310,9 @@
 
     {# Move section modal #}
     {{ include('pages/admin/form/move_section_modal.html.twig') }}
+
+    {# Block has conditions modal #}
+    {{ include('pages/admin/form/item_has_conditions_modal.html.twig') }}
 </form>
 
 {% if item.canUpdate() %}
@@ -309,8 +320,8 @@
     <div data-glpi-form-editor-templates class="d-none">
 
         {# Load all possible questions types as hidden DOM content that is ready to be copied for a new question #}
-        {% for key, question_type in question_types_manager.getQuestionTypes() %}
-            <div data-glpi-form-editor-question-template="{{ key }}">
+        {% for question_type in question_types_manager.getQuestionTypes() %}
+            <div data-glpi-form-editor-question-template="{{ get_class(question_type) }}">
                 {# Render admin template for the given question type #}
                 {{ include('pages/admin/form/form_question.html.twig', {
                     'form'                        : item,
@@ -328,9 +339,6 @@
         <div data-glpi-form-editor-comment-template>
             {{ include('pages/admin/form/form_comment.html.twig', {
                 'form'                   : item,
-                'question_types_manager' : question_types_manager,
-                'question_type'          : question_type,
-                'question'               : null,
                 'section'                : null,
                 'can_update'             : true,
             }, with_context = false) }}
@@ -366,10 +374,13 @@
 
         {# Load all possible question types values #}
         <select data-glpi-form-editor-question-types-values>
-            {% for key, question_type in question_types_manager.getQuestionTypes() %}
+            {% for question_type in question_types_manager.getQuestionTypes() %}
+                {% set parent_category = question_types_manager.getCategoryKey(
+                    question_type.getCategory()
+                ) %}
                 <option
-                    data-glpi-form-editor-question-type="{{ question_type.getCategory().value }}"
-                    value="{{ key }}"
+                    data-glpi-form-editor-question-type="{{ parent_category }}"
+                    value="{{ get_class(question_type) }}"
                 >
                     {{ question_type.getName() }}
                 </option>
@@ -382,9 +393,9 @@
 <script defer type="module">
 (async () => {
     const modules = await Promise.all([
-        import("{{ js_path('js/modules/Forms/EditorController.js') }}"),
-        import("{{ js_path('js/modules/Forms/EditorConvertedExtractedDefaultValue.js') }}"),
-        import("{{ js_path('js/modules/Forms/EditorConvertedExtractedSelectableDefaultValue.js') }}")
+        import("/js/modules/Forms/EditorController.js"),
+        import("/js/modules/Forms/EditorConvertedExtractedDefaultValue.js"),
+        import("/js/modules/Forms/EditorConvertedExtractedSelectableDefaultValue.js")
     ]);
     const GlpiFormEditorController = modules[0].GlpiFormEditorController;
     const EditorConvertedExtractedDefaultValue = modules[1].GlpiFormEditorConvertedExtractedDefaultValue;
@@ -395,7 +406,12 @@
         container_selector,
         {{ item.fields.is_draft ? "true" : "false" }},
         "{{ question_types_manager.getDefaultTypeClass()|escape('js') }}",
-        "[data-glpi-form-editor-templates]"
+        "[data-glpi-form-editor-templates]",
+        {{ item.getDestinations()|map(destination => {
+            'id': destination.fields.id,
+            'name': destination.fields.name,
+            'conditions': destination.getConfiguredConditionsData(),
+        })|json_encode|raw }}
     );
 
     // Temporary solution, would be better to import it directly where it is needed but the current

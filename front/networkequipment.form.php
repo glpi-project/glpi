@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+require_once(__DIR__ . '/_check_webserver_config.php');
+
 use Glpi\Event;
 
 Session::checkRightsOr(NetworkEquipment::$rightname, [READ, READ_ASSIGNED, READ_OWNED]);
@@ -61,7 +63,7 @@ if (isset($_POST["add"])) {
         }
     }
     Html::back();
-} else if (isset($_POST["delete"])) {
+} elseif (isset($_POST["delete"])) {
     $netdevice->check($_POST["id"], DELETE);
     $netdevice->delete($_POST);
 
@@ -75,7 +77,7 @@ if (isset($_POST["add"])) {
     );
 
     $netdevice->redirectToList();
-} else if (isset($_POST["restore"])) {
+} elseif (isset($_POST["restore"])) {
     $netdevice->check($_POST["id"], DELETE);
 
     $netdevice->restore($_POST);
@@ -88,7 +90,7 @@ if (isset($_POST["add"])) {
         sprintf(__('%s restores an item'), $_SESSION["glpiname"])
     );
     $netdevice->redirectToList();
-} else if (isset($_POST["purge"])) {
+} elseif (isset($_POST["purge"])) {
     $netdevice->check($_POST["id"], PURGE);
 
     $netdevice->delete($_POST, 1);
@@ -101,7 +103,7 @@ if (isset($_POST["add"])) {
         sprintf(__('%s purges an item'), $_SESSION["glpiname"])
     );
     $netdevice->redirectToList();
-} else if (isset($_POST["update"])) {
+} elseif (isset($_POST["update"])) {
     $netdevice->check($_POST["id"], UPDATE);
 
     $netdevice->update($_POST);
@@ -118,6 +120,6 @@ if (isset($_POST["add"])) {
     $menus = ["assets", "networkequipment"];
     NetworkEquipment::displayFullPageForItem($_GET["id"], $menus, [
         'withtemplate' => $_GET["withtemplate"],
-        'formoptions'  => "data-track-changes=true"
+        'formoptions'  => "data-track-changes=true",
     ]);
 }

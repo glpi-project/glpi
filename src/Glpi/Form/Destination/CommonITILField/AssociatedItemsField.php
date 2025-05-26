@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -39,16 +38,21 @@ use CommonITILObject;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AnswersSet;
+use Glpi\Form\Destination\AbstractCommonITILFormDestination;
 use Glpi\Form\Destination\AbstractConfigField;
+use Glpi\Form\Export\Context\DatabaseMapper;
+use Glpi\Form\Export\Serializer\DynamicExportDataField;
+use Glpi\Form\Export\Specification\DataRequirementSpecification;
 use Glpi\Form\Form;
 use Glpi\Form\Migration\DestinationFieldConverterInterface;
 use Glpi\Form\Migration\FormMigration;
+use Glpi\Form\Question;
 use Glpi\Form\QuestionType\QuestionTypeItem;
 use Glpi\Form\QuestionType\QuestionTypeUserDevice;
 use InvalidArgumentException;
 use Override;
 
-class AssociatedItemsField extends AbstractConfigField implements DestinationFieldConverterInterface
+final class AssociatedItemsField extends AbstractConfigField implements DestinationFieldConverterInterface
 {
     #[Override]
     public function getLabel(): string
@@ -74,6 +78,9 @@ class AssociatedItemsField extends AbstractConfigField implements DestinationFie
         }
 
         $twig = TemplateRenderer::getInstance();
+        $associated_items = $config->getSpecificAssociatedItems();
+        ksort($associated_items);
+
         return $twig->render('pages/admin/form/itil_config_fields/associated_items.html.twig', [
             // Possible configuration constant that will be used to to hide/show additional fields
             'CONFIG_SPECIFIC_VALUES'  => AssociatedItemsFieldStrategy::SPECIFIC_VALUES->value,
@@ -89,7 +96,7 @@ class AssociatedItemsField extends AbstractConfigField implements DestinationFie
                 'items_id_aria_label' => __("Select the item to associate..."),
                 'input_name'          => $input_name . "[" . AssociatedItemsFieldConfig::SPECIFIC_ASSOCIATED_ITEMS . "]",
                 'itemtypes'           => array_keys(CommonITILObject::getAllTypesForHelpdesk()),
-                'associated_items'    => $config->getSpecificAssociatedItems(),
+                'associated_items'    => $associated_items,
             ],
 
             // Specific additional config for SPECIFIC_ANSWERS strategy
@@ -197,7 +204,7 @@ class AssociatedItemsField extends AbstractConfigField implements DestinationFie
     #[Override]
     public function getWeight(): int
     {
-        return 200;
+        return 300;
     }
 
     #[Override]
@@ -226,6 +233,12 @@ class AssociatedItemsField extends AbstractConfigField implements DestinationFie
             $result = [];
 
             foreach ($itemtypes as $index => $itemtype) {
+                // If no itemtype is selected, a 0 value is returned but not corresponding item_id is set.
+                // So we skip this case to avoid having undefined index error.
+                if (isset($items_ids[$index]) === false) {
+                    continue;
+                }
+
                 $item_id = $items_ids[$index];
 
                 // Ensure that itemtype and item_id are valid
@@ -258,7 +271,7 @@ class AssociatedItemsField extends AbstractConfigField implements DestinationFie
     #[Override]
     public function getCategory(): Category
     {
-        return Category::PROPERTIES;
+        return Category::ASSOCIATED_ITEMS;
     }
 
     #[Override]
@@ -272,14 +285,18 @@ class AssociatedItemsField extends AbstractConfigField implements DestinationFie
                         specific_associated_items: json_decode($rawData['associate_items'], true) ?? []
                     );
                 case 3: // PluginFormcreatorAbstractItilTarget::ASSOCIATE_RULE_ANSWER
+                    $mapped_item = $migration->getMappedItemTarget(
+                        'PluginFormcreatorQuestion',
+                        $rawData['associate_question']
+                    );
+
+                    if ($mapped_item === null) {
+                        throw new InvalidArgumentException("Question not found in a target form");
+                    }
+
                     return new AssociatedItemsFieldConfig(
                         strategies: [AssociatedItemsFieldStrategy::SPECIFIC_ANSWERS],
-                        specific_question_ids: [
-                            $migration->getMappedItemTarget(
-                                'PluginFormcreatorQuestion',
-                                $rawData['associate_question']
-                            )['items_id']
-                        ],
+                        specific_question_ids: [$mapped_item['items_id']]
                     );
                 case 4: // PluginFormcreatorAbstractItilTarget::ASSOCIATE_RULE_LAST_ANSWER
                     return new AssociatedItemsFieldConfig(
@@ -289,5 +306,65 @@ class AssociatedItemsField extends AbstractConfigField implements DestinationFie
         }
 
         return $this->getDefaultConfig($form);
+    }
+
+    #[Override]
+    public function exportDynamicConfig(
+        array $config,
+        AbstractCommonITILFormDestination $destination,
+    ): DynamicExportDataField {
+        $requirements = [];
+
+        if (!isset($config[AssociatedItemsFieldConfig::SPECIFIC_ASSOCIATED_ITEMS])) {
+            return parent::exportDynamicConfig($config, $destination);
+        }
+
+        $items = $config[AssociatedItemsFieldConfig::SPECIFIC_ASSOCIATED_ITEMS];
+        foreach ($items as $itemtype => $items_ids) {
+            foreach ($items_ids as $i => $item_id) {
+                $item = getItemForItemtype($itemtype);
+                if ($item->getFromDB($item_id)) {
+                    // Insert name instead of id and register requirement
+                    $items[$itemtype][$i] = $item->getName();
+                    $requirements[] = new DataRequirementSpecification(
+                        $itemtype,
+                        $item->getName(),
+                    );
+                }
+            }
+        }
+
+        $config[AssociatedItemsFieldConfig::SPECIFIC_ASSOCIATED_ITEMS] = $items;
+        return new DynamicExportDataField($config, $requirements);
+    }
+
+    #[Override]
+    public static function prepareDynamicConfigDataForImport(
+        array $config,
+        AbstractCommonITILFormDestination $destination,
+        DatabaseMapper $mapper,
+    ): array {
+        if (isset($config[AssociatedItemsFieldConfig::SPECIFIC_ASSOCIATED_ITEMS])) {
+            $items = $config[AssociatedItemsFieldConfig::SPECIFIC_ASSOCIATED_ITEMS];
+            foreach ($items as $itemtype => $items_names) {
+                foreach ($items_names as $i => $item_name) {
+                    $id = $mapper->getItemId($itemtype, $item_name);
+                    $items[$itemtype][$i] = $id;
+                }
+            }
+            $config[AssociatedItemsFieldConfig::SPECIFIC_ASSOCIATED_ITEMS] = $items;
+        }
+
+        // Check if specific questions are defined
+        if (isset($config[AssociatedItemsFieldConfig::SPECIFIC_QUESTION_IDS])) {
+            $questions = $config[AssociatedItemsFieldConfig::SPECIFIC_QUESTION_IDS];
+            foreach ($questions as $i => $question) {
+                $id = $mapper->getItemId(Question::class, $question);
+                $questions[$i] = $id;
+            }
+            $config[AssociatedItemsFieldConfig::SPECIFIC_QUESTION_IDS] = $questions;
+        }
+
+        return $config;
     }
 }

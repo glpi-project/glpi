@@ -33,7 +33,7 @@
 
 /* global sortable */
 
-import { GlpiFormQuestionTypeSelectable } from './QuestionSelectable.js';
+import { GlpiFormQuestionTypeSelectable } from '/js/modules/Forms/QuestionSelectable.js';
 
 export class GlpiFormQuestionTypeDropdown extends GlpiFormQuestionTypeSelectable {
 

@@ -38,7 +38,6 @@ namespace Glpi\Api\HL\Controller;
 use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
 use Glpi\Api\HL\Route;
 use Glpi\Api\HL\RouteVersion;
-use Glpi\Api\HL\Search;
 use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
@@ -72,7 +71,7 @@ class ReportController extends AbstractController
                             'type' => Doc\Schema::TYPE_STRING,
                         ],
                     ],
-                ]
+                ],
             ],
             'GlobalStats' => [
                 'x-version-introduced' => '2.0',
@@ -157,7 +156,7 @@ class ReportController extends AbstractController
                             'type' => Doc\Schema::TYPE_INTEGER,
                         ],
                     ],
-                ]
+                ],
             ],
             'ITILStats' => [
                 'x-version-introduced' => '2.0',
@@ -174,7 +173,7 @@ class ReportController extends AbstractController
                             'name' => [
                                 'type' => Doc\Schema::TYPE_STRING,
                             ],
-                        ]
+                        ],
                     ],
                     'number_open' => [
                         'type' => Doc\Schema::TYPE_INTEGER,
@@ -225,7 +224,7 @@ class ReportController extends AbstractController
                         'type' => Doc\Schema::TYPE_INTEGER,
                         'description' => 'The total time it took to completely treat the assistance items (in seconds)',
                     ],
-                ]
+                ],
             ],
             'AssetStats' => [
                 'x-version-introduced' => '2.0',
@@ -253,13 +252,13 @@ class ReportController extends AbstractController
                                 'type' => Doc\Schema::TYPE_BOOLEAN,
                                 'description' => 'Whether the item is deleted or not',
                             ],
-                        ]
+                        ],
                     ],
                     'number_open' => [
                         'type' => Doc\Schema::TYPE_INTEGER,
                         'description' => 'The number of open assistance items',
                     ],
-                ]
+                ],
             ],
             'AssetCharacteristicsStats' => [
                 'x-version-introduced' => '2.0',
@@ -318,7 +317,7 @@ class ReportController extends AbstractController
                         'type' => Doc\Schema::TYPE_INTEGER,
                         'description' => 'The total time it took to completely treat the assistance items (in seconds)',
                     ],
-                ]
+                ],
             ],
         ];
     }
@@ -329,8 +328,8 @@ class ReportController extends AbstractController
         description: 'List available assistance statistics',
         responses: [
             [
-                'schema' => 'StatReport[]'
-            ]
+                'schema' => 'StatReport[]',
+            ],
         ]
     )]
     public function listStatisticReports(Request $request): Response
@@ -389,7 +388,7 @@ class ReportController extends AbstractController
     }
 
     #[Route(path: '/Assistance/Stat/{assistance_type}/Global', methods: ['GET'], requirements: [
-        'assistance_type' => 'Ticket|Change|Problem'
+        'assistance_type' => 'Ticket|Change|Problem',
     ], tags: ['Statistics', 'Assistance'], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
@@ -402,8 +401,8 @@ class ReportController extends AbstractController
                 'example' => '2024-01-30',
                 'schema' => [
                     'type' => Doc\Schema::TYPE_STRING,
-                    'format' => Doc\Schema::FORMAT_STRING_DATE
-                ]
+                    'format' => Doc\Schema::FORMAT_STRING_DATE,
+                ],
             ],
             [
                 'name' => 'date_end',
@@ -412,14 +411,14 @@ class ReportController extends AbstractController
                 'example' => '2024-01-30',
                 'schema' => [
                     'type' => Doc\Schema::TYPE_STRING,
-                    'format' => Doc\Schema::FORMAT_STRING_DATE
-                ]
-            ]
+                    'format' => Doc\Schema::FORMAT_STRING_DATE,
+                ],
+            ],
         ],
         responses: [
             [
-                'schema' => 'GlobalStats'
-            ]
+                'schema' => 'GlobalStats',
+            ],
         ]
     )]
     public function getITILGlobalStats(Request $request): Response
@@ -446,15 +445,15 @@ class ReportController extends AbstractController
             'number_closed' => array_values($nb_closed_stats),
             'satisfaction_surveys_open' => array_values($nb_opensatisfaction_stats),
             'satisfaction_surveys_answered' => array_values($nb_answersatisfaction_stats),
-            'satisfaction_surveys_avg_rating' => array_map(static fn ($v) => round((float) $v, 2), array_values($avg_satisfaction_stats)),
-            'time_solve_avg' => array_map(static fn ($v) => (int) $v, array_values($avg_solvedtime_stats)),
-            'time_close_avg' => array_map(static fn ($v) => (int) $v, array_values($avg_closedtime_stats)),
-            'time_treatment_avg' => array_map(static fn ($v) => (int) $v, array_values($avg_actiontime_stats)),
+            'satisfaction_surveys_avg_rating' => array_map(static fn($v) => round((float) $v, 2), array_values($avg_satisfaction_stats)),
+            'time_solve_avg' => array_map(static fn($v) => (int) $v, array_values($avg_solvedtime_stats)),
+            'time_close_avg' => array_map(static fn($v) => (int) $v, array_values($avg_closedtime_stats)),
+            'time_treatment_avg' => array_map(static fn($v) => (int) $v, array_values($avg_actiontime_stats)),
         ]);
     }
 
     #[Route(path: '/Assistance/Stat/{assistance_type}/Characteristics', methods: ['GET'], requirements: [
-        'assistance_type' => 'Ticket|Change|Problem'
+        'assistance_type' => 'Ticket|Change|Problem',
     ], tags: ['Statistics', 'Assistance'], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
@@ -467,8 +466,8 @@ class ReportController extends AbstractController
                 'example' => '2024-01-30',
                 'schema' => [
                     'type' => Doc\Schema::TYPE_STRING,
-                    'format' => Doc\Schema::FORMAT_STRING_DATE
-                ]
+                    'format' => Doc\Schema::FORMAT_STRING_DATE,
+                ],
             ],
             [
                 'name' => 'date_end',
@@ -477,8 +476,8 @@ class ReportController extends AbstractController
                 'example' => '2024-01-30',
                 'schema' => [
                     'type' => Doc\Schema::TYPE_STRING,
-                    'format' => Doc\Schema::FORMAT_STRING_DATE
-                ]
+                    'format' => Doc\Schema::FORMAT_STRING_DATE,
+                ],
             ],
             [
                 'name' => 'field',
@@ -488,12 +487,12 @@ class ReportController extends AbstractController
                     'type' => Doc\Schema::TYPE_STRING,
                 ],
                 'required' => true,
-            ]
+            ],
         ],
         responses: [
             [
-                'schema' => 'ITILStats[]'
-            ]
+                'schema' => 'ITILStats[]',
+            ],
         ]
     )]
     public function getITILStats(Request $request): Response
@@ -529,7 +528,7 @@ class ReportController extends AbstractController
             if (isset($item['itemtype'])) {
                 $result['item'] = [
                     'id' => $item['id'],
-                    'name' => \Dropdown::getDropdownName($item['itemtype']::getTable(), $item['id'], 0, true, true, '')
+                    'name' => \Dropdown::getDropdownName($item['itemtype']::getTable(), $item['id'], 0, true, true, ''),
                 ];
             } else {
                 $result['item'] = [
@@ -575,7 +574,7 @@ class ReportController extends AbstractController
     }
 
     #[Route(path: '/Assistance/Stat/{assistance_type}/Characteristics/Export', methods: ['GET'], requirements: [
-        'assistance_type' => 'Ticket|Change|Problem'
+        'assistance_type' => 'Ticket|Change|Problem',
     ], tags: ['Statistics', 'Assistance'])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
@@ -588,8 +587,8 @@ class ReportController extends AbstractController
                 'example' => '2024-01-30',
                 'schema' => [
                     'type' => Doc\Schema::TYPE_STRING,
-                    'format' => Doc\Schema::FORMAT_STRING_DATE
-                ]
+                    'format' => Doc\Schema::FORMAT_STRING_DATE,
+                ],
             ],
             [
                 'name' => 'date_end',
@@ -598,8 +597,8 @@ class ReportController extends AbstractController
                 'example' => '2024-01-30',
                 'schema' => [
                     'type' => Doc\Schema::TYPE_STRING,
-                    'format' => Doc\Schema::FORMAT_STRING_DATE
-                ]
+                    'format' => Doc\Schema::FORMAT_STRING_DATE,
+                ],
             ],
             [
                 'name' => 'field',
@@ -618,7 +617,7 @@ class ReportController extends AbstractController
                     'type' => Doc\Schema::TYPE_STRING,
                     'enum' => ['text/csv', 'application/vnd.oasis.opendocument.spreadsheet', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/pdf'],
                 ],
-            ]
+            ],
         ]
     )]
     public function exportITILStats(Request $request): Response
@@ -669,7 +668,7 @@ class ReportController extends AbstractController
     }
 
     #[Route(path: '/Assistance/Stat/{assistance_type}/Asset', methods: ['GET'], requirements: [
-        'assistance_type' => 'Ticket|Change|Problem'
+        'assistance_type' => 'Ticket|Change|Problem',
     ], tags: ['Statistics', 'Assistance'], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
@@ -682,8 +681,8 @@ class ReportController extends AbstractController
                 'example' => '2024-01-30',
                 'schema' => [
                     'type' => Doc\Schema::TYPE_STRING,
-                    'format' => Doc\Schema::FORMAT_STRING_DATE
-                ]
+                    'format' => Doc\Schema::FORMAT_STRING_DATE,
+                ],
             ],
             [
                 'name' => 'date_end',
@@ -692,14 +691,14 @@ class ReportController extends AbstractController
                 'example' => '2024-01-30',
                 'schema' => [
                     'type' => Doc\Schema::TYPE_STRING,
-                    'format' => Doc\Schema::FORMAT_STRING_DATE
-                ]
+                    'format' => Doc\Schema::FORMAT_STRING_DATE,
+                ],
             ],
         ],
         responses: [
             [
-                'schema' => 'AssetStats[]'
-            ]
+                'schema' => 'AssetStats[]',
+            ],
         ]
     )]
     public function getAssetStats(Request $request): Response
@@ -735,7 +734,7 @@ class ReportController extends AbstractController
     }
 
     #[Route(path: '/Assistance/Stat/{assistance_type}/Asset/Export', methods: ['GET'], requirements: [
-        'assistance_type' => 'Ticket|Change|Problem'
+        'assistance_type' => 'Ticket|Change|Problem',
     ], tags: ['Statistics', 'Assistance'])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
@@ -748,8 +747,8 @@ class ReportController extends AbstractController
                 'example' => '2024-01-30',
                 'schema' => [
                     'type' => Doc\Schema::TYPE_STRING,
-                    'format' => Doc\Schema::FORMAT_STRING_DATE
-                ]
+                    'format' => Doc\Schema::FORMAT_STRING_DATE,
+                ],
             ],
             [
                 'name' => 'date_end',
@@ -758,8 +757,8 @@ class ReportController extends AbstractController
                 'example' => '2024-01-30',
                 'schema' => [
                     'type' => Doc\Schema::TYPE_STRING,
-                    'format' => Doc\Schema::FORMAT_STRING_DATE
-                ]
+                    'format' => Doc\Schema::FORMAT_STRING_DATE,
+                ],
             ],
             [
                 'name' => 'Accept',
@@ -769,7 +768,7 @@ class ReportController extends AbstractController
                     'type' => Doc\Schema::TYPE_STRING,
                     'enum' => ['text/csv', 'application/vnd.oasis.opendocument.spreadsheet', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/pdf'],
                 ],
-            ]
+            ],
         ]
     )]
     public function exportAssetStats(Request $request): Response
@@ -819,7 +818,7 @@ class ReportController extends AbstractController
     }
 
     #[Route(path: '/Assistance/Stat/{assistance_type}/AssetCharacteristics', methods: ['GET'], requirements: [
-        'assistance_type' => 'Ticket|Change|Problem'
+        'assistance_type' => 'Ticket|Change|Problem',
     ], tags: ['Statistics', 'Assistance'], middlewares: [ResultFormatterMiddleware::class])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
@@ -832,8 +831,8 @@ class ReportController extends AbstractController
                 'example' => '2024-01-30',
                 'schema' => [
                     'type' => Doc\Schema::TYPE_STRING,
-                    'format' => Doc\Schema::FORMAT_STRING_DATE
-                ]
+                    'format' => Doc\Schema::FORMAT_STRING_DATE,
+                ],
             ],
             [
                 'name' => 'date_end',
@@ -842,8 +841,8 @@ class ReportController extends AbstractController
                 'example' => '2024-01-30',
                 'schema' => [
                     'type' => Doc\Schema::TYPE_STRING,
-                    'format' => Doc\Schema::FORMAT_STRING_DATE
-                ]
+                    'format' => Doc\Schema::FORMAT_STRING_DATE,
+                ],
             ],
             [
                 'name' => 'field',
@@ -853,12 +852,12 @@ class ReportController extends AbstractController
                     'type' => Doc\Schema::TYPE_STRING,
                 ],
                 'required' => true,
-            ]
+            ],
         ],
         responses: [
             [
-                'schema' => 'AssetCharacteristicsStats[]'
-            ]
+                'schema' => 'AssetCharacteristicsStats[]',
+            ],
         ]
     )]
     public function getAssetCharacteristicsStats(Request $request): Response
@@ -883,7 +882,7 @@ class ReportController extends AbstractController
             return self::getInvalidParametersErrorResponse([
                 'invalid' => [
                     'name' => 'field',
-                ]
+                ],
             ]);
         }
         $param = $param_item instanceof \CommonDevice ? 'device' : 'comp_champ';
@@ -904,7 +903,7 @@ class ReportController extends AbstractController
                 $result['item'] = [
                     'itemtype' => $param_item::getType(),
                     'id' => $item['id'],
-                    'name' => \Dropdown::getDropdownName($item['itemtype']::getTable(), $item['id'], 0, true, true, '')
+                    'name' => \Dropdown::getDropdownName($item['itemtype']::getTable(), $item['id'], 0, true, true, ''),
                 ];
             } else {
                 $result['item'] = [
@@ -951,7 +950,7 @@ class ReportController extends AbstractController
     }
 
     #[Route(path: '/Assistance/Stat/{assistance_type}/AssetCharacteristics/Export', methods: ['GET'], requirements: [
-        'assistance_type' => 'Ticket|Change|Problem'
+        'assistance_type' => 'Ticket|Change|Problem',
     ], tags: ['Statistics', 'Assistance'])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
@@ -964,8 +963,8 @@ class ReportController extends AbstractController
                 'example' => '2024-01-30',
                 'schema' => [
                     'type' => Doc\Schema::TYPE_STRING,
-                    'format' => Doc\Schema::FORMAT_STRING_DATE
-                ]
+                    'format' => Doc\Schema::FORMAT_STRING_DATE,
+                ],
             ],
             [
                 'name' => 'date_end',
@@ -974,8 +973,8 @@ class ReportController extends AbstractController
                 'example' => '2024-01-30',
                 'schema' => [
                     'type' => Doc\Schema::TYPE_STRING,
-                    'format' => Doc\Schema::FORMAT_STRING_DATE
-                ]
+                    'format' => Doc\Schema::FORMAT_STRING_DATE,
+                ],
             ],
             [
                 'name' => 'field',
@@ -994,7 +993,7 @@ class ReportController extends AbstractController
                     'type' => Doc\Schema::TYPE_STRING,
                     'enum' => ['text/csv', 'application/vnd.oasis.opendocument.spreadsheet', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/pdf'],
                 ],
-            ]
+            ],
         ]
     )]
     public function exportAssetCharacteristicsStats(Request $request): Response

@@ -6,7 +6,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,26 +32,13 @@
 
 describe('Service catalog page', () => {
 
-    function createActiveForm(name, category = 0) {
+    function createActiveForm(name, category = 0, description = 'Lorem ipsum dolor sit amet, consectetur adipisicing elit.') {
         cy.createFormWithAPI({
             'name': name,
-            'description': "Lorem ipsum dolor sit amet, consectetur adipisicing elit.",
+            'description': description,
             'is_active': true,
             'forms_categories_id': category,
         }).as('form_id');
-
-        cy.get('@form_id').then(form_id => {
-            cy.createWithAPI('Glpi\\Form\\AccessControl\\FormAccessControl', {
-                'forms_forms_id': form_id,
-                'strategy'      : 'Glpi\\Form\\AccessControl\\ControlType\\AllowList',
-                '_config'        : {
-                    'user_ids': ['all'],
-                    'groups_ids': [],
-                    'profiles_ids': [],
-                },
-                'is_active'     : true,
-            });
-        });
     }
 
     function createKnowledgeBaseItem(name, options = {}) {
@@ -304,10 +290,11 @@ describe('Service catalog page', () => {
         cy.changeProfile('Super-Admin');
 
         // Create a simple form
-        const form_name = `Test form for service_catalog_page.cy.js ${(new Date()).getTime()}`;
+        const time = (new Date()).getTime();
+        const form_name = `Test form for service_catalog_page.cy.js ${time}`;
         createActiveForm(form_name);
         cy.get('@form_id').visitFormTab('Form');
-        cy.findByRole('button', {'name': 'Add a new question'}).click();
+        cy.findByRole('button', {'name': 'Add a question'}).click();
         cy.focused().type('Question 1');
         cy.findByRole('button', {'name': 'Save'}).click();
         cy.findByRole('alert')
@@ -320,6 +307,7 @@ describe('Service catalog page', () => {
         cy.validateMenuIsActive('Service catalog');
 
         // Go to our form
+        cy.findByPlaceholderText('Search for forms...').type(time);
         cy.findByRole('region', {'name': form_name}).as('form');
         cy.get('@form').click();
         cy.url().should('include', '/Form/Render');
@@ -328,7 +316,7 @@ describe('Service catalog page', () => {
 
         // Submit the form
         cy.findByRole('textbox', {'name': 'Question 1'}).type('Answer 1');
-        cy.findByRole('button', {'name': 'Send form'}).click();
+        cy.findByRole('button', {'name': 'Submit'}).click();
         cy.findByRole('alert')
             .should('contain.text', 'Item successfully created')
         ;
@@ -358,6 +346,9 @@ describe('Service catalog page', () => {
         // Go to the service catalog
         cy.changeProfile('Self-Service', true);
         cy.visit('/ServiceCatalog');
+
+        // Filter forms to show only the ones created in this test
+        cy.findByPlaceholderText('Search for forms...').type(time);
 
         // Check breadcrumb
         cy.findByRole('navigation', {'name': 'Service catalog categories'}).within(() => {
@@ -475,5 +466,100 @@ describe('Service catalog page', () => {
             cy.findByRole('region', {name: `Form ${String.fromCharCode(65 + i)} ${time}`}).should('exist');
         }
         cy.findByRole('region', {name: `Form ${String.fromCharCode(65 + forms_per_page)} ${time}`}).should('not.exist');
+    });
+
+    it('can display service catalog with form that has no description', () => {
+        const form_name = `Test form without description ${(new Date()).getTime()}`;
+
+        cy.changeProfile('Super-Admin');
+        createActiveForm(form_name, 0, null);
+
+        cy.changeProfile('Self-Service', true);
+        cy.visit('/ServiceCatalog');
+
+        // Search for the form
+        cy.findByPlaceholderText('Search for forms...').as('filter_input');
+        cy.get('@filter_input').type(form_name);
+
+        // Validate that the form is displayed correctly.
+        cy.findByRole('region', {'name': form_name}).as('forms');
+        cy.get('@forms').within(() => {
+            cy.findByRole('heading', {'name': form_name}).should('exist');
+            cy.findByRole('heading', {'name': form_name})
+                .closest('section')
+                .findByTestId('service-catalog-description')
+                .invoke('text')
+                .then((text) => {
+                    expect(text.trim()).to.be.empty;
+                })
+            ;
+        });
+    });
+
+    it('can change sort order in the service catalog', () => {
+        const time = (new Date()).getTime();
+        cy.changeProfile('Super-Admin');
+
+        // Create forms with different names
+        createActiveForm(`A form ${time}`);
+        createActiveForm(`C form ${time}`);
+        createActiveForm(`B form ${time}`);
+
+        // Add a question to B form
+        cy.get('@form_id').visitFormTab('Form');
+        cy.findByRole('button', {'name': 'Add a question'}).click();
+        cy.focused().type('Question 1');
+        cy.findByRole('button', {'name': 'Save'}).click();
+
+        cy.changeProfile('Self-Service', true);
+
+        // Visit and answer to a form to increment popularity
+        cy.visit('/ServiceCatalog');
+        cy.findByPlaceholderText('Search for forms...').as('filter_input');
+        cy.get('@filter_input').type(time);
+        cy.findByRole('region', {'name': `B form ${time}`}).click();
+        cy.findByRole('button', {'name': 'Submit'}).click();
+        cy.findByRole('alert')
+            .should('contain.text', 'Item successfully created');
+
+        // Go back to the service catalog
+        cy.visit('/ServiceCatalog');
+
+        // Search with time to restrict the results
+        cy.findByPlaceholderText('Search for forms...').as('filter_input');
+        cy.get('@filter_input').type(time);
+
+        // Check the default sort order
+        cy.getDropdownByLabelText('Sort by').findByRole('textbox', {'name': 'Most popular'}).should('exist');
+        cy.findByRole('region', {'name': `Forms`}).within(() => {
+            cy.findAllByRole('link').should('have.length', 3);
+            cy.findAllByRole('link').eq(0).findByRole('heading').contains(`B form ${time}`).should('exist');
+            cy.findAllByRole('link').eq(1).findByRole('heading').contains(`A form ${time}`).should('exist');
+            cy.findAllByRole('link').eq(2).findByRole('heading').contains(`C form ${time}`).should('exist');
+        });
+
+        // Change sort order to "Alphabetical"
+        cy.getDropdownByLabelText('Sort by').selectDropdownValue('Alphabetical');
+
+        // Check the new sort order
+        cy.getDropdownByLabelText('Sort by').findByRole('textbox', {'name': 'Alphabetical'}).should('exist');
+        cy.findByRole('region', {'name': `Forms`}).within(() => {
+            cy.findAllByRole('link').should('have.length', 3);
+            cy.findAllByRole('link').eq(0).findByRole('heading').contains(`A form ${time}`).should('exist');
+            cy.findAllByRole('link').eq(1).findByRole('heading').contains(`B form ${time}`).should('exist');
+            cy.findAllByRole('link').eq(2).findByRole('heading').contains(`C form ${time}`).should('exist');
+        });
+
+        // Change sort order to "Non alphabetical"
+        cy.getDropdownByLabelText('Sort by').selectDropdownValue('Reverse alphabetical');
+
+        // Check the new sort order
+        cy.getDropdownByLabelText('Sort by').findByRole('textbox', {'name': 'Reverse alphabetical'}).should('exist');
+        cy.findByRole('region', {'name': `Forms`}).within(() => {
+            cy.findAllByRole('link').should('have.length', 3);
+            cy.findAllByRole('link').eq(0).findByRole('heading').contains(`C form ${time}`).should('exist');
+            cy.findAllByRole('link').eq(1).findByRole('heading').contains(`B form ${time}`).should('exist');
+            cy.findAllByRole('link').eq(2).findByRole('heading').contains(`A form ${time}`).should('exist');
+        });
     });
 });

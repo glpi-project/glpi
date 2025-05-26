@@ -34,7 +34,6 @@
 
 namespace tests\units;
 
-use CommonDBTM;
 use Computer;
 use DbTestCase;
 use Item_Cluster;

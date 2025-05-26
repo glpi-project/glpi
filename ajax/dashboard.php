@@ -51,7 +51,7 @@ $embed = false;
 if (
     in_array($_REQUEST['action'], ['get_dashboard_items', 'get_card', 'get_cards'])
     && array_key_exists('embed', $request_data)
-    && (bool)$request_data['embed']
+    && (bool) $request_data['embed']
 ) {
     if (Grid::checkToken($request_data) === false) {
         throw new AccessDeniedHttpException();

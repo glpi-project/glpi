@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -47,12 +46,12 @@ class TicketParametersTest extends AbstractParameters
         $test_entity_id = getItemByTypeName('Entity', '_test_child_2', true);
 
         $this->createItem('ITILCategory', [
-            'name' => 'category_testGetValues'
+            'name' => 'category_testGetValues',
         ]);
         $itilcategories_id = getItemByTypeName('ITILCategory', 'category_testGetValues', true);
 
         $this->createItem('Location', [
-            'name' => 'location_testGetValues'
+            'name' => 'location_testGetValues',
         ]);
         $locations_id = getItemByTypeName('Location', 'location_testGetValues', true);
 
@@ -213,7 +212,7 @@ class TicketParametersTest extends AbstractParameters
                             'fax'      => '0123456787',
                             'email'    => 'info@_supplier01_name.com',
                             'website'  => null,
-                        ]
+                        ],
                     ],
                 ],
                 'type'      => 'Incident',
@@ -250,7 +249,7 @@ class TicketParametersTest extends AbstractParameters
                 ],
                 'requesttype' => [
                     'id'   => 1,
-                    'name' => 'Helpdesk'
+                    'name' => 'Helpdesk',
                 ],
                 'location' => [
                     'id'           => $locations_id,
@@ -262,8 +261,8 @@ class TicketParametersTest extends AbstractParameters
                         'id' => getItemByTypeName(\KnowbaseItem::class, '_knowbaseitem01', true),
                         'name' => '_knowbaseitem01',
                         'answer' => "Answer for Knowledge base entry _knowbaseitem01 apple juice turnover",
-                        'link' => "<a href=\"/glpi/front/knowbaseitem.form.php?id=1\" title=\"_knowbaseitem01\">_knowbaseitem01</a>"
-                    ]
+                        'link' => "<a href=\"/glpi/front/knowbaseitem.form.php?id=1\" title=\"_knowbaseitem01\">_knowbaseitem01</a>",
+                    ],
                 ],
                 'assets'        => [],
             ],

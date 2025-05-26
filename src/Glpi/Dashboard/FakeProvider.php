@@ -39,7 +39,6 @@ use CommonDBTM;
 use CommonDevice;
 use Group;
 use Session;
-use Stat;
 use Ticket;
 use User;
 
@@ -66,7 +65,7 @@ final class FakeProvider extends Provider
             ['Marcelino', 'Rice'],
             ['Gracie', 'Boyd'],
             ['Zachariah', 'Ellis'],
-            ['Rena', 'Velez']
+            ['Rena', 'Velez'],
         ];
         return array_map(static function ($name) {
             return formatUserName(0, '', $name[1], $name[0]);
@@ -169,7 +168,7 @@ final class FakeProvider extends Provider
                     'label'  => __("Closed"),
                     'url'    => '#',
                     'color'  => '#555555',
-                ]
+                ],
             ],
             'label' => $params['label'],
             'icon'  => $params['icon'],
@@ -222,20 +221,20 @@ final class FakeProvider extends Provider
                 'series' => [
                     [
                         'name' => __('Late own and resolve'),
-                        'data' => [1, 6, 0, 0, 2, 3, 0, 0, 0, 0]
+                        'data' => [1, 6, 0, 0, 2, 3, 0, 0, 0, 0],
                     ],
                     [
                         'name' => __('Late resolve'),
-                        'data' => [3, 6, 0, 0, 3, 3, 0, 0, 0, 0]
+                        'data' => [3, 6, 0, 0, 3, 3, 0, 0, 0, 0],
                     ],
                     [
                         'name' => __('Late own'),
-                        'data' => [1, 6, 0, 0, 2, 3, 0, 0, 0, 0]
+                        'data' => [1, 6, 0, 0, 2, 3, 0, 0, 0, 0],
                     ],
                     [
                         'name' => __('On time'), //406 not new, solved or closed
-                        'data' => [42, 44, 21, 37, 47, 42, 43, 46, 42, 41]
-                    ]
+                        'data' => [42, 44, 21, 37, 47, 42, 43, 46, 42, 41],
+                    ],
                 ],
                 'labels' => self::getFakeNames(),
             ],
@@ -251,20 +250,20 @@ final class FakeProvider extends Provider
                 'series' => [
                     [
                         'name' => __('Late own and resolve'),
-                        'data' => [0, 1, 3, 2, 5]
+                        'data' => [0, 1, 3, 2, 5],
                     ],
                     [
                         'name' => __('Late resolve'),
-                        'data' => [0, 1, 3, 2, 5]
+                        'data' => [0, 1, 3, 2, 5],
                     ],
                     [
                         'name' => __('Late own'),
-                        'data' => [0, 1, 3, 2, 5]
+                        'data' => [0, 1, 3, 2, 5],
                     ],
                     [
                         'name' => __('On time'),
-                        'data' => [12, 22, 34, 65, 102]
-                    ]
+                        'data' => [12, 22, 34, 65, 102],
+                    ],
                 ],
                 'labels' => [
                     _x('fake_data', 'Security team'),
@@ -359,19 +358,19 @@ final class FakeProvider extends Provider
         $series = [
             'inter_total' => [
                 'name'   => _nx('ticket', 'Opened', 'Opened', Session::getPluralNumber()),
-                'search' => []
+                'search' => [],
             ],
             'inter_solved' => [
                 'name'   => _nx('ticket', 'Solved', 'Solved', Session::getPluralNumber()),
-                'search' => []
+                'search' => [],
             ],
             'inter_solved_late' => [
                 'name'   => __('Late'),
-                'search' => []
+                'search' => [],
             ],
             'inter_closed' => [
                 'name'   => __('Closed'),
-                'search' => []
+                'search' => [],
             ],
         ];
 
@@ -426,7 +425,7 @@ final class FakeProvider extends Provider
         foreach ($statuses as $status_i => $status) {
             $series[$status] = [
                 'name'   => $status,
-                'search' => []
+                'search' => [],
             ];
             for ($i = 0; $i < 12; $i++) {
                 $date = date("Y-m", strtotime("-$i months"));
@@ -434,15 +433,15 @@ final class FakeProvider extends Provider
 
                 if ($i >= 4 && $status_i === \CommonITILObject::CLOSED) {
                     $num = self::getObscureNumberForString($date . $status, 500) + 1500;
-                } else if ($i >= 8 && $status_i === \CommonITILObject::CLOSED) {
+                } elseif ($i >= 8 && $status_i === \CommonITILObject::CLOSED) {
                     $num = self::getObscureNumberForString($date . $status, 2500);
-                } else if ($i >= 8) {
+                } elseif ($i >= 8) {
                     $num = 0;
-                } else if ($i >= 4) {
+                } elseif ($i >= 4) {
                     $num = self::getObscureNumberForString($date . $status, 20);
-                } else if (($i === 3 || $i === 2) && $status_i === \CommonITILObject::CLOSED) {
+                } elseif (($i === 3 || $i === 2) && $status_i === \CommonITILObject::CLOSED) {
                     $num = self::getObscureNumberForString($date . $status, 500) + 1000;
-                } else if ($i === 0) {
+                } elseif ($i === 0) {
                     // base the max number on how far into the current month we are
                     $num = self::getObscureNumberForString($date . $status, (int) date("d") * 16);
                 } else {
@@ -458,7 +457,7 @@ final class FakeProvider extends Provider
 
         $data = [
             'labels' => $date_labels,
-            'series' => $series
+            'series' => $series,
         ];
 
         return [
@@ -507,18 +506,18 @@ final class FakeProvider extends Provider
             'series' => [
                 [
                     'name' => __("Time to own"),
-                    'data' => []
+                    'data' => [],
                 ], [
                     'name' => __("Waiting time"),
-                    'data' => []
+                    'data' => [],
                 ], [
                     'name' => __("Time to resolve"),
-                    'data' => []
+                    'data' => [],
                 ], [
                     'name' => __("Time to close"),
-                    'data' => []
-                ]
-            ]
+                    'data' => [],
+                ],
+            ],
         ];
         for ($i = 0; $i < 12; $i++) {
             $date = date("Y-m", strtotime("-$i months"));

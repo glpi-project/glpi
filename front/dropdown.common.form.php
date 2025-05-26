@@ -33,10 +33,12 @@
  * ---------------------------------------------------------------------
  */
 
+require_once(__DIR__ . '/_check_webserver_config.php');
+
 /**
- * Following variables have to be defined before inclusion of this file:
- * @var CommonDropdown $dropdown
- * @var LegacyFileLoadController $this
+ * @var mixed $this
+ * @var mixed $dropdown
+ * @var mixed $options
  */
 
 use Glpi\Controller\DropdownFormController;
@@ -47,13 +49,18 @@ if (!($this instanceof LegacyFileLoadController) || !($dropdown instanceof Commo
 }
 
 \Toolbox::deprecated(\sprintf(
-    'Requiring legacy dropdown files is deprecated. You can safely remove the %s file and use the new `%s` route, dedicated for dropdowns.',
+    'Requiring legacy dropdown files is deprecated. You can safely remove the `%s` file in order to make the `%s` controller used instead.',
     debug_backtrace()[0]['file'] ?? 'including',
-    'glpi_dropdown_form',
+    DropdownFormController::class,
 ));
 
-DropdownFormController::loadDropdownForm(
-    $this->getRequest(), // @phpstan-ignore method.private
-    $dropdown,
-    $options ?? []
-);
+$request = $this->getRequest(); // @phpstan-ignore method.private
+$request->attributes->set('class', $dropdown::class);
+
+if (($options ?? null) !== null) {
+    $request->attributes->set('options', $options);
+}
+
+$controller = new DropdownFormController();
+$response = $controller($request);
+$response->send();

@@ -6,7 +6,6 @@
  # http://glpi-project.org
  #
  # @copyright 2015-2025 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -48,7 +47,13 @@
 {% set showmassiveactions = not p.showmassiveactions is defined or p.showmassiveactions %}
 
 {% if mainform and showaction %}
-   <form name="searchform{{ normalized_itemtype }}" class="search-form-container" method="get" action="{{ p['target'] }}">
+   <form
+      name="searchform{{ normalized_itemtype }}"
+      class="search-form-container"
+      method="get"
+      action="{{ p['target'] }}"
+      data-glpi-search-form
+   >
 
    {% for param_name, param_value in additional_params %}
        <input type="hidden" name="{{ param_name }}" value="{{ param_value }}" />
@@ -111,10 +116,11 @@
             <span class="d-none d-sm-block">{{ __('group') }}</span>
          </button>
          {% if mainform %}
-            <span class="ms-auto btn-group">
+            {% set action_count = showaction + p['showbookmark'] + p['showreset'] %}
+            <span class="ms-auto {{ action_count > 1 ? 'btn-group' : '' }}">
                 {% if (showaction) %}
                 {# Display submit button #}
-                <button class="btn btn-sm btn-primary" type="button" name="{{ p['actionname'] }}">
+                <button class="btn {{ p['is_criteria_filter'] ? 'btn-ghost-secondary' : 'btn-sm btn-primary' }}" type="button" name="{{ p['actionname'] }}">
                     <i class="ti ti-search"></i>
                     <span class="d-none d-sm-block">{{ p['actionvalue'] }}</span>
                 </button>

@@ -38,7 +38,6 @@ namespace Glpi\Form\QuestionType;
 use DateTime;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\JsonFieldInterface;
-use Glpi\Form\Condition\ConditionHandler\ConditionHandlerInterface;
 use Glpi\Form\Condition\ConditionHandler\DateAndTimeConditionHandler;
 use Glpi\Form\Condition\ConditionHandler\DateConditionHandler;
 use Glpi\Form\Condition\ConditionHandler\TimeConditionHandler;
@@ -55,7 +54,7 @@ use RuntimeException;
 class QuestionTypeDateTime extends AbstractQuestionType implements FormQuestionDataConverterInterface, UsedAsCriteriaInterface
 {
     #[Override]
-    public function getCategory(): QuestionTypeCategory
+    public function getCategory(): QuestionTypeCategoryInterface
     {
         return QuestionTypeCategory::DATE_AND_TIME;
     }
@@ -136,7 +135,7 @@ class QuestionTypeDateTime extends AbstractQuestionType implements FormQuestionD
                 'date'            => __('Current date'),
                 'time'            => __('Current time'),
                 'datetime-local'  => __('Current date and time'),
-            ]
+            ],
         ];
     }
 
@@ -200,7 +199,7 @@ class QuestionTypeDateTime extends AbstractQuestionType implements FormQuestionD
         $allowed_keys = [
             'is_default_value_current_time',
             'is_date_enabled',
-            'is_time_enabled'
+            'is_time_enabled',
         ];
 
         return empty(array_diff(array_keys($input), $allowed_keys))
@@ -226,7 +225,7 @@ class QuestionTypeDateTime extends AbstractQuestionType implements FormQuestionD
                         name="default_value"
                         placeholder="{{ placeholders.input[input_type_ignore_text] }}"
                         value="{{ default_value }}"
-                        aria-label="{{ __('Default value') }}"
+                        aria-label="{{ aria_label }}"
                         {{ is_default_value_current_time ? 'disabled' : '' }}
                     />
                 </div>
@@ -244,7 +243,7 @@ class QuestionTypeDateTime extends AbstractQuestionType implements FormQuestionD
 
             {% if question == null %}
                 <script>
-                    import("{{ js_path('js/modules/Forms/QuestionDateTime.js') }}").then((m) => {
+                    import("/js/modules/Forms/QuestionDateTime.js").then((m) => {
                         new m.GlpiFormQuestionTypeDateTime({{ placeholders|json_encode|raw }});
                     });
                 </script>
@@ -260,7 +259,8 @@ TWIG;
             'input_type'        => $this->getInputType($question),
             'input_type_ignore_text'        => $this->getInputType($question, true),
             'is_default_value_current_time' => $this->isDefaultValueCurrentTime($question),
-            'placeholders'      => $this->getPlaceholders()
+            'placeholders'      => $this->getPlaceholders(),
+            'aria_label'        =>  __('Default value'),
         ]);
     }
 
@@ -299,8 +299,8 @@ TWIG;
             'is_time_enabled' => $this->isTimeEnabled($question),
             'labels' => [
                 'date' => _n('Date', 'Dates', 1),
-                'time' => _n('Time', 'Times', 1)
-            ]
+                'time' => _n('Time', 'Times', 1),
+            ],
         ]);
     }
 
@@ -322,12 +322,12 @@ TWIG;
         return $twig->renderFromStringTemplate($template, [
             'question'      => $question,
             'input_type'    => $this->getInputType($question, true),
-            'default_value' => $this->getDefaultValue($question) ?? ''
+            'default_value' => $this->getDefaultValue($question) ?? '',
         ]);
     }
 
     #[Override]
-    public function formatRawAnswer(mixed $answer): string
+    public function formatRawAnswer(mixed $answer, Question $question): string
     {
         return $this->formatAnswer($answer);
     }
@@ -345,9 +345,9 @@ TWIG;
     }
 
     #[Override]
-    public function getConditionHandler(
+    public function getConditionHandlers(
         ?JsonFieldInterface $question_config
-    ): ConditionHandlerInterface {
+    ): array {
         if (!$question_config instanceof QuestionTypeDateTimeExtraDataConfig) {
             throw new InvalidArgumentException();
         }
@@ -355,11 +355,11 @@ TWIG;
         $use_date = $question_config->isDateEnabled();
         $use_time = $question_config->isTimeEnabled();
         if ($use_date && !$use_time) {
-            return new DateConditionHandler();
+            return array_merge(parent::getConditionHandlers($question_config), [new DateConditionHandler()]);
         } elseif (!$use_date && $use_time) {
-            return new TimeConditionHandler();
+            return array_merge(parent::getConditionHandlers($question_config), [new TimeConditionHandler()]);
         } elseif ($use_date && $use_time) {
-            return new DateAndTimeConditionHandler();
+            return array_merge(parent::getConditionHandlers($question_config), [new DateAndTimeConditionHandler()]);
         } else {
             // Impossible, should never happen.
             throw new RuntimeException();

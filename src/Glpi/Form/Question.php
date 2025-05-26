@@ -37,11 +37,18 @@ namespace Glpi\Form;
 
 use CommonDBChild;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AccessControl\FormAccessControlManager;
+use Glpi\Form\Condition\ConditionableValidationTrait;
 use Glpi\Form\Condition\ConditionableVisibilityInterface;
 use Glpi\Form\Condition\ConditionableVisibilityTrait;
+use Glpi\Form\Export\Context\DatabaseMapper;
+use Glpi\Form\Export\Serializer\DynamicExportData;
 use Glpi\Form\QuestionType\QuestionTypeInterface;
 use Glpi\Form\QuestionType\QuestionTypesManager;
+use Glpi\Form\QuestionType\TranslationAwareQuestionType;
+use Glpi\ItemTranslation\Context\TranslationHandler;
+use JsonException;
 use Log;
 use Override;
 use Ramsey\Uuid\Uuid;
@@ -54,6 +61,11 @@ use RuntimeException;
 final class Question extends CommonDBChild implements BlockInterface, ConditionableVisibilityInterface
 {
     use ConditionableVisibilityTrait;
+    use ConditionableValidationTrait;
+
+    public const TRANSLATION_KEY_NAME          = 'question_name';
+    public const TRANSLATION_KEY_DESCRIPTION   = 'question_description';
+    public const TRANSLATION_KEY_DEFAULT_VALUE = 'question_default_value';
 
     public static $itemtype = Section::class;
     public static $items_id = 'forms_sections_id';
@@ -64,6 +76,12 @@ final class Question extends CommonDBChild implements BlockInterface, Conditiona
     public static function getTypeName($nb = 0)
     {
         return _n('Question', 'Questions', $nb);
+    }
+
+    #[Override]
+    public function getUUID(): string
+    {
+        return $this->fields['uuid'];
     }
 
     #[Override]
@@ -93,6 +111,41 @@ final class Question extends CommonDBChild implements BlockInterface, Conditiona
         $this->logDeleteInParentForm();
     }
 
+    #[Override]
+    public function listTranslationsHandlers(): array
+    {
+        $key = sprintf('%s: %s', self::getTypeName(), $this->getName());
+        $handlers = [];
+        if (!empty($this->fields['name'])) {
+            $handlers[$key][] = new TranslationHandler(
+                item: $this,
+                key: self::TRANSLATION_KEY_NAME,
+                name: __('Question name'),
+                value: $this->fields['name'],
+            );
+        }
+
+        if (!empty($this->fields['description'])) {
+            $handlers[$key][] = new TranslationHandler(
+                item: $this,
+                key: self::TRANSLATION_KEY_DESCRIPTION,
+                name: __('Question description'),
+                value: $this->fields['description'],
+            );
+        }
+
+        $question_type = $this->getQuestionType();
+        if ($question_type instanceof TranslationAwareQuestionType) {
+            $handlers[$key] = array_merge(
+                $handlers[$key] ?? [],
+                array_values($question_type->listTranslationsHandlers($this))
+            );
+        }
+
+        return $handlers;
+    }
+
+    #[Override]
     public function displayBlockForEditor(): void
     {
         TemplateRenderer::getInstance()->display('pages/admin/form/form_question.html.twig', [
@@ -104,6 +157,12 @@ final class Question extends CommonDBChild implements BlockInterface, Conditiona
             'can_update'                   => $this->getForm()->canUpdate(),
             'allow_unauthenticated_access' => FormAccessControlManager::getInstance()->allowUnauthenticatedAccess($this->getForm()),
         ]);
+    }
+
+    #[Override]
+    public function getUntitledLabel(): string
+    {
+        return __('Untitled question');
     }
 
     /**
@@ -150,16 +209,6 @@ final class Question extends CommonDBChild implements BlockInterface, Conditiona
         return (new EndUserInputNameProvider())->getEndUserInputName($this);
     }
 
-    public function getUniqueIDInForm(): string
-    {
-        return sprintf(
-            "%s-%s-%s",
-            $this->getItem()->fields['rank'],
-            $this->fields['vertical_rank'],
-            $this->fields['horizontal_rank']
-        );
-    }
-
     #[Override]
     public function prepareInputForAdd($input)
     {
@@ -170,6 +219,10 @@ final class Question extends CommonDBChild implements BlockInterface, Conditiona
         // JSON fields must have a value when created to prevent SQL errors
         if (!isset($input['conditions'])) {
             $input['conditions'] = json_encode([]);
+        }
+
+        if (!isset($input['validation_conditions'])) {
+            $input['validation_conditions'] = json_encode([]);
         }
 
         $input = $this->prepareInput($input);
@@ -198,8 +251,45 @@ final class Question extends CommonDBChild implements BlockInterface, Conditiona
         }
     }
 
+    public function exportDynamicData(): DynamicExportData
+    {
+        $type = $this->getQuestionType();
+
+        $extra_data = $this->getExtraDataConfig();
+        $default_value = $this->getDefaultValue();
+
+        $data = new DynamicExportData();
+        $data->addField('extra_data', $type->exportDynamicExtraData($extra_data));
+        $data->addField('default_value', $type->exportDynamicDefaultValue(
+            $extra_data,
+            $default_value,
+        ));
+
+        return $data;
+    }
+
+    public static function prepareDynamicImportData(
+        QuestionTypeInterface $type,
+        array $input,
+        DatabaseMapper $mapper,
+    ): array {
+        $input['extra_data'] = $type->prepareDynamicExtraDataForImport(
+            $input['extra_data'],
+            $mapper,
+        );
+        $input['default_value'] = $type->prepareDynamicDefaultValueForImport(
+            $input['extra_data'],
+            $input['default_value'],
+            $mapper,
+        );
+
+        return $input;
+    }
+
     private function prepareInput($input): array
     {
+        $is_creating = ($input['id'] ?? 0) === 0;
+
         // Set parent UUID
         if (
             isset($input['forms_sections_id'])
@@ -214,10 +304,14 @@ final class Question extends CommonDBChild implements BlockInterface, Conditiona
             $input['horizontal_rank'] = 'NULL';
         }
 
-        // If the question is being imported, we don't need to format the input
-        // because it is already formatted. So we skip this step.
-        if ($input['_from_import'] ?? false) {
-            return $input;
+        if (isset($input['_conditions'])) {
+            $input['conditions'] = json_encode($input['_conditions']);
+            unset($input['_conditions']);
+        }
+
+        if (isset($input['_validation_conditions'])) {
+            $input['validation_conditions'] = json_encode($input['_validation_conditions']);
+            unset($input['_validation_conditions']);
         }
 
         $question_type = $this->getQuestionType();
@@ -236,34 +330,31 @@ final class Question extends CommonDBChild implements BlockInterface, Conditiona
                 $input['default_value'] = $question_type->formatDefaultValueForDB($input['default_value']);
             }
 
-            $extra_data = $input['extra_data'] ?? [];
-            if (is_string($extra_data)) {
-                if (empty($extra_data)) {
-                    $extra_data = [];
-                } else {
-                    // Decode extra data as JSON
-                    $extra_data = json_decode($extra_data, true);
+            if (isset($input['extra_data']) || $is_creating) {
+                $extra_data = $input['extra_data'] ?? [];
+                if (is_string($extra_data)) {
+                    if (empty($extra_data)) {
+                        $extra_data = [];
+                    } else {
+                        // Decode extra data as JSON
+                        $extra_data = json_decode($extra_data, true);
+                    }
+                }
+
+                $is_extra_data_valid = $question_type->validateExtraDataInput($extra_data);
+
+                if (!$is_extra_data_valid) {
+                    throw new \InvalidArgumentException("Invalid extra data for question");
+                }
+
+                // Prepare extra data
+                $extra_data = $question_type->prepareExtraData($extra_data);
+
+                // Save extra data as JSON
+                if (!empty($extra_data)) {
+                    $input['extra_data'] = json_encode($extra_data);
                 }
             }
-
-            $is_extra_data_valid = $question_type->validateExtraDataInput($extra_data);
-
-            if (!$is_extra_data_valid) {
-                throw new \InvalidArgumentException("Invalid extra data for question");
-            }
-
-            // Prepare extra data
-            $extra_data = $question_type->prepareExtraData($extra_data);
-
-            // Save extra data as JSON
-            if (!empty($extra_data)) {
-                $input['extra_data'] = json_encode($extra_data);
-            }
-        }
-
-        if (isset($input['_conditions'])) {
-            $input['conditions'] = json_encode($input['_conditions']);
-            unset($input['_conditions']);
         }
 
         return $input;
@@ -366,5 +457,56 @@ final class Question extends CommonDBChild implements BlockInterface, Conditiona
         );
 
         parent::post_deleteFromDB();
+    }
+
+    private function getExtraDataConfig(): ?JsonFieldInterface
+    {
+        $data = $this->fields['extra_data'];
+
+        // Empty config
+        if ($data === null) {
+            return null;
+        }
+
+        // Specific config
+        try {
+            $decoded_data = json_decode(
+                $data,
+                associative: true,
+                flags: JSON_THROW_ON_ERROR,
+            );
+        } catch (JsonException $e) {
+            // Invalid format, fallback to null config
+            return null;
+        }
+
+        return $this->getQuestionType()->getExtraDataConfig($decoded_data);
+    }
+
+    private function getDefaultValue(): array|int|float|bool|string|null
+    {
+        $default_value = $this->fields['default_value'];
+
+        // Empty config
+        if ($default_value === null) {
+            return null;
+        }
+
+        // Specific value that is not a string (raw numbers or bool)
+        if (!is_string($default_value)) {
+            return $default_value;
+        }
+
+        // Specific value that may be a string OR a json encoded object/array
+        try {
+            return json_decode(
+                $default_value,
+                associative: true,
+                flags: JSON_THROW_ON_ERROR,
+            );
+        } catch (JsonException $e) {
+            // Specific value is a simple string
+            return $default_value;
+        }
     }
 }

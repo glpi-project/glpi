@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+require_once(__DIR__ . '/_check_webserver_config.php');
+
 use Glpi\Cache\CacheManager;
 
 Session::checkRight("config", READ);
@@ -79,5 +81,5 @@ if (!empty($_POST['reset_translation_cache'])) {
 }
 
 Config::displayFullPageForItem($_POST['id'], ["config", "config"], [
-    'formoptions'  => "data-track-changes=true"
+    'formoptions'  => "data-track-changes=true",
 ]);

@@ -56,13 +56,13 @@ if (isset($_POST["table"], $_POST["value"])) {
         if (
             !Session::validateIDOR([
                 'itemtype'    => $itemtype,
-                '_idor_token' => $_POST['_idor_token'] ?? ""
+                '_idor_token' => $_POST['_idor_token'] ?? "",
             ])
         ) {
             return;
         }
         $item = new $itemtype();
-        $item->getFromDB((int)$_POST["value"]);
+        $item->getFromDB((int) $_POST["value"]);
         echo '&nbsp;' . $item->getLinks();
     }
 }

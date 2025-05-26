@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+require_once(__DIR__ . '/_check_webserver_config.php');
+
 /**
  * @since 0.85
  */
@@ -40,7 +42,7 @@
 Session::checkCentralAccess();
 if (isset($_GET['action'])) {
     $action = $_GET['action'];
-} else if (isset($_POST['action'])) {
+} elseif (isset($_POST['action'])) {
     $action = $_POST['action'];
 } else {
     $action = "import";
@@ -59,9 +61,9 @@ switch ($action) {
         if (RuleCollection::previewImportRules()) {
             break;
         }
-        // no break
         // seems wanted not to break; I do no understand why
 
+        // no break
     case "import":
         $rulecollection->checkGlobal(UPDATE);
         RuleCollection::displayImportRulesForm();
@@ -85,6 +87,7 @@ switch ($action) {
         echo "</div>";
         Html::redirect("rule.backup.php?action=export&itemtype=" . urlencode($_REQUEST['itemtype']));
         // phpcs doesn't understand that the script stops in Html::redirect() so we need a comment to avoid the fallthrough warning
+        // no break
     case "process_import":
         $rulecollection->checkGlobal(UPDATE);
         RuleCollection::processImportRules();

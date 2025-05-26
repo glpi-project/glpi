@@ -35,13 +35,18 @@
 
 namespace Glpi\Form\AnswersHandler;
 
+use Glpi\DBAL\QueryExpression;
 use Glpi\Form\Answer;
 use Glpi\Form\AnswersSet;
 use Glpi\Form\Condition\Engine;
 use Glpi\Form\Condition\EngineInput;
+use Glpi\Form\Condition\ValidationStrategy;
+use Glpi\Form\DelegationData;
 use Glpi\Form\Destination\AnswersSet_FormDestinationItem;
 use Glpi\Form\Destination\FormDestination;
 use Glpi\Form\Form;
+use Glpi\Form\Section;
+use Glpi\Form\ValidationResult;
 
 /**
  * Helper class to handle raw answers data
@@ -57,9 +62,7 @@ final class AnswersHandler
     /**
      * Private constructor to prevent instantiation (singleton)
      */
-    private function __construct()
-    {
-    }
+    private function __construct() {}
 
     /**
      * Get the singleton instance
@@ -73,6 +76,75 @@ final class AnswersHandler
         }
 
         return self::$instance;
+    }
+
+    /**
+     * Check if the given answers are valid for the given form
+     *
+     * @param Form|Section $questions_container The form or section to check
+     * @param array $answers The answers to check
+     * @return ValidationResult The validation result
+     */
+    public function validateAnswers(
+        Form|Section $questions_container,
+        array $answers
+    ): ValidationResult {
+        $form = ($questions_container instanceof Section) ? $questions_container->getItem() : $questions_container;
+        $result = new ValidationResult();
+        $engine = new Engine($form, new EngineInput($answers));
+        $visibility = $engine->computeVisibility();
+        $validation = $engine->computeValidation();
+
+        // Retrieve visible mandatory questions
+        $mandatory_questions = array_filter(
+            $questions_container->getQuestions(),
+            fn($question) => $question->fields['is_mandatory']
+                && $visibility->isQuestionVisible($question->getID())
+        );
+
+        foreach ($mandatory_questions as $question) {
+            // Check if the question is not answered (empty or not set)
+            if (
+                empty($answers[$question->getID()])
+                || (isset($answers[$question->getID()]['items_id']) && empty($answers[$question->getID()]['items_id']))
+            ) {
+                $result->addError($question, __('This field is mandatory'));
+            }
+        }
+
+        // Validate answers for each question if validation conditions are defined
+        foreach ($questions_container->getQuestions() as $question) {
+            if ($question->getConfiguredValidationStrategy() === ValidationStrategy::NO_VALIDATION) {
+                // Skip validation if the question is always validated
+                continue;
+            }
+
+            // Check if the question is visible
+            if (!$visibility->isQuestionVisible($question->getID())) {
+                continue;
+            }
+
+            // Check if the question is not answered (empty or not set)
+            if (empty($answers[$question->getID()])) {
+                continue;
+            }
+
+            // Validate the answer
+            if (!$validation->isQuestionValid($question->getID())) {
+                // Add error for each condition that is not met
+                foreach ($validation->getQuestionValidation($question->getID()) as $condition) {
+                    $result->addError(
+                        $question,
+                        $condition->getValueOperator()?->getErrorMessageForValidation(
+                            $question->getConfiguredValidationStrategy(),
+                            $condition
+                        )
+                    );
+                }
+            }
+        }
+
+        return $result;
     }
 
     /**
@@ -91,20 +163,21 @@ final class AnswersHandler
         Form $form,
         array $answers,
         int $users_id,
-        array $files = []
+        array $files = [],
+        DelegationData $delegation = new DelegationData(),
     ): AnswersSet {
         /** @var \DBmysql $DB */
         global $DB;
 
         if ($DB->inTransaction()) {
-            return $this->doSaveAnswers($form, $answers, $users_id);
+            return $this->doSaveAnswers($form, $answers, $users_id, $delegation, $files);
         } else {
             // We do not want to commit the answers unless everything was processed
             // correctly
             $DB->beginTransaction();
 
             try {
-                $answers_set = $this->doSaveAnswers($form, $answers, $users_id, $files);
+                $answers_set = $this->doSaveAnswers($form, $answers, $users_id, $delegation, $files);
                 $DB->commit();
                 return $answers_set;
             } catch (\Throwable $e) {
@@ -139,7 +212,8 @@ final class AnswersHandler
         Form $form,
         array $answers,
         int $users_id,
-        array $files = []
+        DelegationData $delegation,
+        array $files = [],
     ): AnswersSet {
         // Save answers
         $answers_set = $this->createAnswserSet(
@@ -148,6 +222,7 @@ final class AnswersHandler
             $users_id
         );
         $answers_set->setSubmittedFiles($files);
+        $answers_set->setDelegation($delegation);
 
         // Create destinations objects
         $this->createDestinations(
@@ -155,7 +230,30 @@ final class AnswersHandler
             $answers_set
         );
 
+        // Increment the form usage counter
+        $this->incrementFormUsageCount($form);
+
         return $answers_set;
+    }
+
+    /**
+     * Increment the usage count of a form
+     *
+     * @param Form $form The form to increment the usage count for
+     *
+     * @return void
+     */
+    protected function incrementFormUsageCount(Form $form): void
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        // Note: Using direct DB update prevents race conditions
+        $DB->update(
+            Form::getTable(),
+            ['usage_count' => new QueryExpression('usage_count + 1')],
+            ['id' => $form->getID()]
+        );
     }
 
     /**
@@ -266,12 +364,8 @@ final class AnswersHandler
                 continue;
             }
 
-            // Skip if the destination is not mandatory and it failed its
-            // required conditions.
-            if (
-                !$destination->fields['is_mandatory']
-                && !$engine_output->itemMustBeCreated($destination)
-            ) {
+            // Skip if the destination failed its required conditions.
+            if (!$engine_output->itemMustBeCreated($destination)) {
                 continue;
             }
 

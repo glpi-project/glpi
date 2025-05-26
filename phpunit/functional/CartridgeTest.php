@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -46,7 +45,7 @@ class CartridgeTest extends DbTestCase
         $printer = new \Printer();
         $pid = $printer->add([
             'name'         => 'Test printer',
-            'entities_id'  => getItemByTypeName('Entity', '_test_root_entity', true)
+            'entities_id'  => getItemByTypeName('Entity', '_test_root_entity', true),
         ]);
         $this->assertGreaterThan(0, $pid);
         $this->assertTrue($printer->getFromDB($pid));
@@ -61,7 +60,7 @@ class CartridgeTest extends DbTestCase
         $citem = new \CartridgeItem();
         $ciid = $citem->add([
             'name'                  => 'Test cartridge item',
-            'cartridgeitemtypes_id' => $tid
+            'cartridgeitemtypes_id' => $tid,
         ]);
         $this->assertGreaterThan(0, $ciid);
         $this->assertTrue($citem->getFromDB($ciid));
@@ -69,7 +68,7 @@ class CartridgeTest extends DbTestCase
         $cartridge = new \Cartridge();
         $cid = $cartridge->add([
             'name'               => 'Test cartridge',
-            'cartridgeitems_id'  => $ciid
+            'cartridgeitems_id'  => $ciid,
         ]);
         $this->assertGreaterThan(0, $cid);
         $this->assertTrue($cartridge->getFromDB($cid));
@@ -105,7 +104,7 @@ class CartridgeTest extends DbTestCase
 
         $cartridge_item = new \CartridgeItem();
         $cu_id = (int) $cartridge_item->add([
-            'name' => 'Test cartridge item'
+            'name' => 'Test cartridge item',
         ]);
         $this->assertGreaterThan(0, $cu_id);
 
@@ -114,19 +113,19 @@ class CartridgeTest extends DbTestCase
             'itemtype'  => \CartridgeItem::getType(),
             'items_id'  => $cu_id,
             'buy_date'  => '2020-10-21',
-            'value'     => '500'
+            'value'     => '500',
         ]);
         $this->assertGreaterThan(0, $infocom_id);
 
         $cartridge_id = $cartridge->add([
-            'cartridgeitems_id' => $cu_id
+            'cartridgeitems_id' => $cu_id,
         ]);
         $this->assertGreaterThan(0, $cartridge_id);
 
         $infocom2 = new \Infocom();
         $infocom2_id = (int) $infocom2->getFromDBByCrit([
             'itemtype'  => \Cartridge::getType(),
-            'items_id'  => $cartridge_id
+            'items_id'  => $cartridge_id,
         ]);
         $this->assertGreaterThan(0, $infocom2_id);
         $this->assertEquals($infocom->fields['buy_date'], $infocom2->fields['buy_date']);

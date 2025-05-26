@@ -55,10 +55,10 @@ abstract class AbstractDefinitionManager
     abstract public static function getDefinitionClass(): string;
 
     /**
-     * Returns the list of reserved system names
-     * @return array
+     * Returns the regex pattern of reserved system names
+     * @return string
      */
-    abstract public function getReservedSystemNames(): array;
+    abstract public function getReservedSystemNamesPattern(): string;
 
     /**
      * Register the class autoload function.
@@ -99,9 +99,7 @@ abstract class AbstractDefinitionManager
      * @phpstan-param ConcreteDefinition $definition
      * @return void
      */
-    public function bootstrapDefinition(AbstractDefinition $definition)
-    {
-    }
+    public function bootstrapDefinition(AbstractDefinition $definition) {}
 
     final public function getCustomObjectClassNames(bool $with_namespace = true): array
     {

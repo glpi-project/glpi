@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+require_once(__DIR__ . '/_check_webserver_config.php');
+
 use Glpi\Event;
 
 Session::checkRight("config", UPDATE);
@@ -41,7 +43,7 @@ $notificationajax = new NotificationAjaxSetting();
 if (!empty($_POST["test_ajax_send"])) {
     NotificationAjax::testNotification();
     Html::back();
-} else if (!empty($_POST["update"])) {
+} elseif (!empty($_POST["update"])) {
     $config = new Config();
     $config->update($_POST);
     Event::log(0, "system", 3, "setup", sprintf(

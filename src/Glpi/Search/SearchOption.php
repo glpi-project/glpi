@@ -39,6 +39,7 @@ use Change;
 use CommonDBTM;
 use Glpi\Socket;
 use Problem;
+use Session;
 use Ticket;
 
 /**
@@ -134,7 +135,7 @@ final class SearchOption implements \ArrayAccess
 
         $search = [];
 
-        $cache_key = $itemtype . '_' . $withplugins;
+        $cache_key = $itemtype . '_' . ($withplugins ? 1 : 0);
         if (isset(self::$search_options_cache[$cache_key])) {
             return self::$search_options_cache[$cache_key];
         }
@@ -208,7 +209,7 @@ final class SearchOption implements \ArrayAccess
 
                 $search[$itemtype][16]['table']         = 'asset_types';
                 $search[$itemtype][16]['field']         = 'comment';
-                $search[$itemtype][16]['name']          = __('Comments');
+                $search[$itemtype][16]['name']          = _n('Comment', 'Comments', Session::getPluralNumber());
                 $search[$itemtype][16]['datatype']      = 'text';
 
                 $search[$itemtype][70]['table']         = 'glpi_users';
@@ -265,7 +266,7 @@ final class SearchOption implements \ArrayAccess
         }
 
         if (
-            \Session::getLoginUserID()
+            Session::getLoginUserID()
             && in_array($itemtype, $CFG_GLPI["ticket_types"])
         ) {
             $search[$itemtype]['tracking']          = __('Assistance');
@@ -318,19 +319,19 @@ final class SearchOption implements \ArrayAccess
         }
 
         if (in_array($itemtype, $CFG_GLPI["link_types"])) {
-            $search[$itemtype]['link'] = \Link::getTypeName(\Session::getPluralNumber());
+            $search[$itemtype]['link'] = \Link::getTypeName(Session::getPluralNumber());
             $fn_append_options(\Link::getSearchOptionsToAdd($itemtype));
-            $search[$itemtype]['manuallink'] = \ManualLink::getTypeName(\Session::getPluralNumber());
+            $search[$itemtype]['manuallink'] = \ManualLink::getTypeName(Session::getPluralNumber());
             $fn_append_options(\ManualLink::getSearchOptionsToAdd($itemtype));
         }
 
         if (in_array($itemtype, $CFG_GLPI['reservation_types'], true)) {
-            $search[$itemtype]['reservationitem'] = \Reservation::getTypeName(\Session::getPluralNumber());
+            $search[$itemtype]['reservationitem'] = \Reservation::getTypeName(Session::getPluralNumber());
             $fn_append_options(\ReservationItem::getSearchOptionsToAdd($itemtype));
         }
 
         if (in_array($itemtype, $CFG_GLPI['socket_types'], true)) {
-            $search[$itemtype]['socket'] = Socket::getTypeName(\Session::getPluralNumber());
+            $search[$itemtype]['socket'] = Socket::getTypeName(Session::getPluralNumber());
             $fn_append_options(Socket::getSearchOptionsToAdd($itemtype));
         }
 
@@ -339,7 +340,7 @@ final class SearchOption implements \ArrayAccess
             $plugsearch = \Plugin::getAddSearchOptions($itemtype);
             $plugsearch = $plugsearch + \Plugin::getAddSearchOptionsNew($itemtype);
             if (count($plugsearch)) {
-                $search[$itemtype] += ['plugins' => ['name' => _n('Plugin', 'Plugins', \Session::getPluralNumber())]];
+                $search[$itemtype] += ['plugins' => ['name' => _n('Plugin', 'Plugins', Session::getPluralNumber())]];
                 $fn_append_options($plugsearch);
             }
         }
@@ -416,7 +417,7 @@ final class SearchOption implements \ArrayAccess
             'contains'    => __('contains'),
             'notcontains' => __('not contains'),
             'empty'       => __('is empty'),
-            'searchopt'   => []
+            'searchopt'   => [],
         ];
 
         if (isset($searchopt[$field_num]) && isset($searchopt[$field_num]['table'])) {
@@ -426,7 +427,7 @@ final class SearchOption implements \ArrayAccess
             if (isset($actions['searchopt']['searchtype'])) {
                 // Reset search option
                 $actions = [
-                    'searchopt'   => $searchopt[$field_num]
+                    'searchopt'   => $searchopt[$field_num],
                 ];
                 if (!is_array($actions['searchopt']['searchtype'])) {
                     $actions['searchopt']['searchtype'] = [$actions['searchopt']['searchtype']];
@@ -485,7 +486,7 @@ final class SearchOption implements \ArrayAccess
                             'equals'      => __('is'),
                             'notequals'   => __('is not'),
                             'empty'       => __('is empty'),
-                            'searchopt'   => $searchopt[$field_num]
+                            'searchopt'   => $searchopt[$field_num],
                         ];
                         // No is / isnot if no limits defined
                         if (
@@ -510,21 +511,21 @@ final class SearchOption implements \ArrayAccess
                             'contains'    => __('contains'),
                             'notcontains' => __('not contains'),
                             'empty'       => __('is empty'),
-                            'searchopt'   => $searchopt[$field_num]
+                            'searchopt'   => $searchopt[$field_num],
                         ];
 
                     case 'right':
                         return ['equals'    => __('is'),
                             'notequals' => __('is not'),
                             'empty'     => __('is empty'),
-                            'searchopt' => $searchopt[$field_num]
+                            'searchopt' => $searchopt[$field_num],
                         ];
 
                     case 'itemtypename':
                         return ['equals'    => __('is'),
                             'notequals' => __('is not'),
                             'empty'     => __('is empty'),
-                            'searchopt' => $searchopt[$field_num]
+                            'searchopt' => $searchopt[$field_num],
                         ];
 
                     case 'date':
@@ -538,7 +539,7 @@ final class SearchOption implements \ArrayAccess
                             'contains'    => __('contains'),
                             'notcontains' => __('not contains'),
                             'empty'       => __('is empty'),
-                            'searchopt'   => $searchopt[$field_num]
+                            'searchopt'   => $searchopt[$field_num],
                         ];
                 }
             }
@@ -555,7 +556,7 @@ final class SearchOption implements \ArrayAccess
                     return ['equals'    => __('is'),
                         'notequals' => __('is not'),
                         'empty'     => __('is empty'),
-                        'searchopt' => $searchopt[$field_num]
+                        'searchopt' => $searchopt[$field_num],
                     ];
 
                 case 'name':
@@ -566,7 +567,7 @@ final class SearchOption implements \ArrayAccess
                         'equals'      => __('is'),
                         'notequals'   => __('is not'),
                         'empty'       => __('is empty'),
-                        'searchopt'   => $searchopt[$field_num]
+                        'searchopt'   => $searchopt[$field_num],
                     ];
 
                     // Specific case of TreeDropdown : add under
@@ -630,7 +631,7 @@ final class SearchOption implements \ArrayAccess
         $todel   = [];
 
         if (
-            !\Session::haveRight('infocom', $action)
+            !Session::haveRight('infocom', $action)
             && \Infocom::canApplyOn($itemtype)
         ) {
             $itemstodel = \Infocom::getSearchOptionsToAdd($itemtype);
@@ -638,7 +639,7 @@ final class SearchOption implements \ArrayAccess
         }
 
         if (
-            !\Session::haveRight('contract', $action)
+            !Session::haveRight('contract', $action)
             && in_array($itemtype, $CFG_GLPI["contract_types"])
         ) {
             $itemstodel = \Contract::getSearchOptionsToAdd();
@@ -646,7 +647,7 @@ final class SearchOption implements \ArrayAccess
         }
 
         if (
-            !\Session::haveRight('document', $action)
+            !Session::haveRight('document', $action)
             && \Document::canApplyOn($itemtype)
         ) {
             $itemstodel = \Document::getSearchOptionsToAdd();
@@ -657,18 +658,18 @@ final class SearchOption implements \ArrayAccess
         if (
             ($itemtype == 'Ticket')
             && ($action == UPDATE)
-            && !\Session::haveRight('ticket', \Ticket::CHANGEPRIORITY)
+            && !Session::haveRight('ticket', \Ticket::CHANGEPRIORITY)
         ) {
             $todel[] = 3;
         }
 
         if ($itemtype == 'Computer') {
-            if (!\Session::haveRight('networking', $action)) {
+            if (!Session::haveRight('networking', $action)) {
                 $itemstodel = \NetworkPort::getSearchOptionsToAdd($itemtype);
                 $todel      = array_merge($todel, array_keys($itemstodel));
             }
         }
-        if (!\Session::haveRight(strtolower($itemtype), READNOTE)) {
+        if (!Session::haveRight(strtolower($itemtype), READNOTE)) {
             $todel[] = 90;
         }
 
@@ -726,7 +727,7 @@ final class SearchOption implements \ArrayAccess
             $toview[] = 1;
         }
 
-        if (isset($params['as_map']) && (int)$params['as_map'] === 1) {
+        if (isset($params['as_map']) && (int) $params['as_map'] === 1) {
             if ($itemtype !== \AllAssets::getType()) {
                 // Add location name when map mode
                 $loc_opt = self::getOptionNumber($itemtype, 'completename', 'Location');
@@ -740,7 +741,7 @@ final class SearchOption implements \ArrayAccess
 
         // Add entity view :
         if (
-            \Session::isMultiEntitiesMode()
+            Session::isMultiEntitiesMode()
             && $entity_check
             && (isset($CFG_GLPI["union_search_type"][$itemtype])
                 || ($item && $item->maybeRecursive())
@@ -771,20 +772,38 @@ final class SearchOption implements \ArrayAccess
     public static function generateAProbablyUniqueId(string $string_identifier, ?string $plugin = null): int
     {
         // Generates an ID that can be assigned anywhere in the 10000-19999 range
-        $generated_id = (int)abs((int)hexdec(hash('xxh3', $string_identifier))) % 10000 + 10000;
+        $generated_id = (int) abs((int) hexdec(hash('xxh3', $string_identifier))) % 10000 + 10000;
 
         if ($plugin !== null && $plugin !== '') {
             // For plugins, increment the generated ID from a value between 10000 to 79999,
             // to get a final ID anywhere in the 20000-99999 range.
-            $plugin_increment = (int)abs((int)hexdec(hash('xxh3', $plugin))) % 80000 + 10000;
+            $plugin_increment = (int) abs((int) hexdec(hash('xxh3', $plugin))) % 80000 + 10000;
             $generated_id += $plugin_increment;
         }
 
         return $generated_id;
     }
 
-    public static function clearSearchOptionCache(): void
+    /**
+     * Clear the {@link $search_options_cache search option cache} for a specific itemtype or all itemtypes.
+     *
+     * If an itemtype is specified, the itemtype class-level search option cache will also be cleared.
+     * If no itemtype is specified, you may need to clear the needed class-level caches manually.
+     * @param string|null $itemtype The itemtype to clear the cache for, or null to clear all caches.
+     * @return void
+     * @see \CommonDBTM::clearSearchOptionCache()
+     */
+    public static function clearSearchOptionCache(?string $itemtype = null): void
     {
-        self::$search_options_cache = [];
+        if ($itemtype === null) {
+            self::$search_options_cache = [];
+            return;
+        }
+        // Clear only the cache for the specified itemtype both with and without plugins
+        unset(self::$search_options_cache["{$itemtype}_1"], self::$search_options_cache["{$itemtype}_0"]);
+        // Clear itemtype-level cache if it is CommonDBTM
+        if (is_subclass_of($itemtype, CommonDBTM::class)) {
+            $itemtype::clearSearchOptionCache();
+        }
     }
 }

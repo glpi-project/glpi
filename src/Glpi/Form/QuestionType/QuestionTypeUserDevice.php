@@ -37,11 +37,15 @@ namespace Glpi\Form\QuestionType;
 
 use CommonItilObject_Item;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\JsonFieldInterface;
+use Glpi\Form\Condition\ConditionHandler\UserDevicesConditionHandler;
+use Glpi\Form\Condition\UsedAsCriteriaInterface;
 use Glpi\Form\Question;
+use InvalidArgumentException;
 use Override;
 use Session;
 
-final class QuestionTypeUserDevice extends AbstractQuestionType
+final class QuestionTypeUserDevice extends AbstractQuestionType implements UsedAsCriteriaInterface
 {
     #[Override]
     public function validateExtraDataInput(array $input): bool
@@ -130,7 +134,7 @@ TWIG;
             'init'                => $question !== null,
             'is_multiple_devices' => $this->isMultipleDevices($question),
             'aria_label_multiple_devices' => _n('Select device...', 'Select devices...', 2),
-            'aria_label_single_device' => _n('Select device...', 'Select devices...', 1)
+            'aria_label_single_device' => _n('Select device...', 'Select devices...', 1),
         ]);
     }
 
@@ -170,7 +174,7 @@ TWIG;
         $twig = TemplateRenderer::getInstance();
         return $twig->renderFromStringTemplate($template, [
             'is_multiple_devices' => $this->isMultipleDevices($question),
-            'is_multiple_devices_label' => __('Allow multiple devices')
+            'is_multiple_devices_label' => __('Allow multiple devices'),
         ]);
     }
 
@@ -225,7 +229,7 @@ TWIG;
 
             $devices[] = [
                 'itemtype' => $device_parts['itemtype'],
-                'items_id' => $device_parts['id']
+                'items_id' => $device_parts['id'],
             ];
         }
 
@@ -233,7 +237,7 @@ TWIG;
     }
 
     #[Override]
-    public function formatRawAnswer(mixed $answer): string
+    public function formatRawAnswer(mixed $answer, Question $question): string
     {
         if (is_string($answer)) {
             $answer = [$answer];
@@ -263,7 +267,7 @@ TWIG;
     }
 
     #[Override]
-    public function getCategory(): QuestionTypeCategory
+    public function getCategory(): QuestionTypeCategoryInterface
     {
         return QuestionTypeCategory::ITEM;
     }
@@ -278,5 +282,19 @@ TWIG;
     public function getExtraDataConfigClass(): string
     {
         return QuestionTypeUserDevicesConfig::class;
+    }
+
+    #[Override]
+    public function getConditionHandlers(
+        ?JsonFieldInterface $question_config
+    ): array {
+        if (!$question_config instanceof QuestionTypeUserDevicesConfig) {
+            throw new InvalidArgumentException();
+        }
+
+        return array_merge(
+            parent::getConditionHandlers($question_config),
+            [new UserDevicesConditionHandler($question_config->isMultipleDevices())],
+        );
     }
 }

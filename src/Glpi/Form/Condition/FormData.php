@@ -40,8 +40,14 @@ use ReflectionClass;
 
 final class FormData
 {
+    /** @var SectionData[] $sections_data */
+    private array $sections_data = [];
+
     /** @var QuestionData[] $questions_data */
     private array $questions_data = [];
+
+    /** @var CommentData[] $comments_data */
+    private array $comments_data = [];
 
     /** @var ConditionData[] $conditions_data */
     private array $conditions_data = [];
@@ -52,7 +58,9 @@ final class FormData
     public function __construct(
         array $raw_data
     ) {
+        $this->parseRawSectionsData($raw_data['sections'] ?? []);
         $this->parseRawQuestionsData($raw_data['questions'] ?? []);
+        $this->parseRawCommentsData($raw_data['comments'] ?? []);
         $this->parseRawConditionsData($raw_data['conditions'] ?? []);
         $this->selected_item_uuid = $raw_data['selected_item_uuid'] ?? null;
         $this->selected_item_type = $raw_data['selected_item_type'] ?? null;
@@ -60,18 +68,37 @@ final class FormData
 
     public static function createFromForm(Form $form): self
     {
+        $sections_data = [];
         $questions_data = [];
+        $comments_data = [];
+
+        foreach ($form->getSections() as $section) {
+            $sections_data[] = [
+                'uuid' => $section->fields['uuid'],
+                'name' => $section->fields['name'],
+            ];
+        }
 
         foreach ($form->getQuestions() as $question) {
             $questions_data[] = [
-                'uuid' => $question->fields['uuid'],
-                'name' => $question->fields['name'],
-                'type' => $question->getQuestionType(),
+                'uuid'       => $question->fields['uuid'],
+                'name'       => $question->fields['name'],
+                'type'       => $question->getQuestionType(),
+                'extra_data' => json_decode($question->fields['extra_data'] ?? '{}', true),
+            ];
+        }
+
+        foreach ($form->getFormComments() as $comment) {
+            $comments_data[] = [
+                'uuid' => $comment->fields['uuid'],
+                'name' => $comment->fields['name'],
             ];
         }
 
         return new self([
+            'sections'  => $sections_data,
             'questions' => $questions_data,
+            'comments'  => $comments_data,
 
             // No selected item in this context.
             'selected_item_uuid' => null,
@@ -79,10 +106,22 @@ final class FormData
         ]);
     }
 
+    /** @return SectionData[] */
+    public function getSectionsData(): array
+    {
+        return $this->sections_data;
+    }
+
     /** @return QuestionData[] */
     public function getQuestionsData(): array
     {
         return $this->questions_data;
+    }
+
+    /** @return CommentData[] */
+    public function getCommentsData(): array
+    {
+        return $this->comments_data;
     }
 
     /** @return ConditionData[] */
@@ -99,6 +138,16 @@ final class FormData
     public function getSelectedItemType(): ?string
     {
         return $this->selected_item_type;
+    }
+
+    private function parseRawSectionsData(array $sections_data): void
+    {
+        foreach ($sections_data as $section_data) {
+            $this->sections_data[] = new SectionData(
+                uuid: $section_data['uuid'],
+                name: $section_data['name'],
+            );
+        }
     }
 
     private function parseRawQuestionsData(array $questions_data): void
@@ -121,6 +170,16 @@ final class FormData
         }
     }
 
+    private function parseRawCommentsData(array $comments_data): void
+    {
+        foreach ($comments_data as $comment_data) {
+            $this->comments_data[] = new CommentData(
+                uuid: $comment_data['uuid'],
+                name: $comment_data['name'],
+            );
+        }
+    }
+
     private function parseRawConditionsData(array $conditions_data): void
     {
         foreach ($conditions_data as $condition_data) {
@@ -137,11 +196,16 @@ final class FormData
                 $uuid = implode('-', $item_parts);
             }
 
+            $value = $condition_data['value'] ?? null;
+            if (is_string($value) && !empty($value) && json_validate($value)) {
+                $value = json_decode($value, true);
+            }
+
             $this->conditions_data[] = new ConditionData(
                 item_uuid     : $uuid,
                 item_type     : $type,
                 value_operator: $condition_data['value_operator'] ?? null,
-                value         : $condition_data['value'] ?? null,
+                value         : $value,
                 logic_operator: $condition_data['logic_operator'] ?? null,
             );
         }

@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -44,16 +43,16 @@ class DeviceSimcardTypeTest extends DbTestCase
         $this->login();
         $obj = new \DeviceSimcardType();
 
-       // Add
+        // Add
         $in = [
             'name'                     => __METHOD__,
             'comment'                  => $this->getUniqueString(),
         ];
         $id = $obj->add($in);
-        $this->assertGreaterThan(0, (int)$id);
+        $this->assertGreaterThan(0, (int) $id);
         $this->assertTrue($obj->getFromDB($id));
 
-       // getField methods
+        // getField methods
         $this->assertEquals($id, $obj->getField('id'));
         foreach ($in as $k => $v) {
             $this->assertEquals($v, $obj->getField($k));
@@ -65,13 +64,13 @@ class DeviceSimcardTypeTest extends DbTestCase
         $this->login();
         $obj = new \DeviceSimcardType();
 
-       // Add
+        // Add
         $id = $obj->add([
             'name'                     => $this->getUniqueString(),
         ]);
         $this->assertGreaterThan(0, $id);
 
-       // Update
+        // Update
         $id = $obj->getID();
         $in = [
             'id'                       => $id,
@@ -81,7 +80,7 @@ class DeviceSimcardTypeTest extends DbTestCase
         $this->assertTrue($obj->update($in));
         $this->assertTrue($obj->getFromDB($id));
 
-       // getField methods
+        // getField methods
         foreach ($in as $k => $v) {
             $this->assertEquals($v, $obj->getField($k));
         }
@@ -92,13 +91,13 @@ class DeviceSimcardTypeTest extends DbTestCase
         $this->login();
         $obj = new \DeviceSimcardType();
 
-       // Add
+        // Add
         $id = $obj->add([
             'name'                     => __METHOD__,
         ]);
         $this->assertGreaterThan(0, $id);
 
-       // Delete
+        // Delete
         $in = [
             'id'                       => $obj->getID(),
         ];

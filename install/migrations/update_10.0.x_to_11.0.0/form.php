@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,6 +32,7 @@
  * ---------------------------------------------------------------------
  */
 
+
 /**
  * @var DBmysql $DB
  * @var Migration $migration
@@ -46,11 +46,11 @@ $default_key_sign  = DBConnection::getDefaultPrimaryKeySignOption();
 if (!$DB->tableExists('glpi_forms_categories')) {
     $DB->doQuery(
         "CREATE TABLE `glpi_forms_categories` (
-            `id` int unsigned NOT NULL AUTO_INCREMENT,
+            `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
             `name` varchar(255) NOT NULL DEFAULT '',
             `description` longtext,
             `illustration` varchar(255) NOT NULL DEFAULT '',
-            `forms_categories_id` int unsigned NOT NULL DEFAULT '0',
+            `forms_categories_id` int {$default_key_sign} NOT NULL DEFAULT '0',
             `completename` text,
             `level` int NOT NULL DEFAULT '0',
             `ancestors_cache` longtext,
@@ -69,6 +69,7 @@ if (!$DB->tableExists('glpi_forms_forms')) {
     $DB->doQuery(
         "CREATE TABLE `glpi_forms_forms` (
             `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
+            `uuid` varchar(255) NOT NULL DEFAULT '',
             `entities_id` int {$default_key_sign} NOT NULL DEFAULT '0',
             `is_recursive` tinyint NOT NULL DEFAULT '0',
             `is_active` tinyint NOT NULL DEFAULT '0',
@@ -79,10 +80,14 @@ if (!$DB->tableExists('glpi_forms_forms')) {
             `header` longtext,
             `illustration` varchar(255) NOT NULL DEFAULT '',
             `description` longtext,
-            `forms_categories_id` int unsigned NOT NULL DEFAULT '0',
+            `forms_categories_id` int {$default_key_sign} NOT NULL DEFAULT '0',
+            `usage_count` int unsigned NOT NULL DEFAULT '0',
+            `submit_button_visibility_strategy` varchar(30) NOT NULL DEFAULT '',
+            `submit_button_conditions` JSON NOT NULL,
             `date_mod` timestamp NULL DEFAULT NULL,
             `date_creation` timestamp NULL DEFAULT NULL,
             PRIMARY KEY (`id`),
+            UNIQUE KEY `uuid` (`uuid`),
             KEY `name` (`name`),
             KEY `entities_id` (`entities_id`),
             KEY `is_recursive` (`is_recursive`),
@@ -202,7 +207,6 @@ if (!$DB->tableExists('glpi_forms_destinations_formdestinations')) {
             `itemtype` varchar(255) NOT NULL,
             `name` varchar(255) NOT NULL,
             `config` JSON NOT NULL COMMENT 'Extra configuration field(s) depending on the destination type',
-            `is_mandatory` tinyint NOT NULL DEFAULT '0',
             `creation_strategy` varchar(30) NOT NULL DEFAULT '',
             `conditions` JSON NOT NULL,
             PRIMARY KEY (`id`),
@@ -226,17 +230,18 @@ if (!$DB->tableExists('glpi_forms_accesscontrols_formaccesscontrols')) {
         ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;"
     );
 }
-if (!$DB->tableExists('glpi_helpdesks_tiles_profiles_tiles')) {
+if (!$DB->tableExists('glpi_helpdesks_tiles_items_tiles')) {
     $DB->doQuery(
-        "CREATE TABLE `glpi_helpdesks_tiles_profiles_tiles` (
-            `id` int unsigned NOT NULL AUTO_INCREMENT,
-            `profiles_id` int unsigned NOT NULL DEFAULT '0',
-            `itemtype` varchar(255) DEFAULT NULL,
-            `items_id` int unsigned NOT NULL DEFAULT '0',
+        "CREATE TABLE `glpi_helpdesks_tiles_items_tiles` (
+            `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
+            `itemtype_item` varchar(255) DEFAULT NULL,
+            `items_id_item` int {$default_key_sign} NOT NULL DEFAULT '0',
+            `itemtype_tile` varchar(255) DEFAULT NULL,
+            `items_id_tile` int {$default_key_sign} NOT NULL DEFAULT '0',
             `rank` int NOT NULL DEFAULT 0,
             PRIMARY KEY (`id`),
-            UNIQUE KEY `unicity` (`profiles_id`, `rank`),
-            KEY `item` (`itemtype`,`items_id`),
+            UNIQUE KEY `unicity` (`itemtype_item`, `items_id_item`, `rank`),
+            UNIQUE KEY `item` (`itemtype_tile`,`items_id_tile`),
             KEY `rank` (`rank`)
         ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;"
     );
@@ -244,8 +249,8 @@ if (!$DB->tableExists('glpi_helpdesks_tiles_profiles_tiles')) {
 if (!$DB->tableExists('glpi_helpdesks_tiles_formtiles')) {
     $DB->doQuery(
         "CREATE TABLE `glpi_helpdesks_tiles_formtiles` (
-            `id` int unsigned NOT NULL AUTO_INCREMENT,
-            `forms_forms_id` int unsigned NOT NULL DEFAULT '0',
+            `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
+            `forms_forms_id` int {$default_key_sign} NOT NULL DEFAULT '0',
             PRIMARY KEY (`id`),
             KEY `forms_forms_id` (`forms_forms_id`)
         ) ENGINE=InnoDB DEFAULT CHARSET={$default_charset} COLLATE={$default_collation} ROW_FORMAT=DYNAMIC;"
@@ -254,7 +259,7 @@ if (!$DB->tableExists('glpi_helpdesks_tiles_formtiles')) {
 if (!$DB->tableExists('glpi_helpdesks_tiles_glpipagetiles')) {
     $DB->doQuery(
         "CREATE TABLE `glpi_helpdesks_tiles_glpipagetiles` (
-            `id` int unsigned NOT NULL AUTO_INCREMENT,
+            `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
             `title` varchar(255) DEFAULT NULL,
             `description` varchar(255) DEFAULT NULL,
             `illustration` varchar(255) DEFAULT NULL,
@@ -266,7 +271,7 @@ if (!$DB->tableExists('glpi_helpdesks_tiles_glpipagetiles')) {
 if (!$DB->tableExists('glpi_helpdesks_tiles_externalpagetiles')) {
     $DB->doQuery(
         "CREATE TABLE `glpi_helpdesks_tiles_externalpagetiles` (
-            `id` int unsigned NOT NULL AUTO_INCREMENT,
+            `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
             `title` varchar(255) DEFAULT NULL,
             `description` varchar(255) DEFAULT NULL,
             `illustration` varchar(255) DEFAULT NULL,
@@ -292,6 +297,86 @@ if (!$DB->fieldExists("glpi_entities", $field)) {
     );
 }
 
+$fields = ['custom_helpdesk_home_scene_left', 'custom_helpdesk_home_scene_right'];
+foreach ($fields as $field) {
+    if (!$DB->fieldExists("glpi_entities", $field)) {
+        $migration->addField(
+            'glpi_entities',
+            $field,
+            "varchar(255) NOT NULL DEFAULT '-2'"
+        );
+        $migration->addPostQuery(
+            $DB->buildUpdate(
+                'glpi_entities',
+                [$field => ''],
+                ['id' => 0]
+            )
+        );
+    }
+}
+
+if (!$DB->fieldExists('glpi_forms_forms', 'uuid')) {
+    $migration->addField(
+        'glpi_forms_forms',
+        'uuid',
+        "varchar(255) NOT NULL DEFAULT ''",
+        [
+            'after'  => 'id',
+            'update' => '(select md5(UUID()))',
+        ]
+    );
+    $migration->addKey(
+        'glpi_forms_forms',
+        'uuid',
+        'uuid',
+        'UNIQUE KEY'
+    );
+}
+
+if (!$DB->fieldExists('glpi_forms_forms', 'submit_button_visibility_strategy')) {
+    $migration->addField(
+        'glpi_forms_forms',
+        'submit_button_visibility_strategy',
+        "varchar(30) NOT NULL DEFAULT ''",
+        [
+            'after' => 'usage_count',
+        ]
+    );
+}
+
+if (!$DB->fieldExists('glpi_forms_forms', 'submit_button_conditions')) {
+    $migration->addField(
+        'glpi_forms_forms',
+        'submit_button_conditions',
+        "JSON NOT NULL",
+        [
+            'after' => 'submit_button_visibility_strategy',
+        ]
+    );
+}
+
+if (!$DB->fieldExists('glpi_forms_questions', 'validation_strategy')) {
+    $migration->addField(
+        'glpi_forms_questions',
+        'validation_strategy',
+        "varchar(30) NOT NULL DEFAULT ''",
+        [
+            'after' => 'conditions',
+        ]
+    );
+}
+
+if (!$DB->fieldExists('glpi_forms_questions', 'validation_conditions')) {
+    $migration->addField(
+        'glpi_forms_questions',
+        'validation_conditions',
+        "JSON NOT NULL",
+        [
+            'after' => 'validation_strategy',
+        ]
+    );
+}
+
 // Add rights for the forms object
 $migration->addRight("form", ALLSTANDARDRIGHT, ['config' => UPDATE]);
 
@@ -299,11 +384,9 @@ $migration->addRight("form", ALLSTANDARDRIGHT, ['config' => UPDATE]);
 $ADDTODISPLAYPREF['Glpi\Form\Form'] = [1, 80, 86, 3, 4];
 $ADDTODISPLAYPREF['Glpi\Form\AnswersSet'] = [1, 3, 4];
 
-CronTask::register('Glpi\Form\Form', 'purgedraftforms', DAY_TIMESTAMP, [
-    'state'         => CronTask::STATE_WAITING,
-    'mode'          => CronTask::MODE_INTERNAL,
-    'hourmin'       => 0,
-    'hourmax'       => 24,
-    'logs_lifetime' => 30,
-    'param'         => 7
-]);
+$migration->addCrontask(
+    'Glpi\Form\Form',
+    'purgedraftforms',
+    DAY_TIMESTAMP,
+    param: 7
+);

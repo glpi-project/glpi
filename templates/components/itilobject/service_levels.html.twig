@@ -6,7 +6,6 @@
  # http://glpi-project.org
  #
  # @copyright 2015-2025 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -76,8 +75,8 @@
    }
 ]) %}
 
-{% set can_assign_sla_ola = canupdate and has_profile_right('slm', constant('SLM::RIGHT_ASSIGN')) %}
 {% for la_field in la_fields %}
+   {% set can_assign_sla_ola = canupdate and has_profile_right('slm', constant('SLM::RIGHT_ASSIGN')) and not field_options.fields_template.isReadonlyField(la_field.lafieldname) %}
    {% set rand = random() %}
    {% set date_displayed = field_options.fields_template is not defined or not field_options.fields_template.isHiddenField(la_field.datefieldname) %}
    {% set la_displayed = field_options.fields_template is not defined or not field_options.fields_template.isHiddenField(la_field.lafieldname) %}
@@ -239,7 +238,7 @@
             full_width: true,
             is_horizontal: false,
             add_field_class: (is_expanded ? 'col-sm-6' : ''),
-            required: field_options.fields_template.isMandatoryField(la_field.lafieldname)
+            required: field_options.fields_template.isMandatoryField(la_field.lafieldname),
          }
       ) }}
    {% endif %}

@@ -38,7 +38,6 @@ namespace Glpi\Form\QuestionType;
 use CommonITILObject;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\JsonFieldInterface;
-use Glpi\Form\Condition\ConditionHandler\ConditionHandlerInterface;
 use Glpi\Form\Condition\ConditionHandler\UrgencyConditionHandler;
 use Glpi\Form\Condition\UsedAsCriteriaInterface;
 use Glpi\Form\Migration\FormQuestionDataConverterInterface;
@@ -82,13 +81,13 @@ final class QuestionTypeUrgency extends AbstractQuestionType implements UsedAsCr
         // Get the urgency levels
         $urgency_levels = array_combine(
             range(1, 5),
-            array_map(fn ($urgency) => CommonITILObject::getUrgencyName($urgency), range(1, 5))
+            array_map(fn($urgency) => CommonITILObject::getUrgencyName($urgency), range(1, 5))
         );
 
         // Filter out the urgency levels that are not enabled
         $urgency_levels = array_filter(
             $urgency_levels,
-            fn ($key) => (($CFG_GLPI['urgency_mask'] & (1 << $key)) > 0),
+            fn($key) => (($CFG_GLPI['urgency_mask'] & (1 << $key)) > 0),
             ARRAY_FILTER_USE_KEY
         );
 
@@ -153,13 +152,13 @@ TWIG;
     }
 
     #[Override]
-    public function formatRawAnswer(mixed $answer): string
+    public function formatRawAnswer(mixed $answer, Question $question): string
     {
         return CommonITILObject::getUrgencyName($answer);
     }
 
     #[Override]
-    public function getCategory(): QuestionTypeCategory
+    public function getCategory(): QuestionTypeCategoryInterface
     {
         return QuestionTypeCategory::URGENCY;
     }
@@ -186,16 +185,20 @@ TWIG;
     }
 
     #[Override]
-    public function getConditionHandler(
+    public function getConditionHandlers(
         ?JsonFieldInterface $question_config
-    ): ConditionHandlerInterface {
-        return new UrgencyConditionHandler();
+    ): array {
+        return array_merge(parent::getConditionHandlers($question_config), [new UrgencyConditionHandler()]);
     }
 
     #[Override]
     public function convertDefaultValue(array $rawData): ?int
     {
-        return $rawData['default_values'] ?? null;
+        if (!isset($rawData['default_values'])) {
+            return null;
+        }
+
+        return (int) $rawData['default_values'];
     }
 
     #[Override]

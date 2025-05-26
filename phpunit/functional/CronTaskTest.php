@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -60,7 +59,7 @@ class CronTaskTest extends DbTestCase
 
         //create auto_orient directory
         if (!file_exists(GLPI_TMP_DIR . '/auto_orient/')) {
-            $this->assertTrue(mkdir(GLPI_TMP_DIR . '/auto_orient/', 0755, true));
+            $this->assertTrue(mkdir(GLPI_TMP_DIR . '/auto_orient/', 0o755, true));
         }
 
         $tmp_dir_iterator = new RecursiveIteratorIterator(
@@ -138,7 +137,7 @@ class CronTaskTest extends DbTestCase
 
     public static function unregisterProvider()
     {
-       // Only plugins are supported with the unregister method.
+        // Only plugins are supported with the unregister method.
         return [
             [
                 'plugin_name'       => 'Test',
@@ -174,7 +173,7 @@ class CronTaskTest extends DbTestCase
         $iterator = $DB->request([
             'SELECT' => ['id'],
             'FROM'   => \CronTask::getTable(),
-            'WHERE'  => ['itemtype' => $itemtype, 'name' => $name]
+            'WHERE'  => ['itemtype' => $itemtype, 'name' => $name],
         ]);
         $this->assertEquals(1, $iterator->count());
 
@@ -186,7 +185,7 @@ class CronTaskTest extends DbTestCase
         $iterator = $DB->request([
             'SELECT' => ['id'],
             'FROM'   => \CronTask::getTable(),
-            'WHERE'  => ['itemtype' => $itemtype, 'name' => $name]
+            'WHERE'  => ['itemtype' => $itemtype, 'name' => $name],
         ]);
         $this->assertEquals($should_unregister ? 0 : 1, $iterator->count());
     }

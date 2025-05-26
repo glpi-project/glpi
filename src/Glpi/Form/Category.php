@@ -48,7 +48,7 @@ final class Category extends CommonTreeDropdown implements ServiceCatalogComposi
     public static $rightname = 'form';
 
     /** @var ServiceCatalogItemInterface[] $children */
-    private array $children;
+    private array $children = [];
 
     #[Override]
     public static function getTypeName($nb = 0): string
@@ -59,7 +59,7 @@ final class Category extends CommonTreeDropdown implements ServiceCatalogComposi
     #[Override]
     public static function getIcon(): string
     {
-        return "ti ti-folder";
+        return "ti ti-tags";
     }
 
     #[Override]
@@ -76,10 +76,11 @@ final class Category extends CommonTreeDropdown implements ServiceCatalogComposi
     {
         $fields = parent::getAdditionalFields();
         $fields[] = [
-            'name'  => 'description',
-            'label' => __('Description'),
-            'type'  => 'richtext',
-            'list'  => false,
+            'name'        => 'description',
+            'label'       => __('Description'),
+            'type'        => 'tinymce',
+            'form_params' => ['enable_images' => false, 'full_width' => false],
+            'list'        => false,
         ];
         $fields[] = [
             'name'  => 'illustration',

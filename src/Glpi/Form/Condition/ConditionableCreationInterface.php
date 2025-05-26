@@ -34,8 +34,6 @@
 
 namespace Glpi\Form\Condition;
 
-use Glpi\Form\Condition\CreationStrategy;
-
 interface ConditionableCreationInterface extends ConditionableInterface
 {
     public function getConfiguredCreationStrategy(): CreationStrategy;

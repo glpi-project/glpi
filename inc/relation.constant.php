@@ -83,19 +83,19 @@ $RELATION = [
     ],
 
     'glpi_applianceenvironments' => [
-        'glpi_appliances' => 'applianceenvironments_id'
+        'glpi_appliances' => 'applianceenvironments_id',
     ],
 
     'glpi_appliances'     => [
-        '_glpi_appliances_items' => 'appliances_id'
+        '_glpi_appliances_items' => 'appliances_id',
     ],
 
     'glpi_appliances_items' => [
-        '_glpi_appliances_items_relations' => 'appliances_items_id'
+        '_glpi_appliances_items_relations' => 'appliances_items_id',
     ],
 
     'glpi_appliancetypes' => [
-        'glpi_appliances' => 'appliancetypes_id'
+        'glpi_appliances' => 'appliancetypes_id',
     ],
 
     'glpi_assets_assetdefinitions' => [
@@ -114,7 +114,7 @@ $RELATION = [
     ],
 
     'glpi_databaseinstancetypes' => [
-        'glpi_databaseinstances' => 'databaseinstancetypes_id'
+        'glpi_databaseinstances' => 'databaseinstancetypes_id',
     ],
 
     'glpi_authldaps' => [
@@ -200,7 +200,7 @@ $RELATION = [
         '_glpi_changecosts'         => 'changes_id',
         '_glpi_changes_changes'     => [
             'changes_id_1',
-            'changes_id_2'
+            'changes_id_2',
         ],
         '_glpi_changes_groups'      => 'changes_id',
         '_glpi_changes_items'       => 'changes_id',
@@ -501,11 +501,11 @@ $RELATION = [
     ],
 
     'glpi_domaintypes' => [
-        'glpi_domains'  => 'domaintypes_id'
+        'glpi_domains'  => 'domaintypes_id',
     ],
 
     'glpi_domainrecordtypes'    => [
-        'glpi_domainrecords'  => 'domainrecordtypes_id'
+        'glpi_domainrecords'  => 'domainrecordtypes_id',
     ],
 
     'glpi_dropdowns_dropdowndefinitions' => [
@@ -1128,7 +1128,7 @@ $RELATION = [
 
     'glpi_printers' => [
         '_glpi_cartridges'              => 'printers_id',
-        '_glpi_printerlogs'             => 'printers_id',
+        '_glpi_printerlogs'             => ['items_id', 'itemtype'],
         '_glpi_printers_cartridgeinfos' => 'printers_id',
     ],
 
@@ -1168,7 +1168,6 @@ $RELATION = [
     ],
 
     'glpi_profiles' => [
-        '_glpi_helpdesks_tiles_profiles_tiles' => 'profiles_id',
         '_glpi_knowbaseitems_profiles'         => 'profiles_id',
         '_glpi_profilerights'                  => 'profiles_id',
         '_glpi_profiles_reminders'             => 'profiles_id',
@@ -1306,7 +1305,7 @@ $RELATION = [
         'glpi_cables' => [
             'sockets_id_endpoint_a',
             'sockets_id_endpoint_b',
-        ]
+        ],
     ],
 
     'glpi_softwarecategories' => [

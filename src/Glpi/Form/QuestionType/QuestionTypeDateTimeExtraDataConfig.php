@@ -49,8 +49,7 @@ final class QuestionTypeDateTimeExtraDataConfig implements JsonFieldInterface
         private bool $is_default_value_current_time = false,
         private bool $is_date_enabled = true,
         private bool $is_time_enabled = false,
-    ) {
-    }
+    ) {}
 
     #[Override]
     public static function jsonDeserialize(array $data): self

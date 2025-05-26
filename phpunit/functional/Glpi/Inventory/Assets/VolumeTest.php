@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -66,7 +65,7 @@ class VolumeTest extends AbstractInventoryAsset
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-                'expected'  => '{"encrypt_algo": "aes-xts-plain64", "encrypt_name": "LUKS1", "encrypt_status": "Yes", "filesystem": "ext4", "free": 3632, "serial": "e2d02a40-829a-44ce-b863-cf765ac2c9eb", "total": 30109, "type": "/", "volumn": "/dev/mapper/xps-root", "device": "/dev/mapper/xps-root", "filesystems_id": "ext4", "totalsize": 30109, "freesize": 3632, "encryption_tool": "LUKS1", "encryption_algorithm": "aes-xts-plain64", "encryption_status": 1, "name": "/", "mountpoint": "/", "is_dynamic": 1}'
+                'expected'  => '{"encrypt_algo": "aes-xts-plain64", "encrypt_name": "LUKS1", "encrypt_status": "Yes", "filesystem": "ext4", "free": 3632, "serial": "e2d02a40-829a-44ce-b863-cf765ac2c9eb", "total": 30109, "type": "/", "volumn": "/dev/mapper/xps-root", "device": "/dev/mapper/xps-root", "filesystems_id": "ext4", "totalsize": 30109, "freesize": 3632, "encryption_tool": "LUKS1", "encryption_algorithm": "aes-xts-plain64", "encryption_status": 1, "name": "/", "mountpoint": "/", "is_dynamic": 1}',
             ], [
                 'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
@@ -84,7 +83,7 @@ class VolumeTest extends AbstractInventoryAsset
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-                'expected'  => '{"filesystem": "ext4", "free": 736, "serial": "dca65bdb-c073-4bcb-bd0d-210031a532c9", "total": 975, "type": "/boot", "volumn": "/dev/nvme0n1p2", "device": "/dev/nvme0n1p2", "filesystems_id": "ext4", "totalsize": 975, "freesize": 736, "name": "/boot", "mountpoint": "/boot", "is_dynamic": 1}'
+                'expected'  => '{"filesystem": "ext4", "free": 736, "serial": "dca65bdb-c073-4bcb-bd0d-210031a532c9", "total": 975, "type": "/boot", "volumn": "/dev/nvme0n1p2", "device": "/dev/nvme0n1p2", "filesystems_id": "ext4", "totalsize": 975, "freesize": 736, "name": "/boot", "mountpoint": "/boot", "is_dynamic": 1}',
             ], [
                 'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
@@ -102,7 +101,7 @@ class VolumeTest extends AbstractInventoryAsset
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-                'expected'  => '{"filesystem": "vfat", "free": 191, "serial": "A710-491B", "total": 199, "type": "/boot/efi", "volumn": "/dev/nvme0n1p1", "device": "/dev/nvme0n1p1", "filesystems_id": "vfat", "totalsize": 199, "freesize": 191, "name": "/boot/efi", "mountpoint": "/boot/efi", "is_dynamic": 1}'
+                'expected'  => '{"filesystem": "vfat", "free": 191, "serial": "A710-491B", "total": 199, "type": "/boot/efi", "volumn": "/dev/nvme0n1p1", "device": "/dev/nvme0n1p1", "filesystems_id": "vfat", "totalsize": 199, "freesize": 191, "name": "/boot/efi", "mountpoint": "/boot/efi", "is_dynamic": 1}',
             ], [
                 'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
@@ -120,7 +119,7 @@ class VolumeTest extends AbstractInventoryAsset
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-                'expected'  => '{"filesystem": "ext4", "free": 18455, "serial": "b61d4fbf-32da-4c7a-8b15-45ae81b946b2", "total": 100280, "type": "/home", "volumn": "/dev/mapper/xps-home", "device": "/dev/mapper/xps-home", "filesystems_id": "ext4", "totalsize": 100280, "freesize": 18455, "name": "/home", "mountpoint": "/home", "is_dynamic": 1}'
+                'expected'  => '{"filesystem": "ext4", "free": 18455, "serial": "b61d4fbf-32da-4c7a-8b15-45ae81b946b2", "total": 100280, "type": "/home", "volumn": "/dev/mapper/xps-home", "device": "/dev/mapper/xps-home", "filesystems_id": "ext4", "totalsize": 100280, "freesize": 18455, "name": "/home", "mountpoint": "/home", "is_dynamic": 1}',
             ], [
                 'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
@@ -138,7 +137,7 @@ class VolumeTest extends AbstractInventoryAsset
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-                'expected'  => '{"filesystem": "ext4", "free": 10009, "serial": "79d60190-518f-4de4-8ed5-74146414b890", "total": 20030, "type": "/var/lib/mysql", "volumn": "/dev/mapper/xps-maria", "device": "/dev/mapper/xps-maria", "filesystems_id": "ext4", "totalsize": 20030, "freesize": 10009, "name": "/var/lib/mysql", "mountpoint": "/var/lib/mysql", "is_dynamic": 1}'
+                'expected'  => '{"filesystem": "ext4", "free": 10009, "serial": "79d60190-518f-4de4-8ed5-74146414b890", "total": 20030, "type": "/var/lib/mysql", "volumn": "/dev/mapper/xps-maria", "device": "/dev/mapper/xps-maria", "filesystems_id": "ext4", "totalsize": 20030, "freesize": 10009, "name": "/var/lib/mysql", "mountpoint": "/var/lib/mysql", "is_dynamic": 1}',
             ], [ //network drive
                 'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
@@ -155,7 +154,7 @@ class VolumeTest extends AbstractInventoryAsset
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-                'expected'  => '{"filesystem": "afpfs", "free": 2143720, "total": 4194304, "type": "/Volumes/timemachine", "volumn": "//timemachine@timemachine.glpi-project.org/timemachine", "device": "//timemachine@timemachine.glpi-project.org/timemachine", "filesystems_id": "afpfs", "totalsize": 4194304, "freesize": 2143720, "name": "/Volumes/timemachine", "mountpoint": "/Volumes/timemachine", "is_dynamic": 1}'
+                'expected'  => '{"filesystem": "afpfs", "free": 2143720, "total": 4194304, "type": "/Volumes/timemachine", "volumn": "//timemachine@timemachine.glpi-project.org/timemachine", "device": "//timemachine@timemachine.glpi-project.org/timemachine", "filesystems_id": "afpfs", "totalsize": 4194304, "freesize": 2143720, "name": "/Volumes/timemachine", "mountpoint": "/Volumes/timemachine", "is_dynamic": 1}',
             ], [ //removable drive
                 'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
@@ -176,8 +175,8 @@ class VolumeTest extends AbstractInventoryAsset
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-                'expected'  => '{"description": "Disque amovible", "filesystem": "FAT32", "free": 3267, "label": "USB2", "letter": "E:", "serial": "7C4A2931", "total": 7632, "type": "Removable Disk", "volumn": "USB2", "device": "USB2", "filesystems_id": "FAT32", "totalsize": 7632, "freesize": 3267, "name": "USB2", "mountpoint": "E:", "is_dynamic": 1}'
-            ]
+                'expected'  => '{"description": "Disque amovible", "filesystem": "FAT32", "free": 3267, "label": "USB2", "letter": "E:", "serial": "7C4A2931", "total": 7632, "type": "Removable Disk", "volumn": "USB2", "device": "USB2", "filesystems_id": "FAT32", "totalsize": 7632, "freesize": 3267, "name": "USB2", "mountpoint": "E:", "is_dynamic": 1}',
+            ],
         ];
     }
 
@@ -190,7 +189,7 @@ class VolumeTest extends AbstractInventoryAsset
 
         $computer = getItemByTypeName('Computer', '_test_pc01');
         $asset = new \Glpi\Inventory\Asset\Volume($computer, $json->content->drives);
-        $asset->setExtraData((array)$json->content);
+        $asset->setExtraData((array) $json->content);
 
         $conf = new \Glpi\Inventory\Conf();
         $this->assertTrue($asset->checkConf($conf));
@@ -203,14 +202,14 @@ class VolumeTest extends AbstractInventoryAsset
     {
         $computer = getItemByTypeName('Computer', '_test_pc01');
 
-       //first, check there are no volume linked to this computer
+        //first, check there are no volume linked to this computer
         $idd = new \Item_Disk();
-                 $this->assertFalse(
-                     $idd->getFromDbByCrit(['items_id' => $computer->fields['id'], 'itemtype' => 'Computer']),
-                     'A volume is already linked to computer!'
-                 );
+        $this->assertFalse(
+            $idd->getFromDbByCrit(['items_id' => $computer->fields['id'], 'itemtype' => 'Computer']),
+            'A volume is already linked to computer!'
+        );
 
-       //convert data
+        //convert data
         $expected = $this->assetProvider()[0];
 
         $converter = new \Glpi\Inventory\Converter();
@@ -219,7 +218,7 @@ class VolumeTest extends AbstractInventoryAsset
 
         $computer = getItemByTypeName('Computer', '_test_pc01');
         $asset = new \Glpi\Inventory\Asset\Volume($computer, $json->content->drives);
-        $asset->setExtraData((array)$json->content);
+        $asset->setExtraData((array) $json->content);
 
         $conf = new \Glpi\Inventory\Conf();
         $this->assertTrue($asset->checkConf($conf));
@@ -227,7 +226,7 @@ class VolumeTest extends AbstractInventoryAsset
         $result = $asset->prepare();
         $this->assertEquals(json_decode($expected['expected']), $result[0]);
 
-       //handle
+        //handle
         $asset->handleLinks();
         $asset->handle();
         $this->assertTrue(
@@ -268,11 +267,11 @@ class VolumeTest extends AbstractInventoryAsset
   <QUERY>INVENTORY</QUERY>
 </REQUEST>";
 
-       //create manually a computer, with 3 disks
+        //create manually a computer, with 3 disks
         $computers_id = $computer->add([
             'name'   => 'pc002',
             'serial' => 'ggheb7ne7',
-            'entities_id' => 0
+            'entities_id' => 0,
         ]);
         $this->assertGreaterThan(0, $computers_id);
 
@@ -281,7 +280,7 @@ class VolumeTest extends AbstractInventoryAsset
             "itemtype"     => 'Computer',
             "name"         => "C:",
             "mountpoint"   => "C:",
-            "entities_id"  => 0
+            "entities_id"  => 0,
         ]);
         $this->assertGreaterThan(0, $cdisk_id);
 
@@ -290,7 +289,7 @@ class VolumeTest extends AbstractInventoryAsset
             "itemtype"     => 'Computer',
             "name"         => "D:",
             "mountpoint"   => "D:",
-            "entities_id"  => 0
+            "entities_id"  => 0,
         ]);
         $this->assertGreaterThan(0, $ddisk_id);
 
@@ -299,7 +298,7 @@ class VolumeTest extends AbstractInventoryAsset
             "itemtype"     => 'Computer',
             "name"         => "Z:",
             "mountpoint"   => "Z:",
-            "entities_id"  => 0
+            "entities_id"  => 0,
         ]);
         $this->assertGreaterThan(0, $zdisk_id);
 
@@ -309,14 +308,14 @@ class VolumeTest extends AbstractInventoryAsset
             $this->assertEquals(0, $disk['is_dynamic']);
         }
 
-       //computer inventory knows only disks C: and Z:
+        //computer inventory knows only disks C: and Z:
         $this->doInventory($xml_source, true);
 
-       //we still have 3 disks linked to the computer
+        //we still have 3 disks linked to the computer
         $disks = $item_disk->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
         $this->assertCount(3, $disks);
 
-       //disks present in the inventory source are now dynamic
+        //disks present in the inventory source are now dynamic
         $disks = $item_disk->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
         $this->assertCount(2, $disks);
 
@@ -326,14 +325,14 @@ class VolumeTest extends AbstractInventoryAsset
         $this->assertTrue($item_disk->getFromDB($zdisk_id));
         $this->assertSame(1, $item_disk->fields['is_dynamic']);
 
-       //disk not present in the inventory is still not dynamic
+        //disk not present in the inventory is still not dynamic
         $disks = $item_disk->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 0]);
         $this->assertCount(1, $disks);
 
         $this->assertTrue($item_disk->getFromDB($ddisk_id));
         $this->assertSame(0, $item_disk->fields['is_dynamic']);
 
-       //Redo inventory, but with removed disk Z:
+        //Redo inventory, but with removed disk Z:
         $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
@@ -360,21 +359,21 @@ class VolumeTest extends AbstractInventoryAsset
 
         $this->doInventory($xml_source, true);
 
-       //we now have 2 disks only
+        //we now have 2 disks only
         $disks = $item_disk->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
         $this->assertCount(2, $disks);
 
-       //disks present in the inventory source are still dynamic
+        //disks present in the inventory source are still dynamic
         $disks = $item_disk->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
         $this->assertCount(1, $disks);
 
         $this->assertTrue($item_disk->getFromDB($cdisk_id));
         $this->assertSame(1, $item_disk->fields['is_dynamic']);
 
-       //Z: has been removed
+        //Z: has been removed
         $this->assertFalse($item_disk->getFromDB($zdisk_id));
 
-       //disk not present in the inventory is still not dynamic
+        //disk not present in the inventory is still not dynamic
         $disks = $item_disk->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 0]);
         $this->assertCount(1, $disks);
 
@@ -434,7 +433,7 @@ class VolumeTest extends AbstractInventoryAsset
             $conf->saveConf([
                 'import_volume' => 0,
                 'component_networkdrive' => 0,
-                'component_removablemedia' => 0
+                'component_removablemedia' => 0,
             ])
         );
         $this->logout();
@@ -447,7 +446,7 @@ class VolumeTest extends AbstractInventoryAsset
             $conf->saveConf([
                 'import_volume' => 1,
                 'component_networkdrive' => 1,
-                'component_removablemedia' => 1
+                'component_removablemedia' => 1,
             ])
         );
         $this->logOut();
@@ -465,7 +464,7 @@ class VolumeTest extends AbstractInventoryAsset
             $conf->saveConf([
                 'import_volume' => 1,
                 'component_networkdrive' => 0,
-                'component_removablemedia' => 0
+                'component_removablemedia' => 0,
             ])
         );
         $this->logOut();
@@ -478,7 +477,7 @@ class VolumeTest extends AbstractInventoryAsset
             $conf->saveConf([
                 'import_volume' => 1,
                 'component_networkdrive' => 1,
-                'component_removablemedia' => 1
+                'component_removablemedia' => 1,
             ])
         );
         $this->logOut();
@@ -496,7 +495,7 @@ class VolumeTest extends AbstractInventoryAsset
             $conf->saveConf([
                 'import_volume' => 1,
                 'component_networkdrive' => 1,
-                'component_removablemedia' => 1
+                'component_removablemedia' => 1,
             ])
         );
         $this->logout();
@@ -526,7 +525,7 @@ class VolumeTest extends AbstractInventoryAsset
             $conf->saveConf([
                 'import_volume' => 1,
                 'component_networkdrive' => 1,
-                'component_removablemedia' => 0
+                'component_removablemedia' => 0,
             ])
         );
         $this->logout();
@@ -538,7 +537,7 @@ class VolumeTest extends AbstractInventoryAsset
             $conf->saveConf([
                 'import_volume' => 1,
                 'component_networkdrive' => 1,
-                'component_removablemedia' => 1
+                'component_removablemedia' => 1,
             ])
         );
         $this->logout();

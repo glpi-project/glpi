@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -39,6 +38,7 @@ use DbTestCase;
 use DisplayPreference;
 use Entity;
 use Glpi\Asset\Asset_PeripheralAsset;
+use Glpi\Asset\Capacity;
 use Log;
 use Monitor;
 
@@ -52,21 +52,21 @@ class HasPeripheralAssetsCapacityTest extends DbTestCase
 
         $definition_1 = $this->initAssetDefinition(
             capacities: [
-                \Glpi\Asset\Capacity\HasPeripheralAssetsCapacity::class,
-                \Glpi\Asset\Capacity\HasNotepadCapacity::class,
+                new Capacity(name: \Glpi\Asset\Capacity\HasPeripheralAssetsCapacity::class),
+                new Capacity(name: \Glpi\Asset\Capacity\HasNotepadCapacity::class),
             ]
         );
         $classname_1  = $definition_1->getAssetClassName();
         $definition_2 = $this->initAssetDefinition(
             capacities: [
-                \Glpi\Asset\Capacity\HasHistoryCapacity::class,
+                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
             ]
         );
         $classname_2  = $definition_2->getAssetClassName();
         $definition_3 = $this->initAssetDefinition(
             capacities: [
-                \Glpi\Asset\Capacity\HasPeripheralAssetsCapacity::class,
-                \Glpi\Asset\Capacity\HasHistoryCapacity::class,
+                new Capacity(name: \Glpi\Asset\Capacity\HasPeripheralAssetsCapacity::class),
+                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
             ]
         );
         $classname_3  = $definition_3->getAssetClassName();
@@ -123,15 +123,15 @@ class HasPeripheralAssetsCapacityTest extends DbTestCase
 
         $definition_1 = $this->initAssetDefinition(
             capacities: [
-                \Glpi\Asset\Capacity\HasPeripheralAssetsCapacity::class,
-                \Glpi\Asset\Capacity\HasHistoryCapacity::class,
+                new Capacity(name: \Glpi\Asset\Capacity\HasPeripheralAssetsCapacity::class),
+                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
             ]
         );
         $classname_1  = $definition_1->getAssetClassName();
         $definition_2 = $this->initAssetDefinition(
             capacities: [
-                \Glpi\Asset\Capacity\HasPeripheralAssetsCapacity::class,
-                \Glpi\Asset\Capacity\HasHistoryCapacity::class,
+                new Capacity(name: \Glpi\Asset\Capacity\HasPeripheralAssetsCapacity::class),
+                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
             ]
         );
         $classname_2  = $definition_2->getAssetClassName();
@@ -220,7 +220,7 @@ class HasPeripheralAssetsCapacityTest extends DbTestCase
     public function testCloneAsset()
     {
         $definition = $this->initAssetDefinition(
-            capacities: [\Glpi\Asset\Capacity\HasPeripheralAssetsCapacity::class]
+            capacities: [new Capacity(name: \Glpi\Asset\Capacity\HasPeripheralAssetsCapacity::class)]
         );
         $class = $definition->getAssetClassName();
         $entity = $this->getTestRootEntity(true);
@@ -263,7 +263,7 @@ class HasPeripheralAssetsCapacityTest extends DbTestCase
 
         foreach ($CFG_GLPI['directconnect_types'] as $peripheral_itemtype) {
             $definition = $this->initAssetDefinition(
-                capacities: [\Glpi\Asset\Capacity\HasPeripheralAssetsCapacity::class]
+                capacities: [new Capacity(name: \Glpi\Asset\Capacity\HasPeripheralAssetsCapacity::class)]
             );
             $class = $definition->getAssetClassName();
 
@@ -306,7 +306,7 @@ class HasPeripheralAssetsCapacityTest extends DbTestCase
         $entity_id = $this->getTestRootEntity(true);
 
         $definition = $this->initAssetDefinition(
-            capacities: [\Glpi\Asset\Capacity\HasPeripheralAssetsCapacity::class]
+            capacities: [new Capacity(name: \Glpi\Asset\Capacity\HasPeripheralAssetsCapacity::class)]
         );
         $class = $definition->getAssetClassName();
 

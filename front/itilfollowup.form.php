@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+require_once(__DIR__ . '/_check_webserver_config.php');
+
 use Glpi\Event;
 use Glpi\Exception\Http\BadRequestHttpException;
 
@@ -66,7 +68,7 @@ if (isset($_POST["add"])) {
     );
     $redirect = $track->getFormURLWithID($fup->getField('items_id'));
     $handled = true;
-} else if (
+} elseif (
     isset($_POST['add_close'])
            || isset($_POST['add_reopen'])
 ) {
@@ -82,7 +84,7 @@ if (isset($_POST["add"])) {
             sprintf(__('%s approves or refuses a solution'), $_SESSION["glpiname"])
         );
     }
-} else if (isset($_POST["update"])) {
+} elseif (isset($_POST["update"])) {
     $fup->check($_POST['id'], UPDATE);
     $fup->update($_POST);
 
@@ -96,7 +98,7 @@ if (isset($_POST["add"])) {
     );
     $redirect = $track->getFormURLWithID($fup->getField('items_id'));
     $handled = true;
-} else if (isset($_POST["purge"])) {
+} elseif (isset($_POST["purge"])) {
     $fup->check($_POST['id'], PURGE);
     $fup->delete($_POST, 1);
 
@@ -114,7 +116,7 @@ if (isset($_POST["add"])) {
 if ($handled) {
     if ($track->can($_POST["items_id"], READ)) {
         $toadd = '';
-       // Copy followup to KB redirect to KB
+        // Copy followup to KB redirect to KB
         if (isset($_POST['_fup_to_kb']) && $_POST['_fup_to_kb']) {
             $toadd = "&_fup_to_kb=" . $fup->getID();
         }

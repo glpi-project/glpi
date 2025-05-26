@@ -130,8 +130,8 @@ class Item_Line extends CommonDBRelation
             'items_id' => $item->getID(),
             'itemtype' => $item->getType(),
             'NOT'   => [
-                'lines_id' => 0
-            ]
+                'lines_id' => 0,
+            ],
         ]);
     }
 
@@ -144,7 +144,7 @@ class Item_Line extends CommonDBRelation
     protected static function countSimcardItemsForLine(Line $line)
     {
         return countElementsInTable(Item_DeviceSimcard::getTable(), [
-            'lines_id' => $line->getID()
+            'lines_id' => $line->getID(),
         ]);
     }
 
@@ -176,15 +176,15 @@ class Item_Line extends CommonDBRelation
             'FROM'   => self::getTable(),
             'WHERE'  => [
                 'lines_id' => $ID,
-            ]
+            ],
         ]);
 
         $simcards = $DB->request([
             'SELECT' => ['id'],
             'FROM'   => Item_DeviceSimcard::getTable(),
             'WHERE'  => [
-                'lines_id' => $ID
-            ]
+                'lines_id' => $ID,
+            ],
         ]);
 
         $simcard_entries = [];
@@ -200,17 +200,16 @@ class Item_Line extends CommonDBRelation
 
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'is_tab' => true,
-            'nopager' => true,
             'nofilter' => true,
             'nosort' => true,
             'super_header' => [
                 'label' => Item_DeviceSimcard::getTypeName(Session::getPluralNumber()),
             ],
             'columns' => [
-                'name' => __('Name')
+                'name' => __('Name'),
             ],
             'formatters' => [
-                'name' => 'raw_html'
+                'name' => 'raw_html',
             ],
             'entries' => $simcard_entries,
             'total_number' => count($simcard_entries),
@@ -219,7 +218,7 @@ class Item_Line extends CommonDBRelation
             'massiveactionparams' => [
                 'num_displayed' => count($simcard_entries),
                 'container'     => 'mass' . Item_DeviceSimcard::class . mt_rand(),
-            ]
+            ],
         ]);
 
         if (static::canCreate()) {
@@ -228,8 +227,8 @@ class Item_Line extends CommonDBRelation
             $iterator = $DB->request([
                 'FROM'   => static::getTable(),
                 'WHERE'  => [
-                    'lines_id' => $line->getID()
-                ]
+                    'lines_id' => $line->getID(),
+                ],
             ]);
             foreach ($iterator as $row) {
                 $used[$row['itemtype']][$row['items_id']] = $row['items_id'];
@@ -239,7 +238,7 @@ class Item_Line extends CommonDBRelation
                 'from_line' => true,
                 'peer_id' => $line->getID(),
                 'used' => $used,
-                'entity_restrict' => $line->isRecursive() ? getSonsOf('glpi_entities', $line->getEntityID()) : $line->getEntityID()
+                'entity_restrict' => $line->isRecursive() ? getSonsOf('glpi_entities', $line->getEntityID()) : $line->getEntityID(),
             ]);
         }
 
@@ -259,17 +258,16 @@ class Item_Line extends CommonDBRelation
 
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'is_tab' => true,
-            'nopager' => true,
             'nofilter' => true,
             'nosort' => true,
             'super_header' => [
                 'label' => _n('Item', 'Items', Session::getPluralNumber()),
             ],
             'columns' => [
-                'name' => __('Name')
+                'name' => __('Name'),
             ],
             'formatters' => [
-                'name' => 'raw_html'
+                'name' => 'raw_html',
             ],
             'entries' => $item_entries,
             'total_number' => count($item_entries),
@@ -278,7 +276,7 @@ class Item_Line extends CommonDBRelation
             'massiveactionparams' => [
                 'num_displayed' => count($item_entries),
                 'container'     => 'mass' . static::class . mt_rand(),
-            ]
+            ],
         ]);
     }
 
@@ -313,7 +311,7 @@ class Item_Line extends CommonDBRelation
             'WHERE'  => [
                 'itemtype' => $itemtype,
                 'items_id' => $ID,
-            ]
+            ],
         ]);
 
         $lines_from_sim = $DB->request([
@@ -323,9 +321,9 @@ class Item_Line extends CommonDBRelation
                 'itemtype' => $itemtype,
                 'items_id' => $ID,
                 'NOT'   => [
-                    'lines_id' => 0
-                ]
-            ]
+                    'lines_id' => 0,
+                ],
+            ],
         ]);
 
         $simcard_entries = [];
@@ -341,17 +339,16 @@ class Item_Line extends CommonDBRelation
 
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'is_tab' => true,
-            'nopager' => true,
             'nofilter' => true,
             'nosort' => true,
             'super_header' => [
                 'label' => Item_DeviceSimcard::getTypeName(Session::getPluralNumber()),
             ],
             'columns' => [
-                'name' => __('Name')
+                'name' => __('Name'),
             ],
             'formatters' => [
-                'name' => 'raw_html'
+                'name' => 'raw_html',
             ],
             'entries' => $simcard_entries,
             'total_number' => count($simcard_entries),
@@ -360,7 +357,7 @@ class Item_Line extends CommonDBRelation
             'massiveactionparams' => [
                 'num_displayed' => count($simcard_entries),
                 'container'     => 'mass' . Item_DeviceSimcard::class . mt_rand(),
-            ]
+            ],
         ]);
 
         if (static::canCreate()) {
@@ -371,7 +368,7 @@ class Item_Line extends CommonDBRelation
                 'WHERE'  => [
                     'itemtype' => $itemtype,
                     'items_id' => $ID,
-                ]
+                ],
             ]);
             foreach ($iterator as $row) {
                 $used[] = $row['lines_id'];
@@ -382,7 +379,7 @@ class Item_Line extends CommonDBRelation
                 'peer_itemtype' => $itemtype,
                 'peer_id' => $ID,
                 'used' => $used,
-                'entity_restrict' => $item->isRecursive() ? getSonsOf('glpi_entities', $item->getEntityID()) : $item->getEntityID()
+                'entity_restrict' => $item->isRecursive() ? getSonsOf('glpi_entities', $item->getEntityID()) : $item->getEntityID(),
             ]);
         }
 
@@ -399,17 +396,16 @@ class Item_Line extends CommonDBRelation
 
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'is_tab' => true,
-            'nopager' => true,
             'nofilter' => true,
             'nosort' => true,
             'super_header' => [
                 'label' => Line::getTypeName(Session::getPluralNumber()),
             ],
             'columns' => [
-                'name' => __('Name')
+                'name' => __('Name'),
             ],
             'formatters' => [
-                'name' => 'raw_html'
+                'name' => 'raw_html',
             ],
             'entries' => $line_entries,
             'total_number' => count($line_entries),
@@ -418,7 +414,7 @@ class Item_Line extends CommonDBRelation
             'massiveactionparams' => [
                 'num_displayed' => count($line_entries),
                 'container'     => 'mass' . static::class . mt_rand(),
-            ]
+            ],
         ]);
     }
 

@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -38,10 +37,15 @@ namespace Glpi\Form\Destination\CommonITILField;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AnswersSet;
+use Glpi\Form\Destination\AbstractCommonITILFormDestination;
 use Glpi\Form\Destination\AbstractConfigField;
+use Glpi\Form\Export\Context\DatabaseMapper;
+use Glpi\Form\Export\Serializer\DynamicExportDataField;
+use Glpi\Form\Export\Specification\DataRequirementSpecification;
 use Glpi\Form\Form;
 use Glpi\Form\Migration\DestinationFieldConverterInterface;
 use Glpi\Form\Migration\FormMigration;
+use Glpi\Form\Question;
 use Glpi\Form\QuestionType\AbstractQuestionTypeActors;
 use Glpi\Form\QuestionType\QuestionTypeAssignee;
 use Glpi\Form\QuestionType\QuestionTypeItem;
@@ -51,7 +55,7 @@ use InvalidArgumentException;
 use Override;
 use User;
 
-class ValidationField extends AbstractConfigField implements DestinationFieldConverterInterface
+final class ValidationField extends AbstractConfigField implements DestinationFieldConverterInterface
 {
     #[Override]
     public function getLabel(): string
@@ -266,7 +270,7 @@ class ValidationField extends AbstractConfigField implements DestinationFieldCon
                     if (is_array($validation_actors)) {
                         $fk = $validation_actors['type'] == 'user' ? User::getForeignKeyField() : Group::getForeignKeyField();
                         $actors_ids = array_map(
-                            fn ($id) => sprintf('%s-%d', $fk, $id),
+                            fn($id) => sprintf('%s-%d', $fk, $id),
                             json_decode($rawData['commonitil_validation_question'], true)['values'] ?? []
                         );
                     }
@@ -277,18 +281,87 @@ class ValidationField extends AbstractConfigField implements DestinationFieldCon
                     );
                 case 3: // PluginFormcreatorAbstractItilTarget::VALIDATION_ANSWER_USER
                 case 4: // PluginFormcreatorAbstractItilTarget::VALIDATION_ANSWER_GROUP
+                    $question_ids = [];
+                    if (is_numeric($rawData['commonitil_validation_question'] ?? null)) {
+                        $mapped_item = $migration->getMappedItemTarget(
+                            'PluginFormcreatorQuestion',
+                            $rawData['commonitil_validation_question']
+                        );
+
+                        if ($mapped_item === null) {
+                            throw new InvalidArgumentException("Question not found in a target form");
+                        }
+
+                        $question_ids[] = $mapped_item['items_id'];
+                    }
+
                     return new ValidationFieldConfig(
                         strategies: [ValidationFieldStrategy::SPECIFIC_ANSWERS],
-                        specific_question_ids: [
-                            $migration->getMappedItemTarget(
-                                'PluginFormcreatorQuestion',
-                                $rawData['commonitil_validation_question']
-                            )['items_id']
-                        ]
+                        specific_question_ids: $question_ids
                     );
             }
         }
 
         return $this->getDefaultConfig($form);
+    }
+
+    #[Override]
+    public function exportDynamicConfig(
+        array $config,
+        AbstractCommonITILFormDestination $destination,
+    ): DynamicExportDataField {
+        $requirements = [];
+
+        if (!isset($config[ValidationFieldConfig::SPECIFIC_ACTORS])) {
+            return parent::exportDynamicConfig($config, $destination);
+        }
+
+        $items = $config[ValidationFieldConfig::SPECIFIC_ACTORS];
+        foreach ($items as $itemtype => $items_ids) {
+            foreach ($items_ids as $i => $item_id) {
+                $item = getItemForItemtype($itemtype);
+                if ($item->getFromDB($item_id)) {
+                    // Insert name instead of id and register requirement
+                    $items[$itemtype][$i] = $item->getName();
+                    $requirements[] = new DataRequirementSpecification(
+                        $itemtype,
+                        $item->getName(),
+                    );
+                }
+            }
+        }
+
+        $config[ValidationFieldConfig::SPECIFIC_ACTORS] = $items;
+        return new DynamicExportDataField($config, $requirements);
+    }
+
+    #[Override]
+    public static function prepareDynamicConfigDataForImport(
+        array $config,
+        AbstractCommonITILFormDestination $destination,
+        DatabaseMapper $mapper,
+    ): array {
+        if (isset($config[ValidationFieldConfig::SPECIFIC_ACTORS])) {
+            $items = $config[ValidationFieldConfig::SPECIFIC_ACTORS];
+            foreach ($items as $itemtype => $items_names) {
+                foreach ($items_names as $i => $item_name) {
+                    $id = $mapper->getItemId($itemtype, $item_name);
+                    $items[$itemtype][$i] = $id;
+                }
+            }
+            $config[ValidationFieldConfig::SPECIFIC_ACTORS] = $items;
+        }
+
+        // Check if specific questions are defined
+        if (isset($config[ValidationFieldConfig::SPECIFIC_QUESTION_IDS])) {
+            $questions = $config[ValidationFieldConfig::SPECIFIC_QUESTION_IDS];
+            foreach ($questions as $i => $question) {
+                $id = $mapper->getItemId(Question::class, $question);
+                $questions[$i] = $id;
+            }
+            $config[ValidationFieldConfig::SPECIFIC_QUESTION_IDS] = $questions;
+        }
+
+        return $config;
     }
 }

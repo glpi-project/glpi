@@ -32,13 +32,14 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\Environment;
 use Glpi\Inventory\Conf;
 use Glpi\Inventory\Request;
 use Glpi\Kernel\Kernel;
 
 require dirname(__DIR__) . '/vendor/autoload.php';
 
-$kernel = new Kernel('testing');
+$kernel = new Kernel(Environment::TESTING->value);
 $kernel->boot();
 
 $conf = new Conf();

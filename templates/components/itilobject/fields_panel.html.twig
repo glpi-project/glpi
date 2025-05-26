@@ -6,7 +6,6 @@
  # http://glpi-project.org
  #
  # @copyright 2015-2025 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -41,7 +40,7 @@
 } %}
 
 {% set itil_layout    = user_pref('itil_layout', true) %}
-{% set headers_states = itil_layout['items'] %}
+{% set headers_states = itil_layout['items']|default([]) %}
 
 <div class="accordion open accordion-flush" id="itil-data">
    {% set main_show = headers_states['item-main'] is not defined or headers_states['item-main'] == "true" ? true : false %}
@@ -71,7 +70,9 @@
                      item.fields['entities_id'],
                      _n('Entity', 'Entities', 1),
                      field_options|merge({
-                        'entity': userentities,
+                        'entity': userentities|default(
+                           session('glpiactive_entity')
+                        ),
                         'on_change': 'this.form.submit()',
                      })
                   ) }}
@@ -140,6 +141,7 @@
                   'width': '100%',
                   'display': false,
                   'rand': rand,
+                  'readonly': field_options.fields_template.isReadonlyField('type'),
                }|merge(field_options) %}
                {% if item.isNewItem() %}
                   {% set type_params = type_params|merge({'on_change': 'this.form.submit()',}) %}
@@ -196,7 +198,7 @@
             {{ include('components/itilobject/fields/status.html.twig') }}
 
             {# validation #}
-            {% if item.fields['global_validation'] != 1 %}
+            {% if item.fields['global_validation']|default(1) != 1 %}
                {{ include('components/itilobject/fields/global_validation.html.twig') }}
             {% endif %}
 
@@ -275,7 +277,7 @@
             <span class="badge bg-secondary text-secondary-fg ms-2">
                {{ item.countActors() }}
             </span>
-            {% if not params['template_preview'] and cancreateuser and canupdate %}
+            {% if not (params['template_preview'] ?? false) and cancreateuser|default(false) and canupdate %}
                {{ include('components/user/create_user.html.twig') }}
             {% endif %}
          </button>
@@ -287,7 +289,7 @@
       </div>
    </section>
 
-   {% if canreadnote %}
+   {% if canreadnote|default(false) %}
       {% set notes = call('Notepad::getAllForItem', [get_item('Entity', item.fields['entities_id']), 'Ticket']) %}
       {% set notes_show = headers_states['notes'] is not defined or headers_states['notes'] == "true" ? true : (notes|length > 0) %}
        {% if notes|length != 0 %}
@@ -304,7 +306,14 @@
              <div id="notes" class="accordion-collapse collapse {{ notes_show ? "show" : "" }}" aria-labelledby="notes-heading">
                 <div class="accordion-body row m-0 mt-n2">
                   {% for note in notes %}
-                     <div class="alert alert-info entitynote rich_text_container" role="alert">{{ note['content']|safe_html }}</div>
+                     <div class="alert alert-info entitynote rich_text_container" role="alert">
+                        {{ note['content']|safe_html }}
+
+                        {{ include('components/itilobject/timeline/sub_documents.html.twig', {
+                           'item': get_item(note['itemtype'], note['items_id']),
+                           'entry': note
+                        }) }}
+                     </div>
                   {% endfor %}
                 </div>
              </div>
@@ -464,7 +473,7 @@
       <h2 class="accordion-header" id="linked_itilobjects-heading" title="{{ 'CommonITILObject_CommonITILObject'|itemtype_name(nb_linked_itilobjects) }}" data-bs-toggle="tooltip">
          <button class="accordion-button {{ linked_itilobjects_show ? "" : "collapsed" }}" type="button" data-bs-toggle="collapse" data-bs-target="#linked_itilobjects" aria-expanded="true" aria-controls="linked_itilobjects">
             <i class="ti ti-link me-1"></i>
-            {% if item.isNewItem() and params['_link']['items_id_2'] > 0 %}
+            {% if item.isNewItem() and (params['_link']['items_id_2'] ?? 0) > 0 %}
                {% set nb_linked_itilobjects = 1 %}
             {% endif %}
             <span class="item-title">
@@ -486,7 +495,7 @@
 
     <span class="d-none d-md-block">
         <button type="button" class="switch-panel-width btn btn-icon btn-ghost-secondary position-absolute bottom-0 start-0 mb-2">
-            <i class="fas fa-caret-left"></i>
+            <i class="ti ti-caret-left-filled"></i>
         </button>
     </span>
 </div>

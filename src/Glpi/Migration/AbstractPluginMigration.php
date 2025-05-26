@@ -109,7 +109,7 @@ abstract class AbstractPluginMigration
         } catch (\Throwable $e) {
             $this->result->addMessage(
                 MessageType::Error,
-                $e instanceof MigrationException ? $e->getLocalizedMessage() : __('An unexpected error occured.')
+                $e instanceof MigrationException ? $e->getLocalizedMessage() : __('An unexpected error occurred')
             );
 
             $this->logger?->error($e->getMessage(), context: ['exception' => $e]);
@@ -194,7 +194,7 @@ abstract class AbstractPluginMigration
     {
         $criteria = [
             'FROM'  => $table,
-            'COUNT' => 'cpt'
+            'COUNT' => 'cpt',
         ];
 
         if (!empty($conditions)) {
@@ -512,7 +512,7 @@ abstract class AbstractPluginMigration
     /**
      * Return the GLPI core item specs corresponding to the given plugin item.
      *
-     * @return array{itemtype: class-string<\CommonDBTM>, items_id: int}
+     * @return array{itemtype: class-string<\CommonDBTM>, items_id: int}|null
      */
     final public function getMappedItemTarget(string $source_itemtype, int $source_items_id): ?array
     {

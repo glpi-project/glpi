@@ -178,7 +178,7 @@ if (isset($_POST["validatortype"])) {
             $opt             = [
                 'groups_id' => $_POST["groups_id"],
                 'right'     => $_POST['right'],
-                'entity'    => $_POST["entity"]
+                'entity'    => $_POST["entity"],
             ];
             $data_users      = $validation_class::getGroupUserHaveRights($opt);
             $users           = [];
@@ -195,7 +195,7 @@ if (isset($_POST["validatortype"])) {
                     $data['firstname']
                 );
                 if (in_array($data['id'], $values)) {
-                     $param['values'][] = $data['id'];
+                    $param['values'][] = $data['id'];
                 }
             }
 

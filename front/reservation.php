@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+require_once(__DIR__ . '/_check_webserver_config.php');
+
 if (!isset($_GET["reservationitems_id"])) {
     $_GET["reservationitems_id"] = 0;
 }

@@ -102,7 +102,7 @@ abstract class HTMLSearchOutput extends AbstractSearchOutput
 
         $parameters = http_build_query([
             'sort'   => $search['sort'],
-            'order'  => $search['order']
+            'order'  => $search['order'],
         ]);
 
         $parameters .= "&{$globallinkto}";
@@ -136,7 +136,7 @@ abstract class HTMLSearchOutput extends AbstractSearchOutput
                 $active_search_name = $savedsearch->getName();
                 $active_savedsearch = true;
             }
-        } else if (count($data['search']['criteria']) > 0) {
+        } elseif (count($data['search']['criteria']) > 0) {
             // check if it isn't the default search
             $default = CriteriaFilter::getDefaultSearch($itemtype);
             if ($default != $data['search']['criteria']) {
@@ -214,7 +214,8 @@ abstract class HTMLSearchOutput extends AbstractSearchOutput
             'hide_search_toggle'  => $params['hide_criteria'] ?? false,
             'showmassiveactions'  => ($params['showmassiveactions'] ?? $search['showmassiveactions'] ?? true)
                 && $data['display_type'] != \Search::GLOBAL_SEARCH
-                && ($itemtype == \AllAssets::getType()
+                && (
+                    $itemtype == \AllAssets::getType()
                     || count(\MassiveAction::getAllMassiveActions($item, $is_deleted))
                 ),
             'massiveactionparams' => $data['search']['massiveactionparams'] + [
@@ -224,7 +225,7 @@ abstract class HTMLSearchOutput extends AbstractSearchOutput
             ],
             'can_config'          => \Session::haveRightsOr('search_config', [
                 \DisplayPreference::PERSONAL,
-                \DisplayPreference::GENERAL
+                \DisplayPreference::GENERAL,
             ]),
             'may_be_deleted'      => $item instanceof \CommonDBTM && $item->maybeDeleted() && !$item->useDeletedToLockIfDynamic(),
             'may_be_located'      => $item instanceof \CommonDBTM && $item->maybeLocated(),
@@ -338,7 +339,7 @@ abstract class HTMLSearchOutput extends AbstractSearchOutput
                     'awesome-class'   => 'fa-comments',
                     'display'         => false,
                     'autoclose'       => false,
-                    'onclick'         => true
+                    'onclick'         => true,
                 ]
             );
             $out .= $values[0] . $valTip;

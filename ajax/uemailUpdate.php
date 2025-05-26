@@ -33,7 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\Application\View\TemplateRenderer;
 
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
@@ -79,7 +78,7 @@ if (
     $switch_name = $_POST['field'] . '[use_notification][]';
     echo "<div class='my-1 d-flex align-items-center'>
          <label  for='email_fup_check'>
-            <i class='far fa-envelope me-1'></i>
+            <i class='ti ti-mail me-1'></i>
             " . __s('Email followup') . "
          </label>
          <div class='ms-2'>
@@ -88,18 +87,18 @@ if (
       </div>";
 
     $email_string = '';
-   // Only one email
+    // Only one email
     if (
         (count($emails) == 1)
         && !empty($default_email)
         && NotificationMailing::isUserAddressValid($default_email[$user_index])
     ) {
         $email_string = htmlescape($default_email[$user_index]);
-       // Clean alternative email
+        // Clean alternative email
         echo "<input type='hidden' size='25' name='" . htmlescape($_POST['field']) . "[alternative_email][]'
              value=''>";
-    } else if (count($emails) > 1) {
-       // Several emails : select in the list
+    } elseif (count($emails) > 1) {
+        // Several emails : select in the list
         $emailtab = [];
         foreach ($emails as $new_email) {
             if ($new_email != $default_email) {
@@ -113,7 +112,7 @@ if (
             $emailtab,
             [
                 'value'   => '',
-                'display' => false
+                'display' => false,
             ]
         );
     } else {

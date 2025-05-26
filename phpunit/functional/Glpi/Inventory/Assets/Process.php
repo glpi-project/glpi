@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -71,7 +70,7 @@ class Process extends AbstractInventoryAsset
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-                'expected'  => '{"cmd": "php-fpm: pool www", "cpuusage": "0.0", "mem": "0.0", "pid": 3002, "started": "2022-03-18 14:54:00", "tty": "?", "user": "alexand+", "virtualmemory": 231176, "memusage": "0.0", "is_dynamic": 1}'
+                'expected'  => '{"cmd": "php-fpm: pool www", "cpuusage": "0.0", "mem": "0.0", "pid": 3002, "started": "2022-03-18 14:54:00", "tty": "?", "user": "alexand+", "virtualmemory": 231176, "memusage": "0.0", "is_dynamic": 1}',
             ],
             [
                 'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
@@ -92,7 +91,7 @@ class Process extends AbstractInventoryAsset
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-                'expected'  => '{"cmd": "/usr/sbin/mysqld", "cpuusage": "4.5", "mem": "4.1", "pid": 3012, "started": "2022-03-18 14:54:00", "tty": "?", "user": "mysql", "virtualmemory": 2935028, "memusage": "4.1", "is_dynamic": 1}'
+                'expected'  => '{"cmd": "/usr/sbin/mysqld", "cpuusage": "4.5", "mem": "4.1", "pid": 3012, "started": "2022-03-18 14:54:00", "tty": "?", "user": "mysql", "virtualmemory": 2935028, "memusage": "4.1", "is_dynamic": 1}',
             ],
         ];
     }
@@ -113,7 +112,7 @@ class Process extends AbstractInventoryAsset
 
         $computer = getItemByTypeName('Computer', '_test_pc01');
         $asset = new \Glpi\Inventory\Asset\Process($computer, $json->content->processes);
-        $asset->setExtraData((array)$json->content);
+        $asset->setExtraData((array) $json->content);
 
         $this->assertTrue($asset->checkConf($conf));
 
@@ -148,7 +147,7 @@ class Process extends AbstractInventoryAsset
 
         $computer = getItemByTypeName('Computer', '_test_pc01');
         $asset = new \Glpi\Inventory\Asset\Process($computer, $json->content->processes);
-        $asset->setExtraData((array)$json->content);
+        $asset->setExtraData((array) $json->content);
 
         $this->assertTrue($asset->checkConf($conf));
 
@@ -174,7 +173,7 @@ class Process extends AbstractInventoryAsset
             system_name: 'MyAsset' . $this->getUniqueString(),
             capacities: array_merge(
                 [
-                    \Glpi\Asset\Capacity\IsInventoriableCapacity::class
+                    \Glpi\Asset\Capacity\IsInventoriableCapacity::class,
                 ]
             )
         );

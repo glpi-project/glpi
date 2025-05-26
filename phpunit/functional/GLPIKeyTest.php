@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -132,7 +131,7 @@ class GLPIKeyTest extends \DbTestCase
     public function testGetUnreadableKey()
     {
         $structure = vfsStream::setup('glpi', null, ['config' => ['glpicrypt.key' => 'unreadable file']]);
-        $structure->getChild('config/glpicrypt.key')->chmod(0222);
+        $structure->getChild('config/glpicrypt.key')->chmod(0o222);
 
         $glpikey = new \GLPIKey(vfsStream::url('glpi/config'));
 
@@ -193,7 +192,7 @@ class GLPIKeyTest extends \DbTestCase
     public function testGetLegacyKeyUnreadable()
     {
         $structure = vfsStream::setup('glpi', null, ['config' => ['glpi.key' => 'unreadable file']]);
-        $structure->getChild('config/glpi.key')->chmod(0222);
+        $structure->getChild('config/glpi.key')->chmod(0o222);
 
         $glpikey = new \GLPIKey(vfsStream::url('glpi/config'));
 
@@ -222,7 +221,7 @@ class GLPIKeyTest extends \DbTestCase
     {
         $structure = vfsStream::setup('glpi', null, ['config' => []]);
         vfsStream::copyFromFileSystem(GLPI_CONFIG_DIR, $structure->getChild('config'));
-        $structure->getChild('config/glpicrypt.key')->chmod(0666);
+        $structure->getChild('config/glpicrypt.key')->chmod(0o666);
 
         $glpikey = new \GLPIKey(vfsStream::url('glpi/config'));
 
@@ -242,7 +241,7 @@ class GLPIKeyTest extends \DbTestCase
     {
         // Unwritable dir
         $structure = vfsStream::setup('glpi', null, ['config' => []]);
-        $structure->getChild('config')->chmod(0555);
+        $structure->getChild('config')->chmod(0o555);
 
 
         $glpikey = new \GLPIKey(vfsStream::url('glpi/config'));
@@ -258,7 +257,7 @@ class GLPIKeyTest extends \DbTestCase
     {
         // Unwritable key file
         $structure = vfsStream::setup('glpi', null, ['config' => ['glpicrypt.key' => 'previouskey']]);
-        $structure->getChild('config/glpicrypt.key')->chmod(0444);
+        $structure->getChild('config/glpicrypt.key')->chmod(0o444);
 
         $glpikey = new \GLPIKey(vfsStream::url('glpi/config'));
 
@@ -272,7 +271,7 @@ class GLPIKeyTest extends \DbTestCase
     public function testGenerateFailureWithUnreadableKey()
     {
         $structure = vfsStream::setup('glpi', null, ['config' => ['glpicrypt.key' => 'unreadable file']]);
-        $structure->getChild('config/glpicrypt.key')->chmod(0222);
+        $structure->getChild('config/glpicrypt.key')->chmod(0o222);
 
         $glpikey = new \GLPIKey(vfsStream::url('glpi/config'));
 

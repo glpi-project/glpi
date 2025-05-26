@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -37,6 +36,7 @@ namespace tests\units;
 
 use Certificate_Item;
 use DbTestCase;
+use Glpi\Asset\Capacity;
 use Glpi\Asset\Capacity\HasCertificatesCapacity;
 use Glpi\Features\Clonable;
 use Toolbox;
@@ -48,7 +48,7 @@ class Certificate_ItemTest extends DbTestCase
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        $this->initAssetDefinition(capacities: [HasCertificatesCapacity::class]);
+        $this->initAssetDefinition(capacities: [new Capacity(name: HasCertificatesCapacity::class)]);
 
         $this->login(); // tab will be available only if corresponding right is available in the current session
 
@@ -68,7 +68,7 @@ class Certificate_ItemTest extends DbTestCase
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        $this->initAssetDefinition(capacities: [HasCertificatesCapacity::class]);
+        $this->initAssetDefinition(capacities: [new Capacity(name: HasCertificatesCapacity::class)]);
 
         foreach ($CFG_GLPI['certificate_types'] as $itemtype) {
             if (!Toolbox::hasTrait($itemtype, Clonable::class)) {
@@ -123,7 +123,7 @@ class Certificate_ItemTest extends DbTestCase
         $input = [
             'certificates_id' => $cid1,
             'itemtype'        => 'Computer',
-            'items_id'        => $computer->getID()
+            'items_id'        => $computer->getID(),
         ];
         $this->assertGreaterThan(0, $cert_item->add($input));
 
@@ -136,7 +136,7 @@ class Certificate_ItemTest extends DbTestCase
         $input = [
             'certificates_id' => $cid1,
             'itemtype'        => 'Printer',
-            'items_id'        => $printer->getID()
+            'items_id'        => $printer->getID(),
         ];
         $this->assertGreaterThan(0, $cert_item->add($input));
 
@@ -159,7 +159,7 @@ class Certificate_ItemTest extends DbTestCase
         $list_types = iterator_to_array($cert_item->getDistinctTypes($cid1));
         $expected = [
             ['itemtype' => 'Computer'],
-            ['itemtype' => 'Printer']
+            ['itemtype' => 'Printer'],
         ];
         $this->assertSame($expected, $list_types);
 

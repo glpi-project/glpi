@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+require_once(__DIR__ . '/../_check_webserver_config.php');
+
 use Glpi\Form\Form;
 
 // Read parameters
@@ -46,10 +48,12 @@ if (($_REQUEST['id'] ?? 0) == 0) {
     // edit page which will contains more fields
     $form = new Form();
     $id = $form->add([
-        'name'        => __("Untitled form"),
-        'entities_id' => $_SESSION['glpiactive_entity'],
-        'is_draft'    => true,
+        'name'         => __("Untitled form"),
+        'entities_id'  => $_SESSION['glpiactive_entity'],
+        'is_recursive' => true,
+        'is_draft'     => true,
     ]);
+    Session::setActiveTab(Form::class, Form::class . '$main');
     Html::redirect($form->getLinkURL());
 } elseif (isset($_POST['update'])) {
     $id = $_POST['id'] ?? 0;

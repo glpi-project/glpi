@@ -39,7 +39,7 @@ use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Form\Destination\FormDestination;
 use Glpi\Form\Form;
-use Symfony\Component\HttpFoundation\RedirectResponse;
+use Glpi\Http\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -54,7 +54,7 @@ final class UpdateDestinationController extends AbstractController
             $request->request->all(),
             [
                 'id'                       => $destination_id,
-                Form::getForeignKeyField() => $form_id
+                Form::getForeignKeyField() => $form_id,
             ]
         );
 

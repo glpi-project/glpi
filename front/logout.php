@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+require_once(__DIR__ . '/_check_webserver_config.php');
+
 /**
  * @since 0.85
  */
@@ -72,7 +74,7 @@ $toADD = "";
 // Redirect management
 if (isset($_POST['redirect']) && (strlen($_POST['redirect']) > 0)) {
     $toADD = "?redirect=" . rawurlencode($_POST['redirect']);
-} else if (isset($_GET['redirect']) && (strlen($_GET['redirect']) > 0)) {
+} elseif (isset($_GET['redirect']) && (strlen($_GET['redirect']) > 0)) {
     $toADD = "?redirect=" . rawurlencode($_GET['redirect']);
 }
 

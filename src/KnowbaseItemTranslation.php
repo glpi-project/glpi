@@ -66,9 +66,9 @@ class KnowbaseItemTranslation extends CommonDBChild
     {
         $ong = [];
         $this->addStandardTab(__CLASS__, $ong, $options);
-        $this->addStandardTab('Log', $ong, $options);
-        $this->addStandardTab('KnowbaseItem_Revision', $ong, $options);
-        $this->addStandardTab('KnowbaseItem_Comment', $ong, $options);
+        $this->addStandardTab(Log::class, $ong, $options);
+        $this->addStandardTab(KnowbaseItem_Revision::class, $ong, $options);
+        $this->addStandardTab(KnowbaseItem_Comment::class, $ong, $options);
 
         return $ong;
     }
@@ -120,7 +120,7 @@ class KnowbaseItemTranslation extends CommonDBChild
                     $item->showForm($item->getID(), ['parent' => $item]);
                     break;
             }
-        } else if ($item instanceof KnowbaseItem) {
+        } elseif ($item instanceof KnowbaseItem) {
             self::showTranslations($item);
         }
         return true;
@@ -142,7 +142,7 @@ class KnowbaseItemTranslation extends CommonDBChild
         $twig_params = [
             'subject_label' => __('Subject'),
             'content_label' => __('Content'),
-            'item'          => $this
+            'item'          => $this,
         ];
         // language=Twig
         echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
@@ -171,7 +171,7 @@ TWIG, $twig_params);
         if ($canedit) {
             $twig_params = [
                 'item' => $item,
-                'btn_msg' => __('Add a new translation')
+                'btn_msg' => __('Add a new translation'),
             ];
             // language=Twig
             echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
@@ -210,7 +210,7 @@ TWIG, $twig_params);
             }
             if (!empty($data['answer'])) {
                 $name .= Html::showToolTip(RichText::getEnhancedHtml($data['answer']), [
-                    'display' => false
+                    'display' => false,
                 ]);
             }
 
@@ -218,12 +218,11 @@ TWIG, $twig_params);
                 'itemtype' => self::class,
                 'id'       => $data['id'],
                 'language' => Dropdown::getLanguageName($data['language']),
-                'name'     => $name
+                'name'     => $name,
             ];
         }
 
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
-            'nopager' => true,
             'is_tab' => true,
             'nofilter' => true,
             'nosort' => true,
@@ -240,7 +239,7 @@ TWIG, $twig_params);
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
-                'container'     => 'mass' . static::class . $rand
+                'container'     => 'mass' . static::class . $rand,
             ],
         ]);
         return true;
@@ -262,7 +261,7 @@ TWIG, $twig_params);
         if ($ID > 0) {
             $this->check($ID, READ);
         } else {
-           // Create item
+            // Create item
             $options['itemtype']         = get_class($options['parent']);
             $options['knowbaseitems_id'] = $options['parent']->getID();
             $this->check(-1, CREATE, $options);
@@ -271,7 +270,7 @@ TWIG, $twig_params);
         TemplateRenderer::getInstance()->display('pages/tools/kb/translation.html.twig', [
             'item' => $this,
             'no_header' => true,
-            'used_languages' => $ID <= 0 ? self::getAlreadyTranslatedForItem($options['parent']) : []
+            'used_languages' => $ID <= 0 ? self::getAlreadyTranslatedForItem($options['parent']) : [],
         ]);
         return true;
     }
@@ -289,7 +288,7 @@ TWIG, $twig_params);
         $obj   = new self();
         $found = $obj->find([
             'knowbaseitems_id'   => $item->getID(),
-            'language'           => $_SESSION['glpilanguage']
+            'language'           => $_SESSION['glpilanguage'],
         ]);
 
         if (
@@ -334,7 +333,7 @@ TWIG, $twig_params);
         $iterator = $DB->request([
             'SELECT' => ['language'],
             'FROM'   => self::getTable(),
-            'WHERE'  => ['knowbaseitems_id' => $item->getID()]
+            'WHERE'  => ['knowbaseitems_id' => $item->getID()],
         ]);
 
         foreach ($iterator as $data) {
@@ -366,7 +365,7 @@ TWIG, $twig_params);
         $values = [
             'id'     => $this->getID(),
             'name'   => $revision->fields['name'],
-            'answer' => $revision->fields['answer']
+            'answer' => $revision->fields['answer'],
         ];
 
         if ($this->update($values)) {

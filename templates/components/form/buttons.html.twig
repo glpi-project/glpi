@@ -6,7 +6,6 @@
  # http://glpi-project.org
  #
  # @copyright 2015-2025 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -133,9 +132,9 @@
             <input type="hidden" name="id" value="{{ id }}" />
          {% endif %}
 
-         {% if canedit and params['addbuttons']|length > 0 %}
+         {% if canedit and (params['addbuttons'] ?? [])|length > 0 %}
             {% for key, val in params['addbuttons'] %}
-                {% if val.add_attribs is not empty %}
+                {% if (val.add_attribs ?? []) is not empty %}
                     {% set extra_attribs = call('Html::parseAttributes', {options: val.add_attribs}) %}
                 {% else %}
                     {% set extra_attribs = '' %}

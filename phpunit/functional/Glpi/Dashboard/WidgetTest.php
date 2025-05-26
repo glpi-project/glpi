@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -70,7 +69,7 @@ class WidgetTest extends DbTestCase
                         '#595959',
                         '#333333',
                     ],
-                ]
+                ],
             ], [
                 'bg_color'  => "#FFFFFF",
                 'nb_series' => 4,
@@ -83,7 +82,7 @@ class WidgetTest extends DbTestCase
                         '#a6a6a6',
                         '#cccccc',
                     ],
-                ]
+                ],
             ], [
                 'bg_color'  => "#FFFFFF",
                 'nb_series' => 1,
@@ -93,7 +92,7 @@ class WidgetTest extends DbTestCase
                     'colors' => [
                         '#999999',
                     ],
-                ]
+                ],
             ],
         ];
     }

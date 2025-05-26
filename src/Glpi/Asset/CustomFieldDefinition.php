@@ -116,8 +116,8 @@ final class CustomFieldDefinition extends CommonDBChild
         $DB->update('glpi_assets_assets', [
             'custom_fields' => QueryFunction::jsonRemove([
                 'custom_fields',
-                new QueryExpression($DB::quoteValue('$."' . $this->fields['id'] . '"'))
-            ])
+                new QueryExpression($DB::quoteValue('$."' . $this->fields['id'] . '"')),
+            ]),
         ], [
             'assets_assetdefinitions_id' => $this->fields['assets_assetdefinitions_id'],
         ]);
@@ -134,7 +134,7 @@ final class CustomFieldDefinition extends CommonDBChild
 
         $adm = AssetDefinitionManager::getInstance();
         $field_types = $adm->getCustomFieldTypes();
-        $field_types = array_combine($field_types, array_map(static fn ($t) => $t::getName(), $field_types));
+        $field_types = array_combine($field_types, array_map(static fn($t) => $t::getName(), $field_types));
         TemplateRenderer::getInstance()->display('pages/assets/customfield.html.twig', [
             'no_header' => true,
             'item' => $this,
@@ -142,8 +142,8 @@ final class CustomFieldDefinition extends CommonDBChild
             'allowed_dropdown_itemtypes' => $adm->getAllowedDropdownItemtypes(),
             'field_types' => $field_types,
             'params' => [
-                'formfooter' => false
-            ]
+                'formfooter' => false,
+            ],
         ]);
         return true;
     }

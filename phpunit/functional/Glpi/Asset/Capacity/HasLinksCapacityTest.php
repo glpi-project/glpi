@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -38,6 +37,7 @@ namespace tests\units\Glpi\Asset\Capacity;
 use DbTestCase;
 use DisplayPreference;
 use Entity;
+use Glpi\Asset\Capacity;
 use Glpi\PHPUnit\Tests\Glpi\Asset\CapacityUsageTestTrait;
 use Link;
 use Link_Itemtype;
@@ -61,21 +61,21 @@ class HasLinksCapacityTest extends DbTestCase
 
         $definition_1 = $this->initAssetDefinition(
             capacities: [
-                \Glpi\Asset\Capacity\HasLinksCapacity::class,
-                \Glpi\Asset\Capacity\HasNotepadCapacity::class,
+                new Capacity(name: \Glpi\Asset\Capacity\HasLinksCapacity::class),
+                new Capacity(name: \Glpi\Asset\Capacity\HasNotepadCapacity::class),
             ]
         );
         $classname_1  = $definition_1->getAssetClassName();
         $definition_2 = $this->initAssetDefinition(
             capacities: [
-                \Glpi\Asset\Capacity\HasHistoryCapacity::class,
+                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
             ]
         );
         $classname_2  = $definition_2->getAssetClassName();
         $definition_3 = $this->initAssetDefinition(
             capacities: [
-                \Glpi\Asset\Capacity\HasLinksCapacity::class,
-                \Glpi\Asset\Capacity\HasHistoryCapacity::class,
+                new Capacity(name: \Glpi\Asset\Capacity\HasLinksCapacity::class),
+                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
             ]
         );
         $classname_3  = $definition_3->getAssetClassName();
@@ -125,15 +125,15 @@ class HasLinksCapacityTest extends DbTestCase
 
         $definition_1 = $this->initAssetDefinition(
             capacities: [
-                \Glpi\Asset\Capacity\HasLinksCapacity::class,
-                \Glpi\Asset\Capacity\HasHistoryCapacity::class,
+                new Capacity(name: \Glpi\Asset\Capacity\HasLinksCapacity::class),
+                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
             ]
         );
         $classname_1  = $definition_1->getAssetClassName();
         $definition_2 = $this->initAssetDefinition(
             capacities: [
-                \Glpi\Asset\Capacity\HasLinksCapacity::class,
-                \Glpi\Asset\Capacity\HasHistoryCapacity::class,
+                new Capacity(name: \Glpi\Asset\Capacity\HasLinksCapacity::class),
+                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
             ]
         );
         $classname_2  = $definition_2->getAssetClassName();
@@ -159,7 +159,7 @@ class HasLinksCapacityTest extends DbTestCase
                 'name'     => 'manual link',
                 'itemtype' => $item_1::class,
                 'items_id' => $item_1->getID(),
-                'url'      => 'https://glpi-project.org'
+                'url'      => 'https://glpi-project.org',
             ]
         );
         $manual_link_2 = $this->createItem(
@@ -168,23 +168,23 @@ class HasLinksCapacityTest extends DbTestCase
                 'name'     => 'manual link',
                 'itemtype' => $item_2::class,
                 'items_id' => $item_2->getID(),
-                'url'      => 'https://glpi-project.org'
+                'url'      => 'https://glpi-project.org',
             ]
         );
         $external_link = $this->createItem(
             \Link::class,
             [
                 'name' => 'external link',
-                'link' => 'https://glpi-project.org'
+                'link' => 'https://glpi-project.org',
             ]
         );
         $link_itemtype = $this->createItem(\Link_Itemtype::class, [
             'links_id' => $external_link->getID(),
-            'itemtype' => $item_1::class
+            'itemtype' => $item_1::class,
         ]);
         $link_itemtype_2 = $this->createItem(\Link_Itemtype::class, [
             'links_id' => $external_link->getID(),
-            'itemtype' => $item_2::class
+            'itemtype' => $item_2::class,
         ]);
         $displaypref_1   = $this->createItem(
             DisplayPreference::class,
@@ -240,13 +240,13 @@ class HasLinksCapacityTest extends DbTestCase
         yield [
             'target_classname' => ManualLink::class,
             'target_fields' => [
-                'url'      => 'https://glpi-project.org'
-            ]
+                'url'      => 'https://glpi-project.org',
+            ],
         ];
 
         yield [
             'target_classname' => Link::class,
-            'relation_classname' => Link_Itemtype::class
+            'relation_classname' => Link_Itemtype::class,
         ];
     }
 
@@ -255,15 +255,15 @@ class HasLinksCapacityTest extends DbTestCase
         yield [
             'target_classname' => ManualLink::class,
             'target_fields' => [
-                'url'      => 'https://glpi-project.org'
+                'url'      => 'https://glpi-project.org',
             ],
-            'expected' => '%d links attached to %d assets'
+            'expected' => '%d links attached to %d assets',
         ];
 
         yield [
             'target_classname' => Link::class,
             'relation_classname' => Link_Itemtype::class,
-            'expected' => '%d links attached to %d assets'
+            'expected' => '%d links attached to %d assets',
         ];
     }
 }

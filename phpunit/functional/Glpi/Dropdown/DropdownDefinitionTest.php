@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -37,7 +36,6 @@ namespace tests\units\Glpi\Dropdown;
 
 use DbTestCase;
 use Glpi\Dropdown\DropdownDefinition;
-use Glpi\Dropdown\DropdownDefinitionManager;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Profile;
 
@@ -240,7 +238,131 @@ class DropdownDefinitionTest extends DbTestCase
             }
         }
 
-        foreach (DropdownDefinitionManager::getInstance()->getReservedSystemNames() as $system_name) {
+        // Extracted from Dropdown::getStandardDropdownItemTypes()
+        $reserved_names = [
+            'Location',
+            'State',
+            'Manufacturer',
+            'Blacklist',
+            'BlacklistedMailContent',
+            'DefaultFilter',
+            'ITILCategory',
+            'TaskCategory',
+            'TaskTemplate',
+            'SolutionType',
+            'SolutionTemplate',
+            'ITILValidationTemplate',
+            'RequestType',
+            'ITILFollowupTemplate',
+            'ProjectState',
+            'ProjectType',
+            'ProjectTaskType',
+            'ProjectTaskTemplate',
+            'PlanningExternalEventTemplate',
+            'PlanningEventCategory',
+            'PendingReason',
+            'ComputerType',
+            'NetworkEquipmentType',
+            'PrinterType',
+            'MonitorType',
+            'PeripheralType',
+            'PhoneType',
+            'SoftwareLicenseType',
+            'CartridgeItemType',
+            'ConsumableItemType',
+            'ContractType',
+            'ContactType',
+            'DeviceGenericType',
+            'DeviceSensorType',
+            'DeviceMemoryType',
+            'SupplierType',
+            'InterfaceType',
+            'DeviceCaseType',
+            'PhonePowerSupply',
+            'Filesystem',
+            'CertificateType',
+            'BudgetType',
+            'DeviceSimcardType',
+            'LineType',
+            'RackType',
+            'PDUType',
+            'PassiveDCEquipmentType',
+            'ClusterType',
+            'DatabaseInstanceType',
+            'ComputerModel',
+            'NetworkEquipmentModel',
+            'PrinterModel',
+            'MonitorModel',
+            'PeripheralModel',
+            'PhoneModel',
+            'DeviceCameraModel',
+            'DeviceCaseModel',
+            'DeviceControlModel',
+            'DeviceDriveModel',
+            'DeviceGenericModel',
+            'DeviceGraphicCardModel',
+            'DeviceHardDriveModel',
+            'DeviceMemoryModel',
+            'DeviceMotherboardModel',
+            'DeviceNetworkCardModel',
+            'DevicePciModel',
+            'DevicePowerSupplyModel',
+            'DeviceProcessorModel',
+            'DeviceSoundCardModel',
+            'DeviceSensorModel',
+            'RackModel',
+            'EnclosureModel',
+            'PDUModel',
+            'PassiveDCEquipmentModel',
+            'VirtualMachineType',
+            'VirtualMachineSystem',
+            'VirtualMachineState',
+            'DocumentCategory',
+            'DocumentType',
+            'BusinessCriticity',
+            'DatabaseInstanceCategory',
+            'KnowbaseItemCategory',
+            'Calendar',
+            'Holiday',
+            'OperatingSystem',
+            'OperatingSystemVersion',
+            'OperatingSystemServicePack',
+            'OperatingSystemArchitecture',
+            'OperatingSystemEdition',
+            'OperatingSystemKernel',
+            'OperatingSystemKernelVersion',
+            'AutoUpdateSystem',
+            'NetworkInterface',
+            'Network',
+            'NetworkPortType',
+            'Vlan',
+            'LineOperator',
+            'DomainType',
+            'DomainRelation',
+            'DomainRecordType',
+            'NetworkPortFiberchannelType',
+            'CableType',
+            'CableStrand',
+            'IPNetwork',
+            'FQDN',
+            'WifiNetwork',
+            'NetworkName',
+            'SoftwareCategory',
+            'UserTitle',
+            'UserCategory',
+            'RuleRightParameter',
+            'Fieldblacklist',
+            'SsoVariable',
+            'Plug',
+            'ApplianceType',
+            'ApplianceEnvironment',
+            'ImageResolution',
+            'ImageFormat',
+            'USBVendor',
+            'PCIVendor',
+            'WebhookCategory',
+        ];
+        foreach ($reserved_names as $system_name) {
             // System name must not be a reserved name
             yield [
                 'input'    => [
@@ -249,7 +371,7 @@ class DropdownDefinitionTest extends DbTestCase
                 'output'   => false,
                 'messages' => [
                     ERROR => [
-                        sprintf('The system name must not be the reserved word &quot;%s&quot;.', $system_name),
+                        'The system name is a reserved name.',
                     ],
                 ],
             ];
@@ -321,19 +443,20 @@ class DropdownDefinitionTest extends DbTestCase
             ],
         ];
 
-        // System name must not end with `Model` suffix
+        // System name can end with `Model` suffix
         yield [
             'input'    => [
                 'system_name' => 'TestDropdownModel',
             ],
-            'output'   => false,
-            'messages' => [
-                ERROR => [
-                    'The system name must not end with the word &quot;Model&quot; or the word &quot;Type&quot;.',
-                ],
+            'output'   => [
+                'system_name'  => 'TestDropdownModel',
+                'label'        => 'TestDropdownModel',
+                'profiles'     => '[]',
+                'translations' => '[]',
             ],
+            'messages' => [],
         ];
-        // but system name can contains `Model`
+        // and can contain `Model`
         yield [
             'input'    => [
                 'system_name' => 'TestDropdownModeling',
@@ -347,19 +470,20 @@ class DropdownDefinitionTest extends DbTestCase
             'messages' => [],
         ];
 
-        // System name must not end with `Type` suffix
+        // System name can end with `Type` suffix
         yield [
             'input'    => [
                 'system_name' => 'TestDropdownType',
             ],
-            'output'   => false,
-            'messages' => [
-                ERROR => [
-                    'The system name must not end with the word &quot;Model&quot; or the word &quot;Type&quot;.',
-                ],
+            'output'   => [
+                'system_name'  => 'TestDropdownType',
+                'label'        => 'TestDropdownType',
+                'profiles'     => '[]',
+                'translations' => '[]',
             ],
+            'messages' => [],
         ];
-        // but system name can contains `Type`
+        // and can contain `Type`
         yield [
             'input'    => [
                 'system_name' => 'TestDropdownTyped',
@@ -595,7 +719,7 @@ class DropdownDefinitionTest extends DbTestCase
             'plurals' => [
                 'one' => 'Test',
                 'other' => 'Tests',
-            ]
+            ],
         ]));
         $this->assertTrue($definition->update([
             'id' => $definition->getID(),
@@ -604,7 +728,7 @@ class DropdownDefinitionTest extends DbTestCase
             'plurals' => [
                 'one' => 'Test FR',
                 'other' => 'Tests FR',
-            ]
+            ],
         ]));
 
         $definition->getFromDB($definition->getID());
@@ -682,15 +806,15 @@ class DropdownDefinitionTest extends DbTestCase
         yield [
             'language' => 'not a valid language',
             'expected' => [
-            ]
+            ],
         ];
 
         yield [
             'language' => 'en_US',
             'expected' => [
                 ["id" => "one", "formula" => "n == 1", "examples" => "1"],
-                ["id" => "other", "formula" => null, "examples" => "0, 2~16, 100, 1000, 10000, 100000, 1000000, …"]
-            ]
+                ["id" => "other", "formula" => null, "examples" => "0, 2~16, 100, 1000, 10000, 100000, 1000000, …"],
+            ],
         ];
 
         yield [
@@ -699,7 +823,7 @@ class DropdownDefinitionTest extends DbTestCase
                 ["id" => "one", "formula" => "(n == 0 || n == 1)", "examples" => "0, 1"],
                 ["id" => "many", "formula" => "n != 0 && n % 1000000 == 0", "examples" => "1000000, 1c6, 2c6, 3c6, 4c6, 5c6, 6c6, …"],
                 ["id" => "other", "formula" => null, "examples" => "2~17, 100, 1000, 10000, 100000, 1c3, 2c3, 3c3, 4c3, 5c3, 6c3, …"],
-            ]
+            ],
         ];
     }
 

@@ -37,9 +37,16 @@ namespace Glpi\Form\QuestionType;
 
 use Exception;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\JsonFieldInterface;
+use Glpi\Form\Export\Context\DatabaseMapper;
+use Glpi\Form\Export\Serializer\DynamicExportDataField;
+use Glpi\Form\Export\Specification\DataRequirementSpecification;
 use Glpi\Form\Migration\FormQuestionDataConverterInterface;
+use Glpi\Form\Condition\ConditionHandler\ActorConditionHandler;
+use Glpi\Form\Condition\UsedAsCriteriaInterface;
 use Glpi\Form\Question;
 use Group;
+use InvalidArgumentException;
 use Override;
 use Supplier;
 use User;
@@ -47,7 +54,7 @@ use User;
 /**
  * "Actors" questions represent an input field for actors (requesters, ...)
  */
-abstract class AbstractQuestionTypeActors extends AbstractQuestionType implements FormQuestionDataConverterInterface
+abstract class AbstractQuestionTypeActors extends AbstractQuestionType implements FormQuestionDataConverterInterface, UsedAsCriteriaInterface
 {
     /**
      * Retrieve the allowed actor types
@@ -76,25 +83,35 @@ abstract class AbstractQuestionTypeActors extends AbstractQuestionType implement
     #[Override]
     public function formatDefaultValueForDB(mixed $value): ?string
     {
-        if (empty($value)) {
+        if (empty($value) || !is_array($value)) {
             return null;
         }
 
-        if (!is_array($value)) {
-            $value = [$value];
-        }
+        $actors_ids = [
+            'users_id'     => $value['users_ids'] ?? [],
+            'groups_id'    => $value['groups_ids'] ?? [],
+            'suppliers_id' => $value['suppliers_ids'] ?? [],
+        ];
+        unset($value['users_ids']);
+        unset($value['groups_ids']);
+        unset($value['suppliers_ids']);
 
-        $actors_ids = [];
+        // Handle alternative format used by dropdowns (fkey-id)
         foreach ($value as $actor) {
             $actor_parts = explode('-', $actor);
-            $actors_ids[getItemtypeForForeignKeyField($actor_parts[0])][] = (int) $actor_parts[1];
+            $fkey = $actor_parts[0];
+            if (!isset($actors_ids[$fkey])) {
+                continue;
+            }
+
+            $actors_ids[$fkey][] = (int) $actor_parts[1];
         }
 
         // Wrap the array in a config object to serialize it
         $config = new QuestionTypeActorsDefaultValueConfig(
-            users_ids: $actors_ids['User'] ?? [],
-            groups_ids: $actors_ids['Group'] ?? [],
-            suppliers_ids: $actors_ids['Supplier'] ?? []
+            users_ids: $actors_ids['users_id'],
+            groups_ids: $actors_ids['groups_id'],
+            suppliers_ids: $actors_ids['suppliers_id'],
         );
 
         return json_encode($config->jsonSerialize());
@@ -146,7 +163,7 @@ abstract class AbstractQuestionTypeActors extends AbstractQuestionType implement
 
             $actors[] = [
                 'itemtype' => $itemtype,
-                'items_id' => $item_id
+                'items_id' => $item_id,
             ];
         }
 
@@ -160,10 +177,8 @@ abstract class AbstractQuestionTypeActors extends AbstractQuestionType implement
     #[Override]
     public function convertDefaultValue(array $rawData): mixed
     {
-        return array_map(
-            fn ($actor_id) => sprintf('%s-%d', User::getForeignKeyField(), $actor_id),
-            json_decode($rawData['default_values']) ?? []
-        );
+        $users_ids = json_decode($rawData['default_values'] ?? []);
+        return ['users_ids' => $users_ids];
     }
 
     #[Override]
@@ -219,7 +234,7 @@ abstract class AbstractQuestionTypeActors extends AbstractQuestionType implement
         $default_values = [
             getForeignKeyFieldForItemType(User::class) => $config->getUsersIds(),
             getForeignKeyFieldForItemType(Group::class) => $config->getGroupsIds(),
-            getForeignKeyFieldForItemType(Supplier::class) => $config->getSuppliersIds()
+            getForeignKeyFieldForItemType(Supplier::class) => $config->getSuppliersIds(),
         ];
 
         if ($multiple) {
@@ -239,7 +254,7 @@ abstract class AbstractQuestionTypeActors extends AbstractQuestionType implement
             'default_value',
             values,
             {
-                'form_id'         : question.getForm().getId(),
+                'form_id'         : form_id,
                 'multiple'        : false,
                 'init'            : init,
                 'allowed_types'   : allowed_types,
@@ -255,7 +270,7 @@ abstract class AbstractQuestionTypeActors extends AbstractQuestionType implement
             'default_value',
             values,
             {
-                'form_id'         : question.getForm().getId(),
+                'form_id'         : form_id,
                 'multiple'        : true,
                 'init'            : init,
                 'allowed_types'   : allowed_types,
@@ -304,6 +319,7 @@ abstract class AbstractQuestionTypeActors extends AbstractQuestionType implement
 TWIG;
 
         $twig = TemplateRenderer::getInstance();
+        $form_id = $question ? $question->getForm()->getId() : null;
         return $twig->renderFromStringTemplate($template, [
             'init'               => $question != null,
             'question'           => $question,
@@ -312,7 +328,8 @@ TWIG;
             'is_multiple_actors' => $this->isMultipleActors($question),
             'aria_label'         => __('Select an actor...'),
             'right_for_users'    => $this->getRightForUsers(),
-            'group_conditions'   => $this->getGroupConditions()
+            'group_conditions'   => $this->getGroupConditions(),
+            'form_id'            => $form_id,
         ]);
     }
 
@@ -354,12 +371,12 @@ TWIG;
         $twig = TemplateRenderer::getInstance();
         return $twig->renderFromStringTemplate($template, [
             'is_multiple_actors' => $this->isMultipleActors($question),
-            'is_multiple_actors_label' => __('Allow multiple actors')
+            'is_multiple_actors_label' => __('Allow multiple actors'),
         ]);
     }
 
     #[Override]
-    public function formatRawAnswer(mixed $answer): string
+    public function formatRawAnswer(mixed $answer, Question $question): string
     {
         $formatted_actors = [];
         foreach ($answer as $actor) {
@@ -417,8 +434,22 @@ TWIG;
             'question'           => $question,
             'allowed_types'      => $this->getAllowedActorTypes(),
             'is_multiple_actors' => $is_multiple_actors,
-            'aria_label'         => $question->fields['name']
+            'aria_label'         => $question->fields['name'],
         ]);
+    }
+
+    #[Override]
+    public function getConditionHandlers(
+        ?JsonFieldInterface $question_config
+    ): array {
+        if (!$question_config instanceof QuestionTypeActorsExtraDataConfig) {
+            throw new InvalidArgumentException();
+        }
+
+        return array_merge(
+            parent::getConditionHandlers($question_config),
+            [new ActorConditionHandler($this, $question_config)]
+        );
     }
 
     #[Override]
@@ -442,5 +473,95 @@ TWIG;
     public function getDefaultValueConfigClass(): ?string
     {
         return QuestionTypeActorsDefaultValueConfig::class;
+    }
+
+    #[Override]
+    public function exportDynamicDefaultValue(
+        ?JsonFieldInterface $extra_data_config,
+        array|int|float|bool|string|null $default_value_config,
+    ): DynamicExportDataField {
+        $requirements = [];
+
+        // Fallback to default values if configuration isn't in the expected format
+        if (!is_array($default_value_config)) {
+            return parent::exportDynamicDefaultValue(
+                $extra_data_config,
+                $default_value_config
+            );
+        }
+
+        $to_handle =  [
+            User::class     => QuestionTypeActorsDefaultValueConfig::KEY_USERS_IDS,
+            Group::class    => QuestionTypeActorsDefaultValueConfig::KEY_GROUPS_IDS,
+            Supplier::class => QuestionTypeActorsDefaultValueConfig::KEY_SUPPLIERS_IDS,
+        ];
+
+        // Handler users, groups and suppliers ids.
+        foreach ($to_handle as $itemtype => $data_key) {
+            /** @var class-string<\CommonDBTM> $itemtype */
+
+            // Iterate on ids
+            $ids = $default_value_config[$data_key] ?? [];
+            foreach ($ids as $i => $item_id) {
+                if (intval($item_id) === 0) {
+                    continue;
+                }
+
+                $item = $itemtype::getById($item_id);
+                if (!$item) {
+                    continue;
+                }
+
+                $name = $item->getName();
+                $default_value_config[$data_key][$i] = $name;
+                $requirements[] = new DataRequirementSpecification($itemtype, $name);
+            }
+        }
+
+        return new DynamicExportDataField($default_value_config, $requirements);
+    }
+
+    #[Override]
+    public static function prepareDynamicDefaultValueForImport(
+        ?array $extra_data,
+        array|int|float|bool|string|null $default_value_data,
+        DatabaseMapper $mapper,
+    ): array|int|float|bool|string|null {
+        $fallback = parent::prepareDynamicDefaultValueForImport(
+            $extra_data,
+            $default_value_data,
+            $mapper,
+        );
+
+        // Content should be an array
+        if (!is_array($default_value_data)) {
+            return $fallback;
+        }
+
+        $to_handle =  [
+            User::class     => QuestionTypeActorsDefaultValueConfig::KEY_USERS_IDS,
+            Group::class    => QuestionTypeActorsDefaultValueConfig::KEY_GROUPS_IDS,
+            Supplier::class => QuestionTypeActorsDefaultValueConfig::KEY_SUPPLIERS_IDS,
+        ];
+
+        // Handler users, groups and suppliers ids.
+        foreach ($to_handle as $itemtype => $data_key) {
+            /** @var class-string<\CommonDBTM> $itemtype */
+
+            // Iterate on names
+            $names = $default_value_data[$data_key] ?? [];
+            foreach ($names as $i => $name) {
+                // Exclude special values
+                if ($name == "all") {
+                    continue;
+                }
+
+                // Restore correct id
+                $id = $mapper->getItemId($itemtype, $name);
+                $default_value_data[$data_key][$i] = $id;
+            }
+        }
+
+        return $default_value_data;
     }
 }

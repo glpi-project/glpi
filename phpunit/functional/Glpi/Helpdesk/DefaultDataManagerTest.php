@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -38,12 +37,12 @@ namespace test\units\Glpi\Helpdesk;
 use CommonITILActor;
 use Computer;
 use DbTestCase;
+use Entity;
 use Glpi\Form\AccessControl\FormAccessControlManager;
 use Glpi\Form\AccessControl\FormAccessParameters;
-use Glpi\Form\AnswersSet;
 use Glpi\Helpdesk\DefaultDataManager;
 use Glpi\Form\Form;
-use Glpi\Helpdesk\Tile\Profile_Tile;
+use Glpi\Helpdesk\Tile\Item_Tile;
 use Glpi\Helpdesk\Tile\TileInterface;
 use Glpi\Session\SessionInfo;
 use Glpi\Tests\FormTesterTrait;
@@ -153,7 +152,7 @@ final class DefaultDataManagerTest extends DbTestCase
                 'name' => 'Test Monitor 2',
                 'users_id' => Session::getLoginUserID(),
                 'entities_id' => $this->getTestRootEntity(true),
-            ]
+            ],
         ]);
 
         // Fetch test users
@@ -181,7 +180,7 @@ final class DefaultDataManagerTest extends DbTestCase
                 Computer::class . '_' . $computer->getID(),
                 Monitor::class . '_' . $monitors[0]->getID(),
                 Monitor::class . '_' . $monitors[1]->getID(),
-            ]
+            ],
         ]);
 
         // Assert: check the created ticket properties
@@ -247,7 +246,7 @@ final class DefaultDataManagerTest extends DbTestCase
                 'name' => 'Test Monitor 2',
                 'users_id' => Session::getLoginUserID(),
                 'entities_id' => $this->getTestRootEntity(true),
-            ]
+            ],
         ]);
 
         // Fetch test users
@@ -275,7 +274,7 @@ final class DefaultDataManagerTest extends DbTestCase
                 Computer::class . '_' . $computer->getID(),
                 Monitor::class . '_' . $monitors[0]->getID(),
                 Monitor::class . '_' . $monitors[1]->getID(),
-            ]
+            ],
         ]);
 
         // Assert: check the created ticket properties
@@ -352,19 +351,26 @@ final class DefaultDataManagerTest extends DbTestCase
 
     public function testsTilesAreAddedAfterInstallation(): void
     {
-        $this->assertEquals(5, countElementsInTable(Profile_Tile::getTable()));
+        $this->assertEquals(5, countElementsInTable(Item_Tile::getTable()));
+
+        // Default tiles must be attached to the root entity
+        $profile_tiles = (new Item_Tile())->find([]);
+        foreach ($profile_tiles as $row) {
+            $this->assertEquals(Entity::class, $row['itemtype_item']);
+            $this->assertEquals(0, $row['items_id_item']);
+        }
     }
 
     public function testNoTilesAreCreatedWhenDatabaseIsNotEmpty(): void
     {
         // Arrange: count the number of tiles that already exist in the database
-        $number_of_tiles_before = countElementsInTable(Profile_Tile::getTable());
+        $number_of_tiles_before = countElementsInTable(Item_Tile::getTable());
 
         // Act: initialize default data
         $this->getManager()->initializeDataIfNeeded();
 
         // Assert: there must be not be any new tiles
-        $number_of_tiles_after = countElementsInTable(Profile_Tile::getTable());
+        $number_of_tiles_after = countElementsInTable(Item_Tile::getTable());
         $number_of_new_tiles = $number_of_tiles_after - $number_of_tiles_before;
         $this->assertEquals(0, $number_of_new_tiles);
     }
@@ -376,11 +382,11 @@ final class DefaultDataManagerTest extends DbTestCase
         $valid_icons = $illustration_manager->getAllIconsIds();
 
         // Act: load the default tiles
-        $profile_tiles = (new Profile_Tile())->find([]);
+        $profile_tiles = (new Item_Tile())->find([]);
         $tiles = array_map(function ($row) {
-            $itemtype = $row['itemtype'];
+            $itemtype = $row['itemtype_tile'];
             $tile = new $itemtype();
-            $tile->getFromDb($row['items_id']);
+            $tile->getFromDb($row['items_id_tile']);
             return $tile;
         }, $profile_tiles);
 

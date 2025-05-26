@@ -51,8 +51,14 @@ abstract class ITILTemplateField extends CommonDBChild
 
     private $all_fields;
 
-   // From CommonDBTM
+    // From CommonDBTM
     public $dohistory = true;
+
+    public static function getMultiplePredefinedValues(): array
+    {
+        // List of fields that are allowed to be defined multiples times.
+        return [];
+    }
 
 
     public function getForbiddenStandardMassiveAction()
@@ -139,7 +145,7 @@ abstract class ITILTemplateField extends CommonDBChild
         $display_options = [
             'relative_dates' => true,
             'comments'       => true,
-            'html'           => true
+            'html'           => true,
         ];
         $itil_class    = static::$itiltype;
         $searchOption  = SearchOption::getOptionsForItemtype($itil_class);
@@ -149,7 +155,7 @@ abstract class ITILTemplateField extends CommonDBChild
         $crtiteria = [
             'SELECT' => ['id', 'num'],
             'FROM'   => static::getTable(),
-            'WHERE'  => [static::$items_id => $ID]
+            'WHERE'  => [static::$items_id => $ID],
         ];
         if (is_subclass_of(static::class, ITILTemplatePredefinedField::class)) {
             $crtiteria['SELECT'][] = 'value';
@@ -183,6 +189,15 @@ abstract class ITILTemplateField extends CommonDBChild
             $used[$data['num']]        = $data['num'];
         }
 
+        // Remove fields that are allowed to have multiple values from the 'used'
+        // list.
+        $multiple = static::getMultiplePredefinedValues();
+        foreach ($multiple as $val) {
+            if (isset($used[$val])) {
+                unset($used[$val]);
+            }
+        }
+
         $fields_dropdown_values = [];
         foreach ($fields as $k => $field) {
             $fields_dropdown_values[$k] = $field;
@@ -190,7 +205,7 @@ abstract class ITILTemplateField extends CommonDBChild
 
         if (is_subclass_of(static::class, ITILTemplatePredefinedField::class)) {
             $fields_dropdown_values = array_replace([
-                -1 => Dropdown::EMPTY_VALUE
+                -1 => Dropdown::EMPTY_VALUE,
             ], $fields_dropdown_values);
         }
 
@@ -208,8 +223,8 @@ abstract class ITILTemplateField extends CommonDBChild
                         'with_days'          => 0,
                         'with_specific_date' => 0,
                         'itemlink_as_string' => 1,
-                        'entity'             => $tt->getEntityID()
-                    ]
+                        'entity'             => $tt->getEntityID(),
+                    ],
                 ];
                 $extra_form_html = Ajax::updateItemOnSelectEvent(
                     "dropdown_num{$rand}",
@@ -230,7 +245,7 @@ abstract class ITILTemplateField extends CommonDBChild
                 'fields' => $fields_dropdown_values,
                 'extra_form_html' => $extra_form_html,
                 'rand' => $rand,
-                'show_submit' => !is_subclass_of(static::class, ITILTemplatePredefinedField::class)
+                'show_submit' => !is_subclass_of(static::class, ITILTemplatePredefinedField::class),
             ];
             echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
                 {% import 'components/form/fields_macros.html.twig' as fields %}
@@ -269,12 +284,13 @@ TWIG, $twig_params);
             'nofilter' => true,
             'columns' => $columns,
             'entries' => $entries,
+            'formatters' => ['value' => 'raw_html'],
             'total_number' => count($entries),
             'filtered_number' => count($entries),
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => min($_SESSION['glpilist_limit'], $numrows),
-                'container'     => 'mass' . static::class . $rand
+                'container'     => 'mass' . static::class . $rand,
             ],
         ]);
     }

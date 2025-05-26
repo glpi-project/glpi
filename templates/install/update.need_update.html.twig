@@ -1,0 +1,71 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2025 Teclib' and contributors.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% do call(['Html', 'nullHeader'], [__('Update needed')]) %}
+<div class="container-fluid mb-4">
+    <div class="row justify-content-evenly">
+        <div class="col-12 col-xxl-6">
+            <div class="card text-center mb-4">
+                {% include 'install/blocks/requirements_table.html.twig' with {'requirements': core_requirements} %}
+                {% if core_requirements.hasMissingMandatoryRequirements() or core_requirements.hasMissingOptionalRequirements() %}
+                    <form action="{{ path('index.php') }}" method="post">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="ti ti-reload"></i>{{ __('Try again') }}
+                        </button>
+                    </form>
+                {% endif %}
+                {% if not core_requirements.hasMissingMandatoryRequirements() %}
+                    {% if not is_outdated %}
+                        <form method="post" action="{{ path('install/update.php') }}" class="p-2">
+                            <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+                            {% if not is_stable_release %}
+                                {% include 'install/agree_unstable.html.twig' with {'is_dev': is_dev_version} only %}
+                            {% endif %}
+                            <p class="my-2 alert alert-important alert-warning">
+                                {{ __('The GLPI codebase has been updated. The update of the GLPI database is necessary.') }}
+                            </p>
+                            <button type="submit" name="from_update" class="btn btn-primary">
+                                <i class="ti ti-check"></i>{{ _x('button', 'Upgrade') }}
+                            </button>
+                        </form>
+                    {% else %}
+                        <p class="mt-2 mb-n2 alert alert-important alert-warning">
+                            {{ __('You are trying to use GLPI with outdated files compared to the version of the database. Please install the correct GLPI files corresponding to the version of your database.') }}
+                        </p>
+                    {% endif %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% do call(['Html', 'nullFooter']) %}

@@ -188,13 +188,12 @@ TWIG, $twig_params);
             'datatable_id' => 'translationlist' . $rand,
             'is_tab' => true,
             'nofilter' => true,
-            'nopager' => true,
             'columns' => [
                 'language' => __('Language'),
                 'subject' => __('Subject'),
             ],
             'formatters' => [
-                'subject' => 'raw_html'
+                'subject' => 'raw_html',
             ],
             'entries' => $entries,
             'total_number' => count($entries),
@@ -203,7 +202,7 @@ TWIG, $twig_params);
             'massiveactionparams' => [
                 'num_displayed' => min($_SESSION['glpilist_limit'], count($entries)),
                 'container'     => 'mass' . static::class . $rand,
-                'specific_actions' => ['purge' => _x('button', 'Delete permanently')]
+                'specific_actions' => ['purge' => _x('button', 'Delete permanently')],
             ],
         ]);
 
@@ -221,7 +220,7 @@ TWIG, $twig_params);
         if ($this->getID() > 0) {
             $this->check($ID, READ);
         } else {
-           // Create item
+            // Create item
             $item                = $options['parent'];
             $options['itemtype'] = get_class($item);
             $options['reminders_id'] = $item->getID();
@@ -233,7 +232,7 @@ TWIG, $twig_params);
             'item' => $this,
             'used_langs' => isset($item) ? self::getAlreadyTranslatedForItem($item) : [],
             'params' => $options,
-            'no_header' => true
+            'no_header' => true,
         ]);
         return true;
     }
@@ -251,7 +250,7 @@ TWIG, $twig_params);
         $obj   = new self();
         $found = $obj->find([
             'reminders_id'   => $item->getID(),
-            'language'           => $_SESSION['glpilanguage']
+            'language'           => $_SESSION['glpilanguage'],
         ]);
 
         if (
@@ -295,7 +294,7 @@ TWIG, $twig_params);
 
         $iterator = $DB->request([
             'FROM'   => self::getTable(),
-            'WHERE'  => ['reminders_id' => $item->getID()]
+            'WHERE'  => ['reminders_id' => $item->getID()],
         ]);
 
         foreach ($iterator as $data) {

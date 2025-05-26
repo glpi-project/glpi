@@ -40,6 +40,8 @@ use CommonGLPI;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Form\Condition\ConditionableCreationInterface;
 use Glpi\Form\Condition\ConditionableCreationTrait;
+use Glpi\Form\Export\Context\DatabaseMapper;
+use Glpi\Form\Export\Serializer\DynamicExportData;
 use Glpi\Form\Form;
 use InvalidArgumentException;
 use LogicException;
@@ -108,7 +110,7 @@ final class FormDestination extends CommonDBChild implements ConditionableCreati
             $active = null;
         }
 
-        $manager = FormDestinationTypeManager::getInstance();
+        $manager = FormDestinationManager::getInstance();
 
         $renderer = TemplateRenderer::getInstance();
         $renderer->display('pages/admin/form/form_destination.html.twig', [
@@ -119,6 +121,7 @@ final class FormDestination extends CommonDBChild implements ConditionableCreati
             'available_destinations_types' => $manager->getDestinationTypesDropdownValues(),
             'active_destination'           => $active,
             'can_update'                   => self::canUpdate(),
+            'warnings'                     => $manager->getWarnings($item),
         ]);
 
         return true;
@@ -160,10 +163,6 @@ final class FormDestination extends CommonDBChild implements ConditionableCreati
     #[Override]
     public function canPurgeItem(): bool
     {
-        if ($this->fields['is_mandatory']) {
-            return false;
-        }
-
         $form = Form::getByID($this->fields['forms_forms_id']);
         if (!$form) {
             return false;
@@ -177,13 +176,6 @@ final class FormDestination extends CommonDBChild implements ConditionableCreati
     public function prepareInputForAdd($input): array
     {
         $input = $this->prepareInput($input);
-
-        // Set default name
-        if (!isset($input['name'])) {
-            // It is safe to access the 'itemtype' key here as it has been
-            // validated by the "prepareInput" method
-            $input['name'] = $input['itemtype']::getTypeName(1);
-        }
 
         // Set default config
         if (!isset($input['config'])) {
@@ -241,7 +233,7 @@ final class FormDestination extends CommonDBChild implements ConditionableCreati
             $type = $input['itemtype'] ?? null;
             if (
                 $type === null
-                || !is_a($type, AbstractFormDestinationType::class, true)
+                || !is_a($type, FormDestinationInterface::class, true)
                 || (new ReflectionClass($type))->isAbstract()
             ) {
                 throw new InvalidArgumentException("Invalid itemtype");
@@ -293,36 +285,28 @@ final class FormDestination extends CommonDBChild implements ConditionableCreati
         return new $class();
     }
 
-    /**
-     * Get valid destinations for a given form
-     *
-     * @param Form $form
-     *
-     * @return AbstractFormDestinationType[]
-     */
-    protected function getDestinationsForForm(Form $form): array
+    public function exportDynamicData(): DynamicExportData
     {
-        $destinations = [];
-        $raw_data = $this->find(['forms_forms_id' => $form->getID()]);
+        $type = $this->getConcreteDestinationItem();
+        $config = $this->getConfig();
 
-        foreach ($raw_data as $row) {
-            if (
-                !is_a($row['itemtype'], AbstractFormDestinationType::class, true)
-                || (new ReflectionClass($row['itemtype']))->isAbstract()
-            ) {
-                // Invalid itemtype, maybe from a disabled plugin
-                continue;
-            }
+        $data = new DynamicExportData();
+        $data->addField('config', $type->exportDynamicConfig($config));
 
-            $destination = $row['itemtype']::getById($row['items_id']);
-            if (!$destination) {
-                continue;
-            }
+        return $data;
+    }
 
-            $destinations[] = $destination;
-        }
+    public static function prepareDynamicImportData(
+        FormDestinationInterface $type,
+        array $input,
+        DatabaseMapper $mapper,
+    ): array {
+        $input['config'] = $type->prepareDynamicConfigDataForImport(
+            $input['config'],
+            $mapper,
+        );
 
-        return $destinations;
+        return $input;
     }
 
     /**

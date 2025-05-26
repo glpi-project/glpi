@@ -43,10 +43,10 @@ Html::header_nocache();
 $solutiontemplates_id = $_POST['solutiontemplates_id'] ?? null;
 if ($solutiontemplates_id === null) {
     throw new BadRequestHttpException("Missing or invalid parameter: 'solutiontemplates_id'");
-} else if ($solutiontemplates_id == 0) {
-   // Reset form
+} elseif ($solutiontemplates_id == 0) {
+    // Reset form
     echo json_encode([
-        'content' => ""
+        'content' => "",
     ]);
     return;
 }
@@ -75,13 +75,13 @@ if (!$template->getFromDB($solutiontemplates_id)) {
 }
 
 if ($apply_twig) {
-   // Load parent item
+    // Load parent item
     $parent = new $parents_itemtype();
     if (!$parent->getFromDB($parents_id)) {
         throw new BadRequestHttpException("Unable to load parent item: $parents_itemtype $parents_id");
     }
 
-   // Render template content using twig
+    // Render template content using twig
     $template->fields['content'] = $template->getRenderedContent($parent);
 } else {
     $content = DropdownTranslation::getTranslatedValue(

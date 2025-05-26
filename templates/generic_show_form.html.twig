@@ -6,7 +6,6 @@
  # http://glpi-project.org
  #
  # @copyright 2015-2025 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -125,7 +124,7 @@
                                   {% set conditions_met = conditions_met + 1 %}
                               {% endif %}
 
-                              {% if cluster is not null %}
+                              {% if cluster is defined and cluster is not null %}
                                   {{ fields.htmlField(
                                       '',
                                       cluster.getLink(),
@@ -250,14 +249,6 @@
                               ) }}
                           {% elseif field is same as 'address' %}
                               {{ fields.textareaField('address', item.fields['address'], __('Address')) }}
-                          {% elseif field is same as 'postalcode' %}
-                              {{ fields.autoNameField(
-                                  'postalcode',
-                                  item,
-                                  __('Postal code'),
-                                  withtemplate,
-                                  specific_field_options
-                              ) }}
                           {% elseif field is same as 'town' %}
                               {{ fields.autoNameField(
                                   'town',
@@ -579,7 +570,7 @@
       {{ include('components/form/inventory_info.html.twig') }}
    {% endif %}
 
-   {% if params['formfooter'] is null or params['formfooter'] == true %}
+   {% if params['formfooter'] ?? true %}
       <div class="card-footer mx-n2 mb-n2">
          {{ include('components/form/dates.html.twig') }}
       </div>

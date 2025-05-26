@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -36,7 +35,6 @@
 namespace tests\units\Glpi\Form;
 
 use Glpi\DBAL\JsonFieldInterface;
-use Glpi\Form\Destination\AbstractCommonITILFormDestination;
 use Glpi\Form\Destination\CommonITILField\AssigneeField;
 use Glpi\Form\Destination\CommonITILField\AssigneeFieldConfig;
 use Glpi\Form\Destination\CommonITILField\AssociatedItemsField;
@@ -88,9 +86,6 @@ use Glpi\Form\Destination\CommonITILField\UrgencyFieldStrategy;
 use Glpi\Form\Destination\CommonITILField\ValidationField;
 use Glpi\Form\Destination\CommonITILField\ValidationFieldConfig;
 use Glpi\Form\Destination\CommonITILField\ValidationFieldStrategy;
-use Glpi\Form\Destination\FormDestinationTicket;
-use Glpi\Form\Destination\FormDestinationTypeManager;
-use Glpi\Form\Export\Context\ConfigWithForeignKeysInterface;
 use Glpi\Form\Export\Serializer\FormSerializer;
 use Glpi\Form\Form;
 use Glpi\Form\QuestionType\QuestionTypeActorsExtraDataConfig;
@@ -127,12 +122,12 @@ final class FormSerializerDestinationTest extends \DbTestCase
     {
         yield 'TitleField' => [
             'field_key' => TitleField::getKey(),
-            'config'    => new SimpleValueConfig(value: 'My title')
+            'config'    => new SimpleValueConfig(value: 'My title'),
         ];
 
         yield 'ContentField' => [
             'field_key' => ContentField::getKey(),
-            'config'    => new SimpleValueConfig(value: 'My content')
+            'config'    => new SimpleValueConfig(value: 'My content'),
         ];
 
         yield 'TemplateField' => [
@@ -146,9 +141,9 @@ final class FormSerializerDestinationTest extends \DbTestCase
                     'itemtype' => \TicketTemplate::class,
                     'input'    => [
                         'name'        => 'My ticket template',
-                    ]
-                ]
-            ]
+                    ],
+                ],
+            ],
         ];
 
         yield 'ITILCategoryField' => [
@@ -162,9 +157,9 @@ final class FormSerializerDestinationTest extends \DbTestCase
                     'itemtype' => \ITILCategory::class,
                     'input'    => [
                         'name'        => 'My ITIL category',
-                    ]
-                ]
-            ]
+                    ],
+                ],
+            ],
         ];
 
         yield 'EntityField' => [
@@ -178,9 +173,9 @@ final class FormSerializerDestinationTest extends \DbTestCase
                     'itemtype' => \Entity::class,
                     'input'    => [
                         'name' => 'My entity',
-                    ]
-                ]
-            ]
+                    ],
+                ],
+            ],
         ];
 
         yield 'LocationField' => [
@@ -194,9 +189,9 @@ final class FormSerializerDestinationTest extends \DbTestCase
                     'itemtype' => \Location::class,
                     'input'    => [
                         'name' => 'My location',
-                    ]
-                ]
-            ]
+                    ],
+                ],
+            ],
         ];
 
         yield 'AssociatedItemsField' => [
@@ -213,16 +208,16 @@ final class FormSerializerDestinationTest extends \DbTestCase
                     'itemtype' => \Computer::class,
                     'input'    => [
                         'name' => 'My computer',
-                    ]
+                    ],
                 ],
                 [
                     'itemtype' => \Monitor::class,
                     'input'    => [
                         'name' => 'My monitor',
-                    ]
-                ]
+                    ],
+                ],
             ],
-            'keys_to_ignore' => ['specific_question_ids']
+            'keys_to_ignore' => [],
         ];
 
         yield 'ITILFollowupField' => [
@@ -236,9 +231,9 @@ final class FormSerializerDestinationTest extends \DbTestCase
                     'itemtype' => \ITILFollowupTemplate::class,
                     'input'    => [
                         'name' => 'My ITIL followup template',
-                    ]
-                ]
-            ]
+                    ],
+                ],
+            ],
         ];
 
         yield 'RequestSourceField' => [
@@ -252,9 +247,9 @@ final class FormSerializerDestinationTest extends \DbTestCase
                     'itemtype' => \RequestType::class,
                     'input'    => [
                         'name' => 'My request source',
-                    ]
-                ]
-            ]
+                    ],
+                ],
+            ],
         ];
 
         yield 'ValidationField' => [
@@ -271,30 +266,27 @@ final class FormSerializerDestinationTest extends \DbTestCase
                     'itemtype' => \User::class,
                     'input'    => [
                         'name' => 'My user',
-                    ]
+                    ],
                 ],
                 [
                     'itemtype' => \Group::class,
                     'input'    => [
                         'name' => 'My group',
-                    ]
-                ]
+                    ],
+                ],
             ],
             'check_fn' => function ($imported_destinations, $created_items) {
                 assertEquals(
-                    array_diff_key(
-                        (new ValidationFieldConfig(
-                            strategies: [ValidationFieldStrategy::SPECIFIC_ACTORS],
-                            specific_actors: [
-                                \User::class => [$created_items[0]->getId()],
-                                \Group::class => [$created_items[1]->getId()],
-                            ]
-                        ))->jsonSerialize(),
-                        ['specific_question_ids' => '']
-                    ),
+                    (new ValidationFieldConfig(
+                        strategies: [ValidationFieldStrategy::SPECIFIC_ACTORS],
+                        specific_actors: [
+                            \User::class => [$created_items[0]->getId()],
+                            \Group::class => [$created_items[1]->getId()],
+                        ]
+                    ))->jsonSerialize(),
                     end($imported_destinations)->getConfig()[ValidationField::getKey()]
                 );
-            }
+            },
         ];
 
         yield 'ITILTaskField' => [
@@ -308,9 +300,9 @@ final class FormSerializerDestinationTest extends \DbTestCase
                     'itemtype' => \TaskTemplate::class,
                     'input'    => [
                         'name' => 'My ITIL task',
-                    ]
-                ]
-            ]
+                    ],
+                ],
+            ],
         ];
 
         yield 'RequesterField' => [
@@ -328,37 +320,34 @@ final class FormSerializerDestinationTest extends \DbTestCase
                     'itemtype' => \User::class,
                     'input'    => [
                         'name' => 'My user',
-                    ]
+                    ],
                 ],
                 [
                     'itemtype' => \Group::class,
                     'input'    => [
                         'name' => 'My group',
-                    ]
+                    ],
                 ],
                 [
                     'itemtype' => \Supplier::class,
                     'input'    => [
                         'name' => 'My supplier',
-                    ]
-                ]
+                    ],
+                ],
             ],
             'check_fn' => function ($imported_destinations, $created_items) {
                 assertEquals(
-                    array_diff_key(
-                        (new RequesterFieldConfig(
-                            strategies: [ITILActorFieldStrategy::SPECIFIC_VALUES],
-                            specific_itilactors_ids: [
-                                \User::class => [$created_items[0]->getId()],
-                                \Group::class => [$created_items[1]->getId()],
-                                \Supplier::class => [$created_items[2]->getId()],
-                            ]
-                        ))->jsonSerialize(),
-                        ['specific_question_ids' => '']
-                    ),
+                    (new RequesterFieldConfig(
+                        strategies: [ITILActorFieldStrategy::SPECIFIC_VALUES],
+                        specific_itilactors_ids: [
+                            \User::class => [$created_items[0]->getId()],
+                            \Group::class => [$created_items[1]->getId()],
+                            \Supplier::class => [$created_items[2]->getId()],
+                        ]
+                    ))->jsonSerialize(),
                     end($imported_destinations)->getConfig()[RequesterField::getKey()]
                 );
-            }
+            },
         ];
 
         yield 'ObserverField' => [
@@ -375,30 +364,27 @@ final class FormSerializerDestinationTest extends \DbTestCase
                     'itemtype' => \User::class,
                     'input'    => [
                         'name' => 'My user',
-                    ]
+                    ],
                 ],
                 [
                     'itemtype' => \Group::class,
                     'input'    => [
                         'name' => 'My group',
-                    ]
-                ]
+                    ],
+                ],
             ],
             'check_fn' => function ($imported_destinations, $created_items) {
                 assertEquals(
-                    array_diff_key(
-                        (new ObserverFieldConfig(
-                            strategies: [ITILActorFieldStrategy::SPECIFIC_VALUES],
-                            specific_itilactors_ids: [
-                                \User::class => [$created_items[0]->getId()],
-                                \Group::class => [$created_items[1]->getId()],
-                            ]
-                        ))->jsonSerialize(),
-                        ['specific_question_ids' => '']
-                    ),
+                    (new ObserverFieldConfig(
+                        strategies: [ITILActorFieldStrategy::SPECIFIC_VALUES],
+                        specific_itilactors_ids: [
+                            \User::class => [$created_items[0]->getId()],
+                            \Group::class => [$created_items[1]->getId()],
+                        ]
+                    ))->jsonSerialize(),
                     end($imported_destinations)->getConfig()[ObserverField::getKey()]
                 );
-            }
+            },
         ];
 
         yield 'AssigneeField' => [
@@ -415,30 +401,27 @@ final class FormSerializerDestinationTest extends \DbTestCase
                     'itemtype' => \User::class,
                     'input'    => [
                         'name' => 'My user',
-                    ]
+                    ],
                 ],
                 [
                     'itemtype' => \Group::class,
                     'input'    => [
                         'name' => 'My group',
-                    ]
-                ]
+                    ],
+                ],
             ],
             'check_fn' => function ($imported_destinations, $created_items) {
                 assertEquals(
-                    array_diff_key(
-                        (new AssigneeFieldConfig(
-                            strategies: [ITILActorFieldStrategy::SPECIFIC_VALUES],
-                            specific_itilactors_ids: [
-                                \User::class => [$created_items[0]->getId()],
-                                \Group::class => [$created_items[1]->getId()],
-                            ]
-                        ))->jsonSerialize(),
-                        ['specific_question_ids' => '']
-                    ),
+                    (new AssigneeFieldConfig(
+                        strategies: [ITILActorFieldStrategy::SPECIFIC_VALUES],
+                        specific_itilactors_ids: [
+                            \User::class => [$created_items[0]->getId()],
+                            \Group::class => [$created_items[1]->getId()],
+                        ]
+                    ))->jsonSerialize(),
                     end($imported_destinations)->getConfig()[AssigneeField::getKey()]
                 );
-            }
+            },
         ];
 
         yield 'SLATTOField' => [
@@ -455,9 +438,9 @@ final class FormSerializerDestinationTest extends \DbTestCase
                         'type'            => SLM::TTO,
                         'number_time'     => 4,
                         'definition_time' => 'hour',
-                    ]
-                ]
-            ]
+                    ],
+                ],
+            ],
         ];
 
         yield 'SLATTRField' => [
@@ -474,9 +457,9 @@ final class FormSerializerDestinationTest extends \DbTestCase
                         'type'            => SLM::TTR,
                         'number_time'     => 4,
                         'definition_time' => 'hour',
-                    ]
-                ]
-            ]
+                    ],
+                ],
+            ],
         ];
 
         yield 'OLATTRField' => [
@@ -493,9 +476,9 @@ final class FormSerializerDestinationTest extends \DbTestCase
                         'type'            => SLM::TTR,
                         'number_time'     => 4,
                         'definition_time' => 'hour',
-                    ]
-                ]
-            ]
+                    ],
+                ],
+            ],
         ];
 
         yield 'OLATTOField' => [
@@ -512,9 +495,9 @@ final class FormSerializerDestinationTest extends \DbTestCase
                         'type'            => SLM::TTO,
                         'number_time'     => 4,
                         'definition_time' => 'hour',
-                    ]
-                ]
-            ]
+                    ],
+                ],
+            ],
         ];
 
         yield 'UrgencyField' => [
@@ -530,17 +513,17 @@ final class FormSerializerDestinationTest extends \DbTestCase
             'config' => new RequestTypeFieldConfig(
                 strategy: RequestTypeFieldStrategy::SPECIFIC_VALUE,
                 specific_request_type: Ticket::DEMAND_TYPE
-            )
+            ),
         ];
     }
 
     #[DataProvider('getFieldDestinationsWithSpecificValueProvider')]
     public function testImportAndExportForDestinationFieldWithSpecificValueStrategy(
         string $field_key,
-        JsonFieldInterface $config = null,
-        callable $config_fn = null,
+        ?JsonFieldInterface $config = null,
+        ?callable $config_fn = null,
         array $items_to_create = [],
-        callable $check_fn = null,
+        ?callable $check_fn = null,
         array $keys_to_ignore = []
     ) {
         $this->login();
@@ -593,8 +576,8 @@ final class FormSerializerDestinationTest extends \DbTestCase
                     'type' => QuestionTypeItemDropdown::class,
                     'extra_data' => json_encode((new QuestionTypeItemExtraDataConfig(
                         itemtype: \ITILCategory::class
-                    ))->jsonSerialize())
-                ]
+                    ))->jsonSerialize()),
+                ],
             ],
         ];
 
@@ -609,8 +592,8 @@ final class FormSerializerDestinationTest extends \DbTestCase
                     'type' => QuestionTypeItem::class,
                     'extra_data' => json_encode((new QuestionTypeItemExtraDataConfig(
                         itemtype: \Entity::class
-                    ))->jsonSerialize())
-                ]
+                    ))->jsonSerialize()),
+                ],
             ],
         ];
 
@@ -625,8 +608,8 @@ final class FormSerializerDestinationTest extends \DbTestCase
                     'type' => QuestionTypeItemDropdown::class,
                     'extra_data' => json_encode((new QuestionTypeItemExtraDataConfig(
                         itemtype: \Location::class
-                    ))->jsonSerialize())
-                ]
+                    ))->jsonSerialize()),
+                ],
             ],
         ];
 
@@ -644,13 +627,13 @@ final class FormSerializerDestinationTest extends \DbTestCase
                     'type' => QuestionTypeItem::class,
                     'extra_data' => json_encode((new QuestionTypeItemExtraDataConfig(
                         itemtype: \Computer::class
-                    ))->jsonSerialize())
+                    ))->jsonSerialize()),
                 ],
                 [
-                    'type' => QuestionTypeUserDevice::class
-                ]
+                    'type' => QuestionTypeUserDevice::class,
+                ],
             ],
-            'question_id_key' => 'specific_question_ids'
+            'question_id_key' => 'specific_question_ids',
         ];
 
         yield 'ValidationField' => [
@@ -669,22 +652,22 @@ final class FormSerializerDestinationTest extends \DbTestCase
                     'type' => QuestionTypeItem::class,
                     'extra_data' => json_encode((new QuestionTypeItemExtraDataConfig(
                         itemtype: \User::class
-                    ))->jsonSerialize())
+                    ))->jsonSerialize()),
                 ],
                 [
                     'type' => QuestionTypeItem::class,
                     'extra_data' => json_encode((new QuestionTypeItemExtraDataConfig(
                         itemtype: \Group::class
-                    ))->jsonSerialize())
+                    ))->jsonSerialize()),
                 ],
                 [
-                    'type' => QuestionTypeObserver::class
+                    'type' => QuestionTypeObserver::class,
                 ],
                 [
-                    'type' => QuestionTypeAssignee::class
-                ]
+                    'type' => QuestionTypeAssignee::class,
+                ],
             ],
-            'question_id_key' => 'specific_question_ids'
+            'question_id_key' => 'specific_question_ids',
         ];
 
         yield 'RequesterField' => [
@@ -704,10 +687,10 @@ final class FormSerializerDestinationTest extends \DbTestCase
                     'type' => QuestionTypeRequester::class,
                     'extra_data' => json_encode((new QuestionTypeActorsExtraDataConfig(
                         is_multiple_actors: true
-                    ))->jsonSerialize())
+                    ))->jsonSerialize()),
                 ],
             ],
-            'question_id_key' => 'specific_question_ids'
+            'question_id_key' => 'specific_question_ids',
         ];
 
         yield 'ObserverField' => [
@@ -727,10 +710,10 @@ final class FormSerializerDestinationTest extends \DbTestCase
                     'type' => QuestionTypeObserver::class,
                     'extra_data' => json_encode((new QuestionTypeActorsExtraDataConfig(
                         is_multiple_actors: true
-                    ))->jsonSerialize())
+                    ))->jsonSerialize()),
                 ],
             ],
-            'question_id_key' => 'specific_question_ids'
+            'question_id_key' => 'specific_question_ids',
         ];
 
         yield 'AssigneeField' => [
@@ -750,10 +733,10 @@ final class FormSerializerDestinationTest extends \DbTestCase
                     'type' => QuestionTypeAssignee::class,
                     'extra_data' => json_encode((new QuestionTypeActorsExtraDataConfig(
                         is_multiple_actors: true
-                    ))->jsonSerialize())
+                    ))->jsonSerialize()),
                 ],
             ],
-            'question_id_key' => 'specific_question_ids'
+            'question_id_key' => 'specific_question_ids',
         ];
 
         yield 'UrgencyField' => [
@@ -764,8 +747,8 @@ final class FormSerializerDestinationTest extends \DbTestCase
             ),
             'questions_to_create' => [
                 [
-                    'type' => QuestionTypeUrgency::class
-                ]
+                    'type' => QuestionTypeUrgency::class,
+                ],
             ],
         ];
 
@@ -777,8 +760,8 @@ final class FormSerializerDestinationTest extends \DbTestCase
             ),
             'questions_to_create' => [
                 [
-                    'type' => QuestionTypeRequestType::class
-                ]
+                    'type' => QuestionTypeRequestType::class,
+                ],
             ],
         ];
     }
@@ -786,8 +769,8 @@ final class FormSerializerDestinationTest extends \DbTestCase
     #[DataProvider('getFieldDestinationsWithSpecificQuestionProvider')]
     public function testImportAndExportForDestinationFieldWithSpecificQuestionStrategy(
         string $field_key,
-        JsonFieldInterface $config = null,
-        callable $config_fn = null,
+        ?JsonFieldInterface $config = null,
+        ?callable $config_fn = null,
         array $questions_to_create = [],
         string $question_id_key = 'specific_question_id'
     ) {
@@ -838,43 +821,6 @@ final class FormSerializerDestinationTest extends \DbTestCase
         }
     }
 
-    public function testAllConfigFieldsImplementConfigWithForeignKeysInterface()
-    {
-        $configs_to_exclude = [
-            SimpleValueConfig::class,
-            RequestSourceFieldConfig::class,
-        ];
-
-        /** @var AbstractCommonITILFormDestination[] $destination_types */
-        $destination_types = array_filter(
-            FormDestinationTypeManager::getInstance()->getDestinationTypes(),
-            fn($destination_type) => $destination_type instanceof AbstractCommonITILFormDestination
-        );
-        $destination_fields = array_merge(...array_map(
-            fn($destination_type) => $destination_type->getConfigurableFields(),
-            $destination_types
-        ));
-        $destination_config_fields = array_unique(array_map(
-            fn($field) => $field->getConfigClass(),
-            $destination_fields
-        ));
-
-        // Check that all config fields implement ConfigWithForeignKeysInterface
-        foreach ($destination_config_fields as $config_field) {
-            if (in_array($config_field, $configs_to_exclude)) {
-                continue;
-            }
-
-            $this->assertTrue(
-                is_subclass_of($config_field, ConfigWithForeignKeysInterface::class),
-                sprintf(
-                    "Config field %s must implement ConfigWithForeignKeysInterface",
-                    $config_field
-                )
-            );
-        }
-    }
-
     /**
      * Check the import and export process for a given key
      *
@@ -887,7 +833,7 @@ final class FormSerializerDestinationTest extends \DbTestCase
     private function checkImportAndExport(
         string $key,
         JsonFieldInterface $config,
-        Form $form = null
+        ?Form $form = null
     ): Form {
         if ($form === null) {
             $form = $this->createForm($this->getFormBuilderWithTicketDestination());

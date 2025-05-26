@@ -43,7 +43,7 @@ class RefusedEquipment extends CommonDBTM
 {
     use Glpi\Features\Inventoriable;
 
-   // From CommonDBTM
+    // From CommonDBTM
     public $dohistory                   = true;
     public static $rightname                   = 'refusedequipment';
 
@@ -165,7 +165,7 @@ class RefusedEquipment extends CommonDBTM
     {
         return [
             'sort'  => 3, //date SO
-            'order' => 'DESC'
+            'order' => 'DESC',
         ];
     }
 
@@ -185,27 +185,27 @@ class RefusedEquipment extends CommonDBTM
         echo "<tr class='tab_bg_1'>";
 
         $itemtype = $this->fields['itemtype'];
-        echo "<th>" .  __s('Item type') . "</th>";
-        echo "<td>" . htmlescape($itemtype::getTypeName(1))  . "</td>";
+        echo "<th>" . __s('Item type') . "</th>";
+        echo "<td>" . htmlescape($itemtype::getTypeName(1)) . "</td>";
 
         echo "<th>" . __s('Name') . "</th>";
-        echo "<td>" . htmlescape($this->getName())  . "</td>";
+        echo "<td>" . htmlescape($this->getName()) . "</td>";
 
         echo "</tr>";
         echo "<tr class='tab_bg_1'>";
 
-        echo "<th>" .  __s('Serial') . "</th>";
-        echo "<td>" . htmlescape($this->fields['serial'])  . "</td>";
+        echo "<th>" . __s('Serial') . "</th>";
+        echo "<td>" . htmlescape($this->fields['serial']) . "</td>";
 
-        echo "<th>" .  __s('UUID') . "</th>";
-        echo "<td>" . htmlescape($this->fields['uuid'])  . "</td>";
+        echo "<th>" . __s('UUID') . "</th>";
+        echo "<td>" . htmlescape($this->fields['uuid']) . "</td>";
 
         echo "</tr>";
         echo "<tr class='tab_bg_1'>";
 
         $rule = new RuleImportAsset();
         $rule->getFromDB($this->fields['rules_id']);
-        echo "<th>" .  htmlescape(Rule::getTypeName(1)) . "</th>";
+        echo "<th>" . htmlescape(Rule::getTypeName(1)) . "</th>";
         echo "<td>";
         echo $rule->getLink();
 
@@ -225,16 +225,16 @@ class RefusedEquipment extends CommonDBTM
 
         $entity = new Entity();
         $entity->getFromDB($this->fields['entities_id']);
-        echo "<th>" .  htmlescape(Entity::getTypeName(1)) . "</th>";
+        echo "<th>" . htmlescape(Entity::getTypeName(1)) . "</th>";
         echo "<td>" . $entity->getLink() . "</td>";
 
         echo "</tr>";
         echo "<tr class='tab_bg_1'>";
 
-        echo "<th>" .  htmlescape(IPAddress::getTypeName(1)) . "</th>";
+        echo "<th>" . htmlescape(IPAddress::getTypeName(1)) . "</th>";
         echo "<td>" . htmlescape(implode(', ', importArrayFromDB($this->fields['ip']))) . "</td>";
 
-        echo "<th>" .  __s('MAC address') . "</th>";
+        echo "<th>" . __s('MAC address') . "</th>";
         echo "<td>" . htmlescape(implode(', ', importArrayFromDB($this->fields['mac']))) . "</td>";
 
         echo "</tr>";

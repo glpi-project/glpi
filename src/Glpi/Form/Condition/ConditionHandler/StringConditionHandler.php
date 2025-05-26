@@ -34,7 +34,6 @@
 
 namespace Glpi\Form\Condition\ConditionHandler;
 
-use Glpi\Form\Condition\InputTemplateKey;
 use Glpi\Form\Condition\ValueOperator;
 use Override;
 
@@ -48,6 +47,8 @@ class StringConditionHandler implements ConditionHandlerInterface
             ValueOperator::NOT_EQUALS,
             ValueOperator::CONTAINS,
             ValueOperator::NOT_CONTAINS,
+            ValueOperator::MATCH_REGEX,
+            ValueOperator::NOT_MATCH_REGEX,
         ];
     }
 
@@ -74,10 +75,18 @@ class StringConditionHandler implements ConditionHandlerInterface
         $b = strtolower(strval($b));
 
         return match ($operator) {
-            ValueOperator::EQUALS       => $a === $b,
-            ValueOperator::NOT_EQUALS   => $a !== $b,
-            ValueOperator::CONTAINS     => str_contains($b, $a),
-            ValueOperator::NOT_CONTAINS => !str_contains($b, $a),
+            ValueOperator::EQUALS          => $a === $b,
+            ValueOperator::NOT_EQUALS      => $a !== $b,
+            ValueOperator::CONTAINS        => str_contains($b, $a),
+            ValueOperator::NOT_CONTAINS    => !str_contains($b, $a),
+
+            // Note: we do not want to throw warnings here if an invalid regex
+            // is configured by the user.
+            // There is no clean way to test that a regex is valid in PHP,
+            // therefore the simplest way to deal with that is to ignore
+            // warnings using the "@" prefix.
+            ValueOperator::MATCH_REGEX     => @preg_match($b, $a),
+            ValueOperator::NOT_MATCH_REGEX => !@preg_match($b, $a),
 
             // Unsupported operators
             default => false,

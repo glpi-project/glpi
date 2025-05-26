@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -135,12 +134,12 @@ if (!$DB->tableExists('glpi_cables')) {
 }
 $migration->addField('glpi_states', 'is_visible_cable', 'bool', [
     'value' => 1,
-    'after' => 'is_visible_appliance'
+    'after' => 'is_visible_appliance',
 ]);
 $migration->addKey('glpi_states', 'is_visible_cable');
 
 if (!$DB->tableExists('glpi_sockets')) {
-   //create socket table
+    //create socket table
     $query = "CREATE TABLE `glpi_sockets` (
       `id` int {$default_key_sign} NOT NULL AUTO_INCREMENT,
       `position` int NOT NULL DEFAULT '0',
@@ -168,9 +167,9 @@ if (!$DB->tableExists('glpi_sockets')) {
 }
 
 if ($DB->tableExists('glpi_netpoints')) {
-   //migrate link between NetworkPort and Socket
-   // BEFORE : supported by NetworkPortEthernet / NetworkPortFiberchannel with 'netpoints_id' foreign key
-   // AFTER  : supported by Socket with (itemtype, items_id, networkports_id)
+    //migrate link between NetworkPort and Socket
+    // BEFORE : supported by NetworkPortEthernet / NetworkPortFiberchannel with 'netpoints_id' foreign key
+    // AFTER  : supported by Socket with (itemtype, items_id, networkports_id)
     $tables_to_migrate = ['glpi_networkportethernets', 'glpi_networkportfiberchannels'];
     foreach ($tables_to_migrate as $table) {
         if (!$DB->fieldExists($table, 'netpoints_id')) {
@@ -194,15 +193,15 @@ if ($DB->tableExists('glpi_netpoints')) {
                     'FKEY' => [
                         'glpi_networkports'     => 'id',
                         $table   => 'networkports_id',
-                    ]
+                    ],
                 ],
                 'glpi_netpoints' => [
                     'FKEY' => [
                         'glpi_netpoints'        => 'id',
                         $table   => 'netpoints_id',
-                    ]
+                    ],
                 ],
-            ]
+            ],
         ];
 
         $iterator = $DB->request($criteria);
@@ -223,7 +222,7 @@ if ($DB->tableExists('glpi_netpoints')) {
             $socket->add($input);
         }
     }
-   //remove "useless "netpoints_id" field
+    //remove "useless "netpoints_id" field
     $migration->dropField('glpi_networkportethernets', 'netpoints_id');
     $migration->dropField('glpi_networkportfiberchannels', 'netpoints_id');
 }

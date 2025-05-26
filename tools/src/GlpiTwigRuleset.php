@@ -61,7 +61,7 @@ class GlpiTwigRuleset extends Official
             new RegEngineRule(Violation::SEVERITY_ERROR, $this->getRegEngineRuleset()),
             new TrailingSpace(Violation::SEVERITY_ERROR),
             new UnusedMacro(Violation::SEVERITY_WARNING),
-         // new UnusedVariable(Violation::SEVERITY_WARNING), // Cannot be enable since we do not explicitely pass variables to includes
+            // new UnusedVariable(Violation::SEVERITY_WARNING), // Cannot be enable since we do not explicitely pass variables to includes
         ];
     }
 
@@ -70,17 +70,17 @@ class GlpiTwigRuleset extends Official
         $configurator = new RulesetConfigurator();
         $configurator->setTwigMajorVersion($this->twigMajorVersion);
 
-       // Update config
+        // Update config
         $config = $configurator->getProcessedConfiguration();
 
-       // Retrieve ruleset
+        // Retrieve ruleset
         $builder = new RulesetBuilder($configurator);
         $rulesets = $builder->build();
 
-       // Override rules:
+        // Override rules:
         $overrided = [];
 
-       // Remove strictness in spacing inside variables declaration.
+        // Remove strictness in spacing inside variables declaration.
         $overrided['<➀set➊@➋=➌$➁>'] = $builder
          ->argTag()
          ->delegate('$', 'expr')
@@ -99,7 +99,7 @@ class GlpiTwigRuleset extends Official
          //->enforceSize(' ', $config['hash']['after_key'], 'There should be %quantity% space(s) between the key and ":".')
          ->enforceSize('_', $config['hash']['before_value'], 'There should be %quantity% space(s) between ":" and the value.');
 
-       // Fixes https://github.com/friendsoftwig/twigcs/issues/170
+        // Fixes https://github.com/friendsoftwig/twigcs/issues/170
         $overrided['@➀=(?![>=])➁$➂,➃%'] = Handler::create()
          ->enforceSize('➀', 1, 'There should be %quantity% space(s) before the "=" in the named arguments list.')
          ->enforceSize('➁', 1, 'There should be %quantity% space(s) after the "=" in the named arguments list.')

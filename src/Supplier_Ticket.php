@@ -40,7 +40,7 @@
  **/
 class Supplier_Ticket extends CommonITILActor
 {
-   // From CommonDBRelation
+    // From CommonDBRelation
     public static $itemtype_1 = 'Ticket';
     public static $items_id_1 = 'tickets_id';
     public static $itemtype_2 = 'Supplier';
@@ -64,14 +64,14 @@ class Supplier_Ticket extends CommonITILActor
                 'glpi_suppliers'  => [
                     'ON' => [
                         $this->getTable() => 'suppliers_id',
-                        'glpi_suppliers'  => 'id'
-                    ]
-                ]
+                        'glpi_suppliers'  => 'id',
+                    ],
+                ],
             ],
             'WHERE'     => [
                 $this->getTable() . '.tickets_id'   => $items_id,
-                'glpi_suppliers.email'              => $email
-            ]
+                'glpi_suppliers.email'              => $email,
+            ],
         ]);
 
         foreach ($iterator as $data) {
@@ -89,6 +89,6 @@ class Supplier_Ticket extends CommonITILActor
                 break;
         }
         parent::post_addItem();
-        unset($this->_force_log_option);
+        $this->_force_log_option = 0;
     }
 }

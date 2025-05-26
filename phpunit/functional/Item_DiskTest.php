@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -36,6 +35,7 @@
 namespace tests\units;
 
 use DbTestCase;
+use Glpi\Asset\Capacity;
 use Glpi\Asset\Capacity\HasVolumesCapacity;
 use Glpi\Features\Clonable;
 use Item_Disk;
@@ -48,7 +48,7 @@ class Item_DiskTest extends DbTestCase
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        $this->initAssetDefinition(capacities: [HasVolumesCapacity::class]);
+        $this->initAssetDefinition(capacities: [new Capacity(name: HasVolumesCapacity::class)]);
 
         $this->login(); // tab will be available only if corresponding right is available in the current session
 
@@ -68,7 +68,7 @@ class Item_DiskTest extends DbTestCase
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        $this->initAssetDefinition(capacities: [HasVolumesCapacity::class]);
+        $this->initAssetDefinition(capacities: [new Capacity(name: HasVolumesCapacity::class)]);
 
         foreach ($CFG_GLPI['disk_types'] as $itemtype) {
             if (!Toolbox::hasTrait($itemtype, Clonable::class)) {
@@ -92,10 +92,10 @@ class Item_DiskTest extends DbTestCase
 
         $this->assertGreaterThan(
             0,
-            $id = (int)$obj->add([
+            $id = (int) $obj->add([
                 'itemtype'     => $computer->getType(),
                 'items_id'     => $computer->fields['id'],
-                'mountpoint'   => '/'
+                'mountpoint'   => '/',
             ])
         );
         $this->assertTrue($obj->getFromDB($id));
@@ -114,10 +114,10 @@ class Item_DiskTest extends DbTestCase
 
         $this->assertGreaterThan(
             0,
-            $id = (int)$obj->add([
+            $id = (int) $obj->add([
                 'itemtype'     => $computer->getType(),
                 'items_id'     => $computer->fields['id'],
-                'mountpoint'   => '/'
+                'mountpoint'   => '/',
             ])
         );
         $this->assertTrue($obj->getFromDB($id));
@@ -125,7 +125,7 @@ class Item_DiskTest extends DbTestCase
 
         $this->assertTrue($obj->update([
             'id'           => $id,
-            'mountpoint'   => '/mnt'
+            'mountpoint'   => '/mnt',
         ]));
         $this->assertTrue($obj->getFromDB($id));
         $this->assertSame('/mnt', $obj->fields['mountpoint']);
@@ -143,10 +143,10 @@ class Item_DiskTest extends DbTestCase
 
         $this->assertGreaterThan(
             0,
-            $id = (int)$obj->add([
+            $id = (int) $obj->add([
                 'itemtype'     => $computer->getType(),
                 'items_id'     => $computer->fields['id'],
-                'mountpoint'   => '/'
+                'mountpoint'   => '/',
             ])
         );
         $this->assertTrue($obj->getFromDB($id));
@@ -154,7 +154,7 @@ class Item_DiskTest extends DbTestCase
 
         $this->assertTrue(
             $obj->delete([
-                'id'  => $id
+                'id'  => $id,
             ])
         );
         $this->assertTrue($obj->getFromDB($id)); //it's always in DB but with is_deleted = 1

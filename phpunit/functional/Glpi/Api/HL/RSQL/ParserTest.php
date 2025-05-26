@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -49,41 +48,41 @@ class ParserTest extends GLPITestCase
         return [
             [
                 [[5, 'id'], [6, '=='], [7, '20']], /** Tokens. First element is the token type. See T_* consts in {@link \Glpi\Api\HL\RSQL\Lexer} */
-                "(`_`.`id` = '20')"
+                "(`_`.`id` = '20')",
             ],
             [
                 [
                     [3, "("], [3, "("], [5, "model.name"], [6, "=in="], [7, "(A2696,A2757,A2777)"], [1, ";"],
                     [5, "name"], [6, "=like="], [7, "*Staff*"], [4, ")"], [2, ","], [3, "("], [5, "model.name"],
                     [6, "=in="], [7, "(A2602,A2604,A2603,A2605)"], [1, ";"], [5, "name"], [6, "=like="], [7, "*Student*"],
-                    [4, ")"], [4, ")"], [2, ","], [5, "name"], [6, "=in="], [7, "(A2436,A2764,A2437,A2766)"]
+                    [4, ")"], [4, ")"], [2, ","], [5, "name"], [6, "=in="], [7, "(A2436,A2764,A2437,A2766)"],
                 ],
-                "(((`model`.`name` IN ('A2696', 'A2757', 'A2777')) AND (`_`.`name` LIKE CAST('%Staff%' AS BINARY))) OR ((`model`.`name` IN ('A2602', 'A2604', 'A2603', 'A2605')) AND (`_`.`name` LIKE CAST('%Student%' AS BINARY)))) OR (`_`.`name` IN ('A2436', 'A2764', 'A2437', 'A2766'))"
+                "(((`model`.`name` IN ('A2696', 'A2757', 'A2777')) AND (`_`.`name` LIKE CAST('%Staff%' AS BINARY))) OR ((`model`.`name` IN ('A2602', 'A2604', 'A2603', 'A2605')) AND (`_`.`name` LIKE CAST('%Student%' AS BINARY)))) OR (`_`.`name` IN ('A2436', 'A2764', 'A2437', 'A2766'))",
             ],
             [
                 [[5, 'name'], [6, '=='], [7, '(test']],
-                "(`_`.`name` = '(test')"
+                "(`_`.`name` = '(test')",
             ],
             [
                 [[5, 'scalar_join'], [6, '=='], [7, '1']],
-                "(`scalar_join`.`external_prop` = '1')" // While the property is 'scalar_join', that is also the join name. The field it points to is 'external_prop', so the resolved SQL is `scalar_join`.`external_prop`.
+                "(`scalar_join`.`external_prop` = '1')", // While the property is 'scalar_join', that is also the join name. The field it points to is 'external_prop', so the resolved SQL is `scalar_join`.`external_prop`.
             ],
             [
                 [[5, 'scalar_join'], [6, '=='], [7, 'true']],
-                "(`scalar_join`.`external_prop` = '1')"
+                "(`scalar_join`.`external_prop` = '1')",
             ],
             [
                 [[5, 'scalar_join'], [6, '=='], [7, '0']],
-                "(`scalar_join`.`external_prop` = '0')"
+                "(`scalar_join`.`external_prop` = '0')",
             ],
             [
                 [[5, 'scalar_join'], [6, '=='], [7, 'false']],
-                "(`scalar_join`.`external_prop` = '0')"
+                "(`scalar_join`.`external_prop` = '0')",
             ],
             [
                 [[5, 'extra_fields.extra1'], [6, '=='], [7, 'test']],
-                "(`extra_fieldsextra1`.`extra1` = 'test')"
-            ]
+                "(`extra_fieldsextra1`.`extra1` = 'test')",
+            ],
         ];
     }
 
@@ -101,12 +100,12 @@ class ParserTest extends GLPITestCase
                     'properties' => [
                         'id' => ['type' => 'integer'],
                         'name' => ['type' => 'string'],
-                    ]
+                    ],
                 ],
                 'scalar_join' => [
                     'type' => 'boolean',
                     'x-join' => [],
-                    'x-field' => 'external_prop'
+                    'x-field' => 'external_prop',
                 ],
                 'extra_fields' => [
                     'type' => 'object',
@@ -114,16 +113,16 @@ class ParserTest extends GLPITestCase
                         'extra1' => [
                             'type' => 'string',
                             'x-join' => [],
-                            'x-field' => 'extra1'
+                            'x-field' => 'extra1',
                         ],
                         'extra2' => [
                             'type' => 'string',
                             'x-join' => [],
-                            'x-field' => 'extra2'
-                        ]
-                    ]
-                ]
-            ]
+                            'x-field' => 'extra2',
+                        ],
+                    ],
+                ],
+            ],
         ];
         $search_class = new \ReflectionClass(Search::class);
         $search = $search_class->newInstanceWithoutConstructor();
@@ -131,7 +130,7 @@ class ParserTest extends GLPITestCase
         $search_class->getProperty('flattened_properties')->setValue($search, Schema::flattenProperties($schema['properties']));
         $search_class->getProperty('joins')->setValue($search, Schema::getJoins($schema['properties']));
         $parser = new Parser($search);
-        $this->assertEquals($expected, (string)$parser->parse($tokens)->getSQLCriteria());
+        $this->assertEquals($expected, (string) $parser->parse($tokens)->getSQLWhereCriteria());
     }
 
     /**
@@ -147,9 +146,9 @@ class ParserTest extends GLPITestCase
                 'mapped' => [
                     'type' => 'string',
                     'x-mapped-from' => 'id',
-                    'x-mapper' => static fn () => 'mapped'
-                ]
-            ]
+                    'x-mapper' => static fn() => 'mapped',
+                ],
+            ],
         ];
 
         $search_class = new \ReflectionClass(Search::class);
@@ -160,21 +159,21 @@ class ParserTest extends GLPITestCase
         $parser = new Parser($search);
 
         $result = $parser->parse([[5, 'test'], [6, '=='], [7, 'test']]);
-        $this->assertEquals('1', (string)$result->getSQLCriteria());
+        $this->assertEquals('1', (string) $result->getSQLWhereCriteria());
         $this->assertEquals(Error::UNKNOWN_PROPERTY, $result->getInvalidFilters()['test']);
         // Test an invalid filter with a valid one
         $result = $parser->parse([[5, 'test'], [6, '=='], [7, 'test'], [1, ';'], [5, 'name'], [6, '=='], [7, 'test']]);
-        $this->assertEquals("(`_`.`name` = 'test')", (string)$result->getSQLCriteria());
+        $this->assertEquals("(`_`.`name` = 'test')", (string) $result->getSQLWhereCriteria());
         $this->assertEquals(Error::UNKNOWN_PROPERTY, $result->getInvalidFilters()['test']);
 
         // Test invalid operator
         $result = $parser->parse([[5, 'name'], [6, '=f='], [7, 'test']]);
-        $this->assertEquals('1', (string)$result->getSQLCriteria());
+        $this->assertEquals('1', (string) $result->getSQLWhereCriteria());
         $this->assertEquals(Error::UNKNOWN_OPERATOR, $result->getInvalidFilters()['name']);
 
         // Mapped properties should be ignored
         $result = $parser->parse([[5, 'mapped'], [6, '=='], [7, 'test']]);
-        $this->assertEquals('1', (string)$result->getSQLCriteria());
+        $this->assertEquals('1', (string) $result->getSQLWhereCriteria());
         $this->assertEquals(Error::MAPPED_PROPERTY, $result->getInvalidFilters()['mapped']);
     }
 }

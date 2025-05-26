@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -53,11 +52,9 @@ function update956to957()
     $updateresult     = true;
     $ADDTODISPLAYPREF = [];
 
-   //TRANS: %s is the number of new version
-    $migration->displayTitle(sprintf(__('Update to %s'), '9.5.7'));
     $migration->setVersion('9.5.7');
 
-   /* Fix null `date` in ITIL tables */
+    /* Fix null `date` in ITIL tables */
     $itil_tables = ['glpi_changes', 'glpi_problems', 'glpi_tickets'];
     foreach ($itil_tables as $itil_table) {
         $migration->addPostQuery(
@@ -68,7 +65,7 @@ function update956to957()
             )
         );
     }
-   /* /Fix null `date` in ITIL tables */
+    /* /Fix null `date` in ITIL tables */
 
     /** Replace -1 values for glpi_events.items_id field */
     $migration->addPostQuery(
@@ -103,14 +100,14 @@ function update956to957()
         ],
         'FROM' => 'glpi_items_operatingsystems',
         'WHERE' => [
-            'operatingsystems_id' => [-1, 0]
+            'operatingsystems_id' => [-1, 0],
         ],
         'GROUPBY' => [
             'items_id',
             'itemtype',
             'operatingsystemarchitectures_id',
         ],
-        'HAVING' => [new QueryExpression("COUNT(*) > 1")]
+        'HAVING' => [new QueryExpression("COUNT(*) > 1")],
     ]);
 
     // Keep only the latest value for each items with duplicated data
@@ -138,7 +135,7 @@ function update956to957()
     }
     /** /Replace -1 values for glpi_items_operatingsystems table foreign key fields */
 
-   // ************ Keep it at the end **************
+    // ************ Keep it at the end **************
     $migration->executeMigration();
 
     return $updateresult;

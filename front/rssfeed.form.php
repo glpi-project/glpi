@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+require_once(__DIR__ . '/_check_webserver_config.php');
+
 /**
  * @since 0.84
  */
@@ -60,7 +62,7 @@ if (isset($_POST["add"])) {
         )
     );
     Html::redirect($rssfeed->getFormURLWithID($newID));
-} else if (isset($_POST["purge"])) {
+} elseif (isset($_POST["purge"])) {
     $rssfeed->check($_POST["id"], PURGE);
     $rssfeed->delete($_POST, 1);
     Event::log(
@@ -72,7 +74,7 @@ if (isset($_POST["add"])) {
         sprintf(__('%s purges an item'), $_SESSION["glpiname"])
     );
     $rssfeed->redirectToList();
-} else if (isset($_POST["update"])) {
+} elseif (isset($_POST["update"])) {
     $rssfeed->check($_POST["id"], UPDATE);   // Right to update the rssfeed
 
     $rssfeed->update($_POST);
@@ -85,7 +87,7 @@ if (isset($_POST["add"])) {
         sprintf(__('%s updates an item'), $_SESSION["glpiname"])
     );
     Html::back();
-} else if (isset($_POST["addvisibility"])) {
+} elseif (isset($_POST["addvisibility"])) {
     if (
         isset($_POST["_type"]) && !empty($_POST["_type"])
         && isset($_POST["rssfeeds_id"]) && $_POST["rssfeeds_id"]
@@ -135,7 +137,7 @@ if (isset($_POST["add"])) {
 } else {
     $menus = [
         'central'  => ["tools", "rssfeed"],
-        'helpdesk' => []
+        'helpdesk' => [],
     ];
     RSSFeed::displayFullPageForItem($_GET["id"], $menus);
 }

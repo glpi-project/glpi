@@ -118,12 +118,12 @@ class CableStrand extends CommonDropdown
 
         $criteria = [
             'SELECT' => [
-                'id'
+                'id',
             ],
             'FROM'   => $cable->getTable(),
             'WHERE'  => [
                 'cablestrands_id' => $cablestrands_id,
-            ]
+            ],
         ];
         if ($cable->maybeDeleted()) {
             $criteria['WHERE']['is_deleted'] = 0;
@@ -135,7 +135,7 @@ class CableStrand extends CommonDropdown
 
         $iterator = $DB->request($criteria);
 
-       // Execute a second request to get the total number of rows
+        // Execute a second request to get the total number of rows
         unset($criteria['SELECT']);
         unset($criteria['START']);
         unset($criteria['LIMIT']);

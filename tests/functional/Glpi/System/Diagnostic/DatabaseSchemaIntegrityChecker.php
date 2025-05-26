@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -35,7 +34,6 @@
 
 namespace tests\units\Glpi\System\Diagnostic;
 
-use Glpi\Toolbox\VersionParser;
 use org\bovigo\vfs\vfsStream;
 
 class DatabaseSchemaIntegrityChecker extends \GLPITestCase
@@ -309,7 +307,7 @@ SQL,
                 'ignore_timestamps_migration' => false,
                 'ignore_utf8mb4_migration' => false,
                 'ignore_dynamic_row_format_migration' => false,
-                'ignore_unsigned_keys_migration' => false
+                'ignore_unsigned_keys_migration' => false,
             ]
         );
 
@@ -375,7 +373,7 @@ SQL,
  ) ENGINE=InnoDB ROW_FORMAT=DYNAMIC
 
 DIFF,
-                ]
+                ],
             ],
 
             // utf8mb3 should be normalized to utf8.
@@ -465,7 +463,7 @@ SQL,
  ) COLLATE=utf8mb4_unicode_ci DEFAULT CHARSET=utf8mb4 ENGINE=InnoDB
 
 DIFF,
-                ]
+                ],
             ],
 
             // Charset/collation should NOT be removed/ignored if related to utf8mb4 migration
@@ -517,7 +515,7 @@ SQL,
 +) COLLATE=utf8mb4_unicode_ci DEFAULT CHARSET=utf8mb4 ENGINE=InnoDB
 
 DIFF,
-                ]
+                ],
             ],
 
             // timestamp should NOT be replaced by datetime/ignored when NOT using ignore_timestamps_migration flag.
@@ -563,7 +561,7 @@ SQL,
  ) ENGINE=InnoDB
 
 DIFF,
-                ]
+                ],
             ],
 
             // ROW_FORMAT should NOT be removed/ignored when NOT using ignore_dynamic_row_format_migration flag.
@@ -603,7 +601,7 @@ SQL,
 +) ENGINE=InnoDB ROW_FORMAT=COMPACT
 
 DIFF,
-                ]
+                ],
             ],
 
             // ENGINE should NOT be removed/ignored when NOT using ignore_innodb_migration flag.
@@ -643,7 +641,7 @@ SQL,
 +) ENGINE=MyISAM
 
 DIFF,
-                ]
+                ],
             ],
 
             // signed/unsigned on primary/foreign keys should NOT be removed/ignored when NOT using ignore_unsigned_keys_migration flag.
@@ -707,7 +705,7 @@ SQL,
  ) ENGINE=InnoDB
 
 DIFF,
-                ]
+                ],
             ],
         ];
 
@@ -720,7 +718,7 @@ DIFF,
                 'ignore_timestamps_migration' => false,
                 'ignore_utf8mb4_migration' => false,
                 'ignore_dynamic_row_format_migration' => false,
-                'ignore_unsigned_keys_migration' => false
+                'ignore_unsigned_keys_migration' => false,
             ]
         );
 
@@ -800,7 +798,7 @@ SQL,
  )
 
 DIFF,
-                ]
+                ],
             ],
 
             // Charset/collation should be removed/ignored if related to utf8mb4 migration
@@ -971,7 +969,7 @@ SQL,
                 'ignore_timestamps_migration' => true,
                 'ignore_utf8mb4_migration' => true,
                 'ignore_dynamic_row_format_migration' => true,
-                'ignore_unsigned_keys_migration' => true
+                'ignore_unsigned_keys_migration' => true,
             ]
         );
 
@@ -1037,7 +1035,7 @@ SQL,
  ) COLLATE=utf8_unicode_ci DEFAULT CHARSET=utf8 ENGINE=InnoDB
 
 DIFF,
-                ]
+                ],
             ],
         ];
 
@@ -1050,7 +1048,7 @@ DIFF,
                 'ignore_timestamps_migration' => false,
                 'ignore_utf8mb4_migration' => false,
                 'ignore_dynamic_row_format_migration' => false,
-                'ignore_unsigned_keys_migration' => false
+                'ignore_unsigned_keys_migration' => false,
             ]
         );
 
@@ -1106,7 +1104,7 @@ SQL,
 +) COLLATE=utf8mb4_unicode_ci DEFAULT CHARSET=utf8mb4 ENGINE=InnoDB
 
 DIFF,
-                ]
+                ],
             ],
         ];
 
@@ -1119,7 +1117,7 @@ DIFF,
                 'ignore_timestamps_migration' => false,
                 'ignore_utf8mb4_migration' => false,
                 'ignore_dynamic_row_format_migration' => false,
-                'ignore_unsigned_keys_migration' => false
+                'ignore_unsigned_keys_migration' => false,
             ]
         );
 
@@ -1184,7 +1182,7 @@ SQL,
  )
 
 DIFF,
-                ]
+                ],
             ],
         ];
 
@@ -1197,7 +1195,7 @@ DIFF,
                 'ignore_timestamps_migration' => true,
                 'ignore_utf8mb4_migration' => true,
                 'ignore_dynamic_row_format_migration' => true,
-                'ignore_unsigned_keys_migration' => true
+                'ignore_unsigned_keys_migration' => true,
             ]
         );
 
@@ -1277,7 +1275,7 @@ DIFF,
                 'ignore_timestamps_migration' => true,
                 'ignore_utf8mb4_migration' => true,
                 'ignore_dynamic_row_format_migration' => true,
-                'ignore_unsigned_keys_migration' => true
+                'ignore_unsigned_keys_migration' => true,
             ]
         );
 
@@ -1320,7 +1318,7 @@ SQL,
                     'ignore_timestamps_migration' => true,
                     'ignore_utf8mb4_migration' => true,
                     'ignore_dynamic_row_format_migration' => true,
-                    'ignore_unsigned_keys_migration' => true
+                    'ignore_unsigned_keys_migration' => true,
                 ]
             );
         }
@@ -1376,7 +1374,7 @@ DIFF,
                 'ignore_timestamps_migration' => true,
                 'ignore_utf8mb4_migration' => true,
                 'ignore_dynamic_row_format_migration' => true,
-                'ignore_unsigned_keys_migration' => true
+                'ignore_unsigned_keys_migration' => true,
             ]
         );
 
@@ -1786,7 +1784,7 @@ CREATE TABLE `glpi_impactcontexts` (
   `max_depth` int NOT NULL DEFAULT '5',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8_unicode_ci;
-SQL
+SQL,
                 ];
                 return $res;
             }
@@ -1821,7 +1819,7 @@ SQL
                             'context' => 'core',
                             'name'    => 'dbversion',
                             'value'   => $dbversion,
-                        ]
+                        ],
                     ]
                 );
             };
@@ -1850,7 +1848,7 @@ CREATE TABLE `glpi_impactcontexts` (
   `max_depth` int NOT NULL DEFAULT '5',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
-SQL
+SQL,
                 ];
                 return $res;
             }
@@ -1875,11 +1873,12 @@ SQL
                             'context' => 'core',
                             'name'    => 'dbversion',
                             'value'   => $dbversion,
-                        ]
+                        ],
                     ]
                 );
             };
-            $this->string($this->testedInstance->getDiff('glpi_impactcontexts', $schema_sql_from_1001))->isEqualTo(<<<DIFF
+            $this->string($this->testedInstance->getDiff('glpi_impactcontexts', $schema_sql_from_1001))->isEqualTo(
+                <<<DIFF
 --- Expected database schema
 +++ Current database schema
 @@ @@
@@ -1940,7 +1939,7 @@ CREATE TABLE `glpi_notimportedemails` (
   KEY `users_id` (`users_id`),
   KEY `mailcollectors_id` (`mailcollectors_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=156 DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
-SQL
+SQL,
                 ];
                 return $res;
             }
@@ -1971,7 +1970,7 @@ SQL
                             'context' => 'core',
                             'name'    => 'dbversion',
                             'value'   => $dbversion,
-                        ]
+                        ],
                     ]
                 );
             };
@@ -2034,7 +2033,7 @@ CREATE TABLE `glpi_notimportedemails` (
   KEY `users_id` (`users_id`),
   KEY `mailcollectors_id` (`mailcollectors_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=156 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
-SQL
+SQL,
                 ];
                 return $res;
             }
@@ -2065,7 +2064,7 @@ SQL
                             'context' => 'core',
                             'name'    => 'dbversion',
                             'value'   => $dbversion,
-                        ]
+                        ],
                     ]
                 );
             };

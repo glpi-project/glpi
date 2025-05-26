@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -94,12 +93,12 @@ class MonitorTest extends DbTestCase
 
         $data = [
             'name'         => '_test_monitor01',
-            'entities_id'  => 0
+            'entities_id'  => 0,
         ];
 
         $monitor = new \Monitor();
         $added = $monitor->add($data);
-        $this->assertGreaterThan(0, (int)$added);
+        $this->assertGreaterThan(0, (int) $added);
 
         $monitor = getItemByTypeName('Monitor', '_test_monitor01');
 
@@ -121,7 +120,7 @@ class MonitorTest extends DbTestCase
         $_SESSION['glpi_currenttime'] = $date;
 
         $added = $monitor->clone();
-        $this->assertGreaterThan(0, (int)$added);
+        $this->assertGreaterThan(0, (int) $added);
 
         $clonedMonitor = new \Monitor();
         $this->assertTrue($clonedMonitor->getFromDB($added));

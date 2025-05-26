@@ -51,7 +51,7 @@ class DocumentCategory extends CommonTreeDropdown
         parent::cleanRelationData();
 
         if ($this->isUsedAsDefaultCategoryForTickets()) {
-            $newval = (isset($this->input['_replace_by']) ? $this->input['_replace_by'] : 0);
+            $newval = ($this->input['_replace_by'] ?? 0);
 
             Config::setConfigurationValues(
                 'core',
@@ -90,6 +90,6 @@ class DocumentCategory extends CommonTreeDropdown
 
     public static function getIcon()
     {
-        return "fas fa-tags";
+        return "ti ti-tags";
     }
 }

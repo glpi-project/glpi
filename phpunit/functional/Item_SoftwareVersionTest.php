@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -36,6 +35,7 @@
 namespace tests\units;
 
 use DbTestCase;
+use Glpi\Asset\Capacity;
 use Glpi\Asset\Capacity\HasSoftwaresCapacity;
 use Glpi\Features\Clonable;
 use Item_SoftwareVersion;
@@ -51,7 +51,7 @@ class Item_SoftwareVersionTest extends DbTestCase
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        $this->initAssetDefinition(capacities: [HasSoftwaresCapacity::class]);
+        $this->initAssetDefinition(capacities: [new Capacity(name: HasSoftwaresCapacity::class)]);
 
         $this->login(); // tab will be available only if corresponding right is available in the current session
 
@@ -71,7 +71,7 @@ class Item_SoftwareVersionTest extends DbTestCase
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        $this->initAssetDefinition(capacities: [HasSoftwaresCapacity::class]);
+        $this->initAssetDefinition(capacities: [new Capacity(name: HasSoftwaresCapacity::class)]);
 
         foreach ($CFG_GLPI['software_types'] as $itemtype) {
             if (!Toolbox::hasTrait($itemtype, Clonable::class)) {
@@ -97,7 +97,7 @@ class Item_SoftwareVersionTest extends DbTestCase
         $computer1 = getItemByTypeName('Computer', '_test_pc01');
         $ver = getItemByTypeName('SoftwareVersion', '_test_softver_1', true);
 
-       // Do some installations
+        // Do some installations
         $ins = new \Item_SoftwareVersion();
         $this->assertGreaterThan(
             0,
@@ -111,7 +111,7 @@ class Item_SoftwareVersionTest extends DbTestCase
         $input = [
             'items_id'  => $computer1->getID(),
             'itemtype'  => 'Computer',
-            'name'      => 'A name'
+            'name'      => 'A name',
         ];
 
         $expected = [
@@ -121,7 +121,7 @@ class Item_SoftwareVersionTest extends DbTestCase
             'is_template_item'      => $computer1->getField('is_template'),
             'is_deleted_item'       => $computer1->getField('is_deleted'),
             'entities_id'           => getItemByTypeName('Entity', '_test_root_entity', true),
-            'is_recursive'          => 0
+            'is_recursive'          => 0,
         ];
 
         $this->setEntity('_test_root_entity', true);
@@ -135,7 +135,7 @@ class Item_SoftwareVersionTest extends DbTestCase
         $computer1 = getItemByTypeName('Computer', '_test_pc01');
         $ver = getItemByTypeName('SoftwareVersion', '_test_softver_1', true);
 
-       // Do some installations
+        // Do some installations
         $ins = new \Item_SoftwareVersion();
         $this->assertGreaterThan(
             0,
@@ -149,7 +149,7 @@ class Item_SoftwareVersionTest extends DbTestCase
         $input = [
             'items_id'              => $computer1->getID(),
             'itemtype'              => 'Computer',
-            'name'                  => 'Another name'
+            'name'                  => 'Another name',
         ];
 
         $expected = [
@@ -157,7 +157,7 @@ class Item_SoftwareVersionTest extends DbTestCase
             'itemtype'              => 'Computer',
             'name'                  => 'Another name',
             'is_template_item'      => $computer1->getField('is_template'),
-            'is_deleted_item'       => $computer1->getField('is_deleted')
+            'is_deleted_item'       => $computer1->getField('is_deleted'),
         ];
 
         $this->assertSame($expected, $ins->prepareInputForUpdate($input));
@@ -173,7 +173,7 @@ class Item_SoftwareVersionTest extends DbTestCase
         $computer12 = getItemByTypeName('Computer', '_test_pc12', true);
         $ver = getItemByTypeName('SoftwareVersion', '_test_softver_1', true);
 
-       // Do some installations
+        // Do some installations
         $ins = new \Item_SoftwareVersion();
         $this->assertGreaterThan(
             0,
@@ -225,13 +225,13 @@ class Item_SoftwareVersionTest extends DbTestCase
             'itemtype'              => 'Computer',
             'softwareversions_id'   => $ver1,
         ]);
-        $this->assertGreaterThan(0, (int)$softver01);
+        $this->assertGreaterThan(0, (int) $softver01);
         $softver02 = $softver->add([
             'items_id'              => $computer1->getID(),
             'itemtype'              => 'Computer',
             'softwareversions_id'   => $ver2,
         ]);
-        $this->assertGreaterThan(0, (int)$softver02);
+        $this->assertGreaterThan(0, (int) $softver02);
 
         foreach ([$softver01, $softver02] as $tsoftver) {
             $o = new \Item_SoftwareVersion();
@@ -279,7 +279,7 @@ class Item_SoftwareVersionTest extends DbTestCase
             $csoftver->add([
                 'items_id'              => $computer1->fields['id'],
                 'itemtype'              => 'Computer',
-                'softwareversions_id'   => $soft1->fields['id']
+                'softwareversions_id'   => $soft1->fields['id'],
             ])
         );
 

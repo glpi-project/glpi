@@ -33,7 +33,7 @@
 
 /* global glpi_toast_info, tinymce, glpi_toast_error, _ */
 
-import { GlpiFormConditionEngine } from './Condition/Engine.js';
+import { GlpiFormConditionEngine } from '/js/modules/Forms/Condition/Engine.js';
 
 /**
  * Client code to handle users actions on the form_renderer template
@@ -41,8 +41,8 @@ import { GlpiFormConditionEngine } from './Condition/Engine.js';
 export class GlpiFormRendererController
 {
     /**
-     * Target form (jquery selector)
-     * @type {string}
+     * Target form
+     * @type {HTMLFormElement}
      */
     #target;
 
@@ -66,7 +66,7 @@ export class GlpiFormRendererController
      */
     constructor(target, form_id) {
         // Target must be a valid form
-        this.#target = target;
+        this.#target = document.querySelector(target);
         if ($(this.#target).prop("tagName") != "FORM") {
             throw new Error("Target must be a valid form");
         }
@@ -122,6 +122,73 @@ export class GlpiFormRendererController
 
             debouncedComputeItemsVisibilities();
         });
+
+        // Handle delegation form update
+        $(this.#target).on(
+            'change',
+            '[data-glpi-form-renderer-delegation-container] select[name="delegation_users_id"]',
+            (e) => this.#renderDelegation(e)
+        );
+
+        // Enable actions
+        $(this.#target).removeClass('pointer-events-none');
+    }
+
+    async #checkCurrentSectionValidity() {
+        // Get the UUID of the current section
+        const currentSectionElement = $(this.#target).find(`[data-glpi-form-renderer-section="${this.#section_index}"]`);
+        const currentSectionUuid = currentSectionElement.data('glpi-form-renderer-uuid');
+
+        const response = await $.ajax({
+            url: `${CFG_GLPI.root_doc}/Form/ValidateAnswers`,
+            type: 'POST',
+            data: `${$(this.#target).serialize()  }&section_uuid=${currentSectionUuid}`,
+            dataType: 'json',
+        });
+
+        // Remove previous error messages and aria attributes
+        $(this.#target)
+            .find(".invalid-tooltip")
+            .remove();
+        $(this.#target)
+            .find(".is-invalid")
+            .removeClass("is-invalid")
+            .removeAttr("aria-invalid")
+            .removeAttr("aria-errormessage");
+
+        if (response.success === false) {
+            Object.values(response.errors).forEach(error => {
+                // Highlight the field with error
+                const question = $(`[data-glpi-form-renderer-id="${error.question_id}"][data-glpi-form-renderer-question]`);
+                if (!question.length) {
+                    return;
+                }
+
+                // Find the input field within the question
+                const inputField = question.find('input:not([type=hidden]):not([data-uploader-name]):not(.select2-search__field), select, textarea');
+                if (!inputField.length) {
+                    return;
+                }
+
+                // Generate a unique ID for the error message
+                const errorId = `error-${error.question_id}`;
+
+                // Add validation classes and accessibility attributes
+                inputField
+                    .addClass('is-invalid')
+                    .attr('aria-invalid', 'true')
+                    .attr('aria-errormessage', errorId);
+
+                // Add a tooltip with the error message
+                inputField.parent().append(
+                    `<span id="${errorId}" class="invalid-tooltip">${error.message}</span>`
+                );
+            });
+
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -130,11 +197,20 @@ export class GlpiFormRendererController
     async #submitForm() {
         // Form will be sumitted using an AJAX request instead
         try {
+            // Disable actions immediately to avoid someone clicking on the actions
+            // while the form is being submitted.
+            this.#disableActions();
+
             // Update tinymce values
             if (window.tinymce !== undefined) {
                 tinymce.get().forEach(editor => {
                     editor.save();
                 });
+            }
+
+            if (!await this.#checkCurrentSectionValidity()) {
+                this.#enableActions();
+                return;
             }
 
             // Submit form using AJAX
@@ -160,6 +236,7 @@ export class GlpiFormRendererController
             $(this.#target)
                 .find(`
                     [data-glpi-form-renderer-form-header],
+                    [data-glpi-form-renderer-delegation-container],
                     [data-glpi-form-renderer-section=${this.#section_index}],
                     [data-glpi-form-renderer-parent-section=${this.#section_index}],
                     [data-glpi-form-renderer-actions]
@@ -171,13 +248,19 @@ export class GlpiFormRendererController
             glpi_toast_error(
                 __("Failed to submit form, please contact your administrator.")
             );
+        } finally {
+            this.#enableActions();
         }
     }
 
     /**
      * Go to the next section of the form.
      */
-    #goToNextSection() {
+    async #goToNextSection() {
+        if (!await this.#checkCurrentSectionValidity()) {
+            return;
+        }
+
         // Hide current section and its questions
         $(this.#target)
             .find(`
@@ -319,7 +402,15 @@ export class GlpiFormRendererController
 
     #applyVisibilityResults(results)
     {
-        const container = document.querySelector(this.#target);
+        const container = this.#target;
+
+        // Apply submit button visibility
+        const submit_button = container.querySelector(
+            '[data-glpi-form-renderer-action=submit]'
+        );
+        if (submit_button !== null) {
+            this.#applyVisibilityToItem(submit_button, results.form_visibility);
+        }
 
         // Apply sections visibility
         for (const [id, must_be_visible] of Object.entries(
@@ -446,5 +537,22 @@ export class GlpiFormRendererController
             .find("button[data-glpi-form-renderer-action]")
             .removeClass("pointer-events-none")
         ;
+    }
+
+    async #renderDelegation()
+    {
+        const selected_user_id = $(this.#target)
+            .find('[data-glpi-form-renderer-delegation-container]')
+            .find('select[name="delegation_users_id"]')
+            .val();
+
+        const response = await $.get('/Form/Delegation', {
+            'selected_user_id': selected_user_id,
+        });
+
+        // Replace only the inner content of the delegation container
+        $(this.#target)
+            .find('[data-glpi-form-renderer-delegation-container]')
+            .html(response);
     }
 }

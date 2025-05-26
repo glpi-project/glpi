@@ -6,7 +6,6 @@
  # http://glpi-project.org
  #
  # @copyright 2015-2025 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -120,6 +119,8 @@
                                     'date_creation': note['date_creation'],
                                     'date_mod': note['date_mod'],
                                     'users_id_editor': note['users_id_lastupdater'],
+                                    'anchor': 'Notepad' ~ '_' ~ note['id'],
+                                    'user_object': null,
                                 }, with_context = false) }}
                             </span>
 
@@ -145,14 +146,19 @@
                         </div>
 
                         {{ include('components/itilobject/timeline/sub_documents.html.twig', {
-                            'item': note,
+                            'item': get_item(note['itemtype'], note['items_id']),
                             'entry': note
                         }) }}
 
-                        <div id="edit-{{ id }}" class="modal fade">
+                    </form>
 
-                            <div class="modal-dialog modal-xl">
-                                <div class="modal-content">
+                    <div id="edit-{{ id }}" class="modal fade">
+                        <div class="modal-dialog modal-xl">
+                            <div class="modal-content">
+                                <form action="{{ url }}" method="post" autocomplete="off" data-submit-once>
+                                    <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
+                                    <input type="hidden" name="id" value="{{ note['id'] }}" />
+
                                     <div class="modal-header">
                                         <h3 class="modal-title">
                                             <i class="ti ti-notes"></i>
@@ -196,11 +202,10 @@
                                             <span>{{ __('Update') }}</span>
                                         </button>
                                     </div>
-                                </div>
+                                </form>
                             </div>
                         </div>
-
-                    </form>
+                    </div>
                 </div>
             </div>
         </div>

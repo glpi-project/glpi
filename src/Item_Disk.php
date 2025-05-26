@@ -48,9 +48,9 @@ class Item_Disk extends CommonDBChild
     public $dohistory       = true;
 
     // Encryption status
-    const ENCRYPTION_STATUS_NO = 0;
-    const ENCRYPTION_STATUS_YES = 1;
-    const ENCRYPTION_STATUS_PARTIALLY = 2;
+    public const ENCRYPTION_STATUS_NO = 0;
+    public const ENCRYPTION_STATUS_YES = 1;
+    public const ENCRYPTION_STATUS_PARTIALLY = 2;
 
     public static function getTypeName($nb = 0)
     {
@@ -59,7 +59,7 @@ class Item_Disk extends CommonDBChild
 
     public static function getIcon()
     {
-        return 'far fa-hdd';
+        return 'ti ti-server-2';
     }
 
     public function post_getEmpty()
@@ -87,7 +87,7 @@ class Item_Disk extends CommonDBChild
                     [
                         'items_id'     => $item->getID(),
                         'itemtype'     => $item->getType(),
-                        'is_deleted'   => 0
+                        'is_deleted'   => 0,
                     ]
                 );
             }
@@ -111,8 +111,8 @@ class Item_Disk extends CommonDBChild
     {
         $ong = [];
         $this->addDefaultFormTab($ong);
-        $this->addStandardTab('Lock', $ong, $options);
-        $this->addStandardTab('Log', $ong, $options);
+        $this->addStandardTab(Lock::class, $ong, $options);
+        $this->addStandardTab(Log::class, $ong, $options);
 
         return $ong;
     }
@@ -133,7 +133,7 @@ class Item_Disk extends CommonDBChild
         $itemtype = null;
         if (isset($options['itemtype']) && !empty($options['itemtype'])) {
             $itemtype = $options['itemtype'];
-        } else if (isset($this->fields['itemtype']) && !empty($this->fields['itemtype'])) {
+        } elseif (isset($this->fields['itemtype']) && !empty($this->fields['itemtype'])) {
             $itemtype = $this->fields['itemtype'];
         } else {
             throw new \RuntimeException('Unable to retrieve itemtype');
@@ -183,21 +183,21 @@ class Item_Disk extends CommonDBChild
         $iterator = $DB->request([
             'SELECT'    => [
                 Filesystem::getTable() . '.name AS fsname',
-                self::getTable() . '.*'
+                self::getTable() . '.*',
             ],
             'FROM'      => self::getTable(),
             'LEFT JOIN' => [
                 Filesystem::getTable() => [
                     'FKEY' => [
                         self::getTable()        => 'filesystems_id',
-                        Filesystem::getTable()  => 'id'
-                    ]
-                ]
+                        Filesystem::getTable()  => 'id',
+                    ],
+                ],
             ],
             'WHERE'     => [
                 'itemtype'     => $item->getType(),
-                'items_id'     => $item->fields['id']
-            ]
+                'items_id'     => $item->fields['id'],
+            ],
         ]);
         return $iterator;
     }
@@ -249,21 +249,25 @@ class Item_Disk extends CommonDBChild
             $encryption_label = '';
             if ($data['encryption_status'] !== self::ENCRYPTION_STATUS_NO) {
                 $twig_params = [
-                    'encryption_status' => Dropdown::getYesNo($data['encryption_status'] === self::ENCRYPTION_STATUS_YES),
-                    'encryption_tool' => $data['encryption_tool'],
-                    'encryption_algorithm' => $data['encryption_algorithm'],
-                    'encryption_type' => $data['encryption_type'],
+                    'encryption_status_label'    => __('Partial encryption'),
+                    'encryption_status_value'    => Dropdown::getYesNo($data['encryption_status'] === self::ENCRYPTION_STATUS_YES),
+                    'encryption_tool_label'      => __('Encryption tool'),
+                    'encryption_tool_value'      => $data['encryption_tool'],
+                    'encryption_algorithm_label' => __('Encryption algorithm'),
+                    'encryption_algorithm_value' => $data['encryption_algorithm'],
+                    'encryption_type_label'      => __('Encryption type'),
+                    'encryption_type_value'      => $data['encryption_type'],
                 ];
                 $encryptionTooltip = TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
-                    <strong>{{ __('Partial encryption') }}</strong> : {{ encryption_status }}<br/>
-                    <strong>{{ __('Encryption tool') }}</strong> : {{ encryption_tool }}</br>
-                    <strong>{{ __('Encryption algorithm') }}</strong> : {{ encryption_algorithm }}</br>
-                    <strong>{{ __('Encryption type') }}</strong> : {{ encryption_type }}
+                    <strong>{{ encryption_status_label }}</strong> : {{ encryption_status_value }}<br/>
+                    <strong>{{ encryption_tool_label }}</strong> : {{ encryption_tool_value }}</br>
+                    <strong>{{ encryption_algorithm_label }}</strong> : {{ encryption_algorithm_value }}<br/>
+                    <strong>{{ encryption_type_label }}</strong> : {{ encryption_type_value }}
 TWIG, $twig_params);
 
                 $encryption_label = Html::showTooltip($encryptionTooltip, [
-                    'awesome-class' => "fas fa-lock",
-                    'display' => false
+                    'awesome-class' => "ti ti-lock-password",
+                    'display' => false,
                 ]);
             }
             $entries[] = [
@@ -308,7 +312,7 @@ TWIG, $twig_params);
             'showmassiveactions' => $canedit,
             'massiveactionparams' => [
                 'num_displayed' => min($_SESSION['glpilist_limit'], count($entries)),
-                'container'     => 'mass' . static::class . $rand
+                'container'     => 'mass' . static::class . $rand,
             ],
         ]);
     }
@@ -320,7 +324,7 @@ TWIG, $twig_params);
 
         $tab[] = [
             'id'                 => 'common',
-            'name'               => __('Characteristics')
+            'name'               => __('Characteristics'),
         ];
 
         $tab[] = [
@@ -384,7 +388,7 @@ TWIG, $twig_params);
         $name = _n('Volume', 'Volumes', Session::getPluralNumber());
         $tab[] = [
             'id'                 => 'disk',
-            'name'               => $name
+            'name'               => $name,
         ];
 
         $tab[] = [
@@ -396,8 +400,8 @@ TWIG, $twig_params);
             'massiveaction'      => false,
             'datatype'           => 'dropdown',
             'joinparams'         => [
-                'jointype'           => 'itemtype_item'
-            ]
+                'jointype'           => 'itemtype_item',
+            ],
         ];
 
         $tab[] = [
@@ -412,8 +416,8 @@ TWIG, $twig_params);
             'width'              => 1000,
             'massiveaction'      => false,
             'joinparams'         => [
-                'jointype'           => 'itemtype_item'
-            ]
+                'jointype'           => 'itemtype_item',
+            ],
         ];
 
         $tab[] = [
@@ -427,8 +431,8 @@ TWIG, $twig_params);
             'width'              => 1000,
             'massiveaction'      => false,
             'joinparams'         => [
-                'jointype'           => 'itemtype_item'
-            ]
+                'jointype'           => 'itemtype_item',
+            ],
         ];
 
         $tab[] = [
@@ -439,7 +443,7 @@ TWIG, $twig_params);
             'forcegroupby'       => true,
             'datatype'           => 'progressbar',
             'width'              => 2,
-         // NULLIF -> avoid divizion by zero by replacing it by null (division by null return null without warning)
+            // NULLIF -> avoid divizion by zero by replacing it by null (division by null return null without warning)
             'computation'        => QueryFunction::lpad(
                 expression: QueryFunction::round(new QueryExpression('100*TABLE.freesize/' . QueryFunction::nullif('TABLE.totalsize', new QueryExpression('0')))),
                 length: 3,
@@ -449,8 +453,8 @@ TWIG, $twig_params);
             'unit'               => '%',
             'massiveaction'      => false,
             'joinparams'         => [
-                'jointype'           => 'itemtype_item'
-            ]
+                'jointype'           => 'itemtype_item',
+            ],
         ];
 
         $tab[] = [
@@ -462,8 +466,8 @@ TWIG, $twig_params);
             'massiveaction'      => false,
             'datatype'           => 'string',
             'joinparams'         => [
-                'jointype'           => 'itemtype_item'
-            ]
+                'jointype'           => 'itemtype_item',
+            ],
         ];
 
         $tab[] = [
@@ -475,8 +479,8 @@ TWIG, $twig_params);
             'massiveaction'      => false,
             'datatype'           => 'string',
             'joinparams'         => [
-                'jointype'           => 'itemtype_item'
-            ]
+                'jointype'           => 'itemtype_item',
+            ],
         ];
 
         $tab[] = [
@@ -491,10 +495,10 @@ TWIG, $twig_params);
                 'beforejoin'         => [
                     'table'              => self::getTable(),
                     'joinparams'         => [
-                        'jointype'           => 'itemtype_item'
-                    ]
-                ]
-            ]
+                        'jointype'           => 'itemtype_item',
+                    ],
+                ],
+            ],
         ];
 
         $tab[] = [
@@ -508,8 +512,8 @@ TWIG, $twig_params);
             'searchequalsonfield' => true,
             'datatype'           => 'specific',
             'joinparams'         => [
-                'jointype'           => 'itemtype_item'
-            ]
+                'jointype'           => 'itemtype_item',
+            ],
         ];
 
         $tab[] = [
@@ -521,8 +525,8 @@ TWIG, $twig_params);
             'massiveaction'      => false,
             'datatype'           => 'string',
             'joinparams'         => [
-                'jointype'           => 'itemtype_item'
-            ]
+                'jointype'           => 'itemtype_item',
+            ],
         ];
 
         $tab[] = [
@@ -534,8 +538,8 @@ TWIG, $twig_params);
             'massiveaction'      => false,
             'datatype'           => 'string',
             'joinparams'         => [
-                'jointype'           => 'itemtype_item'
-            ]
+                'jointype'           => 'itemtype_item',
+            ],
         ];
 
         $tab[] = [
@@ -547,8 +551,8 @@ TWIG, $twig_params);
             'massiveaction'      => false,
             'datatype'           => 'string',
             'joinparams'         => [
-                'jointype'           => 'itemtype_item'
-            ]
+                'jointype'           => 'itemtype_item',
+            ],
         ];
 
         return $tab;
@@ -614,7 +618,7 @@ TWIG, $twig_params);
             $values,
             [
                 'value'   => $value,
-                'display' => false
+                'display' => false,
             ]
         );
     }

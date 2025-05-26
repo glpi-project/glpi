@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -35,6 +34,7 @@
 
 namespace tests\units;
 
+use Change;
 use DbTestCase;
 
 /* Test for inc/change.class.php */
@@ -74,7 +74,7 @@ class ChangeTest extends DbTestCase
 
         $this->assertFalse($entity->isNewID($entityId));
         $entity->getFromDB($entityId);
-        $this->assertEquals(\Entity::CONFIG_NEVER, (int)$entity->fields['auto_assign_mode']);
+        $this->assertEquals(\Entity::CONFIG_NEVER, (int) $entity->fields['auto_assign_mode']);
 
         // Login again to acess the new entity
         $this->login('glpi', 'glpi');
@@ -257,8 +257,8 @@ class ChangeTest extends DbTestCase
                 [
                     'users_id' => $users_id,
                     'use_notification'  => 0,
-                ]
-            ]
+                ],
+            ],
         ]);
         $this->assertTrue($result);
 
@@ -268,8 +268,8 @@ class ChangeTest extends DbTestCase
                 [
                     'users_id' => $users_id,
                     'use_notification'  => 0,
-                ]
-            ]
+                ],
+            ],
         ]);
         $this->assertTrue($result);
     }
@@ -311,7 +311,7 @@ class ChangeTest extends DbTestCase
             'content' => 'Test followup content',
             'requesttypes_id' => 1,
             'timeline_position' => \CommonITILObject::TIMELINE_LEFT,
-            'add_reopen' => ''
+            'add_reopen' => '',
         ]);
         $this->assertGreaterThan(0, $followup_id);
 
@@ -354,7 +354,7 @@ class ChangeTest extends DbTestCase
         $task = new \ChangeTask();
         $this->assertGreaterThan(
             0,
-            (int)$task->add([
+            (int) $task->add([
                 'changes_id'   => $change_id,
                 'content'      => 'A simple Task',
                 'date'         => '2015-01-01 00:00:00',
@@ -363,7 +363,7 @@ class ChangeTest extends DbTestCase
 
         $this->assertGreaterThan(
             0,
-            (int)$task->add([
+            (int) $task->add([
                 'changes_id'   => $change_id,
                 'content'      => 'A simple Task',
                 'date'         => $last_task_date,
@@ -372,7 +372,7 @@ class ChangeTest extends DbTestCase
 
         $this->assertGreaterThan(
             0,
-            (int)$task->add([
+            (int) $task->add([
                 'changes_id'   => $change_id,
                 'content'      => 'A simple Task',
                 'date'         => '2016-01-01 00:00:00',
@@ -382,7 +382,7 @@ class ChangeTest extends DbTestCase
         $solution = new \ITILSolution();
         $this->assertGreaterThan(
             0,
-            (int)$solution->add([
+            (int) $solution->add([
                 'itemtype'  => $change::getType(),
                 'items_id' => $change_id,
                 'content'    => 'solution content',
@@ -393,7 +393,7 @@ class ChangeTest extends DbTestCase
 
         $this->assertGreaterThan(
             0,
-            (int)$followup->add([
+            (int) $followup->add([
                 'itemtype'  => $change::getType(),
                 'items_id'  => $change_id,
                 'add_reopen'   => '1',
@@ -404,7 +404,7 @@ class ChangeTest extends DbTestCase
 
         $this->assertGreaterThan(
             0,
-            (int)$solution->add([
+            (int) $solution->add([
                 'itemtype'  => $change::getType(),
                 'items_id' => $change_id,
                 'content'    => 'solution content',
@@ -418,7 +418,7 @@ class ChangeTest extends DbTestCase
                 'field' => 2,
                 'searchtype' => 'contains',
                 'value' => $change_id,
-            ]
+            ],
         ];
         $data   = \Search::getDatas($change->getType(), ["criteria" => $criteria], [72,73,74]);
         $this->assertSame(1, $data['data']['totalcount']);
@@ -430,5 +430,55 @@ class ChangeTest extends DbTestCase
         $this->assertEquals($last_task_date, $change_with_so['ITEM_Change_73']);
         $this->assertTrue(array_key_exists('ITEM_Change_74', $change_with_so));
         $this->assertEquals($last_solution_date, $change_with_so['ITEM_Change_74']);
+    }
+
+    public function testCentralChangeValidationList()
+    {
+        $this->login();
+        $users_id = getItemByTypeName('User', TU_USER, true);
+
+        // create change
+        $change = $this->createItem('Change', [
+            'name'         => 'test change',
+            'content'      => '<p>test content</p>',
+            'entities_id'  => getItemByTypeName('Entity', '_test_child_2', true),
+        ]);
+
+        // create change validation
+        $this->createItem('ChangeValidation', [
+            'changes_id'        => $change->getID(),
+            'items_id_target'   => $users_id,
+            'itemtype_target'   => \User::class,
+        ]);
+
+        ob_start();
+        \Change::showCentralList(0, 'tovalidate', false);
+        $output = ob_get_clean();
+        $this->assertStringContainsString("Your changes to validate <span class='primary-bg primary-fg count'>1</span>", $output);
+        $this->assertMatchesRegularExpression("/href='\/glpi\/front\/change.form.php\?id=" . $change->getID() . "[^']+'>/", $output);
+
+        // login as tech to check if the change validation is not shown
+        $this->login('tech', 'tech');
+
+        ob_start();
+        \Change::showCentralList(0, 'tovalidate', false);
+        $output = ob_get_clean();
+        $this->assertStringNotContainsString("Your changes to validate", $output);
+    }
+
+    public function testShowFormNewItem(): void
+    {
+        // Arrange: prepare an empty change
+        $change = new Change();
+        $change->getEmpty();
+
+        // Act: render form for a new change
+        $this->login();
+        ob_start();
+        $change->showForm($change->getID());
+        $html = ob_get_clean();
+
+        // Assert: make sure some html was generated
+        $this->assertNotEmpty($html);
     }
 }

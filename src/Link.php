@@ -44,13 +44,13 @@ use Glpi\Toolbox\URL;
  */
 class Link extends CommonDBTM
 {
-   // From CommonDBTM
+    // From CommonDBTM
     public $dohistory                   = true;
 
     public static $rightname = 'link';
     public static $tags      = ['LOGIN', 'ID', 'NAME', 'LOCATION', 'LOCATIONID', 'IP',
         'MAC', 'NETWORK', 'DOMAIN', 'SERIAL', 'OTHERSERIAL',
-        'USER', 'GROUP', 'REALNAME', 'FIRSTNAME', 'MODEL'
+        'USER', 'GROUP', 'REALNAME', 'FIRSTNAME', 'MODEL',
     ];
 
     public static function getTypeName($nb = 0)
@@ -100,7 +100,7 @@ class Link extends CommonDBTM
                     ['glpi_links_itemtypes','glpi_links'],
                     [
                         'glpi_links_itemtypes.links_id'  => new QueryExpression(DBmysql::quoteName('glpi_links.id')),
-                        'glpi_links_itemtypes.itemtype'  => $item->getType()
+                        'glpi_links_itemtypes.itemtype'  => $item->getType(),
                     ] + $entity_criteria
                 );
             }
@@ -119,7 +119,7 @@ class Link extends CommonDBTM
     {
         $ong = [];
         $this->addDefaultFormTab($ong);
-        $this->addStandardTab('Log', $ong, $options);
+        $this->addStandardTab(Log::class, $ong, $options);
 
         return $ong;
     }
@@ -151,7 +151,7 @@ class Link extends CommonDBTM
         return array_column(iterator_to_array($DB->request([
             'SELECT' => ['itemtype'],
             'FROM' => 'glpi_links_itemtypes',
-            'WHERE' => ['links_id' => $this->getID()]
+            'WHERE' => ['links_id' => $this->getID()],
         ])), 'itemtype');
     }
 
@@ -224,7 +224,7 @@ class Link extends CommonDBTM
         TemplateRenderer::getInstance()->display('pages/setup/externallink.html.twig', [
             'item' => $this,
             'tag_options' => $this->getTagCompletions(),
-            'params' => $options
+            'params' => $options,
         ]);
     }
 
@@ -234,7 +234,7 @@ class Link extends CommonDBTM
 
         $tab[] = [
             'id'                 => 'common',
-            'name'               => __('Characteristics')
+            'name'               => __('Characteristics'),
         ];
 
         $tab[] = [
@@ -252,7 +252,7 @@ class Link extends CommonDBTM
             'field'              => 'id',
             'name'               => __('ID'),
             'massiveaction'      => false,
-            'datatype'           => 'number'
+            'datatype'           => 'number',
         ];
 
         $tab[] = [
@@ -269,7 +269,7 @@ class Link extends CommonDBTM
             'field'              => 'date_mod',
             'name'               => __('Last update'),
             'datatype'           => 'datetime',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -278,7 +278,7 @@ class Link extends CommonDBTM
             'field'              => 'date_creation',
             'name'               => __('Creation date'),
             'datatype'           => 'datetime',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -287,7 +287,7 @@ class Link extends CommonDBTM
             'field'              => 'completename',
             'name'               => Entity::getTypeName(1),
             'massiveaction'      => false,
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         return $tab;
@@ -316,16 +316,16 @@ class Link extends CommonDBTM
                                 'glpi_ipaddresses'   => 'items_id',
                                 'glpi_networknames'  => 'id', [
                                     'AND' => [
-                                        'glpi_ipaddresses.itemtype' => 'NetworkName'
-                                    ]
-                                ]
-                            ]
-                        ]
+                                        'glpi_ipaddresses.itemtype' => 'NetworkName',
+                                    ],
+                                ],
+                            ],
+                        ],
                     ],
                     'WHERE'        => [
                         'glpi_networknames.items_id'  => $item->getID(),
-                        'glpi_networknames.itemtype'  => ['NetworkEquipment']
-                    ]
+                        'glpi_networknames.itemtype'  => ['NetworkEquipment'],
+                    ],
                 ]);
                 foreach ($iterator as $data2) {
                     $ipmac['ip' . $data2['id']]['ip']  = $data2["ip"];
@@ -345,7 +345,7 @@ class Link extends CommonDBTM
                 'SELECT' => [
                     'glpi_ipaddresses.id',
                     'glpi_ipaddresses.name AS ip',
-                    'glpi_networkports.mac'
+                    'glpi_networkports.mac',
                 ],
                 'FROM'   => 'glpi_networkports',
                 'INNER JOIN'   => [
@@ -354,26 +354,26 @@ class Link extends CommonDBTM
                             'glpi_networknames'  => 'items_id',
                             'glpi_networkports'  => 'id', [
                                 'AND' => [
-                                    'glpi_networknames.itemtype' => 'NetworkPort'
-                                ]
-                            ]
-                        ]
+                                    'glpi_networknames.itemtype' => 'NetworkPort',
+                                ],
+                            ],
+                        ],
                     ],
                     'glpi_ipaddresses'   => [
                         'ON' => [
                             'glpi_ipaddresses'   => 'items_id',
                             'glpi_networknames'  => 'id', [
                                 'AND' => [
-                                    'glpi_ipaddresses.itemtype' => 'NetworkName'
-                                ]
-                            ]
-                        ]
-                    ]
+                                    'glpi_ipaddresses.itemtype' => 'NetworkName',
+                                ],
+                            ],
+                        ],
+                    ],
                 ],
                 'WHERE'        => [
                     'glpi_networkports.items_id'  => $item->getID(),
-                    'glpi_networkports.itemtype'  => $item::class
-                ]
+                    'glpi_networkports.itemtype'  => $item::class,
+                ],
             ]);
             foreach ($iterator as $data2) {
                 $ipmac['ip' . $data2['id']]['ip']  = $data2["ip"];
@@ -385,14 +385,14 @@ class Link extends CommonDBTM
             $criteria = [
                 'SELECT' => [
                     'glpi_networkports.id',
-                    'glpi_networkports.mac'
+                    'glpi_networkports.mac',
                 ],
                 'FROM'   => 'glpi_networkports',
                 'WHERE'  => [
                     'glpi_networkports.items_id'  => $item->getID(),
-                    'glpi_networkports.itemtype'  => $item::class
+                    'glpi_networkports.itemtype'  => $item::class,
                 ],
-                'GROUP' => 'glpi_networkports.mac'
+                'GROUP' => 'glpi_networkports.mac',
             ];
 
             if ($get_ip) {
@@ -402,11 +402,11 @@ class Link extends CommonDBTM
                             'glpi_networknames'  => 'items_id',
                             'glpi_networkports'  => 'id', [
                                 'AND' => [
-                                    'glpi_networknames.itemtype'  => 'NetworkPort'
-                                ]
-                            ]
-                        ]
-                    ]
+                                    'glpi_networknames.itemtype'  => 'NetworkPort',
+                                ],
+                            ],
+                        ],
+                    ],
                 ];
                 $criteria['WHERE']['glpi_networknames.id'] = null;
             }
@@ -455,7 +455,7 @@ class Link extends CommonDBTM
         ];
 
         if (Toolbox::hasTrait($item::class, AssignableItem::class)) {
-            $group_names = array_map(static fn ($group_id) => Dropdown::getDropdownName('glpi_groups', $group_id), $item->fields['groups_id']);
+            $group_names = array_map(static fn($group_id) => Dropdown::getDropdownName('glpi_groups', $group_id), $item->fields['groups_id']);
             $vars['GROUPS'] = $group_names;
             // GROUP - BC for < GLPI 11
             $vars['GROUP'] = count($group_names) > 0 ? array_shift($group_names) : '';
@@ -493,14 +493,14 @@ class Link extends CommonDBTM
                     $domain_item_table => [
                         'FKEY'   => [
                             $domain_table        => 'id',
-                            $domain_item_table   => 'domains_id'
-                        ]
-                    ]
+                            $domain_item_table   => 'domains_id',
+                        ],
+                    ],
                 ],
                 'WHERE'     => [
                     'itemtype' => $item::class,
-                    'items_id' => $item->getID()
-                ]
+                    'items_id' => $item->getID(),
+                ],
             ]);
             if ($iterator->count()) {
                 $vars['DOMAIN'] = $iterator->current()['name'];
@@ -530,7 +530,7 @@ class Link extends CommonDBTM
                         $common_link,
                         [
                             'IP' => $val['ip'] ?? '',
-                            'MAC' => $val['mac'] ?? ''
+                            'MAC' => $val['mac'] ?? '',
                         ],
                         expect_html: false
                     );
@@ -542,7 +542,7 @@ class Link extends CommonDBTM
         }
 
         if ($safe_url) {
-            $links = array_map(static fn ($l) => URL::sanitizeURL($l) ?: '#', $links);
+            $links = array_map(static fn($l) => URL::sanitizeURL($l) ?: '#', $links);
         }
 
         return $links;
@@ -600,7 +600,7 @@ TWIG, $buttons_params);
                     'name' => $row['name'],
                     'link' => ManualLink::getLinkHtml($row),
                     'comment' => $row['comment'],
-                    'type' => _n('Item', 'Items', 1)
+                    'type' => _n('Item', 'Items', 1),
                 ];
                 $actions = '';
 
@@ -627,7 +627,7 @@ TWIG, $buttons_params);
                         'name' => $link,
                         'link' => $link,
                         'type' => $item::getTypeName(Session::getPluralNumber()),
-                        'comment' => ''
+                        'comment' => '',
                     ];
                 }
             }
@@ -636,13 +636,12 @@ TWIG, $buttons_params);
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'is_tab' => true,
             'nofilter' => true,
-            'nopager' => true,
             'superheader' => '',
             'columns' => [
                 'type' => __('Linked to'),
-                'link' => __('Link'),
-                'comment' => __('Comment'),
-                'actions' => __('Actions')
+                'link' => _n('Link', 'Links', 1),
+                'comment' => _n('Comment', 'Comments', 1),
+                'actions' => _n('Action', 'Actions', Session::getPluralNumber()),
             ],
             'formatters' => [
                 'link' => 'raw_html',
@@ -707,7 +706,7 @@ TWIG, $buttons_params);
                 $i++;
             }
         } else {
-           // Generate files
+            // Generate files
             $files = $item->generateLinkContents($params['link'], $item, false);
             $links = $item->generateLinkContents($params['data'], $item, false);
             $i     = 1;
@@ -717,7 +716,7 @@ TWIG, $buttons_params);
                     // a different name for each file, ex name = foo-[IP].txt
                     $file = $files[$key];
                 } else {
-                   // same name for all files, ex name = foo.txt
+                    // same name for all files, ex name = foo.txt
                     $file = reset($files);
                 }
                 $url             = $CFG_GLPI["root_doc"] . "/front/link.send.php?lID=" . $params['id'] .
@@ -740,7 +739,7 @@ TWIG, $buttons_params);
     {
         $tab = [];
 
-       // "Fake" search options, processing is done in Search::giveItem() for glpi_links._virtual
+        // "Fake" search options, processing is done in Search::giveItem() for glpi_links._virtual
         $newtab = [
             'id'                 => '145',
             'table'              => 'glpi_links',
@@ -754,10 +753,10 @@ TWIG, $buttons_params);
                 'beforejoin'         => [
                     'table'              => 'glpi_links_itemtypes',
                     'joinparams'         => [
-                        'jointype'           => 'itemtypeonly'
-                    ]
-                ]
-            ]
+                        'jointype'           => 'itemtypeonly',
+                    ],
+                ],
+            ],
         ];
 
         $tab[] = $newtab;
@@ -792,21 +791,21 @@ TWIG, $buttons_params);
                 'glpi_links.link AS link',
                 'glpi_links.name AS name',
                 'glpi_links.data AS data',
-                'glpi_links.open_window AS open_window'
+                'glpi_links.open_window AS open_window',
             ],
             'FROM'         => 'glpi_links',
             'INNER JOIN'   => [
                 'glpi_links_itemtypes'  => [
                     'ON' => [
                         'glpi_links_itemtypes'  => 'links_id',
-                        'glpi_links'            => 'id'
-                    ]
-                ]
+                        'glpi_links'            => 'id',
+                    ],
+                ],
             ],
             'WHERE'        => [
                 'glpi_links_itemtypes.itemtype'  => $item::class,
             ] + getEntitiesRestrictCriteria('glpi_links', 'entities_id', $restrict, true),
-            'ORDERBY'      => 'name'
+            'ORDERBY'      => 'name',
         ]);
     }
 
@@ -864,7 +863,7 @@ TWIG, $buttons_params);
             foreach ($this->input['itemtypes'] as $itemtype) {
                 $link_itemtype->add([
                     'links_id' => $this->getID(),
-                    'itemtype' => $itemtype
+                    'itemtype' => $itemtype,
                 ]);
             }
         }
@@ -879,7 +878,7 @@ TWIG, $buttons_params);
         if (isset($this->input['itemtypes'])) {
             $existing_itemtypes = iterator_to_array($DB->request([
                 'FROM' => 'glpi_links_itemtypes',
-                'WHERE' => ['links_id' => $this->getID()]
+                'WHERE' => ['links_id' => $this->getID()],
             ]));
             $link_itemtype = new Link_Itemtype();
             foreach ($existing_itemtypes as $existing_itemtype) {
@@ -891,7 +890,7 @@ TWIG, $buttons_params);
                 if (!in_array($itemtype, array_column($existing_itemtypes, 'itemtype'), true)) {
                     $link_itemtype->add([
                         'links_id' => $this->getID(),
-                        'itemtype' => $itemtype
+                        'itemtype' => $itemtype,
                     ]);
                 }
             }

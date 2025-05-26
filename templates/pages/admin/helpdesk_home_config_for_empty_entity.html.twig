@@ -1,0 +1,112 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2025 Teclib' and contributors.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% set container_id = "glpi-helpdesk-config-container-empty-entity" ~ random() %}
+{% set form_id = "copy-entity-settings-form-" ~ random() %}
+
+<div id="{{ container_id }}">
+    <div
+        data-glpi-helpdesk-config-tiles-empty-entity-original-content
+        class="helpdesk-home-config-for-empty-entity-wrapper"
+    >
+        {{ include('pages/admin/helpdesk_home_config.html.twig', {
+            tiles_manager: tiles_manager,
+            tiles        : [],
+            itemtype_item: itemtype_item,
+            items_id_item: items_id_item,
+            editable     : true,
+            info_text    : info_text,
+        }, with_context: false) }}
+    </div>
+
+    <div
+        class="container-xl ms-0 mt-2"
+        data-glpi-helpdesk-config-tiles-empty-entity-specific
+    >
+        <div class="d-flex flex-column text-muted mb-2">
+            <span>
+                {{ __("There are no tiles defined for this entity.") }}
+            </span>
+            <span>
+                {{ __("The following tiles from the parent entity will be used:") }}
+            </span>
+        </div>
+
+        <div class="row ms-n2 me-n2 mb-3">
+            {{ include('pages/admin/helpdesk_home_config_tiles.html.twig', {
+                'tiles_manager': tiles_manager,
+                'tiles': parent_tiles,
+                'editable': false,
+            }, with_context = false) }}
+        </div>
+
+        <div class="d-flex">
+            <button
+                form="{{ form_id }}"
+                class="btn ms-auto me-2 pointer-events-none"
+                data-glpi-helpdesk-config-tiles-empty-entity-copy-tiles
+            >
+                <i class="ti ti-copy me-2"></i>
+                {{ __("Copy parent entity configuration into this entity") }}
+            </button>
+            <button
+                type="button"
+                class="btn btn-primary pointer-events-none"
+                data-glpi-helpdesk-config-tiles-empty-entity-define-tiles
+            >
+                <i class="ti ti-settings me-2"></i>
+                {{ __("Define tiles for this entity from scratch") }}
+            </button>
+        </div>
+    </div>
+</div>
+
+<form
+    id="{{ form_id }}"
+    method="POST"
+    action="{{ path('/Config/Helpdesk/CopyParentEntity') }}"
+>
+    <input type="hidden" name="entities_id" value="{{ items_id_item }}">
+    <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}"/>
+</form>
+
+{# Start js controller #}
+<script defer type="module">
+    (async () => {
+        const module = await import(
+            "/js/modules/Helpdesk/HelpdeskConfigForEmptyEntityController.js"
+        );
+        new module.GlpiHelpdeskConfigForEmptyEntityController(
+            document.getElementById("{{ container_id }}"),
+        );
+    })();
+</script>

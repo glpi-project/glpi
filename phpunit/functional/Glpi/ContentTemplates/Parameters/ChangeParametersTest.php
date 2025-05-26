@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -47,7 +46,7 @@ class ChangeParametersTest extends AbstractParameters
         $test_entity_id = getItemByTypeName('Entity', '_test_child_2', true);
 
         $this->createItem('ITILCategory', [
-            'name' => 'category_testGetValues'
+            'name' => 'category_testGetValues',
         ]);
 
         $itilcategories_id = getItemByTypeName('ITILCategory', 'category_testGetValues', true);

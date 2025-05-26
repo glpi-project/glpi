@@ -6,7 +6,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -41,5 +40,10 @@ declare namespace Cypress {
         changeEntity(entity: string|number, is_recursive: boolean): Chainable<any>
         validateBreadcrumbs(breadcrumbs: array): Chainable<any>
         validateMenuIsActive(name: string): Chainable<any>
+        updateTestUserSettings(object: settings): Chainable<any>
+        createWithAPI(itemtype: string, values, array): Chainable<any>
+        updateWithAPI(itemtype: string, values, array): Chainable<any>
+        deleteWithAPI(itemtype): Chainable<any>
+        searchWithAPI(itemtype: string, values, array): Chainable<any>
     }
 }

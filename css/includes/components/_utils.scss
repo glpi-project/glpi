@@ -88,3 +88,19 @@
 .pointer-events-none {
     pointer-events: none;
 }
+
+.border-menu {
+    border-color: var(--glpi-mainmenu-bg) !important;
+}
+
+.hover-no-shadow:hover {
+    box-shadow: none !important;
+}
+
+.hover-bg:hover {
+    background-color: var(--glpi-hover-bg) !important;
+}
+
+.border-transparent {
+    border-color: transparent;
+}

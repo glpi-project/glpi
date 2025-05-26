@@ -30,12 +30,18 @@
  * ---------------------------------------------------------------------
  */
 
-/* global _ */
+/* global _, setupAdaptDropdown */
 
 export class GlpiFormServiceCatalogController
 {
-    constructor()
+    /**
+     * @constructor
+     * @param {Object} sort_icons - Icons for sorting
+     */
+    constructor(sort_icons)
     {
+        this.sort_icons = sort_icons;
+
         const input = this.#getFilterInput();
         const filterFormsDebounced = _.debounce(
             this.#filterItems.bind(this), // .bind keep the correct "this" context
@@ -108,6 +114,16 @@ export class GlpiFormServiceCatalogController
                 this.#loadPage(pageLink.get(0));
             }
         });
+
+        // Initialize the sort select after the DOM is ready
+        const sortSelect = document.querySelector('[data-glpi-service-catalog-sort-strategy]');
+        setTimeout(() => {
+            setupAdaptDropdown(window.select2_configs[sortSelect.id])
+                .on('select2:select', (e) => {
+                    const sort_strategy = e.params.data.id;
+                    this.#applySortStrategy(sort_strategy);
+                });
+        }, 0);
     }
 
     async #filterItems()
@@ -176,6 +192,14 @@ export class GlpiFormServiceCatalogController
         );
     }
 
+    async #applySortStrategy(sort_strategy) {
+        const url_params = new URLSearchParams();
+        url_params.set('sort_strategy', sort_strategy);
+        url_params.set('filter', this.#getFilterInput().value); // Keep the current filter
+        url_params.set('page', 1); // Reset to first page when sorting
+        this.#loadItems(url_params);
+    }
+
     #updateBreadcrumb() {
         const breadcrumbContainer = document.querySelector('.breadcrumb');
         breadcrumbContainer.innerHTML = '';
@@ -208,5 +232,10 @@ export class GlpiFormServiceCatalogController
     #getFormsArea()
     {
         return document.querySelector("[data-glpi-service-catalog-items]");
+    }
+
+    getTemplateForSortSelect(data) {
+        const icon = this.sort_icons[data.id];
+        return $(`<span class="w-full" title="${data.text}" aria-label="${data.text}"><i class="${icon}"></i></span>`);
     }
 }

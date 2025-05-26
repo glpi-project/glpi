@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -37,6 +36,7 @@
 
 use Glpi\Asset\AssetDefinition;
 use Glpi\Asset\AssetDefinitionManager;
+use Glpi\Asset\Capacity;
 use Glpi\Dropdown\DropdownDefinition;
 
 class DbTestCase extends \GLPITestCase
@@ -72,7 +72,7 @@ class DbTestCase extends \GLPITestCase
      *
      * @return \Auth
      */
-    protected function login(
+    protected function realLogin(
         string $user_name = TU_USER,
         string $user_pass = TU_PASS,
         bool $noauto = true,
@@ -83,6 +83,33 @@ class DbTestCase extends \GLPITestCase
 
         $auth = new Auth();
         $this->assertEquals($expected, $auth->login($user_name, $user_pass, $noauto));
+
+        return $auth;
+    }
+
+    /**
+     * "Fake" login process (for performances reason), if you need a real login
+     * use the realLogin() method instead.
+     *
+     * The rule engine will not be executed.
+     *
+     * A session will be loaded for the supplied user without checking if his
+     * account is valid.
+     *
+     * The "user_pass" parameter is no longer used but was not removed to
+     * avoid needing to update all the occurences in existings tests.
+     */
+    protected function login(
+        string $user_name = TU_USER,
+        string $user_pass = "",
+    ): \Auth {
+        \Session::destroy();
+        \Session::start();
+
+        $auth = new Auth();
+        $auth->user = getItemByTypeName(User::class, $user_name);
+        $auth->auth_succeded = true;
+        Session::init($auth);
 
         return $auth;
     }
@@ -124,12 +151,18 @@ class DbTestCase extends \GLPITestCase
      */
     protected function checkInput(CommonDBTM $object, $id = 0, $input = [])
     {
-        $this->assertGreaterThan($object instanceof Entity ? -1 : 0, (int)$id);
+        $this->assertGreaterThan($object instanceof Entity ? -1 : 0, (int) $id);
         $this->assertTrue($object->getFromDB($id));
         $this->assertEquals($id, $object->getID());
 
         if (count($input)) {
             foreach ($input as $k => $v) {
+                $this->assertArrayHasKey(
+                    $k,
+                    $object->fields,
+                    "Object not created as expected, field '$k' not found in object " . get_class($object),
+                );
+
                 $this->assertEquals(
                     $v,
                     $object->fields[$k],
@@ -143,12 +176,15 @@ class DbTestCase extends \GLPITestCase
     }
 
     /**
-     * Get all classes in folder inc/
+     * Get classes in src/
      *
-     * @param boolean $function Whether to look for a function
-     * @param array   $excludes List of classes to exclude
+     * Get classes implementing the specified $function, or all classes if $function is false,
+     * excluding classnames matching a pattern in $excludes
      *
-     * @return array
+     * @param string|false $function Whether to look for a function
+     * @param array $excludes List of classes to exclude
+     *
+     * @return array<int, class-string>
      */
     protected static function getClasses($function = false, array $excludes = [])
     {
@@ -168,8 +204,8 @@ class DbTestCase extends \GLPITestCase
             $is_excluded = false;
             foreach ($excludes as $exclude) {
                 if ($classname === $exclude || @preg_match($exclude, $classname) === 1) {
-                     $is_excluded = true;
-                     break;
+                    $is_excluded = true;
+                    break;
                 }
             }
             if ($is_excluded) {
@@ -370,7 +406,7 @@ class DbTestCase extends \GLPITestCase
             'match'        => $builder->getOperator(),
             'condition'    => $builder->getCondition(),
             'is_recursive' => $builder->isRecursive(),
-            'entities_id'  => $builder->getEntity()
+            'entities_id'  => $builder->getEntity(),
         ];
         if ($ranking = $builder->getRanking()) {
             $input['ranking'] = $ranking;
@@ -413,7 +449,7 @@ class DbTestCase extends \GLPITestCase
      * Initialize a definition.
      *
      * @param ?string $system_name
-     * @param array $capacities
+     * @param \Glpi\Asset\Capacity[] $capacities
      * @param ?array $profiles
      *
      * @return AssetDefinition
@@ -433,22 +469,28 @@ class DbTestCase extends \GLPITestCase
             ];
         }
 
+        $capacity_input = array_map(
+            fn(Capacity $capacity) => $capacity->jsonSerialize(),
+            $capacities
+        );
+
         $definition = $this->createItem(
             AssetDefinition::class,
             [
                 'system_name' => $system_name ?? $this->getUniqueString(),
                 'is_active'   => true,
-                'capacities'  => $capacities,
+                'capacities'  => $capacity_input,
                 'profiles'    => $profiles,
                 'fields_display' => [],
             ],
             skip_fields: ['capacities', 'profiles', 'fields_display'] // JSON encoded fields cannot be automatically checked
         );
-        $this->assertEquals(
+
+        $this->assertEqualsCanonicalizing(
             $capacities,
-            $this->callPrivateMethod($definition, 'getDecodedCapacitiesField')
+            array_values($this->callPrivateMethod($definition, 'getDecodedCapacitiesField'))
         );
-        $this->assertEquals(
+        $this->assertEqualsCanonicalizing(
             $profiles,
             $this->callPrivateMethod($definition, 'getDecodedProfilesField')
         );
@@ -518,23 +560,25 @@ class DbTestCase extends \GLPITestCase
     /**
      * Helper method to enable a capacity on the given asset definition
      *
-     * @param AssetDefinition $definition Asset definition
-     * @param string          $capacity   Capacity to enable
+     * @param AssetDefinition $definition           Asset definition
+     * @param string          $capacity_classname   Capacity to enable
      *
      * @return AssetDefinition Updated asset definition
      */
     protected function enableCapacity(
         AssetDefinition $definition,
-        string $capacity
+        string $capacity_classname
     ): AssetDefinition {
         // Add new capacity
-        $capacities = json_decode($definition->fields['capacities']);
-        $capacities[] = $capacity;
+        $existing_capacities = $this->callPrivateMethod($definition, 'getDecodedCapacitiesField');
+
+        $capacity_input = array_map(fn(Capacity $capacity) => $capacity->jsonSerialize(), $existing_capacities);
+        $capacity_input[] = ['name' => $capacity_classname];
 
         $this->updateItem(
             AssetDefinition::class,
             $definition->getID(),
-            ['capacities' => $capacities],
+            ['capacities' => $capacity_input],
             // JSON encoded fields cannot be automatically checked
             skip_fields: ['capacities']
         );
@@ -543,8 +587,8 @@ class DbTestCase extends \GLPITestCase
         $definition->getFromDB($definition->getID());
 
         // Ensure capacity was added
-        $this->assertContains(
-            $capacity,
+        $this->assertArrayHasKey(
+            $capacity_classname,
             $this->callPrivateMethod($definition, 'getDecodedCapacitiesField')
         );
 
@@ -554,27 +598,30 @@ class DbTestCase extends \GLPITestCase
     /**
      * Helper method to disable a capacity on the given asset definition
      *
-     * @param AssetDefinition $definition Asset definition
-     * @param string          $capacity   Capacity to disable
+     * @param AssetDefinition $definition           Asset definition
+     * @param string          $capacity_classname   Capacity to disable
      *
      * @return AssetDefinition Updated asset definition
      */
     protected function disableCapacity(
         AssetDefinition $definition,
-        string $capacity
+        string $capacity_classname
     ): AssetDefinition {
-        // Remove capacity
-        $capacities = json_decode($definition->fields['capacities']);
-        $capacities = array_diff($capacities, [$capacity]);
+        $existing_capacities = $this->callPrivateMethod($definition, 'getDecodedCapacitiesField');
 
-        // Reorder keys to ensure json_decode will return an array instead of an
-        // object
-        $capacities = array_values($capacities);
+        $capacity_input = [];
+        foreach ($existing_capacities as $capacity) {
+            if ($capacity->getName() === $capacity_classname) {
+                continue;
+            }
+
+            $capacity_input[] = $capacity->jsonSerialize();
+        }
 
         $this->updateItem(
             AssetDefinition::class,
             $definition->getID(),
-            ['capacities' => $capacities],
+            ['capacities' => $capacity_input],
             // JSON encoded fields cannot be automatically checked
             skip_fields: ['capacities']
         );
@@ -583,8 +630,8 @@ class DbTestCase extends \GLPITestCase
         $definition->getFromDB($definition->getID());
 
         // Ensure capacity was deleted
-        $this->assertNotContains(
-            $capacity,
+        $this->assertArrayNotHasKey(
+            $capacity_classname,
             $this->callPrivateMethod($definition, 'getDecodedCapacitiesField')
         );
 

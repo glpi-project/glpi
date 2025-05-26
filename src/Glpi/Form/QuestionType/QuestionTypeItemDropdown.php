@@ -41,7 +41,6 @@ use Session;
 
 final class QuestionTypeItemDropdown extends QuestionTypeItem
 {
-    #[Override]
     public function __construct()
     {
         parent::__construct();

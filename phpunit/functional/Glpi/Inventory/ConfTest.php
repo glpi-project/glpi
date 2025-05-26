@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -48,7 +47,7 @@ class ConfTest extends \GLPITestCase
         $expected = [
             'json',
             'xml',
-            'ocs'
+            'ocs',
         ];
 
         $conf = new \Glpi\Inventory\Conf();
@@ -60,17 +59,17 @@ class ConfTest extends \GLPITestCase
         return [
             [
                 'file'      => 'computer.json',
-                'expected'  => true
+                'expected'  => true,
             ], [
                 'file'      => 'anything.xml',
-                'expected'  => true
+                'expected'  => true,
             ], [
                 'file'      => 'another.ocs',
-                'expected'  => true
+                'expected'  => true,
             ], [
                 'file'      => 'computer.xls',
-                'expected'  => false
-            ]
+                'expected'  => false,
+            ],
         ];
     }
 
@@ -89,7 +88,7 @@ class ConfTest extends \GLPITestCase
         foreach ($defaults as $key => $value) {
             $provider[] = [
                 'key'    => $key,
-                'value'  => $value
+                'value'  => $value,
             ];
         }
         return $provider;

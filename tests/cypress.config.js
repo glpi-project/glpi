@@ -6,7 +6,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -32,6 +31,7 @@
  */
 
 const { defineConfig } = require("cypress");
+const execSync = require('child_process');
 
 module.exports = defineConfig({
     viewportWidth: 1920,
@@ -54,6 +54,10 @@ module.exports = defineConfig({
                 }
                 return launchOptions;
             });
+            on('before:run', () => {
+                // Make sure cached content like twig template is cleared before running the tests.
+                execSync.execSync("../bin/console cache:clear --env='testing'");
+            });
             on('task', {
                 log(message) {
                     // eslint-disable-next-line no-console
@@ -64,7 +68,8 @@ module.exports = defineConfig({
                     // eslint-disable-next-line no-console
                     console.table(message);
                     return null;
-                }
+                },
+                generateOTP: require('cypress-otp')
             });
         },
     },

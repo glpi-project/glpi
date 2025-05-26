@@ -76,6 +76,7 @@ class FirewallTest extends \DbTestCase
                     'lostpassword.php' => '',
                     'planning.php' => '',
                     'tracking.injector.php' => '',
+                    'initpassword.php' => '',
                     'updatepassword.php' => '',
                 ],
                 'marketplace' => [
@@ -96,7 +97,7 @@ class FirewallTest extends \DbTestCase
                             'css.php' => '',
                         ],
                         'index.php' => '',
-                    ]
+                    ],
                 ],
                 'myplugindir' => [
                     'pluginb' => [
@@ -149,8 +150,8 @@ class FirewallTest extends \DbTestCase
             // Default strategies
             foreach ($default_mapping as $path => $expected_strategy) {
                 $this->dotestComputeFallbackStrategy(
-                    root_doc:          $root_doc,
-                    path:              $root_doc . $path,
+                    root_doc: $root_doc,
+                    path: $root_doc . $path,
                     expected_strategy: $expected_strategy,
                 );
             }
@@ -159,15 +160,15 @@ class FirewallTest extends \DbTestCase
 
             // `/front/planning.php` has a specific strategy only if some get parameters are defined
             $this->dotestComputeFallbackStrategy(
-                root_doc:          $root_doc,
-                path:              $root_doc . '/front/planning.php',
+                root_doc: $root_doc,
+                path: $root_doc . '/front/planning.php',
                 expected_strategy: $default_for_core_legacy,
             );
 
             $_GET['token'] = 'abc';
             $this->dotestComputeFallbackStrategy(
-                root_doc:          $root_doc,
-                path:              $root_doc . '/front/planning.php',
+                root_doc: $root_doc,
+                path: $root_doc . '/front/planning.php',
                 expected_strategy: 'no_check',
             );
             unset($_GET['token']);
@@ -175,8 +176,8 @@ class FirewallTest extends \DbTestCase
             $legacy_faq_urls = ['/front/helpdesk.faq.php'];
             foreach ($legacy_faq_urls as $faq_url) {
                 $this->dotestComputeFallbackStrategy(
-                    root_doc:          $root_doc,
-                    path:              $root_doc . $faq_url,
+                    root_doc: $root_doc,
+                    path: $root_doc . $faq_url,
                     expected_strategy: 'faq_access',
                 );
             }
@@ -191,13 +192,14 @@ class FirewallTest extends \DbTestCase
                 '/front/locale.php',
                 '/front/login.php',
                 '/front/logout.php',
+                '/front/initpassword.php',
                 '/front/lostpassword.php',
                 '/front/updatepassword.php',
             ];
             foreach ($legacy_no_check_urls as $no_check_url) {
                 $this->dotestComputeFallbackStrategy(
-                    root_doc:          $root_doc,
-                    path:              $root_doc . $no_check_url,
+                    root_doc: $root_doc,
+                    path: $root_doc . $no_check_url,
                     expected_strategy: 'no_check',
                 );
             }
@@ -205,40 +207,40 @@ class FirewallTest extends \DbTestCase
             // Specific strategies defined by plugins
             Firewall::addPluginStrategyForLegacyScripts('myplugin', '#^.*/foo.php#', 'faq_access');
             $this->dotestComputeFallbackStrategy(
-                root_doc:          $root_doc,
-                path:              $root_doc . '/marketplace/myplugin/ajax/foo.php',
+                root_doc: $root_doc,
+                path: $root_doc . '/marketplace/myplugin/ajax/foo.php',
                 expected_strategy: 'faq_access',
             );
             $this->dotestComputeFallbackStrategy(
-                root_doc:          $root_doc,
-                path:              $root_doc . '/marketplace/myplugin/front/foo.php',
+                root_doc: $root_doc,
+                path: $root_doc . '/marketplace/myplugin/front/foo.php',
                 expected_strategy: 'faq_access',
             );
             $this->dotestComputeFallbackStrategy(
-                root_doc:          $root_doc,
-                path:              $root_doc . '/marketplace/myplugin/front/dir/bar.php',
+                root_doc: $root_doc,
+                path: $root_doc . '/marketplace/myplugin/front/dir/bar.php',
                 expected_strategy: $default_for_plugins_legacy, // does not match the pattern
             );
             Firewall::addPluginStrategyForLegacyScripts('myplugin', '#^/front/dir/#', 'helpdesk_access');
             $this->dotestComputeFallbackStrategy(
-                root_doc:          $root_doc,
-                path:              $root_doc . '/marketplace/myplugin/ajax/foo.php',
+                root_doc: $root_doc,
+                path: $root_doc . '/marketplace/myplugin/ajax/foo.php',
                 expected_strategy: 'faq_access',
             );
             $this->dotestComputeFallbackStrategy(
-                root_doc:          $root_doc,
-                path:              $root_doc . '/marketplace/myplugin/front/foo.php',
+                root_doc: $root_doc,
+                path: $root_doc . '/marketplace/myplugin/front/foo.php',
                 expected_strategy: 'faq_access',
             );
             $this->dotestComputeFallbackStrategy(
-                root_doc:          $root_doc,
-                path:              $root_doc . '/marketplace/myplugin/front/dir/bar.php',
+                root_doc: $root_doc,
+                path: $root_doc . '/marketplace/myplugin/front/dir/bar.php',
                 expected_strategy: 'helpdesk_access',
             );
             Firewall::addPluginStrategyForLegacyScripts('myplugin', '#^/PluginRoute$#', 'helpdesk_access');
             $this->dotestComputeFallbackStrategy(
-                root_doc:          $root_doc,
-                path:              $root_doc . '/marketplace/myplugin/PluginRoute',
+                root_doc: $root_doc,
+                path: $root_doc . '/marketplace/myplugin/PluginRoute',
                 expected_strategy: $default_for_symfony_routes, // fallback strategies MUST NOT apply to symfony routes
             );
             Firewall::resetPluginsStrategies();
@@ -270,6 +272,7 @@ class FirewallTest extends \DbTestCase
     public static function provideStrategy(): iterable
     {
         yield ['strategy' => Firewall::STRATEGY_AUTHENTICATED];
+        yield ['strategy' => Firewall::STRATEGY_ADMIN_ACCESS];
         yield ['strategy' => Firewall::STRATEGY_CENTRAL_ACCESS];
         yield ['strategy' => Firewall::STRATEGY_FAQ_ACCESS];
         yield ['strategy' => Firewall::STRATEGY_HELPDESK_ACCESS];
@@ -299,11 +302,42 @@ class FirewallTest extends \DbTestCase
 
     public static function provideStrategyResults(): iterable
     {
+        $admin_users = [
+            TU_USER => TU_PASS,
+            'glpi'  => 'glpi',
+        ];
+
+        foreach ($admin_users as $login => $pass) {
+            yield [
+                'strategy'      => Firewall::STRATEGY_AUTHENTICATED,
+                'credentials'   => [$login, $pass],
+                'exception'     => null,
+            ];
+            yield [
+                'strategy'      => Firewall::STRATEGY_ADMIN_ACCESS,
+                'credentials'   => [$login, $pass],
+                'exception'     => null,
+            ];
+            yield [
+                'strategy'      => Firewall::STRATEGY_CENTRAL_ACCESS,
+                'credentials'   => [$login, $pass],
+                'exception'     => null,
+            ];
+            yield [
+                'strategy'      => Firewall::STRATEGY_FAQ_ACCESS,
+                'credentials'   => [$login, $pass],
+                'exception'     => null,
+            ];
+            yield [
+                'strategy'      => Firewall::STRATEGY_HELPDESK_ACCESS,
+                'credentials'   => [$login, $pass],
+                'exception'     => new AccessDeniedHttpException('The current profile does not use the simplified interface'),
+            ];
+        }
+
         $central_users = [
-            TU_USER     => TU_PASS,
-            'glpi'      => 'glpi',
-            'tech'      => 'tech',
-            'normal'    => 'normal',
+            'tech'   => 'tech',
+            'normal' => 'normal',
         ];
 
         foreach ($central_users as $login => $pass) {
@@ -311,6 +345,11 @@ class FirewallTest extends \DbTestCase
                 'strategy'      => Firewall::STRATEGY_AUTHENTICATED,
                 'credentials'   => [$login, $pass],
                 'exception'     => null,
+            ];
+            yield [
+                'strategy'      => Firewall::STRATEGY_ADMIN_ACCESS,
+                'credentials'   => [$login, $pass],
+                'exception'     => new AccessDeniedHttpException('Missing administration rights.'),
             ];
             yield [
                 'strategy'      => Firewall::STRATEGY_CENTRAL_ACCESS,
@@ -337,6 +376,11 @@ class FirewallTest extends \DbTestCase
                 'strategy'      => Firewall::STRATEGY_AUTHENTICATED,
                 'credentials'   => [$login, $pass],
                 'exception'     => null,
+            ];
+            yield [
+                'strategy'      => Firewall::STRATEGY_ADMIN_ACCESS,
+                'credentials'   => [$login, $pass],
+                'exception'     => new AccessDeniedHttpException('Missing administration rights.'),
             ];
             yield [
                 'strategy'      => Firewall::STRATEGY_CENTRAL_ACCESS,

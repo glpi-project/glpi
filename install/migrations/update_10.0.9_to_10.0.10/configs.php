@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,5 +32,9 @@
  * ---------------------------------------------------------------------
  */
 
+/**
+ * @var \Migration $migration
+ */
+
 // Drop unexpected `['0' => 'system_user']` config added by buggy 9.5.x -> 10.0.0 migration.
-Config::deleteConfigurationValues('core', ['0']);
+$migration->removeConfig(['0']);

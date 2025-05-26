@@ -37,8 +37,12 @@ namespace Glpi\Form;
 
 use CommonDBChild;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\Condition\ConditionableVisibilityInterface;
 use Glpi\Form\Condition\ConditionableVisibilityTrait;
+use Glpi\ItemTranslation\Context\TranslationHandler;
+use Glpi\Form\Condition\ConditionHandler\VisibilityConditionHandler;
+use Glpi\Form\Condition\UsedAsCriteriaInterface;
 use Log;
 use Override;
 use Ramsey\Uuid\Uuid;
@@ -47,9 +51,15 @@ use RuntimeException;
 /**
  * Comment of a given helpdesk form's section
  */
-final class Comment extends CommonDBChild implements BlockInterface, ConditionableVisibilityInterface
+final class Comment extends CommonDBChild implements
+    BlockInterface,
+    ConditionableVisibilityInterface,
+    UsedAsCriteriaInterface
 {
     use ConditionableVisibilityTrait;
+
+    public const TRANSLATION_KEY_NAME = 'comment_name';
+    public const TRANSLATION_KEY_DESCRIPTION = 'comment_description';
 
     public static $itemtype = Section::class;
     public static $items_id = 'forms_sections_id';
@@ -60,6 +70,12 @@ final class Comment extends CommonDBChild implements BlockInterface, Conditionab
     public static function getTypeName($nb = 0)
     {
         return _n('Comment', 'Comments', $nb);
+    }
+
+    #[Override]
+    public function getUUID(): string
+    {
+        return $this->fields['uuid'];
     }
 
     #[Override]
@@ -125,6 +141,41 @@ final class Comment extends CommonDBChild implements BlockInterface, Conditionab
         return $input;
     }
 
+    #[Override]
+    public function listTranslationsHandlers(): array
+    {
+        $key = sprintf('%s: %s', self::getTypeName(), $this->getName());
+        $handlers = [];
+
+        if (!empty($this->fields['name'])) {
+            $handlers[$key][] = new TranslationHandler(
+                item: $this,
+                key: self::TRANSLATION_KEY_NAME,
+                name: __('Comment title'),
+                value: $this->fields['name'],
+            );
+        }
+
+        if (!empty($this->fields['description'])) {
+            $handlers[$key][] = new TranslationHandler(
+                item: $this,
+                key: self::TRANSLATION_KEY_DESCRIPTION,
+                name: __('Comment description'),
+                value: $this->fields['description'],
+            );
+        }
+
+        return $handlers;
+    }
+
+    #[Override]
+    public function getConditionHandlers(
+        ?JsonFieldInterface $question_config
+    ): array {
+        return [new VisibilityConditionHandler()];
+    }
+
+    #[Override]
     public function displayBlockForEditor(): void
     {
         TemplateRenderer::getInstance()->display('pages/admin/form/form_comment.html.twig', [
@@ -133,6 +184,12 @@ final class Comment extends CommonDBChild implements BlockInterface, Conditionab
             'section'    => $this->getItem(),
             'can_update' => $this->getForm()->canUpdate(),
         ]);
+    }
+
+    #[Override]
+    public function getUntitledLabel(): string
+    {
+        return __('Untitled comment');
     }
 
     /**

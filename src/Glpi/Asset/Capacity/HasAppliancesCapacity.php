@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -38,6 +37,7 @@ namespace Glpi\Asset\Capacity;
 use Appliance;
 use Appliance_Item;
 use CommonGLPI;
+use Glpi\Asset\CapacityConfig;
 use Override;
 use Session;
 
@@ -81,13 +81,13 @@ class HasAppliancesCapacity extends AbstractCapacity
         );
     }
 
-    public function onClassBootstrap(string $classname): void
+    public function onClassBootstrap(string $classname, CapacityConfig $config): void
     {
         $this->registerToTypeConfig('appliance_types', $classname);
         CommonGLPI::registerStandardTab($classname, Appliance_Item::class, 85);
     }
 
-    public function onCapacityDisabled(string $classname): void
+    public function onCapacityDisabled(string $classname, CapacityConfig $config): void
     {
         $this->unregisterFromTypeConfig('appliance_types', $classname);
 

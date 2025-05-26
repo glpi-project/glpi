@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -44,7 +43,7 @@ class DatabaseKeysCheckerTest extends \GLPITestCase
     {
         return [
             [
-            // Uncommon is_ flags and dates may have no entry in index
+                // Uncommon is_ flags and dates may have no entry in index
                 'create_table_sql'   => <<<SQL
 CREATE TABLE `%s` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
@@ -55,14 +54,13 @@ CREATE TABLE `%s` (
   `date_of_stuff` tinyint NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB
-SQL
-            ,
+SQL,
                 'expected_missing'   => [],
                 'expected_misnamed'  => [],
                 'expected_useless'   => [],
             ],
             [
-            // All these fields (except name) have NOT expected corresponding key
+                // All these fields (except name) have NOT expected corresponding key
                 'create_table_sql'   => <<<SQL
 CREATE TABLE `%s` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
@@ -79,8 +77,7 @@ CREATE TABLE `%s` (
   `date_mod` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB
-SQL
-            ,
+SQL,
                 'expected_missing'   => [
                     'entities_id'   => ['entities_id'],
                     'is_recursive'  => ['is_recursive'],
@@ -96,7 +93,7 @@ SQL
                 'expected_useless'   => [],
             ],
             [
-            // All these fields (except name) have expected corresponding key
+                // All these fields (except name) have expected corresponding key
                 'create_table_sql'   => <<<SQL
 CREATE TABLE `%s` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
@@ -122,14 +119,13 @@ CREATE TABLE `%s` (
   KEY `date_mod` (`date_mod`),
   KEY `date_creation` (`date_creation`)
 ) ENGINE=InnoDB
-SQL
-            ,
+SQL,
                 'expected_missing'   => [],
                 'expected_misnamed'  => [],
                 'expected_useless'   => [],
             ],
             [
-            // Fields be indexed in a key that contains other keys, but only if they are at first position
+                // Fields be indexed in a key that contains other keys, but only if they are at first position
                 'create_table_sql'   => <<<SQL
 CREATE TABLE `%s` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
@@ -144,8 +140,7 @@ CREATE TABLE `%s` (
   UNIQUE KEY `unicity` (`computers_id`,`is_active`),
   KEY `some_key` (`itemtype_1`,`items_id_1`,`itemtype_2`,`items_id_2`)
 ) ENGINE=InnoDB
-SQL
-            ,
+SQL,
                 'expected_missing'   => [
                     'is_active' => ['is_active'], // Included in `unicity`, but not at first position
                     'item_2' => ['itemtype_2', 'items_id_2'], // Included in `some_key`, but not at first positions
@@ -154,7 +149,7 @@ SQL
                 'expected_useless'   => [],
             ],
             [
-            // Key should match field name when key corresponds to a unique field
+                // Key should match field name when key corresponds to a unique field
                 'create_table_sql'   => <<<SQL
 CREATE TABLE `%s` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
@@ -163,8 +158,7 @@ CREATE TABLE `%s` (
   PRIMARY KEY (`id`),
   KEY `some_key` (`computers_id`)
 ) ENGINE=InnoDB
-SQL
-            ,
+SQL,
                 'expected_missing'   => [],
                 'expected_misnamed'  => [
                     'some_key' => 'computers_id',
@@ -172,7 +166,7 @@ SQL
                 'expected_useless'   => [],
             ],
             [
-            // Key should match `item(_suffix)?` pattern when key corresponds to a itemtype/items_id couple
+                // Key should match `item(_suffix)?` pattern when key corresponds to a itemtype/items_id couple
                 'create_table_sql'   => <<<SQL
 CREATE TABLE `%s` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
@@ -185,8 +179,7 @@ CREATE TABLE `%s` (
   KEY `mainitem` (`itemtype`, `items_id`),
   KEY `some_key` (`itemtype_blablabla`, `items_id_blablabla`)
 ) ENGINE=InnoDB
-SQL
-            ,
+SQL,
                 'expected_missing'   => [],
                 'expected_misnamed'  => [
                     'mainitem' => 'item',
@@ -195,7 +188,7 @@ SQL
                 'expected_useless'   => [],
             ],
             [
-            // Keys are useless if included in larger keys
+                // Keys are useless if included in larger keys
                 'create_table_sql'   => <<<SQL
 CREATE TABLE `%s` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
@@ -210,8 +203,7 @@ CREATE TABLE `%s` (
   KEY `item_link` (`itemtype`,`items_id`,`items_linktype`),
   KEY `item` (`itemtype`,`items_id`)
 ) ENGINE=InnoDB
-SQL
-            ,
+SQL,
                 'expected_missing'   => [],
                 'expected_misnamed'  => [],
                 'expected_useless'   => [
@@ -220,7 +212,7 @@ SQL
                 ],
             ],
             [
-            // Keys are NOT useless if included in FULLTEXT larger keys
+                // Keys are NOT useless if included in FULLTEXT larger keys
                 'create_table_sql'   => <<<SQL
 CREATE TABLE `%s` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
@@ -230,32 +222,29 @@ CREATE TABLE `%s` (
   KEY `name` (`name`),
   FULLTEXT KEY `fulltext` (`name`,`content`)
 ) ENGINE=InnoDB
-SQL
-            ,
+SQL,
                 'expected_missing'   => [],
                 'expected_misnamed'  => [],
                 'expected_useless'   => [],
             ],
             [
-            // name field should be indexed (default name field)
+                // name field should be indexed (default name field)
                 'create_table_sql'   => <<<SQL
 CREATE TABLE `%s` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB
-SQL
-            ,
+SQL,
                 'expected_missing'   => [
                     'name' => ['name'],
                 ],
                 'expected_misnamed'  => [],
                 'expected_useless'   => [],
-                'item_class'         => new class extends \CommonDBTM {
-                },
+                'item_class'         => new class extends \CommonDBTM {},
             ],
             [
-            // name field should be indexed (custom name field)
+                // name field should be indexed (custom name field)
                 'create_table_sql'   => <<<SQL
 CREATE TABLE `%s` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
@@ -264,8 +253,7 @@ CREATE TABLE `%s` (
   PRIMARY KEY (`id`),
   KEY `name` (`name`)
 ) ENGINE=InnoDB
-SQL
-            ,
+SQL,
                 'expected_missing'   => [
                     'test' => ['test'],
                 ],
@@ -279,36 +267,32 @@ SQL
                 },
             ],
             [
-            // name field could be indexed in PRIMARY (default name field)
+                // name field could be indexed in PRIMARY (default name field)
                 'create_table_sql'   => <<<SQL
 CREATE TABLE `%s` (
   `name` varchar(255) NOT NULL,
   `description` text,
   PRIMARY KEY (`name`)
 ) ENGINE=InnoDB
-SQL
-            ,
+SQL,
                 'expected_missing'   => [],
                 'expected_misnamed'  => [],
                 'expected_useless'   => [],
-                'item_class'         => new class extends \CommonDBTM {
-                },
+                'item_class'         => new class extends \CommonDBTM {},
             ],
             [
-            // name field cannot be indexed if it is a text field
+                // name field cannot be indexed if it is a text field
                 'create_table_sql'   => <<<SQL
 CREATE TABLE `%s` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `name` text,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB
-SQL
-            ,
+SQL,
                 'expected_missing'   => [],
                 'expected_misnamed'  => [],
                 'expected_useless'   => [],
-                'item_class'         => new class extends \CommonDBTM {
-                },
+                'item_class'         => new class extends \CommonDBTM {},
             ],
         ];
     }
@@ -327,8 +311,7 @@ SQL
         $table_name = getTableForItemType($itemtype);
 
         if ($item_class === null) {
-            $item_class = new class {
-            };
+            $item_class = new class {};
         }
         class_alias(get_class($item_class), $itemtype);
 

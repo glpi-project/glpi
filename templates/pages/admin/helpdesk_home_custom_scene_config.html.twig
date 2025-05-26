@@ -1,0 +1,177 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2025 Teclib' and contributors.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+
+<div class="container-xl ms-0 mt-3">
+    <h2 class="fs-2 mb-2">
+        {{ __("Custom illustrations") }}
+    </h2>
+
+    {% set is_root_entity = entity.getID() == 0 %}
+    {% if is_root_entity %}
+        {% set options = {
+            (constant("Entity::SCENE_DEFAULT")): __("Default illustration"),
+            (constant("Entity::SCENE_CUSTOM")) : __("Custom illustration"),
+        } %}
+    {% else %}
+        {% set options = {
+            (constant("Entity::SCENE_DEFAULT")): __("Default illustration"),
+            (constant("Entity::SCENE_CUSTOM")) : __("Custom illustration"),
+            (constant("Entity::SCENE_INHERIT")): __("Inherited from parent entity"),
+        } %}
+    {% endif %}
+
+    <form method="POST" action="{{ entity.getFormURL() }}">
+        <div class="row mb-3">
+            {% set sides = [
+                {
+                    id: "left_side",
+                    label: __("Left side"),
+                    dropdown_label: __("Left side configuration"),
+                    field: 'custom_helpdesk_home_scene_left',
+                    config: entity.getSceneConfigForDropdown(
+                        'custom_helpdesk_home_scene_left'
+                    ),
+                    default: constant("Entity::DEFAULT_LEFT_SCENE"),
+                },
+                {
+                    id: "right_side",
+                    label: __("Right side"),
+                    dropdown_label: __("Right side configuration"),
+                    field: 'custom_helpdesk_home_scene_right',
+                    config: entity.getSceneConfigForDropdown(
+                        'custom_helpdesk_home_scene_right'
+                    ),
+                    default: constant("Entity::DEFAULT_RIGHT_SCENE"),
+                },
+            ] %}
+
+            {% for side in sides %}
+                <section
+                    class="col-6"
+                    aria-labelledby="{{ side.id ~ "heading" }}"
+                >
+                    <h3
+                        id="{{ side.id ~ "heading" }}"
+                        class="mb-2 mt-1"
+                    >{{ side.label }}</h3>
+
+                    {# Main value input dropdown #}
+                    <div class="mb-2">
+                        {% do call('Dropdown::showFromArray', [
+                            side.field,
+                            options,
+                            {
+                                value: side.config,
+                                width: "100%",
+                                aria_label: side.dropdown_label,
+                            }
+                        ]) %}
+                    </div>
+
+                    {# Default value preview #}
+                    <section
+                        class="{{ side.config == "default" ? '' : 'd-none' }}"
+                        data-glpi-parent-dropdown="{{ side.field }}"
+                        data-glpi-parent-dropdown-condition="default"
+                        aria-label="{{ __("Default illustration preview") }}"
+                    >
+                        {{ render_scene(side.default, 400) }}
+                    </section>
+
+                    {# Custom value preview #}
+                    <section
+                        class="{{ side.config == "custom" ? '' : 'd-none' }}"
+                        data-glpi-parent-dropdown="{{ side.field }}"
+                        data-glpi-parent-dropdown-condition="custom"
+                        aria-label="{{ __("Custom illustration preview and selection") }}"
+                    >
+                        {% if side.config == "custom" and not entity.fields[side.field] is empty %}
+                            {{ render_scene(
+                                constant(
+                                    'Glpi\\UI\\IllustrationManager::CUSTOM_SCENE_PREFIX'
+                                ) ~ entity.fields[side.field],
+                                400
+                            ) }}
+                        {% endif %}
+
+                        {% do call('Html::file', [
+                            {
+                                'name': side.field,
+                            }
+                        ]) %}
+                    </section>
+
+                    {% if not is_root_entity %}
+                        {# Inherited value preview #}
+                        <section
+                            class="{{ side.config == "inherit" ? '' : 'd-none' }}"
+                            data-glpi-parent-dropdown="{{ side.field }}"
+                            data-glpi-parent-dropdown-condition="inherit"
+                            aria-label="{{ __("Inherited illustration preview") }}"
+                        >
+                            <div class="d-flex flex-column text-muted mb-2">
+                                <span>
+                                    {{ __("The following illustration from the parent entity will be used:") }}
+                                </span>
+                            </div>
+
+                            <div>
+                                {{ render_scene(
+                                    entity.getHelpdeskSceneId(side.field),
+                                    400
+                                ) }}
+                            </div>
+                        </section>
+                    {% endif %}
+                </section>
+            {% endfor %}
+        </div>
+
+        {# Form actions #}
+        <div class="d-flex mb-1">
+            <button class="btn btn-primary ms-auto" name="update">
+                <i class="ti ti-upload me-2"></i>
+                {{ __("Save custom illustrations settings") }}
+            </button>
+        </div>
+
+        <input type="hidden" name="id" value="{{ entity.getID() }}">
+        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+    </form>
+</div>
+
+<script>
+    import("/js/modules/DynamicDropdownController.js")
+        .then((module) => new module.DynamicDropdownController())
+    ;
+</script>

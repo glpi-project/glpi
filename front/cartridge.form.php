@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+require_once(__DIR__ . '/_check_webserver_config.php');
+
 use Glpi\Event;
 
 Session::checkRightsOr(Cartridge::$rightname, [READ, READ_ASSIGNED]);
@@ -56,7 +58,7 @@ if (isset($_POST["add"])) {
         sprintf(__('%s adds cartridges'), $_SESSION["glpiname"])
     );
     Html::back();
-} else if (isset($_POST["purge"])) {
+} elseif (isset($_POST["purge"])) {
     $cartype->check($_POST["cartridgeitems_id"], PURGE);
 
     if ($cart->delete($_POST, 1)) {
@@ -70,7 +72,7 @@ if (isset($_POST["add"])) {
         );
     }
     Html::back();
-} else if (isset($_POST["install"])) {
+} elseif (isset($_POST["install"])) {
     if ($_POST["cartridgeitems_id"]) {
         $cartype->check($_POST["cartridgeitems_id"], UPDATE);
         for ($i = 0; $i < $_POST["nbcart"]; $i++) {
@@ -87,7 +89,7 @@ if (isset($_POST["add"])) {
         }
     }
     Html::redirect(Printer::getFormURLWithID($_POST["printers_id"]));
-} else if (isset($_POST["update"])) {
+} elseif (isset($_POST["update"])) {
     $cart->check($_POST["id"], UPDATE);
 
     if ($cart->update($_POST)) {

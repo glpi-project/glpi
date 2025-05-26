@@ -44,11 +44,11 @@ final class IllustrationManagerTest extends GLPITestCase
     {
         yield [
             'filter' => 'Service',
-            'expected' => ['request-service']
+            'expected' => ['request-service'],
         ];
         yield [
             'filter' => 'backup And restoration',
-            'expected' => ['backup-restoration-1', 'backup-restoration-2']
+            'expected' => ['backup-restoration-1', 'backup-restoration-2'],
         ];
     }
 
@@ -71,9 +71,9 @@ final class IllustrationManagerTest extends GLPITestCase
             'page' => 1,
             'page_size' => 3,
             'expected' => [
-                'approve-requests',
-                'asset-cartridge',
-                'asset-desktop-1',
+                'antivirus',
+                'application',
+                'application-altenative',
             ],
         ];
 
@@ -81,9 +81,9 @@ final class IllustrationManagerTest extends GLPITestCase
             'page' => 2,
             'page_size' => 3,
             'expected' => [
-                'asset-desktop-2',
-                'asset-laptop',
-                'asset-lost',
+                'application-edit',
+                'approve-requests',
+                'asset-cartridge',
             ],
         ];
 
@@ -91,16 +91,16 @@ final class IllustrationManagerTest extends GLPITestCase
             'page' => 1,
             'page_size' => 10,
             'expected' => [
+                'antivirus',
+                'application',
+                'application-altenative',
+                'application-edit',
                 'approve-requests',
                 'asset-cartridge',
                 'asset-desktop-1',
                 'asset-desktop-2',
                 'asset-laptop',
                 'asset-lost',
-                'asset-network-equipment',
-                'asset-peripheral',
-                'asset-phone',
-                'asset-printer',
             ],
         ];
     }

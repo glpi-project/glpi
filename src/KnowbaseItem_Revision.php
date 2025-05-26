@@ -69,12 +69,12 @@ class KnowbaseItem_Revision extends CommonDBTM
             if ($item instanceof KnowbaseItem) {
                 $where = [
                     'knowbaseitems_id' => $item->getID(),
-                    'language'         => ''
+                    'language'         => '',
                 ];
             } else {
                 $where = [
                     'knowbaseitems_id' => $item->fields['knowbaseitems_id'],
-                    'language'         => $item->fields['language']
+                    'language'         => $item->fields['language'],
                 ];
             }
 
@@ -106,7 +106,7 @@ class KnowbaseItem_Revision extends CommonDBTM
         global $DB;
 
         if (isset($_GET["start"])) {
-            $start = (int)$_GET["start"];
+            $start = (int) $_GET["start"];
         } else {
             $start = 0;
         }
@@ -140,11 +140,11 @@ class KnowbaseItem_Revision extends CommonDBTM
         $revisions = $DB->request([
             'FROM' => 'glpi_knowbaseitems_revisions',
             'WHERE' => $where,
-            'ORDER' => 'id DESC'
+            'ORDER' => 'id DESC',
         ]);
         $is_checked = true;
         $author_cache = [
-            $item->fields['users_id'] => $user->getLink()
+            $item->fields['users_id'] => $user->getLink(),
         ];
         $entries = [
             [
@@ -152,8 +152,8 @@ class KnowbaseItem_Revision extends CommonDBTM
                 'selections' => '<input type="radio" name="oldid" value="0" style="visibility:hidden"/><input type="radio" name="diff" value="0" checked="checked"/>',
                 'author' => $author_cache[$item->fields['users_id']],
                 'date_creation' => $item->fields['date_mod'],
-                'actions' => ''
-            ]
+                'actions' => '',
+            ],
         ];
         $show_msg = __s('show');
         $restore_msg = __s('restore');
@@ -193,7 +193,7 @@ HTML;
                 'selections' => $selection_controls,
                 'author' => $author_cache[$revision['users_id']],
                 'date_creation' => $revision['date'],
-                'actions' => $actions
+                'actions' => $actions,
             ];
         }
 
@@ -205,11 +205,11 @@ HTML;
             'nofilter' => true,
             'nosort' => true,
             'columns' => [
-                'number' => __('#'),
+                'number' => '#',
                 'selections' => '',
                 'author' => __('Author'),
                 'date_creation' => __('Creation date'),
-                'actions' => ''
+                'actions' => '',
             ],
             'formatters' => [
                 'selections' => 'raw_html',
@@ -264,8 +264,8 @@ HTML;
             'FROM'   => 'glpi_knowbaseitems_revisions',
             'WHERE'  => [
                 'knowbaseitems_id'   => $this->fields['knowbaseitems_id'],
-                'language'           => $this->fields['language']
-            ]
+                'language'           => $this->fields['language'],
+            ],
         ])->current();
 
         $rev = $result['revision'];

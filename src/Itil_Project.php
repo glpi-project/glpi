@@ -214,7 +214,7 @@ TWIG, $twig_params);
         // insert 'itemtype_label' column after 'item_id' column
         $cols['columns'] = array_merge(
             ['item_id' => $cols['columns']['item_id']],
-            ['itemtype_label' => __('Type')],
+            ['itemtype_label' => _n('Type', 'Types', 1)],
             array_slice($cols['columns'], 1)
         );
         $entries = [];
@@ -228,7 +228,6 @@ TWIG, $twig_params);
         }
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'is_tab' => true,
-            'nopager' => true,
             'nofilter' => true,
             'nosort' => true,
             'columns' => $cols['columns'],
@@ -240,8 +239,8 @@ TWIG, $twig_params);
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
                 'container'     => 'mass' . self::class . mt_rand(),
-                'specific_actions' => ['purge' => _x('button', 'Delete permanently')]
-            ]
+                'specific_actions' => ['purge' => _x('button', 'Delete permanently')],
+            ],
         ]);
     }
 
@@ -270,7 +269,7 @@ TWIG, $twig_params);
         $iterator = $DB->request([
             'SELECT'          => [
                 "$selfTable.id AS linkid",
-                "$projectTable.*"
+                "$projectTable.*",
             ],
             'DISTINCT'        => true,
             'FROM'            => $selfTable,
@@ -343,7 +342,6 @@ TWIG, $twig_params);
 
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'is_tab' => true,
-            'nopager' => true,
             'nofilter' => true,
             'nosort' => true,
             'columns' => $cols['columns'],
@@ -355,7 +353,7 @@ TWIG, $twig_params);
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
                 'container'     => 'mass' . self::class . mt_rand(),
-            ]
+            ],
         ]);
     }
 }

@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -38,7 +37,6 @@ namespace tests\units\Glpi\Api\HL;
 use Glpi\Api\HL\Route;
 use Glpi\Api\HL\Router;
 use Glpi\Api\HL\RouteVersion;
-use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
 use GLPITestCase;

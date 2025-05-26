@@ -91,8 +91,8 @@ class Item_Enclosure extends CommonDBRelation
             'SELECT' => ['id', 'itemtype', 'items_id', 'position'],
             'FROM'   => self::getTable(),
             'WHERE'  => [
-                'enclosures_id' => $enclosure->getID()
-            ]
+                'enclosures_id' => $enclosure->getID(),
+            ],
         ]);
 
         if ($enclosure->canAddItem('itemtype')) {
@@ -103,7 +103,7 @@ class Item_Enclosure extends CommonDBRelation
                 __('Add new item to this enclosure...'),
                 [
                     'enclosure'   => $enclosure->getID(),
-                    'position'  => 1
+                    'position'  => 1,
                 ]
             );
             echo "</div>";
@@ -117,7 +117,7 @@ class Item_Enclosure extends CommonDBRelation
                 'itemtype' => static::class,
                 'id'       => $row['id'],
                 'item'     => $item->getLink(),
-                'position' => $row['position']
+                'position' => $row['position'],
             ];
         }
 
@@ -126,10 +126,10 @@ class Item_Enclosure extends CommonDBRelation
             'nofilter' => true,
             'columns' => [
                 'item' => _n('Item', 'Items', 1),
-                'position' => __('Position')
+                'position' => __('Position'),
             ],
             'formatters' => [
-                'item' => 'raw_html'
+                'item' => 'raw_html',
             ],
             'entries' => $entries,
             'total_number' => count($entries),
@@ -178,25 +178,25 @@ class Item_Enclosure extends CommonDBRelation
             [
                 'display_emptychoice'   => true,
                 'value'                 => $this->fields["itemtype"],
-                'rand'                  => $rand
+                'rand'                  => $rand,
             ]
         );
 
-       //get all used items
+        //get all used items
         $used = [];
         $iterator = $DB->request([
-            'FROM'   => $this->getTable()
+            'FROM'   => $this->getTable(),
         ]);
         foreach ($iterator as $row) {
             $used [$row['itemtype']][] = $row['items_id'];
         }
 
-       // get used items by racks
+        // get used items by racks
         $iterator = $DB->request([
             'FROM'  => Item_Rack::getTable(),
             'WHERE' => [
-                'is_reserved' => 0
-            ]
+                'is_reserved' => 0,
+            ],
         ]);
         foreach ($iterator as $row) {
             $used [$row['itemtype']][] = $row['items_id'];
@@ -211,14 +211,14 @@ class Item_Enclosure extends CommonDBRelation
                 'name'      => 'items_id',
                 'value'     => $this->fields['items_id'],
                 'rand'      => $rand,
-                'used'      => $used
+                'used'      => $used,
             ]
         );
 
-       //TODO: update possible positions according to selected item number of units
-       //TODO: update positions on rack selection
-       //TODO: update hpos from item model info is_half_rack
-       //TODO: update orientation according to item model depth
+        //TODO: update possible positions according to selected item number of units
+        //TODO: update positions on rack selection
+        //TODO: update hpos from item model info is_half_rack
+        //TODO: update orientation according to item model depth
 
         echo "</td>";
         echo "<td><label for='dropdown_items_id$rand'>" . _sn('Item', 'Items', 1) . "</label></td>";
@@ -229,7 +229,7 @@ class Item_Enclosure extends CommonDBRelation
             $itemtype::dropdown([
                 'name'   => "items_id",
                 'value'  => $this->fields['items_id'],
-                'rand'   => $rand
+                'rand'   => $rand,
             ]);
         } else {
             Dropdown::showFromArray(
@@ -237,7 +237,7 @@ class Item_Enclosure extends CommonDBRelation
                 [],
                 [
                     'display_emptychoice'   => true,
-                    'rand'                  => $rand
+                    'rand'                  => $rand,
                 ]
             );
         }
@@ -259,7 +259,7 @@ class Item_Enclosure extends CommonDBRelation
                 'min'    => 1,
                 'step'   => 1,
                 'used'   => $enclosure->getFilled($this->fields['itemtype'], $this->fields['items_id']),
-                'rand'   => $rand
+                'rand'   => $rand,
             ]
         );
         echo "</td>";
@@ -291,7 +291,7 @@ class Item_Enclosure extends CommonDBRelation
     {
         $error_detected = [];
 
-       //check for requirements
+        //check for requirements
         if (
             ($this->isNewItem() && (!isset($input['itemtype']) || empty($input['itemtype'])))
             || (isset($input['itemtype']) && empty($input['itemtype']))

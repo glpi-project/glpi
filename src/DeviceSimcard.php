@@ -51,19 +51,19 @@ class DeviceSimcard extends CommonDevice
                 [
                     'name'  => 'devicesimcardtypes_id',
                     'label' => _n('Type', 'Types', 1),
-                    'type'  => 'dropdownValue'
+                    'type'  => 'dropdownValue',
                 ],
                 [
                     'name'  => 'voltage',
                     'label' => __('Voltage'),
                     'type'  => 'integer',
                     'min'   => 0,
-                    'unit'  => 'mV'
+                    'unit'  => 'mV',
                 ],
                 [
                     'name'  => 'allow_voip',
                     'label' => __('Allow VOIP'),
-                    'type'  => 'bool'
+                    'type'  => 'bool',
                 ],
             ]
         );
@@ -86,7 +86,7 @@ class DeviceSimcard extends CommonDevice
             'table'              => 'glpi_devicesimcardtypes',
             'field'              => 'name',
             'name'               => _n('Type', 'Types', 1),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -94,7 +94,7 @@ class DeviceSimcard extends CommonDevice
             'table'              => static::getTable(),
             'field'              => 'allow_voip',
             'name'               => __('Allow VOIP'),
-            'datatype'           => 'bool'
+            'datatype'           => 'bool',
         ];
 
         return $tab;
@@ -111,7 +111,7 @@ class DeviceSimcard extends CommonDevice
 
     public static function getIcon()
     {
-        return "fas fa-sim-card";
+        return "ti ti-device-sim";
     }
 
     public function getRights($interface = 'central')

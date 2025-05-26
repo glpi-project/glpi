@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -50,34 +49,9 @@ function update910to911()
     $updateresult     = true;
     $ADDTODISPLAYPREF = [];
 
-   //TRANS: %s is the number of new version
-    $migration->displayTitle(sprintf(__('Update to %s'), '9.1.1'));
     $migration->setVersion('9.1.1');
 
-    $backup_tables = false;
-   // table already exist but deleted during the migration
-   // not table created during the migration
-   // not table created during the migration
-    $newtables     = [];
-
-    foreach ($newtables as $new_table) {
-       // rename new tables if exists ?
-        if ($DB->tableExists($new_table)) {
-            $migration->dropTable("backup_$new_table");
-            $migration->displayWarning("$new_table table already exists. " .
-                                    "A backup have been done to backup_$new_table.");
-            $backup_tables = true;
-            $migration->renameTable("$new_table", "backup_$new_table");
-        }
-    }
-    if ($backup_tables) {
-        $migration->displayWarning(
-            "You can delete backup tables if you have no need of them.",
-            true
-        );
-    }
-
-   // rectify missing right in 9.1 update
+    // rectify missing right in 9.1 update
     if (countElementsInTable("glpi_profilerights", ['name' => 'license']) == 0) {
         $prights = $DB->request(['FROM' => 'glpi_profilerights', 'WHERE' => ['name' => 'software']]);
         foreach ($prights as $profrights) {
@@ -87,15 +61,15 @@ function update910to911()
                     'id'           => null,
                     'profiles_id'  => $profrights['profiles_id'],
                     'name'         => "license",
-                    'rights'       => $profrights['rights']
+                    'rights'       => $profrights['rights'],
                 ]
             );
         }
     }
 
-   //put you migration script here
+    //put you migration script here
 
-   // ************ Keep it at the end **************
+    // ************ Keep it at the end **************
     $migration->executeMigration();
 
     return $updateresult;

@@ -40,6 +40,7 @@ use DbTestCase;
 use DropdownTranslation;
 use Entity;
 use Glpi\Asset\AssetDefinition;
+use Glpi\Asset\Capacity;
 use Glpi\Asset\Capacity\HasInfocomCapacity;
 use Glpi\Dropdown\DropdownDefinition;
 use Glpi\Message\MessageType;
@@ -117,7 +118,7 @@ class AbstractPluginMigrationTest extends DbTestCase
         $expected_messages = [
             [
                 'type' => MessageType::Error,
-                'message' => 'An unexpected error occured.',
+                'message' => 'An unexpected error occurred',
             ],
         ];
         $this->assertEquals($expected_messages, $result->getMessages());
@@ -195,7 +196,7 @@ class AbstractPluginMigrationTest extends DbTestCase
             ],
             [
                 'type' => MessageType::Error,
-                'message' => 'An unexpected error occured.',
+                'message' => 'An unexpected error occurred',
             ],
         ];
         $this->assertEquals($expected_messages, $result->getMessages());
@@ -274,7 +275,7 @@ class AbstractPluginMigrationTest extends DbTestCase
             ],
             [
                 'type' => MessageType::Error,
-                'message' => 'An unexpected error occured.',
+                'message' => 'An unexpected error occurred',
             ],
         ];
         $this->assertEquals($expected_messages, $result->getMessages());
@@ -564,14 +565,14 @@ class AbstractPluginMigrationTest extends DbTestCase
                     'itemtype'   => TaskCategory::class,
                     'language'   => 'fr_FR',
                     'field'      => 'name',
-                    'value'      => 'FR - _cat_1'
+                    'value'      => 'FR - _cat_1',
                 ],
                 [
                     'items_id'   => $cat_1_id,
                     'itemtype'   => TaskCategory::class,
                     'language'   => 'es_SP',
                     'field'      => 'name',
-                    'value'      => 'ES - _cat_1'
+                    'value'      => 'ES - _cat_1',
                 ],
             ]);
         });
@@ -589,7 +590,7 @@ class AbstractPluginMigrationTest extends DbTestCase
                 $my_imported_cat = $this->importItem(
                     $definition->getDropdownClassName(),
                     [
-                        'name' => 'Test category'
+                        'name' => 'Test category',
                     ]
                 );
 
@@ -661,7 +662,7 @@ class AbstractPluginMigrationTest extends DbTestCase
                     'language' => 'fr_FR',
                     'field'    => 'name',
                     'value'    => 'FR - _cat_1',
-                ]
+                ],
             ],
             \array_values($copied_translations)
         );
@@ -673,7 +674,7 @@ class AbstractPluginMigrationTest extends DbTestCase
         $definition = $this->initAssetDefinition(
             'MyCustomAsset',
             capacities: [
-                HasInfocomCapacity::class,
+                new Capacity(name: HasInfocomCapacity::class),
             ]
         );
 
@@ -933,7 +934,7 @@ class AbstractPluginMigrationTest extends DbTestCase
             }
 
             return new \ArrayIterator([
-                $result
+                $result,
             ]);
         });
 

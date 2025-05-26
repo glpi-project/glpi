@@ -59,6 +59,11 @@ export class GlpiFormFieldDestinationAssociatedItem {
     #specific_values_template;
 
     /**
+     * @type {number}
+     */
+    #last_used_dropdown_index = 0;
+
+    /**
      * @param {jQuery<HTMLElement>} specific_values_extra_field
      */
     constructor(
@@ -151,8 +156,7 @@ export class GlpiFormFieldDestinationAssociatedItem {
             }
         });
 
-
-        const id = getUUID();
+        const id = this.#last_used_dropdown_index++;
         const itemtype_select_id = field.find(`select[name="${itemtype_name}"]`).attr('id');
 
         // Replace the old id by the new one

@@ -1,0 +1,102 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2025 Teclib' and contributors.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+<div class="d-flex flex-row-reverse align-items-center justify-content-between">
+    <div class="d-flex flex-row-reverse">
+        <button
+            class="btn btn-primary ms-2"
+            name="update"
+            type="submit"
+            formaction="{{ path('/Form/%d/Destination/%d/Update'|format(form.getID(), destination.getID())) }}"
+            formmethod="post"
+        >
+            <i class="ti ti-device-floppy me-2"></i>
+            {{ __("Update item") }}
+        </button>
+        {% if destination.canPurgeItem() %}
+            <button
+                class="btn btn-ghost-danger"
+                name="purge"
+                type="submit"
+                formaction="{{ path('/Form/%d/Destination/%d/Purge'|format(form.getID(), destination.getID())) }}"
+                formmethod="post"
+            >
+                <i class="ti ti-trash me-2"></i>
+                {{ __("Delete") }}
+            </button>
+        {% endif %}
+    </div>
+    <div>
+        <button
+            title="{{ __('Configure creation conditions') }}"
+            data-bs-toggle="dropdown"
+            data-bs-auto-close="outside"
+            class="dropdown-toggle btn btn-outline-secondary btn-sm px-2"
+            data-bs-placement="top"
+            type="button"
+        >
+            {% set selected_strategy = destination.getConfiguredCreationStrategy() %}
+            {% for strategy in enum_cases('Glpi\\Form\\Condition\\CreationStrategy') %}
+                {% set is_visible = selected_strategy == strategy %}
+                {% set display_class = is_visible ? 'd-flex' : 'd-none' %}
+                <div
+                    class="{{ display_class }} align-items-center"
+                    data-glpi-editor-condition-badge="{{ strategy.value }}"
+                >
+                    <i class="{{ strategy.getIcon() }} me-1"></i>
+                    <span>{{ strategy.getLabel() }}</span>
+                </div>
+            {% endfor %}
+        </button>
+        <div
+            class="dropdown-menu dropdown-menu-end dropdown-menu-card animate__animated animate__zoomIn"
+        >
+            <div class="card visibility-dropdown-card">
+                <div class="card-body">
+                    <h3 class="card-title d-flex align-items-center">
+                        <i class="ti ti-circuit-changeover me-2"></i>
+                        {{ __('Conditions') }}
+                    </h3>
+
+                    {{ include(
+                        "pages/admin/form/destination_visibility_conditions_configuration.html.twig",
+                        {
+                            destination: destination,
+                            form: form,
+                        },
+                        with_context: false
+                    ) }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

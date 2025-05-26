@@ -36,11 +36,20 @@
 namespace Glpi\Form\QuestionType;
 
 use CartridgeItem;
+use CommonDBTM;
 use ConsumableItem;
 use Dropdown;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\JsonFieldInterface;
+use Glpi\Form\Condition\ConditionHandler\ItemAsTextConditionHandler;
+use Glpi\Form\Export\Context\DatabaseMapper;
+use Glpi\Form\Export\Serializer\DynamicExportDataField;
+use Glpi\Form\Export\Specification\DataRequirementSpecification;
 use Glpi\Form\Migration\FormQuestionDataConverterInterface;
+use Glpi\Form\Condition\ConditionHandler\ItemConditionHandler;
+use Glpi\Form\Condition\UsedAsCriteriaInterface;
 use Glpi\Form\Question;
+use InvalidArgumentException;
 use Line;
 use Override;
 use PassiveDCEquipment;
@@ -49,12 +58,11 @@ use Session;
 use Software;
 use TicketRecurrent;
 
-class QuestionTypeItem extends AbstractQuestionType implements FormQuestionDataConverterInterface
+class QuestionTypeItem extends AbstractQuestionType implements FormQuestionDataConverterInterface, UsedAsCriteriaInterface
 {
     protected string $itemtype_aria_label;
     protected string $items_id_aria_label;
 
-    #[Override]
     public function __construct()
     {
         parent::__construct();
@@ -66,11 +74,15 @@ class QuestionTypeItem extends AbstractQuestionType implements FormQuestionDataC
     #[Override]
     public function formatDefaultValueForDB(mixed $value): ?string
     {
+        if (is_array($value) && isset($value['items_id'])) {
+            $value = $value['items_id'];
+        }
+
         if (!is_numeric($value)) {
             return null;
         }
 
-        return json_encode((new QuestionTypeItemDefaultValueConfig((int) $value))->jsonSerialize());
+        return json_encode(new QuestionTypeItemDefaultValueConfig((int) $value));
     }
 
     #[Override]
@@ -117,7 +129,7 @@ class QuestionTypeItem extends AbstractQuestionType implements FormQuestionDataC
             ),
             __('Management') => $CFG_GLPI['management_types'],
             __('Tools') => $CFG_GLPI['tools_types'],
-            __('Administration') => $CFG_GLPI['admin_types']
+            __('Administration') => $CFG_GLPI['admin_types'],
         ];
     }
 
@@ -234,7 +246,7 @@ class QuestionTypeItem extends AbstractQuestionType implements FormQuestionDataC
 
             {% if question == null %}
                 <script>
-                    import("{{ js_path('js/modules/Forms/QuestionItem.js') }}").then((m) => {
+                    import("/js/modules/Forms/QuestionItem.js").then((m) => {
                         new m.GlpiFormQuestionTypeItem({{ question_type|json_encode|raw }});
                     });
                 </script>
@@ -296,7 +308,7 @@ TWIG;
     }
 
     #[Override]
-    public function formatRawAnswer(mixed $answer): string
+    public function formatRawAnswer(mixed $answer, Question $question): string
     {
         $item = $answer['itemtype']::getById($answer['items_id']);
         if (!$item) {
@@ -307,7 +319,7 @@ TWIG;
     }
 
     #[Override]
-    public function getCategory(): QuestionTypeCategory
+    public function getCategory(): QuestionTypeCategoryInterface
     {
         return QuestionTypeCategory::ITEM;
     }
@@ -340,5 +352,103 @@ TWIG;
     public function getDefaultValueConfigClass(): ?string
     {
         return QuestionTypeItemDefaultValueConfig::class;
+    }
+
+    #[Override]
+    public function getConditionHandlers(
+        ?JsonFieldInterface $question_config
+    ): array {
+        if (!$question_config instanceof QuestionTypeItemExtraDataConfig) {
+            throw new InvalidArgumentException();
+        }
+
+        return array_merge(
+            parent::getConditionHandlers($question_config),
+            [
+                new ItemConditionHandler($question_config->getItemtype()),
+                new ItemAsTextConditionHandler($question_config->getItemtype()),
+            ],
+        );
+    }
+
+    public function exportDynamicDefaultValue(
+        ?JsonFieldInterface $extra_data_config,
+        array|int|float|bool|string|null $default_value_config,
+    ): DynamicExportDataField {
+        $requirements = [];
+        $fallback = parent::exportDynamicDefaultValue(
+            $extra_data_config,
+            $default_value_config
+        );
+
+        // Stop here if one of the parameters is empty or invalid
+        if ($extra_data_config === null || !is_array($default_value_config)) {
+            return $fallback;
+        }
+
+        // Validate configuration values
+        $default_value_config = $this->getDefaultValueConfig($default_value_config);
+        if (
+            !$default_value_config instanceof QuestionTypeItemDefaultValueConfig
+            || !$extra_data_config instanceof QuestionTypeItemExtraDataConfig
+            || $extra_data_config->getItemtype() === null
+            || !is_a($extra_data_config->getItemtype(), CommonDBTM::class, true)
+            || empty($default_value_config->getItemsId())
+        ) {
+            return $fallback;
+        }
+
+        $default_value_data = $default_value_config->jsonSerialize();
+
+        // Load linked item
+        /** @var class-string<\CommonDBTM> $itemtype */
+        $itemtype = $extra_data_config->getItemtype();
+        $item = $itemtype::getById(
+            $default_value_config->getItemsId()
+        );
+
+        // Replace id and register requirement
+        $key = QuestionTypeItemDefaultValueConfig::KEY_ITEMS_ID;
+        $default_value_data[$key] = $item->getName();
+        $requirements[] = new DataRequirementSpecification(
+            $itemtype,
+            $item->getName(),
+        );
+
+        return new DynamicExportDataField($default_value_data, $requirements);
+    }
+
+    #[Override]
+    public static function prepareDynamicDefaultValueForImport(
+        ?array $extra_data,
+        array|int|float|bool|string|null $default_value_data,
+        DatabaseMapper $mapper,
+    ): array|int|float|bool|string|null {
+        $fallback = parent::prepareDynamicDefaultValueForImport(
+            $extra_data,
+            $default_value_data,
+            $mapper,
+        );
+
+        // Validate we have two valid configs
+        if ($extra_data == null || $default_value_data === null) {
+            return $fallback;
+        }
+
+        // Validate config values
+        $itemtype = $extra_data[QuestionTypeItemExtraDataConfig::ITEMTYPE] ?? "";
+        $name = $default_value_data[QuestionTypeItemDefaultValueConfig::KEY_ITEMS_ID] ?? "";
+        if (
+            !(getItemForItemtype($itemtype) instanceof CommonDBTM)
+            || empty($name)
+        ) {
+            return $fallback;
+        }
+
+        // Find item id
+        $id = $mapper->getItemId($itemtype, $name);
+        $default_value_data[QuestionTypeItemDefaultValueConfig::KEY_ITEMS_ID] = $id;
+
+        return $default_value_data;
     }
 }

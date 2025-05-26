@@ -6,7 +6,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -39,8 +38,8 @@ describe ('Form editor', () => {
     });
 
     it('can add a new question and verify it is not within a horizontal block', () => {
-        // Add a new question
-        cy.findByRole('button', {'name': 'Add a new question'}).click();
+        // Add a question
+        cy.findByRole('button', {'name': 'Add a question'}).click();
 
         // Check if the question isn't in a horizontal block
         cy.findByRole('region', {'name': 'Horizontal blocks layout'}).should('not.exist');
@@ -50,21 +49,21 @@ describe ('Form editor', () => {
         cy.findByRole('button', {'name': 'Add a horizontal layout'}).click();
         cy.findByRole('region', {'name': 'Horizontal blocks layout'}).within(() => {
             // Placeholder toolbars must be hidden when the placeholder is not active
-            cy.findByRole('button', {'name': 'Add a new question'}).should('not.exist');
+            cy.findByRole('button', {'name': 'Add a question'}).should('not.exist');
 
             cy.findAllByRole('option', {'name': 'Form horizontal block placeholder'}).eq(0).click();
             cy.findAllByRole('option', {'name': 'Form horizontal block placeholder'}).eq(0)
-                .findByRole('button', {'name': 'Add a new question'}).click();
+                .findByRole('button', {'name': 'Add a question'}).click();
             cy.findByRole('region', {'name': 'Question details'}).within(() => {
                 cy.findByRole('textbox', {'name': 'Question name'}).type('First question');
                 cy.getDropdownByLabelText("Question type").selectDropdownValue('Short answer');
                 cy.getDropdownByLabelText("Question sub type").selectDropdownValue('Text');
             });
 
-            // Add a new comment from the other placeholder
+            // Add a comment from the other placeholder
             cy.findByRole('option', {'name': 'Form horizontal block placeholder'}).click();
             cy.findByRole('option', {'name': 'Form horizontal block placeholder'})
-                .findByRole('button', {'name': 'Add a new comment'}).click();
+                .findByRole('button', {'name': 'Add a comment'}).click();
             cy.findByRole('region', {'name': 'Comment details'}).within(() => {
                 cy.findByRole('textbox', {'name': 'Comment title'}).type('Comment title');
                 cy.findByLabelText("Comment description")
@@ -93,10 +92,10 @@ describe ('Form editor', () => {
         cy.findByRole('region', {'name': 'Horizontal blocks layout'}).within(() => {
             cy.findAllByRole('option', {'name': 'Form horizontal block placeholder'}).should('have.length', 2);
             for (let index = 3; index < 5; index++) {
-                cy.findByRole('button', {'name': 'Add a new slot'}).click();
+                cy.findByRole('button', {'name': 'Add a slot'}).click();
                 cy.findAllByRole('option', {'name': 'Form horizontal block placeholder'}).should('have.length', index);
             }
-            cy.findByRole('button', {'name': 'Add a new slot'}).should('not.exist');
+            cy.findByRole('button', {'name': 'Add a slot'}).should('not.exist');
         });
     });
 
@@ -104,16 +103,16 @@ describe ('Form editor', () => {
     it('should not allow adding more than 4 questions in a horizontal block using placeholder toolbar', () => {
         cy.findByRole('button', {'name': 'Add a horizontal layout'}).click();
         cy.findByRole('region', {'name': 'Horizontal blocks layout'}).within(() => {
-            cy.findByRole('button', {'name': 'Add a new slot'}).click();
-            cy.findByRole('button', {'name': 'Add a new slot'}).click();
+            cy.findByRole('button', {'name': 'Add a slot'}).click();
+            cy.findByRole('button', {'name': 'Add a slot'}).click();
 
             for (let index = 0; index < 4; index++) {
                 // Focus the first placeholder
                 cy.findAllByRole('option', {'name': 'Form horizontal block placeholder'}).eq(0).click();
 
-                // Add a new question
+                // Add a question
                 cy.findAllByRole('option', {'name': 'Form horizontal block placeholder'}).eq(0)
-                    .findByRole('button', {'name': 'Add a new question'}).click();
+                    .findByRole('button', {'name': 'Add a question'}).click();
             }
         });
     });
@@ -124,9 +123,9 @@ describe ('Form editor', () => {
             // Focus the first placeholder
             cy.findAllByRole('option', {'name': 'Form horizontal block placeholder'}).eq(0).click();
 
-            // Add a new question
+            // Add a question
             cy.findAllByRole('option', {'name': 'Form horizontal block placeholder'}).eq(0)
-                .findByRole('button', {'name': 'Add a new question'}).click();
+                .findByRole('button', {'name': 'Add a question'}).click();
 
             for (let index = 0; index < 3; index++) {
                 // Duplicate the question
@@ -138,7 +137,7 @@ describe ('Form editor', () => {
         cy.findAllByRole('button', {'name': 'Duplicate question'}).should('not.exist');
 
         // Check that the new slot button disappears
-        cy.findByRole('button', {'name': 'Add a new slot'}).should('not.exist');
+        cy.findByRole('button', {'name': 'Add a slot'}).should('not.exist');
     });
 
     it('can save a form with a horizontal block with only one question', () => {
@@ -148,7 +147,7 @@ describe ('Form editor', () => {
             cy.findAllByRole('option', {'name': 'Form horizontal block placeholder'}).eq(0).click();
 
             cy.findAllByRole('option', {'name': 'Form horizontal block placeholder'}).eq(0)
-                .findByRole('button', {'name': 'Add a new question'}).click();
+                .findByRole('button', {'name': 'Add a question'}).click();
             cy.findByRole('region', {'name': 'Question details'}).within(() => {
                 cy.findByRole('textbox', {'name': 'Question name'}).type('First question');
                 cy.getDropdownByLabelText("Question type").selectDropdownValue('Short answer');
@@ -173,9 +172,9 @@ describe ('Form editor', () => {
             // Focus the first placeholder
             cy.findAllByRole('option', {'name': 'Form horizontal block placeholder'}).eq(0).click();
 
-            // Add a new question
+            // Add a question
             cy.findAllByRole('option', {'name': 'Form horizontal block placeholder'}).eq(0)
-                .findByRole('button', {'name': 'Add a new question'}).click();
+                .findByRole('button', {'name': 'Add a question'}).click();
             cy.findByRole('region', {'name': 'Question details'}).within(() => {
                 cy.findByRole('textbox', {'name': 'Question name'}).type('First question');
             });
@@ -183,9 +182,9 @@ describe ('Form editor', () => {
             // Focus the second placeholder
             cy.findAllByRole('option', {'name': 'Form horizontal block placeholder'}).eq(0).click();
 
-            // Add a new question
+            // Add a question
             cy.findAllByRole('option', {'name': 'Form horizontal block placeholder'}).eq(0)
-                .findByRole('button', {'name': 'Add a new question'}).click();
+                .findByRole('button', {'name': 'Add a question'}).click();
             cy.findAllByRole('region', {'name': 'Question details'}).eq(1).within(() => {
                 cy.findByRole('textbox', {'name': 'Question name'}).type('Second question');
             });

@@ -37,7 +37,7 @@
 // since version 0.84
 class CartridgeItem_PrinterModel extends CommonDBRelation
 {
-   // From CommonDBRelation
+    // From CommonDBRelation
     public static $itemtype_1          = 'CartridgeItem';
     public static $items_id_1          = 'cartridgeitems_id';
 
@@ -138,7 +138,7 @@ class CartridgeItem_PrinterModel extends CommonDBRelation
                 $rand     = mt_rand();
                 Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
                 $massiveactionparams = ['num_displayed' => min($_SESSION['glpilist_limit'], count($used)),
-                    'container'     => 'mass' . __CLASS__ . $rand
+                    'container'     => 'mass' . __CLASS__ . $rand,
                 ];
                 Html::showMassiveActions($massiveactionparams);
             }
@@ -171,8 +171,8 @@ class CartridgeItem_PrinterModel extends CommonDBRelation
                             'field'      => 40, // printer model
                             'searchtype' => 'equals',
                             'value'      => $data["id"],
-                        ]
-                    ]
+                        ],
+                    ],
                 ];
                 $url = Printer::getSearchURL() . "?" . Toolbox::append_params($opt, '&amp;');
                 echo "<td class='center'><a href='" . $url . "'>" . htmlescape($data["name"]) . "</a></td>";

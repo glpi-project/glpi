@@ -6,7 +6,6 @@
  # http://glpi-project.org
  #
  # @copyright 2015-2025 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -79,7 +78,7 @@
                     <h3>
                         <span class="status status-{{ primary_ok ? 'green' : primary_unknown ? 'muted' : 'red' }}">
                             <span class="status-dot status-dot-animated"></span>
-                            {{ primary_ok ? _x('status', 'Up') : primary_unknown ? _x('status', 'Unkown') : _x('status', 'Down') }}
+                            {{ primary_ok ? _x('status', 'Up') : primary_unknown ? _x('status', 'Unknown') : _x('status', 'Down') }}
                         </span>
                         <span class="mx-2">{{ __('Primary') }} ({{ primary_dbhost }})</span>
                         {% if not primary_unknown %}
@@ -148,7 +147,7 @@
                     <h3>
                         <span class="status status-{{ replica_ok ? 'green' : replica_unkown ? 'muted' : 'red' }}">
                             <span class="status-dot status-dot-animated"></span>
-                            {{ replica_ok ? _x('status', 'Up') : replica_unkown ? _x('status', 'Unkown') : _x('status', 'Down') }}
+                            {{ replica_ok ? _x('status', 'Up') : replica_unkown ? _x('status', 'Unknown') : _x('status', 'Down') }}
                         </span>
                         <span class="mx-1">{{ __('Replica') }} ({{ replica_data['host'] }})</span>
                         {% if not replica_unkown %}

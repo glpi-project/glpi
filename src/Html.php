@@ -34,6 +34,7 @@
  */
 
 use donatj\UserAgent\UserAgentParser;
+use Glpi\Application\Environment;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\AssetDefinition;
 use Glpi\Asset\AssetDefinitionManager;
@@ -49,6 +50,7 @@ use Glpi\Toolbox\FrontEnd;
 use Glpi\Toolbox\URL;
 use Glpi\UI\ThemeManager;
 use ScssPhp\ScssPhp\Compiler;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Html Class
@@ -250,10 +252,10 @@ class Html
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-       // Php 5.3 : number_format() expects parameter 1 to be double,
+        // Php 5.3 : number_format() expects parameter 1 to be double,
         if ($number === '') {
             $number = 0;
-        } else if ($number === "-") { // used for not defines value (from Infocom::Amort, p.e.)
+        } elseif ($number === "-") { // used for not defines value (from Infocom::Amort, p.e.)
             return "-";
         }
 
@@ -263,7 +265,7 @@ class Html
             $decimal = $forcedecimal;
         }
 
-       // Edit : clean display for mysql
+        // Edit : clean display for mysql
         if ($edit) {
             return number_format($number, $decimal, '.', '');
         }
@@ -289,7 +291,7 @@ class Html
      **/
     public static function timestampToString($time, $display_sec = true, $use_days = true)
     {
-        $time = (float)$time;
+        $time = (float) $time;
 
         $sign = '';
         if ($time < 0) {
@@ -298,7 +300,7 @@ class Html
         }
         $time = floor($time);
 
-       // Force display seconds if time is null
+        // Force display seconds if time is null
         if ($time < MINUTE_TIMESTAMP) {
             $display_sec = true;
         }
@@ -307,19 +309,19 @@ class Html
         if ($use_days) {
             if ($units['day'] > 0) {
                 if ($display_sec) {
-                     //TRANS: %1$s is the sign (-or empty), %2$d number of days, %3$d number of hours,
-                     //       %4$d number of minutes, %5$d number of seconds
-                     return sprintf(
-                         __('%1$s%2$d days %3$d hours %4$d minutes %5$d seconds'),
-                         $sign,
-                         $units['day'],
-                         $units['hour'],
-                         $units['minute'],
-                         $units['second']
-                     );
+                    //TRANS: %1$s is the sign (-or empty), %2$d number of days, %3$d number of hours,
+                    //       %4$d number of minutes, %5$d number of seconds
+                    return sprintf(
+                        __('%1$s%2$d days %3$d hours %4$d minutes %5$d seconds'),
+                        $sign,
+                        $units['day'],
+                        $units['hour'],
+                        $units['minute'],
+                        $units['second']
+                    );
                 }
-              //TRANS:  %1$s is the sign (-or empty), %2$d number of days, %3$d number of hours,
-              //        %4$d number of minutes
+                //TRANS:  %1$s is the sign (-or empty), %2$d number of days, %3$d number of hours,
+                //        %4$d number of minutes
                 return sprintf(
                     __('%1$s%2$d days %3$d hours %4$d minutes'),
                     $sign,
@@ -336,8 +338,8 @@ class Html
 
         if ($units['hour'] > 0) {
             if ($display_sec) {
-               //TRANS:  %1$s is the sign (-or empty), %2$d number of hours, %3$d number of minutes,
-               //        %4$d number of seconds
+                //TRANS:  %1$s is the sign (-or empty), %2$d number of hours, %3$d number of minutes,
+                //        %4$d number of seconds
                 return sprintf(
                     __('%1$s%2$d hours %3$d minutes %4$d seconds'),
                     $sign,
@@ -346,13 +348,13 @@ class Html
                     $units['second']
                 );
             }
-           //TRANS: %1$s is the sign (-or empty), %2$d number of hours, %3$d number of minutes
+            //TRANS: %1$s is the sign (-or empty), %2$d number of hours, %3$d number of minutes
             return sprintf(__('%1$s%2$d hours %3$d minutes'), $sign, $units['hour'], $units['minute']);
         }
 
         if ($units['minute'] > 0) {
             if ($display_sec) {
-               //TRANS:  %1$s is the sign (-or empty), %2$d number of minutes,  %3$d number of seconds
+                //TRANS:  %1$s is the sign (-or empty), %2$d number of minutes,  %3$d number of seconds
                 return sprintf(
                     __('%1$s%2$d minutes %3$d seconds'),
                     $sign,
@@ -360,7 +362,7 @@ class Html
                     $units['second']
                 );
             }
-           //TRANS: %1$s is the sign (-or empty), %2$d number of minutes
+            //TRANS: %1$s is the sign (-or empty), %2$d number of minutes
             return sprintf(
                 _n('%1$s%2$d minute', '%1$s%2$d minutes', $units['minute']),
                 $sign,
@@ -369,7 +371,7 @@ class Html
         }
 
         if ($display_sec) {
-           //TRANS:  %1$s is the sign (-or empty), %2$d number of seconds
+            //TRANS:  %1$s is the sign (-or empty), %2$d number of seconds
             return sprintf(
                 _n('%1$s%2$s second', '%1$s%2$s seconds', $units['second']),
                 $sign,
@@ -470,7 +472,7 @@ class Html
     public static function displayMessageAfterRedirect(bool $display_container = true)
     {
         TemplateRenderer::getInstance()->display('components/messages_after_redirect_toasts.html.twig', [
-            'display_container' => $display_container
+            'display_container' => $display_container,
         ]);
     }
 
@@ -671,7 +673,7 @@ class Html
         $out               = "";
         $multiple          = false;
         $close_string      = '';
-       // Manage multiple confirmation
+        // Manage multiple confirmation
         foreach ($string as $tab) {
             if (is_array($tab)) {
                 $multiple      = true;
@@ -681,7 +683,7 @@ class Html
                 $close_string .= "return true;} else { return false;}";
             }
         }
-       // manage simple confirmation
+        // manage simple confirmation
         if (!$multiple) {
             $out          .= "if (window.confirm(";
             $out          .= json_encode(implode("\n", $string));
@@ -706,9 +708,17 @@ class Html
      *
      *
      * @return string|void Generated HTML if `display` param is true, void otherwise.
-     **/
+     *
+     * @deprecated 11.0.0
+     */
     public static function progressBar($id, array $options = [])
     {
+        Toolbox::deprecated(
+            '`Html::progressBar()` is deprecated.'
+            . ' Use the `Html::getProgressBar()` method to get a static progress bar HTML snippet,'
+            . ' or the `ProgressIndicator` JS module to display a progress bar related to a process progression.'
+        );
+
         $params = [
             'create'    => false,
             'message'   => null,
@@ -809,15 +819,20 @@ HTML;
      * @param array  $options See {@link Html::progressBar()} for available options (excluding message)
      *
      * @return string|void
+     *
      * @deprecated 11.0.0
-     * @see Html::progressBar()
-     **/
+     */
     public static function createProgressBar($msg = null, array $options = [])
     {
-        Toolbox::deprecated('Html::createProgressBar is deprecated. Use Html::progressBar instead.');
+        Toolbox::deprecated(
+            '`Html::createProgressBar()` is deprecated.'
+            . ' Use the `Html::getProgressBar()` method to get a static progress bar HTML snippet,'
+            . ' or the `ProgressIndicator` JS module to display a progress bar related to a process progression.'
+        );
+
         $options = array_replace([
             'create' => true,
-            'display' => true
+            'display' => true,
         ], $options);
         $options['message'] = $msg;
 
@@ -833,9 +848,16 @@ HTML;
      * @param string $msg message under the bar
      *
      * @return void
-     **/
+     *
+     * @deprecated 11.0.0
+     */
     public static function changeProgressBarMessage($msg = "&nbsp;")
     {
+        Toolbox::deprecated(
+            '`Html::changeProgressBarMessage()` is deprecated.'
+            . ' Use the `ProgressIndicator` JS module to display a progress bar related to a process progression.'
+        );
+
         self::progressBar('doaction_progress', ['message' => $msg]);
         self::glpi_flush();
     }
@@ -849,14 +871,21 @@ HTML;
      * @param string $msg   message inside the bar (default is %)
      *
      * @return void
-     **/
+     *
+     * @deprecated 11.0.0
+     */
     public static function changeProgressBarPosition($crt, $tot, $msg = "")
     {
+        Toolbox::deprecated(
+            '`Html::changeProgressBarPosition()` is deprecated.'
+            . ' Use the `ProgressIndicator` JS module to display a progress bar related to a process progression.'
+        );
+
         $options = [];
 
         if (!$tot) {
             $options['percent'] = 0;
-        } else if ($crt > $tot) {
+        } elseif ($crt > $tot) {
             $options['percent'] = 100;
         } else {
             $options['percent'] = 100 * $crt / $tot;
@@ -882,9 +911,17 @@ HTML;
      *            - forcepadding : boolean force str_pad to force refresh (default true)
      *
      * @return void
-     **/
+     *
+     * @deprecated 11.0.0
+     */
     public static function displayProgressBar($width, $percent, $options = [])
     {
+        Toolbox::deprecated(
+            '`Html::displayProgressBar()` is deprecated.'
+            . ' Use the `Html::getProgressBar()` method to get a static progress bar HTML snippet,'
+            . ' or the `ProgressIndicator` JS module to display a progress bar related to a process progression.'
+        );
+
         $param['title']        = __('Progress');
         $param['simple']       = false;
         $param['forcepadding'] = true;
@@ -1132,21 +1169,17 @@ TWIG,
         // Sortable required for drag and drop of display preferences and some other things like dashboards, kanban, etc
         Html::requireJs('sortable');
 
-       //file upload is required... almost everywhere.
+        //file upload is required... almost everywhere.
         Html::requireJs('fileupload');
 
-       // load fuzzy search everywhere
+        // load fuzzy search everywhere
         Html::requireJs('fuzzy');
 
-       // load glpi dailog everywhere
+        // load glpi dailog everywhere
         Html::requireJs('glpi_dialog');
 
-       // load log filters everywhere
+        // load log filters everywhere
         Html::requireJs('log_filters');
-
-        if (isset($_SESSION['glpihighcontrast_css']) && $_SESSION['glpihighcontrast_css']) {
-            $tpl_vars['high_contrast'] = true;
-        }
 
         $tpl_vars['css_files'][] = ['path' => 'lib/tabler.css'];
         $tpl_vars['css_files'][] = ['path' => 'css/glpi.scss'];
@@ -1168,7 +1201,7 @@ TWIG,
         $tpl_vars['js_files'][] = ['path' => 'js/common_ajax_controller.js'];
         $tpl_vars['js_files'][] = ['path' => 'js/common.js'];
 
-       // Search
+        // Search
         $tpl_vars['js_modules'][] = ['path' => 'js/modules/Search/ResultsView.js'];
         $tpl_vars['js_modules'][] = ['path' => 'js/modules/Search/Table.js'];
 
@@ -1185,6 +1218,8 @@ TWIG,
 
 
     /**
+     * Get menu layout information.
+     * This does not include any plugin menu info.
      * @since 0.90
      *
      * @return array
@@ -1211,7 +1246,7 @@ TWIG,
                     AssetDefinitionManager::getInstance()->getCustomObjectClassNames(),
                     $CFG_GLPI['devices_in_menu']
                 ),
-                'icon'    => 'ti ti-package'
+                'icon'    => 'ti ti-package',
             ],
         ];
 
@@ -1224,10 +1259,10 @@ TWIG,
                 'title' => __('Assistance'),
                 'types' => [
                     'Ticket', ServiceCatalog::class, 'Problem', 'Change',
-                    'Planning', 'Stat', 'TicketRecurrent', 'RecurrentChange'
+                    'Planning', 'Stat', 'TicketRecurrent', 'RecurrentChange',
                 ],
-                'icon'    => 'ti ti-headset'
-            ]
+                'icon'    => 'ti ti-headset',
+            ],
         ];
 
         if ($can_read_dashboard && strlen($default_asset_helpdesk) > 0) {
@@ -1240,23 +1275,23 @@ TWIG,
                 'types' => [
                     'SoftwareLicense', 'Budget', 'Supplier', 'Contact', 'Contract',
                     'Document', 'Line', 'Certificate', 'Datacenter', 'Cluster', 'Domain',
-                    'Appliance', 'Database'
+                    'Appliance', 'Database',
                 ],
-                'icon'  => 'ti ti-wallet'
+                'icon'  => 'ti ti-wallet',
             ],
             'tools' => [
                 'title' => __('Tools'),
                 'types' => [
                     'Project', 'Reminder', 'RSSFeed', 'KnowbaseItem',
                     'ReservationItem', 'Report',
-                    'SavedSearch', 'Impact'
+                    'SavedSearch', 'Impact',
                 ],
-                'icon' => 'ti ti-briefcase'
+                'icon' => 'ti ti-briefcase',
             ],
             'plugins' => [
                 'title' => _n('Plugin', 'Plugins', Session::getPluralNumber()),
                 'types' => [],
-                'icon'  => 'ti ti-puzzle'
+                'icon'  => 'ti ti-puzzle',
             ],
             'admin' => [
                 'title' => __('Administration'),
@@ -1265,7 +1300,7 @@ TWIG,
                     'Profile', 'QueuedNotification', 'Glpi\System\Log\LogViewer',
                     'Glpi\Inventory\Inventory', 'Glpi\Form\Form',
                 ],
-                'icon'  => 'ti ti-shield-check'
+                'icon'  => 'ti ti-shield-check',
             ],
             'config' => [
                 'title' => __('Setup'),
@@ -1275,7 +1310,7 @@ TWIG,
                     'SLM', 'Config', 'FieldUnicity', 'CronTask', 'Auth',
                     'OAuthClient', 'MailCollector', 'Link', 'Plugin',
                 ],
-                'icon'  => 'ti ti-settings'
+                'icon'  => 'ti ti-settings',
             ],
 
             // special items
@@ -1306,14 +1341,14 @@ TWIG,
 
         if (
             $force
-            || GLPI_ENVIRONMENT_TYPE === GLPI::ENV_DEVELOPMENT
+            || Environment::get()->shouldExpectResourcesToChange()
             || !isset($_SESSION['glpimenu'])
             || !is_array($_SESSION['glpimenu'])
             || (count($_SESSION['glpimenu']) == 0)
         ) {
             $menu = self::getMenuInfos();
 
-           // Permit to plugins to add entry to others sector !
+            // Permit to plugins to add entry to others sector !
             if (isset($PLUGIN_HOOKS[Hooks::MENU_TOADD]) && count($PLUGIN_HOOKS[Hooks::MENU_TOADD])) {
                 foreach ($PLUGIN_HOOKS[Hooks::MENU_TOADD] as $plugin => $items) {
                     if (!Plugin::isPluginActive($plugin)) {
@@ -1337,8 +1372,8 @@ TWIG,
                         }
                     }
                 }
-               // Move Setup menu ('config') to the last position in $menu (always last menu),
-               // in case some plugin inserted a new top level menu
+                // Move Setup menu ('config') to the last position in $menu (always last menu),
+                // in case some plugin inserted a new top level menu
                 $categories = array_keys($menu);
                 $menu += array_splice($menu, array_search('config', $categories, true), 1);
             }
@@ -1348,7 +1383,7 @@ TWIG,
                     foreach ($entries['types'] as $type) {
                         $data = $type::getMenuContent();
                         if ($data) {
-                          // Multi menu entries management
+                            // Multi menu entries management
                             if (isset($data['is_multi_entries']) && $data['is_multi_entries']) {
                                 if (!isset($menu[$category]['content'])) {
                                     $menu[$category]['content'] = [];
@@ -1361,17 +1396,17 @@ TWIG,
                                 $menu[$category]['title'] = $data['title'];
                             }
                             if (!isset($menu[$category]['default']) && isset($data['default'])) {
-                                   $menu[$category]['default'] = $data['default'];
+                                $menu[$category]['default'] = $data['default'];
                             }
                         }
                     }
                 }
-               // Define default link :
+                // Define default link :
                 if (! isset($menu[$category]['default']) && isset($menu[$category]['content']) && count($menu[$category]['content'])) {
                     foreach ($menu[$category]['content'] as $val) {
                         if (isset($val['page'])) {
-                             $menu[$category]['default'] = $val['page'];
-                             break;
+                            $menu[$category]['default'] = $val['page'];
+                            break;
                         }
                     }
                 }
@@ -1383,7 +1418,7 @@ TWIG,
                 'Peripheral',
                 'NetworkEquipment',
                 'Phone',
-                'Printer'
+                'Printer',
             ];
 
             foreach ($allassets as $type) {
@@ -1446,9 +1481,9 @@ TWIG,
                         'links' => [
                             'search'    => Ticket::getSearchURL(),
                             'lists'     => '',
-                        ]
-                    ]
-                ]
+                        ],
+                    ],
+                ],
             ];
 
             if (Session::haveRight("ticket", CREATE)) {
@@ -1523,7 +1558,7 @@ TWIG,
      */
     public static function getMenuSectorForItemtype(string $itemtype): ?string
     {
-        $menu = self::getMenuInfos();
+        $menu = self::generateMenuSession();
         foreach ($menu as $sector => $params) {
             if (array_key_exists('types', $params) && in_array($itemtype, $params['types'])) {
                 return $sector;
@@ -1620,25 +1655,23 @@ TWIG,
          */
         global $CFG_GLPI, $FOOTER_LOADED;
 
-       // If in modal : display popFooter
+        // If in modal : display popFooter
         if (isset($_REQUEST['_in_modal']) && $_REQUEST['_in_modal']) {
             return self::popFooter();
         }
 
-       // Print foot for every page
+        // Print foot for every page
         if ($FOOTER_LOADED) {
             return;
         }
         $FOOTER_LOADED = true;
-
-        echo self::getCoreVariablesForJavascript(true);
 
         if (isset($CFG_GLPI['notifications_ajax']) && $CFG_GLPI['notifications_ajax'] && !Session::isImpersonateActive()) {
             $options = [
                 'interval'  => ($CFG_GLPI['notifications_ajax_check_interval'] ?: 5) * 1000,
                 'sound'     => $CFG_GLPI['notifications_ajax_sound'] ?: false,
                 'icon'      => ($CFG_GLPI["notifications_ajax_icon_url"] ? $CFG_GLPI['root_doc'] . $CFG_GLPI['notifications_ajax_icon_url'] : false),
-                'user_id'   => Session::getLoginUserID()
+                'user_id'   => Session::getLoginUserID(),
             ];
             $js = "$(function() {
             notifications_ajax = new GLPINotificationsAjax(" . json_encode($options) . ");
@@ -1652,7 +1685,7 @@ TWIG,
             'js_modules' => [],
         ];
 
-       // On demand scripts
+        // On demand scripts
         foreach ($_SESSION['glpi_js_toload'] ?? [] as $scripts) {
             if (!is_array($scripts)) {
                 $scripts = [$scripts];
@@ -1663,9 +1696,9 @@ TWIG,
         }
         $_SESSION['glpi_js_toload'] = [];
 
-       // Locales for js libraries
+        // Locales for js libraries
         if (isset($_SESSION['glpilanguage'])) {
-           // select2
+            // select2
             $filename = sprintf(
                 'lib/select2/js/i18n/%s.js',
                 $CFG_GLPI["languages"][$_SESSION['glpilanguage']][2]
@@ -1681,7 +1714,10 @@ TWIG,
 
         self::displayMessageAfterRedirect();
         \Glpi\Debug\Profiler::getInstance()->stopAll();
-        if ($_SESSION['glpi_use_mode'] === Session::DEBUG_MODE && !str_starts_with($_SERVER['PHP_SELF'], $CFG_GLPI['root_doc'] . '/install/')) {
+        if (
+            $_SESSION['glpi_use_mode'] === Session::DEBUG_MODE
+            && !str_starts_with(Request::createFromGlobals()->getPathInfo(), '/install/')
+        ) {
             $tpl_vars['debug_info'] = \Glpi\Debug\Profile::getCurrent()->getDebugInfo();
         }
 
@@ -1710,7 +1746,7 @@ TWIG,
         /** @var bool $HEADER_LOADED */
         global $HEADER_LOADED;
 
-       // Print a nice HTML-head for help page
+        // Print a nice HTML-head for help page
         if ($HEADER_LOADED) {
             return;
         }
@@ -1718,17 +1754,17 @@ TWIG,
 
         self::includeHeader($title);
 
-       // force layout to horizontal if not connected
+        // force layout to horizontal if not connected
         if (!Session::getLoginUserID()) {
             $_SESSION['glpipage_layout'] = "horizontal";
         }
 
-       // construct menu from passed links
+        // construct menu from passed links
         $menu = [];
         foreach ($links as $label => $url) {
             $menu[] = [
                 'title'   => $label,
-                'default' => $url
+                'default' => $url,
             ];
         }
 
@@ -1870,12 +1906,12 @@ TWIG,
             return;
         }
         $HEADER_LOADED = true;
-       // Print a nice HTML-head with no controls
+        // Print a nice HTML-head with no controls
 
-       // Send UTF8 Headers
+        // Send UTF8 Headers
         header("Content-Type: text/html; charset=UTF-8");
 
-       // Send extra expires header if configured
+        // Send extra expires header if configured
         self::header_nocache();
 
         self::includeHeader($title);
@@ -1914,7 +1950,7 @@ TWIG,
         /** @var bool $HEADER_LOADED */
         global $HEADER_LOADED;
 
-       // Print a nice HTML-head for every page
+        // Print a nice HTML-head for every page
         if ($HEADER_LOADED) {
             return;
         }
@@ -1972,7 +2008,7 @@ TWIG,
         }
         $FOOTER_LOADED = true;
 
-       // Print foot
+        // Print foot
         self::loadJavascript();
         self::displayMessageAfterRedirect();
         echo "</body></html>";
@@ -1983,18 +2019,15 @@ TWIG,
      * Flushes the system write buffers of PHP and whatever backend PHP is using (CGI, a web server, etc).
      * This attempts to push current output all the way to the browser with a few caveats.
      * @see https://www.sitepoint.com/php-streaming-output-buffering-explained/
-     **/
+     *
+     * @deprecated 11.0.0
+     */
     public static function glpi_flush()
     {
-
-        if (
-            function_exists("ob_flush")
-            && (ob_get_length() !== false)
-        ) {
-            ob_flush();
-        }
-
-        flush();
+        trigger_error(
+            '`Html::glpi_glush()` no longer has any effect.',
+            E_USER_WARNING
+        );
     }
 
 
@@ -2031,7 +2064,7 @@ TWIG,
                       name='_checkall_$rand' id='checkall_$rand'
                       onclick= \"if ( checkAsCheckboxes(this, '$container_id', '.massive_action_checkbox')) {return true;}\">";
 
-       // permit to shift select checkboxes
+        // permit to shift select checkboxes
         $out .= Html::scriptBlock("\$(function() {\$('#$container_id input[type=\"checkbox\"]').shiftSelectable();});");
 
         return $out;
@@ -2069,22 +2102,22 @@ TWIG,
             !empty($params['tag_for_massive'])
             || !empty($params['container_id'])
         ) {
-           // Filtering on the container !
+            // Filtering on the container !
             if (!empty($params['container_id'])) {
                 $criterion = '#' . $params['container_id'] . ' ';
             } else {
                 $criterion = '';
             }
 
-           // We only want the checkbox input
+            // We only want the checkbox input
             $criterion .= 'input[type="checkbox"]';
 
-           // Only the given massive tag !
+            // Only the given massive tag !
             if (!empty($params['tag_for_massive'])) {
                 $criterion .= '[data-glpicore-cb-massive-tags~="' . $params['tag_for_massive'] . '"]';
             }
 
-           // Only enabled checkbox
+            // Only enabled checkbox
             $criterion .= ':enabled';
 
             return $criterion;
@@ -2215,7 +2248,7 @@ TWIG,
      * @since 0.84
      *
      * @param string  $itemtype  Massive action itemtype
-     * @param integer $id        ID of the item
+     * @param string|integer $id        ID of the item
      * @param array   $options
      *
      * @return string
@@ -2248,7 +2281,7 @@ TWIG,
      * @since 0.84
      *
      * @param string  $itemtype  Massive action itemtype
-     * @param integer $id        ID of the item
+     * @param string|integer $id        ID of the item
      * @param array   $options
      *
      * @return void
@@ -2327,6 +2360,7 @@ TWIG,
      *    - confirm          : string of confirm message before massive action
      *    - item             : CommonDBTM object that has to be passed to the actions
      *    - tag_to_send      : the tag of the elements to send to the ajax window (default: common)
+     *    - action_button_classes : string of classes to add to the action button
      *    - display          : display or return the generated html (default true)
      *
      * @return bool|string     the html if display parameter is false, or true
@@ -2336,27 +2370,28 @@ TWIG,
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-       /// TODO : permit to pass several itemtypes to show possible actions of all types : need to clean visibility management after
+        /// TODO : permit to pass several itemtypes to show possible actions of all types : need to clean visibility management after
 
-        $p['ontop']             = true;
-        $p['num_displayed']     = -1;
-        $p['forcecreate']       = false;
-        $p['check_itemtype']    = '';
-        $p['check_items_id']    = '';
-        $p['is_deleted']        = false;
-        $p['extraparams']       = [];
-        $p['width']             = 800;
-        $p['height']            = 400;
-        $p['specific_actions']  = [];
-        $p['add_actions']       = [];
-        $p['confirm']           = '';
-        $p['rand']              = '';
-        $p['container']         = '';
-        $p['display_arrow']     = true;
-        $p['title']             = _n('Action', 'Actions', Session::getPluralNumber());
-        $p['item']              = false;
-        $p['tag_to_send']       = 'common';
-        $p['display']           = true;
+        $p['ontop']                 = true;
+        $p['num_displayed']         = -1;
+        $p['forcecreate']           = false;
+        $p['check_itemtype']        = '';
+        $p['check_items_id']        = '';
+        $p['is_deleted']            = false;
+        $p['extraparams']           = [];
+        $p['width']                 = 800;
+        $p['height']                = 400;
+        $p['specific_actions']      = [];
+        $p['add_actions']           = [];
+        $p['confirm']               = '';
+        $p['rand']                  = '';
+        $p['container']             = '';
+        $p['display_arrow']         = true;
+        $p['title']                 = _n('Action', 'Actions', Session::getPluralNumber());
+        $p['item']                  = false;
+        $p['tag_to_send']           = 'common';
+        $p['action_button_classes'] = 'btn btn-sm btn-primary me-2';
+        $p['display']               = true;
 
         foreach ($options as $key => $val) {
             if (isset($p[$key])) {
@@ -2388,7 +2423,7 @@ TWIG,
             $p['extraparams']['item_items_id'] = $p['item']->getID();
         }
 
-       // Manage modal window
+        // Manage modal window
         if (isset($_REQUEST['_is_modal']) && $_REQUEST['_is_modal']) {
             $p['extraparams']['hidden']['_is_modal'] = 1;
         }
@@ -2418,7 +2453,7 @@ TWIG,
                 }
             }
         } else {
-           // Create Modal window on top
+            // Create Modal window on top
             if (
                 $p['ontop']
                 || (isset($p['forcecreate']) && $p['forcecreate'])
@@ -2454,7 +2489,7 @@ TWIG,
             }
             $out .= "<a role=\"button\" title='" . __s('Massive actions') . "'
                      data-bs-toggle='tooltip' data-bs-placement='" . ($p['ontop'] ? "bottom" : "top") . "'
-                     class='btn btn-sm btn-primary me-2' ";
+                     class='{$p['action_button_classes']}' ";
             if (is_array($p['confirm'] || strlen($p['confirm']))) {
                 $out .= self::addConfirmationOnAction($p['confirm'], "modal_massiveaction_window$identifier.show();");
             } else {
@@ -2471,7 +2506,7 @@ TWIG,
                 !$p['ontop']
                 || (isset($p['forcecreate']) && $p['forcecreate'])
             ) {
-               // Clean selection
+                // Clean selection
                 $_SESSION['glpimassiveactionselected'] = [];
             }
         }
@@ -2557,8 +2592,8 @@ TWIG,
             </button>"
          : "";
         $clear_btn = $p['clear_btn'] && $p['maybeempty'] && $p['canedit']
-         ? "<button type='button' class='btn btn-outline-secondary btn-sm' data-toggle title='" . __s('Clear') . "'>
-                    <i class='ti ti-circle-x' data-clear></i>
+         ? "<button type='button' class='btn btn-outline-secondary btn-sm' data-toggle data-clear title='" . __s('Clear') . "'>
+                    <i class='ti ti-circle-x'></i>
                 </button>"
          : "";
 
@@ -2727,24 +2762,24 @@ JS;
         $date_value = '';
         $hour_value = '';
         if (!empty($p['value'])) {
-            list($date_value, $hour_value) = explode(' ', $p['value']);
+            [$date_value, $hour_value] = explode(' ', $p['value']);
         }
 
         if (!empty($p['mintime'])) {
-           // Check time in interval
+            // Check time in interval
             if (!empty($hour_value) && ($hour_value < $p['mintime'])) {
                 $hour_value = $p['mintime'];
             }
         }
 
         if (!empty($p['maxtime'])) {
-           // Check time in interval
+            // Check time in interval
             if (!empty($hour_value) && ($hour_value > $p['maxtime'])) {
                 $hour_value = $p['maxtime'];
             }
         }
 
-       // reconstruct value to be valid
+        // reconstruct value to be valid
         if (!empty($date_value)) {
             $p['value'] = $date_value . ' ' . $hour_value;
         }
@@ -2857,7 +2892,7 @@ JS;
         }
         $rand   = mt_rand();
         $output = '';
-       // Validate value
+        // Validate value
         if (
             ($value != 'NOW')
             && ($value != 'TODAY')
@@ -2890,7 +2925,7 @@ JS;
             $dates,
             ['value'   => $value,
                 'display' => false,
-                'rand'    => $rand
+                'rand'    => $rand,
             ]
         );
         $field_id   = Html::cleanId("dropdown__select_$element$rand");
@@ -2902,7 +2937,7 @@ JS;
         $params     = ['value'         => '__VALUE__',
             'name'          => $element,
             'withtime'      => $p['with_time'],
-            'specificvalue' => $specific_value
+            'specificvalue' => $specific_value,
         ];
 
         $output    .= Ajax::updateItemOnSelectEvent(
@@ -3074,7 +3109,7 @@ JS;
             $format_use = "Y-m-d";
         }
 
-       // Parsing relative date
+        // Parsing relative date
         switch ($val) {
             case 'NOW':
                 return date($format_use, $specifictime);
@@ -3083,7 +3118,7 @@ JS;
                 return date("Y-m-d", $specifictime);
         }
 
-       // Search on begin /end of month / year
+        // Search on begin /end of month / year
         if (strstr($val, 'BEGIN') || strstr($val, 'END')) {
             $hour   = 0;
             $minute = 0;
@@ -3113,7 +3148,7 @@ JS;
             return date($format_use, mktime($hour, $minute, $second, $month, $day, $year));
         }
 
-       // Search on Last monday, sunday...
+        // Search on Last monday, sunday...
         if (strstr($val, 'LAST')) {
             $lastday = str_replace("LAST", "LAST ", $val);
             $hour   = 0;
@@ -3126,14 +3161,14 @@ JS;
             return date($format_use, mktime($hour, $minute, $second, $month, $day, $year));
         }
 
-       // Search on +- x days, hours...
+        // Search on +- x days, hours...
         if (preg_match("/^(-?)(\d+)(\w+)$/", $val, $matches)) {
             if (in_array($matches[3], ['YEAR', 'MONTH', 'WEEK', 'DAY', 'HOUR', 'MINUTE'])) {
                 $nb = intval($matches[2]);
                 if ($matches[1] == '-') {
                     $nb = -$nb;
                 }
-               // Use it to have a clean delay computation (MONTH / YEAR have not always the same duration)
+                // Use it to have a clean delay computation (MONTH / YEAR have not always the same duration)
                 $hour   = date("H", $specifictime);
                 $minute = date("i", $specifictime);
                 $second = 0;
@@ -3201,28 +3236,28 @@ JS;
             'title'   => '',
             'dates'   => [],
             'display' => true,
-            'add_now' => true
+            'add_now' => true,
         ];
         $options = array_merge($default_options, $options);
 
-       //append now date if needed
+        //append now date if needed
         if ($options['add_now']) {
             $now = time();
             $options['dates'][$now . "_now"] = [
                 'timestamp' => $now,
                 'label' => __('Now'),
-                'class' => 'now'
+                'class' => 'now',
             ];
         }
 
         ksort($options['dates']);
 
-       // format dates
+        // format dates
         foreach ($options['dates'] as &$data) {
             $data['date'] = date("Y-m-d H:i:s", $data['timestamp']);
         }
 
-       // get Html
+        // get Html
         $out = TemplateRenderer::getInstance()->render(
             'components/dates_timeline.html.twig',
             [
@@ -3289,14 +3324,14 @@ JS;
             }
         }
 
-       // No empty content to have a clean display
+        // No empty content to have a clean display
         if (empty($content)) {
             $content = "&nbsp;";
         }
         $rand = mt_rand();
         $out  = '';
 
-       // Force link for popup
+        // Force link for popup
         if (!empty($param['popup'])) {
             $param['link'] = '#';
         }
@@ -3317,7 +3352,7 @@ JS;
                 $out .= '>';
             }
             if (isset($param['img'])) {
-               //for compatibility. Use fontawesome instead.
+                //for compatibility. Use fontawesome instead.
                 $out .= "<img id='tooltip$rand' src='" . htmlescape($param['img']) . "'>";
             } else {
                 $class = htmlescape($param['awesome-class']);
@@ -3344,7 +3379,7 @@ JS;
                 $param['popup'],
                 ['display' => false,
                     'width'   => 600,
-                    'height'  => 300
+                    'height'  => 300,
                 ]
             );
         }
@@ -3358,7 +3393,7 @@ JS;
         if (!is_null($param['url'])) {
             $js .= "
                 ajax: {
-                    url: " . json_encode($CFG_GLPI['root_doc'] . $param['url'])  . ",
+                    url: " . json_encode($CFG_GLPI['root_doc'] . $param['url']) . ",
                     type: 'GET',
                     data: {},
                 },
@@ -3377,7 +3412,7 @@ JS;
                 }";
         if ($param['onclick']) {
             $js .= ",show: 'click', hide: false,";
-        } else if (!$param['autoclose']) {
+        } elseif (!$param['autoclose']) {
             $js .= ",show: {
                         solo: true, // ...and hide all other tooltips...
                 },";
@@ -3435,7 +3470,7 @@ JS;
          */
         global $CFG_GLPI, $DB;
 
-       // load tinymce lib
+        // load tinymce lib
         Html::requireJs('tinymce');
 
         $language = $_SESSION['glpilanguage'];
@@ -3447,7 +3482,7 @@ JS;
         }
         $language_url = $CFG_GLPI['root_doc'] . '/lib/tinymce-i18n/langs6/' . $language . '.js';
 
-       // Apply all GLPI styles to editor content
+        // Apply all GLPI styles to editor content
         $theme = ThemeManager::getInstance()->getCurrentTheme();
         $content_css_paths = [
             'css/glpi.scss',
@@ -3503,7 +3538,7 @@ JS;
         if ($language !== 'en_GB') {
             $language_opts = json_encode([
                 'language' => $language,
-                'language_url' => $language_url
+                'language_url' => $language_url,
             ]);
         }
 
@@ -3713,7 +3748,8 @@ JS;
     {
         $values = json_encode($values);
 
-        echo Html::scriptBlock(<<<JAVASCRIPT
+        echo Html::scriptBlock(
+            <<<JAVASCRIPT
          $(
             function() {
                var editor_id = $('{$selector}').attr('id');
@@ -3745,7 +3781,7 @@ JAVASCRIPT
         $link =  $CFG_GLPI['root_doc'] . $url;
         $params = [
             'target' => '_blank',
-            'style'  => 'margin-top:6px; display: block'
+            'style'  => 'margin-top:6px; display: block',
         ];
 
         if (!is_null($link_id)) {
@@ -3772,8 +3808,9 @@ JAVASCRIPT
         $link_id = "template_documentation_" . mt_rand();
         self::addTemplateDocumentationLink($preset_target, $link_id);
 
-       // Move link before the given textarea
-        echo Html::scriptBlock(<<<JAVASCRIPT
+        // Move link before the given textarea
+        echo Html::scriptBlock(
+            <<<JAVASCRIPT
          $(
             function() {
                $('{$selector}').parent().append($('#{$link_id}'));
@@ -3799,25 +3836,25 @@ JAVASCRIPT
     public static function printAjaxPager($title, $start, $numrows, $additional_info = '', $display = true, $additional_params = '')
     {
         $list_limit = $_SESSION['glpilist_limit'];
-       // Forward is the next step forward
+        // Forward is the next step forward
         $forward = $start + $list_limit;
 
-       // This is the end, my friend
+        // This is the end, my friend
         $end = $numrows - $list_limit;
 
-       // Human readable count starts here
+        // Human readable count starts here
         $current_start = $start + 1;
 
-       // And the human is viewing from start to end
+        // And the human is viewing from start to end
         $current_end = $current_start + $list_limit - 1;
         if ($current_end > $numrows) {
             $current_end = $numrows;
         }
-       // Empty case
+        // Empty case
         if ($current_end == 0) {
             $current_start = 0;
         }
-       // Backward browsing
+        // Backward browsing
         if ($current_start - $list_limit <= 0) {
             $back = 0;
         } else {
@@ -3829,14 +3866,14 @@ JAVASCRIPT
         }
 
         $out = '';
-       // Print it
+        // Print it
         $out .= "<div><table class='tab_cadre_pager'>";
         if (!empty($title)) {
             $out .= "<tr><th colspan='6'>" . htmlescape($title) . "</th></tr>";
         }
         $out .= "<tr>\n";
 
-       // Back and fast backward button
+        // Back and fast backward button
         if (!$start == 0) {
             $out .= "<th class='left'><a class='btn btn-sm btn-icon btn-ghost-secondary' href='javascript:reloadTab(\"start=0$additional_params\");'>
                      <i class='ti ti-chevrons-left' title=\"" . __s('Start') . "\"></i></a></th>";
@@ -3852,13 +3889,13 @@ JAVASCRIPT
             $out .= $additional_info;
             $out .= "</td>";
         }
-       // Print the "where am I?"
+        // Print the "where am I?"
         $out .= "<td width='50%' class='tab_bg_2 b'>";
-       //TRANS: %1$d, %2$d, %3$d are page numbers
+        //TRANS: %1$d, %2$d, %3$d are page numbers
         $out .= sprintf(__s('From %1$d to %2$d of %3$d'), $current_start, $current_end, $numrows);
         $out .= "</td>\n";
 
-       // Forward and fast forward button
+        // Forward and fast forward button
         if ($forward < $numrows) {
             $out .= "<th class='right'><a class='btn btn-sm btn-icon btn-ghost-secondary' href='javascript:reloadTab(\"start=$forward$additional_params\");'>
                      <i class='ti ti-chevron-right' title=\"" . __s('Next') . "\"></i></a></th>";
@@ -3866,7 +3903,7 @@ JAVASCRIPT
                      <i class='ti ti-chevrons-right' title=\"" . __s('End') . "\"></i></a></th>";
         }
 
-       // End pager
+        // End pager
         $out .= "</tr></table></div>";
 
         if ($display) {
@@ -3893,7 +3930,7 @@ JAVASCRIPT
 
         if (count($tab)) {
             echo "<table class='array-debug table table-striped'>";
-           // For debug / no gettext
+            // For debug / no gettext
             echo "<tr><th>KEY</th><th>=></th><th>VALUE</th></tr>";
 
             foreach ($tab as $key => $val) {
@@ -3918,9 +3955,9 @@ JAVASCRIPT
                 } else {
                     if (is_bool($val)) {
                         if ($val) {
-                              echo 'true';
+                            echo 'true';
                         } else {
-                             echo 'false';
+                            echo 'false';
                         }
                     } else {
                         if (is_object($val)) {
@@ -3971,35 +4008,35 @@ JAVASCRIPT
         global $CFG_GLPI;
 
         $list_limit = $_SESSION['glpilist_limit'];
-       // Forward is the next step forward
+        // Forward is the next step forward
         $forward = $start + $list_limit;
 
-       // This is the end, my friend
+        // This is the end, my friend
         $end = $numrows - $list_limit;
 
-       // Human readable count starts here
+        // Human readable count starts here
 
         $current_start = $start + 1;
 
-       // And the human is viewing from start to end
+        // And the human is viewing from start to end
         $current_end = $current_start + $list_limit - 1;
         if ($current_end > $numrows) {
             $current_end = $numrows;
         }
 
-       // Empty case
+        // Empty case
         if ($current_end == 0) {
             $current_start = 0;
         }
 
-       // Backward browsing
+        // Backward browsing
         if ($current_start - $list_limit <= 0) {
             $back = 0;
         } else {
             $back = $start - $list_limit;
         }
 
-       // Print it
+        // Print it
         echo "<div><table class='table align-middle'>";
         echo "<tr>";
 
@@ -4008,7 +4045,7 @@ JAVASCRIPT
         } else {
             $fulltarget = $target . "&" . $parameters;
         }
-       // Back and fast backward button
+        // Back and fast backward button
         if (!$start == 0) {
             echo "<th class='left'>";
             echo "<a href='$fulltarget&amp;start=0' class='btn btn-sm btn-ghost-secondary me-2'
@@ -4021,7 +4058,7 @@ JAVASCRIPT
             echo "</a></th>";
         }
 
-       // Print the "where am I?"
+        // Print the "where am I?"
         echo "<td width='31%' class='tab_bg_2'>";
         self::printPagerForm("$fulltarget&amp;start=$start");
         echo "</td>";
@@ -4069,11 +4106,11 @@ JAVASCRIPT
         }
 
         echo "<td width='20%' class='b'>";
-       //TRANS: %1$d, %2$d, %3$d are page numbers
+        //TRANS: %1$d, %2$d, %3$d are page numbers
         printf(__s('From %1$d to %2$d of %3$d'), $current_start, $current_end, $numrows);
         echo "</td>";
 
-       // Forward and fast forward button
+        // Forward and fast forward button
         if ($forward < $numrows) {
             echo "<th class='right'>";
             echo "<a href='$fulltarget&amp;start=$forward' class='btn btn-sm btn-ghost-secondary'
@@ -4086,7 +4123,7 @@ JAVASCRIPT
             echo "</a>";
             echo "</th>";
         }
-       // End pager
+        // End pager
         echo "</tr></table></div>";
     }
 
@@ -4143,12 +4180,12 @@ JAVASCRIPT
     public static function makeTitle($string, $num, $tot)
     {
         if (($num > 0) && ($num < $tot)) {
-           // TRANS %1$d %2$d are numbers (displayed, total)
+            // TRANS %1$d %2$d are numbers (displayed, total)
             $cpt = "<span class='primary-bg primary-fg count'>" .
             htmlescape(sprintf(__('%1$d on %2$d'), $num, $tot)) . "</span>";
         } else {
-           // $num is 0, so means configured to display nothing
-           // or $num == $tot
+            // $num is 0, so means configured to display nothing
+            // or $num == $tot
             $cpt = "<span class='primary-bg primary-fg count'>$tot</span>";
         }
         return sprintf(__s('%1$s %2$s'), htmlescape($string), $cpt);
@@ -4193,7 +4230,7 @@ JAVASCRIPT
         if (!empty($btoption)) {
             $link .= ' ' . $btoption . ' ';
         }
-       // Do not force class if already defined
+        // Do not force class if already defined
         if (!strstr($btoption, 'class=')) {
             if (empty($btimage)) {
                 $link .= " class='btn btn-primary' ";
@@ -4218,7 +4255,7 @@ JAVASCRIPT
         } else {
             if (strpos($btimage, 'fa-') === 0) {
                 $link .= "<span class='fas $btimage' title='$btlabel'><span class='sr-only'>$btlabel</span>";
-            } else if (strpos($btimage, 'ti-') === 0) {
+            } elseif (strpos($btimage, 'ti-') === 0) {
                 $link .= "<span class='ti $btimage' title='$btlabel'><span class='sr-only'>$btlabel</span>";
             } else {
                 $link .= "<img src='$btimage' title='$btlabel' alt='$btlabel' class='pointer'>";
@@ -4461,7 +4498,7 @@ JS;
 
         $options = [
             'id'        => $field_id,
-            'selected'  => $value
+            'selected'  => $value,
         ];
 
         // manage multiple select (with multiple values)
@@ -4625,7 +4662,7 @@ JS;
             }
             unset($options['confirm']);
         }
-       // Do not escape title if it is an image or a i tag (fontawesome)
+        // Do not escape title if it is an image or a i tag (fontawesome)
         if (!preg_match('/<i(mg)?.*/', $text)) {
             $text = htmlescape($text);
         }
@@ -4743,9 +4780,11 @@ JS;
             $select .= sprintf(
                 '<option value="%1$s"%2$s>%3$s</option>',
                 htmlescape($key),
-                ($selected != false && (
-                $key == $selected
-                || is_array($selected) && in_array($key, $selected))
+                (
+                    $selected != false && (
+                        $key == $selected
+                || is_array($selected) && in_array($key, $selected)
+                    )
                 ) ? ' selected="selected"' : '',
                 htmlescape($value)
             );
@@ -4780,7 +4819,7 @@ JS;
             unset($options['image']);
         }
 
-       // Set default class to submit
+        // Set default class to submit
         if (!isset($options['class'])) {
             $options['class'] = 'btn';
         }
@@ -4847,7 +4886,7 @@ JS;
         $p = [
             'rand'            => mt_rand(),
             'tooltip'         => '',
-            'append_percent'  => true
+            'append_percent'  => true,
         ];
         $p = array_replace($p, $params);
 
@@ -5019,7 +5058,7 @@ HTML;
             file_exists($prod_file)
             && $_SESSION['glpi_use_mode'] != Session::DEBUG_MODE
         ) {
-            $url = self::getPrefixedUrl(str_replace(GLPI_ROOT, '', $prod_file));
+            $url = self::getPrefixedUrl(str_replace(GLPI_ROOT . '/public', '', $prod_file));
         } else {
             $file = $url;
             $url = self::getPrefixedUrl('/front/css.php');
@@ -5136,7 +5175,7 @@ HTML;
                 $display .= sprintf(__s('%1$s (%2$s)'), __s('File(s)'), Document::getMaxUploadSize());
                 $display .= DocumentType::showAvailableTypesLink([
                     'display' => false,
-                    'rand'    => $p['rand']
+                    'rand'    => $p['rand'],
                 ]);
                 if ($p['required']) {
                     $display .= '<span class="required">*</span>';
@@ -5163,10 +5202,10 @@ HTML;
 
         // sanitize name and random id
         $name    = preg_replace('/[^a-z0-9_\[\]]/', '', $p['name']);
-        $rand_id = (int)$p['rand'];
+        $rand_id = (int) $p['rand'];
 
         if (!$p['only_uploaded_files']) {
-           // manage file upload without tinymce editor
+            // manage file upload without tinymce editor
             $display .= "<span class='b'>" . __s('Drag and drop your file here, or') . '</span><br>';
         }
         $display .= "<input id='fileupload{$rand_id}' type='file' name='_uploader_{$name}[]'
@@ -5179,7 +5218,7 @@ HTML;
                       . ($p['onlyimages'] ? " accept='.gif,.png,.jpg,.jpeg'" : "") . ">";
 
         $display .= "<div id='progress{$rand_id}' style='display:none'>" .
-                "<div class='uploadbar' style='width: 0%;'></div></div>";
+                "<div role='progressbar' class='uploadbar' style='width: 0%;'></div></div>";
         $progressall_js = "
         progressall: function(event, data) {
             var progress = parseInt(data.loaded / data.total * 100, 10);
@@ -5256,8 +5295,8 @@ HTML;
                );
             },
             messages: {
-              acceptFileTypes: __('Filetype not allowed'),
-              maxFileSize: __('File is too big'),
+              acceptFileTypes: " . json_encode(__('Filetype not allowed')) . ",
+              maxFileSize: " . json_encode(__('File is too big')) . ",
             },
             $progressall_js
          });
@@ -5296,7 +5335,7 @@ HTML;
      */
     public static function textarea($options = [])
     {
-       //default options
+        //default options
 
         $rand = $options['rand'] ?? mt_rand();
 
@@ -5315,7 +5354,7 @@ HTML;
         $p['required']          = false;
         $p['uploads']           = [];
 
-       //merge default options with options parameter
+        //merge default options with options parameter
         $p = array_merge($p, $options);
 
         $required = $p['required'] ? 'required="required"' : '';
@@ -5367,17 +5406,17 @@ HTML;
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-       //default options
+        //default options
         $p['filecontainer']     = 'fileupload_info';
         $p['name']              = 'filename';
         $p['editor_id']         = '';
         $p['display']           = true;
         $p['uploads']           = [];
 
-       //merge default options with options parameter
+        //merge default options with options parameter
         $p = array_merge($p, $options);
 
-       // div who will receive and display file list
+        // div who will receive and display file list
         $display = "<div id='" . htmlescape($p['filecontainer']) . "' class='fileupload_info'>";
         if (isset($p['uploads']['_' . $p['name']])) {
             foreach ($p['uploads']['_' . $p['name']] as $uploadId => $upload) {
@@ -5492,7 +5531,7 @@ HTML;
         foreach ($columns as $col_name => $column) {
             $nb_cb_per_col[$col_name] = [
                 'total'   => 0,
-                'checked' => 0
+                'checked' => 0,
             ];
         }
 
@@ -5505,7 +5544,7 @@ HTML;
             if (!is_string($row)) {
                 $nb_cb_per_row[$row_name] = [
                     'total'   => 0,
-                    'checked' => 0
+                    'checked' => 0,
                 ];
 
                 foreach ($columns as $col_name => $column) {
@@ -5732,7 +5771,7 @@ HTML;
             $base_path = parse_url($CFG_GLPI['url_base'], PHP_URL_PATH);
         }
 
-       // Add only image files : try to detect mime type
+        // Add only image files : try to detect mime type
         $ok   = false;
         $mime = '';
         if (isset($document->fields['filepath'])) {
@@ -5776,7 +5815,7 @@ HTML;
     {
         $message = "<a href=\"https://glpi-project.org/\" title=\"Powered by Teclib and contributors\" class=\"copyright\">";
         $message .= "GLPI ";
-       // if required, add GLPI version (eg not for login page)
+        // if required, add GLPI version (eg not for login page)
         if ($withVersion) {
             $message .= GLPI_VERSION . " ";
         }
@@ -5801,7 +5840,7 @@ HTML;
         global $CFG_GLPI, $PLUGIN_HOOKS;
 
         if (isset($_SESSION['glpi_js_toload'][$name])) {
-           //already in stack
+            //already in stack
             return;
         }
         switch ($name) {
@@ -5923,10 +5962,7 @@ HTML;
          */
         global $CFG_GLPI, $PLUGIN_HOOKS;
 
-       // transfer core variables to javascript side
-        echo self::getCoreVariablesForJavascript(true);
-
-       //load on demand scripts
+        //load on demand scripts
         if (isset($_SESSION['glpi_js_toload'])) {
             foreach ($_SESSION['glpi_js_toload'] as $key => $script) {
                 if (is_array($script)) {
@@ -5940,9 +5976,9 @@ HTML;
             }
         }
 
-       //locales for js libraries
+        //locales for js libraries
         if (isset($_SESSION['glpilanguage'])) {
-           // select2
+            // select2
             $filename = "lib/select2/js/i18n/" .
                      $CFG_GLPI["languages"][$_SESSION['glpilanguage']][2] . ".js";
             if (file_exists(GLPI_ROOT . '/public/' . $filename)) {
@@ -5950,7 +5986,7 @@ HTML;
             }
         }
 
-       // Some Javascript-Functions which we may need later
+        // Some Javascript-Functions which we may need later
         self::redefineAlert();
         self::redefineConfirm();
 
@@ -5959,7 +5995,7 @@ HTML;
                 'interval'  => ($CFG_GLPI['notifications_ajax_check_interval'] ? $CFG_GLPI['notifications_ajax_check_interval'] : 5) * 1000,
                 'sound'     => $CFG_GLPI['notifications_ajax_sound'] ? $CFG_GLPI['notifications_ajax_sound'] : false,
                 'icon'      => ($CFG_GLPI["notifications_ajax_icon_url"] ? $CFG_GLPI['root_doc'] . $CFG_GLPI['notifications_ajax_icon_url'] : false),
-                'user_id'   => Session::getLoginUserID()
+                'user_id'   => Session::getLoginUserID(),
             ];
             $js = "$(function() {
             notifications_ajax = new GLPINotificationsAjax(" . json_encode($options) . ");
@@ -5968,7 +6004,7 @@ HTML;
             echo Html::scriptBlock($js);
         }
 
-       // Add specific javascript for plugins
+        // Add specific javascript for plugins
         if (isset($PLUGIN_HOOKS[Hooks::ADD_JAVASCRIPT]) && count($PLUGIN_HOOKS[Hooks::ADD_JAVASCRIPT])) {
             foreach ($PLUGIN_HOOKS[Hooks::ADD_JAVASCRIPT] as $plugin => $files) {
                 if (!Plugin::isPluginActive($plugin)) {
@@ -5981,7 +6017,7 @@ HTML;
                 foreach ($files as $file) {
                     echo Html::script("/plugins/{$plugin}/{$file}", [
                         'version'   => $version,
-                        'type'      => 'text/javascript'
+                        'type'      => 'text/javascript',
                     ]);
                 }
             }
@@ -5999,7 +6035,7 @@ HTML;
                 foreach ($files as $file) {
                     echo self::script("/plugins/{$plugin}/{$file}", [
                         'version'   => $version,
-                        'type'      => 'module'
+                        'type'      => 'module',
                     ]);
                 }
             }
@@ -6113,10 +6149,10 @@ HTML;
 
         $text = "";
         if ($timer > 0) {
-           // set timer to millisecond from minutes
+            // set timer to millisecond from minutes
             $timer = $timer * MINUTE_TIMESTAMP * 1000;
 
-           // call callback function to $timer interval
+            // call callback function to $timer interval
             $text = self::scriptBlock("window.setInterval(function() {
                $callback
             }, $timer);");
@@ -6141,7 +6177,7 @@ HTML;
                 if (strlen($firstlvl['title']) > 0) {
                     $fuzzy_entries[] = [
                         'url'   => self::getPrefixedUrl($firstlvl['default']),
-                        'title' => $firstlvl['title']
+                        'title' => $firstlvl['title'],
                     ];
                 }
             }
@@ -6150,7 +6186,7 @@ HTML;
                 if (strlen($firstlvl['title']) > 0) {
                     $fuzzy_entries[] = [
                         'url'   => self::getPrefixedUrl($firstlvl['default_dashboard']),
-                        'title' => $firstlvl['title'] . " > " . __('Dashboard')
+                        'title' => $firstlvl['title'] . " > " . __('Dashboard'),
                     ];
                 }
             }
@@ -6160,7 +6196,7 @@ HTML;
                     if (isset($menu['title']) && strlen($menu['title']) > 0) {
                         $fuzzy_entries[] = [
                             'url'   => self::getPrefixedUrl($menu['page']),
-                            'title' => $firstlvl['title'] . " > " . $menu['title']
+                            'title' => $firstlvl['title'] . " > " . $menu['title'],
                         ];
 
                         if (isset($menu['options'])) {
@@ -6170,7 +6206,7 @@ HTML;
                                         'url'   => self::getPrefixedUrl($submenu['page']),
                                         'title' => $firstlvl['title'] . " > " .
                                             $menu['title'] . " > " .
-                                            $submenu['title']
+                                            $submenu['title'],
                                     ];
                                 }
                             }
@@ -6201,7 +6237,7 @@ HTML;
         if (str_contains($hexcolor, '#')) {
             $hexcolor = trim($hexcolor, '#');
         }
-       // convert 3-digit hex to 6-digits.
+        // convert 3-digit hex to 6-digits.
         if (strlen($hexcolor) === 3) {
             $hexcolor = $hexcolor[0] . $hexcolor[0]
                    . $hexcolor[1] . $hexcolor[1]
@@ -6224,12 +6260,12 @@ HTML;
                ? '#DFDFDF'
                : '#FFFFFF');
         }
-       // invert color components
+        // invert color components
         $r = 255 - $r;
         $g = 255 - $g;
         $b = 255 - $b;
 
-       // pad each with zeros and return
+        // pad each with zeros and return
         return "#"
          . str_pad($r, 2, '0', STR_PAD_LEFT)
          . str_pad($g, 2, '0', STR_PAD_LEFT)
@@ -6280,14 +6316,14 @@ HTML;
         $ckey .= '_' . $file;
 
         if (!str_ends_with($file, '.scss')) {
-           // Prevent include of file if ext is not .scss
+            // Prevent include of file if ext is not .scss
             $file .= '.scss';
         }
 
-       // Requested file path
+        // Requested file path
         $path = GLPI_ROOT . '/' . $file;
 
-       // Alternate file path (prefixed by a "_", i.e. "_highcontrast.scss").
+        // Alternate file path (prefixed by a "_", i.e. "_highcontrast.scss").
         $pathargs = explode('/', $file);
         $pathargs[] = '_' . array_pop($pathargs);
         $pathalt = GLPI_ROOT . '/' . implode('/', $pathargs);
@@ -6300,7 +6336,7 @@ HTML;
             $path = $pathalt;
         }
 
-       // Prevent import of a file from ouside GLPI dir
+        // Prevent import of a file from ouside GLPI dir
         $path = realpath($path);
         if (
             !str_starts_with($path, realpath(GLPI_ROOT))
@@ -6311,7 +6347,7 @@ HTML;
             return '';
         }
 
-       // Fix issue with Windows directory separator
+        // Fix issue with Windows directory separator
         $path = str_replace(DIRECTORY_SEPARATOR, '/', $path);
 
         $import = '@import "' . $path . '";';
@@ -6324,7 +6360,7 @@ HTML;
             $args['reload'] = true;
         }
 
-       // Enable imports of ".scss" files from "css/lib", when path starts with "~".
+        // Enable imports of ".scss" files from "css/lib", when path starts with "~".
         $scss->addImportPath(
             function ($path) {
                 //Force bootstrap imports to be prefixed by ~
@@ -6431,11 +6467,11 @@ CSS;
             $import_filename = basename($import_url) . ($has_extension ? '' : '.scss');
 
             if ($is_from_lib) {
-               // Search file in libs
+                // Search file in libs
                 $potential_paths[] = GLPI_ROOT . '/css/lib/' . $import_dirname . '/' . $import_filename;
                 $potential_paths[] = GLPI_ROOT . '/css/lib/' . $import_dirname . '/_' . $import_filename;
             } else {
-               // Search using path relative to current file
+                // Search using path relative to current file
                 $potential_paths[] = dirname($filepath) . '/' . $import_dirname . '/' . $import_filename;
                 $potential_paths[] = dirname($filepath) . '/' . $import_dirname . '/_' . $import_filename;
             }
@@ -6501,7 +6537,7 @@ CSS;
         $diff = time() - $ts;
         if ($diff == 0) {
             return __('Now');
-        } else if ($diff > 0) {
+        } elseif ($diff > 0) {
             $date = new DateTime(date('Y-m-d', $ts));
             $today = new DateTime('today');
             $day_diff = $date->diff($today)->days;

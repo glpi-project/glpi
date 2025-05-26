@@ -47,7 +47,7 @@ class Controller extends Device
             'name'          => 'designation',
             'manufacturer'  => 'manufacturers_id',
             'type'          => 'interfacetypes_id',
-            'model'         => 'devicecontrolmodels_id'
+            'model'         => 'devicecontrolmodels_id',
         ];
         $pcivendor = new \PCIVendor();
 
@@ -59,11 +59,11 @@ class Controller extends Device
                     }
                 }
                 if (property_exists($val, 'vendorid')) {
-                   //manufacturer
+                    //manufacturer
                     if ($pci_manufacturer = $pcivendor->getManufacturer($val->vendorid)) {
                         $val->manufacturers_id = $pci_manufacturer;
                         if (property_exists($val, 'productid')) {
-                          //product name
+                            //product name
                             if ($pci_product = $pcivendor->getProductName($val->vendorid, $val->productid)) {
                                 $val->designation = $pci_product;
                             }

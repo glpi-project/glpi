@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -42,7 +41,7 @@
 if (!$DB->fieldExists('glpi_states', 'is_visible_unmanaged')) {
     $migration->addField('glpi_states', 'is_visible_unmanaged', 'bool', [
         'value' => 1,
-        'after' => 'is_visible_cable'
+        'after' => 'is_visible_cable',
     ]);
 }
 $migration->addKey('glpi_states', 'is_visible_unmanaged');

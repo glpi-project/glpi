@@ -55,7 +55,7 @@ if ($room->getFromDB($id)) {
             'value'                 => $current,
             'rand'                  => $rand,
             'display_emptychoice'   => true,
-            'used'                  => $used
+            'used'                  => $used,
         ]
     );
 } else {

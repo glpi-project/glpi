@@ -41,7 +41,7 @@ use Glpi\RichText\RichText;
  **/
 class NotificationTemplateTranslation extends CommonDBChild
 {
-   // From CommonDBChild
+    // From CommonDBChild
     public static $itemtype  = 'NotificationTemplate';
     public static $items_id  = 'notificationtemplates_id';
 
@@ -86,7 +86,7 @@ class NotificationTemplateTranslation extends CommonDBChild
         $ong = [];
         $this->addDefaultFormTab($ong);
         $this->addStandardTab(self::class, $ong, $options);
-        $this->addStandardTab('Log', $ong, $options);
+        $this->addStandardTab(Log::class, $ong, $options);
 
         return $ong;
     }
@@ -104,10 +104,16 @@ class NotificationTemplateTranslation extends CommonDBChild
         $template = new NotificationTemplate();
         $template->getFromDB($notificationtemplates_id);
 
+        $used_languages = self::getAllUsedLanguages($notificationtemplates_id);
+        // Remove current language
+        if (!$this->isNewItem()) {
+            $used_languages = array_diff($used_languages, [$this->getField('language')]);
+        }
+
         TemplateRenderer::getInstance()->display('pages/setup/notification/translation.html.twig', [
             'item' => $this,
             'template' => $template,
-            'used_languages' => self::getAllUsedLanguages($notificationtemplates_id),
+            'used_languages' => $used_languages,
         ]);
         return true;
     }
@@ -144,7 +150,7 @@ TWIG, $twig_params);
         foreach (
             $DB->request([
                 'FROM' => 'glpi_notificationtemplatetranslations',
-                'WHERE' => ['notificationtemplates_id' => $nID]
+                'WHERE' => ['notificationtemplates_id' => $nID],
             ]) as $data
         ) {
             if ($this->getFromDB($data['id'])) {
@@ -161,14 +167,13 @@ TWIG, $twig_params);
 
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'is_tab' => true,
-            'nopager' => true,
             'nofilter' => true,
             'nosort' => true,
             'columns' => [
                 'language' => __('Language'),
             ],
             'formatters' => [
-                'language' => 'raw_html'
+                'language' => 'raw_html',
             ],
             'entries' => $entries,
             'total_number' => count($entries),
@@ -177,7 +182,7 @@ TWIG, $twig_params);
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
                 'container'     => 'mass' . static::class . mt_rand(),
-            ]
+            ],
         ]);
     }
 
@@ -193,7 +198,7 @@ TWIG, $twig_params);
         if (!$txt) {
             // No HTML (nothing to display)
             $input['content_html'] = '';
-        } else if (!$input['content_text']) {
+        } elseif (!$input['content_text']) {
             // Use cleaned HTML
             $input['content_text'] = $txt;
         }
@@ -217,7 +222,7 @@ TWIG, $twig_params);
             'force_update' => true,
             'name' => 'content_html',
             'content_field' => 'content_html',
-            '_add_link' => false
+            '_add_link' => false,
         ]);
 
         parent::post_addItem();
@@ -230,7 +235,7 @@ TWIG, $twig_params);
             'force_update' => true,
             'name' => 'content_html',
             'content_field' => 'content_html',
-            '_add_link' => false
+            '_add_link' => false,
         ]);
 
         parent::post_updateItem($history);
@@ -242,7 +247,7 @@ TWIG, $twig_params);
 
         $tab[] = [
             'id'                 => 'common',
-            'name'               => __('Characteristics')
+            'name'               => __('Characteristics'),
         ];
 
         $tab[] = [
@@ -251,7 +256,7 @@ TWIG, $twig_params);
             'field'              => 'language',
             'name'               => __('Language'),
             'datatype'           => 'language',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -270,7 +275,7 @@ TWIG, $twig_params);
             'name'               => __('Email HTML body'),
             'datatype'           => 'text',
             'htmltext'           => 'true',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -279,7 +284,7 @@ TWIG, $twig_params);
             'field'              => 'content_text',
             'name'               => __('Email text body'),
             'datatype'           => 'text',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         return $tab;
@@ -300,8 +305,8 @@ TWIG, $twig_params);
             'SELECT' => ['language'],
             'FROM' => 'glpi_notificationtemplatetranslations',
             'WHERE' => [
-                'notificationtemplates_id' => $language_id
-            ]
+                'notificationtemplates_id' => $language_id,
+            ],
         ]);
 
         $used           = [];
@@ -362,7 +367,7 @@ TWIG, $twig_params);
                     ['content' => htmlescape($event)],
                     ['content' => htmlescape($action)],
                     ['content' => htmlescape($allowed_values)],
-                ]
+                ],
             ];
         }
 
@@ -375,9 +380,9 @@ TWIG, $twig_params);
                     ['content' => _n('Event', 'Events', 1)],
                     ['content' => _n('Type', 'Types', 1)],
                     ['content' => __('Possible values')],
-                ]
+                ],
             ],
-            'rows' => $rows
+            'rows' => $rows,
         ]);
     }
 
@@ -432,7 +437,7 @@ TWIG, $twig_params);
         }
 
         $oktypes = ['CartridgeItem', 'Change', 'ConsumableItem', 'Contract', 'CronTask',
-            'Problem', 'Project', 'Ticket', 'User'
+            'Problem', 'Project', 'Ticket', 'User',
         ];
 
         $can_preview = in_array($itemtype, $oktypes, true);
@@ -451,7 +456,7 @@ TWIG, $twig_params);
             // TODO Awfull Hack waiting for https://forge.indepnet.net/issues/3439
             //TODO Is this supposed to refer to notifications that are grouped together? For example, one notification about all certificates expiring? This may not be up to date.
             $multi   = ['alert', 'alertnotclosed', 'end', 'notice',
-                'periodicity', 'periodicitynotice'
+                'periodicity', 'periodicitynotice',
             ];
             if (in_array($event, $multi, true)) {
                 // Won't work for Cardridge and Consumable
@@ -460,7 +465,7 @@ TWIG, $twig_params);
             }
             $target = NotificationTarget::getInstance($item, $event, $options);
             $infos  = ['language' => $_SESSION['glpilanguage'],
-                'additionnaloption' => ['usertype' => NotificationTarget::GLPI_USER]
+                'additionnaloption' => ['usertype' => NotificationTarget::GLPI_USER],
             ];
 
             $template->resetComputedTemplates();

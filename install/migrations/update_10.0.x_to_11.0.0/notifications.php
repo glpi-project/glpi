@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -55,7 +54,7 @@ if (!$notification_exists) {
             'is_recursive'    => 1,
             'is_active'       => 1,
             'date_creation'   => new QueryExpression('NOW()'),
-            'date_mod'        => new QueryExpression('NOW()')
+            'date_mod'        => new QueryExpression('NOW()'),
         ]
     );
     $notification_id = $DB->insertId();
@@ -64,7 +63,7 @@ if (!$notification_exists) {
         'glpi_notificationtemplates',
         [
             'name' => 'Password Initialization',
-            'itemtype' => 'User'
+            'itemtype' => 'User',
         ]
     );
 
@@ -153,7 +152,7 @@ HTML,
         [
             'event' => 'replysatisfaction',
             'name'  => 'Change Satisfaction Answer',
-        ]
+        ],
     ];
     foreach ($notifications_data as $notification_data) {
         $DB->insert(
@@ -208,7 +207,7 @@ HTML,
 if (countElementsInTable('glpi_notifications', ['itemtype' => 'Ticket', 'event' => 'auto_reminder']) === 0) {
     $DB->insert('glpi_notificationtemplates', [
         'name' => 'Automatic reminder',
-        'itemtype' => 'Ticket'
+        'itemtype' => 'Ticket',
     ]);
 
     $notificationtemplate_id = $DB->insertId();
@@ -285,7 +284,7 @@ $attach_documents_value = $DB->request([
     'FROM'   => 'glpi_configs',
     'WHERE'  => [
         'context' => 'core',
-        'name'    => 'attach_ticket_documents_to_mail'
+        'name'    => 'attach_ticket_documents_to_mail',
     ],
 ])->current()['value'] ?? '0';
 $migration->addField(

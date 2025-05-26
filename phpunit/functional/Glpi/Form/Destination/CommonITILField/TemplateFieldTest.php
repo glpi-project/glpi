@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -168,7 +167,7 @@ final class TemplateFieldTest extends AbstractDestinationFieldTest
             ],
             'field_config' => new TemplateFieldConfig(
                 TemplateFieldStrategy::DEFAULT_TEMPLATE
-            )
+            ),
         ];
 
         yield 'Specific Ticket Template strategy' => [
@@ -179,7 +178,7 @@ final class TemplateFieldTest extends AbstractDestinationFieldTest
             'field_config' => new TemplateFieldConfig(
                 TemplateFieldStrategy::SPECIFIC_TEMPLATE,
                 getItemByTypeName(TicketTemplate::class, 'Default', true)
-            )
+            ),
         ];
     }
 

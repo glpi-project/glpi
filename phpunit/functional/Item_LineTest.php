@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -52,9 +51,9 @@ class Item_LineTest extends DbTestCase
 
         $this->assertGreaterThan(
             0,
-            (int)$line->add([
+            (int) $line->add([
                 'name'         => 'Test line - testAdd',
-                'entities_id'  => getItemByTypeName('Entity', '_test_root_entity', true)
+                'entities_id'  => getItemByTypeName('Entity', '_test_root_entity', true),
             ])
         );
 
@@ -68,7 +67,7 @@ class Item_LineTest extends DbTestCase
         $this->assertFalse(
             $item_line->add([
                 'itemtype'  => 'Phone',
-                'items_id'  => $phone_1
+                'items_id'  => $phone_1,
             ])
         );
 
@@ -79,7 +78,7 @@ class Item_LineTest extends DbTestCase
         $this->assertFalse(
             $item_line->add([
                 'lines_id'  => $line->fields['id'],
-                'items_id'  => $phone_1
+                'items_id'  => $phone_1,
             ])
         );
 
@@ -100,10 +99,10 @@ class Item_LineTest extends DbTestCase
         $item_line->getEmpty();
         $this->assertGreaterThan(
             0,
-            (int)$item_line->add([
+            (int) $item_line->add([
                 'lines_id'  => $line->fields['id'],
                 'itemtype'  => 'Phone',
-                'items_id'  => $phone_1
+                'items_id'  => $phone_1,
             ])
         );
 
@@ -111,10 +110,10 @@ class Item_LineTest extends DbTestCase
         $item_line->getEmpty();
         $this->assertGreaterThan(
             0,
-            (int)$item_line->add([
+            (int) $item_line->add([
                 'lines_id'  => $line->fields['id'],
                 'itemtype'  => 'Phone',
-                'items_id'  => $phone_2
+                'items_id'  => $phone_2,
             ])
         );
 

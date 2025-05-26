@@ -35,10 +35,7 @@
 
 namespace Glpi\Helpdesk;
 
-use AbstractRightsDropdown;
-use Glpi\Form\AccessControl\ControlType\AllowList;
-use Glpi\Form\AccessControl\ControlType\AllowListConfig;
-use Glpi\Form\AccessControl\FormAccessControl;
+use Entity;
 use Glpi\Form\Destination\CommonITILField\ContentField;
 use Glpi\Form\Destination\CommonITILField\ITILActorFieldStrategy;
 use Glpi\Form\Destination\CommonITILField\ObserverField;
@@ -48,8 +45,6 @@ use Glpi\Form\Destination\CommonITILField\RequestTypeFieldConfig;
 use Glpi\Form\Destination\CommonITILField\RequestTypeFieldStrategy;
 use Glpi\Form\Destination\CommonITILField\SimpleValueConfig;
 use Glpi\Form\Destination\CommonITILField\TitleField;
-use Glpi\Form\Destination\FormDestination;
-use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\Form;
 use Glpi\Form\Question;
 use Glpi\Form\QuestionType\QuestionTypeItemDropdown;
@@ -65,7 +60,6 @@ use Glpi\Helpdesk\Tile\GlpiPageTile;
 use Glpi\Helpdesk\Tile\TilesManager;
 use ITILCategory;
 use Location;
-use Profile;
 use Ticket;
 
 final class DefaultDataManager
@@ -93,55 +87,39 @@ final class DefaultDataManager
         $incident_form = $this->createIncidentForm();
         $this->createRequestForm();
 
-        foreach ($this->getHelpdeskProfiles() as $profile) {
-            $this->tiles_manager->addTile($profile, GlpiPageTile::class, [
-                'title'        => __("Browse help articles"),
-                'description'  => __("See all available help articles and our FAQ."),
-                'illustration' => "browse-kb",
-                'page'         => GlpiPageTile::PAGE_FAQ,
-            ]);
+        $root_entity = Entity::getById(0);
 
-            $this->tiles_manager->addTile($profile, FormTile::class, [
-                'forms_forms_id' => $incident_form->getID(),
-            ]);
+        $this->tiles_manager->addTile($root_entity, GlpiPageTile::class, [
+            'title'        => __("Browse help articles"),
+            'description'  => __("See all available help articles and our FAQ."),
+            'illustration' => "browse-kb",
+            'page'         => GlpiPageTile::PAGE_FAQ,
+        ]);
 
-            $this->tiles_manager->addTile($profile, GlpiPageTile::class, [
-                'title'        => __("Request a service"),
-                'description'  => __("Ask for a service to be provided by our team."),
-                'illustration' => "request-service",
-                'page'         => GlpiPageTile::PAGE_SERVICE_CATALOG,
-            ]);
+        $this->tiles_manager->addTile($root_entity, FormTile::class, [
+            'forms_forms_id' => $incident_form->getID(),
+        ]);
 
-            $this->tiles_manager->addTile($profile, GlpiPageTile::class, [
-                'title'        => __("Make a reservation"),
-                'description'  => __("Pick an available asset and reserve it for a given date."),
-                'illustration' => "reservation",
-                'page'         => GlpiPageTile::PAGE_RESERVATION,
-            ]);
+        $this->tiles_manager->addTile($root_entity, GlpiPageTile::class, [
+            'title'        => __("Request a service"),
+            'description'  => __("Ask for a service to be provided by our team."),
+            'illustration' => "request-service",
+            'page'         => GlpiPageTile::PAGE_SERVICE_CATALOG,
+        ]);
 
-            $this->tiles_manager->addTile($profile, GlpiPageTile::class, [
-                'title'        => __("View approval requests"),
-                'description'  => __("View all tickets waiting for your validation."),
-                'illustration' => "approve-requests",
-                'page'         => GlpiPageTile::PAGE_APPROVAL,
-            ]);
-        }
-    }
+        $this->tiles_manager->addTile($root_entity, GlpiPageTile::class, [
+            'title'        => __("Make a reservation"),
+            'description'  => __("Pick an available asset and reserve it for a given date."),
+            'illustration' => "reservation",
+            'page'         => GlpiPageTile::PAGE_RESERVATION,
+        ]);
 
-    /** @return Profile[] */
-    private function getHelpdeskProfiles(): array
-    {
-        $profiles = [];
-        $profiles_data = (new Profile())->find(['interface' => 'helpdesk']);
-
-        foreach ($profiles_data as $row) {
-            $profile = new Profile();
-            $profile->getFromResultSet($row);
-            $profile->post_getFromDB();
-            $profiles[] = $profile;
-        }
-
-        return $profiles;
+        $this->tiles_manager->addTile($root_entity, GlpiPageTile::class, [
+            'title'        => __("View approval requests"),
+            'description'  => __("View all tickets waiting for your validation."),
+            'illustration' => "approve-requests",
+            'page'         => GlpiPageTile::PAGE_APPROVAL,
+        ]);
     }
 
     private function dataHasBeenInitialized(): bool
@@ -205,10 +183,7 @@ final class DefaultDataManager
         ];
 
         // Add ticket destination
-        $this->setMandatoryTicketDestination($form, $config);
-
-        // Allow all users
-        $this->allowAllUsers($form);
+        $this->setDefaultDestinationConfig($form, $config);
 
         return $form;
     }
@@ -268,10 +243,7 @@ final class DefaultDataManager
         ];
 
         // Add ticket destination
-        $this->setMandatoryTicketDestination($form, $config);
-
-        // Allow all users
-        $this->allowAllUsers($form);
+        $this->setDefaultDestinationConfig($form, $config);
     }
 
     private function createForm(
@@ -343,7 +315,7 @@ final class DefaultDataManager
         return [
             'type' => QuestionTypeItemDropdown::class,
             'name' => _n('Category', 'Categories', 1),
-            'default_value' => 0,
+            'default_value' => null,
             'extra_data' => json_encode(['itemtype' => ITILCategory::class]),
         ];
     }
@@ -363,7 +335,7 @@ final class DefaultDataManager
         return [
             'type' => QuestionTypeItemDropdown::class,
             'name' => _n('Location', 'Locations', 1),
-            'default_value' => 0,
+            'default_value' => null,
             'extra_data' => json_encode(['itemtype' => Location::class]),
         ];
     }
@@ -385,7 +357,7 @@ final class DefaultDataManager
         ];
     }
 
-    private function setMandatoryTicketDestination(Form $form, array $config): void
+    private function setDefaultDestinationConfig(Form $form, array $config): void
     {
         $destination = current($form->getDestinations());
         $success = $destination->update([
@@ -395,23 +367,6 @@ final class DefaultDataManager
 
         if (!$success) {
             throw new \RuntimeException("Failed configure destination");
-        }
-    }
-
-    private function allowAllUsers(Form $form): void
-    {
-        $form_access_control = new FormAccessControl();
-        $id = $form_access_control->add([
-            Form::getForeignKeyField() => $form->getID(),
-            'strategy' => AllowList::class,
-            '_config'   => new AllowListConfig(
-                user_ids: [AbstractRightsDropdown::ALL_USERS]
-            ),
-            'is_active' => 1,
-        ]);
-
-        if (!$id) {
-            throw new \RuntimeException("Failed to create access policy");
         }
     }
 }

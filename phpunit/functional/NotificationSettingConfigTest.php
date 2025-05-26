@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -51,7 +50,7 @@ class NotificationSettingConfigTest extends DbTestCase
 
         $settingconfig = new \NotificationSettingConfig();
         $settingconfig->update([
-            'use_notifications' => 1
+            'use_notifications' => 1,
         ]);
 
         $current_config = \Config::getConfigurationValues('core');
@@ -61,7 +60,7 @@ class NotificationSettingConfigTest extends DbTestCase
         $this->assertEquals(0, $current_config['notifications_ajax']);
 
         $settingconfig->update([
-            'notifications_mailing' => 1
+            'notifications_mailing' => 1,
         ]);
 
         $current_config = \Config::getConfigurationValues('core');
@@ -71,7 +70,7 @@ class NotificationSettingConfigTest extends DbTestCase
         $this->assertEquals(0, $current_config['notifications_ajax']);
 
         $settingconfig->update([
-            'use_notifications' => 0
+            'use_notifications' => 0,
         ]);
 
         $current_config = \Config::getConfigurationValues('core');

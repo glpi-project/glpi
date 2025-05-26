@@ -58,7 +58,7 @@ class SearchExtension extends AbstractExtension
         int $row = 0,
         string $extraparams = ""
     ): string {
-       // This is mandatory as Search::showItem expected third param to be passed by reference...
+        // This is mandatory as Search::showItem expected third param to be passed by reference...
         return Search::showItem($displaytype, $value, $num, $row, $extraparams);
     }
 }

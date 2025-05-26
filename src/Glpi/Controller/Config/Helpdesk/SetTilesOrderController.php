@@ -34,26 +34,12 @@
 
 namespace Glpi\Controller\Config\Helpdesk;
 
-use Config;
-use Glpi\Controller\AbstractController;
-use Glpi\Exception\Http\AccessDeniedHttpException;
-use Glpi\Helpdesk\Tile\TilesManager;
-use Glpi\Session\SessionInfo;
-use Profile;
-use Session;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-final class SetTilesOrderController extends AbstractController
+final class SetTilesOrderController extends AbstractTileController
 {
-    private TilesManager $tiles_manager;
-
-    public function __construct()
-    {
-        $this->tiles_manager = new TilesManager();
-    }
-
     #[Route(
         "/Config/Helpdesk/SetTilesOrder",
         name: "glpi_config_helpdesk_set_tiles_order",
@@ -61,25 +47,24 @@ final class SetTilesOrderController extends AbstractController
     )]
     public function __invoke(Request $request): Response
     {
-        if (!Session::haveRight(Config::$rightname, UPDATE)) {
-            throw new AccessDeniedHttpException();
-        }
-
-        // Apply new order
-        $profile_id = $request->request->getInt('profile_id');
-        $order = $request->request->all()['order'];
-        $this->tiles_manager->setOrderForProfile(
-            Profile::getById($profile_id),
-            $order
+        // Validate linked item
+        $linked_item = $this->getAndValidateLinkedItemFromRequest(
+            linked_itemtype: $request->request->getString('itemtype_item'),
+            linked_items_id: $request->request->getInt('items_id_item'),
         );
 
+        // Apply new order
+        $order = $request->request->all()['order'];
+        $this->tiles_manager->setOrderForItem($linked_item, $order);
+
         // Reload tiles
-        $tiles = $this->tiles_manager->getTiles(new SessionInfo(
-            profile_id: $profile_id,
-        ), check_availability: false);
+        $tiles = $this->tiles_manager->getTilesForItem($linked_item);
         return $this->render('pages/admin/helpdesk_home_config_tiles.html.twig', [
             'tiles_manager' => $this->tiles_manager,
             'tiles' => $tiles,
+            // If we reach this point, the item was editable so we must keep
+            // displaying the controls.
+            'editable' => true,
         ]);
     }
 }

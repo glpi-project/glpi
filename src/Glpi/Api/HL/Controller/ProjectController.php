@@ -46,7 +46,7 @@ use Glpi\Api\HL\Doc as Doc;
 use ProjectTask;
 
 #[Route(path: '/Project', tags: ['Project'], requirements: [
-    'project_id' => '\d+'
+    'project_id' => '\d+',
 ])]
 #[Doc\Route(
     parameters: [
@@ -54,8 +54,8 @@ use ProjectTask;
             'name' => 'project_id',
             'description' => 'Project ID',
             'location' => Doc\Parameter::LOCATION_PATH,
-            'schema' => ['type' => Doc\Schema::TYPE_STRING]
-        ]
+            'schema' => ['type' => Doc\Schema::TYPE_STRING],
+        ],
     ]
 )]
 final class ProjectController extends AbstractController
@@ -78,19 +78,19 @@ final class ProjectController extends AbstractController
                                     'glpi_projectteams' => [
                                         'ON' => [
                                             'glpi_projectteams' => 'projects_id',
-                                            '_' => 'id'
-                                        ]
-                                    ]
+                                            '_' => 'id',
+                                        ],
+                                    ],
                                 ],
                                 'WHERE' => [
                                     'OR' => [
                                         '_.users_id' => \Session::getLoginUserID(),
                                         [
                                             "glpi_projectteams.itemtype"   => 'User',
-                                            "glpi_projectteams.items_id"   => \Session::getLoginUserID()
-                                        ]
-                                    ]
-                                ]
+                                            "glpi_projectteams.items_id"   => \Session::getLoginUserID(),
+                                        ],
+                                    ],
+                                ],
                             ];
                             if (count($_SESSION['glpigroups'])) {
                                 $criteria['WHERE']['OR'][] = [
@@ -98,13 +98,13 @@ final class ProjectController extends AbstractController
                                 ];
                                 $criteria['WHERE']['OR'][] = [
                                     "glpi_projectteams.itemtype"   => 'Group',
-                                    "glpi_projectteams.items_id"   => $_SESSION['glpigroups']
+                                    "glpi_projectteams.items_id"   => $_SESSION['glpigroups'],
                                 ];
                             }
                             return $criteria;
                         }
                         return true; // Allow reading by default. No extra SQL conditions needed.
-                    }
+                    },
                 ],
                 'properties' => [
                     'id' => [
@@ -119,6 +119,14 @@ final class ProjectController extends AbstractController
                     'priority' => [
                         'type' => Doc\Schema::TYPE_INTEGER,
                         'enum' => [1, 2, 3, 4, 5, 6],
+                        'description' => <<<EOT
+                            - 1: Very Low
+                            - 2: Low
+                            - 3: Medium
+                            - 4: High
+                            - 5: Very High
+                            - 6: Major
+                            EOT,
                     ],
                     'entity' => self::getDropdownTypeSchema(class: \Entity::class, full_schema: 'Entity'),
                     'tasks' => [
@@ -130,7 +138,7 @@ final class ProjectController extends AbstractController
                                 'table' => 'glpi_projecttasks',
                                 'fkey' => 'id',
                                 'field' => 'projects_id',
-                                'primary-property' => 'id'
+                                'primary-property' => 'id',
                             ],
                             'properties' => [
                                 'id' => [
@@ -141,10 +149,10 @@ final class ProjectController extends AbstractController
                                 'name' => ['type' => Doc\Schema::TYPE_STRING],
                                 'comment' => ['type' => Doc\Schema::TYPE_STRING],
                                 'content' => ['type' => Doc\Schema::TYPE_STRING],
-                            ]
+                            ],
                         ],
-                    ]
-                ]
+                    ],
+                ],
             ],
             'ProjectTask' => [
                 'x-version-introduced' => '2.0',
@@ -161,19 +169,19 @@ final class ProjectController extends AbstractController
                                     'glpi_projectteams' => [
                                         'ON' => [
                                             'glpi_projectteams' => 'projects_id',
-                                            'project' => 'id'
-                                        ]
-                                    ]
+                                            'project' => 'id',
+                                        ],
+                                    ],
                                 ],
                                 'WHERE' => [
                                     'OR' => [
                                         '_.users_id' => \Session::getLoginUserID(),
                                         [
                                             "glpi_projectteams.itemtype"   => 'User',
-                                            "glpi_projectteams.items_id"   => \Session::getLoginUserID()
-                                        ]
-                                    ]
-                                ]
+                                            "glpi_projectteams.items_id"   => \Session::getLoginUserID(),
+                                        ],
+                                    ],
+                                ],
                             ];
                             if (count($_SESSION['glpigroups'])) {
                                 $project_criteria['WHERE']['OR'][] = [
@@ -181,7 +189,7 @@ final class ProjectController extends AbstractController
                                 ];
                                 $project_criteria['WHERE']['OR'][] = [
                                     "glpi_projectteams.itemtype"   => 'Group',
-                                    "glpi_projectteams.items_id"   => $_SESSION['glpigroups']
+                                    "glpi_projectteams.items_id"   => $_SESSION['glpigroups'],
                                 ];
                             }
 
@@ -190,9 +198,9 @@ final class ProjectController extends AbstractController
                                     'glpi_projecttaskteams' => [
                                         'ON' => [
                                             'glpi_projecttaskteams' => 'projecttasks_id',
-                                            'project' => 'id'
-                                        ]
-                                    ]
+                                            'project' => 'id',
+                                        ],
+                                    ],
                                 ] + $project_criteria['LEFT JOIN'],
                                 'WHERE' => [
                                     'OR' => [
@@ -200,21 +208,21 @@ final class ProjectController extends AbstractController
                                         $project_criteria['WHERE'],
                                         [
                                             'glpi_projecttaskteams.items_id' => \Session::getLoginUserID(),
-                                            'glpi_projecttaskteams.itemtype' => 'User'
-                                        ]
-                                    ]
-                                ]
+                                            'glpi_projecttaskteams.itemtype' => 'User',
+                                        ],
+                                    ],
+                                ],
                             ];
                             if (count($_SESSION['glpigroups'])) {
                                 $criteria['WHERE']['OR'][] = [
                                     'glpi_projecttaskteams.items_id' => $_SESSION['glpigroups'],
-                                    'glpi_projecttaskteams.itemtype' => 'Group'
+                                    'glpi_projecttaskteams.itemtype' => 'Group',
                                 ];
                             }
                             return $criteria;
                         }
                         return true; // Allow reading by default. No extra SQL conditions needed.
-                    }
+                    },
                 ],
                 'properties' => [
                     'id' => [
@@ -227,7 +235,7 @@ final class ProjectController extends AbstractController
                     'content' => ['type' => Doc\Schema::TYPE_STRING],
                     'project' => self::getDropdownTypeSchema(class: Project::class, full_schema: 'Project'),
                     'parent_task' => self::getDropdownTypeSchema(class: ProjectTask::class, full_schema: 'ProjectTask'),
-                ]
+                ],
             ],
         ];
     }
@@ -238,7 +246,7 @@ final class ProjectController extends AbstractController
         description: 'List or search projects',
         parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT, self::PARAMETER_SORT],
         responses: [
-            ['schema' => 'Project[]']
+            ['schema' => 'Project[]'],
         ]
     )]
     public function searchProjects(Request $request): Response
@@ -251,7 +259,7 @@ final class ProjectController extends AbstractController
     #[Doc\Route(
         description: 'Get a project by ID',
         responses: [
-            ['schema' => 'Project']
+            ['schema' => 'Project'],
         ]
     )]
     public function getProject(Request $request): Response
@@ -266,7 +274,7 @@ final class ProjectController extends AbstractController
             'name' => '_',
             'location' => Doc\Parameter::LOCATION_BODY,
             'schema' => 'Project',
-        ]
+        ],
     ])]
     public function createProject(Request $request): Response
     {
@@ -282,10 +290,10 @@ final class ProjectController extends AbstractController
                 'name' => '_',
                 'location' => Doc\Parameter::LOCATION_BODY,
                 'schema' => 'Project',
-            ]
+            ],
         ],
         responses: [
-            ['schema' => 'Project']
+            ['schema' => 'Project'],
         ]
     )]
     public function updateProject(Request $request): Response
@@ -307,7 +315,7 @@ final class ProjectController extends AbstractController
         description: 'List or search project tasks',
         parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT, self::PARAMETER_SORT],
         responses: [
-            ['schema' => 'ProjectTask[]']
+            ['schema' => 'ProjectTask[]'],
         ]
     )]
     public function searchTasks(Request $request): Response
@@ -320,7 +328,7 @@ final class ProjectController extends AbstractController
     #[Doc\Route(
         description: 'Get a task by ID',
         responses: [
-            ['schema' => 'ProjectTask']
+            ['schema' => 'ProjectTask'],
         ]
     )]
     public function getTask(Request $request): Response
@@ -335,7 +343,7 @@ final class ProjectController extends AbstractController
             'name' => '_',
             'location' => Doc\Parameter::LOCATION_BODY,
             'schema' => 'ProjectTask',
-        ]
+        ],
     ])]
     public function createTask(Request $request): Response
     {
@@ -347,7 +355,7 @@ final class ProjectController extends AbstractController
     #[Doc\Route(
         description: 'Update a task by ID',
         responses: [
-            ['schema' => 'ProjectTask']
+            ['schema' => 'ProjectTask'],
         ]
     )]
     public function updateTask(Request $request): Response
@@ -369,7 +377,7 @@ final class ProjectController extends AbstractController
         description: 'List or search project tasks',
         parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT, self::PARAMETER_SORT],
         responses: [
-            ['schema' => 'ProjectTask[]']
+            ['schema' => 'ProjectTask[]'],
         ]
     )]
     public function searchLinkedTasks(Request $request): Response
@@ -389,7 +397,7 @@ final class ProjectController extends AbstractController
             'name' => '_',
             'location' => Doc\Parameter::LOCATION_BODY,
             'schema' => 'ProjectTask',
-        ]
+        ],
     ])]
     public function createLinkedTask(Request $request): Response
     {

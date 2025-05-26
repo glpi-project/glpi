@@ -35,6 +35,4 @@
 
 namespace Glpi\Form\Export\Specification;
 
-interface ContentSpecificationInterface
-{
-}
+interface ContentSpecificationInterface {}

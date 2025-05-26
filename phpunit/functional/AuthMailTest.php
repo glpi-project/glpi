@@ -37,7 +37,6 @@ namespace tests\units;
 use AuthMail;
 use AuthLDAP;
 use DbTestCase;
-use Exception;
 use Glpi\PHPUnit\Tests\Glpi\Auth\HelpersTrait;
 
 class AuthMailTest extends DbTestCase

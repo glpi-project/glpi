@@ -37,9 +37,7 @@ namespace Glpi\Application;
 
 final class ResourcesChecker
 {
-    public function __construct(private string $root_dir)
-    {
-    }
+    public function __construct(private string $root_dir) {}
 
     /**
      * Check that all required resources are up-to-date.
@@ -53,12 +51,12 @@ final class ResourcesChecker
         if (!$this->areDependenciesUpToDate()) {
             echo 'Application dependencies are not up to date.' . PHP_EOL;
             echo 'Run "php bin/console dependencies install" in the glpi tree to fix this.' . PHP_EOL;
-            exit(1);
+            exit(1); // @phpstan-ignore glpi.forbidExit (Script execution should be stopped to prevent further errors)
         }
         if (!$this->areLocalesUpToDate()) {
             echo 'Application locales have to be compiled.' . PHP_EOL;
             echo 'Run "php bin/console locales:compile" in the glpi tree to fix this.' . PHP_EOL;
-            exit(1);
+            exit(1); // @phpstan-ignore glpi.forbidExit (Script execution should be stopped to prevent further errors)
         }
     }
 
@@ -71,10 +69,10 @@ final class ResourcesChecker
         $autoload = $this->root_dir . '/vendor/autoload.php';
         if (!file_exists($autoload)) {
             return false;
-        } else if (file_exists($this->root_dir . '/composer.lock')) {
+        } elseif (file_exists($this->root_dir . '/composer.lock')) {
             if (!file_exists($this->root_dir . '/.composer.hash')) {
                 return false;
-            } else if (sha1_file($this->root_dir . '/composer.lock') != file_get_contents($this->root_dir . '/.composer.hash')) {
+            } elseif (sha1_file($this->root_dir . '/composer.lock') != file_get_contents($this->root_dir . '/.composer.hash')) {
                 return false;
             }
         }
@@ -82,10 +80,10 @@ final class ResourcesChecker
         // Check node dependencies
         if (!file_exists($this->root_dir . '/public/lib')) {
             return false;
-        } else if (file_exists($this->root_dir . '/package-lock.json')) {
+        } elseif (file_exists($this->root_dir . '/package-lock.json')) {
             if (!file_exists($this->root_dir . '/.package.hash')) {
                 return false;
-            } else if (sha1_file($this->root_dir . '/package-lock.json') != file_get_contents($this->root_dir . '/.package.hash')) {
+            } elseif (sha1_file($this->root_dir . '/package-lock.json') != file_get_contents($this->root_dir . '/.package.hash')) {
                 return false;
             }
         }
@@ -103,7 +101,7 @@ final class ResourcesChecker
         $mo_files = preg_grep('/\.mo$/', $locales_files);
         if (count($mo_files) < count($po_files)) {
             return false;
-        } else if (file_exists($this->root_dir . '/locales/glpi.pot')) {
+        } elseif (file_exists($this->root_dir . '/locales/glpi.pot')) {
             // Assume that `locales/glpi.pot` file only exists when installation mode is GIT
             foreach ($po_files as $po_file) {
                 $po_file = $this->root_dir . '/locales/' . $po_file;
@@ -122,18 +120,9 @@ final class ResourcesChecker
      */
     private function shouldCheckResources(): bool
     {
-        // Only production/staging environment are considered as environments where resources are not supposed to change.
-        $env = $_ENV['GLPI_ENVIRONMENT_TYPE'] ?? $_SERVER['GLPI_ENVIRONMENT_TYPE'] ?? 'production';
-        if (!in_array($env, ['staging', 'production'])) {
-            return true;
-        }
-
-        // If GLPI is install direcly by cloning the git repository, then it is preferable to check
-        // resources state.
-        if (is_dir($this->root_dir . '/.git')) {
-            return true;
-        }
-
-        return false;
+        // The file is special and will be executed before the autoload script
+        // is loaded, thus we must require the needed file manually.
+        require_once($this->root_dir . '/src/Glpi/Application/Environment.php');
+        return \Glpi\Application\Environment::get()->shouldExpectResourcesToChange($this->root_dir);
     }
 }

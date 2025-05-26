@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -88,12 +87,12 @@ class DropdownTest extends DbTestCase
     {
         $id = \Dropdown::import('UserTitle', $input);
         if ($result) {
-            $this->assertGreaterThan(0, (int)$id);
+            $this->assertGreaterThan(0, (int) $id);
             $ut = new \UserTitle();
             $this->assertTrue($ut->getFromDB($id));
             $this->assertSame($result, $ut->getField('name'));
         } else {
-            $this->assertLessThan(0, (int)$id);
+            $this->assertLessThan(0, (int) $id);
         }
     }
 
@@ -122,13 +121,13 @@ class DropdownTest extends DbTestCase
         $input['entities_id'] = getItemByTypeName('Entity', '_test_root_entity', true);
         $id = \Dropdown::import('Location', $input);
         if ($result) {
-            $this->assertGreaterThan(0, (int)$id, $msg);
+            $this->assertGreaterThan(0, (int) $id, $msg);
             $ut = new \Location();
             $this->assertTrue($ut->getFromDB($id));
             $this->assertSame($result, $ut->getField('name'));
             $this->assertSame($complete, $ut->getField('completename'));
         } else {
-            $this->assertLessThanOrEqual(0, (int)$id);
+            $this->assertLessThanOrEqual(0, (int) $id);
         }
     }
 
@@ -306,7 +305,7 @@ HTML;
         $ret = \Dropdown::getDropdownName('glpi_locations', $location_id);
         $this->assertSame($expected_name, $ret);
 
-         // test of return with comments
+        // test of return with comments
         $expected_comments = <<<HTML
 <span class="b">Complete name: </span>_location01<br />
                 <span class="b">Comments: </span>
@@ -334,7 +333,7 @@ HTML;
         $ret = \Dropdown::getDropdownName('glpi_locations', $location_id);
         $this->assertSame($expected_name, $ret);
 
-         // test of return with comments
+        // test of return with comments
         $expected_comments = <<<HTML
 <span class="b">Complete name: </span>_location02 &gt; _sublocation02<br />
             <span class="b">Code: </span>code_sublocation02<br />
@@ -363,7 +362,7 @@ HTML;
         $ret = \Dropdown::getDropdownName('glpi_locations', $location_id);
         $this->assertSame($expected_name, $ret);
 
-         // test of return with comments
+        // test of return with comments
         $expected_comments = <<<HTML
 <span class="b">Complete name: </span>_location02 &gt; _sublocation03<br />
             <span class="b">Alias: </span>alias_sublocation03<br />
@@ -392,7 +391,7 @@ HTML;
         $ret = \Dropdown::getDropdownName('glpi_locations', $location_id);
         $this->assertSame($expected_name, $ret);
 
-         // test of return with comments
+        // test of return with comments
         $expected_comments = <<<HTML
 <span class="b">Complete name: </span>_location02 &gt; _sublocation04<br />
             <span class="b">Alias: </span>alias_sublocation04<br />
@@ -423,7 +422,7 @@ HTML;
             [
                 'name'        => __METHOD__,
                 'comment'     => '',
-                'entities_id' => $this->getTestRootEntity(true)
+                'entities_id' => $this->getTestRootEntity(true),
             ],
         );
         $this->assertSame('', \Dropdown::getDropdownComments('glpi_computers', $item->getID()));
@@ -476,7 +475,7 @@ HTML;
             [
                 'params' => [
                     'display_emptychoice'   => 0,
-                    'itemtype'              => 'TaskCategory'
+                    'itemtype'              => 'TaskCategory',
                 ],
                 'expected'  => [
                     'results' => [
@@ -505,16 +504,16 @@ HTML;
                                     'selection_text' => '_cat_1 > R&D',
                                 ],
                             ],
-                            'itemtype' => 'Entity'
-                        ]
+                            'itemtype' => 'Entity',
+                        ],
                     ],
-                    'count' => 3
-                ]
+                    'count' => 3,
+                ],
             ], [
                 'params' => [
                     'display_emptychoice'   => 0,
                     'itemtype'              => 'TaskCategory',
-                    'searchText'            => 'subcat'
+                    'searchText'            => 'subcat',
                 ],
                 'expected'  => [
                     'results' => [
@@ -525,7 +524,7 @@ HTML;
                                     'id'     => getItemByTypeName('TaskCategory', '_cat_1', true),
                                     'text'   => '_cat_1',
                                     'level'  => 1,
-                                    'disabled' => true
+                                    'disabled' => true,
                                 ],
                                 1 => [
                                     'id'             => getItemByTypeName('TaskCategory', '_subcat_1', true),
@@ -533,18 +532,18 @@ HTML;
                                     'level'          => 2,
                                     'title'          => '_cat_1 > _subcat_1 - Comment for sub-category _subcat_1',
                                     'selection_text' => '_cat_1 > _subcat_1',
-                                ]
+                                ],
                             ],
-                            'itemtype' => 'Entity'
-                        ]
+                            'itemtype' => 'Entity',
+                        ],
                     ],
-                    'count' => 1
-                ]
+                    'count' => 1,
+                ],
             ], [
                 'params' => [
                     'display_emptychoice'   => 0,
                     'itemtype'              => 'TaskCategory',
-                    'searchText'            => '_cat_1 > _subcat'
+                    'searchText'            => '_cat_1 > _subcat',
                 ],
                 'expected'  => [
                     'results' => [
@@ -555,7 +554,7 @@ HTML;
                                     'id'     => getItemByTypeName('TaskCategory', '_cat_1', true),
                                     'text'   => '_cat_1',
                                     'level'  => 1,
-                                    'disabled' => true
+                                    'disabled' => true,
                                 ],
                                 1 => [
                                     'id'             => getItemByTypeName('TaskCategory', '_subcat_1', true),
@@ -563,18 +562,18 @@ HTML;
                                     'level'          => 2,
                                     'title'          => '_cat_1 > _subcat_1 - Comment for sub-category _subcat_1',
                                     'selection_text' => '_cat_1 > _subcat_1',
-                                ]
+                                ],
                             ],
-                            'itemtype' => 'Entity'
-                        ]
+                            'itemtype' => 'Entity',
+                        ],
                     ],
-                    'count' => 1
-                ]
+                    'count' => 1,
+                ],
             ], [
                 'params' => [
                     'display_emptychoice'   => 0,
                     'itemtype'              => 'TaskCategory',
-                    'searchText'            => 'R&D'
+                    'searchText'            => 'R&D',
                 ],
                 'expected'  => [
                     'results' => [
@@ -585,7 +584,7 @@ HTML;
                                     'id'     => getItemByTypeName('TaskCategory', '_cat_1', true),
                                     'text'   => '_cat_1',
                                     'level'  => 1,
-                                    'disabled' => true
+                                    'disabled' => true,
                                 ],
                                 1 => [
                                     'id'             => getItemByTypeName('TaskCategory', 'R&D', true),
@@ -595,22 +594,22 @@ HTML;
                                     'selection_text' => '_cat_1 > R&D',
                                 ],
                             ],
-                            'itemtype' => 'Entity'
-                        ]
+                            'itemtype' => 'Entity',
+                        ],
                     ],
-                    'count' => 1
-                ]
+                    'count' => 1,
+                ],
             ], [
                 'params' => [
                     'display_emptychoice'   => 1,
                     'emptylabel'            => 'EEEEEE',
-                    'itemtype'              => 'TaskCategory'
+                    'itemtype'              => 'TaskCategory',
                 ],
                 'expected'  => [
                     'results' => [
                         0 => [
                             'id'        => 0,
-                            'text'      => 'EEEEEE'
+                            'text'      => 'EEEEEE',
                         ],
                         1 => [
                             'text'      => 'Root entity',
@@ -637,16 +636,16 @@ HTML;
                                     'selection_text' => '_cat_1 > R&D',
                                 ],
                             ],
-                            'itemtype' => 'Entity'
-                        ]
+                            'itemtype' => 'Entity',
+                        ],
                     ],
-                    'count' => 3
-                ]
+                    'count' => 3,
+                ],
             ], [
                 'params' => [
                     'display_emptychoice'   => 0,
                     'itemtype'              => 'TaskCategory',
-                    'used'                  => [getItemByTypeName('TaskCategory', '_cat_1', true)]
+                    'used'                  => [getItemByTypeName('TaskCategory', '_cat_1', true)],
                 ],
                 'expected'  => [
                     'results' => [
@@ -657,7 +656,7 @@ HTML;
                                     'id'     => getItemByTypeName('TaskCategory', '_cat_1', true),
                                     'text'   => '_cat_1',
                                     'level'  => 1,
-                                    'disabled' => true
+                                    'disabled' => true,
                                 ],
                                 1 => [
                                     'id'             => getItemByTypeName('TaskCategory', '_subcat_1', true),
@@ -674,71 +673,71 @@ HTML;
                                     'selection_text' => '_cat_1 > R&D',
                                 ],
                             ],
-                            'itemtype' => 'Entity'
-                        ]
+                            'itemtype' => 'Entity',
+                        ],
                     ],
-                    'count' => 2
-                ]
-            ], [
-                'params' => [
-                    'display_emptychoice'   => 0,
-                    'itemtype'              => 'Computer',
-                    'entity_restrict'       => getItemByTypeName('Entity', '_test_child_2', true)
+                    'count' => 2,
                 ],
-                'expected'  => [
-                    'results'   => [
-                        0 => [
-                            'text'      => 'Root entity > _test_root_entity > _test_child_2',
-                            'children'  => [
-                                0 => [
-                                    'id'     => getItemByTypeName('Computer', '_test_pc21', true),
-                                    'text'   => '_test_pc21',
-                                    'title'  => '_test_pc21',
-                                ],
-                                1 => [
-                                    'id'     => getItemByTypeName('Computer', '_test_pc22', true),
-                                    'text'   => '_test_pc22',
-                                    'title'  => '_test_pc22',
-                                ]
-                            ],
-                            'itemtype' => 'Entity'
-                        ]
-                    ],
-                    'count'     => 2
-                ]
-            ], [
-                'params' => [
-                    'display_emptychoice'   => 0,
-                    'itemtype'              => 'Computer',
-                    'entity_restrict'       => '[' . getItemByTypeName('Entity', '_test_child_2', true) . ']'
-                ],
-                'expected'  => [
-                    'results'   => [
-                        0 => [
-                            'text'      => 'Root entity > _test_root_entity > _test_child_2',
-                            'children'  => [
-                                0 => [
-                                    'id'     => getItemByTypeName('Computer', '_test_pc21', true),
-                                    'text'   => '_test_pc21',
-                                    'title'  => '_test_pc21',
-                                ],
-                                1 => [
-                                    'id'     => getItemByTypeName('Computer', '_test_pc22', true),
-                                    'text'   => '_test_pc22',
-                                    'title'  => '_test_pc22',
-                                ]
-                            ],
-                            'itemtype' => 'Entity'
-                        ]
-                    ],
-                    'count'     => 2
-                ]
             ], [
                 'params' => [
                     'display_emptychoice'   => 0,
                     'itemtype'              => 'Computer',
                     'entity_restrict'       => getItemByTypeName('Entity', '_test_child_2', true),
-                    'searchText'            => '22'
+                ],
+                'expected'  => [
+                    'results'   => [
+                        0 => [
+                            'text'      => 'Root entity > _test_root_entity > _test_child_2',
+                            'children'  => [
+                                0 => [
+                                    'id'     => getItemByTypeName('Computer', '_test_pc21', true),
+                                    'text'   => '_test_pc21',
+                                    'title'  => '_test_pc21',
+                                ],
+                                1 => [
+                                    'id'     => getItemByTypeName('Computer', '_test_pc22', true),
+                                    'text'   => '_test_pc22',
+                                    'title'  => '_test_pc22',
+                                ],
+                            ],
+                            'itemtype' => 'Entity',
+                        ],
+                    ],
+                    'count'     => 2,
+                ],
+            ], [
+                'params' => [
+                    'display_emptychoice'   => 0,
+                    'itemtype'              => 'Computer',
+                    'entity_restrict'       => '[' . getItemByTypeName('Entity', '_test_child_2', true) . ']',
+                ],
+                'expected'  => [
+                    'results'   => [
+                        0 => [
+                            'text'      => 'Root entity > _test_root_entity > _test_child_2',
+                            'children'  => [
+                                0 => [
+                                    'id'     => getItemByTypeName('Computer', '_test_pc21', true),
+                                    'text'   => '_test_pc21',
+                                    'title'  => '_test_pc21',
+                                ],
+                                1 => [
+                                    'id'     => getItemByTypeName('Computer', '_test_pc22', true),
+                                    'text'   => '_test_pc22',
+                                    'title'  => '_test_pc22',
+                                ],
+                            ],
+                            'itemtype' => 'Entity',
+                        ],
+                    ],
+                    'count'     => 2,
+                ],
+            ], [
+                'params' => [
+                    'display_emptychoice'   => 0,
+                    'itemtype'              => 'Computer',
+                    'entity_restrict'       => getItemByTypeName('Entity', '_test_child_2', true),
+                    'searchText'            => '22',
                 ],
                 'expected'  => [
                     'results'   => [
@@ -749,13 +748,13 @@ HTML;
                                     'id'     => getItemByTypeName('Computer', '_test_pc22', true),
                                     'text'   => '_test_pc22',
                                     'title'  => '_test_pc22',
-                                ]
+                                ],
                             ],
-                            'itemtype' => 'Entity'
-                        ]
+                            'itemtype' => 'Entity',
+                        ],
                     ],
-                    'count'     => 1
-                ]
+                    'count'     => 1,
+                ],
             ], [
                 'params' => [
                     'display_emptychoice'   => 0,
@@ -763,18 +762,18 @@ HTML;
                     'searchText'            => 'subcat',
                     'toadd'                 => [
                         'key'  => 'value',
-                        'key2' => "value with unescaped \t and escaped \\t"
-                    ]
+                        'key2' => "value with unescaped \t and escaped \\t",
+                    ],
                 ],
                 'expected'  => [
                     'results' => [
                         [
                             'id'     => 'key',
-                            'text'   => 'value'
+                            'text'   => 'value',
                         ],
                         [
                             'id'     => 'key2',
-                            'text'   => "value with unescaped \t and escaped \\t"
+                            'text'   => "value with unescaped \t and escaped \\t",
                         ],
                         [
                             'text'      => 'Root entity',
@@ -783,7 +782,7 @@ HTML;
                                     'id'     => getItemByTypeName('TaskCategory', '_cat_1', true),
                                     'text'   => '_cat_1',
                                     'level'  => 1,
-                                    'disabled' => true
+                                    'disabled' => true,
                                 ],
                                 1 => [
                                     'id'             => getItemByTypeName('TaskCategory', '_subcat_1', true),
@@ -791,18 +790,18 @@ HTML;
                                     'level'          => 2,
                                     'title'          => '_cat_1 > _subcat_1 - Comment for sub-category _subcat_1',
                                     'selection_text' => '_cat_1 > _subcat_1',
-                                ]
+                                ],
                             ],
-                            'itemtype' => 'Entity'
-                        ]
+                            'itemtype' => 'Entity',
+                        ],
                     ],
-                    'count' => 1
-                ]
+                    'count' => 1,
+                ],
             ], [
                 'params' => [
                     'display_emptychoice'   => 0,
                     'itemtype'              => 'TaskCategory',
-                    'searchText'            => 'subcat'
+                    'searchText'            => 'subcat',
                 ],
                 'expected'  => [
                     'results' => [
@@ -815,20 +814,20 @@ HTML;
                                     'level'          => 0,
                                     'title'          => '_cat_1 > _subcat_1 - Comment for sub-category _subcat_1',
                                     'selection_text' => '_cat_1 > _subcat_1',
-                                ]
+                                ],
                             ],
-                            'itemtype' => 'Entity'
-                        ]
+                            'itemtype' => 'Entity',
+                        ],
                     ],
-                    'count' => 1
+                    'count' => 1,
                 ],
                 'session_params' => [
-                    'glpiuse_flat_dropdowntree' => true
-                ]
+                    'glpiuse_flat_dropdowntree' => true,
+                ],
             ], [
                 'params' => [
                     'display_emptychoice'   => 0,
-                    'itemtype'              => 'TaskCategory'
+                    'itemtype'              => 'TaskCategory',
                 ],
                 'expected'  => [
                     'results' => [
@@ -857,20 +856,20 @@ HTML;
                                     'selection_text' => '_cat_1 > R&D',
                                 ],
                             ],
-                            'itemtype' => 'Entity'
-                        ]
+                            'itemtype' => 'Entity',
+                        ],
                     ],
-                    'count' => 3
+                    'count' => 3,
                 ],
                 'session_params' => [
-                    'glpiuse_flat_dropdowntree' => true
-                ]
+                    'glpiuse_flat_dropdowntree' => true,
+                ],
             ], [
                 'params' => [
                     'display_emptychoice'   => 0,
                     'itemtype'              => 'TaskCategory',
                     'searchText'            => 'subcat',
-                    'permit_select_parent'  => true
+                    'permit_select_parent'  => true,
                 ],
                 'expected'  => [
                     'results' => [
@@ -890,15 +889,15 @@ HTML;
                                     'level'          => 2,
                                     'title'          => '_cat_1 > _subcat_1 - Comment for sub-category _subcat_1',
                                     'selection_text' => '_cat_1 > _subcat_1',
-                                ]
+                                ],
                             ],
-                            'itemtype' => 'Entity'
-                        ]
+                            'itemtype' => 'Entity',
+                        ],
                     ],
-                    'count' => 1
-                ]
+                    'count' => 1,
+                ],
             ], [
-            // search using id on CommonTreeDropdown but without "glpiis_ids_visible" set to true -> no results
+                // search using id on CommonTreeDropdown but without "glpiis_ids_visible" set to true -> no results
                 'params' => [
                     'display_emptychoice'   => 0,
                     'itemtype'              => 'TaskCategory',
@@ -907,13 +906,13 @@ HTML;
                 'expected'  => [
                     'results' => [
                     ],
-                    'count' => 0
+                    'count' => 0,
                 ],
                 'session_params' => [
-                    'glpiis_ids_visible' => false
-                ]
+                    'glpiis_ids_visible' => false,
+                ],
             ], [
-            // search using id on CommonTreeDropdown with "glpiis_ids_visible" set to true -> results
+                // search using id on CommonTreeDropdown with "glpiis_ids_visible" set to true -> results
                 'params' => [
                     'display_emptychoice'   => 0,
                     'itemtype'              => 'TaskCategory',
@@ -928,7 +927,7 @@ HTML;
                                     'id'             => getItemByTypeName('TaskCategory', '_cat_1', true),
                                     'text'           => '_cat_1',
                                     'level'          => 1,
-                                    'disabled'       => true
+                                    'disabled'       => true,
                                 ],
                                 1 => [
                                     'id'             => getItemByTypeName('TaskCategory', '_subcat_1', true),
@@ -936,18 +935,18 @@ HTML;
                                     'level'          => 2,
                                     'title'          => '_cat_1 > _subcat_1 - Comment for sub-category _subcat_1',
                                     'selection_text' => '_cat_1 > _subcat_1',
-                                ]
+                                ],
                             ],
-                            'itemtype' => 'Entity'
-                        ]
+                            'itemtype' => 'Entity',
+                        ],
                     ],
-                    'count' => 1
+                    'count' => 1,
                 ],
                 'session_params' => [
-                    'glpiis_ids_visible' => true
-                ]
+                    'glpiis_ids_visible' => true,
+                ],
             ], [
-            // search using id on "not a CommonTreeDropdown" but without "glpiis_ids_visible" set to true -> no results
+                // search using id on "not a CommonTreeDropdown" but without "glpiis_ids_visible" set to true -> no results
                 'params' => [
                     'display_emptychoice'   => 0,
                     'itemtype'              => 'DocumentType',
@@ -956,13 +955,13 @@ HTML;
                 'expected'  => [
                     'results' => [
                     ],
-                    'count' => 0
+                    'count' => 0,
                 ],
                 'session_params' => [
-                    'glpiis_ids_visible' => false
-                ]
+                    'glpiis_ids_visible' => false,
+                ],
             ], [
-            // search using id on "not a CommonTreeDropdown" with "glpiis_ids_visible" set to true -> results
+                // search using id on "not a CommonTreeDropdown" with "glpiis_ids_visible" set to true -> results
                 'params' => [
                     'display_emptychoice'   => 0,
                     'itemtype'              => 'DocumentType',
@@ -974,13 +973,13 @@ HTML;
                             'id'             => getItemByTypeName('DocumentType', 'markdown', true),
                             'text'           => 'markdown (' . getItemByTypeName('DocumentType', 'markdown', true) . ')',
                             'title'          => 'markdown',
-                        ]
+                        ],
                     ],
-                    'count' => 1
+                    'count' => 1,
                 ],
                 'session_params' => [
-                    'glpiis_ids_visible' => true
-                ]
+                    'glpiis_ids_visible' => true,
+                ],
             ], [
                 'params' => [
                     'display_emptychoice' => 0,
@@ -997,10 +996,10 @@ HTML;
                             'id'     => getItemByTypeName('ComputerModel', '_test_computermodel_2', true),
                             'text'   => '_test_computermodel_2 - CMP_567AEC68',
                             'title'  => '_test_computermodel_2 - CMP_567AEC68',
-                        ]
+                        ],
                     ],
-                    'count'     => 2
-                ]
+                    'count'     => 2,
+                ],
             ], [
                 'params' => [
                     'display_emptychoice' => 0,
@@ -1013,10 +1012,10 @@ HTML;
                             'id'     => getItemByTypeName('ComputerModel', '_test_computermodel_2', true),
                             'text'   => '_test_computermodel_2 - CMP_567AEC68',
                             'title'  => '_test_computermodel_2 - CMP_567AEC68',
-                        ]
+                        ],
                     ],
-                    'count'     => 1
-                ]
+                    'count'     => 1,
+                ],
             ], [
                 'params' => [
                     'display_emptychoice' => 0,
@@ -1029,10 +1028,128 @@ HTML;
                             'id'     => getItemByTypeName(Socket::class, '_socket01', true),
                             'text'   => '_socket01',
                             'title'  => '_socket01 - Comment for socket _socket01',
-                        ]
+                        ],
                     ],
-                    'count'     => 1
-                ]
+                    'count'     => 1,
+                ],
+            ],
+            // This test verifies the behavior of searches by ID when $_SESSION['glpiis_ids_visible'] is true.
+            // Specifically, it checks that a WHERE clause is applied on the index name ("id")
+            // when 'searchText' contains only numeric characters (one or more), with no other characters.
+            // This condition is evaluated in two contexts: when the related object is either a CommonDropdown or a CommonTreeDropdown.
+            // Therefore, we cover both cases by testing with TaskCategory (CommonTreeDropdown) and ComputerModel (CommonDropdown).
+            // Additionally, we use both string and integer values for 'searchText' to ensure proper handling and to validate the regex used in preg_match.
+            [
+                'params' => [
+                    'display_emptychoice' => 0,
+                    'itemtype'            => 'TaskCategory',
+                    'searchText'          => (int) getItemByTypeName(\TaskCategory::class, '_cat_1', true), // search commonTreeDropdown by id as int
+                ],
+                'expected'  => [
+                    'results'   => [
+                        [
+                            'text'   => 'Root entity',
+                            'children' => [
+                                0 => [
+                                    'id'             => getItemByTypeName('TaskCategory', '_cat_1', true),
+                                    'text'           => '_cat_1',
+                                    'level'          => 1,
+                                    'title'          => '_cat_1 - Comment for category _cat_1',
+                                    'selection_text' => '_cat_1',
+                                ],
+                                1 => [
+                                    'id'             => getItemByTypeName('TaskCategory', '_subcat_1', true),
+                                    'text'           => '_subcat_1',
+                                    'level'          => 2,
+                                    'title'          => '_cat_1 > _subcat_1 - Comment for sub-category _subcat_1',
+                                    'selection_text' => '_cat_1 > _subcat_1',
+                                ],
+                                2 => [
+                                    'id'             => getItemByTypeName('TaskCategory', 'R&D', true),
+                                    'text'           => 'R&D',
+                                    'level'          => 2,
+                                    'title'          => '_cat_1 > R&D - Comment for sub-category _subcat_2',
+                                    'selection_text' => '_cat_1 > R&D',
+                                ],
+                            ],
+                            'itemtype' => 'Entity',
+                        ],
+                    ],
+                    'count'     => 3,
+                ],
+            ],
+            [
+                'params' => [
+                    'display_emptychoice' => 0,
+                    'itemtype'            => 'TaskCategory',
+                    'searchText'          => (string) getItemByTypeName(\TaskCategory::class, '_cat_1', true), // search commonTreeDropdown by id as string
+                ],
+                'expected'  => [
+                    'results'   => [
+                        [
+                            'text'   => 'Root entity',
+                            'children' => [
+                                0 => [
+                                    'id'             => getItemByTypeName('TaskCategory', '_cat_1', true),
+                                    'text'           => '_cat_1',
+                                    'level'          => 1,
+                                    'title'          => '_cat_1 - Comment for category _cat_1',
+                                    'selection_text' => '_cat_1',
+                                ],
+                                1 => [
+                                    'id'             => getItemByTypeName('TaskCategory', '_subcat_1', true),
+                                    'text'           => '_subcat_1',
+                                    'level'          => 2,
+                                    'title'          => '_cat_1 > _subcat_1 - Comment for sub-category _subcat_1',
+                                    'selection_text' => '_cat_1 > _subcat_1',
+                                ],
+                                2 => [
+                                    'id'             => getItemByTypeName('TaskCategory', 'R&D', true),
+                                    'text'           => 'R&D',
+                                    'level'          => 2,
+                                    'title'          => '_cat_1 > R&D - Comment for sub-category _subcat_2',
+                                    'selection_text' => '_cat_1 > R&D',
+                                ],
+                            ],
+                            'itemtype' => 'Entity',
+                        ],
+                    ],
+                    'count'     => 3,
+                ],
+            ],
+            [
+                'params' => [
+                    'display_emptychoice' => 0,
+                    'itemtype'            => 'ComputerModel',
+                    'searchText'          => (int) getItemByTypeName('ComputerModel', '_test_computermodel_1', true), // search CommonDropdown by id as int
+                ],
+                'expected'  => [
+                    'results'   => [
+                        [
+                            'id'     => getItemByTypeName('ComputerModel', '_test_computermodel_1', true),
+                            'text'   => '_test_computermodel_1 - CMP_ADEAF5E1',
+                            'title'  => '_test_computermodel_1 - CMP_ADEAF5E1',
+                        ],
+                    ],
+                    'count'     => 1,
+                ],
+            ],
+            [
+                'params' => [
+                    'display_emptychoice' => 0,
+                    'itemtype'            => 'ComputerModel',
+                    'searchText'          => (string) getItemByTypeName('ComputerModel', '_test_computermodel_1', true), // search CommonDropdown by id as string
+                ],
+                'expected'  => [
+                    'results'   => [
+                        [
+                            'id'     => getItemByTypeName('ComputerModel', '_test_computermodel_1', true),
+                            'text'   => '_test_computermodel_1 - CMP_ADEAF5E1',
+                            'title'  => '_test_computermodel_1 - CMP_ADEAF5E1',
+                        ],
+                    ],
+                    'count'     => 1,
+                ],
             ],
         ];
     }
@@ -1077,7 +1194,7 @@ HTML;
             [
                 'params'    => [
                     'fromtype'  => 'Computer',
-                    'itemtype'  => 'Printer'
+                    'itemtype'  => 'Printer',
                 ],
                 'expected'  => [
                     'results' => [
@@ -1095,8 +1212,8 @@ HTML;
                                 1 => [
                                     'id'     => getItemByTypeName('Printer', '_test_printer_ent0', true),
                                     'text'   => '_test_printer_ent0',
-                                ]
-                            ]
+                                ],
+                            ],
                         ],
                         2 => [
                             'text' => "Root entity > _test_root_entity > _test_child_1",
@@ -1104,8 +1221,8 @@ HTML;
                                 0 => [
                                     'id'     => getItemByTypeName('Printer', '_test_printer_ent1', true),
                                     'text'   => '_test_printer_ent1',
-                                ]
-                            ]
+                                ],
+                            ],
                         ],
                         3 => [
                             'text' => "Root entity > _test_root_entity > _test_child_2",
@@ -1113,11 +1230,11 @@ HTML;
                                 0 => [
                                     'id'     => getItemByTypeName('Printer', '_test_printer_ent2', true),
                                     'text'   => '_test_printer_ent2',
-                                ]
-                            ]
-                        ]
-                    ]
-                ]
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
             ], [
                 'params'    => [
                     'fromtype'  => 'Computer',
@@ -1125,9 +1242,9 @@ HTML;
                     'used'      => [
                         'Printer' => [
                             getItemByTypeName('Printer', '_test_printer_ent0', true),
-                            getItemByTypeName('Printer', '_test_printer_ent2', true)
-                        ]
-                    ]
+                            getItemByTypeName('Printer', '_test_printer_ent2', true),
+                        ],
+                    ],
                 ],
                 'expected'  => [
                     'results' => [
@@ -1141,8 +1258,8 @@ HTML;
                                 0 => [
                                     'id'     => getItemByTypeName('Printer', '_test_printer_all', true),
                                     'text'   => '_test_printer_all',
-                                ]
-                            ]
+                                ],
+                            ],
                         ],
                         2 => [
                             'text' => "Root entity > _test_root_entity > _test_child_1",
@@ -1150,16 +1267,16 @@ HTML;
                                 0 => [
                                     'id'     => getItemByTypeName('Printer', '_test_printer_ent1', true),
                                     'text'   => '_test_printer_ent1',
-                                ]
-                            ]
-                        ]
-                    ]
-                ]
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
             ], [
                 'params'    => [
                     'fromtype'     => 'Computer',
                     'itemtype'     => 'Printer',
-                    'searchText'   => 'ent0'
+                    'searchText'   => 'ent0',
                 ],
                 'expected'  => [
                     'results' => [
@@ -1169,16 +1286,16 @@ HTML;
                                 0 => [
                                     'id'     => getItemByTypeName('Printer', '_test_printer_ent0', true),
                                     'text'   => '_test_printer_ent0',
-                                ]
-                            ]
-                        ]
-                    ]
-                ]
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
             ], [
                 'params'    => [
                     'fromtype'     => 'Computer',
                     'itemtype'     => 'Printer',
-                    'searchText'   => 'ent0'
+                    'searchText'   => 'ent0',
                 ],
                 'expected'  => [
                     'results' => [
@@ -1188,15 +1305,15 @@ HTML;
                                 0 => [
                                     'id'     => getItemByTypeName('Printer', '_test_printer_ent0', true),
                                     'text'   => '_test_printer_ent0 (' . getItemByTypeName('Printer', '_test_printer_ent0', true) . ')',
-                                ]
-                            ]
-                        ]
-                    ]
+                                ],
+                            ],
+                        ],
+                    ],
                 ],
                 'session_params' => [
-                    'glpiis_ids_visible' => true
-                ]
-            ]
+                    'glpiis_ids_visible' => true,
+                ],
+            ],
         ];
     }
 
@@ -1243,90 +1360,90 @@ HTML;
                     'results'   => [
                         0 => [
                             'id'     => 1,
-                            'text'   => '1'
+                            'text'   => '1',
                         ],
                         1 => [
                             'id'     => 2,
-                            'text'   => '2'
+                            'text'   => '2',
                         ],
                         2 => [
                             'id'     => 3,
-                            'text'   => '3'
+                            'text'   => '3',
                         ],
                         3 => [
                             'id'     => 4,
-                            'text'   => '4'
+                            'text'   => '4',
                         ],
                         4 => [
                             'id'     => 5,
-                            'text'   => '5'
+                            'text'   => '5',
                         ],
                         5 => [
                             'id'     => 6,
-                            'text'   => '6'
+                            'text'   => '6',
                         ],
                         6 => [
                             'id'     => 7,
-                            'text'   => '7'
+                            'text'   => '7',
                         ],
                         7 => [
                             'id'     => 8,
-                            'text'   => '8'
+                            'text'   => '8',
                         ],
                         8 => [
                             'id'     => 9,
-                            'text'   => '9'
+                            'text'   => '9',
                         ],
                         9 => [
                             'id'     => 10,
-                            'text'   => '10'
-                        ]
+                            'text'   => '10',
+                        ],
                     ],
-                    'count'     => 10
-                ]
-            ], [
-                'params'    => [
-                    'min'    => 10,
-                    'max'    => 30,
-                    'step'   => 10
+                    'count'     => 10,
                 ],
-                'expected'  => [
-                    'results'   => [
-                        0 => [
-                            'id'     => 10,
-                            'text'   => '10'
-                        ],
-                        1 => [
-                            'id'     => 20,
-                            'text'   => '20'
-                        ],
-                        2 => [
-                            'id'     => 30,
-                            'text'   => '30'
-                        ]
-                    ],
-                    'count'     => 3
-                ]
             ], [
                 'params'    => [
                     'min'    => 10,
                     'max'    => 30,
                     'step'   => 10,
-                    'used'   => [20]
                 ],
                 'expected'  => [
                     'results'   => [
                         0 => [
                             'id'     => 10,
-                            'text'   => '10'
+                            'text'   => '10',
+                        ],
+                        1 => [
+                            'id'     => 20,
+                            'text'   => '20',
+                        ],
+                        2 => [
+                            'id'     => 30,
+                            'text'   => '30',
+                        ],
+                    ],
+                    'count'     => 3,
+                ],
+            ], [
+                'params'    => [
+                    'min'    => 10,
+                    'max'    => 30,
+                    'step'   => 10,
+                    'used'   => [20],
+                ],
+                'expected'  => [
+                    'results'   => [
+                        0 => [
+                            'id'     => 10,
+                            'text'   => '10',
                         ],
                         1 => [
                             'id'     => 30,
-                            'text'   => '30'
-                        ]
+                            'text'   => '30',
+                        ],
                     ],
-                    'count'     => 2
-                ]
+                    'count'     => 2,
+                ],
             ], [
                 'params'    => [
                     'min'    => 10,
@@ -1336,13 +1453,13 @@ HTML;
                     'toadd'  => [
                         5 => 'five',
                         6 => "value with unescaped \t and escaped \\t",
-                    ]
+                    ],
                 ],
                 'expected'  => [
                     'results'   => [
                         [
                             'id'     => 5,
-                            'text'   => 'five'
+                            'text'   => 'five',
                         ],
                         [
                             'id'     => 6,
@@ -1350,37 +1467,37 @@ HTML;
                         ],
                         [
                             'id'     => 10,
-                            'text'   => '10'
+                            'text'   => '10',
                         ],
                         [
                             'id'     => 30,
-                            'text'   => '30'
-                        ]
+                            'text'   => '30',
+                        ],
                     ],
-                    'count'     => 2
-                ]
+                    'count'     => 2,
+                ],
             ], [
                 'params'    => [
                     'min'    => 10,
                     'max'    => 30,
                     'step'   => 10,
                     'used'   => [20],
-                    'unit'   => 'second'
+                    'unit'   => 'second',
                 ],
                 'expected'  => [
                     'results'   => [
                         0 => [
                             'id'     => 10,
-                            'text'   => '10 seconds'
+                            'text'   => '10 seconds',
                         ],
                         1 => [
                             'id'     => 30,
-                            'text'   => '30 seconds'
-                        ]
+                            'text'   => '30 seconds',
+                        ],
                     ],
-                    'count'     => 2
-                ]
-            ]
+                    'count'     => 2,
+                ],
+            ],
         ];
     }
 
@@ -1407,44 +1524,44 @@ HTML;
                             'text'   => '-----',
                         ],
                         1 => [
-                            'id'     => (int)getItemByTypeName('User', '_test_user', true),
+                            'id'     => (int) getItemByTypeName('User', '_test_user', true),
                             'text'   => '_test_user',
                             'title'  => '_test_user - _test_user',
                         ],
                         2 => [
-                            'id'     => (int)getItemByTypeName('User', 'glpi', true),
+                            'id'     => (int) getItemByTypeName('User', 'glpi', true),
                             'text'   => 'glpi',
                             'title'  => 'glpi - glpi',
                         ],
                         3 => [
-                            'id'     => (int)getItemByTypeName('User', 'normal', true),
+                            'id'     => (int) getItemByTypeName('User', 'normal', true),
                             'text'   => 'normal',
                             'title'  => 'normal - normal',
                         ],
                         4 => [
-                            'id'     => (int)getItemByTypeName('User', 'post-only', true),
+                            'id'     => (int) getItemByTypeName('User', 'post-only', true),
                             'text'   => 'post-only',
                             'title'  => 'post-only - post-only',
                         ],
                         5 => [
-                            'id'     => (int)getItemByTypeName('User', 'tech', true),
+                            'id'     => (int) getItemByTypeName('User', 'tech', true),
                             'text'   => 'tech',
                             'title'  => 'tech - tech',
                         ],
                         6 => [
-                            'id'     => (int)getItemByTypeName('User', 'jsmith123', true),
+                            'id'     => (int) getItemByTypeName('User', 'jsmith123', true),
                             'text'   => 'Smith John',
                             'title'  => 'Smith John - jsmith123',
-                        ]
+                        ],
                     ],
-                    'count' => 6
-                ]
+                    'count' => 6,
+                ],
             ], [
                 'params'    => [
                     'used'   => [
                         getItemByTypeName('User', 'glpi', true),
-                        getItemByTypeName('User', 'tech', true)
-                    ]
+                        getItemByTypeName('User', 'tech', true),
+                    ],
                 ],
                 'expected'  => [
                     'results' => [
@@ -1453,28 +1570,28 @@ HTML;
                             'text'   => '-----',
                         ],
                         1 => [
-                            'id'     => (int)getItemByTypeName('User', '_test_user', true),
+                            'id'     => (int) getItemByTypeName('User', '_test_user', true),
                             'text'   => '_test_user',
                             'title'  => '_test_user - _test_user',
                         ],
                         2 => [
-                            'id'     => (int)getItemByTypeName('User', 'normal', true),
+                            'id'     => (int) getItemByTypeName('User', 'normal', true),
                             'text'   => 'normal',
                             'title'  => 'normal - normal',
                         ],
                         3 => [
-                            'id'     => (int)getItemByTypeName('User', 'post-only', true),
+                            'id'     => (int) getItemByTypeName('User', 'post-only', true),
                             'text'   => 'post-only',
                             'title'  => 'post-only - post-only',
                         ],
                         4 => [
-                            'id'     => (int)getItemByTypeName('User', 'jsmith123', true),
+                            'id'     => (int) getItemByTypeName('User', 'jsmith123', true),
                             'text'   => 'Smith John',
                             'title'  => 'Smith John - jsmith123',
-                        ]
+                        ],
                     ],
-                    'count' => 4
-                ]
+                    'count' => 4,
+                ],
             ], [
                 'params'    => [
                     'all'    => true,
@@ -1482,8 +1599,8 @@ HTML;
                         getItemByTypeName('User', 'glpi', true),
                         getItemByTypeName('User', 'tech', true),
                         getItemByTypeName('User', 'normal', true),
-                        getItemByTypeName('User', 'post-only', true)
-                    ]
+                        getItemByTypeName('User', 'post-only', true),
+                    ],
                 ],
                 'expected'  => [
                     'results' => [
@@ -1492,19 +1609,19 @@ HTML;
                             'text'   => 'All',
                         ],
                         1 => [
-                            'id'     => (int)getItemByTypeName('User', '_test_user', true),
+                            'id'     => (int) getItemByTypeName('User', '_test_user', true),
                             'text'   => '_test_user',
                             'title'  => '_test_user - _test_user',
                         ],
                         2 => [
-                            'id'     => (int)getItemByTypeName('User', 'jsmith123', true),
+                            'id'     => (int) getItemByTypeName('User', 'jsmith123', true),
                             'text'   => 'Smith John',
                             'title'  => 'Smith John - jsmith123',
-                        ]
+                        ],
                     ],
-                    'count' => 2
-                ]
-            ]
+                    'count' => 2,
+                ],
+            ],
         ];
     }
 
@@ -1531,8 +1648,8 @@ HTML;
         for ($i = 0; $i <= 20; ++$i) {
             $this->assertGreaterThan(
                 0,
-                (int)$location->add([
-                    'name'   => "Test location $i"
+                (int) $location->add([
+                    'name'   => "Test location $i",
                 ])
             );
         }
@@ -1543,29 +1660,29 @@ HTML;
             'entity_restrict'       => 0,
             'page'                  => 1,
             'page_limit'            => 10,
-            '_idor_token'           => \Session::getNewIDORToken($location::getType(), ['entity_restrict' => 0])
+            '_idor_token'           => \Session::getNewIDORToken($location::getType(), ['entity_restrict' => 0]),
         ];
         $values = \Dropdown::getDropdownValue($post);
-        $values = (array)json_decode($values);
+        $values = (array) json_decode($values);
 
         $this->assertSame(10, $values['count']);
         $this->assertCount(2, $values['results']);
 
-        $results = (array)$values['results'];
+        $results = (array) $values['results'];
         $this->assertSame(
             [
                 'id'     => 0,
-                'text'   => '-----'
+                'text'   => '-----',
             ],
-            (array)$results[0]
+            (array) $results[0]
         );
 
-        $list_results = (array)$results[1];
+        $list_results = (array) $results[1];
         $this->assertCount(3, $list_results);
         $this->assertSame('Root entity', $list_results['text']);
         $this->assertSame('Entity', $list_results['itemtype']);
 
-        $children = (array)$list_results['children'];
+        $children = (array) $list_results['children'];
         $this->assertCount(10, $children);
         $this->assertSame(
             [
@@ -1573,14 +1690,14 @@ HTML;
                 'text',
                 'level',
                 'title',
-                'selection_text'
+                'selection_text',
             ],
-            array_keys((array)$children[0])
+            array_keys((array) $children[0])
         );
 
         $post['page'] = 2;
         $values = \Dropdown::getDropdownValue($post);
-        $values = (array)json_decode($values);
+        $values = (array) json_decode($values);
 
         $this->assertEquals(10, $values['count']);
 
@@ -1591,9 +1708,9 @@ HTML;
                 'text',
                 'level',
                 'title',
-                'selection_text'
+                'selection_text',
             ],
-            array_keys((array)$values['results'][0])
+            array_keys((array) $values['results'][0])
         );
 
         //use a array condition
@@ -1604,10 +1721,10 @@ HTML;
             'entity_restrict'       => 0,
             'page'                  => 1,
             'page_limit'            => 10,
-            '_idor_token'           => \Session::getNewIDORToken($location::getType(), ['entity_restrict' => 0, 'condition' => ['name' => ['LIKE', "%3%"]]])
+            '_idor_token'           => \Session::getNewIDORToken($location::getType(), ['entity_restrict' => 0, 'condition' => ['name' => ['LIKE', "%3%"]]]),
         ];
         $values = \Dropdown::getDropdownValue($post);
-        $values = (array)json_decode($values);
+        $values = (array) json_decode($values);
 
         $this->assertEquals(3, $values['count']);
         $this->assertCount(2, $values['results']);
@@ -1619,7 +1736,7 @@ HTML;
         $post['condition']   = $condition_key;
         $post['_idor_token'] = \Session::getNewIDORToken($location::getType(), ['entity_restrict' => 0, 'condition' => $condition_key]);
         $values = \Dropdown::getDropdownValue($post);
-        $values = (array)json_decode($values);
+        $values = (array) json_decode($values);
 
         $this->assertEquals(3, $values['count']);
         $this->assertCount(2, $values['results']);
@@ -1632,10 +1749,10 @@ HTML;
             'entity_restrict'       => 0,
             'page'                  => 1,
             'page_limit'            => 10,
-            '_idor_token'           => \Session::getNewIDORToken($location::getType(), ['entity_restrict' => 0, 'condition' => '`name` LIKE "%4%"'])
+            '_idor_token'           => \Session::getNewIDORToken($location::getType(), ['entity_restrict' => 0, 'condition' => '`name` LIKE "%4%"']),
         ];
         $values = \Dropdown::getDropdownValue($post);
-        $values = (array)json_decode($values);
+        $values = (array) json_decode($values);
 
         $this->assertEquals(10, $values['count']);
         $this->assertCount(2, $values['results']);
@@ -1712,7 +1829,7 @@ HTML;
                 'parent_id'           => $state_1_id,
                 'display_emptychoice' => false,
                 'entity_restrict'     => 0,
-                '_idor_token'         => Session::getNewIDORToken($state->getType())
+                '_idor_token'         => Session::getNewIDORToken($state->getType()),
             ],
             false
         );
@@ -1766,7 +1883,7 @@ HTML;
                 'parent_id'           => $state_1_1_id,
                 'display_emptychoice' => false,
                 'entity_restrict'     => 0,
-                '_idor_token'         => Session::getNewIDORToken($state->getType())
+                '_idor_token'         => Session::getNewIDORToken($state->getType()),
             ],
             false
         );
@@ -1812,7 +1929,7 @@ HTML;
                 'parent_id'           => $state_2_id,
                 'display_emptychoice' => false,
                 'entity_restrict'     => 0,
-                '_idor_token'         => Session::getNewIDORToken($state->getType())
+                '_idor_token'         => Session::getNewIDORToken($state->getType()),
             ],
             false
         );
@@ -1860,14 +1977,14 @@ HTML;
                 'step' => 1,
                 'unit' => "",
             ],
-            'expected' => [1, 2, 3, 4]
+            'expected' => [1, 2, 3, 4],
         ];
         yield [
             'params' => [
                 'min' => 1,
                 'max' => 4,
                 'step' => 0.5,
-                'unit' => ""
+                'unit' => "",
             ],
             'expected' => [
                 1,
@@ -1876,8 +1993,8 @@ HTML;
                 2.5,
                 3,
                 3.5,
-                4
-            ]
+                4,
+            ],
         ];
 
         yield [
@@ -1885,12 +2002,12 @@ HTML;
                 'min' => 1,
                 'max' => 4,
                 'step' => 2,
-                'unit' => ""
+                'unit' => "",
             ],
             'expected' => [
                 1,
-                3
-            ]
+                3,
+            ],
         ];
 
         yield [
@@ -1898,12 +2015,12 @@ HTML;
                 'min' => 1,
                 'max' => 4,
                 'step' => 2.5,
-                'unit' => ""
+                'unit' => "",
             ],
             'expected' => [
                 1,
-                3.5
-            ]
+                3.5,
+            ],
         ];
 
         yield [
@@ -1911,11 +2028,11 @@ HTML;
                 'min' => 1,
                 'max' => 4,
                 'step' => 5.5,
-                'unit' => ""
+                'unit' => "",
             ],
             'expected' => [
-                1
-            ]
+                1,
+            ],
         ];
     }
 
@@ -1961,7 +2078,7 @@ HTML;
 
                     $extra_fields = $item->getAdditionalFields();
                     $input = [
-                        'name' => __FUNCTION__
+                        'name' => __FUNCTION__,
                     ];
                     $parent_id = null;
                     foreach ($extra_fields as $field) {
@@ -1972,7 +2089,7 @@ HTML;
                             $this->assertGreaterThan(
                                 0,
                                 $parent_id = $item->add([
-                                    'name' => __FUNCTION__ . '_parent'
+                                    'name' => __FUNCTION__ . '_parent',
                                 ])
                             );
                         }
@@ -2006,7 +2123,7 @@ HTML;
     {
         return [
             [\CartridgeItem::class], [\Computer::class], [\ConsumableItem::class], [\Monitor::class], [\NetworkEquipment::class],
-            [\Peripheral::class], [\Phone::class], [\Printer::class], [\Software::class]
+            [\Peripheral::class], [\Phone::class], [\Printer::class], [\Software::class],
         ];
     }
 
@@ -2024,7 +2141,7 @@ HTML;
             $groups_id = $group->add([
                 'name' => __FUNCTION__,
                 'entities_id' => $this->getTestRootEntity(true),
-                'is_recursive' => 1
+                'is_recursive' => 1,
             ])
         );
         // Add user to group
@@ -2042,7 +2159,7 @@ HTML;
             0,
             $item->add([
                 'name' => __FUNCTION__ . '1',
-                'entities_id' => $this->getTestRootEntity(true)
+                'entities_id' => $this->getTestRootEntity(true),
             ])
         );
         $this->assertGreaterThan(
@@ -2050,7 +2167,7 @@ HTML;
             $item->add([
                 'name' => __FUNCTION__ . '2',
                 'entities_id' => $this->getTestRootEntity(true),
-                'users_id_tech' => $_SESSION['glpiID']
+                'users_id_tech' => $_SESSION['glpiID'],
             ])
         );
         $this->assertGreaterThan(
@@ -2058,14 +2175,14 @@ HTML;
             $item->add([
                 'name' => __FUNCTION__ . '3',
                 'entities_id' => $this->getTestRootEntity(true),
-                'groups_id_tech' => $groups_id
+                'groups_id_tech' => $groups_id,
             ])
         );
 
         $results = \Dropdown::getDropdownValue([
             'itemtype' => $itemtype,
             'display_emptychoice' => 0,
-            '_idor_token' => \Session::getNewIDORToken($itemtype)
+            '_idor_token' => \Session::getNewIDORToken($itemtype),
         ], false)['results'];
         // get optgroup id (key in the results array) for the test root entity "_test_root_entity"
         $optgroup_id = array_search("Root _test_root_entity", array_column($results, 'text'));
@@ -2079,7 +2196,7 @@ HTML;
         $results = \Dropdown::getDropdownValue([
             'itemtype' => $itemtype,
             'display_emptychoice' => 0,
-            '_idor_token' => \Session::getNewIDORToken($itemtype)
+            '_idor_token' => \Session::getNewIDORToken($itemtype),
         ], false)['results'];
         $this->assertNotContains(__FUNCTION__ . '1', array_column($results[$optgroup_id]['children'], 'text'));
         $this->assertContains(__FUNCTION__ . '2', array_column($results[$optgroup_id]['children'], 'text'));
@@ -2090,7 +2207,7 @@ HTML;
         $results = \Dropdown::getDropdownValue([
             'itemtype' => $itemtype,
             'display_emptychoice' => 0,
-            '_idor_token' => \Session::getNewIDORToken($itemtype)
+            '_idor_token' => \Session::getNewIDORToken($itemtype),
         ], false)['results'];
         $children = $results[$optgroup_id]['children'] ?? null;
         if ($children === null) {
@@ -2115,7 +2232,7 @@ HTML;
             $groups_id = $group->add([
                 'name' => __FUNCTION__,
                 'entities_id' => $this->getTestRootEntity(true),
-                'is_recursive' => 1
+                'is_recursive' => 1,
             ])
         );
         // Add user to group
@@ -2133,7 +2250,7 @@ HTML;
             0,
             $item->add([
                 'name' => __FUNCTION__ . '1',
-                'entities_id' => $this->getTestRootEntity(true)
+                'entities_id' => $this->getTestRootEntity(true),
             ])
         );
         $this->assertGreaterThan(
@@ -2141,7 +2258,7 @@ HTML;
             $item->add([
                 'name' => __FUNCTION__ . '2',
                 'entities_id' => $this->getTestRootEntity(true),
-                'users_id_tech' => $_SESSION['glpiID']
+                'users_id_tech' => $_SESSION['glpiID'],
             ])
         );
         $this->assertGreaterThan(
@@ -2149,7 +2266,7 @@ HTML;
             $item->add([
                 'name' => __FUNCTION__ . '3',
                 'entities_id' => $this->getTestRootEntity(true),
-                'groups_id_tech' => $groups_id
+                'groups_id_tech' => $groups_id,
             ])
         );
         // Create two items. One with the user as the owner, and one with a group as the owner.
@@ -2158,7 +2275,7 @@ HTML;
             $item->add([
                 'name' => __FUNCTION__ . '4',
                 'entities_id' => $this->getTestRootEntity(true),
-                'users_id' => $_SESSION['glpiID']
+                'users_id' => $_SESSION['glpiID'],
             ])
         );
         $this->assertGreaterThan(
@@ -2166,7 +2283,7 @@ HTML;
             $item->add([
                 'name' => __FUNCTION__ . '5',
                 'entities_id' => $this->getTestRootEntity(true),
-                'groups_id' => $groups_id
+                'groups_id' => $groups_id,
             ])
         );
 
@@ -2174,8 +2291,8 @@ HTML;
             'itemtype' => $itemtype,
             'table' => $itemtype::getTable(),
             '_idor_token' => \Session::getNewIDORToken($itemtype, [
-                'table' => $itemtype::getTable()
-            ])
+                'table' => $itemtype::getTable(),
+            ]),
         ], false)['results'];
 
         $this->assertContains(__FUNCTION__ . '1', array_column($results, 'text'));
@@ -2190,8 +2307,8 @@ HTML;
             'itemtype' => $itemtype,
             'table' => $itemtype::getTable(),
             '_idor_token' => \Session::getNewIDORToken($itemtype, [
-                'table' => $itemtype::getTable()
-            ])
+                'table' => $itemtype::getTable(),
+            ]),
         ], false)['results'];
 
         $this->assertNotContains(__FUNCTION__ . '1', array_column($results, 'text'));
@@ -2205,8 +2322,8 @@ HTML;
             'itemtype' => $itemtype,
             'table' => $itemtype::getTable(),
             '_idor_token' => \Session::getNewIDORToken($itemtype, [
-                'table' => $itemtype::getTable()
-            ])
+                'table' => $itemtype::getTable(),
+            ]),
         ], false)['results'];
 
         $this->assertNotContains(__FUNCTION__ . '1', array_column($results, 'text'));
@@ -2221,8 +2338,8 @@ HTML;
             'itemtype' => $itemtype,
             'table' => $itemtype::getTable(),
             '_idor_token' => \Session::getNewIDORToken($itemtype, [
-                'table' => $itemtype::getTable()
-            ])
+                'table' => $itemtype::getTable(),
+            ]),
         ], false)['results'];
         $this->assertNotContains(__FUNCTION__ . '1', array_column($results, 'text'));
         $this->assertNotContains(__FUNCTION__ . '2', array_column($results, 'text'));

@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -38,7 +37,6 @@ namespace tests\units;
 use Calendar;
 use CalendarSegment;
 use DbTestCase;
-use Session;
 
 /* Test for inc/commonitilrecurrent.class.php */
 
@@ -61,8 +59,8 @@ abstract class CommonITILRecurrentTest extends DbTestCase
         $start_of_previous_month = date('Y-m-01 00:00:00', strtotime('-1 month'));
         $end_of_next_year        = date('Y-m-d 23:59:59', strtotime('last day of next year'));
 
-       // Create a calendar where every day except today is a working day.
-       // Used to test cases with periodicity smaller than one day.
+        // Create a calendar where every day except today is a working day.
+        // Used to test cases with periodicity smaller than one day.
         $calendar_id = $calendar->add(['name' => $this->getChildClass() . ' testing calendar']);
         $this->assertGreaterThan(0, $calendar_id);
 
@@ -76,14 +74,14 @@ abstract class CommonITILRecurrentTest extends DbTestCase
                     'calendars_id' => $calendar_id,
                     'day'          => $day,
                     'begin'        => '09:00:00',
-                    'end'          => '19:00:00'
+                    'end'          => '19:00:00',
                 ]
             );
             $this->assertGreaterThan(0, $cal_segment_id);
         }
 
         $data = [
-         // Empty begin date
+            // Empty begin date
             [
                 'begin_date'     => '',
                 'end_date'       => $end_of_next_year,
@@ -92,7 +90,7 @@ abstract class CommonITILRecurrentTest extends DbTestCase
                 'calendars_id'   => 0,
                 'expected_value' => 'NULL',
             ],
-         // Invalid begin date
+            // Invalid begin date
             [
                 'begin_date'     => '',
                 'end_date'       => $end_of_next_year,
@@ -101,7 +99,7 @@ abstract class CommonITILRecurrentTest extends DbTestCase
                 'calendars_id'   => 0,
                 'expected_value' => 'NULL',
             ],
-         // Empty periodicity
+            // Empty periodicity
             [
                 'begin_date'     => $start_of_previous_month,
                 'end_date'       => $end_of_next_year,
@@ -110,7 +108,7 @@ abstract class CommonITILRecurrentTest extends DbTestCase
                 'calendars_id'   => 0,
                 'expected_value' => 'NULL',
             ],
-         // Invalid periodicity
+            // Invalid periodicity
             [
                 'begin_date'     => $start_of_previous_month,
                 'end_date'       => $end_of_next_year,
@@ -119,7 +117,7 @@ abstract class CommonITILRecurrentTest extends DbTestCase
                 'calendars_id'   => 0,
                 'expected_value' => 'NULL',
             ],
-         // Invalid anticipated creation delay compared to periodicity
+            // Invalid anticipated creation delay compared to periodicity
             [
                 'begin_date'     => $start_of_previous_month,
                 'end_date'       => $end_of_next_year,
@@ -127,9 +125,9 @@ abstract class CommonITILRecurrentTest extends DbTestCase
                 'create_before'  => HOUR_TIMESTAMP * 2,
                 'calendars_id'   => 0,
                 'expected_value' => 'NULL',
-                'messages'       => ['Invalid frequency. It must be greater than the preliminary creation.']
+                'messages'       => ['Invalid frequency. It must be greater than the preliminary creation.'],
             ],
-         // End date in past
+            // End date in past
             [
                 'begin_date'     => '2018-03-26 15:00:00',
                 'end_date'       => '2019-01-12 00:00:00',
@@ -139,7 +137,7 @@ abstract class CommonITILRecurrentTest extends DbTestCase
                 'expected_value' => 'NULL',
             ],
 
-         // Valid case: item created every hour with no anticipation and no calendar
+            // Valid case: item created every hour with no anticipation and no calendar
             [
                 'begin_date'     => $start_of_previous_month,
                 'end_date'       => $end_of_next_year,
@@ -149,7 +147,7 @@ abstract class CommonITILRecurrentTest extends DbTestCase
                 'expected_value' => date('Y-m-d H:00:00', strtotime('+ 1 hour')),
             ],
 
-         // Item created every hour with anticipation and no calendar
+            // Item created every hour with anticipation and no calendar
             [
                 'begin_date'     => $start_of_previous_month,
                 'end_date'       => $end_of_next_year,
@@ -159,7 +157,7 @@ abstract class CommonITILRecurrentTest extends DbTestCase
                 'expected_value' => date('Y-m-d H:00:00', strtotime('+ 1 hour')),
             ],
 
-         // Item created every hour with anticipation and with calendar, but no end date
+            // Item created every hour with anticipation and with calendar, but no end date
             [
                 'begin_date'     => $start_of_previous_month,
                 'end_date'       => null,
@@ -169,8 +167,8 @@ abstract class CommonITILRecurrentTest extends DbTestCase
                 'expected_value' => date('Y-m-d 08:00:00', strtotime('tomorrow')),
             ],
 
-         // Item created every hour with no anticipation and with calendar and having a begin date in the future
-         // As begin date is inside working hours, first occurence should be on begin date.
+            // Item created every hour with no anticipation and with calendar and having a begin date in the future
+            // As begin date is inside working hours, first occurence should be on begin date.
             [
                 'begin_date'     => date('Y-m-d 09:00:00', strtotime('tomorrow')),
                 'end_date'       => $end_of_next_year,
@@ -180,8 +178,8 @@ abstract class CommonITILRecurrentTest extends DbTestCase
                 'expected_value' => date('Y-m-d 09:00:00', strtotime('tomorrow')),
             ],
 
-         // Item created every hour with anticipation and with calendar and having a begin date in the future
-         // As begin date is outside working hours, first occurence should be on opening hour - anticipation.
+            // Item created every hour with anticipation and with calendar and having a begin date in the future
+            // As begin date is outside working hours, first occurence should be on opening hour - anticipation.
             [
                 'begin_date'     => date('Y-m-d 04:00:00', strtotime('tomorrow')),
                 'end_date'       => $end_of_next_year,
@@ -189,11 +187,11 @@ abstract class CommonITILRecurrentTest extends DbTestCase
                 'create_before'  => HOUR_TIMESTAMP,
                 'calendars_id'   => $calendar_id,
                 'expected_value' => date('Y-m-d 08:00:00', strtotime('tomorrow')),
-            ]
+            ],
         ];
 
-       // Create a calendar where every day are working days, from 9am to 7pm, but with today as a day off.
-       // Used to test cases with periodicity periodicity of at least one day.
+        // Create a calendar where every day are working days, from 9am to 7pm, but with today as a day off.
+        // Used to test cases with periodicity periodicity of at least one day.
         $calendar_id = $calendar->add(['name' => $this->getChildClass() . ' testing calendar']);
         $this->assertGreaterThan(0, $calendar_id);
 
@@ -293,7 +291,7 @@ abstract class CommonITILRecurrentTest extends DbTestCase
             'calendars_id'   => $calendar_id,
             'expected_value' => $this->getNextWorkingDayDate(
                 $working_days,
-                (int)date('w') === 1 && (int)date('G') < 12
+                (int) date('w') === 1 && (int) date('G') < 12
                 ? 'tomorrow' // postpone to tomorrow if we are on monday prior to 12:00, as today is a day off
                 : 'next monday',
                 'Y-m-d 12:00:00'
@@ -359,7 +357,7 @@ abstract class CommonITILRecurrentTest extends DbTestCase
         // Next time is "2 hours before tomorrow 00:00:00" ...
         $next_time = strtotime(date('Y-m-d 22:00:00')); // 2 hours anticipation
         if ($next_time < time()) {
-           // ... unless "2 hours before tomorrow 00:00:00" is already passed
+            // ... unless "2 hours before tomorrow 00:00:00" is already passed
             $next_time = strtotime('+ 1 day', $next_time);
         }
         $data[] = [
@@ -375,7 +373,7 @@ abstract class CommonITILRecurrentTest extends DbTestCase
         // Next time is "5 days before begin of next month" ...
         $next_time = strtotime('+ 2 month', strtotime($start_of_previous_month . ' - 5 days')); // 5 days anticipation
         if ($next_time < time()) {
-           // ... unless "5 days before begin of next month" is already passed
+            // ... unless "5 days before begin of next month" is already passed
             $next_time = strtotime('+ 1 month', $next_time);
         }
         $data[] = [
@@ -391,7 +389,7 @@ abstract class CommonITILRecurrentTest extends DbTestCase
         // Next time is "4 days before 'now + 1 year'" ...
         $next_time = strtotime('+ 1 year', strtotime($start_of_previous_month . ' - 4 days')); // 4 days anticipation
         if ($next_time < time()) {
-           // ... unless "4 days before 'now + 1 year'" is already passed
+            // ... unless "4 days before 'now + 1 year'" is already passed
             $next_time = strtotime('+ 1 year', $next_time);
         }
         $data[] = [
@@ -413,7 +411,7 @@ abstract class CommonITILRecurrentTest extends DbTestCase
                     'calendars_id' => $calendar_id,
                     'day'          => $day,
                     'begin'        => '00:00:00',
-                    'end'          => '24:00:00'
+                    'end'          => '24:00:00',
                 ]
             );
             $this->assertGreaterThan(0, $cal_segment_id);
@@ -442,7 +440,7 @@ abstract class CommonITILRecurrentTest extends DbTestCase
                 'calendars_id' => $full_calendar_9_to_10->getID(),
                 'day'          => $day,
                 'begin'        => '09:00:00',
-                'end'          => '10:00:00'
+                'end'          => '10:00:00',
             ]);
         }
 
@@ -571,7 +569,7 @@ abstract class CommonITILRecurrentTest extends DbTestCase
                     'calendars_id' => $calendar->getID(),
                     'day'          => $day,
                     'begin'        => '00:00:00',
-                    'end'          => '24:00:00'
+                    'end'          => '24:00:00',
                 ]
             );
         }
@@ -628,7 +626,7 @@ abstract class CommonITILRecurrentTest extends DbTestCase
             $template = $this->createItem(
                 $template_class,
                 [
-                    'name' => __METHOD__
+                    'name' => __METHOD__,
                 ]
             );
             foreach ($predefined_fields as $num => $value) {

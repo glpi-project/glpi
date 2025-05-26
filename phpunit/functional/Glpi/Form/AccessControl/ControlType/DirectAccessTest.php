@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -97,6 +96,7 @@ class DirectAccessTest extends \DBTestCase
         // The rendered content should be validated by an E2E test.
         $form = $this->createForm(
             (new FormBuilder())
+                ->setUseDefaultAccessPolicies(false)
                 ->addAccessControl(
                     DirectAccess::class,
                     new DirectAccessConfig(
@@ -148,7 +148,7 @@ class DirectAccessTest extends \DBTestCase
                 session_info: self::getAuthenticatedSession(),
                 url_parameters: self::getValidTokenUrlParameters()
             ),
-            AccessVote::Grant
+            AccessVote::Grant,
         ];
         yield 'Authenticated form: abstain for authenticated user with wrong token' => [
             $config_authenticated,
@@ -156,7 +156,7 @@ class DirectAccessTest extends \DBTestCase
                 session_info: self::getUnauthenticatedSession(),
                 url_parameters: self::getInvalidTokenUrlParameters()
             ),
-            AccessVote::Abstain
+            AccessVote::Abstain,
         ];
         yield 'Authenticated form: abstain for authenticated user with missing token' => [
             $config_authenticated,
@@ -164,7 +164,7 @@ class DirectAccessTest extends \DBTestCase
                 session_info: self::getUnauthenticatedSession(),
                 url_parameters: self::getMissingTokenUrlParameters()
             ),
-            AccessVote::Abstain
+            AccessVote::Abstain,
         ];
         yield 'Authenticated form: abstain for unauthenticated user with correct token' => [
             $config_authenticated,
@@ -172,7 +172,7 @@ class DirectAccessTest extends \DBTestCase
                 session_info: self::getUnauthenticatedSession(),
                 url_parameters: self::getValidTokenUrlParameters()
             ),
-            AccessVote::Abstain
+            AccessVote::Abstain,
         ];
         yield 'Authenticated form: abstain for unauthenticated user with wrong token' => [
             $config_authenticated,
@@ -180,7 +180,7 @@ class DirectAccessTest extends \DBTestCase
                 session_info: self::getUnauthenticatedSession(),
                 url_parameters: self::getInvalidTokenUrlParameters()
             ),
-            AccessVote::Abstain
+            AccessVote::Abstain,
         ];
         yield 'Authenticated form: abstain for unauthenticated user with missing token' => [
             $config_authenticated,
@@ -188,7 +188,7 @@ class DirectAccessTest extends \DBTestCase
                 session_info: self::getUnauthenticatedSession(),
                 url_parameters: self::getMissingTokenUrlParameters()
             ),
-            AccessVote::Abstain
+            AccessVote::Abstain,
         ];
 
         // Unauthenticated form
@@ -199,7 +199,7 @@ class DirectAccessTest extends \DBTestCase
                 session_info: self::getAuthenticatedSession(),
                 url_parameters: self::getValidTokenUrlParameters()
             ),
-            AccessVote::Grant
+            AccessVote::Grant,
         ];
         yield 'Unauthenticated form: abstain for authenticated user with wrong token' => [
             $config_unauthenticated,
@@ -207,7 +207,7 @@ class DirectAccessTest extends \DBTestCase
                 session_info: self::getUnauthenticatedSession(),
                 url_parameters: self::getInvalidTokenUrlParameters()
             ),
-            AccessVote::Abstain
+            AccessVote::Abstain,
         ];
         yield 'Unauthenticated form: abstain for authenticated user with missing token' => [
             $config_unauthenticated,
@@ -215,7 +215,7 @@ class DirectAccessTest extends \DBTestCase
                 session_info: self::getUnauthenticatedSession(),
                 url_parameters: self::getMissingTokenUrlParameters()
             ),
-            AccessVote::Abstain
+            AccessVote::Abstain,
         ];
         yield 'Unauthenticated form: allow unauthenticated user with correct token' => [
             $config_unauthenticated,
@@ -223,7 +223,7 @@ class DirectAccessTest extends \DBTestCase
                 session_info: self::getUnauthenticatedSession(),
                 url_parameters: self::getValidTokenUrlParameters()
             ),
-            AccessVote::Grant
+            AccessVote::Grant,
         ];
         yield 'Unauthenticated form: deny unauthenticated user with wrong token' => [
             $config_unauthenticated,
@@ -231,7 +231,7 @@ class DirectAccessTest extends \DBTestCase
                 session_info: self::getUnauthenticatedSession(),
                 url_parameters: self::getInvalidTokenUrlParameters()
             ),
-            AccessVote::Abstain
+            AccessVote::Abstain,
         ];
         yield 'Unauthenticated form: deny unauthenticated user with missing token' => [
             $config_unauthenticated,
@@ -239,7 +239,7 @@ class DirectAccessTest extends \DBTestCase
                 session_info: self::getUnauthenticatedSession(),
                 url_parameters: self::getMissingTokenUrlParameters()
             ),
-            AccessVote::Abstain
+            AccessVote::Abstain,
         ];
     }
 
@@ -260,37 +260,40 @@ class DirectAccessTest extends \DBTestCase
     {
         yield 'form without blacklisted question types' => [
             (new FormBuilder())
+                ->setUseDefaultAccessPolicies(false)
                 ->addAccessControl(DirectAccess::class, new DirectAccessConfig(
                     token: 'my_token',
                     allow_unauthenticated: true,
                 )),
-            []
+            [],
         ];
 
         yield 'form with blacklisted question types' => [
             (new FormBuilder())
                 ->addQuestion('My observer question', QuestionTypeObserver::class)
+                ->setUseDefaultAccessPolicies(false)
                 ->addAccessControl(DirectAccess::class, new DirectAccessConfig(
                     token: 'my_token',
                     allow_unauthenticated: true,
                 )),
             [
-                'This form contains question types that are not allowed for unauthenticated access. These questions will be hidden from unauthenticated users.'
-            ]
+                'This form contains question types that are not allowed for unauthenticated access. These questions will be hidden from unauthenticated users.',
+            ],
         ];
 
         yield 'inactive form with blacklisted question types' => [
             (new FormBuilder())
                 ->setIsActive(false)
                 ->addQuestion('My observer question', QuestionTypeObserver::class)
+                ->setUseDefaultAccessPolicies(false)
                 ->addAccessControl(DirectAccess::class, new DirectAccessConfig(
                     token: 'my_token',
                     allow_unauthenticated: true,
                 )),
             [
                 'This form is not visible to anyone because it is not active.',
-                'This form contains question types that are not allowed for unauthenticated access. These questions will be hidden from unauthenticated users.'
-            ]
+                'This form contains question types that are not allowed for unauthenticated access. These questions will be hidden from unauthenticated users.',
+            ],
         ];
     }
 

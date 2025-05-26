@@ -6,7 +6,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -43,6 +42,13 @@ describe('User form', () => {
         cy.url().should('include', '/front/updatepassword.php');
     });
     it('Change other password field', () => {
+        // E2E user shouldn't have access to change password button since they exist in an entity below the "tech" user
+        cy.visit('/front/user.form.php?id=4');
+        cy.findByRole('tab', { name: 'User' }).click();
+        cy.findByRole('button', { name: /Change password/ }).should('not.exist');
+        // Need to log in as the default super-admin to have more permissions over the "tech" user to test they can see the change password button
+        cy.login('glpi', 'glpi');
+        cy.changeEntity(0, true);
         cy.visit('/front/user.form.php?id=4');
         cy.findByRole('tab', { name: 'User' }).click();
         cy.findByRole('button', { name: /Change password/ }).click();
@@ -68,5 +74,28 @@ describe('User form', () => {
             cy.get('[data-default-avatar]').should('not.be.visible');
             cy.get('[data-preview-avatar]').should('not.be.visible');
         });
+    });
+    it('can add emails and set one as default', () => {
+        cy.visit('/front/preference.php');
+        cy.get('.nav-item').contains('Main').click();
+
+        // Add a email
+        cy.findByRole('textbox', { name: 'Email address' }).should('be.visible').type('test@test.test');
+        cy.findByRole('button', { name: /Save/ }).click();
+
+        // Check if the email is added
+        cy.findByRole('textbox', { name: 'Email address' }).should('have.value', 'test@test.test');
+        cy.findByRole('radio', { name: 'Set as default email' }).should('be.checked');
+
+        // Add another email
+        cy.findByRole('generic', { name: 'Add a new Emails' }).click();
+        cy.findAllByRole('textbox', { name: 'Email address' }).eq(1).should('be.visible').type('anothertest@test.test');
+        cy.findByRole('button', { name: /Save/ }).click();
+
+        // Check emails
+        cy.findAllByRole('textbox', { name: 'Email address' }).eq(0).should('have.value', 'anothertest@test.test');
+        cy.findAllByRole('textbox', { name: 'Email address' }).eq(1).should('have.value', 'test@test.test');
+        cy.findAllByRole('radio', { name: 'Set as default email' }).eq(0).should('not.be.checked');
+        cy.findAllByRole('radio', { name: 'Set as default email' }).eq(1).should('be.checked');
     });
 });

@@ -36,7 +36,7 @@
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\Event;
-use Glpi\Http\Response;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Document class
@@ -46,7 +46,7 @@ class Document extends CommonDBTM
     use Glpi\Features\TreeBrowse;
     use Glpi\Features\ParentStatus;
 
-   // From CommonDBTM
+    // From CommonDBTM
     public $dohistory                   = true;
 
     protected static $forward_entity_to = ['Document_Item'];
@@ -124,7 +124,7 @@ class Document extends CommonDBTM
             }
         }
 
-       // From Ticket Document Tab => check right to add followup.
+        // From Ticket Document Tab => check right to add followup.
         if (
             isset($this->fields['tickets_id'])
             && ($this->fields['tickets_id'] > 0)
@@ -149,7 +149,7 @@ class Document extends CommonDBTM
             ]
         );
 
-       // Unlink/delete the file
+        // Unlink/delete the file
         if (!empty($this->fields["filepath"])) {
             if (
                 is_file(GLPI_DOC_DIR . "/" . $this->fields["filepath"])
@@ -189,9 +189,9 @@ class Document extends CommonDBTM
     {
         $ong = [];
         $this->addDefaultFormTab($ong);
-        $this->addStandardTab('Document_Item', $ong, $options);
-        $this->addStandardTab('Notepad', $ong, $options);
-        $this->addStandardTab('Log', $ong, $options);
+        $this->addStandardTab(Document_Item::class, $ong, $options);
+        $this->addStandardTab(Notepad::class, $ong, $options);
+        $this->addStandardTab(Log::class, $ong, $options);
 
         return $ong;
     }
@@ -222,10 +222,10 @@ class Document extends CommonDBTM
         $upload_ok = false;
         if (!empty($input["_filename"])) {
             $upload_ok = self::moveDocument($input, array_shift($input["_filename"]));
-        } else if (!empty($input["upload_file"])) {
+        } elseif (!empty($input["upload_file"])) {
             // Move doc from upload dir
             $upload_ok = $this->moveUploadedDocument($input, $input["upload_file"]);
-        } else if (isset($input['filepath']) && file_exists(GLPI_DOC_DIR . '/' . $input['filepath'])) {
+        } elseif (isset($input['filepath']) && file_exists(GLPI_DOC_DIR . '/' . $input['filepath'])) {
             // Document is created using an existing document file
             $upload_ok = true;
         }
@@ -289,7 +289,7 @@ class Document extends CommonDBTM
             $docitem = new Document_Item();
             $docitem->add(['documents_id' => $this->fields['id'],
                 'itemtype'     => $this->input["itemtype"],
-                'items_id'     => $this->input["items_id"]
+                'items_id'     => $this->input["items_id"],
             ]);
 
             if (is_a($this->input["itemtype"], CommonITILObject::class, true)) {
@@ -321,7 +321,7 @@ class Document extends CommonDBTM
         if (isset($input['current_filepath'])) {
             if (!empty($input["_filename"])) {
                 self::moveDocument($input, array_shift($input["_filename"]));
-            } else if (!empty($input["upload_file"])) {
+            } elseif (!empty($input["upload_file"])) {
                 // Move doc from upload dir
                 $this->moveUploadedDocument($input, $input["upload_file"]);
             }
@@ -363,7 +363,7 @@ class Document extends CommonDBTM
             'uploaded_files' => self::getUploadedFiles(),
             'params' => [
                 'canedit' => $this->canUpdateItem(),
-            ]
+            ],
         ]);
     }
 
@@ -380,19 +380,26 @@ class Document extends CommonDBTM
     }
 
     /**
-     * Send a document to navigator
-     *
-     * @param bool   $return_response
-     * @return Response|void
-     * @phpstan-return $return_response ? Response : void
-     **/
-    public function send(bool $return_response = false)
+     * Get a Symfony response for the given document.
+     */
+    public function getAsResponse(): Response
     {
         $file = GLPI_DOC_DIR . "/" . $this->fields['filepath'];
-        $response = Toolbox::sendFile($file, $this->fields['filename'], $this->fields['mime'], false, $return_response);
-        if ($response !== null) {
-            return $response;
-        }
+        return Toolbox::getFileAsResponse($file, $this->fields['filename'], $this->fields['mime']);
+    }
+
+    /**
+     * Send a document to navigator
+     *
+     * @return void
+     *
+     * @deprecated 11.0.0
+     */
+    public function send()
+    {
+        Toolbox::deprecated();
+
+        $this->getAsResponse()->send();
     }
 
     /**
@@ -425,10 +432,10 @@ class Document extends CommonDBTM
         $splitter = $this->fields['filename'] !== null ? explode("/", $this->fields['filename']) : [];
 
         if (count($splitter) === 2) {
-           // Old documents in EXT/filename
+            // Old documents in EXT/filename
             $fileout = $splitter[1];
         } else {
-           // New document
+            // New document
             $fileout = $this->fields['filename'];
         }
 
@@ -462,8 +469,8 @@ class Document extends CommonDBTM
                 'FROM'   => 'glpi_documenttypes',
                 'WHERE'  => [
                     'ext'    => ['LIKE', $splitter[0]],
-                    'icon'   => ['<>', '']
-                ]
+                    'icon'   => ['<>', ''],
+                ],
             ]);
 
             if (count($iterator) > 0) {
@@ -512,7 +519,7 @@ class Document extends CommonDBTM
                 'FROM'   => $table,
                 'WHERE'  => [
                     $table . '.sha1sum'      => $sum,
-                    $table . '.entities_id'  => $entity
+                    $table . '.entities_id'  => $entity,
                 ],
                 'LIMIT'  => 1,
             ]
@@ -644,15 +651,15 @@ class Document extends CommonDBTM
                             'glpi_documents_items'  => 'items_id',
                             'glpi_reminders'        => 'id', [
                                 'AND' => [
-                                    'glpi_documents_items.itemtype'  => 'Reminder'
-                                ]
-                            ]
-                        ]
-                    ]
+                                    'glpi_documents_items.itemtype'  => 'Reminder',
+                                ],
+                            ],
+                        ],
+                    ],
                 ],
                 'WHERE'     => [
-                    'glpi_documents_items.documents_id' => $this->fields['id']
-                ]
+                    'glpi_documents_items.documents_id' => $this->fields['id'],
+                ],
             ],
             Reminder::getVisibilityCriteria()
         );
@@ -700,13 +707,13 @@ class Document extends CommonDBTM
                     'FKEY' => [
                         'glpi_knowbaseitems'   => 'id',
                         'glpi_documents_items' => 'items_id',
-                        ['AND' => ['glpi_documents_items.itemtype' => 'KnowbaseItem']]
-                    ]
-                ]
+                        ['AND' => ['glpi_documents_items.itemtype' => 'KnowbaseItem']],
+                    ],
+                ],
             ],
             'WHERE'     => [
                 'glpi_documents_items.documents_id' => $this->fields['id'],
-            ]
+            ],
         ];
 
         if (array_key_exists('LEFT JOIN', $visibilityCriteria) && count($visibilityCriteria['LEFT JOIN']) > 0) {
@@ -739,7 +746,7 @@ class Document extends CommonDBTM
             return false;
         }
 
-       /* @var CommonITILObject $itil */
+        /* @var CommonITILObject $itil */
         $itil = new $itemtype();
 
         if (!$itil->can($items_id, READ)) {
@@ -755,7 +762,7 @@ class Document extends CommonDBTM
                 'documents_id' => $this->fields['id'],
                 $itil->getAssociatedDocumentsCriteria(),
             ],
-            'LIMIT' => 1 // Only need to see one result
+            'LIMIT' => 1, // Only need to see one result
         ])->current();
 
         return $result['cpt'] > 0;
@@ -795,7 +802,7 @@ class Document extends CommonDBTM
                 'itemtype' => $itemtype,
                 'items_id' => $items_id,
             ],
-            'LIMIT' => 1 // Only need to see one result
+            'LIMIT' => 1, // Only need to see one result
         ])->current();
 
         if ($result['cpt'] === 0) {
@@ -811,7 +818,7 @@ class Document extends CommonDBTM
 
         $tab[] = [
             'id'                 => 'document',
-            'name'               => self::getTypeName(Session::getPluralNumber())
+            'name'               => self::getTypeName(Session::getPluralNumber()),
         ];
 
         $tab[] = [
@@ -824,8 +831,8 @@ class Document extends CommonDBTM
             'datatype'           => 'count',
             'massiveaction'      => false,
             'joinparams'         => [
-                'jointype'           => 'itemtype_item'
-            ]
+                'jointype'           => 'itemtype_item',
+            ],
         ];
 
         return $tab;
@@ -837,7 +844,7 @@ class Document extends CommonDBTM
 
         $tab[] = [
             'id'                 => 'common',
-            'name'               => __('Characteristics')
+            'name'               => __('Characteristics'),
         ];
 
         $tab[] = [
@@ -855,7 +862,7 @@ class Document extends CommonDBTM
             'field'              => 'id',
             'name'               => __('ID'),
             'massiveaction'      => false,
-            'datatype'           => 'number'
+            'datatype'           => 'number',
         ];
 
         $tab[] = [
@@ -864,7 +871,7 @@ class Document extends CommonDBTM
             'field'              => 'filename',
             'name'               => __('File'),
             'massiveaction'      => false,
-            'datatype'           => 'string'
+            'datatype'           => 'string',
         ];
 
         $tab[] = [
@@ -889,7 +896,7 @@ class Document extends CommonDBTM
             'field'              => 'tag',
             'name'               => __('Tag'),
             'datatype'           => 'text',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -897,7 +904,7 @@ class Document extends CommonDBTM
             'table'              => 'glpi_documentcategories',
             'field'              => 'completename',
             'name'               => __('Heading'),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -906,7 +913,7 @@ class Document extends CommonDBTM
             'field'              => 'completename',
             'name'               => Entity::getTypeName(1),
             'massiveaction'      => false,
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -914,7 +921,7 @@ class Document extends CommonDBTM
             'table'              => static::getTable(),
             'field'              => 'is_recursive',
             'name'               => __('Child entities'),
-            'datatype'           => 'bool'
+            'datatype'           => 'bool',
         ];
 
         $tab[] = [
@@ -923,7 +930,7 @@ class Document extends CommonDBTM
             'field'              => 'date_mod',
             'name'               => __('Last update'),
             'datatype'           => 'datetime',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -932,7 +939,7 @@ class Document extends CommonDBTM
             'field'              => 'date_creation',
             'name'               => __('Creation date'),
             'datatype'           => 'datetime',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -941,15 +948,15 @@ class Document extends CommonDBTM
             'field'              => 'sha1sum',
             'name'               => sprintf(__('%1$s (%2$s)'), __('Checksum'), __('SHA1')),
             'massiveaction'      => false,
-            'datatype'           => 'string'
+            'datatype'           => 'string',
         ];
 
         $tab[] = [
             'id'                 => '16',
             'table'              => static::getTable(),
             'field'              => 'comment',
-            'name'               => __('Comments'),
-            'datatype'           => 'text'
+            'name'               => _n('Comment', 'Comments', Session::getPluralNumber()),
+            'datatype'           => 'text',
         ];
 
         $tab[] = [
@@ -962,11 +969,11 @@ class Document extends CommonDBTM
             'datatype'           => 'count',
             'massiveaction'      => false,
             'joinparams'         => [
-                'jointype'           => 'child'
-            ]
+                'jointype'           => 'child',
+            ],
         ];
 
-       // add objectlock search options
+        // add objectlock search options
         $tab = array_merge($tab, ObjectLock::rawSearchOptionsToAdd(get_class($this)));
 
         $tab = array_merge($tab, Notepad::rawSearchOptionsToAdd());
@@ -1044,7 +1051,7 @@ class Document extends CommonDBTM
             return false;
         }
 
-       // Delete old file (if not used by another doc)
+        // Delete old file (if not used by another doc)
         if (
             isset($input['current_filepath'])
             && !empty($input['current_filepath'])
@@ -1052,7 +1059,7 @@ class Document extends CommonDBTM
             && (countElementsInTable(
                 'glpi_documents',
                 ['sha1sum' => sha1_file(GLPI_DOC_DIR . "/" .
-                $input['current_filepath'])
+                $input['current_filepath']),
                 ]
             ) <= 1)
         ) {
@@ -1062,7 +1069,7 @@ class Document extends CommonDBTM
                     $input['current_filename']
                 )));
             } else {
-               // TRANS: %1$s is the curent filename, %2$s is its directory
+                // TRANS: %1$s is the curent filename, %2$s is its directory
                 trigger_error(
                     sprintf(
                         'Failed to delete the file %1$s (%2$s)',
@@ -1082,7 +1089,7 @@ class Document extends CommonDBTM
             }
         }
 
-       // Local file : try to detect mime type
+        // Local file : try to detect mime type
         $input['mime'] = Toolbox::getMime($fullpath);
 
         if (
@@ -1104,11 +1111,11 @@ class Document extends CommonDBTM
             }
         }
 
-       // For display
+        // For display
         $input['filename'] = $filename;
-       // Storage path
+        // Storage path
         $input['filepath'] = $new_path;
-       // Checksum
+        // Checksum
         $input['sha1sum']  = $sha1sum;
         return true;
     }
@@ -1169,7 +1176,7 @@ class Document extends CommonDBTM
             && (countElementsInTable(
                 'glpi_documents',
                 ['sha1sum' => sha1_file(GLPI_DOC_DIR . "/" .
-                $input['current_filepath'])
+                $input['current_filepath']),
                 ]
             ) <= 1)
         ) {
@@ -1179,7 +1186,7 @@ class Document extends CommonDBTM
                     $input['current_filename']
                 ));
             } else {
-               // TRANS: %1$s is the curent filename, %2$s is its directory
+                // TRANS: %1$s is the curent filename, %2$s is its directory
                 trigger_error(
                     sprintf(
                         'Failed to delete the file %1$s (%2$s)',
@@ -1235,7 +1242,7 @@ class Document extends CommonDBTM
 
             if (Session::haveRight('dropdown', READ)) {
                 $message .= " <a target='_blank' href='" . DocumentType::getSearchURL() . "' class='pointer'>
-                         <i class='fa fa-info'</i><span class='sr-only'>" . __s('Manage document types')  . "</span></a>";
+                         <i class='fa fa-info'</i><span class='sr-only'>" . __s('Manage document types') . "</span></a>";
             }
             Session::addMessageAfterRedirect($message, false, ERROR);
             return '';
@@ -1260,7 +1267,7 @@ class Document extends CommonDBTM
 
         if (
             !is_dir(GLPI_DOC_DIR . "/" . $subdir)
-            && @mkdir(GLPI_DOC_DIR . "/" . $subdir, 0777, true)
+            && @mkdir(GLPI_DOC_DIR . "/" . $subdir, 0o777, true)
         ) {
             Session::addMessageAfterRedirect(sprintf(
                 __s('Create the directory %s'),
@@ -1329,7 +1336,7 @@ class Document extends CommonDBTM
                 'is_uploadable'   => 1,
                 'ext'             => ['LIKE', $ext],
             ],
-            'LIMIT'  => 1
+            'LIMIT'  => 1,
         ]);
 
         if (count($iterator)) {
@@ -1343,7 +1350,7 @@ class Document extends CommonDBTM
             'WHERE'  => [
                 'is_uploadable'   => 1,
                 'ext'             => ['LIKE', '/%/'],
-            ]
+            ],
         ]);
 
         foreach ($iterator as $data) {
@@ -1414,10 +1421,10 @@ class Document extends CommonDBTM
                     'SELECT'          => 'documentcategories_id',
                     'DISTINCT'        => true,
                     'FROM'            => 'glpi_documents',
-                    'WHERE'           => $subwhere
-                ])
+                    'WHERE'           => $subwhere,
+                ]),
             ],
-            'ORDER'  => 'name'
+            'ORDER'  => 'name',
         ];
         $iterator = $DB->request($criteria);
 
@@ -1444,7 +1451,7 @@ class Document extends CommonDBTM
             'display'             => false,
             'display_emptychoice' => true,
             'value'               => $p['rubdoc'] ?? 0,
-            'readonly'            => $readonly
+            'readonly'            => $readonly,
         ]);
         $field_id = Html::cleanId("dropdown__rubdoc$rand");
 
@@ -1452,7 +1459,7 @@ class Document extends CommonDBTM
             'entity' => $p['entity'],
             'rand'   => $rand,
             'myname' => $p['name'],
-            'used'   => $p['used']
+            'used'   => $p['used'],
         ];
 
         if ($readonly) {
@@ -1484,7 +1491,7 @@ class Document extends CommonDBTM
                 'display'             => false,
                 'display_emptychoice' => true,
                 'value'               => $p['value'] ?? 0,
-                'readonly'            => $readonly
+                'readonly'            => $readonly,
             ]);
             $out .= '</div>';
             $out .= '</div>';
@@ -1660,13 +1667,13 @@ class Document extends CommonDBTM
                 $ditable => [
                     'ON'  => [
                         $dtable  => 'id',
-                        $ditable => 'documents_id'
-                    ]
-                ]
+                        $ditable => 'documents_id',
+                    ],
+                ],
             ],
             'WHERE'     => [
-                "$ditable.documents_id" => null
-            ]
+                "$ditable.documents_id" => null,
+            ],
         ]);
 
         $nb = 0;

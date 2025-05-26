@@ -35,7 +35,6 @@
 
 namespace Glpi\Inventory\Asset;
 
-use CommonDBTM;
 use Glpi\Inventory\Conf;
 
 class Processor extends Device
@@ -49,7 +48,7 @@ class Processor extends Device
             'name'         => 'designation',
             'core'         => 'nbcores',
             'thread'       => 'nbthreads',
-            'id'           => 'internalid'
+            'id'           => 'internalid',
         ];
         foreach ($this->data as &$val) {
             foreach ($mapping as $origin => $dest) {

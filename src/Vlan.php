@@ -57,8 +57,8 @@ class Vlan extends CommonDropdown
                 'type'     => 'integer',
                 'min'      => 1,
                 'max'      => 4094,
-                'list'     => true
-            ]
+                'list'     => true,
+            ],
         ];
     }
 
@@ -73,7 +73,7 @@ class Vlan extends CommonDropdown
             'name'               => __('ID TAG'),
             'datatype'           => 'number',
             'min'                => 1,
-            'max'                => 4094
+            'max'                => 4094,
         ];
 
         return $tab;
@@ -160,7 +160,7 @@ class Vlan extends CommonDropdown
                     )) . "<br>" .
                     htmlescape(sprintf(
                         __('%1$s: %2$s'),
-                        __('Comments'),
+                        _n('Comment', 'Comments', Session::getPluralNumber()),
                         $vlan->fields['comment']
                     )),
                     ['display' => false]
@@ -175,7 +175,7 @@ class Vlan extends CommonDropdown
     {
         $ong = [];
         $this->addDefaultFormTab($ong)
-         ->addStandardTab('NetworkPort_Vlan', $ong, $options);
+         ->addStandardTab(NetworkPort_Vlan::class, $ong, $options);
 
         return $ong;
     }

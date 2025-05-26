@@ -254,7 +254,7 @@ final class SearchEngine
             'Monitor',
             'Peripheral',
             'Software',
-            'Phone'
+            'Phone',
         ];
         foreach ($types as $type) {
             if (is_a($itemtype, $type, true)) {
@@ -436,9 +436,9 @@ final class SearchEngine
                                     || !$criterion['meta'])
                             ) {
                                 array_push($data['toview'], $criterion['field']);
-                            } else if ($criterion['field'] == 'all') {
+                            } elseif ($criterion['field'] == 'all') {
                                 $data['search']['all_search'] = true;
-                            } else if ($criterion['field'] == 'view') {
+                            } elseif ($criterion['field'] == 'view') {
                                 $data['search']['view_search'] = true;
                             }
                             if (isset($criterion['virtual']) && $criterion['virtual']) {
@@ -519,7 +519,7 @@ final class SearchEngine
         if ($only_not) {
             return [
                 'AND'     => \Dropdown::EMPTY_VALUE,
-                'AND NOT' => __("NOT")
+                'AND NOT' => __("NOT"),
             ];
         }
 
@@ -527,7 +527,7 @@ final class SearchEngine
             'AND'     => __('AND'),
             'OR'      => __('OR'),
             'AND NOT' => __('AND NOT'),
-            'OR NOT'  => __('OR NOT')
+            'OR NOT'  => __('OR NOT'),
         ];
     }
 
@@ -598,7 +598,7 @@ final class SearchEngine
         TemplateRenderer::getInstance()->display('layout/parts/saved_searches.html.twig', [
             'itemtype' => $itemtype,
         ]);
-        echo "<div class='col search-container'>";
+        echo "<div class='col search-container' data-glpi-search-container>";
 
         $output = self::getOutputForLegacyKey($params['display_type'], $params);
         $output::showPreSearchDisplay($itemtype);

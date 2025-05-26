@@ -37,7 +37,7 @@ use Glpi\Application\View\TemplateRenderer;
 
 class RuleDictionnarySoftwareCollection extends RuleCollection
 {
-   // From RuleCollection
+    // From RuleCollection
 
     public $stop_on_first_match = true;
     public $can_replay_rules    = true;
@@ -101,76 +101,38 @@ TWIG, $twig_params);
         return true;
     }
 
+    public function countTotalItemsForRulesReplay(array $params = []): int
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        return $DB->request($this->getIteratorCriteriaForRulesReplay($params))->count();
+    }
+
     public function replayRulesOnExistingDB($offset = 0, $maxtime = 0, $items = [], $params = [])
     {
         /** @var \DBmysql $DB */
         global $DB;
 
-        if (isCommandLine()) {
-            echo "replayRulesOnExistingDB started : " . date("r") . "\n";
-        }
         $i  = $offset;
 
         if (count($items) === 0) {
-           //Select all the differents software
-            $criteria = [
-                'SELECT'          => [
-                    'glpi_softwares.name',
-                    'glpi_manufacturers.name AS manufacturer',
-                    'glpi_softwares.manufacturers_id AS manufacturers_id',
-                    'glpi_softwares.entities_id AS entities_id',
-                    'glpi_softwares.is_helpdesk_visible AS helpdesk',
-                    'glpi_softwares.softwarecategories_id AS softwarecategories_id',
-                ],
-                'DISTINCT'        => true,
-                'FROM'            => 'glpi_softwares',
-                'LEFT JOIN'       => [
-                    'glpi_manufacturers' => [
-                        'ON' => [
-                            'glpi_manufacturers' => 'id',
-                            'glpi_softwares'     => 'manufacturers_id'
-                        ]
-                    ]
-                ],
-                'WHERE'           => [
-               // Do not replay on trashbin and templates
-                    'glpi_softwares.is_deleted'   => 0,
-                    'glpi_softwares.is_template'  => 0
-                ]
-            ];
-
-            if (isset($params['manufacturer']) && $params['manufacturer']) {
-                $criteria['WHERE']['glpi_softwares.manufacturers_id'] = $params['manufacturer'];
-            }
+            $criteria = $this->getIteratorCriteriaForRulesReplay($params);
             if ($offset) {
-                $criteria['START'] = (int)$offset;
+                $criteria['START'] = (int) $offset;
+                $criteria['LIMIT'] = 2 ** 32; // MySQL requires a limit, set it to an unreachable value
             }
 
             $iterator = $DB->request($criteria);
             $nb   = count($iterator) + $offset;
-            $step = (($nb > 1000) ? 50 : (($nb > 20) ? floor(count($iterator) / 20) : 1));
 
             foreach ($iterator as $input) {
-                if (!($i % $step)) {
-                    if (isCommandLine()) {
-                        printf(
-                            __('%1$s - replay rules on existing database: %2$s/%3$s (%4$s Mio)') . "\n",
-                            date("H:i:s"),
-                            $i,
-                            $nb,
-                            round(memory_get_usage() / (1024 * 1024), 2)
-                        );
-                    } else {
-                        Html::changeProgressBarPosition($i, $nb, "$i / $nb");
-                    }
-                }
-
-               //If manufacturer is set, then first run the manufacturer's dictionary
+                //If manufacturer is set, then first run the manufacturer's dictionary
                 if (isset($input["manufacturer"])) {
                     $input["manufacturer"] = Manufacturer::processName($input["manufacturer"]);
                 }
 
-               //Replay software dictionary rules
+                //Replay software dictionary rules
                 $res_rule = $this->processAllRules($input, [], []);
 
                 if (
@@ -192,12 +154,12 @@ TWIG, $twig_params);
                         'FROM'   => 'glpi_softwares',
                         'WHERE'  => [
                             'name'               => $input['name'],
-                            'manufacturers_id'   => $input['manufacturers_id']
-                        ]
+                            'manufacturers_id'   => $input['manufacturers_id'],
+                        ],
                     ]);
 
                     if (count($same_iterator)) {
-                          //Store all the software's IDs in an array
+                        //Store all the software's IDs in an array
                         foreach ($same_iterator as $result) {
                             $IDs[] = $result["id"];
                         }
@@ -206,29 +168,53 @@ TWIG, $twig_params);
                     }
                 }
                 $i++;
-                if ($maxtime) {
-                    $crt = explode(" ", microtime());
-                    if (((float)$crt[0] + (float)$crt[1]) > $maxtime) {
-                        break;
-                    }
-                }
-            }
 
-            if (isCommandLine()) {
-                printf(__('Replay rules on existing database: %1$s/%2$s') . "   \n", $i, $nb);
-            } else {
-                Html::changeProgressBarPosition($i, $nb, "$i / $nb");
+                if ($maxtime && microtime(true) > $maxtime) {
+                    break;
+                }
             }
         } else {
             $this->replayDictionnaryOnSoftwaresByID($items);
             return true;
         }
 
-        if (isCommandLine()) {
-            printf(__('Replay rules on existing database ended on %s') . "\n", date("r"));
+        return (($i == $nb) ? -1 : $i);
+    }
+
+    private function getIteratorCriteriaForRulesReplay(array $params): array
+    {
+        // Select all the differents software
+        $criteria = [
+            'SELECT'          => [
+                'glpi_softwares.name',
+                'glpi_manufacturers.name AS manufacturer',
+                'glpi_softwares.manufacturers_id AS manufacturers_id',
+                'glpi_softwares.entities_id AS entities_id',
+                'glpi_softwares.is_helpdesk_visible AS helpdesk',
+                'glpi_softwares.softwarecategories_id AS softwarecategories_id',
+            ],
+            'DISTINCT'        => true,
+            'FROM'            => 'glpi_softwares',
+            'LEFT JOIN'       => [
+                'glpi_manufacturers' => [
+                    'ON' => [
+                        'glpi_manufacturers' => 'id',
+                        'glpi_softwares'     => 'manufacturers_id',
+                    ],
+                ],
+            ],
+            'WHERE'           => [
+                // Do not replay on trashbin and templates
+                'glpi_softwares.is_deleted'   => 0,
+                'glpi_softwares.is_template'  => 0,
+            ],
+        ];
+
+        if (isset($params['manufacturer']) && $params['manufacturer']) {
+            $criteria['WHERE']['glpi_softwares.manufacturers_id'] = $params['manufacturer'];
         }
 
-        return (($i == $nb) ? -1 : $i);
+        return $criteria;
     }
 
     /**
@@ -253,38 +239,38 @@ TWIG, $twig_params);
                     'gs.id',
                     'gs.name AS name',
                     'gs.entities_id AS entities_id',
-                    'gm.name AS manufacturer'
+                    'gm.name AS manufacturer',
                 ],
                 'FROM'      => 'glpi_softwares AS gs',
                 'LEFT JOIN' => [
                     'glpi_manufacturers AS gm' => [
                         'ON' => [
                             'gs'  => 'manufacturers_id',
-                            'gm'  => 'id'
-                        ]
-                    ]
+                            'gm'  => 'id',
+                        ],
+                    ],
                 ],
                 'WHERE'     => [
                     'gs.is_template'  => 0,
-                    'gs.id'           => $ID
-                ]
+                    'gs.id'           => $ID,
+                ],
             ]);
 
             if (count($iterator)) {
-                 $soft = $iterator->current();
-                 //For each software
-                 $this->replayDictionnaryOnOneSoftware(
-                     $new_softs,
-                     $res_rule,
-                     $ID,
-                     $res_rule['new_entities_id'] ?? $soft["entities_id"],
-                     $soft['name'] ?? '',
-                     $soft['manufacturer'] ?? '',
-                     $delete_ids
-                 );
+                $soft = $iterator->current();
+                //For each software
+                $this->replayDictionnaryOnOneSoftware(
+                    $new_softs,
+                    $res_rule,
+                    $ID,
+                    $res_rule['new_entities_id'] ?? $soft["entities_id"],
+                    $soft['name'] ?? '',
+                    $soft['manufacturer'] ?? '',
+                    $delete_ids
+                );
             }
         }
-       //Delete software if needed
+        //Delete software if needed
         $this->putOldSoftsInTrash($delete_ids);
     }
 
@@ -379,10 +365,10 @@ TWIG, $twig_params);
             $soft_ids[] = $ID;
         }
 
-       //Get all the different versions for a software
+        //Get all the different versions for a software
         $iterator = $DB->request([
             'FROM'   => 'glpi_softwareversions',
-            'WHERE'  => ['softwares_id' => $ID]
+            'WHERE'  => ['softwares_id' => $ID],
         ]);
 
         foreach ($iterator as $version) {
@@ -391,7 +377,7 @@ TWIG, $twig_params);
 
             if (isset($res_rule['version_append']) && $res_rule['version_append'] != '') {
                 $new_version_name = $old_version_name . $res_rule['version_append'];
-            } else if (isset($res_rule["version"]) && $res_rule["version"] != '') {
+            } elseif (isset($res_rule["version"]) && $res_rule["version"] != '') {
                 $new_version_name = $res_rule["version"];
             } else {
                 $new_version_name = $version["name"];
@@ -423,33 +409,33 @@ TWIG, $twig_params);
         global $DB;
 
         if (count($soft_ids) > 0) {
-           //Try to delete all the software that are not used anymore
-           // (which means that don't have version associated anymore)
+            //Try to delete all the software that are not used anymore
+            // (which means that don't have version associated anymore)
             $iterator = $DB->request([
                 'SELECT'    => [
                     'glpi_softwares.id',
-                    'COUNT' => 'glpi_softwareversions.softwares_id AS cpt'
+                    'COUNT' => 'glpi_softwareversions.softwares_id AS cpt',
                 ],
                 'FROM'      => 'glpi_softwares',
                 'LEFT JOIN' => [
                     'glpi_softwareversions' => [
                         'ON' => [
                             'glpi_softwareversions' => 'softwares_id',
-                            'glpi_softwares'        => 'id'
-                        ]
-                    ]
+                            'glpi_softwares'        => 'id',
+                        ],
+                    ],
                 ],
                 'WHERE'     => [
                     'glpi_softwares.id'  => $soft_ids,
-                    'is_deleted'         => 0
+                    'is_deleted'         => 0,
                 ],
                 'GROUPBY'   => 'glpi_softwares.id',
-                'HAVING'    => ['cpt' => 0]
+                'HAVING'    => ['cpt' => 0],
             ]);
 
             $software = new Software();
             foreach ($iterator as $soft) {
-                 $software->putInTrash($soft["id"], __('Software deleted by GLPI dictionary rules'));
+                $software->putInTrash($soft["id"], __('Software deleted by GLPI dictionary rules'));
             }
         }
     }
@@ -472,23 +458,23 @@ TWIG, $twig_params);
 
         $new_versionID = $this->versionExists($new_software_id, $new_version);
 
-       // Do something if it is not the same version
+        // Do something if it is not the same version
         if ($new_versionID != $version_id) {
-           //A version does not exist : update existing one
+            //A version does not exist : update existing one
             if ($new_versionID == -1) {
                 //Transfer versions from old software to new software for a specific version
                 $DB->update(
                     'glpi_softwareversions',
                     [
                         'name'         => $new_version,
-                        'softwares_id' => $new_software_id
+                        'softwares_id' => $new_software_id,
                     ],
                     [
-                        'id' => $version_id
+                        'id' => $version_id,
                     ]
                 );
             } else {
-               // Delete software can be in double after update
+                // Delete software can be in double after update
                 $item_softwareversion_table = Item_SoftwareVersion::getTable();
                 $iterator = $DB->request([
                     'SELECT'    => ['gcs_2.*'],
@@ -499,59 +485,59 @@ TWIG, $twig_params);
                                 'gcs_2'                       => 'items_id',
                                 $item_softwareversion_table   => 'items_id', [
                                     'AND' => [
-                                        'gcs_2.itemtype' => $item_softwareversion_table . '.itemtype'
-                                    ]
-                                ]
-                            ]
-                        ]
+                                        'gcs_2.itemtype' => $item_softwareversion_table . '.itemtype',
+                                    ],
+                                ],
+                            ],
+                        ],
                     ],
                     'WHERE'     => [
                         "{$item_softwareversion_table}.softwareversions_id"   => $new_versionID,
-                        'gcs_2.softwareversions_id'                           => $version_id
-                    ]
+                        'gcs_2.softwareversions_id'                           => $version_id,
+                    ],
                 ]);
                 foreach ($iterator as $data) {
                     $DB->delete(
                         'glpi_items_softwareversions',
                         [
-                            'id' => $data['id']
+                            'id' => $data['id'],
                         ]
                     );
                 }
 
-               //Change ID of the version in glpi_items_softwareversions
+                //Change ID of the version in glpi_items_softwareversions
                 $DB->update(
                     $item_softwareversion_table,
                     [
-                        'softwareversions_id' => $new_versionID
+                        'softwareversions_id' => $new_versionID,
                     ],
                     [
-                        'softwareversions_id' => $version_id
+                        'softwareversions_id' => $version_id,
                     ]
                 );
 
-               // Update licenses version link
+                // Update licenses version link
                 $DB->update(
                     'glpi_softwarelicenses',
                     [
-                        'softwareversions_id_buy' => $new_versionID
+                        'softwareversions_id_buy' => $new_versionID,
                     ],
                     [
-                        'softwareversions_id_buy' => $version_id
+                        'softwareversions_id_buy' => $version_id,
                     ]
                 );
 
                 $DB->update(
                     'glpi_softwarelicenses',
                     [
-                        'softwareversions_id_use' => $new_versionID
+                        'softwareversions_id_use' => $new_versionID,
                     ],
                     [
-                        'softwareversions_id_use' => $version_id
+                        'softwareversions_id_use' => $version_id,
                     ]
                 );
 
-               //Delete old version
+                //Delete old version
                 $old_version = new SoftwareVersion();
                 $old_version->delete(["id" => $version_id]);
             }
@@ -584,10 +570,10 @@ TWIG, $twig_params);
             $DB->update(
                 'glpi_softwarelicenses',
                 [
-                    'softwares_id' => $new_software_id
+                    'softwares_id' => $new_software_id,
                 ],
                 [
-                    'softwares_id' => $old_software_id
+                    'softwares_id' => $old_software_id,
                 ]
             );
         }
@@ -610,8 +596,8 @@ TWIG, $twig_params);
             'FROM'   => 'glpi_softwareversions',
             'WHERE'  => [
                 'softwares_id' => $software_id,
-                'name'         => $version
-            ]
+                'name'         => $version,
+            ],
         ]);
         return count($iterator) ? $iterator->current()['id'] : -1;
     }

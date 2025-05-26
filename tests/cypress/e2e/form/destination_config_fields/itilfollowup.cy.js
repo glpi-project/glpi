@@ -6,7 +6,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -38,7 +37,7 @@ describe('ITILFollowup configuration', () => {
 
         // Create form
         cy.createFormWithAPI().as('form_id').visitFormTab('Form');
-        cy.findByRole('button', {'name': "Add a new question"}).click();
+        cy.findByRole('button', {'name': "Add a question"}).click();
         cy.focused().type("My question");
 
         cy.findByRole('button', {'name': 'Save'}).click();
@@ -57,7 +56,7 @@ describe('ITILFollowup configuration', () => {
 
     it('can use all possibles configuration options', () => {
         cy.findByRole('region', {'name': "Followups configuration"}).as("config");
-        cy.get('@config').getDropdownByLabelText('Followups').as("itilfollowup_dropdown");
+        cy.get('@config').getDropdownByLabelText('Select strategy...').as("itilfollowup_dropdown");
 
         // Default value
         cy.get('@itilfollowup_dropdown').should(
@@ -89,7 +88,7 @@ describe('ITILFollowup configuration', () => {
 
     it('can create ticket using specific followup template', () => {
         cy.findByRole('region', {'name': "Followups configuration"}).as("config");
-        cy.get('@config').getDropdownByLabelText('Followups').as("itilfollowup_dropdown");
+        cy.get('@config').getDropdownByLabelText('Select strategy...').as("itilfollowup_dropdown");
 
         // Switch to "Specific Followup templates"
         cy.get('@form_id').then((form_id) => {
@@ -111,7 +110,7 @@ describe('ITILFollowup configuration', () => {
         ;
 
         // Fill form
-        cy.findByRole('button', {'name': 'Send form'}).click();
+        cy.findByRole('button', {'name': 'Submit'}).click();
         cy.findByRole('link', {'name': 'My test form'}).click();
 
         // Check if followup template content is displayed

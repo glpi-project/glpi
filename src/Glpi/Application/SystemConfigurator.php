@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -40,6 +39,9 @@ use Glpi\Log\AccessLogHandler;
 use Glpi\Log\ErrorLogHandler;
 use Monolog\Logger;
 use Psr\Log\LoggerInterface;
+use Psr\Log\LogLevel;
+
+use function Safe\define;
 
 final class SystemConfigurator
 {
@@ -51,6 +53,9 @@ final class SystemConfigurator
         $this->setSessionConfiguration();
         $this->initLogger();
         $this->registerErrorHandler();
+
+        // Keep it after `registerErrorHandler()` call to be sure that messages are correctly handled.
+        $this->checkForObsoleteConstants();
     }
 
     public function getLogger(): LoggerInterface
@@ -63,7 +68,8 @@ final class SystemConfigurator
         if ($this->env !== null) {
             // Force the `GLPI_ENVIRONMENT_TYPE` constant.
             // The value defined in the server env variables will be ignored.
-            define('GLPI_ENVIRONMENT_TYPE', $this->env);
+            $env = Environment::from($this->env);
+            Environment::set($env);
         }
 
         // Define GLPI_* constants that can be customized by admin.
@@ -75,7 +81,7 @@ final class SystemConfigurator
         $constants = [
             'default' => [
                 // GLPI environment
-                'GLPI_ENVIRONMENT_TYPE' => 'production',
+                'GLPI_ENVIRONMENT_TYPE' => Environment::PRODUCTION->value,
 
                 // Constants related to system paths
                 'GLPI_CONFIG_DIR'      => $this->root_dir . '/config', // Path for configuration files (db, security key, ...)
@@ -99,7 +105,7 @@ final class SystemConfigurator
 
                 // Where to load plugins.
                 // Order in this array is important (priority to first found).
-                'PLUGINS_DIRECTORIES'  => [
+                'GLPI_PLUGINS_DIRECTORIES' => [
                     '{GLPI_MARKETPLACE_DIR}',
                     $this->root_dir . '/plugins',
                 ],
@@ -143,41 +149,25 @@ final class SystemConfigurator
                 'GLPI_USER_AGENT_EXTRA_COMMENTS'    => '', // Extra comment to add to GLPI User-Agent
                 'GLPI_DOCUMENTATION_ROOT_URL'       => 'https://links.glpi-project.org', // Official documentations root URL
 
-                // SQL compatibility
+                // Constants dedicated to developers
                 'GLPI_DISABLE_ONLY_FULL_GROUP_BY_SQL_MODE' => '1', // '1' to disable ONLY_FULL_GROUP_BY 'sql_mode'
+                'GLPI_LOG_LVL'                             => LogLevel::WARNING,
+                'GLPI_SKIP_UPDATES'                        => false, // `true` to bypass minor versions DB updates
+                'GLPI_STRICT_ENV'                          => false, // `true` to make environment more strict (strict variables in twig templates, etc)
 
                 // Other constants
                 'GLPI_AJAX_DASHBOARD'         => '1', // 1 for "multi ajax mode" 0 for "single ajax mode" (see Glpi\Dashboard\Grid::getCards)
                 'GLPI_CALDAV_IMPORT_STATE'    => 0, // external events created from a caldav client will take this state by default (0 = Planning::INFO)
                 'GLPI_CENTRAL_WARNINGS'       => '1', // display (1), or not (0), warnings on GLPI Central page
+                'GLPI_SYSTEM_CRON'            => false, // `true` to use the system cron provided by the downstream package
                 'GLPI_TEXT_MAXSIZE'           => '4000', // character threshold for displaying read more button
                 'GLPI_WEBHOOK_ALLOW_RESPONSE_SAVING' => '0', // allow (1) or not (0) to save webhook response in database
             ],
-            'production' => [
-            ],
-            'staging' => [
-            ],
-            'testing' => [
-                'GLPI_CONFIG_DIR'               => $this->root_dir . '/tests/config',
-                'GLPI_VAR_DIR'                  => $this->root_dir . '/tests/files',
-                'GLPI_SERVERSIDE_URL_ALLOWLIST' => [
-                    // default allowlist entries
-                    '#^http://[^@:]+(:80)?(/.*)?$#',
-                    '#^https://[^@:]+(:443)?(/.*)?$#',
-                    '#^feed://[^@:]+(/.*)?$#',
-
-                    // calendar mockups
-                    '/^file:\/\/.*\.ics$/',
-                ],
-                'PLUGINS_DIRECTORIES'           => [
-                    $this->root_dir . '/plugins',
-                    $this->root_dir . '/tests/fixtures/plugins',
-                ],
-            ],
-            'development' => [
-                'GLPI_WEBHOOK_ALLOW_RESPONSE_SAVING' => '1'
-            ],
         ];
+
+        foreach (Environment::cases() as $env) {
+            $constants[$env->value] = $env->getConstantsOverride($this->root_dir);
+        }
 
         $constants_names = array_keys($constants['default']);
 
@@ -198,21 +188,16 @@ final class SystemConfigurator
             include_once($this->root_dir . '/inc/downstream.php');
         }
 
-        // Check custom values
-        $allowed_envs = ['production', 'staging', 'testing', 'development'];
-        if (defined('GLPI_ENVIRONMENT_TYPE') && !in_array(GLPI_ENVIRONMENT_TYPE, $allowed_envs)) {
-            throw new \UnexpectedValueException(
-                sprintf(
-                    'Invalid GLPI_ENVIRONMENT_TYPE constant value `%s`. Allowed values are: `%s`',
-                    GLPI_ENVIRONMENT_TYPE,
-                    implode('`, `', $allowed_envs)
-                )
-            );
+        // Handle deprecated/obsolete constants
+        if (defined('PLUGINS_DIRECTORIES') && !defined('GLPI_PLUGINS_DIRECTORIES')) {
+            define('GLPI_PLUGINS_DIRECTORIES', PLUGINS_DIRECTORIES);
         }
 
         // Configure environment type if not defined by user.
-        if (!defined('GLPI_ENVIRONMENT_TYPE')) {
-            define('GLPI_ENVIRONMENT_TYPE', $constants['default']['GLPI_ENVIRONMENT_TYPE']);
+        if (Environment::isSet()) {
+            Environment::validate();
+        } else {
+            Environment::set(Environment::PRODUCTION);
         }
 
         // Define constants values from defaults
@@ -297,5 +282,22 @@ final class SystemConfigurator
     {
         $errorHandler = new ErrorHandler($this->logger);
         $errorHandler::register($errorHandler);
+    }
+
+    private function checkForObsoleteConstants(): void
+    {
+        if (defined('GLPI_USE_CSRF_CHECK')) {
+            trigger_error(
+                'The `GLPI_USE_CSRF_CHECK` constant is now ignored for security reasons.',
+                E_USER_WARNING
+            );
+        }
+
+        if (defined('PLUGINS_DIRECTORIES')) {
+            trigger_error(
+                'The `PLUGINS_DIRECTORIES` constant is deprecated. Use the `GLPI_PLUGINS_DIRECTORIES` constant instead.',
+                E_USER_DEPRECATED
+            );
+        }
     }
 }

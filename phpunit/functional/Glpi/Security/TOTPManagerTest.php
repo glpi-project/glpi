@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -59,7 +58,7 @@ class TOTPManagerTest extends \DbTestCase
         $tfa_config = $DB->request([
             'SELECT' => '2fa',
             'FROM' => 'glpi_users',
-            'WHERE' => ['id' => $users_id]
+            'WHERE' => ['id' => $users_id],
         ])->current()['2fa'];
 
         $this->assertNotNull($tfa_config);
@@ -83,7 +82,7 @@ class TOTPManagerTest extends \DbTestCase
         $tfa_config = $DB->request([
             'SELECT' => '2fa',
             'FROM' => 'glpi_users',
-            'WHERE' => ['id' => $users_id]
+            'WHERE' => ['id' => $users_id],
         ])->current()['2fa'];
 
         $this->assertNotNull($tfa_config);
@@ -93,7 +92,7 @@ class TOTPManagerTest extends \DbTestCase
         $tfa_config = $DB->request([
             'SELECT' => '2fa',
             'FROM' => 'glpi_users',
-            'WHERE' => ['id' => $users_id]
+            'WHERE' => ['id' => $users_id],
         ])->current()['2fa'];
         $this->assertNull($tfa_config);
     }
@@ -107,8 +106,8 @@ class TOTPManagerTest extends \DbTestCase
 
         $DB->update('glpi_users', [
             '2fa' => json_encode([
-                'secret' => (new \GLPIKey())->encrypt('G3QWAUUBIOM7GUU3EHC76WGMV5FIO3FB')
-            ])
+                'secret' => (new \GLPIKey())->encrypt('G3QWAUUBIOM7GUU3EHC76WGMV5FIO3FB'),
+            ]),
         ], ['id' => $users_id]);
         $this->assertTrue($tfa->is2FAEnabled($users_id));
 

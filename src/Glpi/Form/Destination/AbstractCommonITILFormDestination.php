@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -53,30 +52,54 @@ use Glpi\Form\Destination\CommonITILField\RequesterField;
 use Glpi\Form\Destination\CommonITILField\TitleField;
 use Glpi\Form\Destination\CommonITILField\UrgencyField;
 use Glpi\Form\Destination\CommonITILField\ValidationField;
+use Glpi\Form\Export\Context\DatabaseMapper;
+use Glpi\Form\Export\Serializer\DynamicExportDataField;
 use Glpi\Form\Form;
 use Override;
 use Ticket;
 
-abstract class AbstractCommonITILFormDestination extends AbstractFormDestinationType
+abstract class AbstractCommonITILFormDestination implements FormDestinationInterface
 {
+    /** @return class-string<\CommonITILObject>   */
+    abstract public function getTargetItemtype(): string;
+
+    final public function __construct() {}
+
     #[Override]
-    final public function renderConfigForm(Form $form, array $config): string
-    {
+    final public function renderConfigForm(
+        Form $form,
+        FormDestination $destination,
+        array $config
+    ): string {
         $twig = TemplateRenderer::getInstance();
         return $twig->render(
             'pages/admin/form/form_destination_commonitil_config.html.twig',
             [
-                'form'   => $form,
-                'item'   => $this,
-                'config' => $config,
+                'form'        => $form,
+                'item'        => $this,
+                'config'      => $config,
+                'destination' => $destination,
+                'can_update'  => FormDestination::canUpdate(),
             ]
         );
     }
 
     #[Override]
-    final public static function getTypeName($nb = 0)
+    public function useDefaultConfigLayout(): bool
     {
-        return static::getTargetItemtype()::getTypeName($nb);
+        return false;
+    }
+
+    #[Override]
+    final public function getLabel(): string
+    {
+        return $this->getTargetItemtype()::getTypeName(1);
+    }
+
+    #[Override]
+    final public function getIcon(): string
+    {
+        return $this->getTargetItemtype()::getIcon();
     }
 
     #[Override]
@@ -85,8 +108,8 @@ abstract class AbstractCommonITILFormDestination extends AbstractFormDestination
         AnswersSet $answers_set,
         array $config,
     ): array {
-        $typename        = static::getTypeName(1);
-        $itemtype        = static::getTargetItemtype();
+        $typename        = $this->getLabel();
+        $itemtype        = $this->getTargetItemtype();
         $fields_to_apply = $this->getConfigurableFields();
 
         // Mandatory values, we must preset defaults values as it can't be
@@ -97,7 +120,7 @@ abstract class AbstractCommonITILFormDestination extends AbstractFormDestination
         ];
 
         // Template field must be computed before applying predefined fields
-        $target_itemtype = static::getTargetItemtype();
+        $target_itemtype = $this->getTargetItemtype();
         $template_class = (new $target_itemtype())->getTemplateClass();
         $template_field = new TemplateField($template_class);
         $input = $template_field->applyConfiguratedValueToInputUsingAnswers(
@@ -137,6 +160,10 @@ abstract class AbstractCommonITILFormDestination extends AbstractFormDestination
 
         // Create commonitil object
         $itil_object = new $itemtype();
+
+        // It is safer to ignore this phpstan error as plugin code may not be
+        // statically analyzed and we don't want it to create unexpected issues.
+        // @phpstan-ignore-next-line instanceof.alwaysTrue
         if (!($itil_object instanceof CommonITILObject)) {
             throw new \RuntimeException(
                 "The target itemtype must be an instance of CommonITILObject"
@@ -216,7 +243,7 @@ abstract class AbstractCommonITILFormDestination extends AbstractFormDestination
      */
     protected function defineConfigurableFields(): array
     {
-        $target_itemtype = static::getTargetItemtype();
+        $target_itemtype = $this->getTargetItemtype();
         $template_class = (new $target_itemtype())->getTemplateClass();
 
         return [
@@ -265,9 +292,52 @@ abstract class AbstractCommonITILFormDestination extends AbstractFormDestination
         return "config[$field_key]";
     }
 
+    #[Override]
+    final public function exportDynamicConfig(
+        array $config
+    ): DynamicExportDataField {
+        $requirements = [];
+        foreach ($config as $field_key => $field_config_data) {
+            $field = $this->getConfigurableFieldByKey($field_key);
+            if (!$field instanceof AbstractConfigField) {
+                continue;
+            }
+            $export_data = $field->exportDynamicConfig($field_config_data, $this);
+
+            // Apply config for this field
+            $config[$field_key] = $export_data->getData();
+            array_push($requirements, ...$export_data->getRequirements());
+        }
+
+        return new DynamicExportDataField($config, $requirements);
+    }
+
+    #[Override]
+    final public static function prepareDynamicConfigDataForImport(
+        array $config,
+        DatabaseMapper $mapper,
+    ): array {
+        foreach ($config as $field_key => $field_config_data) {
+            $destination = new static();
+            $field = $destination->getConfigurableFieldByKey($field_key);
+            if (!$field instanceof AbstractConfigField) {
+                continue;
+            }
+
+            // Prepare field config for import
+            $config[$field_key] = $field->prepareDynamicConfigDataForImport(
+                $field_config_data,
+                $destination,
+                $mapper,
+            );
+        }
+
+        return $config;
+    }
+
     private function applyPredefinedTemplateFields(array $input): array
     {
-        $itemtype = static::getTargetItemtype();
+        $itemtype = $this->getTargetItemtype();
 
         /** @var \CommonITILObject $itil */
         $itil = new $itemtype();

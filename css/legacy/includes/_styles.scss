@@ -181,7 +181,9 @@
    }
 
    .pointer {
-      opacity: .7;
+      &:not(.nav-link) {
+         opacity: .7;
+      }
 
       &:hover {
          opacity: 1;
@@ -820,24 +822,6 @@
          content: "\f071";
          color: red;
          font-weight: 900;
-      }
-   }
-
-   .input-group.copy_to_clipboard_wrapper {
-      &:after {
-         content: none;
-      }
-
-      i.copy_to_clipboard_wrapper {
-         font-style: normal;
-
-         &:after {
-            left: 0;
-         }
-
-         &:before {
-            content: none;
-         }
       }
    }
 

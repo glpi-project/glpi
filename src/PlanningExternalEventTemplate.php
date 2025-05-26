@@ -45,7 +45,7 @@ class PlanningExternalEventTemplate extends CommonDropdown
         rawSearchOptions as protected trait_rawSearchOptions;
     }
 
-   // From CommonDBTM
+    // From CommonDBTM
     public $dohistory          = true;
     public $can_be_translated  = true;
 
@@ -67,11 +67,11 @@ class PlanningExternalEventTemplate extends CommonDropdown
                 'name'  => 'planningeventcategories_id',
                 'label' => _n('Category', 'Categories', 1),
                 'type'  => 'dropdownValue',
-                'list'  => true
+                'list'  => true,
             ], [
                 'name'  => 'background',
                 'label' => __('Background event'),
-                'type'  => 'bool'
+                'type'  => 'bool',
             ], [
                 'name'  => 'plan',
                 'label' => _n('Calendar', 'Calendars', 1),
@@ -88,7 +88,7 @@ class PlanningExternalEventTemplate extends CommonDropdown
                 // When an element will be created from a template, tinymce will catch the base64 image and trigger the
                 // document upload process.
                 'convert_images_to_documents' => false,
-            ]
+            ],
         ];
     }
 
@@ -194,6 +194,6 @@ class PlanningExternalEventTemplate extends CommonDropdown
 
     public static function getIcon()
     {
-        return "fas fa-layer-group";
+        return "ti ti-stack-2-filled";
     }
 }

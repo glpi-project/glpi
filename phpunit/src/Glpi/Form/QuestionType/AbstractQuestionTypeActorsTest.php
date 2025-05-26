@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -36,8 +35,8 @@
 namespace Glpi\PHPUnit\Tests\Glpi\Form\QuestionType;
 
 use DbTestCase;
-use Glpi\Form\Destination\FormDestinationTicket;
-use Glpi\Form\QuestionType\QuestionTypeActorsConfig;
+use Glpi\Form\Question;
+use Glpi\Form\QuestionType\QuestionTypeActorsDefaultValueConfig;
 use Glpi\Form\QuestionType\QuestionTypeActorsExtraDataConfig;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
@@ -185,6 +184,33 @@ abstract class AbstractQuestionTypeActorsTest extends DbTestCase
         $this->assertStringContainsString(
             "1) Question: Doe John",
             strip_tags($ticket->fields['content']),
+        );
+    }
+
+    /**
+     * If the user does not define a default value for an actor type question,
+     * the default value will correspond to the default value used for dropdowns.
+     * Thus, the returned value will be "0"
+     */
+    public function testDefaultValueCanBeEmpty(): void
+    {
+        $builder = (new FormBuilder())
+            ->addQuestion("Question", static::getQuestionType());
+        $form = $this->createForm($builder);
+
+        $this->updateItem(
+            Question::class,
+            $this->getQuestionId($form, "Question"),
+            [
+                'default_value' => ["0"],
+            ],
+            ['default_value'] // Normally the field doesn't correspond to the defined value, don't verify it here
+        );
+
+        $question = Question::getById($this->getQuestionId($form, "Question"));
+        $this->assertEquals(
+            json_encode(new QuestionTypeActorsDefaultValueConfig()),
+            $question->fields['default_value'],
         );
     }
 }

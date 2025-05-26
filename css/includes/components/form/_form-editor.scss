@@ -187,6 +187,8 @@
 
 [data-glpi-form-editor-question] {
     &[data-glpi-form-editor-active-question] {
+        width: calc(100% + 2.5rem + 0.25rem);
+
         // Show secondary data on active form
         [data-glpi-form-editor-question-extra-details] {
             position: relative;
@@ -221,8 +223,11 @@
 
 [data-glpi-form-editor-comment] {
     &[data-glpi-form-editor-active-comment] {
+        width: calc(100% + 2.5rem + 0.25rem);
+
         // Show secondary data on active comments
         [data-glpi-form-editor-comment-extra-details] {
+            position: relative;
             opacity: 1;
             visibility: visible;
             transition: visibility 0s, opacity 0.20s linear;
@@ -237,9 +242,12 @@
 
         // Do not show secondary data on inactive comments
         [data-glpi-form-editor-comment-extra-details] {
+            position: absolute;
             height: 0;
+            width: 0;
             opacity: 0;
             visibility: hidden;
+            overflow: hidden;
         }
     }
 }
@@ -394,16 +402,16 @@ input.value-selector {
     }
 }
 
-.visibility-dropdown-card {
-    width: 700px;
+.visibility-dropdown-card, .validation-dropdown-card {
+    min-width: 700px;
+    width: fit-content;
+
+    // Add scrolling as a last ressort, will not happen most of the time
+    overflow: scroll;
 }
 
 [data-glpi-form-editor-block] {
     margin-bottom: 1rem;
-}
-
-[data-glpi-form-editor-toolbar] {
-    margin-top: 0.5rem;
 }
 
 .question-type-dropdown-group {
@@ -500,5 +508,17 @@ html {
     // Only apply the overflow hidden on the body when active tab contains the form editor
     &:has(.tab-pane.active > [data-glpi-form-editor-container]) {
         overflow: hidden;
+    }
+}
+
+
+[data-glpi-form-editor-toolbar].btn-group-vertical {
+    &::before {
+        content: "\ea7c";
+        font-family: tabler-icons !important;
+        font-size: x-large;
+        color: var(--tblr-border-active-color);
+        transform: translateY(1.9rem);
+        position: absolute;
     }
 }

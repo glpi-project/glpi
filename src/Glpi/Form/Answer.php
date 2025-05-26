@@ -91,7 +91,11 @@ final readonly class Answer implements JsonSerializable
             return null;
         }
 
-        return $type->formatRawAnswer($this->getRawAnswer());
+        $question = Question::getById($this->getQuestionId());
+        if ($question === false) {
+            return null;
+        }
+        return $type->formatRawAnswer($this->getRawAnswer(), $question);
     }
 
     public function getQuestionLabel(): string

@@ -6,7 +6,6 @@
  # http://glpi-project.org
  #
  # @copyright 2015-2025 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -42,7 +41,7 @@
       <div class="read-only-content w-100">
          {{ entry_i['content']|raw }}
 
-         {% if entry_i['comment_submission']|length %}
+         {% if (entry_i['comment_submission'] ?? '')|length %}
             <div class='alert alert-info mt-2'>
                 <div class='d-flex'>
                     <div><i class='ti ti-quote me-2'></i></div>
@@ -55,7 +54,7 @@
                 </div>
             </div>
          {% endif %}
-         {% if entry_i['comment_validation']|length %}
+         {% if entry_i['comment_validation'] is defined and entry_i['comment_validation']|length %}
             <div class='alert alert-info mt-2'>
                 <div class='d-flex'>
                     <div><i class='ti ti-quote me-2'></i></div>
@@ -69,7 +68,7 @@
             </div>
          {% endif %}
 
-         {% if entry_i['can_answer'] %}
+         {% if entry_i['can_answer'] ?? false %}
             <hr class="my-2" />
             <form id="validationanswers_id_{{ entry_i['id'] }}"
                   action="{{ entry['type']|itemtype_form_path }}" method="post" data-submit-once>
@@ -182,18 +181,20 @@
                 <h3 class="cart-title">{{ __("Validation request") }}</h3>
             </div>
             <div class="card-body">
-               {{ fields.dropdownField(
-                  'ITILValidationTemplate',
-                  'itilvalidationtemplates_id',
-                  '',
-                  _n('Template', 'Templates', 1),
-                  {
-                     'full_width': true,
-                     'on_change': 'itilvalidationtemplate_update' ~ rand ~ '(this.value);',
-                     'entity': item.fields['entities_id'],
-                     'rand': rand,
-                  },
-                ) }}
+                {% if item.isNewItem() %}
+                   {{ fields.dropdownField(
+                      'ITILValidationTemplate',
+                      'itilvalidationtemplates_id',
+                      '',
+                      _n('Template', 'Templates', 1),
+                      {
+                         'full_width': true,
+                         'on_change': 'itilvalidationtemplate_update' ~ rand ~ '(this.value);',
+                         'entity': item.fields['entities_id'],
+                         'rand': rand,
+                      },
+                    ) }}
+                {% endif %}
 
                 {{ fields.readOnlyField(
                     'approval_requester',
@@ -246,12 +247,13 @@
                     subitem.fields['comment_submission'],
                     _n('Comment', 'Comments', 1),
                     {
-                    'full_width': true,
-                    'enable_richtext': true,
-                    'enable_fileupload': false,
-                    'mention_options': mention_options,
-                    'entities_id': item.fields['entities_id'],
-                    'rand': rand,
+                        'full_width': true,
+                        'enable_richtext': true,
+                        'enable_fileupload': false,
+                        'mention_options': mention_options,
+                        'entities_id': item.fields['entities_id'],
+                        'rand': rand,
+                        'disabled': item.fields['status'] != constant('CommonITILValidation::WAITING'),
                     }
                 ) }}
 
@@ -295,7 +297,7 @@
          </form>
       </div>
 
-      {% if scroll %}
+      {% if scroll ?? false %}
          <script type="text/javascript">
             window.scrollTo(0,document.body.scrollHeight);
          </script>

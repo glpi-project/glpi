@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -39,6 +38,7 @@ use DbTestCase;
 use DisplayPreference;
 use Entity;
 use Glpi\Asset\Asset;
+use Glpi\Asset\Capacity;
 use Glpi\PHPUnit\Tests\Glpi\Asset\CapacityUsageTestTrait;
 use Log;
 use Notepad;
@@ -65,23 +65,23 @@ class HasNotepadCapacityTest extends DbTestCase
 
         $definition_1 = $this->initAssetDefinition(
             capacities: [
-                \Glpi\Asset\Capacity\HasHistoryCapacity::class,
-                \Glpi\Asset\Capacity\HasNotepadCapacity::class,
+                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
+                new Capacity(name: \Glpi\Asset\Capacity\HasNotepadCapacity::class),
             ],
             profiles: $profiles
         );
         $classname_1  = $definition_1->getAssetClassName();
         $definition_2 = $this->initAssetDefinition(
             capacities: [
-                \Glpi\Asset\Capacity\HasDocumentsCapacity::class,
+                new Capacity(name: \Glpi\Asset\Capacity\HasDocumentsCapacity::class),
             ],
             profiles: $profiles
         );
         $classname_2  = $definition_2->getAssetClassName();
         $definition_3 = $this->initAssetDefinition(
             capacities: [
-                \Glpi\Asset\Capacity\HasDocumentsCapacity::class,
-                \Glpi\Asset\Capacity\HasNotepadCapacity::class,
+                new Capacity(name: \Glpi\Asset\Capacity\HasDocumentsCapacity::class),
+                new Capacity(name: \Glpi\Asset\Capacity\HasNotepadCapacity::class),
             ],
             profiles: $profiles
         );
@@ -128,15 +128,15 @@ class HasNotepadCapacityTest extends DbTestCase
 
         $definition_1 = $this->initAssetDefinition(
             capacities: [
-                \Glpi\Asset\Capacity\HasHistoryCapacity::class,
-                \Glpi\Asset\Capacity\HasNotepadCapacity::class,
+                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
+                new Capacity(name: \Glpi\Asset\Capacity\HasNotepadCapacity::class),
             ]
         );
         $classname_1  = $definition_1->getAssetClassName();
         $definition_2 = $this->initAssetDefinition(
             capacities: [
-                \Glpi\Asset\Capacity\HasHistoryCapacity::class,
-                \Glpi\Asset\Capacity\HasNotepadCapacity::class,
+                new Capacity(name: \Glpi\Asset\Capacity\HasHistoryCapacity::class),
+                new Capacity(name: \Glpi\Asset\Capacity\HasNotepadCapacity::class),
             ]
         );
         $classname_2  = $definition_2->getAssetClassName();
@@ -223,7 +223,7 @@ class HasNotepadCapacityTest extends DbTestCase
 
         $definition = $this->initAssetDefinition(
             capacities: [
-                \Glpi\Asset\Capacity\HasNotepadCapacity::class,
+                new Capacity(name: \Glpi\Asset\Capacity\HasNotepadCapacity::class),
             ]
         );
         $classname  = $definition->getAssetClassName();
@@ -232,7 +232,7 @@ class HasNotepadCapacityTest extends DbTestCase
             $classname,
             [
                 'name' => __FUNCTION__,
-                'entities_id' => $root_entity_id
+                'entities_id' => $root_entity_id,
             ]
         );
 
@@ -287,7 +287,7 @@ class HasNotepadCapacityTest extends DbTestCase
     public function testCloneAsset()
     {
         $definition = $this->initAssetDefinition(
-            capacities: [\Glpi\Asset\Capacity\HasNotepadCapacity::class]
+            capacities: [new Capacity(name: \Glpi\Asset\Capacity\HasNotepadCapacity::class)]
         );
         $class = $definition->getAssetClassName();
         $entity = $this->getTestRootEntity(true);
@@ -310,7 +310,7 @@ class HasNotepadCapacityTest extends DbTestCase
             getAllDataFromTable(Notepad::getTable(), [
                 'itemtype' => $asset::getType(),
                 'items_id' => $clone_id,
-                'content'  => 'A note related to the asset'
+                'content'  => 'A note related to the asset',
             ])
         );
     }
@@ -318,7 +318,7 @@ class HasNotepadCapacityTest extends DbTestCase
     public static function provideIsUsed(): iterable
     {
         yield [
-            'target_classname' => Notepad::class
+            'target_classname' => Notepad::class,
         ];
     }
 
@@ -326,7 +326,7 @@ class HasNotepadCapacityTest extends DbTestCase
     {
         yield [
             'target_classname' => Notepad::class,
-            'expected' => '%d notes attached to %d assets'
+            'expected' => '%d notes attached to %d assets',
         ];
     }
 }

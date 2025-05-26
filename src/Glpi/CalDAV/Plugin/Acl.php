@@ -85,13 +85,13 @@ class Acl extends Plugin
         ];
 
         if ($node instanceof Calendar && Session::haveRight(PlanningExternalEvent::$rightname, UPDATE)) {
-           // If user can update external events, then he is able to write on calendar to create new events.
+            // If user can update external events, then he is able to write on calendar to create new events.
             $acl[] = [
                 'principal' => '{DAV:}authenticated',
                 'privilege' => '{DAV:}write',
                 'protected' => true,
             ];
-        } else if ($node instanceof CalendarObject) {
+        } elseif ($node instanceof CalendarObject) {
             $item = $this->getCalendarItemForPath($node->getName());
             if ($item instanceof CommonDBTM && $item->can($item->fields['id'], UPDATE)) {
                 $acl[] = [

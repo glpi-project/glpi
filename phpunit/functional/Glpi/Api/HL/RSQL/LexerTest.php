@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -52,16 +51,16 @@ class LexerTest extends GLPITestCase
             [
                 '((model.name=in=(A2696,A2757,A2777);name=like=*Staff*),(model.name=in=(A2602,A2604,A2603,A2605);name=like=*Student*)),name=in=(A2436,A2764,A2437,A2766)',
                 [
-                    [3, "("] ,[3, "("], [5,"model.name"], [6, "=in="], [7, "(A2696,A2757,A2777)"], [1, ";"],
+                    [3, "("],[3, "("], [5,"model.name"], [6, "=in="], [7, "(A2696,A2757,A2777)"], [1, ";"],
                     [5, "name"], [6, "=like="], [7, "*Staff*"], [4, ")"], [2, ","], [3, "("], [5, "model.name"],
                     [6, "=in="], [7, "(A2602,A2604,A2603,A2605)"], [1, ";"], [5, "name"], [6, "=like="], [7, "*Student*"],
-                    [4, ")"], [4, ")"], [2, ","], [5, "name"],[6, "=in="], [7, "(A2436,A2764,A2437,A2766)"]
-                ]
+                    [4, ")"], [4, ")"], [2, ","], [5, "name"],[6, "=in="], [7, "(A2436,A2764,A2437,A2766)"],
+                ],
             ],
             [
                 'name==(test', // In this case, "(test" is a valid value
-                [[5, 'name'], [6, '=='], [7, '(test']]
-            ]
+                [[5, 'name'], [6, '=='], [7, '(test']],
+            ],
         ];
     }
 
@@ -83,7 +82,7 @@ class LexerTest extends GLPITestCase
     {
         return [
             ['id='],
-            ['id=l']
+            ['id=l'],
         ];
     }
 
@@ -106,7 +105,7 @@ class LexerTest extends GLPITestCase
     {
         return [
             ['(id=like=1'],
-            ['name==Test1,((id=like=1),(name==Test2)']
+            ['name==Test1,((id=like=1),(name==Test2)'],
         ];
     }
 

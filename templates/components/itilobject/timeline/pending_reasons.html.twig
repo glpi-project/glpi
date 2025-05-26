@@ -6,7 +6,6 @@
  # http://glpi-project.org
  #
  # @copyright 2015-2025 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -108,7 +107,7 @@
             // Mark the dropdown as initialized and reset the form modification flag to avoid triggering the unsaved changes warning
             if (!pendingReasonsInitalized{{ rand }}) {
                pendingReasonsInitalized{{ rand }} = true;
-               window.glpiUnsavedFormChanges = false;
+               setHasUnsavedChanges(false);
             }
 
             $('#dropdown_pendingreasons_id{{ rand }}').change(handlePendingReasonsChange{{ rand }});
@@ -120,7 +119,7 @@
             <div class="col-12 col-sm-6" title="{{ __('Automatic follow-up') }}"
                   data-bs-toggle="tooltip" data-bs-placement="top">
                {% set pendingreasons_frequency_field = call('PendingReason::displayFollowupFrequencyfield', [
-                  pending_item ? pending_item.fields['followup_frequency'] : pending_item_parent.fields['followup_frequency'],
+                  pending_item ? pending_item.fields['followup_frequency'] : pending_item_parent ? pending_item_parent.fields['followup_frequency'] : null,
                   "",
                   {
                      'rand': rand
@@ -146,7 +145,7 @@
             <div class="col-12 col-sm-6" title="{{ __('Automatic resolution') }}"
                  data-bs-toggle="tooltip" data-bs-placement="top">
                {% set pendingreasons_resolution_field = call('PendingReason::displayFollowupsNumberBeforeResolutionField', [
-                     pending_item ? pending_item.fields['followups_before_resolution'] : pending_item_parent.fields['followups_before_resolution'],
+                     pending_item ? pending_item.fields['followups_before_resolution'] : pending_item_parent ? pending_item_parent.fields['followups_before_resolution'] : null,
                      "",
                      {
                         'rand': rand

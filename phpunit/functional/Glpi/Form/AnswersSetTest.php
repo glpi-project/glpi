@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -35,11 +34,11 @@
 
 namespace tests\units\Glpi\Form;
 
-use CommonGLPI;
+use CommonITILActor;
 use DbTestCase;
 use Glpi\Form\Answer;
 use Glpi\Form\AnswersHandler\AnswersHandler;
-use Glpi\Form\AnswersSet;
+use Glpi\Form\DelegationData;
 use Glpi\Form\Destination\FormDestinationProblem;
 use Glpi\Form\Form;
 use Glpi\Form\Question;
@@ -47,7 +46,10 @@ use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\QuestionType\QuestionTypeShortText;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
+use Group;
+use Group_User;
 use Ticket;
+use User;
 
 class AnswersSetTest extends DbTestCase
 {
@@ -69,7 +71,7 @@ class AnswersSetTest extends DbTestCase
                 ->addQuestion("Name", QuestionTypeShortText::class)
         );
         $answers_set = $answers_handler->saveAnswers($form, [
-            $this->getQuestionId($form, "Name") => "Pierre Paul Jacques"
+            $this->getQuestionId($form, "Name") => "Pierre Paul Jacques",
         ], \Session::getLoginUserID());
 
         $answer = new Answer(
@@ -136,6 +138,113 @@ class AnswersSetTest extends DbTestCase
         $this->assertCount(1, $answers->getLinksToCreatedItems());
     }
 
+    public function testGetDelegationWihoutRights()
+    {
+        $this->login("post-only", "postonly");
+        $form = $this->createForm(new FormBuilder());
+
+        $answers_handler = AnswersHandler::getInstance();
+        $answers = $answers_handler->saveAnswers(
+            $form,
+            [],
+            \Session::getLoginUserID(),
+            [],
+            new DelegationData(
+                getitemByTypeName(User::class, 'glpi')->getID(),
+                true,
+                ''
+            )
+        );
+
+        /** @var Ticket $ticket */
+        $ticket = current($answers->getCreatedItems());
+        $this->assertInstanceOf(Ticket::class, $ticket);
+        $requesters = $ticket->getActorsForType(CommonITILActor::REQUESTER);
+        $this->assertCount(1, $requesters);
+        $this->assertArrayIsIdenticalToArrayOnlyConsideringListOfKeys(
+            [
+                'itemtype'          => User::class,
+                'items_id'          => getitemByTypeName(User::class, 'post-only')->getID(),
+                'use_notification'  => 1,
+                'alternative_email' => '',
+            ],
+            current($requesters),
+            [
+                'itemtype',
+                'items_id',
+                'use_notification',
+                'alternative_email',
+            ]
+        );
+    }
+
+    public function testGetDelegation()
+    {
+        $this->login("post-only", "postonly");
+
+        // Create a group
+        $group = $this->createItem(
+            Group::class,
+            [
+                'name'        => 'Test group',
+                'entities_id' => 0,
+            ]
+        );
+
+        // Add users to the group
+        $this->createItem(
+            Group_User::class,
+            [
+                'groups_id'       => $group->getID(),
+                'users_id'        => getItemByTypeName(User::class, 'post-only')->getID(),
+                'is_userdelegate' => 1,
+            ]
+        );
+        $this->createItem(
+            Group_User::class,
+            [
+                'groups_id' => $group->getID(),
+                'users_id'  => getItemByTypeName(User::class, 'glpi')->getID(),
+            ]
+        );
+
+        $form = $this->createForm(new FormBuilder());
+
+        $answers_handler = AnswersHandler::getInstance();
+        $answers = $answers_handler->saveAnswers(
+            $form,
+            [],
+            \Session::getLoginUserID(),
+            [],
+            new DelegationData(
+                getitemByTypeName(User::class, 'glpi')->getID(),
+                true,
+                ''
+            ),
+        );
+
+        /** @var Ticket $ticket */
+        $ticket = current($answers->getCreatedItems());
+        $this->assertInstanceOf(Ticket::class, $ticket);
+        $requesters = $ticket->getActorsForType(CommonITILActor::REQUESTER);
+        $this->assertCount(1, $requesters);
+        $this->assertArrayIsIdenticalToArrayOnlyConsideringListOfKeys(
+            [
+                'itemtype'          => User::class,
+                'items_id'          => getitemByTypeName(User::class, 'glpi')->getID(),
+                'use_notification'  => 1,
+                'alternative_email' => '',
+            ],
+            current($requesters),
+            [
+                'itemtype',
+                'items_id',
+                'use_notification',
+                'alternative_email',
+            ]
+        );
+    }
+
     private function createAndGetFormWithTwoAnswers(): Form
     {
         $form = $this->createForm(
@@ -145,10 +254,10 @@ class AnswersSetTest extends DbTestCase
 
         $answers_handler = AnswersHandler::getInstance();
         $answers_handler->saveAnswers($form, [
-            $this->getQuestionId($form, "Name") => "Pierre Paul Jacques"
+            $this->getQuestionId($form, "Name") => "Pierre Paul Jacques",
         ], \Session::getLoginUserID());
         $answers_handler->saveAnswers($form, [
-            $this->getQuestionId($form, "Name") => "Paul Pierre Jacques"
+            $this->getQuestionId($form, "Name") => "Paul Pierre Jacques",
         ], \Session::getLoginUserID());
 
         return $form;

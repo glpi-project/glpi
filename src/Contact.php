@@ -44,8 +44,9 @@ use Sabre\VObject;
 class Contact extends CommonDBTM
 {
     use AssetImage;
+    use Glpi\Features\Clonable;
 
-   // From CommonDBTM
+    // From CommonDBTM
     public $dohistory           = true;
 
     public static $rightname           = 'contact_enterprise';
@@ -92,17 +93,24 @@ class Contact extends CommonDBTM
         );
     }
 
+    public function getCloneRelations(): array
+    {
+        return [
+            ManualLink::class,
+        ];
+    }
+
 
     public function defineTabs($options = [])
     {
 
         $ong = [];
         $this->addDefaultFormTab($ong);
-        $this->addStandardTab('Contact_Supplier', $ong, $options);
-        $this->addStandardTab('Document_Item', $ong, $options);
-        $this->addStandardTab('ManualLink', $ong, $options);
-        $this->addStandardTab('Notepad', $ong, $options);
-        $this->addStandardTab('Log', $ong, $options);
+        $this->addStandardTab(Contact_Supplier::class, $ong, $options);
+        $this->addStandardTab(Document_Item::class, $ong, $options);
+        $this->addStandardTab(ManualLink::class, $ong, $options);
+        $this->addStandardTab(Notepad::class, $ong, $options);
+        $this->addStandardTab(Log::class, $ong, $options);
 
         return $ong;
     }
@@ -125,18 +133,18 @@ class Contact extends CommonDBTM
                 'glpi_suppliers.postcode',
                 'glpi_suppliers.town',
                 'glpi_suppliers.state',
-                'glpi_suppliers.country'
+                'glpi_suppliers.country',
             ],
             'FROM'         => 'glpi_suppliers',
             'INNER JOIN'   => [
                 'glpi_contacts_suppliers'  => [
                     'ON' => [
                         'glpi_contacts_suppliers'  => 'suppliers_id',
-                        'glpi_suppliers'           => 'id'
-                    ]
-                ]
+                        'glpi_suppliers'           => 'id',
+                    ],
+                ],
             ],
-            'WHERE'        => ['contacts_id' => $this->fields['id']]
+            'WHERE'        => ['contacts_id' => $this->fields['id']],
         ]);
 
         if ($data = $iterator->current()) {
@@ -158,18 +166,18 @@ class Contact extends CommonDBTM
 
         $iterator = $DB->request([
             'SELECT' => [
-                'glpi_suppliers.website AS website'
+                'glpi_suppliers.website AS website',
             ],
             'FROM'         => 'glpi_suppliers',
             'INNER JOIN'   => [
                 'glpi_contacts_suppliers'  => [
                     'ON' => [
                         'glpi_contacts_suppliers'  => 'suppliers_id',
-                        'glpi_suppliers'           => 'id'
-                    ]
-                ]
+                        'glpi_suppliers'           => 'id',
+                    ],
+                ],
             ],
-            'WHERE'        => ['contacts_id' => $this->fields['id']]
+            'WHERE'        => ['contacts_id' => $this->fields['id']],
         ]);
 
         if ($data = $iterator->current()) {
@@ -235,8 +243,8 @@ HTML;
             return formatUserName(
                 '',
                 '',
-                (isset($this->fields["name"]) ? $this->fields["name"] : ''),
-                (isset($this->fields["firstname"]) ? $this->fields["firstname"] : '')
+                ($this->fields["name"] ?? ''),
+                ($this->fields["firstname"] ?? '')
             );
         }
         return '';
@@ -249,7 +257,7 @@ HTML;
 
         $tab[] = [
             'id'                 => 'common',
-            'name'               => __('Characteristics')
+            'name'               => __('Characteristics'),
         ];
 
         $tab[] = [
@@ -275,7 +283,7 @@ HTML;
             'field'              => 'id',
             'name'               => __('ID'),
             'massiveaction'      => false,
-            'datatype'           => 'number'
+            'datatype'           => 'number',
         ];
 
         $tab[] = [
@@ -322,7 +330,7 @@ HTML;
             'id'                 => '82',
             'table'              => $this->getTable(),
             'field'              => 'address',
-            'name'               => __('Address')
+            'name'               => __('Address'),
         ];
 
         $tab[] = [
@@ -362,7 +370,7 @@ HTML;
             'table'              => 'glpi_contacttypes',
             'field'              => 'name',
             'name'               => _n('Type', 'Types', 1),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -370,7 +378,7 @@ HTML;
             'table'              => 'glpi_usertitles',
             'field'              => 'name',
             'name'               => __('Title'),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -384,18 +392,18 @@ HTML;
                 'beforejoin'         => [
                     'table'              => 'glpi_contacts_suppliers',
                     'joinparams'         => [
-                        'jointype'           => 'child'
-                    ]
-                ]
-            ]
+                        'jointype'           => 'child',
+                    ],
+                ],
+            ],
         ];
 
         $tab[] = [
             'id'                 => '16',
             'table'              => $this->getTable(),
             'field'              => 'comment',
-            'name'               => __('Comments'),
-            'datatype'           => 'text'
+            'name'               => _n('Comment', 'Comments', Session::getPluralNumber()),
+            'datatype'           => 'text',
         ];
 
         $tab[] = [
@@ -404,7 +412,7 @@ HTML;
             'field'              => 'completename',
             'name'               => Entity::getTypeName(1),
             'massiveaction'      => false,
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -412,7 +420,7 @@ HTML;
             'table'              => $this->getTable(),
             'field'              => 'is_recursive',
             'name'               => __('Child entities'),
-            'datatype'           => 'bool'
+            'datatype'           => 'bool',
         ];
 
         $tab[] = [
@@ -421,7 +429,7 @@ HTML;
             'field'              => 'date_mod',
             'name'               => __('Last update'),
             'datatype'           => 'datetime',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -430,7 +438,7 @@ HTML;
             'field'              => 'date_creation',
             'name'               => __('Creation date'),
             'datatype'           => 'datetime',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -439,10 +447,10 @@ HTML;
             'field'              => 'registration_number',
             'name'               => _x('infocom', 'Administrative number'),
             'datatype'           => 'string',
-            'autocomplete'       => true
+            'autocomplete'       => true,
         ];
 
-       // add objectlock search options
+        // add objectlock search options
         $tab = array_merge($tab, ObjectLock::rawSearchOptionsToAdd(get_class($this)));
 
         $tab = array_merge($tab, Notepad::rawSearchOptionsToAdd());
@@ -468,7 +476,7 @@ HTML;
             $title = new UserTitle();
             $title->getFromDB($this->fields['usertitles_id']);
         }
-       // build the Vcard
+        // build the Vcard
         $vcard = new VObject\Component\VCard([
             'N'     => [$this->fields["name"], $this->fields["firstname"]],
             'EMAIL' => $this->fields["email"],
@@ -489,13 +497,13 @@ HTML;
             $vcard->add('ADR', $addr_string, ['type' => 'WORK;POSTAL']);
         }
 
-       // Get more data from plugins such as an IM contact
+        // Get more data from plugins such as an IM contact
         $data = Plugin::doHook(Hooks::VCARD_DATA, ['item' => $this, 'data' => []])['data'];
         foreach ($data as $field => $additional_field) {
             $vcard->add($additional_field['name'], $additional_field['value'] ?? '', $additional_field['params'] ?? []);
         }
 
-       // send the  VCard
+        // send the  VCard
         $output   = $vcard->serialize();
         $filename = $this->fields["name"] . "_" . $this->fields["firstname"] . ".vcf";
 
@@ -510,6 +518,6 @@ HTML;
 
     public static function getIcon()
     {
-        return "fas fa-user-tie";
+        return "ti ti-address-book";
     }
 }

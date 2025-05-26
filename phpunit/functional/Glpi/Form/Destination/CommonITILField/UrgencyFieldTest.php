@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -261,7 +260,7 @@ final class UrgencyFieldTest extends AbstractDestinationFieldTest
             ],
             'field_config' => new UrgencyFieldConfig(
                 strategy: UrgencyFieldStrategy::FROM_TEMPLATE
-            )
+            ),
         ];
 
         yield 'Specific urgency' => [
@@ -273,22 +272,22 @@ final class UrgencyFieldTest extends AbstractDestinationFieldTest
             'field_config' => new UrgencyFieldConfig(
                 strategy: UrgencyFieldStrategy::SPECIFIC_VALUE,
                 specific_urgency_value: 4 // High urgency
-            )
+            ),
         ];
 
         yield 'Equals to the answer to the question' => [
             'field_key'     => UrgencyField::getKey(),
             'fields_to_set' => [
                 'urgency_rule'     => 3, // PluginFormcreatorAbstractItilTarget::URGENCY_RULE_ANSWER
-                'urgency_question' => 79
+                'urgency_question' => 79,
             ],
-            'field_config' => fn ($migration, $form) => new UrgencyFieldConfig(
+            'field_config' => fn($migration, $form) => new UrgencyFieldConfig(
                 strategy: UrgencyFieldStrategy::SPECIFIC_ANSWER,
                 specific_question_id: $migration->getMappedItemTarget(
                     'PluginFormcreatorQuestion',
                     79
                 )['items_id'] ?? throw new \Exception("Question not found")
-            )
+            ),
         ];
     }
 

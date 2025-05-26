@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -37,6 +36,7 @@ namespace Glpi\Asset\Capacity;
 
 use CommonGLPI;
 use Glpi\Asset\Asset_PeripheralAsset;
+use Glpi\Asset\CapacityConfig;
 use Override;
 use Session;
 
@@ -70,7 +70,7 @@ class HasPeripheralAssetsCapacity extends AbstractCapacity
         return Asset_PeripheralAsset::rawSearchOptionsToAdd();
     }
 
-    protected function countAssetsLinkedToPeerItem(string $asset_classname, string $relation_classname): int
+    private function countAssetsLinkedToPeripherals(string $asset_classname, string $relation_classname): int
     {
         return countDistinctElementsInTable(
             $relation_classname::getTable(),
@@ -81,7 +81,7 @@ class HasPeripheralAssetsCapacity extends AbstractCapacity
         );
     }
 
-    protected function countPeerItemsUsage(string $asset_classname, string $relation_classname): int
+    private function countPeripheralItemsUsage(string $asset_classname, string $relation_classname): int
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
@@ -104,19 +104,19 @@ class HasPeripheralAssetsCapacity extends AbstractCapacity
     public function isUsed(string $classname): bool
     {
         return parent::isUsed($classname)
-            && $this->countAssetsLinkedToPeerItem($classname, Asset_PeripheralAsset::class) > 0;
+            && $this->countAssetsLinkedToPeripherals($classname, Asset_PeripheralAsset::class) > 0;
     }
 
     public function getCapacityUsageDescription(string $classname): string
     {
         return sprintf(
             __('%1$s peripheral assets attached to %2$s assets'),
-            $this->countPeerItemsUsage($classname, Asset_PeripheralAsset::class),
-            $this->countAssetsLinkedToPeerItem($classname, Asset_PeripheralAsset::class)
+            $this->countPeripheralItemsUsage($classname, Asset_PeripheralAsset::class),
+            $this->countAssetsLinkedToPeripherals($classname, Asset_PeripheralAsset::class)
         );
     }
 
-    public function onClassBootstrap(string $classname): void
+    public function onClassBootstrap(string $classname, CapacityConfig $config): void
     {
         // Allow the asset to be linked to peripheral asset
         $this->registerToTypeConfig('peripheralhost_types', $classname);
@@ -124,7 +124,7 @@ class HasPeripheralAssetsCapacity extends AbstractCapacity
         CommonGLPI::registerStandardTab($classname, Asset_PeripheralAsset::class, 55);
     }
 
-    public function onCapacityDisabled(string $classname): void
+    public function onCapacityDisabled(string $classname, CapacityConfig $config): void
     {
         // Unregister from peripheral hosts types
         $this->unregisterFromTypeConfig('peripheralhost_types', $classname);

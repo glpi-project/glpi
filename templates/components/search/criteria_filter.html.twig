@@ -6,7 +6,6 @@
  # http://glpi-project.org
  #
  # @copyright 2015-2025 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -45,7 +44,7 @@
         <div id="manage_filter_ux" class="{{ filter_enabled ? "" : "d-none" }}">
 
             {# Display search UX #}
-            {% do call('Glpi\\Search\\Input\\QueryBuilder::showGenericSearch', [itemtype, params]) %}
+            {% do call('Glpi\\Search\\Input\\QueryBuilder::showGenericSearch', [itemtype, params + {is_criteria_filter: true}]) %}
 
             {# Display search results, hidden until a search is executed #}
             <div id="criteria_filter_preview" class="d-none">

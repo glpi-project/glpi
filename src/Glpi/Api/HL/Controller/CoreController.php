@@ -77,7 +77,7 @@ final class CoreController extends AbstractController
                             'id' => ['type' => Doc\Schema::TYPE_INTEGER],
                             'name' => ['type' => Doc\Schema::TYPE_STRING],
                             'interface' => ['type' => Doc\Schema::TYPE_STRING],
-                        ]
+                        ],
                     ],
                     'active_entity' => [
                         'type' => Doc\Schema::TYPE_OBJECT,
@@ -86,9 +86,9 @@ final class CoreController extends AbstractController
                             'short_name' => ['type' => Doc\Schema::TYPE_STRING],
                             'complete_name' => ['type' => Doc\Schema::TYPE_STRING],
                             'recursive' => ['type' => Doc\Schema::TYPE_INTEGER],
-                        ]
-                    ]
-                ]
+                        ],
+                    ],
+                ],
             ],
             'EntityTransferRecord' => [
                 'x-version-introduced' => '2.0',
@@ -98,7 +98,7 @@ final class CoreController extends AbstractController
                     'items_id' => ['type' => Doc\Schema::TYPE_INTEGER],
                     'entity' => ['type' => Doc\Schema::TYPE_INTEGER],
                     'options' => ['type' => Doc\Schema::TYPE_OBJECT],
-                ]
+                ],
             ],
             'APIInformation' => [
                 'x-version-introduced' => '2.0',
@@ -113,11 +113,11 @@ final class CoreController extends AbstractController
                                 'api_version' => ['type' => Doc\Schema::TYPE_STRING],
                                 'version' => ['type' => Doc\Schema::TYPE_STRING],
                                 'endpoint' => ['type' => Doc\Schema::TYPE_STRING],
-                            ]
-                        ]
-                    ]
-                ]
-            ]
+                            ],
+                        ],
+                    ],
+                ],
+            ],
         ];
     }
 
@@ -128,15 +128,15 @@ final class CoreController extends AbstractController
         responses: [
             '200' => [
                 'description' => 'API information',
-                'schema' => 'APIInformation'
-            ]
+                'schema' => 'APIInformation',
+            ],
         ]
     )]
     public function index(Request $request): Response
     {
         $data = [
             'message' => 'Welcome to GLPI API',
-            'api_versions' => Router::getAPIVersions()
+            'api_versions' => Router::getAPIVersions(),
         ];
 
         return new JSONResponse($data);
@@ -188,7 +188,7 @@ HTML;
         // Must allow caching since it is a large script, and the documentation won't update often (possibly when plugins change)
         return new Response(200, [
             'Content-Type' => 'text/html',
-            'Cache-Control' => 'public, max-age=86400'
+            'Cache-Control' => 'public, max-age=86400',
         ], $swagger_content);
     }
 
@@ -273,7 +273,7 @@ HTML;
             ],
             '404' => [
                 'description' => 'No route found for the requested path',
-            ]
+            ],
         ]
     )]
     public function defaultRoute(Request $request): Response
@@ -303,7 +303,7 @@ HTML;
         }
         if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS'])) {
             $response_headers['Access-Control-Allow-Headers'] = [
-                'Content-Type', 'Authorization', 'Origin', 'Accept', 'Glpi-Session-Token', 'Glpi-User-Token'
+                'Content-Type', 'Authorization', 'Origin', 'Accept', 'Glpi-Session-Token', 'Glpi-User-Token',
             ];
         }
         return new JSONResponse(null, 204, $response_headers);
@@ -316,8 +316,8 @@ HTML;
         responses: [
             [
                 'description'   => 'The session information',
-                'schema'        => 'Session'
-            ]
+                'schema'        => 'Session',
+            ],
         ]
     )]
     public function getSession(Request $request): Response
@@ -326,43 +326,43 @@ HTML;
         $allowed_keys_mapping = [
             'glpi_currenttime' => [
                 'name' => 'current_time',
-                'default' => ''
+                'default' => '',
             ],
             'glpiID' => [
                 'name' => 'user_id',
-                'default' => -1
+                'default' => -1,
             ],
             'glpi_use_mode' => [
                 'name' => 'use_mode',
-                'default' => Session::NORMAL_MODE
+                'default' => Session::NORMAL_MODE,
             ],
             'glpifriendlyname' => [
                 'name' => 'friendly_name',
-                'default' => ''
+                'default' => '',
             ],
             'glpiname' => [
                 'name' => 'name',
-                'default' => ''
+                'default' => '',
             ],
             'glpirealname' => [
                 'name' => 'real_name',
-                'default' => ''
+                'default' => '',
             ],
             'glpifirstname' => [
                 'name' => 'first_name',
-                'default' => ''
+                'default' => '',
             ],
             'glpidefault_entity' => [
                 'name' => 'default_entity',
-                'default' => -1
+                'default' => -1,
             ],
             'glpiprofiles' => [
                 'name' => 'profiles',
-                'default' => []
+                'default' => [],
             ],
             'glpiactiveentities' => [
                 'name' => 'active_entities',
-                'default' => []
+                'default' => [],
             ],
         ];
         $session = [];
@@ -381,7 +381,7 @@ HTML;
             'id' => $_SESSION['glpiactive_entity'],
             'short_name' => $_SESSION['glpiactive_entity_shortname'],
             'complete_name' => $_SESSION['glpiactive_entity_name'],
-            'recursive' => $_SESSION['glpiactive_entity_recursive']
+            'recursive' => $_SESSION['glpiactive_entity_recursive'],
         ];
         return new JSONResponse($session);
     }
@@ -402,7 +402,7 @@ HTML;
             if ($user_id === false) {
                 // Redirect to login page
                 $redirect_params = [
-                    'scope'         => implode(' ', array_map(static fn ($s) => $s->getIdentifier(), $auth_request->getScopes())),
+                    'scope'         => implode(' ', array_map(static fn($s) => $s->getIdentifier(), $auth_request->getScopes())),
                     'client_id'     => $auth_request->getClient()->getIdentifier(),
                     'response_type' => 'code',
                     'redirect_uri'  => $auth_request->getRedirectUri(),
@@ -480,7 +480,7 @@ HTML;
         $data = [
             'all' => [
                 'href' => '/status/all',
-            ]
+            ],
         ];
         foreach ($services as $service) {
             $data[$service] = [
@@ -505,10 +505,10 @@ HTML;
                                 'type' => Doc\Schema::TYPE_STRING,
                                 'enum' => [StatusChecker::STATUS_OK, StatusChecker::STATUS_WARNING, StatusChecker::STATUS_PROBLEM, StatusChecker::STATUS_NO_DATA],
                             ],
-                        ]
-                    ]
-                ]
-            ]
+                        ],
+                    ],
+                ],
+            ],
         ]
     )]
     public function statusAllServices(Request $request): Response
@@ -519,7 +519,7 @@ HTML;
     }
 
     #[Route(path: '/status/{service}', methods: ['GET'], requirements: [
-        'service' => '[a-zA-Z0-9_]+'
+        'service' => '[a-zA-Z0-9_]+',
     ], priority: 9, tags: ['Status'])]
     #[RouteVersion(introduced: '2.0')]
     #[Doc\Route(
@@ -533,9 +533,9 @@ HTML;
                             'type' => Doc\Schema::TYPE_STRING,
                             'enum' => [StatusChecker::STATUS_OK, StatusChecker::STATUS_WARNING, StatusChecker::STATUS_PROBLEM, StatusChecker::STATUS_NO_DATA],
                         ],
-                    ]
-                ]
-            ]
+                    ],
+                ],
+            ],
         ]
     )]
     public function statusByService(Request $request): Response
@@ -556,8 +556,8 @@ HTML;
             [
                 'name' => '_',
                 'location' => Doc\Parameter::LOCATION_BODY,
-                'schema' => 'EntityTransferRecord[]'
-            ]
+                'schema' => 'EntityTransferRecord[]',
+            ],
         ]
     )]
     public function transferEntity(Request $request): Response

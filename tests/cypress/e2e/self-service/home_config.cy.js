@@ -30,351 +30,497 @@
  * ---------------------------------------------------------------------
  */
 
-describe('Helpdesk home page configuration', () => {
-    beforeEach(() => {
-        cy.login();
+const test_tiles = [
+    {
+        title: "Browse help articles",
+        description: "See all available help articles and our FAQ.",
+        illustration: "browse-kb",
+        page: "faq",
+    },
+    {
+        title: "Request a service",
+        description: "Ask for a service to be provided by our team.",
+        illustration: "request-service",
+        page: "service_catalog ",
+    },
+    {
+        title: "Make a reservation",
+        description: "Pick an available asset and reserve it for a given date.",
+        illustration: "reservation",
+        page: "reservation",
+    },
+    {
+        title: "View approval requests",
+        description: "View all tickets waiting for your validation.",
+        illustration: "approve-requests",
+        page: "approval",
+    },
+];
 
-        // Set up a new profile with 4 tiles
-        cy.createWithAPI('Profile', {
+const tests = [
+    {
+        label: "profile",
+        itemtype: "Profile",
+        subject: {
             'name': 'Helpdesk profile for e2e tests',
             'interface': 'helpdesk',
-        }).then((profile_id) => {
-            const tiles = [
-                {
-                    title: "Browse help articles",
-                    description: "See all available help articles and our FAQ.",
-                    illustration: "browse-kb",
-                    page: "faq",
-                },
-                {
-                    title: "Request a service",
-                    description: "Ask for a service to be provided by our team.",
-                    illustration: "request-service",
-                    page: "service_catalog ",
-                },
-                {
-                    title: "Make a reservation",
-                    description: "Pick an available asset and reserve it for a given date.",
-                    illustration: "reservation",
-                    page: "reservation",
-                },
-                {
-                    title: "View approval requests",
-                    description: "View all tickets waiting for your validation.",
-                    illustration: "approve-requests",
-                    page: "approval",
-                },
-            ];
-            tiles.forEach((tile, i) => {
-                cy.createWithAPI(
-                    'Glpi\\Helpdesk\\Tile\\GlpiPageTile',
-                    tile
-                ).then((tile_id) => {
-                    cy.createWithAPI('Glpi\\Helpdesk\\Tile\\Profile_Tile', {
-                        'profiles_id': profile_id,
-                        'itemtype': 'Glpi\\Helpdesk\\Tile\\GlpiPageTile',
-                        'items_id': tile_id,
-                        'rank': i,
+        },
+        url: "/front/profile.form.php?id=${id}&forcetab=Profile$4",
+    },
+    {
+        label: "entity",
+        itemtype: "Entity",
+        subject: {
+            'name': 'Entity for e2e tests',
+            'entities_id': 1, // E2ETestEntity
+        },
+        url: "/front/entity.form.php?id=${id}&forcetab=Entity$9",
+    }
+];
+
+for (const test of tests) {
+    const original_name = test.subject.name;
+
+    describe(`Helpdesk home page configuration (${test.label})`, () => {
+        beforeEach(() => {
+            cy.login();
+
+            // Add random part to subject name to avoid unicity issues
+            test.subject.name = original_name + (new Date()).getTime();
+
+            // Set up a new profile with 4 tiles
+            cy.createWithAPI(test.itemtype, test.subject).then((id) => {
+                test_tiles.forEach((tile, i) => {
+                    cy.createWithAPI(
+                        'Glpi\\Helpdesk\\Tile\\GlpiPageTile',
+                        tile
+                    ).then((tile_id) => {
+                        cy.createWithAPI('Glpi\\Helpdesk\\Tile\\Item_Tile', {
+                            'itemtype_item': test.itemtype,
+                            'items_id_item': id,
+                            'itemtype_tile': 'Glpi\\Helpdesk\\Tile\\GlpiPageTile',
+                            'items_id_tile': tile_id,
+                            'rank': i,
+                        });
                     });
                 });
+
+                cy.visit(test.url.replace('${id}', id));
             });
 
-            cy.visit(`/front/profile.form.php?id=${profile_id}&forcetab=Profile$4`);
+            // Need the JS controller to be ready
+            // eslint-disable-next-line cypress/no-unnecessary-waiting
+            cy.wait(1200);
+
+            // html5sortable add the wrong "option" role, we must remove it
+            cy.window().then((win) => {
+                win.document
+                    .querySelector('[data-glpi-helpdesk-config-tiles]')
+                    .querySelectorAll('section')
+                    .forEach((node) => node.removeAttribute('role'))
+                ;
+            });
         });
 
-        // Need the JS controller to be ready
-        // eslint-disable-next-line cypress/no-unnecessary-waiting
-        cy.wait(1000);
+        it(`can reorder tiles (${test.label})`, () => {
+            // Valide default order
+            validateTilesOrder([
+                "Browse help articles",
+                "Request a service",
+                "Make a reservation",
+                "View approval requests",
+            ]);
 
-        // html5sortable add the wrong "option" role, we must remove it
-        cy.window().then((win) => {
-            win.document
-                .querySelector('[data-glpi-helpdesk-config-tiles]')
-                .querySelectorAll('section')
-                .forEach((node) => node.removeAttribute('role'))
+            // Change order
+            moveTileAfterTile("Browse help articles", "Make a reservation");
+            validateTilesOrder([
+                "Request a service",
+                "Make a reservation",
+                "Browse help articles",
+                "View approval requests",
+            ]);
+
+            // Save new order
+            cy.findByRole('button', {'name': "Save tiles order"}).click();
+            cy.findAllByRole('alert')
+                .contains("Configuration updated successfully.")
+                .should('be.visible')
             ;
+            validateTilesOrder([
+                "Request a service",
+                "Make a reservation",
+                "Browse help articles",
+                "View approval requests",
+            ]);
+
+            // Make sure the state is still editable after the action
+            checkThatTilesAreEditable();
+        });
+
+        it(`can remove tiles (${test.label})`, () => {
+            // Delete tile
+            cy.findByRole("region", {'name': "Request a service"}).click();
+            cy.findByRole('button', {'name': 'Delete tile'}).click();
+
+            // Validate deletion
+            cy.findByRole("region", {'name': "Request a service"}).should('not.exist');
+            cy.findAllByRole('alert')
+                .contains("Configuration updated successfully.")
+                .should('be.visible')
+            ;
+            validateTilesOrder([
+                "Browse help articles",
+                "Make a reservation",
+                "View approval requests",
+            ]);
+
+            // Make sure the state is still editable after the action
+            checkThatTilesAreEditable();
+
+            // Refresh page to confirm deletion
+            cy.reload();
+            validateTilesOrder([
+                "Browse help articles",
+                "Make a reservation",
+                "View approval requests",
+            ]);
+        });
+
+        it(`can edit a tile (${test.label})`, () => {
+            // Go to tile edition form
+            cy.findByRole("region", {'name': "Request a service"}).click();
+
+            // Change a field
+            cy.findByRole("textbox", {'name': 'Title'}).clear();
+            cy.findByRole("textbox", {'name': 'Title'}).type("My new tile name");
+
+            // Submit
+            cy.findByRole('dialog').findByRole('button', {'name': 'Save changes'}).click();
+            cy.findAllByRole('alert')
+                .contains("Configuration updated successfully.")
+                .should('be.visible')
+            ;
+            validateTilesOrder([
+                "Browse help articles",
+                "My new tile name",
+                "Make a reservation",
+                "View approval requests",
+            ]);
+
+            // Make sure the state is still editable after the action
+            checkThatTilesAreEditable();
+        });
+
+        it(`can add a "Glpi page" tile (${test.label})`, () => {
+            // Go to tile creation form
+            cy.findByRole('button', {'name': "Add tile"}).click();
+
+            // Set fields
+            cy.getDropdownByLabelText('Type').selectDropdownValue('GLPI page');
+            cy.findByRole("textbox", {'name': 'Title'}).type("My title");
+            cy.findByRole("dialog")
+                .find('div[data-glpi-helpdesk-config-add-tile-form-for]:visible') // impossible to target without this due to some limitations
+                .findByLabelText('Description')
+                .awaitTinyMCE()
+                .type("My description")
+            ;
+            cy.getDropdownByLabelText('Target page').selectDropdownValue('Service catalog');
+
+            // Submit
+            cy.findByRole('dialog').findByRole('button', {'name': 'Add tile'}).click();
+            cy.findAllByRole('alert')
+                .contains("Configuration updated successfully.")
+                .should('be.visible')
+            ;
+            validateTilesOrder([
+                "Browse help articles",
+                "Request a service",
+                "Make a reservation",
+                "View approval requests",
+                "My title",
+            ]);
+            cy.findByText("My description").should('be.visible');
+
+            // Make sure the state is still editable after the action
+            checkThatTilesAreEditable();
+        });
+
+        it(`can add a "External page" tile (${test.label})`, () => {
+            // Go to tile creation form
+            cy.findByRole('button', {'name': "Add tile"}).click();
+
+            // Set fields
+            cy.getDropdownByLabelText('Type').selectDropdownValue('External page');
+            cy.findByRole("textbox", {'name': 'Title'}).type("My external tile title");
+            cy.findByRole("dialog")
+                .find('div[data-glpi-helpdesk-config-add-tile-form-for]:visible') // impossible to target without this due to some limitations
+                .findByLabelText('Description')
+                .awaitTinyMCE()
+                .type("My description")
+            ;
+            cy.findByRole("textbox", {'name': 'Target url'}).type("support.teclib.com");
+
+            // Submit
+            cy.findByRole('dialog').findByRole('button', {'name': 'Add tile'}).click();
+            cy.findAllByRole('alert')
+                .contains("Configuration updated successfully.")
+                .should('be.visible')
+            ;
+            validateTilesOrder([
+                "Browse help articles",
+                "Request a service",
+                "Make a reservation",
+                "View approval requests",
+                "My external tile title",
+            ]);
+            cy.findByText("My description").should('be.visible');
+            validateTileFields(
+                "My external tile title",
+                "My description",
+                "support.teclib.com"
+            );
+        });
+
+        it(`can add a "Form" tile (${test.label})`, () => {
+            // Go to tile creation form
+            cy.findByRole('button', {'name': "Add tile"}).click();
+
+            // Set fields
+            cy.getDropdownByLabelText('Type').selectDropdownValue('Form');
+            cy.getDropdownByLabelText('Target form').selectDropdownValue('Report an issue');
+
+            // Submit
+            cy.findByRole('dialog').findByRole('button', {'name': 'Add tile'}).click();
+            cy.findAllByRole('alert')
+                .contains("Configuration updated successfully.")
+                .should('be.visible')
+            ;
+            validateTilesOrder([
+                "Browse help articles",
+                "Request a service",
+                "Make a reservation",
+                "View approval requests",
+                "Report an issue",
+            ]);
+            cy.findByText("Ask for support from our helpdesk team.").should('be.visible');
+        });
+    });
+}
+
+describe(`Helpdesk home page configuration - entities specific`, () => {
+    beforeEach(() => {
+        cy.login();
+        cy.createWithAPI("Entity", {
+            'name': `Entity for e2e tests ${(new Date()).getTime()}`,
+            'entities_id': 1, // E2ETestEntity
+        }).then((id) => {
+            cy.visit(`/front/entity.form.php?id=${id}&forcetab=Entity$9`);
         });
     });
 
-    function validateTilesOrder(tiles) {
-        cy.findByRole("region", {'name': "Home tiles configuration"}).within(() => {
-            tiles.forEach((title, i) => {
-                cy.findAllByRole("region").eq(i).should('have.attr', 'aria-label', title);
+    it(`can configure an entity from scratch`, () => {
+        // When the page is loaded, the tiles from the parent entity are shown
+        cy.findByText('There are no tiles defined for this entity.')
+            .should('be.visible')
+        ;
+        cy.findByRole('heading', {name: 'Browse help articles'})
+            .should('be.visible')
+        ;
+        cy.findByRole('button', {name: "Add tile"}).should('not.exist');
+
+        // Define our own tabs
+        cy.findByRole('button', {
+            name: "Define tiles for this entity from scratch"
+        }).click();
+        cy.findByRole('button', {name: "Add tile"}).should('be.visible');
+        cy.findByText('There are no tiles defined for this entity.')
+            .should('not.be.visible')
+        ;
+        cy.findByRole('heading', {name: 'Browse help articles'})
+            .should('not.exist')
+        ;
+    });
+
+    it(`can copy an entity settings`, () => {
+        // When the page is loaded, the tiles from the parent entity are shown
+        cy.findByText('There are no tiles defined for this entity.')
+            .should('be.visible')
+        ;
+        cy.findByRole('heading', {name: 'Browse help articles'})
+            .should('be.visible')
+        ;
+        cy.findByRole('button', {name: "Add tile"}).should('not.exist');
+
+        // Define our own tabs, with the parent tabs still being here
+        cy.findByRole('button', {
+            name: "Copy parent entity configuration into this entity"
+        }).click();
+        cy.findByRole('button', {name: "Add tile"}).should('be.visible');
+        cy.findByText('There are no tiles defined for this entity.')
+            .should('not.exist')
+        ;
+        cy.findByRole('heading', {name: 'Browse help articles'})
+            .should('be.visible')
+        ;
+    });
+
+    it('can configure custom illustrations', () => {
+        // Some headings should be displayed
+        cy.findByRole('heading', {name: "Custom illustrations"}).should('be.visible');
+        cy.findByRole('heading', {name: "Left side"}).should('be.visible');
+        cy.findByRole('heading', {name: "Right side"}).should('be.visible');
+
+        // There should be two dropdowns - one per side
+        cy.getDropdownByLabelText("Left side configuration").should('be.visible');
+        cy.getDropdownByLabelText("Right side configuration").should('be.visible');
+
+        // Configure a custom illustration
+        cy.findByRole('region', {name: "Left side"}).within(() => {
+            // Default state, inheritance should be selected
+            cy.getDropdownByLabelText("Left side configuration").should(
+                "have.text",
+                "Inherited from parent entity"
+            );
+            validateRegionVisibilities({
+                "Default illustration preview"             : 'not.exist',
+                "Custom illustration preview and selection": 'not.exist',
+                "Inherited illustration preview"           : 'be.visible',
             });
+            validateSvgSpriteIsShown();
+
+            // Switch to "Custom illustration"
+            cy.getDropdownByLabelText("Left side configuration")
+                .selectDropdownValue("Custom illustration")
+            ;
+            validateRegionVisibilities({
+                "Default illustration preview"             : 'not.exist',
+                "Custom illustration preview and selection": 'be.visible',
+                "Inherited illustration preview"           : 'not.exist',
+            });
+
+            // Upload an image
+            cy.get('input[type=file]').selectFile("fixtures/uploads/bar.png");
+            cy.findByText("Upload successful").should('be.visible');
+
+            // Save and reload, make sure value was saved
+            saveIllustrationSettings();
+            cy.getDropdownByLabelText("Left side configuration").should(
+                "have.text",
+                "Custom illustration"
+            );
+            validateRegionVisibilities({
+                "Default illustration preview"             : 'not.exist',
+                "Custom illustration preview and selection": 'be.visible',
+                "Inherited illustration preview"           : 'not.exist',
+            });
+            validateImageIsShown();
         });
-    }
 
-    function validateOrderControlsAreHidden() {
-        cy.findByRole('button', {'name': "Cancel"}).should('not.exist');
-        cy.findByRole('button', {'name': "Save order"}).should('not.exist');
-        cy.findByRole('button', {'name': "Add tile"}).should('be.visible');
-    }
+        // Use the default illustration
+        cy.findByRole('region', {name: "Left side"}).within(() => {
+            // Switch to "Default illustration"
+            cy.getDropdownByLabelText("Left side configuration")
+                .selectDropdownValue("Default illustration")
+            ;
+            validateRegionVisibilities({
+                "Default illustration preview"             : 'be.visible',
+                "Custom illustration preview and selection": 'not.exist',
+                "Inherited illustration preview"           : 'not.exist',
+            });
+            validateSvgSpriteIsShown();
 
-    function validateOrderControlsAreShown() {
-        cy.findByRole('button', {'name': "Cancel"}).should('be.visible');
-        cy.findByRole('button', {'name': "Save order"}).should('be.visible');
-        cy.findByRole('button', {'name': "Add tile"}).should('not.exist');
-    }
-
-    function moveTileAfterTile(subject, destination) {
-        // Because the drag and drop was faked, we need to manually trigger the
-        // sortstart event to display the actions
-        cy.get("[data-glpi-helpdesk-config-tiles]").trigger('sortstart');
-
-        cy.findByRole("region", {'name': subject}).startToDrag();
-        cy.findByRole("region", {'name': destination}).dropDraggedItemAfter();
-    }
-
-    it('can reorder tiles', () => {
-        // Valide default order
-        validateTilesOrder([
-            "Browse help articles",
-            "Request a service",
-            "Make a reservation",
-            "View approval requests",
-        ]);
-        validateOrderControlsAreHidden();
-
-        // Change order
-        moveTileAfterTile("Browse help articles", "Make a reservation");
-        validateTilesOrder([
-            "Request a service",
-            "Make a reservation",
-            "Browse help articles",
-            "View approval requests",
-        ]);
-        validateOrderControlsAreShown();
-
-        // Revert to original order
-        cy.findByRole('button', {'name': "Cancel"}).click();
-        validateTilesOrder([
-            "Browse help articles",
-            "Request a service",
-            "Make a reservation",
-            "View approval requests",
-        ]);
-        validateOrderControlsAreHidden();
-
-        // Change order again
-        moveTileAfterTile("View approval requests", "Request a service");
-        validateTilesOrder([
-            "Browse help articles",
-            "Request a service",
-            "View approval requests",
-            "Make a reservation",
-        ]);
-        validateOrderControlsAreShown();
-
-        // Save new order
-        cy.findByRole('button', {'name': "Save order"}).click();
-        cy.findByRole('alert').should(
-            'contain.text',
-            "Configuration updated successfully."
-        );
-        validateTilesOrder([
-            "Browse help articles",
-            "Request a service",
-            "View approval requests",
-            "Make a reservation",
-        ]);
-        validateOrderControlsAreHidden();
-    });
-
-    it('can remove tiles', () => {
-        // Delete tile
-        cy.findByRole("region", {'name': "Request a service"}).within(() => {
-            cy.findByRole('button', {'name': 'Show more actions'}).click();
+            // Save and reload, make sure value was saved
+            saveIllustrationSettings();
+            cy.getDropdownByLabelText("Left side configuration").should(
+                "have.text",
+                "Default illustration"
+            );
+            validateRegionVisibilities({
+                "Default illustration preview"             : 'be.visible',
+                "Custom illustration preview and selection": 'not.exist',
+                "Inherited illustration preview"           : 'not.exist',
+            });
+            validateSvgSpriteIsShown();
         });
-        cy.findByRole('button', {'name': 'Delete tile'}).click();
 
-        // Validate deletion
-        cy.findByRole("region", {'name': "Request a service"}).should('not.exist');
-        cy.findByRole('alert').should(
-            'contain.text',
-            "Configuration updated successfully."
-        );
-        validateTilesOrder([
-            "Browse help articles",
-            "Make a reservation",
-            "View approval requests",
-        ]);
+        // Go back to inherited value
+        cy.findByRole('region', {name: "Left side"}).within(() => {
+            // Switch to "Default illustration"
+            cy.getDropdownByLabelText("Left side configuration")
+                .selectDropdownValue("Inherited from parent entity")
+            ;
+            validateRegionVisibilities({
+                "Default illustration preview"             : 'not.exist',
+                "Custom illustration preview and selection": 'not.exist',
+                "Inherited illustration preview"           : 'be.visible',
+            });
+            validateSvgSpriteIsShown();
 
-        // Refresh page to confirm deletion
-        cy.reload();
-        validateTilesOrder([
-            "Browse help articles",
-            "Make a reservation",
-            "View approval requests",
-        ]);
-    });
-
-    it('can cancel editing tile', () => {
-        // Default state
-        cy.findByRole("region", {'name': "Home tiles configuration"}).should('be.visible');
-        cy.findByRole("region", {'name': "Edit tile"}).should('not.exist');
-
-        // Enter edit mode
-        cy.findByRole("region", {'name': "Request a service"}).within(() => {
-            cy.findByRole('button', {'name': 'Show more actions'}).click();
+            // Save and reload, make sure value was saved
+            saveIllustrationSettings();
+            cy.getDropdownByLabelText("Left side configuration").should(
+                "have.text",
+                "Inherited from parent entity"
+            );
+            validateRegionVisibilities({
+                "Default illustration preview"             : 'not.exist',
+                "Custom illustration preview and selection": 'not.exist',
+                "Inherited illustration preview"           : 'be.visible',
+            });
+            validateSvgSpriteIsShown();
         });
-        cy.findByRole('button', {'name': 'Edit tile'}).click();
-        cy.findByRole("region", {'name': "Edit tile"}).should('be.visible');
-        cy.findByRole("region", {'name': "Home tiles configuration"}).should('not.exist');
-
-        // Change a field
-        cy.findByRole("textbox", {'name': 'Title'}).clear();
-        cy.findByRole("textbox", {'name': 'Title'}).type("My new tile name");
-
-        // Cancel
-        cy.findByRole('button', {'name': 'Cancel'}).click();
-        validateTilesOrder([
-            "Browse help articles",
-            "Request a service",
-            "Make a reservation",
-            "View approval requests",
-        ]);
-    });
-
-    it('can edit a tile', () => {
-        // Default state
-        cy.findByRole("region", {'name': "Home tiles configuration"}).should('be.visible');
-        cy.findByRole("region", {'name': "Edit tile"}).should('not.exist');
-
-        // Enter edit mode
-        cy.findByRole("region", {'name': "Request a service"}).within(() => {
-            cy.findByRole('button', {'name': 'Show more actions'}).click();
-        });
-        cy.findByRole('button', {'name': 'Edit tile'}).click();
-        cy.findByRole("region", {'name': "Edit tile"}).should('be.visible');
-        cy.findByRole("region", {'name': "Home tiles configuration"}).should('not.exist');
-
-        // Change a field
-        cy.findByRole("textbox", {'name': 'Title'}).clear();
-        cy.findByRole("textbox", {'name': 'Title'}).type("My new tile name");
-
-        // Submit
-        cy.findByRole('button', {'name': 'Save changes'}).click();
-        validateTilesOrder([
-            "Browse help articles",
-            "My new tile name",
-            "Make a reservation",
-            "View approval requests",
-        ]);
-    });
-
-    it('can add a "Glpi page" tile', () => {
-        // Default state
-        cy.findByRole("region", {'name': "Home tiles configuration"}).should('be.visible');
-        cy.findByRole("region", {'name': "Add a new tile"}).should('not.exist');
-
-        // Enter add mode
-        cy.findByRole('button', {'name': "Add tile"}).click();
-        cy.findByRole("region", {'name': "Add a new tile"}).should('be.visible');
-        cy.findByRole("region", {'name': "Home tiles configuration"}).should('not.exist');
-
-        // Set fields
-        cy.getDropdownByLabelText('Type').selectDropdownValue('GLPI page');
-        cy.findByRole("textbox", {'name': 'Title'}).type("My title");
-        cy.findByRole("region", {'name': "Add a new tile"})
-            .find('div[data-glpi-helpdesk-config-add-tile-form-for]:visible') // impossible to target without this due to some limitations
-            .findByLabelText('Description')
-            .awaitTinyMCE()
-            .type("My description")
-        ;
-        cy.getDropdownByLabelText('Target page').selectDropdownValue('Service catalog');
-
-        // Submit
-        cy.findByRole('button', {'name': 'Add tile'}).click();
-        validateTilesOrder([
-            "Browse help articles",
-            "Request a service",
-            "Make a reservation",
-            "View approval requests",
-            "My title",
-        ]);
-        cy.findByText("My description").should('be.visible');
-    });
-
-    it('can add a "External page" tile', () => {
-        // Default state
-        cy.findByRole("region", {'name': "Home tiles configuration"}).should('be.visible');
-        cy.findByRole("region", {'name': "Add a new tile"}).should('not.exist');
-
-        // Enter add mode
-        cy.findByRole('button', {'name': "Add tile"}).click();
-        cy.findByRole("region", {'name': "Add a new tile"}).should('be.visible');
-        cy.findByRole("region", {'name': "Home tiles configuration"}).should('not.exist');
-
-        // Set fields
-        cy.getDropdownByLabelText('Type').selectDropdownValue('External page');
-        cy.findByRole("textbox", {'name': 'Title'}).type("My external tile title");
-        cy.findByRole("region", {'name': "Add a new tile"})
-            .find('div[data-glpi-helpdesk-config-add-tile-form-for]:visible') // impossible to target without this due to some limitations
-            .findByLabelText('Description')
-            .awaitTinyMCE()
-            .type("My description")
-        ;
-        cy.findByRole("textbox", {'name': 'Target url'}).type("support.teclib.com");
-
-        // Submit
-        cy.findByRole('button', {'name': 'Add tile'}).click();
-        validateTilesOrder([
-            "Browse help articles",
-            "Request a service",
-            "Make a reservation",
-            "View approval requests",
-            "My external tile title",
-        ]);
-        cy.findByText("My description").should('be.visible');
-    });
-
-    it('can add a "Form" tile', () => {
-        // Default state
-        cy.findByRole("region", {'name': "Home tiles configuration"}).should('be.visible');
-        cy.findByRole("region", {'name': "Add a new tile"}).should('not.exist');
-
-        // Enter add mode
-        cy.findByRole('button', {'name': "Add tile"}).click();
-        cy.findByRole("region", {'name': "Add a new tile"}).should('be.visible');
-        cy.findByRole("region", {'name': "Home tiles configuration"}).should('not.exist');
-
-        // Set fields
-        cy.getDropdownByLabelText('Type').selectDropdownValue('Form');
-        cy.getDropdownByLabelText('Target form').selectDropdownValue('Report an issue');
-
-        // Submit
-        cy.findByRole('button', {'name': 'Add tile'}).click();
-        validateTilesOrder([
-            "Browse help articles",
-            "Request a service",
-            "Make a reservation",
-            "View approval requests",
-            "Report an issue",
-        ]);
-        cy.findByText("Ask for support from our helpdesk team.").should('be.visible');
-    });
-
-    it('can cancel addding a tile', () => {
-        // Default state
-        cy.findByRole("region", {'name': "Home tiles configuration"}).should('be.visible');
-        cy.findByRole("region", {'name': "Add a new tile"}).should('not.exist');
-
-        // Enter add mode
-        cy.findByRole('button', {'name': "Add tile"}).click();
-        cy.findByRole("region", {'name': "Add a new tile"}).should('be.visible');
-        cy.findByRole("region", {'name': "Home tiles configuration"}).should('not.exist');
-
-        // Set fields
-        cy.getDropdownByLabelText('Type').selectDropdownValue('Form');
-        cy.getDropdownByLabelText('Target form').selectDropdownValue('Report an issue');
-
-        // Cancel
-        cy.findByRole('button', {'name': 'Cancel'}).click();
-        validateTilesOrder([
-            "Browse help articles",
-            "Request a service",
-            "Make a reservation",
-            "View approval requests",
-        ]);
     });
 });
+
+function validateTilesOrder(tiles) {
+    cy.findByRole("region", {'name': "Home tiles configuration"}).within(() => {
+        tiles.forEach((title, i) => {
+            cy.findAllByRole("region").eq(i).should('have.attr', 'aria-label', title);
+        });
+    });
+}
+
+function validateTileFields(title, description, target) {
+    cy.findByRole("region", {'name': title}).click();
+    cy.findByRole("heading", {'name': title}).should('be.visible');
+    cy.findByLabelText('Description').awaitTinyMCE().should('contain', description);
+    cy.findByLabelText('Target url').should('have.value', target);
+}
+
+function moveTileAfterTile(subject, destination) {
+    cy.findByRole("region", {'name': subject}).startToDrag();
+    cy.findByRole("region", {'name': destination}).dropDraggedItemAfter();
+}
+
+function saveIllustrationSettings() {
+    cy.document().its('body').within(() => {
+        cy.findByRole('button', {name: "Save custom illustrations settings"}).click();
+    });
+}
+
+function validateRegionVisibilities(regions) {
+    for (const [region, assertion] of Object.entries(regions)) {
+        cy.findByRole('region', {name: region})
+            .should(assertion)
+        ;
+    }
+}
+
+function validateImageIsShown() {
+    cy.get('img:visible')
+        .should('have.prop', 'naturalWidth')
+        .should('be.greaterThan', 0)
+    ;
+}
+
+function validateSvgSpriteIsShown() {
+    cy.get('svg:visible').should('exist');
+    // TODO: something like this would be better but I can't get it to work.
+    // cy.get('svg:visible').find('use').shadow().find('symbol').should('exist');
+}
+
+function checkThatTilesAreEditable() {
+    // Using "should be.visible" instead of click would be more precise but
+    // it seems to lead to many false negative results.
+    cy.findByRole('button', {'name': "Add tile"}).click();
+}

@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -67,7 +66,7 @@ class BiosTest extends AbstractInventoryAsset
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-                'expected'  => '{"bdate": "2016-02-06", "bmanufacturer": "Dell Inc.", "bversion": "1.4.3", "mmanufacturer": "Dell Inc.", "mmodel": "07TYC2", "msn": "/640HP72/CN129636460078/", "skunumber": "0704", "smanufacturer": "Dell Inc.", "smodel": "XPS 13 9350", "ssn": "640HP72", "date": "2016-02-06", "version": "1.4.3", "manufacturers_id": "Dell Inc.", "designation": "Dell Inc. BIOS", "devicefirmwaretypes_id": "BIOS"}'
+                'expected'  => '{"bdate": "2016-02-06", "bmanufacturer": "Dell Inc.", "bversion": "1.4.3", "mmanufacturer": "Dell Inc.", "mmodel": "07TYC2", "msn": "/640HP72/CN129636460078/", "skunumber": "0704", "smanufacturer": "Dell Inc.", "smodel": "XPS 13 9350", "ssn": "640HP72", "date": "2016-02-06", "version": "1.4.3", "manufacturers_id": "Dell Inc.", "designation": "Dell Inc. BIOS", "devicefirmwaretypes_id": "BIOS"}',
             ], [
                 'xml' => "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
@@ -83,8 +82,8 @@ class BiosTest extends AbstractInventoryAsset
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-                'expected'  => '{"bversion": "IM51.0090.B09", "smanufacturer": "Apple Computer, Inc.", "smodel": "iMac5,1", "ssn": "W87051UGVUV", "version": "IM51.0090.B09", "designation": " BIOS", "devicefirmwaretypes_id": "BIOS"}'
-            ]
+                'expected'  => '{"bversion": "IM51.0090.B09", "smanufacturer": "Apple Computer, Inc.", "smodel": "iMac5,1", "ssn": "W87051UGVUV", "version": "IM51.0090.B09", "designation": " BIOS", "devicefirmwaretypes_id": "BIOS"}',
+            ],
         ];
     }
 
@@ -96,8 +95,8 @@ class BiosTest extends AbstractInventoryAsset
         $json = json_decode($data);
 
         $computer = getItemByTypeName('Computer', '_test_pc01');
-        $asset = new \Glpi\Inventory\Asset\Bios($computer, (array)$json->content->bios);
-        $asset->setExtraData((array)$json->content);
+        $asset = new \Glpi\Inventory\Asset\Bios($computer, (array) $json->content->bios);
+        $asset->setExtraData((array) $json->content);
         $result = $asset->prepare();
         $this->assertEquals(json_decode($expected), $result[0]);
     }
@@ -106,14 +105,14 @@ class BiosTest extends AbstractInventoryAsset
     {
         $computer = getItemByTypeName('Computer', '_test_pc01');
 
-       //first, check there are no controller linked to this computer
+        //first, check there are no controller linked to this computer
         $idf = new \Item_DeviceFirmware();
-                 $this->assertFalse(
-                     $idf->getFromDbByCrit(['items_id' => $computer->fields['id'], 'itemtype' => 'Computer']),
-                     'A firmware is already linked to computer!'
-                 );
+        $this->assertFalse(
+            $idf->getFromDbByCrit(['items_id' => $computer->fields['id'], 'itemtype' => 'Computer']),
+            'A firmware is already linked to computer!'
+        );
 
-       //convert data
+        //convert data
         $expected = $this->assetProvider()[0];
 
         $converter = new \Glpi\Inventory\Converter();
@@ -121,12 +120,12 @@ class BiosTest extends AbstractInventoryAsset
         $json = json_decode($data);
 
         $computer = getItemByTypeName('Computer', '_test_pc01');
-        $asset = new \Glpi\Inventory\Asset\Bios($computer, (array)$json->content->bios);
-        $asset->setExtraData((array)$json->content);
+        $asset = new \Glpi\Inventory\Asset\Bios($computer, (array) $json->content->bios);
+        $asset->setExtraData((array) $json->content);
         $result = $asset->prepare();
         $this->assertEquals(json_decode($expected['expected']), $result[0]);
 
-       //handle
+        //handle
         $asset->handleLinks();
         $asset->handle();
         $this->assertTrue(
@@ -166,13 +165,13 @@ class BiosTest extends AbstractInventoryAsset
 
         $type = new \DeviceFirmwareType();
         $type->getFromDBByCrit([
-            'name' => 'BIOS'
+            'name' => 'BIOS',
         ]);
         $types_id = $type->getID();
 
         $manufacturer = new \Manufacturer();
         $manufacturers_id = $manufacturer->add([
-            'name' => 'Dell Inc.'
+            'name' => 'Dell Inc.',
         ]);
         $this->assertGreaterThan(0, $manufacturers_id);
 
@@ -180,7 +179,7 @@ class BiosTest extends AbstractInventoryAsset
         $computers_id = $computer->add([
             'name'   => 'pc002',
             'serial' => "ggheb7'ne7",
-            'entities_id' => 0
+            'entities_id' => 0,
         ]);
         $this->assertGreaterThan(0, $computers_id);
 
@@ -188,13 +187,13 @@ class BiosTest extends AbstractInventoryAsset
             'designation' => 'Dell Inc. BIOS',
             'devicefirmwaretypes_id' => $types_id,
             'manufacturers_id' => $manufacturers_id,
-            'version' => '1.4.3'
+            'version' => '1.4.3',
         ]);
 
         $item_bios_id = $item_bios->add([
             'items_id' => $computers_id,
             'itemtype' => 'Computer',
-            'devicefirmwares_id' => $bios_id
+            'devicefirmwares_id' => $bios_id,
         ]);
         $this->assertGreaterThan(0, $item_bios_id);
 
@@ -315,8 +314,8 @@ class BiosTest extends AbstractInventoryAsset
             'WHERE' => [
                 'itemtype' => \NetworkEquipment::class,
                 'items_id' => $networkequipement->getID(),
-                'itemtype_link' => \DeviceFirmware::class
-            ]
+                'itemtype_link' => \DeviceFirmware::class,
+            ],
         ]);
         $this->assertCount(0, $logs);
 
@@ -376,8 +375,8 @@ class BiosTest extends AbstractInventoryAsset
                 'itemtype' => \NetworkEquipment::class,
                 'items_id' => $networkequipement->getID(),
                 'itemtype_link' => \DeviceFirmware::class,
-                'linked_action' => \Log::HISTORY_DELETE_DEVICE
-            ]
+                'linked_action' => \Log::HISTORY_DELETE_DEVICE,
+            ],
         ]);
 
         $this->assertCount(1, $logs);
@@ -389,8 +388,8 @@ class BiosTest extends AbstractInventoryAsset
                 'itemtype' => \NetworkEquipment::class,
                 'items_id' => $networkequipement->getID(),
                 'itemtype_link' => \DeviceFirmware::class,
-                'linked_action' => \Log::HISTORY_ADD_DEVICE
-            ]
+                'linked_action' => \Log::HISTORY_ADD_DEVICE,
+            ],
         ]);
 
         $this->assertCount(1, $logs);

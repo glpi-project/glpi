@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -43,7 +42,7 @@ class TelemetryTest extends DbTestCase
 {
     public function testGrabGlpiInfos()
     {
-       //we do not want any error messages
+        //we do not want any error messages
         $_SESSION['glpicronuserrunning'] = "cron_phpunit";
 
         $expected = [
@@ -65,7 +64,7 @@ class TelemetryTest extends DbTestCase
                 'ldap_enabled'          => false,
                 'mailcollector_enabled' => false,
                 'notifications_modes'   => [],
-            ]
+            ],
         ];
 
         $result = \Telemetry::grabGlpiInfos();
@@ -79,13 +78,13 @@ class TelemetryTest extends DbTestCase
             0,
             $plugins->add(['directory' => 'testplugin',
                 'name'      => 'testplugin',
-                'version'   => '0.x.z'
+                'version'   => '0.x.z',
             ])
         );
 
         $expected['plugins'][] = [
             'key'       => 'testplugin',
-            'version'   => '0.x.z'
+            'version'   => '0.x.z',
         ];
         $this->assertSame($expected, \Telemetry::grabGlpiInfos());
 
@@ -94,7 +93,7 @@ class TelemetryTest extends DbTestCase
         $this->assertTrue(
             $ldap->update([
                 'id'        => $ldap->getID(),
-                'is_active' => true
+                'is_active' => true,
             ])
         );
 
@@ -129,7 +128,7 @@ class TelemetryTest extends DbTestCase
                 'name'        => 'Collector1',
                 'mail_server' => 'test',
                 'server_type' => '/imap',
-                'is_active'   => 1
+                'is_active'   => 1,
             ])
         );
 
@@ -139,7 +138,7 @@ class TelemetryTest extends DbTestCase
         $this->assertTrue(
             $collector->update([
                 'id'        => $collector->getID(),
-                'is_active' => false
+                'is_active' => false,
             ])
         );
 
@@ -158,7 +157,7 @@ class TelemetryTest extends DbTestCase
             'version'   => $dbinfos['Server Version'],
             'size'      => '',
             'log_size'  => '',
-            'sql_mode'  => $dbinfos['Server SQL Mode']
+            'sql_mode'  => $dbinfos['Server SQL Mode'],
         ];
         $infos = \Telemetry::grabDbInfos();
         $this->assertNotEmpty($infos['size']);
@@ -177,8 +176,8 @@ class TelemetryTest extends DbTestCase
                 'post_max_size'         => ini_get('post_max_size'),
                 'safe_mode'             => ini_get('safe_mode'),
                 'session'               => ini_get('session.save_handler'),
-                'upload_max_filesize'   => ini_get('upload_max_filesize')
-            ]
+                'upload_max_filesize'   => ini_get('upload_max_filesize'),
+            ],
         ];
 
         $this->assertSame($expected, \Telemetry::grabPhpInfos());

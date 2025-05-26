@@ -35,8 +35,6 @@
 
 namespace Glpi\Search\Output;
 
-use PhpOffice\PhpSpreadsheet\Writer\Ods\Mimetype;
-
 final class Csv extends Spreadsheet
 {
     public function __construct()

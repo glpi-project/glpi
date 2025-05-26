@@ -46,6 +46,5 @@ final class MiddlewareInput
         public RoutePath $route_path,
         public ?Response $response,
         public ?array $client = null,
-    ) {
-    }
+    ) {}
 }

@@ -35,7 +35,6 @@
 
 namespace Glpi\Asset;
 
-use Ajax;
 use CommonDBRelation;
 use CommonDBTM;
 use CommonGLPI;
@@ -47,7 +46,6 @@ use Html;
 use MassiveAction;
 use Override;
 use Session;
-use Toolbox;
 
 final class Asset_PeripheralAsset extends CommonDBRelation
 {
@@ -111,12 +109,12 @@ final class Asset_PeripheralAsset extends CommonDBRelation
             || self::isAlreadyConnected($asset, $peripheral)
             || !(in_array($asset::class, self::getPeripheralHostItemtypes(), true))
         ) {
-           // no duplicates
+            // no duplicates
             return false;
         }
 
         if (!$peripheral->isGlobal()) {
-           // Autoupdate some fields - should be in post_addItem (here to avoid more DB access)
+            // Autoupdate some fields - should be in post_addItem (here to avoid more DB access)
             $updates = [];
 
             if (
@@ -337,7 +335,7 @@ final class Asset_PeripheralAsset extends CommonDBRelation
                 'myname'          => 'items_id_peripheral',
                 'onlyglobal'      => (int) $withtemplate === 1 ? 1 : 0,
                 'entity_restrict' => $entities,
-                'used'            => $used
+                'used'            => $used,
             ];
 
             $twig_params = [
@@ -431,7 +429,6 @@ TWIG, $twig_params);
 
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'is_tab' => true,
-            'nopager' => true,
             'nofilter' => true,
             'nosort' => true,
             'columns' => [
@@ -441,7 +438,7 @@ TWIG, $twig_params);
                 'entity' => Entity::getTypeName(1),
                 'serial' => __('Serial number'),
                 'otherserial' => __('Inventory number'),
-                'type' => _n('Type', 'Types', 1)
+                'type' => _n('Type', 'Types', 1),
             ],
             'formatters' => [
                 'name' => 'raw_html',
@@ -454,7 +451,7 @@ TWIG, $twig_params);
                 'num_displayed' => count($entries),
                 'container' => 'massAsset_PeripheralAsset' . $rand,
                 'specific_actions' => ['purge' => _x('button', 'Disconnect')],
-            ]
+            ],
         ]);
     }
 
@@ -574,7 +571,6 @@ TWIG, $twig_params);
 
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'is_tab' => true,
-            'nopager' => true,
             'nofilter' => true,
             'nosort' => true,
             'columns' => [
@@ -583,7 +579,7 @@ TWIG, $twig_params);
                 'is_dynamic' => __('Automatic inventory'),
                 'entity' => Entity::getTypeName(1),
                 'serial' => __('Serial number'),
-                'otherserial' => __('Inventory number')
+                'otherserial' => __('Inventory number'),
             ],
             'formatters' => [
                 'name' => 'raw_html',
@@ -596,7 +592,7 @@ TWIG, $twig_params);
                 'num_displayed' => count($entries),
                 'container' => 'massAsset_PeripheralAsset' . $rand,
                 'specific_actions' => ['purge' => _x('button', 'Disconnect')],
-            ]
+            ],
         ]);
     }
 
@@ -623,7 +619,7 @@ TWIG, $twig_params);
         if ($item->getField('is_global')) {
             $input = [
                 'id'        => $item->fields['id'],
-                'is_global' => 0
+                'is_global' => 0,
             ];
             $item->update($input);
 
@@ -633,8 +629,8 @@ TWIG, $twig_params);
                 'FROM'   => self::getTable(),
                 'WHERE'  => [
                     'items_id_peripheral' => $item->getID(),
-                    'itemtype_peripheral' => $item->getType()
-                ]
+                    'itemtype_peripheral' => $item->getType(),
+                ],
             ]);
 
             $first = true;
@@ -749,7 +745,7 @@ TWIG, $twig_params);
         if (in_array($item::class, $CFG_GLPI['directconnect_types'], true)) {
             self::showForPeripheral($item, $withtemplate);
             return true;
-        } else if (self::canViewPeripherals($item)) {
+        } elseif (self::canViewPeripherals($item)) {
             self::showForAsset($item, $withtemplate);
             return true;
         }
@@ -776,9 +772,9 @@ TWIG, $twig_params);
                 'FROM' => self::getTable(),
                 'WHERE' => [
                     'itemtype_asset' => $item->getType(),
-                    'items_id_asset' => $item->getID()
+                    'items_id_asset' => $item->getID(),
                 ],
-                'GROUP' => 'itemtype_peripheral'
+                'GROUP' => 'itemtype_peripheral',
             ]);
 
             foreach ($iterator as $data) {
@@ -790,7 +786,7 @@ TWIG, $twig_params);
                         $data['itemtype_peripheral']::getTable(),
                         [
                             'id' => explode(',', $data['ids']),
-                            'NOT' => ['entities_id' => $entities]
+                            'NOT' => ['entities_id' => $entities],
                         ]
                     ) > 0
                 ) {
@@ -808,14 +804,14 @@ TWIG, $twig_params);
                         alias: 'ids'
                     ),
                     'itemtype_asset',
-                    'items_id_asset'
+                    'items_id_asset',
                 ],
                 'FROM'   => self::getTable(),
                 'WHERE'  => [
                     'itemtype_peripheral' => $item->getType(),
-                    'items_id_peripheral' => $item->fields['id']
+                    'items_id_peripheral' => $item->fields['id'],
                 ],
-                'GROUP'  => 'itemtype_peripheral'
+                'GROUP'  => 'itemtype_peripheral',
             ]);
 
             foreach ($iterator as $data) {
@@ -1005,18 +1001,18 @@ TWIG, $twig_params);
                         $peripheral::getTable() => 'id',
                         [
                             'AND' => [
-                                self::getTable() . '.itemtype_peripheral' => $itemtype
-                            ]
-                        ]
-                    ]
-                ]
+                                self::getTable() . '.itemtype_peripheral' => $itemtype,
+                            ],
+                        ],
+                    ],
+                ],
             ],
             'WHERE' => [
                 self::getTable() . '.is_deleted'     => 0,
                 self::getTable() . '.itemtype_asset' => $asset::class,
                 self::getTable() . '.items_id_asset' => $asset->getID(),
             ] + getEntitiesRestrictCriteria($peripheral::getTable()),
-            'ORDER' => $peripheral::getTable() . '.' . $peripheral::getNameField()
+            'ORDER' => $peripheral::getTable() . '.' . $peripheral::getNameField(),
         ]);
     }
 
@@ -1044,18 +1040,18 @@ TWIG, $twig_params);
                         $item::getTable()  => 'id',
                         [
                             'AND' => [
-                                self::getTable() . '.itemtype_asset' => $itemtype
-                            ]
-                        ]
-                    ]
-                ]
+                                self::getTable() . '.itemtype_asset' => $itemtype,
+                            ],
+                        ],
+                    ],
+                ],
             ],
             'WHERE' => [
                 self::getTable() . '.is_deleted'          => 0,
                 self::getTable() . '.itemtype_peripheral' => $peripheral::class,
                 self::getTable() . '.items_id_peripheral' => $peripheral->getID(),
             ] + getEntitiesRestrictCriteria($item::getTable()),
-            'ORDER' => $item::getTable() . '.' . $item::getNameField()
+            'ORDER' => $item::getTable() . '.' . $item::getNameField(),
         ]);
     }
 }

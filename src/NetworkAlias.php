@@ -41,7 +41,7 @@
  */
 class NetworkAlias extends FQDNLabel
 {
-   // From CommonDBChild
+    // From CommonDBChild
     public static $itemtype           = 'NetworkName';
     public static $items_id           = 'networknames_id';
     public $dohistory                 = true;
@@ -112,7 +112,7 @@ class NetworkAlias extends FQDNLabel
             ['value'        => $this->fields["fqdns_id"],
                 'name'         => 'fqdns_id',
                 'entity'       => $this->getEntityID(),
-                'displaywith'  => ['view']
+                'displaywith'  => ['view'],
             ]
         );
         echo "</td>";
@@ -203,7 +203,7 @@ class NetworkAlias extends FQDNLabel
         $iterator = $DB->request([
             'SELECT' => 'id',
             'FROM'   => 'glpi_networkaliases',
-            'WHERE'  => ['networknames_id' => $item->getID()]
+            'WHERE'  => ['networknames_id' => $item->getID()],
         ]);
 
         foreach ($iterator as $line) {
@@ -249,7 +249,7 @@ class NetworkAlias extends FQDNLabel
 
         $iterator = $DB->request([
             'FROM'   => 'glpi_networkaliases',
-            'WHERE'  => ['networknames_id' => $ID]
+            'WHERE'  => ['networknames_id' => $ID],
         ]);
         $number = count($iterator);
 
@@ -265,7 +265,7 @@ class NetworkAlias extends FQDNLabel
             $params = ['type'            => __CLASS__,
                 'parenttype'      => 'NetworkName',
                 'networknames_id' => $ID,
-                'id'              => -1
+                'id'              => -1,
             ];
             Ajax::updateItemJsCode(
                 "viewnetworkalias$rand",
@@ -284,7 +284,7 @@ class NetworkAlias extends FQDNLabel
         if ($canedit && $number) {
             Html::openMassiveActionsForm('mass' . __CLASS__ . $rand);
             $massiveactionparams = ['num_displayed' => min($_SESSION['glpilist_limit'], $number),
-                'container'     => 'mass' . __CLASS__ . $rand
+                'container'     => 'mass' . __CLASS__ . $rand,
             ];
             Html::showMassiveActions($massiveactionparams);
         }
@@ -327,7 +327,7 @@ class NetworkAlias extends FQDNLabel
                 $params = ['type'             => __CLASS__,
                     'parenttype'       => 'NetworkName',
                     'networknames_id'  => $ID,
-                    'id'               => $data["id"]
+                    'id'               => $data["id"],
                 ];
                 Ajax::updateItemJsCode(
                     "viewnetworkalias$rand",
@@ -410,11 +410,11 @@ class NetworkAlias extends FQDNLabel
             Session::initNavigateListItems(
                 $item->getType(),
                 //TRANS : %1$s is the itemtype name, %2$s is the name of the item (used for headings of a list)
-                                        sprintf(
-                                            __('%1$s = %2$s'),
-                                            self::getTypeName(1),
-                                            $item->fields['name']
-                                        )
+                sprintf(
+                    __('%1$s = %2$s'),
+                    self::getTypeName(1),
+                    $item->fields['name']
+                )
             );
 
             $iterator = $DB->request([
@@ -422,21 +422,21 @@ class NetworkAlias extends FQDNLabel
                     'glpi_networkaliases.id AS alias_id',
                     'glpi_networkaliases.name AS alias',
                     'glpi_networknames.id AS address_id',
-                    'glpi_networkaliases.comment AS comment'
+                    'glpi_networkaliases.comment AS comment',
                 ],
                 'FROM'      => 'glpi_networkaliases',
                 'INNER JOIN' => [
                     'glpi_networknames'  => [
                         'ON' => [
                             'glpi_networkaliases'   => 'networknames_id',
-                            'glpi_networknames'     => 'id'
-                        ]
-                    ]
+                            'glpi_networknames'     => 'id',
+                        ],
+                    ],
                 ],
                 'WHERE'     => ['glpi_networkaliases.fqdns_id' => $item->getID()],
                 'ORDERBY'   => $order,
                 'LIMIT'     => $_SESSION['glpilist_limit'],
-                'START'     => $start
+                'START'     => $start,
             ]);
 
             foreach ($iterator as $data) {
@@ -509,7 +509,7 @@ class NetworkAlias extends FQDNLabel
             'table'              => 'glpi_fqdns',
             'field'              => 'fqdn',
             'name'               => FQDN::getTypeName(1),
-            'datatype'           => 'string'
+            'datatype'           => 'string',
         ];
 
         $tab[] = [
@@ -518,7 +518,7 @@ class NetworkAlias extends FQDNLabel
             'field'              => 'name',
             'name'               => NetworkName::getTypeName(1),
             'massiveaction'      => false,
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         return $tab;

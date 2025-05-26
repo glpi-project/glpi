@@ -33,25 +33,16 @@
  * ---------------------------------------------------------------------
  */
 
+require_once(__DIR__ . '/_check_webserver_config.php');
+
 Session::checkCentralAccess();
 
 if (isset($_GET["itemtype"])) {
     $itemtype = $_GET['itemtype'];
     $link     = $itemtype::getFormURL();
 
-   // Get right sector
-    $sector   = 'assets';
-
-   //Get sectors from the menu
-    $menu     = Html::getMenuInfos();
-
-   //Try to find to which sector the itemtype belongs
-    foreach ($menu as $menusector => $infos) {
-        if (isset($infos['types']) && in_array($itemtype, $infos['types'])) {
-            $sector = $menusector;
-            break;
-        }
-    }
+    // Get right sector
+    $sector = Html::getMenuSectorForItemtype($itemtype) ?? 'assets';
 
     Html::header(__('Manage templates...'), '', $sector, $itemtype);
 

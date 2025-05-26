@@ -6,7 +6,6 @@
  # http://glpi-project.org
  #
  # @copyright 2015-2025 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -34,7 +33,7 @@
 {% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
 
 {% if preferences|length > 0 %}
-    <div class="m-3">
+    <div class="m-3" id="displayprefences-setup">
         {% if massiveactionparams['specific_actions']|length > 0 %}
             <form id="massDisplayPreference{{ rand }}" method="get" action="{{ path('front/massiveaction.php') }}"
                 data-search-itemtype="DisplayPreference" data-submit-once>
@@ -44,7 +43,7 @@
 
                     <a role="button" class="btn btn-sm btn-ghost-secondary" id="select-all-itemtypes">
                         <i class="ti ti-copy-check"></i>
-                        <span>{{ __('(Un)select all') }}</span>
+                        <span>{{ __('Select/unselect all') }}</span>
                     </a>
 
                     <input type="text" placeholder="{{ _x('button', 'Search') }}" class="ms-auto" id="search-itemtype" />
@@ -128,7 +127,7 @@
 
             // (un)toggle all capacities button
             $('#select-all-itemtypes').on('click', function() {
-                var $checkboxes = $('input[type=checkbox]');
+                var $checkboxes = $('#displayprefences-setup input[type=checkbox]');
                 var $checkedCheckboxes = $checkboxes.filter(':checked');
 
                 if ($checkedCheckboxes.length === $checkboxes.length) {

@@ -43,8 +43,7 @@ final readonly class FormAccessParameters
         private ?SessionInfo $session_info = null,
         private array $url_parameters = [],
         private bool $bypass_restriction = false,
-    ) {
-    }
+    ) {}
 
     public function isAuthenticated()
     {

@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -101,6 +100,28 @@ final class FormDestinationTest extends DbTestCase
         $this->assertTrue($return);
     }
 
+    public function testWarningsAreRendereredInTabContent()
+    {
+        // Arrange: create a form and remove its default destination
+        $form = $this->createForm(new FormBuilder());
+        $destinations = $form->getDestinations();
+        foreach ($destinations as $destination) {
+            $this->deleteItem($destination::class, $destination->getId(), true);
+        }
+
+        // Act: display the destination tab
+        $destination = new FormDestination();
+        ob_start();
+        $destination->displayTabContentForItem($form);
+        $content = ob_get_clean();
+
+        // Assert: the content should contain the warning
+        $this->assertStringContainsString(
+            "This form is invalid, it must create at least one item.",
+            $content
+        );
+    }
+
     private function createAndGetFormWithFourDestinations(): Form
     {
         $builder = new FormBuilder();
@@ -111,51 +132,5 @@ final class FormDestinationTest extends DbTestCase
             ->addDestination(FormDestinationTicket::class, 'destination 4')
         ;
         return $this->createForm($builder);
-    }
-
-    public function testOneMandatoryTicketDestinationIsAlwaysAdded(): void
-    {
-        // Act: create a form
-        $form = $this->createItem(Form::class, ['name' => 'My test form']);
-
-        // Assert: the form should have one ticket destination
-        $destinations = $form->getDestinations();
-        $this->assertCount(1, $destinations);
-        $this->assertEquals(
-            FormDestinationTicket::class,
-            current($destinations)->fields['itemtype']
-        );
-    }
-
-    public function testMandatoryDestinationCantBeDeleted(): void
-    {
-        // Arrange: create a form and get its default destination
-        $form = $this->createItem(Form::class, ['name' => 'My test form']);
-        $destinations = $form->getDestinations();
-        $mandatory_destination = current($destinations);
-
-        // Act: check if the destination can be deleted
-        $this->login();
-        $can_delete = $mandatory_destination->canPurgeItem();
-
-        // Assert: the mandatory destination should not be able to be deleted
-        $this->assertFalse($can_delete);
-    }
-
-    public function testNonMandatoryDestinationCanBeDeleted(): void
-    {
-        // Arrange: create a form with a non mandatory destination
-        $builder = new FormBuilder("My test form");
-        $builder->addDestination(FormDestinationTicket::class, 'My destination');
-        $form = $this->createForm($builder);
-        $destinations = $form->getDestinations();
-        $non_mandatory_destination = end($destinations);
-
-        // Act: check if the destination can be deleted
-        $this->login();
-        $can_delete = $non_mandatory_destination->canPurgeItem();
-
-        // Assert: the non mandatory destination should be able to be deleted
-        $this->assertTrue($can_delete);
     }
 }

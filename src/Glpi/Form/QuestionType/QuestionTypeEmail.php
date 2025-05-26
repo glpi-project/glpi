@@ -36,7 +36,6 @@
 namespace Glpi\Form\QuestionType;
 
 use Glpi\DBAL\JsonFieldInterface;
-use Glpi\Form\Condition\ConditionHandler\ConditionHandlerInterface;
 use Glpi\Form\Condition\ConditionHandler\StringConditionHandler;
 use Glpi\Form\Condition\UsedAsCriteriaInterface;
 use Override;
@@ -69,9 +68,9 @@ final class QuestionTypeEmail extends AbstractQuestionTypeShortAnswer implements
     }
 
     #[Override]
-    public function getConditionHandler(
+    public function getConditionHandlers(
         ?JsonFieldInterface $question_config
-    ): ConditionHandlerInterface {
-        return new StringConditionHandler();
+    ): array {
+        return array_merge(parent::getConditionHandlers($question_config), [new StringConditionHandler()]);
     }
 }

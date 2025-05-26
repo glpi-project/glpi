@@ -133,6 +133,7 @@ The present file will list all changes made to the project; according to the
   Building and executing raw queries using `DBmysql::request()`, `DBmysqlIterator::buildQuery()` and `DBmysqlIterator::execute()` methods is also prohibited.
   To execute DB queries, either `DBmysql::request()` can be used to craft query using the GLPI query builder,
   or `DBmysql::doQuery()` can be used for safe queries to execute DB query using a self-crafted a SQL string.
+- The dynamic progress bar provided by the `Html` class no longer works. The `ProgressIndicator` JS module can be used as a replacement to display the progress of a process.
 - `js/fuzzysearch.js` replaced with `FuzzySearch/Modal` Vue component.
 - `Html::fuzzySearch()` replaced with `Html::getMenuFuzzySearchList()` function.
 - `NotificationEvent::raiseEvent()` signature cahnged. A new `$trigger` parameter has been added at 4th position, and `$label` is now the 5th parameter.
@@ -173,7 +174,7 @@ The present file will list all changes made to the project; according to the
 - The `inc/autoload.function.php`, `inc/based_config.php`, `inc/config.php`, `inc/db.function.php` and `inc/define.php` files have been removed and the `inc/includes.php` file has been almost emptied.
   The corresponding global functions, constants and variables are now loaded and initialized automatically and the corresponding GLPI boostraping logic is now executed automatically.
 - `Plugin::init()` and `Plugin::checkStates()` methods signature changed. It is not anymore possible to exclude specific plugins.
-- In a HTTP request context, `$_SERVER['PATH_INFO']`, `$_SERVER['SCRIPT_FILENAME'] and `$_SERVER['SCRIPT_NAME']` will no longer contain the path to the requested script, but will contain the path to the `public/index.php` script.
+- In a HTTP request context `$_SERVER` variables, like `PATH_INFO`, `PHP_SELF`, `SCRIPT_FILENAME` and `SCRIPT_NAME`, will no longer refer to the requested script, but will refer to the `public/index.php` script.
 - Any class added to `$CFG_GLPI['directconnect_types']` must now use the `Glpi\Features\AssignableItem` trait as multi-group support is required.
 - For assets, `groups_id` and `groups_id_tech` fields were changed from integers to arrays and are loaded into the `fields` array after `getFromDB`/`getEmpty`.
   If reading directly from the DB, you need to query the new linking table `glpi_groups_items`.
@@ -231,10 +232,17 @@ The present file will list all changes made to the project; according to the
 - The `$target` parameter has been removed from the `Rule::showRulePreviewCriteriasForm()`, `Rule::showRulePreviewResultsForm()`, `RuleCollection::showRulesEnginePreviewCriteriasForm()`, and `RuleCollection::showRulesEnginePreviewResultsForm()` methods signature.
 - `Hooks::SHOW_IN_TIMELINE`/`show_in_timeline` plugin hook has been renamed to `Hooks::TIMELINE_ITEMS`/`timeline_items`.
 - `Auth::getMethodName()` now only returns the name without a link. Use `Auth::getMethodLink()` to get a HTML-safe link.
+- `GLPI_STRICT_DEPRECATED` constant is now know as `GLPI_STRICT_ENV`
+- `Software::merge()` method is now private.
+- The refusal of the collected emails corresponding to a GLPI notification will now be made based on a default rule.
+- The `$store_path` parameter has been removed from the `Dropdown::dropdownIcons()` method.
+- The `PLUGINS_DIRECTORIES` constant has been renamed to `GLPI_PLUGINS_DIRECTORIES`.
+- Most of the `Profile::show*()` methods have been made private.
 
 #### Deprecated
 - Usage of the `/marketplace` path for plugins URLs. All plugins URLs should now start with `/plugins`.
 - Usage of `GLPI_PLUGINS_PATH` javascript variable.
+- Usage of the `GLPI_FORCE_MAIL` constant.
 - Usage of `MAIL_SMTPSSL` and `MAIL_SMTPTLS` constants.
 - Usage of `name` and `users_id_validate` parameter in `ajax/dropdownValidator.php`.
 - Usage of `users_id_validate` parameter in `front/commonitilvalidation.form.php`.
@@ -259,10 +267,14 @@ The present file will list all changes made to the project; according to the
 - `DBmysql::truncate()`
 - `DBmysql::truncateOrDie()`
 - `DBmysql::updateOrDie()`. Use `DBmysql::update()` instead.
+- `Document::send()`
 - `Glpi\Application\View\Extension\DataHelpersExtension::getVerbatimValue()`
 - `Glpi\Application\View\Extension\PluginExtension::getPluginWebDir()`
 - `Glpi\Dashboard\Filter::getAll()`
+- `Glpi\Http\Response::send()`
+- `Glpi\Http\Response::sendContent()`
 - `Glpi\Http\Response::sendError()`. Throw a `Glpi\Exception\Http\*HttpException` exception instead.
+- `Glpi\Http\Response::sendHeaders()`
 - `Glpi\Toolbox\Sanitizer::dbEscape()`
 - `Glpi\Toolbox\Sanitizer::dbEscapeRecursive()`
 - `Glpi\Toolbox\Sanitizer::dbUnescape()`
@@ -278,21 +290,31 @@ The present file will list all changes made to the project; according to the
 - `Glpi\Toolbox\Sanitizer::sanitize()`
 - `Glpi\Toolbox\Sanitizer::unsanitize()`
 - `Html::ajaxFooter()`
+- `Html::changeProgressBarMessage()`
+- `Html::changeProgressBarPosition()`
 - `Html::cleanInputText()`
 - `Html::cleanPostForTextArea()`
 - `Html::createProgressBar()`
 - `Html::displayErrorAndDie()`. Throw a `Glpi\Exception\Http\BadRequestHttpException` exception instead.
 - `Html::displayNotFoundError()`. Throw a `Glpi\Exception\Http\NotFoundHttpException` exception instead.
+- `Html::displayProgressBar()`
 - `Html::displayRightError()`. Throw a `Glpi\Exception\Http\AccessDeniedHttpException` exception instead.
 - `Html::entities_deep()`
 - `Html::entity_decode_deep()`
+- `Html::glpi_flush()`
 - `Html::jsGetElementbyID()`
 - `Html::jsGetDropdownValue()`
 - `Html::jsSetDropdownValue()`
+- `Html::progressBar()`
 - `HookManager::enableCSRF()`
 - `ITILFollowup::ADDMYTICKET` constant. Use `ITILFollowup::ADDMY`.
 - `ITILFollowup::ADDGROUPTICKET` constant. Use `ITILFollowup::ADD_AS_GROUP`.
 - `ITILFollowup::ADDALLTICKET` constant. Use `ITILFollowup::ADDALLITEM`.
+- `Migration::addNewMessageArea()`
+- `Migration::displayError()`
+- `Migration::displayTitle()`
+- `Migration::displayWarning()`
+- `Migration::setOutputHandler()`
 - `Pdu_Plug` has been deprecated and replaced by `Item_Plug`
 - `Plugin::getWebDir()`
 - `Search::joinDropdownTranslations()`
@@ -302,10 +324,11 @@ The present file will list all changes made to the project; according to the
 - `Timer` class
 - `Toolbox::addslashes_deep()`
 - `Toolbox::seems_utf8()`
+- `Toolbox::sendFile()`
 - `Toolbox::stripslashes_deep()`
 
 #### Removed
-- `GLPI_USE_CSRF_CHECK`, `GLPI_USE_IDOR_CHECK`, `GLPI_CSRF_EXPIRES`, `GLPI_CSRF_MAX_TOKENS` and `GLPI_IDOR_EXPIRES` constants.
+- `GLPI_USE_CSRF_CHECK`, `GLPI_USE_IDOR_CHECK`, `GLPI_KEEP_CSRF_TOKEN`, `GLPI_CSRF_EXPIRES`, `GLPI_CSRF_MAX_TOKENS` and `GLPI_IDOR_EXPIRES` constants.
 - `GLPI_DEMO_MODE` constant.
 - `GLPI_DUMP_DIR` constant.
 - `GLPI_SQL_DEBUG` constant.
@@ -342,6 +365,7 @@ The present file will list all changes made to the project; according to the
 - `Change::showDebug()`
 - `Change_Item::showForChange()`
 - `CommonDBTM::$deduplicate_queued_notifications` property.
+- `CommonDBTM::cleanLockedsOnAdd()`
 - `CommonDBTM::getCacheKeyForFriendlyName()`
 - `CommonDBTM::getSNMPCredential()`
 - `CommonDBTM::hasSavedInput()`
@@ -374,6 +398,8 @@ The present file will list all changes made to the project; according to the
 - `ComputerVirtualMachine::showForComputer()`
 - `Config::detectRootDoc()`
 - `Config::getCurrentDBVersion()`
+- `Config::getLibraries()`
+- `Config::getLibraryDir()`
 - `Config::showDebug()`
 - `Config::showLibrariesInformation()`
 - `Config::validatePassword()`
@@ -409,6 +435,7 @@ The present file will list all changes made to the project; according to the
 - `Glpi\Api\API::showDebug()`
 - `Glpi\Api\API::returnSanitizedContent()`
 - `Glpi\Application\ErrorHandler` class
+- `Glpi\Cache\CacheManager::getInstallerCacheInstance()`
 - `Glpi\Console\Command\ForceNoPluginsOptionCommandInterface` class
 - `Glpi\Dashboard\Filter::dates()`
 - `Glpi\Dashboard\Filter::dates_mod()`
@@ -445,6 +472,7 @@ The present file will list all changes made to the project; according to the
 - `Html::displayAccessDeniedPage()`
 - `Html::displayAjaxMessageAfterRedirect()`. The JS function is already provided by `js/misc.js`.
 - `Html::displayItemNotFoundPage()`
+- `Html::getCoreVariablesForJavascript()`
 - `Html::jsConfirmCallback()`
 - `Html::jsHide()`
 - `Html::jsShow()`
@@ -473,8 +501,10 @@ The present file will list all changes made to the project; according to the
 - `KnowbaseItemTranslation::isKbTranslationActive()`. Translations are now always active.
 - `Link::showForItem()`
 - `Link_Itemtype::showForLink()`
+- `MailCollector::isMessageSentByGlpi()`
 - `MailCollector::listEncodings()`
 - `MailCollector::title()`
+- `MassiveAction::updateProgressBars()`
 - `ManualLink::showForItem()`
 - `MigrationCleaner` class
 - `Netpoint` class
@@ -604,6 +634,7 @@ The present file will list all changes made to the project; according to the
 
 ### Changed
 - Only unsolved/unclosed tickets will be shown in the dropdown when performing the "Merge as Followup" action.
+- Domain records must be attached to a domain. Existing unattached records will remain but will require a domain if edited.
 
 ### Deprecated
 

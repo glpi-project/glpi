@@ -116,7 +116,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
                 [
                     static::$items_id_1 => $input[static::$items_id_1],
                     'itemtype'   => $input['itemtype'],
-                    'items_id'   => $input['items_id']
+                    'items_id'   => $input['items_id'],
                 ]
             ) > 0
         ) {
@@ -168,7 +168,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
             '_users_id_requester' => 0,
             'items_id'            => [],
             'itemtype'            => '',
-            '_canupdate'          => false
+            '_canupdate'          => false,
         ];
 
         foreach ($options as $key => $val) {
@@ -211,7 +211,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
             'all_items_dropdown' => '',
             'items_to_add'       => [],
             'params'             => $params,
-            'opt'                => []
+            'opt'                => [],
         ];
 
         $class_template = get_class($obj) . "Template";
@@ -224,7 +224,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
                 if (isset($tt->fields['id'])) {
                     $twig_params['opt']['templates_id'] = $tt->fields['id'];
                 }
-            } else if (isset($options['templates_id'])) {
+            } elseif (isset($options['templates_id'])) {
                 $tt->getFromDBWithData($options['templates_id']);
                 if (isset($tt->fields['id'])) {
                     $twig_params['opt']['templates_id'] = $tt->fields['id'];
@@ -237,7 +237,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
             $p = [
                 'used'       => $params['items_id'],
                 'rand'       => $rand,
-                static::$items_id_1 => $params['id']
+                static::$items_id_1 => $params['id'],
             ];
             // My items
             if ($params['_users_id_requester'] > 0) {
@@ -273,7 +273,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
                         [
                             'rand'      => $rand,
                             'delete'    => $delete,
-                            'visible'   => ($count <= 5)
+                            'visible'   => ($count <= 5),
                         ]
                     );
                 }
@@ -308,7 +308,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
             'rand'      => mt_rand(),
             'delete'    => true,
             'visible'   => true,
-            'kblink'    => true
+            'kblink'    => true,
         ];
 
         foreach ($options as $key => $val) {
@@ -351,7 +351,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
             return false;
         }
 
-        $instID = (int)$obj->fields['id'];
+        $instID = (int) $obj->fields['id'];
 
         if (!$obj->can($instID, READ)) {
             return false;
@@ -483,7 +483,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
                     echo "<td class='center" .
                             (isset($data['is_deleted']) && $data['is_deleted'] ? " tab_bg_2_2'" : "'");
                     echo ">" . $namelink . "</td>";
-                    echo "<td class='center'>" . (isset($data["serial"]) ?  htmlescape($data["serial"]) : "-") .
+                    echo "<td class='center'>" . (isset($data["serial"]) ? htmlescape($data["serial"]) : "-") .
                         "</td>";
                     echo "<td class='center'>" .
                         (isset($data["otherserial"]) ? htmlescape($data["otherserial"]) : "-") . "</td>";
@@ -527,7 +527,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
                                 static::getTable(),
                                 [
                                     static::$items_id_1 => $item->getID(),
-                                    'itemtype' => $_SESSION["glpiactiveprofile"]["helpdesk_item_type"]
+                                    'itemtype' => $_SESSION["glpiactiveprofile"]["helpdesk_item_type"],
                                 ]
                             );
                         }
@@ -605,7 +605,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
 
         $criteria['WHERE'] = $restrict + getEntitiesRestrictCriteria(static::$itemtype_1::getTable());
         $criteria['WHERE'][static::$itemtype_1::getTable() . ".is_deleted"] = 0;
-        $criteria['LIMIT'] = (int)$_SESSION['glpilist_limit'];
+        $criteria['LIMIT'] = (int) $_SESSION['glpilist_limit'];
         $iterator = $DB->request($criteria);
         $number = count($iterator);
 
@@ -697,7 +697,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
             static::$items_id_1 => 0,
             'used'       => [],
             'multiple'   => false,
-            'rand'       => mt_rand()
+            'rand'       => mt_rand(),
         ];
 
         foreach ($options as $key => $val) {
@@ -867,10 +867,10 @@ abstract class CommonItilObject_Item extends CommonDBRelation
                 $criteria = [
                     'FROM'   => $itemtable,
                     'WHERE'  => [
-                        'users_id' => $userID
+                        'users_id' => $userID,
                     ] + getEntitiesRestrictCriteria($itemtable, '', $entity_restrict, $item->maybeRecursive())
                     + $itemtype::getSystemSQLCriteria(),
-                    'ORDER'  => $item->getNameField()
+                    'ORDER'  => $item->getNameField(),
                 ];
 
                 if ($item->maybeDeleted()) {
@@ -919,20 +919,20 @@ abstract class CommonItilObject_Item extends CommonDBRelation
         $iterator = $DB->request([
             'SELECT'    => [
                 'glpi_groups_users.groups_id',
-                'glpi_groups.name'
+                'glpi_groups.name',
             ],
             'FROM'      => 'glpi_groups_users',
             'LEFT JOIN' => [
                 'glpi_groups'  => [
                     'ON' => [
                         'glpi_groups_users'  => 'groups_id',
-                        'glpi_groups'        => 'id'
-                    ]
-                ]
+                        'glpi_groups'        => 'id',
+                    ],
+                ],
             ],
             'WHERE'     => [
-                'glpi_groups_users.users_id'  => $userID
-            ] + getEntitiesRestrictCriteria('glpi_groups', '', $entity_restrict, true)
+                'glpi_groups_users.users_id'  => $userID,
+            ] + getEntitiesRestrictCriteria('glpi_groups', '', $entity_restrict, true),
         ]);
 
         if (count($iterator)) {
@@ -957,19 +957,19 @@ abstract class CommonItilObject_Item extends CommonDBRelation
                                     $itemtable => 'id',
                                     Group_Item::getTable() => 'items_id', [
                                         'AND' => [
-                                            Group_Item::getTable() . '.itemtype' => $itemtype
-                                        ]
-                                    ]
-                                ]
-                            ]
+                                            Group_Item::getTable() . '.itemtype' => $itemtype,
+                                        ],
+                                    ],
+                                ],
+                            ],
                         ],
                         'WHERE'   => [
                             Group_Item::getTable() . '.type' => Group_Item::GROUP_TYPE_NORMAL,
-                            Group_Item::getTable() . '.groups_id' => $groups
+                            Group_Item::getTable() . '.groups_id' => $groups,
                         ] + getEntitiesRestrictCriteria($itemtable, '', $entity_restrict, $item->maybeRecursive())
                         + $itemtype::getSystemSQLCriteria(),
                         'GROUPBY' => $itemtable . '.id',
-                        'ORDER'   => $item->getNameField()
+                        'ORDER'   => $item->getNameField(),
                     ];
 
                     if ($item->maybeDeleted()) {
@@ -1025,7 +1025,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
                         'SELECT'          => [
                             'glpi_softwareversions.name AS version',
                             'glpi_softwares.name AS name',
-                            'glpi_softwares.id'
+                            'glpi_softwares.id',
                         ],
                         'DISTINCT'        => true,
                         'FROM'            => 'glpi_items_softwareversions',
@@ -1033,22 +1033,22 @@ abstract class CommonItilObject_Item extends CommonDBRelation
                             'glpi_softwareversions'  => [
                                 'ON' => [
                                     'glpi_items_softwareversions' => 'softwareversions_id',
-                                    'glpi_softwareversions'       => 'id'
-                                ]
+                                    'glpi_softwareversions'       => 'id',
+                                ],
                             ],
                             'glpi_softwares'        => [
                                 'ON' => [
                                     'glpi_softwareversions' => 'softwares_id',
-                                    'glpi_softwares'        => 'id'
-                                ]
-                            ]
+                                    'glpi_softwares'        => 'id',
+                                ],
+                            ],
                         ],
                         'WHERE'        => [
                             'glpi_items_softwareversions.items_id' => $devices[$itemtype],
                             'glpi_items_softwareversions.itemtype' => $itemtype,
-                            'glpi_softwares.is_helpdesk_visible'   => 1
+                            'glpi_softwares.is_helpdesk_visible'   => 1,
                         ] + getEntitiesRestrictCriteria('glpi_softwares', '', $entity_restrict),
-                        'ORDERBY'      => 'glpi_softwares.name'
+                        'ORDERBY'      => 'glpi_softwares.name',
                     ]);
 
                     if (count($iterator)) {
@@ -1108,16 +1108,16 @@ abstract class CommonItilObject_Item extends CommonDBRelation
                                 $itemtable  => [
                                     'ON' => [
                                         $relation_table => 'items_id_peripheral',
-                                        $itemtable      => 'id'
-                                    ]
-                                ]
+                                        $itemtable      => 'id',
+                                    ],
+                                ],
                             ],
                             'WHERE'           => [
                                 $relation_table . '.itemtype_peripheral' => $peripheral_itemtype,
                                 $relation_table . '.itemtype_asset'      => $peripheralhost_itemtype,
-                                $relation_table . '.items_id_asset'      => $devices[$peripheralhost_itemtype]
+                                $relation_table . '.items_id_asset'      => $devices[$peripheralhost_itemtype],
                             ] + getEntitiesRestrictCriteria($itemtable, '', $entity_restrict),
-                            'ORDERBY'         => "$itemtable.name"
+                            'ORDERBY'         => "$itemtable.name",
                         ];
 
                         if ($item->maybeDeleted()) {
@@ -1202,14 +1202,14 @@ abstract class CommonItilObject_Item extends CommonDBRelation
                 'SELECT' => [
                     'id',
                     new QueryExpression("$type AS " . $DB->quoteName('itemtype')),
-                    "name"
+                    "name",
                 ],
                 'FROM'   => $table,
                 'WHERE'  => [
                     'NOT'          => ['id' => null],
                     'is_deleted'   => 0,
-                    'is_template'  => 0
-                ]
+                    'is_template'  => 0,
+                ],
             ]);
         }
 
@@ -1265,7 +1265,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
                     'itemtype_name'   => 'item_itemtype',
                     'itemtypes'       => $CFG_GLPI['ticket_types'],
                     'checkright'      => true,
-                    'entity_restrict' => $_SESSION['glpiactive_entity']
+                    'entity_restrict' => $_SESSION['glpiactive_entity'],
                 ]);
                 echo "<br><input type='submit' name='add' value=\"" . _sx('button', 'Add') . "\" class='btn btn-primary'>";
                 break;
@@ -1276,10 +1276,10 @@ abstract class CommonItilObject_Item extends CommonDBRelation
                     'itemtype_name'   => 'item_itemtype',
                     'itemtypes'       => $CFG_GLPI['ticket_types'],
                     'checkright'      => true,
-                    'entity_restrict' => $_SESSION['glpiactive_entity']
+                    'entity_restrict' => $_SESSION['glpiactive_entity'],
                 ]);
 
-                echo "<br><input type='submit' name='delete' value=\"" . __s('Delete permanently') . "\" class='btn btn-primary'>";
+                echo "<br><input type='submit' name='delete' value=\"" . _sx('button', 'Delete permanently') . "\" class='btn btn-primary'>";
                 break;
         }
     }
@@ -1351,7 +1351,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
                         $item_found = $item_obj->find([
                             static::$items_id_1   => $id,
                             'itemtype'     => $input['item_itemtype'],
-                            'items_id'     => $input['items_id']
+                            'items_id'     => $input['items_id'],
                         ]);
                         if (!empty($item_found)) {
                             $item_founds_id = array_keys($item_found);
@@ -1407,7 +1407,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
             'datatype'           => 'specific',
             'comments'           => true,
             'nosort'             => true,
-            'additionalfields'   => ['itemtype']
+            'additionalfields'   => ['itemtype'],
         ];
 
         $tab[] = [
@@ -1417,7 +1417,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
             'name'               => _n('Associated item type', 'Associated item types', Session::getPluralNumber()),
             'datatype'           => 'itemtypename',
             'itemtype_list'      => 'ticket_types',
-            'nosort'             => true
+            'nosort'             => true,
         ];
 
         return $tab;
@@ -1446,7 +1446,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
             $item->getFromDB($this->fields['items_id']);
 
             if (($name = $item->getName()) == NOT_AVAILABLE) {
-               //TRANS: %1$s is the itemtype, %2$d is the id of the item
+                //TRANS: %1$s is the itemtype, %2$d is the id of the item
                 $item->fields['name'] = sprintf(
                     __('%1$s - ID %2$d'),
                     $item->getTypeName(1),
@@ -1457,7 +1457,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
             $display = (isset($this->input['_no_message_link']) ? htmlescape($item->getNameID())
                                                             : $item->getLink());
 
-           //TRANS : %s is the description of the added item
+            //TRANS : %s is the description of the added item
             Session::addMessageAfterRedirect(sprintf(
                 __s('%1$s: %2$s'),
                 __s('Item successfully added'),
@@ -1522,11 +1522,11 @@ abstract class CommonItilObject_Item extends CommonDBRelation
                     $name = Dropdown::getDropdownName($table, $value);
                     if (isset($options['comments']) && $options['comments']) {
                         $comments = Dropdown::getDropdownComments($table, $value);
-                         return sprintf(
-                             __('%1$s %2$s'),
-                             htmlescape($name),
-                             Html::showToolTip($comments, ['display' => false])
-                         );
+                        return sprintf(
+                            __('%1$s %2$s'),
+                            htmlescape($name),
+                            Html::showToolTip($comments, ['display' => false])
+                        );
                     }
                     return htmlescape($name);
                 }
@@ -1570,7 +1570,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
         $params = [static::$items_id_1 => 0,
             'used'       => [],
             'multiple'   => 0,
-            'rand'       => mt_rand()
+            'rand'       => mt_rand(),
         ];
 
         foreach ($options as $key => $val) {
@@ -1591,7 +1591,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
                     Ticket::HELPDESK_ALL_HARDWARE
                 )
             ) {
-               // Display a message if view my hardware
+                // Display a message if view my hardware
                 if (
                     $users_id
                     && ($_SESSION["glpiactiveprofile"]["helpdesk_hardware"] & pow(
@@ -1603,7 +1603,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
                 }
 
                 $types = static::$itemtype_1::getAllTypesForHelpdesk();
-                $types = array_filter($types, static fn ($k) => $k::canView(), ARRAY_FILTER_USE_KEY);
+                $types = array_filter($types, static fn($k) => $k::canView(), ARRAY_FILTER_USE_KEY);
                 $emptylabel = __('General');
                 if ($params[static::$items_id_1] > 0) {
                     $emptylabel = Dropdown::EMPTY_VALUE;
@@ -1615,7 +1615,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
                         'emptylabel'          => $emptylabel,
                         'value'               => $itemtype,
                         'rand'                => $rand,
-                        'display_emptychoice' => true
+                        'display_emptychoice' => true,
                     ]
                 );
                 $found_type = isset($types[$itemtype]);
@@ -1628,7 +1628,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
                     'used'            => $params['used'],
                     'multiple'        => $params['multiple'],
                     'rand'            => $rand,
-                    'myname'          => "add_items_id"
+                    'myname'          => "add_items_id",
                 ];
 
                 if (isset($params['width'])) {
@@ -1643,7 +1643,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
                 );
                 echo "<span id='" . Html::cleanId("results_" . htmlescape($myname) . "$rand") . "'>\n";
 
-               // Display default value if itemtype is displayed
+                // Display default value if itemtype is displayed
                 if (
                     $found_type
                     && $itemtype

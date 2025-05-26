@@ -40,14 +40,12 @@
 {% endif %}
 
 {% block conditions_editor %}
-    {# Spacing div (ms-auto must be applied to an item that is always visible) #}
-    <div class="ms-auto"></div>
-
     <div
         data-glpi-form-editor-visibility-dropdown-container
 
         {% set hide = question_strategy == enum('Glpi\\Form\\Condition\\VisibilityStrategy').ALWAYS_VISIBLE %}
-        class="btn-group {{ hide ? 'd-none' : '' }}"
+        {% set force_show = force_show|default(false) %}
+        class="btn-group ms-1 {{ (hide and not force_show) ? 'd-none' : '' }}"
 
         {# May be displayed on section, comment and question #}
         {# We can't use instanceOf here as `item` may be null #}
@@ -81,7 +79,7 @@
             {% endfor %}
         </button>
         <div
-            class="dropdown-menu dropdown-menu-end dropdown-menu-card animate__animated animate__zoomIn"
+            class="dropdown-menu dropdown-menu-card animate__animated animate__zoomIn"
         >
             <div class="card visibility-dropdown-card">
                 <div class="card-body">

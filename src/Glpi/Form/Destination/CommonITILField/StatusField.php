@@ -43,7 +43,7 @@ use Glpi\Form\Form;
 use InvalidArgumentException;
 use Override;
 
-class StatusField extends AbstractConfigField
+final class StatusField extends AbstractConfigField
 {
     public const DEFAULT_STATUS = 'default_status';
 
@@ -86,6 +86,7 @@ class StatusField extends AbstractConfigField
                 options|merge({
                     'field_class'      : '',
                     'no_label'         : true,
+                    'mb'               : '',
                 })
             ) }}
 TWIG;
@@ -126,7 +127,7 @@ TWIG;
     #[Override]
     public function getWeight(): int
     {
-        return 25;
+        return 50;
     }
 
     #[Override]

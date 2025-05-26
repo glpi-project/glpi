@@ -45,7 +45,7 @@ class ItemtypeFormRoute extends Route
     public function __construct(string $itemtype)
     {
         parent::__construct(
-            path: '/' . $itemtype . '/Form',
+            path: $itemtype::getFormURL(false),
             name: 'glpi_itemtype_' . \strtolower($itemtype) . '_form',
         );
     }

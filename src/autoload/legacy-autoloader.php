@@ -59,7 +59,7 @@ function glpi_autoload($classname)
     }
 
     $plugin_path = null;
-    foreach (PLUGINS_DIRECTORIES as $plugins_dir) {
+    foreach (GLPI_PLUGINS_DIRECTORIES as $plugins_dir) {
         $dir_to_check = sprintf('%s/%s', $plugins_dir, $plugin_key);
         if (is_dir($dir_to_check)) {
             $plugin_path = $dir_to_check;
@@ -73,7 +73,7 @@ function glpi_autoload($classname)
     $psr4_styled_path = sprintf('%s/src/%s.php', $plugin_path, str_replace('\\', '/', $classname));
     if (file_exists($legacy_path)) {
         include_once($legacy_path);
-    } else if (file_exists($psr4_styled_path)) {
+    } elseif (file_exists($psr4_styled_path)) {
         include_once($psr4_styled_path);
     }
 }

@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -98,17 +97,17 @@ class FormTest extends DbTestCase
             \Glpi\Form\QuestionType\QuestionTypeRadio::class => [
                 'options' => [
                     123 => 'Radio 1',
-                ]
+                ],
             ],
             \Glpi\Form\QuestionType\QuestionTypeCheckbox::class => [
                 'options' => [
                     123 => 'Checkbox 1',
-                ]
+                ],
             ],
             \Glpi\Form\QuestionType\QuestionTypeDropdown::class => [
                 'options' => [
                     123 => 'Dropdown 1',
-                ]
+                ],
             ],
             \Glpi\Form\QuestionType\QuestionTypeItem::class => [
                 'itemtype' => 'Computer',
@@ -216,9 +215,9 @@ class FormTest extends DbTestCase
         $this->assertCount(1, $form_with_section->getSections());
 
         $form_without_section = $this->createItem(Form::class, [
-            'name'                  => 'Form without first section',
-            'entities_id'           => $entity->getID(),
-            '_do_not_init_sections' => true,
+            'name'           => 'Form without first section',
+            'entities_id'    => $entity->getID(),
+            '_init_sections' => false,
         ]);
         $this->assertCount(0, $form_without_section->getSections());
     }
@@ -385,37 +384,37 @@ class FormTest extends DbTestCase
         $this->login();
 
         $form = $this->createForm(new FormBuilder());
-        $this->checkTestLogs($form, 2); // Created + mandatory target added
+        $this->checkTestLogs($form, 3); // Created + mandatory target + default policy
 
         $this->addSectionToForm($form, "Section 1");
         $this->addSectionToForm($form, "Section 2");
         $this->addSectionToForm($form, "Section 3");
-        $this->checkTestLogs($form, 5); // + 3 sections added
+        $this->checkTestLogs($form, 6); // + 3 sections added
 
         $q1 = $this->addQuestionToForm($form, "Question 1");
         $this->addQuestionToForm($form, "Question 2");
-        $this->checkTestLogs($form, 7); // + 2 questions added
+        $this->checkTestLogs($form, 8); // + 2 questions added
 
         $c1 = $this->addCommentBlockToForm($form, "Title 1", "Content 1");
         $this->addCommentBlockToForm($form, "Title 2", "Content 2");
-        $this->checkTestLogs($form, 9); // + 2 comments added
+        $this->checkTestLogs($form, 10); // + 2 comments added
 
         $this->updateItem(Question::class, $q1->getId(), [
             'name' => 'Question 1 (updated)',
             'type' => QuestionTypeEmail::class,
         ]);
-        $this->checkTestLogs($form, 11); // + 2 question fields updated
+        $this->checkTestLogs($form, 12); // + 2 question fields updated
 
         $this->deleteItem(Question::class, $q1->getId());
-        $this->checkTestLogs($form, 12); // + 1 question deleted
+        $this->checkTestLogs($form, 13); // + 1 question deleted
 
         $this->updateItem(Comment::class, $c1->getId(), [
             'name' => 'Title 1 (updated)',
         ]);
-        $this->checkTestLogs($form, 13); // + 1 comment updated
+        $this->checkTestLogs($form, 14); // + 1 comment updated
 
         $this->deleteItem(Comment::class, $c1->getId());
-        $this->checkTestLogs($form, 14); // + 1 comment deleted
+        $this->checkTestLogs($form, 15); // + 1 comment deleted
     }
 
     private function checkTestLogs(
@@ -459,6 +458,7 @@ class FormTest extends DbTestCase
                 ->addQuestion('Question 2', QuestionTypeShortText::class)
                 ->addQuestion('Question 3', QuestionTypeShortText::class)
                 ->addDestination(FormDestinationTicket::class, 'Destination 1')
+                ->setUseDefaultAccessPolicies(false)
                 ->addAccessControl(AllowList::class, new AllowListConfig())
                 ->addAccessControl(DirectAccess::class, new DirectAccessConfig())
         );
@@ -470,6 +470,7 @@ class FormTest extends DbTestCase
                 ->addQuestion('Question 1', QuestionTypeShortText::class)
                 ->addComment('Comment 1', 'Comment 1 description')
                 ->addDestination(FormDestinationTicket::class, 'Destination 1')
+                ->setUseDefaultAccessPolicies(false)
                 ->addAccessControl(DirectAccess::class, new DirectAccessConfig())
         );
 
@@ -527,6 +528,7 @@ class FormTest extends DbTestCase
                 ->addSection('Section 1')
                 ->addQuestion('Question 1', QuestionTypeShortText::class)
                 ->addDestination(FormDestinationTicket::class, 'Destination 1')
+                ->setUseDefaultAccessPolicies(false)
                 ->addAccessControl(DirectAccess::class, new DirectAccessConfig())
         );
         $DB->update(
@@ -557,8 +559,9 @@ class FormTest extends DbTestCase
             'expected_tabs' => [
                 'Form',
                 'Service catalog',
-                'Access control',
+                'Access control 1',
                 'Items to create 1',
+                'Form translations',
             ],
         ];
         yield 'Form with default destination and 1 answers' => [
@@ -568,8 +571,9 @@ class FormTest extends DbTestCase
                 'Form',
                 'Service catalog',
                 'Tickets 1',
-                'Access control',
+                'Access control 1',
                 'Items to create 1',
+                'Form translations',
             ],
         ];
         yield 'Form with default destination and 5 answers' => [
@@ -579,8 +583,9 @@ class FormTest extends DbTestCase
                 'Form',
                 'Service catalog',
                 'Tickets 5',
-                'Access control',
+                'Access control 1',
                 'Items to create 1',
+                'Form translations',
             ],
         ];
     }
@@ -598,8 +603,9 @@ class FormTest extends DbTestCase
             'expected_tabs' => [
                 'Form',
                 'Service catalog',
-                'Access control',
+                'Access control 1',
                 'Items to create 4',
+                'Form translations',
             ],
         ];
         yield 'Form with multiple tickets destinations and 1 answers' => [
@@ -609,8 +615,9 @@ class FormTest extends DbTestCase
                 'Form',
                 'Service catalog',
                 'Tickets 4', // (1 (default) + 3) destinations * 1 answer
-                'Access control',
+                'Access control 1',
                 'Items to create 4',
+                'Form translations',
             ],
         ];
         yield 'Form with multiple tickets destinations and 5 answers' => [
@@ -620,8 +627,9 @@ class FormTest extends DbTestCase
                 'Form',
                 'Service catalog',
                 'Tickets 20', // (1 (default) + 3) destinations 5 answers
-                'Access control',
+                'Access control 1',
                 'Items to create 4',
+                'Form translations',
             ],
         ];
     }
@@ -639,8 +647,9 @@ class FormTest extends DbTestCase
             'expected_tabs' => [
                 'Form',
                 'Service catalog',
-                'Access control',
+                'Access control 1',
                 'Items to create 4',
+                'Form translations',
             ],
         ];
         yield 'Form with multiple changes destinations and 1 answers' => [
@@ -651,8 +660,9 @@ class FormTest extends DbTestCase
                 'Service catalog',
                 'Tickets 1',
                 'Changes 3', // 3 destinations * 1 answer
-                'Access control',
+                'Access control 1',
                 'Items to create 4',
+                'Form translations',
             ],
         ];
         yield 'Form with multiple changes destinations and 5 answers' => [
@@ -663,8 +673,9 @@ class FormTest extends DbTestCase
                 'Service catalog',
                 'Tickets 5',
                 'Changes 15', // 3 destinations * 5 answers
-                'Access control',
+                'Access control 1',
                 'Items to create 4',
+                'Form translations',
             ],
         ];
     }
@@ -682,8 +693,9 @@ class FormTest extends DbTestCase
             'expected_tabs' => [
                 'Form',
                 'Service catalog',
-                'Access control',
+                'Access control 1',
                 'Items to create 4',
+                'Form translations',
             ],
         ];
         yield 'Form with multiple problems destinations and 1 answers' => [
@@ -694,8 +706,9 @@ class FormTest extends DbTestCase
                 'Service catalog',
                 'Tickets 1',
                 'Problems 3', // 3 destinations * 1 answer
-                'Access control',
+                'Access control 1',
                 'Items to create 4',
+                'Form translations',
             ],
         ];
         yield 'Form with multiple problems destinations and 5 answers' => [
@@ -706,8 +719,9 @@ class FormTest extends DbTestCase
                 'Service catalog',
                 'Tickets 5',
                 'Problems 15', // 3 destinations * 5 answers
-                'Access control',
+                'Access control 1',
                 'Items to create 4',
+                'Form translations',
             ],
         ];
     }

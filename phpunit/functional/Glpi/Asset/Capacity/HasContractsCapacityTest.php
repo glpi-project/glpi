@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -40,6 +39,7 @@ use Contract_Item;
 use DbTestCase;
 use DisplayPreference;
 use Glpi\Asset\Asset;
+use Glpi\Asset\Capacity;
 use Glpi\Asset\Capacity\HasHistoryCapacity;
 use Glpi\PHPUnit\Tests\Glpi\Asset\CapacityUsageTestTrait;
 use Log;
@@ -132,7 +132,7 @@ class HasContractsCapacityTest extends DbTestCase
     {
         // Create custom asset definition with the target capacity enabled
         $definition = $this->initAssetDefinition(
-            capacities: [$this->getTargetCapacity()]
+            capacities: [new Capacity(name: $this->getTargetCapacity())]
         );
         $class = $definition->getAssetClassName();
         $entity = $this->getTestRootEntity(true);
@@ -144,10 +144,10 @@ class HasContractsCapacityTest extends DbTestCase
         ]);
 
         // Create some contracts that are ready to be assigned to our item
-        list(
+        [
             $contract1,
             $contract2
-        ) = $this->createItems(Contract::class, [
+        ] = $this->createItems(Contract::class, [
             ['name' => 'Contract 1', 'entities_id' => $entity],
             ['name' => 'Contract 2', 'entities_id' => $entity],
         ]);
@@ -196,8 +196,8 @@ class HasContractsCapacityTest extends DbTestCase
         // Create custom asset definition with the target capacity enabled
         $definition = $this->initAssetDefinition(
             capacities: [
-                $this->getTargetCapacity(),
-                HasHistoryCapacity::class
+                new Capacity(name: $this->getTargetCapacity()),
+                new Capacity(name: HasHistoryCapacity::class),
             ]
         );
         $class = $definition->getAssetClassName();
@@ -277,7 +277,7 @@ class HasContractsCapacityTest extends DbTestCase
     {
         // Create custom asset definition with the target capacity enabled
         $definition = $this->initAssetDefinition(
-            capacities: [$this->getTargetCapacity()]
+            capacities: [new Capacity(name: $this->getTargetCapacity())]
         );
         $class = $definition->getAssetClassName();
 
@@ -329,7 +329,7 @@ class HasContractsCapacityTest extends DbTestCase
     public function testCloneAsset()
     {
         $definition = $this->initAssetDefinition(
-            capacities: [\Glpi\Asset\Capacity\HasContractsCapacity::class]
+            capacities: [new Capacity(name: \Glpi\Asset\Capacity\HasContractsCapacity::class)]
         );
         $class = $definition->getAssetClassName();
         $entity = $this->getTestRootEntity(true);
@@ -366,7 +366,7 @@ class HasContractsCapacityTest extends DbTestCase
     {
         yield [
             'target_classname' => Contract::class,
-            'relation_classname' => Contract_Item::class
+            'relation_classname' => Contract_Item::class,
         ];
     }
 
@@ -375,7 +375,7 @@ class HasContractsCapacityTest extends DbTestCase
         yield [
             'target_classname' => Contract::class,
             'relation_classname' => Contract_Item::class,
-            'expected' => '%d contracts attached to %d assets'
+            'expected' => '%d contracts attached to %d assets',
         ];
     }
 }

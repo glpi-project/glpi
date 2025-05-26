@@ -35,8 +35,6 @@
 
 namespace Glpi\Search\Output;
 
-use PhpOffice\PhpSpreadsheet\Worksheet\PageSetup;
-
 class Tcpdf extends \PhpOffice\PhpSpreadsheet\Writer\Pdf\Tcpdf
 {
     protected function createExternalWriterInstance($orientation, $unit, $paperSize): \TCPDF
@@ -48,7 +46,7 @@ class Tcpdf extends \PhpOffice\PhpSpreadsheet\Writer\Pdf\Tcpdf
                 'format' => $paperSize,
                 'font_size' => 8,
                 'font' => $_SESSION['glpipdffont'] ?? 'helvetica',
-                'margin_bottom' => 30
+                'margin_bottom' => 30,
             ],
             $this->spreadsheet->getProperties()->getCustomPropertyValue('items count'),
             null,
@@ -67,12 +65,12 @@ class Tcpdf extends \PhpOffice\PhpSpreadsheet\Writer\Pdf\Tcpdf
                 [
                     '|</style>|',
                     '|width:\d+pt"|',
-                    '|padding-left:\dpx;|'
+                    '|padding-left:\dpx;|',
                 ],
                 [
                     'table { width: 100%; };</style>',
                     '"',
-                    ''
+                    '',
                 ],
                 $html
             );

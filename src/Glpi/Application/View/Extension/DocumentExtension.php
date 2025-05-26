@@ -76,12 +76,12 @@ class DocumentExtension extends AbstractExtension
             $iterator = $DB->request([
                 'SELECT' => [
                     'ext',
-                    'icon'
+                    'icon',
                 ],
                 'FROM' => 'glpi_documenttypes',
                 'WHERE' => [
-                    'icon' => ['<>', '']
-                ]
+                    'icon' => ['<>', ''],
+                ],
             ]);
             foreach ($iterator as $result) {
                 self::$extensionIcon[$result['ext']] = $result['icon'];

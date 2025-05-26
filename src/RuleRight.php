@@ -42,7 +42,7 @@ use Glpi\Application\View\TemplateRenderer;
  **/
 class RuleRight extends Rule
 {
-   // From Rule
+    // From Rule
     public static $rightname           = 'rule_ldap';
     public $specific_parameters = true;
 
@@ -60,7 +60,7 @@ class RuleRight extends Rule
                     case "assign":
                         switch ($action->fields["field"]) {
                             case "entities_id":
-                                 $entity[] = $action->fields["value"];
+                                $entity[] = $action->fields["value"];
                                 break;
 
                             case "profiles_id":
@@ -155,7 +155,7 @@ class RuleRight extends Rule
                 if ($right !== '') {
                     foreach ($entity as $entID) {
                         $output["_ldap_rules"]["rules_entities_rights"][] = [$entID, $right,
-                            $is_recursive
+                            $is_recursive,
                         ];
                     }
                 } else {
@@ -163,7 +163,7 @@ class RuleRight extends Rule
                         $output["_ldap_rules"]["rules_entities"][] = [$entID, $is_recursive];
                     }
                 }
-            } else if ($right !== '') {
+            } elseif ($right !== '') {
                 $output["_ldap_rules"]["rules_rights"][] = $right;
             }
 
@@ -227,7 +227,7 @@ class RuleRight extends Rule
             $criterias['_groups_id']['virtual']    = true;
             $criterias['_groups_id']['id']         = 'groups';
 
-           //Dynamically add all the ldap criterias to the current list of rule's criterias
+            //Dynamically add all the ldap criterias to the current list of rule's criterias
             $this->addSpecificCriteriasToArray($criterias);
         }
         return $criterias;
@@ -302,7 +302,7 @@ class RuleRight extends Rule
         $actions['_entities_id_default']['field']             = 'name';
         $actions['_entities_id_default']['name']              = __('Default entity');
         $actions['_entities_id_default']['linkfield']         = 'entities_id';
-        $actions['_entities_id_default']['type']              = 'dropdown';
+        $actions['_entities_id_default']['type']              = 'dropdown_entity';
 
         $actions['specific_groups_id']['name'] = Group::getTypeName(Session::getPluralNumber());
         $actions['specific_groups_id']['type'] = 'dropdown';
@@ -346,13 +346,13 @@ class RuleRight extends Rule
                     'value',
                     $timezones,
                     [
-                        'display_emptychoice' => true
+                        'display_emptychoice' => true,
                     ]
                 );
                 return true;
             case 'language':
                 Dropdown::showLanguages('value', [
-                    'display_emptychoice' => true
+                    'display_emptychoice' => true,
                 ]);
                 return true;
         }
@@ -404,7 +404,7 @@ class RuleRight extends Rule
                     'text' => _x('button', 'Test'),
                     'type' => 'button',
                     'onclick' => "$('#ruletestmodal').modal('show');",
-                ]
+                ],
             ];
         }
 
@@ -417,7 +417,7 @@ class RuleRight extends Rule
             'params' => [
                 'canedit' => $canedit,
                 'addbuttons' => $add_buttons,
-            ]
+            ],
         ], $options);
         TemplateRenderer::getInstance()->display('pages/admin/rules/ruleright_form.html.twig', $twig_params);
     }

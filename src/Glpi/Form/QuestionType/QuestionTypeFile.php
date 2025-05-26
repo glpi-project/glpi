@@ -82,7 +82,7 @@ TWIG;
 
         $twig = TemplateRenderer::getInstance();
         return $twig->renderFromStringTemplate($template, [
-            'question'       => $question
+            'question'       => $question,
         ]);
     }
 
@@ -113,12 +113,12 @@ TWIG;
 
         $twig = TemplateRenderer::getInstance();
         return $twig->renderFromStringTemplate($template, [
-            'question' => $question
+            'question' => $question,
         ]);
     }
 
     #[Override]
-    public function formatRawAnswer(mixed $answer): string
+    public function formatRawAnswer(mixed $answer, Question $question): string
     {
         return implode(', ', array_map(
             fn($document_id) => (new Document())->getById($document_id)->fields['filename'],
@@ -127,7 +127,7 @@ TWIG;
     }
 
     #[Override]
-    public function getCategory(): QuestionTypeCategory
+    public function getCategory(): QuestionTypeCategoryInterface
     {
         return QuestionTypeCategory::FILE;
     }

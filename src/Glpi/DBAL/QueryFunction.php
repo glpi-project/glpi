@@ -345,7 +345,7 @@ class QueryFunction
     {
         /** @var \DBmysql $DB */
         global $DB;
-        $length = new QueryExpression((string)$length);
+        $length = new QueryExpression((string) $length);
         $pad_string = new QueryExpression($DB::quoteValue($pad_string));
         return self::getExpression('LPAD', [$expression, $length, $pad_string], $alias);
     }
@@ -361,7 +361,7 @@ class QueryFunction
     public static function substring(string|QueryExpression $expression, int $start, int $length, ?string $alias = null): QueryExpression
     {
         return self::getExpression('SUBSTRING', [
-            $expression, new QueryExpression($start), new QueryExpression($length)
+            $expression, new QueryExpression($start), new QueryExpression($length),
         ], $alias);
     }
 
@@ -374,7 +374,7 @@ class QueryFunction
      */
     public static function round(string|QueryExpression $expression, int $precision = 0, ?string $alias = null): QueryExpression
     {
-        $precision = new QueryExpression((string)$precision);
+        $precision = new QueryExpression((string) $precision);
         return self::getExpression('ROUND', [$expression, $precision], $alias);
     }
 

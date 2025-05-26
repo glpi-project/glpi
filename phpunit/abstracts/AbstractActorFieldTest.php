@@ -81,12 +81,12 @@ abstract class AbstractActorFieldTest extends AbstractDestinationFieldTest
             [
                 'name' => 'testUserActorsFromSpecificItemQuestions Computer 1',
                 'entities_id' => $this->getTestRootEntity(true),
-                'users_id_tech' => $users[0]->getID()
+                'users_id_tech' => $users[0]->getID(),
             ],
             [
                 'name' => 'testUserActorsFromSpecificItemQuestions Computer 2',
                 'entities_id' => $this->getTestRootEntity(true),
-                'users_id' => $users[1]->getID()
+                'users_id' => $users[1]->getID(),
             ],
         ]);
 
@@ -106,7 +106,7 @@ abstract class AbstractActorFieldTest extends AbstractDestinationFieldTest
                 'Computer question' => [
                     'itemtype' => Computer::class,
                     'items_id' => $computers[0]->getID(),
-                ]
+                ],
             ],
             expected_actors_ids: []
         );
@@ -119,7 +119,7 @@ abstract class AbstractActorFieldTest extends AbstractDestinationFieldTest
                 'Computer question' => [
                     'itemtype' => Computer::class,
                     'items_id' => $computers[1]->getID(),
-                ]
+                ],
             ],
             expected_actors_ids: [$users[1]->getID()]
         );
@@ -146,12 +146,12 @@ abstract class AbstractActorFieldTest extends AbstractDestinationFieldTest
             [
                 'name' => 'testTechUserActorsFromSpecificItemQuestions Computer 1',
                 'entities_id' => $this->getTestRootEntity(true),
-                'users_id_tech' => $users[0]->getID()
+                'users_id_tech' => $users[0]->getID(),
             ],
             [
                 'name' => 'testTechUserActorsFromSpecificItemQuestions Computer 2',
                 'entities_id' => $this->getTestRootEntity(true),
-                'users_id' => $users[1]->getID()
+                'users_id' => $users[1]->getID(),
             ],
         ]);
 
@@ -171,7 +171,7 @@ abstract class AbstractActorFieldTest extends AbstractDestinationFieldTest
                 'Computer question' => [
                     'itemtype' => Computer::class,
                     'items_id' => $computers[0]->getID(),
-                ]
+                ],
             ],
             expected_actors_ids: [$users[0]->getID()]
         );
@@ -184,7 +184,7 @@ abstract class AbstractActorFieldTest extends AbstractDestinationFieldTest
                 'Computer question' => [
                     'itemtype' => Computer::class,
                     'items_id' => $computers[1]->getID(),
-                ]
+                ],
             ],
             expected_actors_ids: []
         );
@@ -211,12 +211,12 @@ abstract class AbstractActorFieldTest extends AbstractDestinationFieldTest
             [
                 'name' => 'testGroupActorsFromSpecificItemQuestions Computer 1',
                 'entities_id' => $this->getTestRootEntity(true),
-                '_groups_id' => [$groups[0]->getID()]
+                '_groups_id' => [$groups[0]->getID()],
             ],
             [
                 'name' => 'testGroupActorsFromSpecificItemQuestions Computer 2',
                 'entities_id' => $this->getTestRootEntity(true),
-                '_groups_id_tech' => [$groups[1]->getID()]
+                '_groups_id_tech' => [$groups[1]->getID()],
             ],
         ]);
 
@@ -236,7 +236,7 @@ abstract class AbstractActorFieldTest extends AbstractDestinationFieldTest
                 'Computer question' => [
                     'itemtype' => Computer::class,
                     'items_id' => $computers[0]->getID(),
-                ]
+                ],
             ],
             expected_actors_ids: [$groups[0]->getID()]
         );
@@ -249,7 +249,7 @@ abstract class AbstractActorFieldTest extends AbstractDestinationFieldTest
                 'Computer question' => [
                     'itemtype' => Computer::class,
                     'items_id' => $computers[1]->getID(),
-                ]
+                ],
             ],
             expected_actors_ids: []
         );
@@ -276,12 +276,12 @@ abstract class AbstractActorFieldTest extends AbstractDestinationFieldTest
             [
                 'name' => 'testGroupActorsFromSpecificItemQuestions Computer 1',
                 'entities_id' => $this->getTestRootEntity(true),
-                '_groups_id' => [$groups[0]->getID()]
+                '_groups_id' => [$groups[0]->getID()],
             ],
             [
                 'name' => 'testGroupActorsFromSpecificItemQuestions Computer 2',
                 'entities_id' => $this->getTestRootEntity(true),
-                '_groups_id_tech' => [$groups[1]->getID()]
+                '_groups_id_tech' => [$groups[1]->getID()],
             ],
         ]);
 
@@ -301,7 +301,7 @@ abstract class AbstractActorFieldTest extends AbstractDestinationFieldTest
                 'Computer question' => [
                     'itemtype' => Computer::class,
                     'items_id' => $computers[0]->getID(),
-                ]
+                ],
             ],
             expected_actors_ids: []
         );
@@ -314,7 +314,7 @@ abstract class AbstractActorFieldTest extends AbstractDestinationFieldTest
                 'Computer question' => [
                     'itemtype' => Computer::class,
                     'items_id' => $computers[1]->getID(),
-                ]
+                ],
             ],
             expected_actors_ids: [$groups[1]->getID()]
         );

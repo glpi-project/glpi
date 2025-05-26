@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -34,11 +33,19 @@
  */
 
 /**
+ * @var \DBmysql $DB
  * @var \Migration $migration
- * @var array $DELFROMDISPLAYPREF
  */
 
-$migration->dropField('glpi_groups_users', 'is_userdelegate');
-
-$DELFROMDISPLAYPREF['Group']      = [71];
-$DELFROMDISPLAYPREF['Group_User'] = [7];
+if (!$DB->fieldExists('glpi_groups_users', 'is_userdelegate')) {
+    $migration->addField(
+        'glpi_groups_users',
+        'is_userdelegate',
+        "tinyint NOT NULL DEFAULT '0'",
+        ['after' => 'is_manager']
+    );
+    $migration->addKey(
+        'glpi_groups_users',
+        'is_userdelegate'
+    );
+}

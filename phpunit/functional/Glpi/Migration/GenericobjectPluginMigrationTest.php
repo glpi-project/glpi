@@ -50,6 +50,7 @@ use Glpi\Asset\Capacity\HasNetworkPortCapacity;
 use Glpi\Asset\Capacity\HasNotepadCapacity;
 use Glpi\Asset\Capacity\IsProjectAssetCapacity;
 use Glpi\Asset\Capacity\IsReservableCapacity;
+use Glpi\DBAL\QueryExpression;
 use Glpi\Dropdown\DropdownDefinition;
 use Glpi\Migration\GenericobjectPluginMigration;
 use Glpi\Migration\PluginMigrationResult;
@@ -93,6 +94,8 @@ class GenericobjectPluginMigrationTest extends DbTestCase
         global $DB;
 
         parent::setUp();
+
+        $DB->delete(AssetDefinition::getTable(), [new QueryExpression('true')]);
 
         // Load it inside the test DB transaction to not have to clean it manually
         $queries = $DB->getQueriesFromFile(sprintf('%s/tests/fixtures/genericobject-migration/glpi-data.sql', GLPI_ROOT));
@@ -176,16 +179,16 @@ class GenericobjectPluginMigrationTest extends DbTestCase
                 'picture'        => null,
                 'is_active'      => true,
                 'capacities'     => [
-                    AllowedInGlobalSearchCapacity::class,
-                    HasContractsCapacity::class,
-                    HasDevicesCapacity::class,
-                    HasDocumentsCapacity::class,
-                    HasHistoryCapacity::class,
-                    HasInfocomCapacity::class,
-                    HasNetworkPortCapacity::class,
-                    HasNotepadCapacity::class,
-                    IsProjectAssetCapacity::class,
-                    IsReservableCapacity::class,
+                    ['name' => AllowedInGlobalSearchCapacity::class, 'config' => []],
+                    ['name' => HasContractsCapacity::class, 'config' => []],
+                    ['name' => HasDevicesCapacity::class, 'config' => []],
+                    ['name' => HasDocumentsCapacity::class, 'config' => []],
+                    ['name' => HasHistoryCapacity::class, 'config' => []],
+                    ['name' => HasInfocomCapacity::class, 'config' => []],
+                    ['name' => HasNetworkPortCapacity::class, 'config' => []],
+                    ['name' => HasNotepadCapacity::class, 'config' => []],
+                    ['name' => IsProjectAssetCapacity::class, 'config' => []],
+                    ['name' => IsReservableCapacity::class, 'config' => []],
                 ],
                 'profiles'       => [
                     1 => 33,
@@ -546,7 +549,7 @@ class GenericobjectPluginMigrationTest extends DbTestCase
                     'date_creation' => '2025-03-06 10:06:47',
                     'date_mod'      => '2025-03-06 10:06:47',
                     'entities_id'   => 0,
-                    'is_recursive'  => false
+                    'is_recursive'  => false,
                 ],
                 [
                     'name'          => 'Bar 2',
@@ -859,6 +862,7 @@ class GenericobjectPluginMigrationTest extends DbTestCase
                 }
             }
         }
+
         $this->assertEquals(
             \count($expected_items),
             \countElementsInTable($class::getTable(), $class::getSystemSqlCriteria())

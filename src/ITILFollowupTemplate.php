@@ -62,16 +62,16 @@ class ITILFollowupTemplate extends AbstractITILChildTemplate
                 'name'  => 'requesttypes_id',
                 'label' => __('Source of followup'),
                 'type'  => 'dropdownValue',
-                'list'  => true
+                'list'  => true,
             ], [
                 'name'  => 'pendingreasons_id',
                 'label' => PendingReason::getTypeName(1),
                 'type'  => 'dropdownValue',
-                'list'  => true
+                'list'  => true,
             ], [
                 'name'  => 'is_private',
                 'label' => __('Private'),
-                'type'  => 'bool'
+                'type'  => 'bool',
             ], [
                 'name'  => 'content',
                 'label' => __('Content'),
@@ -80,7 +80,7 @@ class ITILFollowupTemplate extends AbstractITILChildTemplate
                 // When an element will be created from a template, tinymce will catch the base64 image and trigger the
                 // document upload process.
                 'convert_images_to_documents' => false,
-            ]
+            ],
         ];
     }
 
@@ -95,7 +95,7 @@ class ITILFollowupTemplate extends AbstractITILChildTemplate
             'field'              => 'content',
             'table'              => self::getTable(),
             'datatype'           => 'text',
-            'htmltext'           => true
+            'htmltext'           => true,
         ];
 
         $tab[] = [
@@ -103,7 +103,7 @@ class ITILFollowupTemplate extends AbstractITILChildTemplate
             'name'               => __('Source of followup'),
             'field'              => 'name',
             'table'              => getTableForItemType('RequestType'),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -111,7 +111,7 @@ class ITILFollowupTemplate extends AbstractITILChildTemplate
             'name'               => __('Private'),
             'field'              => 'is_private',
             'table'              => self::getTable(),
-            'datatype'           => 'bool'
+            'datatype'           => 'bool',
         ];
 
         return $tab;
@@ -119,7 +119,7 @@ class ITILFollowupTemplate extends AbstractITILChildTemplate
 
     public static function getIcon()
     {
-        return "fas fa-layer-group";
+        return "ti ti-stack-2-filled";
     }
 
     public function getCloneRelations(): array

@@ -83,31 +83,31 @@ class NotificationTargetCronTask extends NotificationTarget
         $tags = ['crontask.action'      => __('Monitoring of automatic actions'),
             'crontask.url'         => __('URL'),
             'crontask.name'        => __('Name'),
-            'crontask.description' => __('Description')
+            'crontask.description' => __('Description'),
         ];
 
         foreach ($tags as $tag => $label) {
             $this->addTagToList(['tag'   => $tag,
                 'label' => $label,
-                'value' => true
+                'value' => true,
             ]);
         }
 
         $this->addTagToList(['tag'     => 'crontasks',
             'label'   => __('Automatic actions list'),
             'value'   => false,
-            'foreach' => true
+            'foreach' => true,
         ]);
 
-       //Tags with just lang
+        //Tags with just lang
         $tags = ['crontask.warning'
-                     => __('The following automatic actions are in error. They require intervention.')
+                     => __('The following automatic actions are in error. They require intervention.'),
         ];
         foreach ($tags as $tag => $label) {
             $this->addTagToList(['tag'   => $tag,
                 'label' => $label,
                 'value' => false,
-                'lang'  => true
+                'lang'  => true,
             ]);
         }
         asort($this->tag_descriptions);

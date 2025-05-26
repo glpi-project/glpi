@@ -6,7 +6,6 @@
  # http://glpi-project.org
  #
  # @copyright 2015-2025 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -39,7 +38,7 @@
          {% if user['id'] %}
             {{ include('components/user/picture.html.twig', {
                'users_id': user['id'],
-               'user_object': user_object,
+               'user_object': user_object ?? null,
                'enable_anonymization': enable_anonymization
             }) }}
          {% endif %}
@@ -54,7 +53,7 @@
          </h4>
 
          <div class="text-muted">
-            {% if user['login'] is not empty %}
+            {% if user.login is defined and user['login'] is not empty %}
                 <div>
                     <i class="ti ti-id-badge"></i>
                     {{ user['login'] }}
@@ -120,7 +119,7 @@
          </div>
       </div>
 
-      {% if can_edit %}
+      {% if can_edit ?? false %}
          <div class="col">
             <a class="btn btn-icon btn-sm btn-outline-secondary" href="{{ path('front/preference.php') }}"
                title="{{ __('Edit') }}" data-bs-toggle="tooltip" data-bs-placement="right">

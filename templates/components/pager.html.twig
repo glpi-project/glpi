@@ -6,7 +6,6 @@
  # http://glpi-project.org
  #
  # @copyright 2015-2025 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -39,6 +38,11 @@
     {% endif %}
 {% endif %}
 
+{% set href = href|default('') %}
+
+{# "start" is 0 based, the 1 based index is "current_start" #}
+{% set start = start|default(0) %}
+
 {% set href_separator = '?' in href ? '&' : '?' %}
 {% set href = href ~ href_separator ~ "start=%start%" ~ additional_params %}
 {% if is_tab is defined and is_tab == true %}
@@ -57,7 +61,7 @@
 {% endif %}
 
 {% set back = start - limit %}
-{% if current_start - list_limit <= 0 %}
+{% if current_start - limit <= 0 %}
    {% set back = 0 %}
 {% endif %}
 

@@ -34,11 +34,15 @@
 
 namespace tests\units\Glpi\Form\Helpdesk\TilesManagerTest;
 
+use CommonDBTM;
 use DbTestCase;
+use Entity;
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\Helpdesk\Tile\ExternalPageTile;
 use Glpi\Helpdesk\Tile\FormTile;
 use Glpi\Helpdesk\Tile\GlpiPageTile;
-use Glpi\Helpdesk\Tile\Profile_Tile;
+use Glpi\Helpdesk\Tile\Item_Tile;
+use Glpi\Helpdesk\Tile\TileInterface;
 use Glpi\Helpdesk\Tile\TilesManager;
 use Glpi\Session\SessionInfo;
 use Glpi\Tests\FormBuilder;
@@ -79,8 +83,7 @@ final class TilesManagerTest extends DbTestCase
         ]);
 
         // Assert: there should be two tiles defined for our profile
-        $session = new SessionInfo(profile_id: $profile->getID());
-        $tiles = $manager->getTiles($session);
+        $tiles = $manager->getTilesForItem($profile);
         $this->assertCount(2, $tiles);
 
         $first_tile = $tiles[0];
@@ -134,13 +137,11 @@ final class TilesManagerTest extends DbTestCase
         $builder = new FormBuilder("Inactive form");
         $builder->setIsActive(false);
         $builder->setEntitiesId($test_entity_id);
-        $builder->allowAllUsers();
         $forms[] = $this->createForm($builder);
 
         $builder = new FormBuilder("Active form");
         $builder->setIsActive(true);
         $builder->setEntitiesId($test_entity_id);
-        $builder->allowAllUsers();
         $forms[] = $this->createForm($builder);
 
         foreach ($forms as $form) {
@@ -153,8 +154,9 @@ final class TilesManagerTest extends DbTestCase
         $session = new SessionInfo(
             profile_id: $profile->getID(),
             active_entities_ids: [$test_entity_id],
+            current_entity_id: $test_entity_id,
         );
-        $tiles = $manager->getTiles($session);
+        $tiles = $manager->getVisibleTilesForSession($session);
 
         // Assert: only the active form tile should be found
         $form_names = array_map(fn($tile) => $tile->getTitle(), $tiles);
@@ -175,13 +177,13 @@ final class TilesManagerTest extends DbTestCase
 
         $builder = new FormBuilder("Form without access policies");
         $builder->setIsActive(true);
+        $builder->setUseDefaultAccessPolicies(false);
         $builder->setEntitiesId($test_entity_id);
         $forms[] = $this->createForm($builder);
 
         $builder = new FormBuilder("Form with access policies");
         $builder->setIsActive(true);
         $builder->setEntitiesId($test_entity_id);
-        $builder->allowAllUsers();
         $forms[] = $this->createForm($builder);
 
         foreach ($forms as $form) {
@@ -194,8 +196,9 @@ final class TilesManagerTest extends DbTestCase
         $session = new SessionInfo(
             profile_id: $profile->getID(),
             active_entities_ids: [$test_entity_id],
+            current_entity_id: $test_entity_id,
         );
-        $tiles = $manager->getTiles($session);
+        $tiles = $manager->getVisibleTilesForSession($session);
 
         // Assert: only the form with a valid access policy should be found
         $form_names = array_map(fn($tile) => $tile->getTitle(), $tiles);
@@ -217,21 +220,18 @@ final class TilesManagerTest extends DbTestCase
         $builder = new FormBuilder("Form inside current entity");
         $builder->setIsActive(true);
         $builder->setEntitiesId($test_entity_id);
-        $builder->allowAllUsers();
         $forms[] = $this->createForm($builder);
 
         $builder = new FormBuilder("Form outside current entity");
         $builder->setIsActive(true);
         $builder->setEntitiesId(0);
         $builder->setIsRecursive(false);
-        $builder->allowAllUsers();
         $forms[] = $this->createForm($builder);
 
         $builder = new FormBuilder("Form inside recursive parent entity");
         $builder->setIsActive(true);
         $builder->setEntitiesId(0);
         $builder->setIsRecursive(true);
-        $builder->allowAllUsers();
         $forms[] = $this->createForm($builder);
 
         foreach ($forms as $form) {
@@ -244,8 +244,9 @@ final class TilesManagerTest extends DbTestCase
         $session = new SessionInfo(
             profile_id: $profile->getID(),
             active_entities_ids: [$test_entity_id],
+            current_entity_id: $test_entity_id,
         );
-        $tiles = $manager->getTiles($session);
+        $tiles = $manager->getVisibleTilesForSession($session);
 
         // Assert: only the form with a valid access policy should be found
         $form_names = array_map(fn($tile) => $tile->getTitle(), $tiles);
@@ -283,13 +284,12 @@ final class TilesManagerTest extends DbTestCase
         ]);
 
         // Get the second tile and move it at the end
-        $this->updateItem(Profile_Tile::class, $profile_tile_id, [
+        $this->updateItem(Item_Tile::class, $profile_tile_id, [
             'rank' => 10,
         ]);
 
         // Act: get tiles
-        $session = new SessionInfo(profile_id: $profile->getID());
-        $tiles = $manager->getTiles($session);
+        $tiles = $manager->getTilesForItem($profile);
 
         // Assert: tiles must be in the expected order
         $this->assertCount(3, $tiles);
@@ -344,15 +344,14 @@ final class TilesManagerTest extends DbTestCase
         ]);
 
         // Act: set a new order
-        $manager->setOrderForProfile($profile, [
+        $manager->setOrderForItem($profile, [
             $profile_tile_id_3,
             $profile_tile_id_1,
             $profile_tile_id_2,
         ]);
 
         // Assert: confirm the new order
-        $session = new SessionInfo(profile_id: $profile->getID());
-        $tiles = $manager->getTiles($session);
+        $tiles = $manager->getTilesForItem($profile);
 
         $first_tile = $tiles[0];
         $this->assertInstanceOf(ExternalPageTile::class, $first_tile);
@@ -404,13 +403,12 @@ final class TilesManagerTest extends DbTestCase
         ]);
 
         // Act: delete the second tile
-        $profile_tile = Profile_Tile::getById($profile_tile_id_2);
-        $tile_id = $profile_tile->fields['items_id'];
+        $item_tile = Item_Tile::getById($profile_tile_id_2);
+        $tile_id = $item_tile->fields['items_id_tile'];
         $this->getManager()->deleteTile(GlpiPageTile::getById($tile_id));
 
         // Assert: the tile must not be found and must be cleared from the DB
-        $session = new SessionInfo(profile_id: $profile->getID());
-        $tiles = $manager->getTiles($session);
+        $tiles = $manager->getTilesForItem($profile);
         $this->assertCount(2, $tiles);
 
         $first_tile = $tiles[0];
@@ -418,7 +416,121 @@ final class TilesManagerTest extends DbTestCase
         $this->assertNotEquals("FAQ", $first_tile->getTitle());
         $this->assertNotEquals("FAQ", $second_tile->getTitle());
 
-        $this->assertFalse(Profile_Tile::getById($profile_tile_id_2));
+        $this->assertFalse(Item_Tile::getById($profile_tile_id_2));
         $this->assertFalse(GlpiPageTile::getById($tile_id));
+    }
+
+    public function testTilesFromRootEntityAreFoundWhenCurrentProfileHasNoConfig(): void
+    {
+        $test_entity_id = $this->getTestRootEntity(only_id: true);
+
+        // Arrange: create a self service profile without tiles
+        $manager = $this->getManager();
+        $profile = $this->createItem(Profile::class, [
+            'name' => 'Helpdesk profile',
+            'interface' => 'helpdesk',
+        ]);
+
+        // Act: get tiles
+        $session = new SessionInfo(
+            profile_id: $profile->getID(),
+            active_entities_ids: [$test_entity_id],
+            current_entity_id: $test_entity_id,
+        );
+        $tiles = $manager->getVisibleTilesForSession($session);
+
+        // Assert: the default tiles from the root entity should be found
+        $this->assertCount(3, $tiles);
+    }
+
+    public function testTilesFromSubEntityAreFoundWhenCurrentProfileHasNoConfig(): void
+    {
+        $test_entity = $this->getTestRootEntity();
+        $test_entity_id = $test_entity->getID();
+
+        // Arrange: create a self service profile without tiles
+        $manager = $this->getManager();
+        $profile = $this->createItem(Profile::class, [
+            'name' => 'Helpdesk profile',
+            'interface' => 'helpdesk',
+        ]);
+
+        // Create a tile for the current entity
+        $manager->addTile($test_entity, ExternalPageTile::class, [
+            'title'        => "GLPI project",
+            'description'  => "Link to GLPI project website",
+            'illustration' => "request-service",
+            'url'          => "https://glpi-project.org",
+        ]);
+
+        // Act: get tiles
+        $session = new SessionInfo(
+            profile_id: $profile->getID(),
+            active_entities_ids: [$test_entity_id],
+            current_entity_id: $test_entity_id,
+        );
+        $tiles = $manager->getVisibleTilesForSession($session);
+
+        // Assert: the unique tile from the current entity should be found
+        $this->assertCount(1, $tiles);
+    }
+
+    public function testCanCopyTilesFromParentEntity(): void
+    {
+        $test_entity = $this->getTestRootEntity();
+
+        // Need an active session to create entities
+        $this->login();
+
+        // Arrange: create an entity
+        $my_entity = $this->createItem(Entity::class, [
+            'name' => "My test entity",
+            'entities_id' => $test_entity->getID(),
+        ]);
+
+        // Act: copy parent entity tiles into the new entity
+        $manager = $this->getManager();
+        $before_copy = $manager->getTilesForItem($my_entity);
+        $manager->copyTilesFromParentEntity($my_entity);
+        $after_copy = $manager->getTilesForItem($my_entity);
+
+        // Asset: tiles should be empty before copy and identical to root entity after copy.
+        $this->assertEmpty($before_copy);
+        $this->assertNotEmpty($after_copy);
+        $root_tiles = $manager->getTilesForItem(Entity::getById(0));
+
+        // Normalize values for comparison by remove ids
+        $normalize = function (CommonDBTM&TileInterface $tile): array {
+            $fields = $tile->fields;
+            unset($fields['id']);
+            return $fields;
+        };
+        $root_tiles_fields = array_map($normalize, $root_tiles);
+        $after_copy_fields = array_map($normalize, $after_copy);
+
+        $this->assertEquals($root_tiles_fields, $after_copy_fields);
+    }
+
+    public function testFormTileWithoutNameDoesntTriggerErrors(): void
+    {
+        // Arrange: create a form without a name and associate it to a tile
+        $builder = new FormBuilder("");
+        $form = $this->createForm($builder);
+        $tile = $this->createItem(FormTile::class, [
+            'forms_forms_id' => $form->getID(),
+        ]);
+
+        // Act: render the tiles
+        TemplateRenderer::getInstance()->render(
+            'pages/admin/helpdesk_home_config_tiles.html.twig',
+            [
+                'tiles_manager' => $this->getManager(),
+                'tiles' => [$tile],
+            ]
+        );
+
+        // Assert: no real assertions, we are just checking that the template
+        // above doesn't throw an error.
+        $this->assertTrue(true);
     }
 }

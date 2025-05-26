@@ -48,8 +48,8 @@ final class SessionInfo
         private int $profile_id = 0,
         /** @var int[] $entities_ids */
         private array $active_entities_ids = [],
-    ) {
-    }
+        private int $current_entity_id = 0,
+    ) {}
 
     public function getUserId(): int
     {
@@ -70,6 +70,11 @@ final class SessionInfo
     public function getActiveEntitiesIds(): array
     {
         return $this->active_entities_ids;
+    }
+
+    public function getCurrentEntityId(): int
+    {
+        return $this->current_entity_id;
     }
 
     public function hasRight(string $right, int $action): bool

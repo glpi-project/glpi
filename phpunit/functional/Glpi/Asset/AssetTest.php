@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -37,6 +36,8 @@ namespace tests\units\Glpi\Asset;
 
 use DbTestCase;
 use Glpi\Asset\AssetDefinitionManager;
+use Glpi\Asset\Capacity;
+use Glpi\Asset\Capacity\CapacityInterface;
 use Glpi\Asset\CustomFieldType\DropdownType;
 use Glpi\Asset\CustomFieldType\StringType;
 
@@ -105,7 +106,7 @@ class AssetTest extends DbTestCase
             $this->assertEquals(
                 [
                     'assets_assetdefinitions_id' => $definition->getID(),
-                    'custom_fields' => '[]'
+                    'custom_fields' => '[]',
                 ],
                 $asset->{$method}([])
             );
@@ -113,7 +114,7 @@ class AssetTest extends DbTestCase
                 [
                     'name' => 'test',
                     'assets_assetdefinitions_id' => $definition->getID(),
-                    'custom_fields' => '[]'
+                    'custom_fields' => '[]',
                 ],
                 $asset->{$method}(['name' => 'test'])
             );
@@ -142,9 +143,12 @@ class AssetTest extends DbTestCase
 
     public function testSearchOptionsUnicity(): void
     {
-        $capacities = AssetDefinitionManager::getInstance()->getAvailableCapacities();
+        $capacities = array_map(
+            fn(CapacityInterface $capacity) => new Capacity(name: $capacity::class),
+            AssetDefinitionManager::getInstance()->getAvailableCapacities()
+        );
         $definition = $this->initAssetDefinition(
-            capacities: array_keys($capacities)
+            capacities: $capacities
         );
 
         $asset = $this->createItem($definition->getAssetClassName(), [
@@ -240,7 +244,7 @@ class AssetTest extends DbTestCase
             'label' => 'Test dropdown',
             'type' => DropdownType::class,
             'itemtype' => \Computer::class,
-            'field_options' => ['multiple' => true]
+            'field_options' => ['multiple' => true],
         ], ['field_options']);
 
         $asset = $this->createItem($asset_definition->getAssetClassName(), [

@@ -39,6 +39,8 @@ use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AccessControl\AccessVote;
 use Glpi\Form\AccessControl\FormAccessControl;
 use Glpi\Form\AccessControl\FormAccessParameters;
+use Glpi\Form\Export\Context\DatabaseMapper;
+use Glpi\Form\Export\Serializer\DynamicExportDataField;
 use Glpi\Form\Form;
 
 interface ControlTypeInterface
@@ -68,10 +70,9 @@ interface ControlTypeInterface
      * Get the warnings for the given form.
      *
      * @param  Form $form
-     * @param  string[] $warnings
      * @return string[]
      */
-    public function getWarnings(Form $form, array $warnings): array;
+    public function getWarnings(Form $form): array;
 
     /**
      * Render the configuration form of this control type.
@@ -115,4 +116,13 @@ interface ControlTypeInterface
      * @return bool
      */
     public function allowUnauthenticated(JsonFieldInterface $config): bool;
+
+    public function exportDynamicConfig(
+        JsonFieldInterface $config
+    ): DynamicExportDataField;
+
+    public static function prepareDynamicConfigDataForImport(
+        array $config,
+        DatabaseMapper $mapper,
+    ): array;
 }

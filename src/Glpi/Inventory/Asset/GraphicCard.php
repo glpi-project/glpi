@@ -35,7 +35,6 @@
 
 namespace Glpi\Inventory\Asset;
 
-use CommonDBTM;
 use Glpi\Inventory\Conf;
 
 class GraphicCard extends Device
@@ -45,7 +44,7 @@ class GraphicCard extends Device
     public function prepare(): array
     {
         $mapping = [
-            'name'   => 'designation'
+            'name'   => 'designation',
         ];
 
         foreach ($this->data as $k => &$val) {

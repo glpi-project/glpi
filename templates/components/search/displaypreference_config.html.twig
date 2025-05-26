@@ -6,7 +6,6 @@
  # http://glpi-project.org
  #
  # @copyright 2015-2025 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -93,13 +92,13 @@
                 {% endif %}
             </div>
             <ul class="list-group">
-                {% for opt in entries|filter(v => v['fixed'] == true) %}
+                {% for opt in entries|filter(v => (v['fixed'] ?? false) == true) %}
                     <li data-opt-id="{{ opt['id'] }}" data-fixed="true" class="list-group-item py-2 disabled px-2">
                         <i class="ti ti-grip-vertical bs-invisible"></i>
                         <span>{{ opt['name'] }}</span>
                     </li>
                 {% endfor %}
-                {% for opt in entries|filter(v => v['fixed'] != true) %}
+                {% for opt in entries|filter(v => (v['fixed'] ?? false) != true) %}
                     {% set name_prefix = opt['group'] is not empty ? (opt['group']) : '' %}
                     <li data-opt-id="{{ opt['id'] }}" class="cursor-grab list-group-item py-2 d-flex px-2 align-items-center">
                         <i class="ti ti-grip-vertical"></i>

@@ -45,7 +45,7 @@
             position: absolute;
             top: 23px;
             bottom: 23px;
-            left: 170px;
+            left: 170.4px;
             width: 3px;
             background-color: #a8a8a8;
         }
@@ -75,11 +75,12 @@
         background-color: #fff;
         border: 2px solid #696969;
         box-sizing: content-box;
+        text-align: center;
+        line-height: 20px;
 
         &::before {
             color: #929292;
             font: var(--fa-font-solid);
-            padding-left: 3px;
         }
     }
 
@@ -102,7 +103,8 @@
         border: 0;
         font-size: 15px;
         height: 18px;
-        left: 161px;
+        left: 162px;
+        line-height: 18px;
 
         &::before {
             content: "\2a";
@@ -122,7 +124,6 @@
 
             &::before {
                 content: "\21";
-                padding-left: 8px;
                 color: #e54e5a;
             }
         }

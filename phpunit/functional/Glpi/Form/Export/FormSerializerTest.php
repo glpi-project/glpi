@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,14 +32,14 @@
  * ---------------------------------------------------------------------
  */
 
-namespace tests\units\Glpi\Form;
+namespace tests\units\Glpi\Form\Export;
 
 use Computer;
 use Entity;
 use Glpi\Form\Category;
 use Glpi\Form\Comment;
 use Glpi\Form\Condition\ConditionData;
-use Glpi\Form\Condition\FormData;
+use Glpi\Form\Condition\CreationStrategy;
 use Glpi\Form\Condition\LogicOperator;
 use Glpi\Form\Condition\Type;
 use Glpi\Form\Condition\ValueOperator;
@@ -58,15 +57,18 @@ use Glpi\Form\Export\Context\DatabaseMapper;
 use Glpi\Form\Export\Result\ImportError;
 use Glpi\Form\Export\Serializer\FormSerializer;
 use Glpi\Form\Form;
+use Glpi\Form\FormTranslation;
 use Glpi\Form\Question;
 use Glpi\Form\QuestionType\QuestionTypeActorsExtraDataConfig;
 use Glpi\Form\QuestionType\QuestionTypeActorsDefaultValueConfig;
+use Glpi\Form\QuestionType\QuestionTypeCheckbox;
 use Glpi\Form\QuestionType\QuestionTypeDropdown;
 use Glpi\Form\QuestionType\QuestionTypeDropdownExtraDataConfig;
 use Glpi\Form\QuestionType\QuestionTypeItemDefaultValueConfig;
 use Glpi\Form\QuestionType\QuestionTypeItemExtraDataConfig;
 use Glpi\Form\QuestionType\QuestionTypeItemDropdown;
 use Glpi\Form\QuestionType\QuestionTypeRequester;
+use Glpi\Form\QuestionType\QuestionTypeSelectableExtraDataConfig;
 use Glpi\Form\QuestionType\QuestionTypeShortText;
 use Glpi\Form\Section;
 use Glpi\Tests\FormBuilder;
@@ -174,7 +176,7 @@ final class FormSerializerTest extends \DbTestCase
     {
         // Arrange: create an empty form
         $form = $this->createItem(Form::class, [
-            'entities_id' => $this->getTestRootEntity(only_id: true)
+            'entities_id' => $this->getTestRootEntity(only_id: true),
         ]);
 
         // Act: export then reimport the form as a copy
@@ -243,7 +245,7 @@ final class FormSerializerTest extends \DbTestCase
         );
         $this->assertCount(0, $import_result->getImportedForms());
         $this->assertEquals([
-            $form->fields['name'] => ImportError::MISSING_DATA_REQUIREMENT
+            $form->fields['name'] => ImportError::MISSING_DATA_REQUIREMENT,
         ], $import_result->getFailedFormImports());
     }
 
@@ -372,7 +374,7 @@ final class FormSerializerTest extends \DbTestCase
             Location::class,
             [
                 'name' => 'My location',
-                'entities_id' => $this->getTestRootEntity(only_id: true)
+                'entities_id' => $this->getTestRootEntity(only_id: true),
             ]
         );
 
@@ -380,8 +382,7 @@ final class FormSerializerTest extends \DbTestCase
         $dropdown_config = new QuestionTypeDropdownExtraDataConfig([
             '123456789' => 'Option 1',
             '987654321' => 'Option 2',
-            true,
-        ]);
+        ], true);
         $item_default_value_config = new QuestionTypeItemDefaultValueConfig($location->getID());
         $item_extra_data_config = new QuestionTypeItemExtraDataConfig(Location::class);
         $actors_default_value_config = new QuestionTypeActorsDefaultValueConfig(
@@ -404,7 +405,7 @@ final class FormSerializerTest extends \DbTestCase
                 "My dropdown question",
                 QuestionTypeDropdown::class,
                 '123456789',
-                json_encode($dropdown_config->jsonSerialize()),
+                json_encode($dropdown_config),
                 'My dropdown question description'
             )
             ->addSection("My second section")
@@ -412,15 +413,15 @@ final class FormSerializerTest extends \DbTestCase
                 "My item dropdown question",
                 QuestionTypeItemDropdown::class,
                 $location->getID(),
-                json_encode($item_extra_data_config->jsonSerialize()),
+                json_encode($item_extra_data_config),
                 'My item dropdown question description',
                 true
             )
             ->addQuestion(
                 "My requester question",
                 QuestionTypeRequester::class,
-                ['users_id-' . $user->getID()],
-                json_encode($actors_extra_data_config->jsonSerialize()),
+                $actors_default_value_config->jsonSerialize(),
+                json_encode($actors_extra_data_config),
             );
         $form = $this->createForm($builder);
 
@@ -463,7 +464,7 @@ final class FormSerializerTest extends \DbTestCase
                 'horizontal_rank'   => null,
                 'description'       => 'My dropdown question description',
                 'default_value'     => '123456789',
-                'extra_data'        => json_encode($dropdown_config->jsonSerialize()),
+                'extra_data'        => json_encode($dropdown_config),
                 'forms_sections_id' => array_values($form_copy->getSections())[0]->fields['id'],
             ],
             [
@@ -474,7 +475,7 @@ final class FormSerializerTest extends \DbTestCase
                 'horizontal_rank'   => null,
                 'description'       => 'My item dropdown question description',
                 'default_value'     => json_encode($item_default_value_config->jsonSerialize()),
-                'extra_data'        => json_encode($item_extra_data_config->jsonSerialize()),
+                'extra_data'        => json_encode($item_extra_data_config),
                 'forms_sections_id' => array_values($form_copy->getSections())[1]->fields['id'],
             ],
             [
@@ -484,14 +485,57 @@ final class FormSerializerTest extends \DbTestCase
                 'vertical_rank'     => 1,
                 'horizontal_rank'   => null,
                 'description'       => '',
-                'default_value'     => json_encode(array_intersect_key(
-                    $actors_default_value_config->jsonSerialize(),
-                    ['users_ids' => '']
-                )),
+                'default_value'     => json_encode($actors_default_value_config->jsonSerialize()),
                 'extra_data'        => json_encode($actors_extra_data_config->jsonSerialize()),
                 'forms_sections_id' => array_values($form_copy->getSections())[1]->fields['id'],
-            ]
+            ],
         ], $questions_data);
+    }
+
+    public function testExportAndImportSubmitButtonConditions(): void
+    {
+        $this->login();
+
+        // Arrange: create a form with submit button conditions
+        $builder = new FormBuilder();
+        $builder->addSection("My first section")
+            ->addQuestion("My first question", QuestionTypeShortText::class);
+        $builder->setSubmitButtonVisibility(
+            VisibilityStrategy::VISIBLE_IF,
+            [
+                [
+                    'logic_operator' => LogicOperator::AND,
+                    'item_name'      => "My first question",
+                    'item_type'      => Type::QUESTION,
+                    'value_operator' => ValueOperator::EQUALS,
+                    'value'          => "my value",
+                ],
+            ]
+        );
+        $form = $this->createForm($builder);
+
+        // Act: export and import the form
+        $form_copy = $this->exportAndImportForm($form);
+
+        // Assert: validate the condition exist on the submit button
+        $submit_button_conditions = json_decode($form_copy->fields['submit_button_conditions'], true);
+        $question_uuid = Question::getById(
+            $this->getQuestionId($form_copy, "My first question")
+        )->fields['uuid'];
+
+        $expected_data = [
+            (new ConditionData(
+                item_uuid: $question_uuid,
+                item_type: Type::QUESTION->value,
+                logic_operator: LogicOperator::AND->value,
+                value_operator: ValueOperator::EQUALS->value,
+                value: "my value",
+            ))->jsonSerialize(),
+        ];
+        $this->assertEquals(
+            $expected_data,
+            $submit_button_conditions
+        );
     }
 
     public function testExportAndImportQuestionConditions(): void
@@ -516,7 +560,7 @@ final class FormSerializerTest extends \DbTestCase
                     'item_type'      => Type::QUESTION,
                     'value_operator' => ValueOperator::EQUALS,
                     'value'          => 'test',
-                ]
+                ],
             ]
         );
         $builder->setQuestionVisibility(
@@ -529,7 +573,7 @@ final class FormSerializerTest extends \DbTestCase
                     'item_type'      => Type::QUESTION,
                     'value_operator' => ValueOperator::EQUALS,
                     'value'          => 'test2',
-                ]
+                ],
             ]
         );
 
@@ -566,7 +610,7 @@ final class FormSerializerTest extends \DbTestCase
                         'value'          => 'test',
                         'value_operator' => ValueOperator::EQUALS->value,
                         'logic_operator' => LogicOperator::AND->value,
-                    ]
+                    ],
                 ],
             ],
             [
@@ -580,7 +624,7 @@ final class FormSerializerTest extends \DbTestCase
                         'value'          => 'test2',
                         'value_operator' => ValueOperator::EQUALS->value,
                         'logic_operator' => LogicOperator::AND->value,
-                    ]
+                    ],
                 ],
             ],
             [
@@ -589,6 +633,162 @@ final class FormSerializerTest extends \DbTestCase
                 'conditions'          => [],
             ],
         ], $questions_data);
+    }
+
+    public function testExportAndImportCommentsConditions(): void
+    {
+        $this->login();
+
+        // Arrange: create a form with conditions on a comment.
+        $builder = new FormBuilder();
+        $builder->addSection("My first section");
+        $builder->addQuestion("My question", QuestionTypeShortText::class);
+        $builder->addComment("My comment");
+        $builder->setCommentVisibility(
+            "My comment",
+            VisibilityStrategy::VISIBLE_IF,
+            [
+                [
+                    'logic_operator' => LogicOperator::AND,
+                    'item_name'      => "My question",
+                    'item_type'      => Type::QUESTION,
+                    'value_operator' => ValueOperator::EQUALS,
+                    'value'          => "my value",
+                ],
+            ]
+        );
+        $form = $this->createForm($builder);
+
+        // Act: export and import the form
+        $form_copy = $this->exportAndImportForm($form);
+
+        // Assert: validate the condition exist on the comment
+        $comments = $form_copy->getFormComments();
+        $comment = array_pop($comments);
+        $question_uuid = Question::getById(
+            $this->getQuestionId($form_copy, "My question")
+        )->fields['uuid'];
+
+        $expected_data = [
+            (new ConditionData(
+                item_uuid: $question_uuid,
+                item_type: Type::QUESTION->value,
+                logic_operator: LogicOperator::AND->value,
+                value_operator: ValueOperator::EQUALS->value,
+                value: "my value",
+            ))->jsonSerialize(),
+        ];
+        $this->assertEquals(
+            $expected_data,
+            json_decode($comment->fields['conditions'], true)
+        );
+        $this->assertEquals(
+            VisibilityStrategy::VISIBLE_IF->value,
+            $comment->fields['visibility_strategy']
+        );
+    }
+
+    public function testExportAndImportSectionsConditions(): void
+    {
+        $this->login();
+
+        // Arrange: create a form with conditions on a section.
+        $builder = new FormBuilder();
+        $builder->addSection("My first section");
+        $builder->addQuestion("My question", QuestionTypeShortText::class);
+        $builder->setSectionVisibility(
+            "My first section",
+            VisibilityStrategy::VISIBLE_IF,
+            [
+                [
+                    'logic_operator' => LogicOperator::AND,
+                    'item_name'      => "My question",
+                    'item_type'      => Type::QUESTION,
+                    'value_operator' => ValueOperator::EQUALS,
+                    'value'          => "my value",
+                ],
+            ]
+        );
+        $form = $this->createForm($builder);
+
+        // Act: export and import the form
+        $form_copy = $this->exportAndImportForm($form);
+
+        // Assert: validate the condition exist on the section
+        $sections = $form_copy->getSections();
+        $section = array_pop($sections);
+        $question_uuid = Question::getById(
+            $this->getQuestionId($form_copy, "My question")
+        )->fields['uuid'];
+
+        $expected_data = [
+            (new ConditionData(
+                item_uuid: $question_uuid,
+                item_type: Type::QUESTION->value,
+                logic_operator: LogicOperator::AND->value,
+                value_operator: ValueOperator::EQUALS->value,
+                value: "my value",
+            ))->jsonSerialize(),
+        ];
+        $this->assertEquals(
+            $expected_data,
+            json_decode($section->fields['conditions'], true)
+        );
+        $this->assertEquals(
+            VisibilityStrategy::VISIBLE_IF->value,
+            $section->fields['visibility_strategy']
+        );
+    }
+
+    public function testExportAndImportDestinationConditions(): void
+    {
+        $this->login();
+
+        // Arrange: create a form with conditions on a destination.
+        $builder = new FormBuilder();
+        $builder->addQuestion("My question", QuestionTypeShortText::class);
+        $builder->setDestinationCondition(
+            "Ticket",
+            CreationStrategy::CREATED_IF,
+            [
+                [
+                    'logic_operator' => LogicOperator::AND,
+                    'item_name'      => "My question",
+                    'item_type'      => Type::QUESTION,
+                    'value_operator' => ValueOperator::EQUALS,
+                    'value'          => "my value",
+                ],
+            ]
+        );
+        $form = $this->createForm($builder);
+
+        // Act: export and import the form
+        $form_copy = $this->exportAndImportForm($form);
+
+        // Assert: validate the condition exist on the destination
+        $destinations = $form_copy->getDestinations();
+        $destination = array_pop($destinations);
+        $question_uuid = Question::getById(
+            $this->getQuestionId($form_copy, "My question")
+        )->fields['uuid'];
+
+        $expected_data = [
+            (new ConditionData(
+                item_uuid: $question_uuid,
+                item_type: Type::QUESTION->value,
+                logic_operator: LogicOperator::AND->value,
+                value_operator: ValueOperator::EQUALS->value,
+                value: "my value",
+            ))->jsonSerialize(),
+        ];
+        $this->assertEquals(
+            $expected_data,
+            json_decode($destination->fields['conditions'], true)
+        );
+        $this->assertEquals(
+            CreationStrategy::CREATED_IF->value,
+            $destination->fields['creation_strategy']
+        );
     }
 
     public function testExportAndImportDestinations(): void
@@ -601,13 +801,13 @@ final class FormSerializerTest extends \DbTestCase
         // Create a Computer
         $computer = $this->createItem('Computer', [
             'name' => 'My computer',
-            'entities_id' => $this->getTestRootEntity(only_id: true)
+            'entities_id' => $this->getTestRootEntity(only_id: true),
         ]);
 
         // Create a monitor
         $monitor = $this->createItem('Monitor', [
             'name' => 'My monitor',
-            'entities_id' => $this->getTestRootEntity(only_id: true)
+            'entities_id' => $this->getTestRootEntity(only_id: true),
         ]);
 
         $form = $this->createForm((new FormBuilder())->addQuestion(
@@ -626,11 +826,11 @@ final class FormSerializerTest extends \DbTestCase
             strategies: [AssociatedItemsFieldStrategy::SPECIFIC_VALUES],
             specific_associated_items: [
                 Computer::class => [
-                    $computer->getID()
+                    $computer->getID(),
                 ],
                 Monitor::class => [
-                    $monitor->getID()
-                ]
+                    $monitor->getID(),
+                ],
             ]
         );
 
@@ -644,8 +844,8 @@ final class FormSerializerTest extends \DbTestCase
                 'config' => [
                     TitleField::getKey() => $title_field_config->jsonSerialize(),
                     ITILCategoryField::getKey() => $itil_category_field_config->jsonSerialize(),
-                    AssociatedItemsField::getKey() => $associated_items_config->jsonSerialize()
-                ]
+                    AssociatedItemsField::getKey() => $associated_items_config->jsonSerialize(),
+                ],
             ],
             ["config"],
         );
@@ -656,16 +856,14 @@ final class FormSerializerTest extends \DbTestCase
 
         $this->assertCount(2, $imported_destinations);
 
-        // Check the mandatory destination
+        // Check the default destination
         $imported_destination_1 = current($imported_destinations);
         $this->assertEquals('Ticket', $imported_destination_1->fields['name']);
-        $this->assertTrue((bool) $imported_destination_1->fields['is_mandatory']);
 
         // Check the second destination
         $imported_destination_2 = next($imported_destinations);
         $imported_configs = end($imported_destinations)->getConfig();
         $this->assertEquals('My ticket destination', $imported_destination_2->fields['name']);
-        $this->assertFalse((bool) $imported_destination_2->fields['is_mandatory']);
 
         // Check that the imported form has the same destination
         $this->assertEquals($title_field_config->jsonSerialize(), $imported_configs[TitleField::getKey()]);
@@ -702,6 +900,71 @@ final class FormSerializerTest extends \DbTestCase
         );
     }
 
+    public function testExportAndImportTranslations(): void
+    {
+        // Arrange: create a form with multiple blocks and sections
+        $builder = new FormBuilder();
+        $builder->addSection("My first section")
+            ->addComment("My first comment", "My first comment in my first section")
+            ->addQuestion(
+                "My text question",
+                QuestionTypeShortText::class,
+                'Test default value',
+                '',
+                'My text question description'
+            )
+            ->addSection("My second section")
+            ->addQuestion(
+                "My multiple choice question",
+                QuestionTypeCheckbox::class,
+                '123456789',
+                json_encode((new QuestionTypeSelectableExtraDataConfig([
+                    '123456789' => 'Option 1',
+                    '987654321' => 'Option 2',
+                ], true))->jsonSerialize()),
+            );
+        $form = $this->createForm($builder);
+
+        // Add translations to the form
+        $handlers = $form->listTranslationsHandlers();
+        array_walk_recursive(
+            $handlers,
+            function ($handler) {
+                $this->addTranslationToForm(
+                    $handler->getItem(),
+                    'fr_FR',
+                    $handler->getKey(),
+                    $handler->getKey() . ' in fr_FR'
+                );
+
+                $this->addTranslationToForm(
+                    $handler->getItem(),
+                    'es_ES',
+                    $handler->getKey(),
+                    $handler->getKey() . ' in es_ES'
+                );
+            }
+        );
+
+        // Act: export and import the form
+        $form_copy = $this->exportAndImportForm($form);
+
+        // Assert: validate translations
+        $translations = FormTranslation::getTranslationsForForm($form);
+        $translations_copy = FormTranslation::getTranslationsForForm($form_copy);
+        $keys_to_exclude = ['id' => '', 'items_id' => ''];
+        $this->assertEquals(
+            array_map(
+                fn($translation) => array_diff_key($translation->fields, $keys_to_exclude),
+                $translations
+            ),
+            array_map(
+                fn($translation) => array_diff_key($translation->fields, $keys_to_exclude),
+                $translations_copy
+            ),
+        );
+    }
+
     public function testPreviewImportWithValidForm(): void
     {
         // Arrange: create a valid form
@@ -715,7 +978,10 @@ final class FormSerializerTest extends \DbTestCase
         );
 
         // Assert: the form should be valid
-        $this->assertEquals([$form->fields['name']], $preview->getValidForms());
+        $this->assertEquals(
+            [$form->fields['name']],
+            array_values($preview->getValidForms())
+        );
         $this->assertEquals([], $preview->getInvalidForms());
     }
 
@@ -744,7 +1010,10 @@ final class FormSerializerTest extends \DbTestCase
 
         // Assert: the form should be invalid
         $this->assertEquals([], $preview->getValidForms());
-        $this->assertEquals([$form->fields['name']], $preview->getInvalidForms());
+        $this->assertEquals(
+            [$form->fields['name']],
+            array_values($preview->getInvalidForms()),
+        );
     }
 
     public function testPreviewImportWithSkippedForm(): void
@@ -763,7 +1032,10 @@ final class FormSerializerTest extends \DbTestCase
         // Assert: the form should be valid
         $this->assertEquals([], $preview->getValidForms());
         $this->assertEquals([], $preview->getInvalidForms());
-        $this->assertEquals([$form->fields['name']], $preview->getSkippedForms());
+        $this->assertEquals(
+            [$form->fields['name']],
+            array_values($preview->getSkippedForms())
+        );
     }
 
     public function testPreviewImportWithFixedForm(): void
@@ -791,7 +1063,10 @@ final class FormSerializerTest extends \DbTestCase
 
         // Assert: the form should be invalid
         $this->assertEquals([], $preview->getValidForms());
-        $this->assertEquals([$form->fields['name']], $preview->getInvalidForms());
+        $this->assertEquals(
+            [$form->fields['name']],
+            array_values($preview->getInvalidForms())
+        );
 
         // Add mapped item to fix the form
         $mapper = new DatabaseMapper([$this->getTestRootEntity(only_id: true)]);
@@ -801,7 +1076,10 @@ final class FormSerializerTest extends \DbTestCase
         $preview = self::$serializer->previewImport($json, $mapper, []);
 
         // Assert: the form should be fixed
-        $this->assertEquals([$form->fields['name']], $preview->getValidForms());
+        $this->assertEquals(
+            [$form->fields['name']],
+            array_values($preview->getValidForms()),
+        );
         $this->assertEquals([], $preview->getInvalidForms());
     }
 
@@ -882,7 +1160,7 @@ final class FormSerializerTest extends \DbTestCase
         // Assert: the import should fail
         $this->assertCount(0, $import_result->getImportedForms());
         $this->assertEquals([
-            $form->fields['name'] => ImportError::MISSING_DATA_REQUIREMENT
+            $form->fields['name'] => ImportError::MISSING_DATA_REQUIREMENT,
         ], $import_result->getFailedFormImports());
 
         // Add mapped item to fix the form
@@ -919,7 +1197,7 @@ final class FormSerializerTest extends \DbTestCase
         $this->assertEquals([
             $forms[0]->fields['name'],
             $forms[2]->fields['name'],
-        ], array_map(fn (Form $form) => $form->fields['name'], $import_result->getImportedForms()));
+        ], array_map(fn(Form $form) => $form->fields['name'], $import_result->getImportedForms()));
     }
 
     public function testAllFieldsAreExportedAndImported(): void
@@ -944,6 +1222,7 @@ final class FormSerializerTest extends \DbTestCase
             $form_copy->fields,
             [
                 'id',
+                'uuid',
                 'date_creation',
             ]
         );
@@ -973,10 +1252,10 @@ final class FormSerializerTest extends \DbTestCase
         ];
 
         $field_keys_to_ignore_for_specific_tables = [
-            '_glpi_forms_sections'                      => ['uuid'],
-            '_glpi_forms_questions'                     => ['uuid', 'forms_sections_uuid'],
-            '_glpi_forms_comments'                      => ['uuid', 'forms_sections_uuid'],
-            '_glpi_forms_destinations_formdestinations' => ['config'],
+            '_glpi_forms_sections'                      => ['uuid', 'conditions'],
+            '_glpi_forms_questions'                     => ['uuid', 'forms_sections_uuid', 'conditions'],
+            '_glpi_forms_comments'                      => ['uuid', 'forms_sections_uuid', 'conditions'],
+            '_glpi_forms_destinations_formdestinations' => ['config', 'conditions'],
         ];
 
         foreach ($relations as $table_name => $field_keys) {
@@ -1038,12 +1317,12 @@ final class FormSerializerTest extends \DbTestCase
             if ($new_relations !== false) {
                 $a = array_filter(
                     $ids_for_default_form,
-                    fn ($key) => $key === $relation_item->getForeignKeyField(),
+                    fn($key) => $key === $relation_item->getForeignKeyField(),
                     ARRAY_FILTER_USE_KEY
                 );
                 $b = array_filter(
                     $ids_for_imported_form,
-                    fn ($key) => $key === $relation_item->getForeignKeyField(),
+                    fn($key) => $key === $relation_item->getForeignKeyField(),
                     ARRAY_FILTER_USE_KEY
                 );
                 if (!empty($a) && !empty($b)) {

@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -46,7 +45,7 @@ class RichTextTest extends \GLPITestCase
 {
     public static function getSafeHtmlProvider(): iterable
     {
-       // Empty content would not be altered
+        // Empty content would not be altered
         yield [
             'content'                => null,
             'encode_output_entities' => false,
@@ -58,14 +57,14 @@ class RichTextTest extends \GLPITestCase
             'expected_result'        => '',
         ];
 
-       // Handling of encoded result (to be used in textarea for instance)
+        // Handling of encoded result (to be used in textarea for instance)
         yield [
             'content'                => '<p>Some HTML content with special chars like &gt; &amp; &lt;.</p>',
             'encode_output_entities' => true,
             'expected_result'        => '&lt;p&gt;Some HTML content with special chars like &amp;gt; &amp;amp; &amp;lt;.&lt;/p&gt;',
         ];
 
-       // Handling of special chars (<, > and &)
+        // Handling of special chars (<, > and &)
         $xml_sample = <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <root>
@@ -81,7 +80,7 @@ XML;
             'expected_result'        => $result,
         ];
 
-       // Handling of plain-text transformation
+        // Handling of plain-text transformation
         yield [
             'content'                => <<<PLAINTEXT
 Plain text content created by mailcollector.
@@ -106,7 +105,7 @@ PLAINTEXT,
 HTML,
         ];
 
-       // Cleaning of HTML structure
+        // Cleaning of HTML structure
         yield [
             'content'                => <<<HTML
 <!doctype html>
@@ -136,7 +135,7 @@ HTML,
 HTML,
         ];
 
-       // Unauthorized elements should be cleaned, other should be preserved
+        // Unauthorized elements should be cleaned, other should be preserved
         yield [
             'content'                => <<<HTML
 <h1>Form element should be removed</h1>
@@ -347,34 +346,6 @@ HTML,
             'expected_result'        => '<table height="100" width="0" align="left" cellspacing="10" style="width: 100%;"><tr><td>Test</td></tr></table>',
         ];
 
-        /*// Images path should be corrected when root doc changed
-        // see #15113
-        foreach (['', '/glpi', '/path/to/glpi'] as $expected_prefix) {
-            global $CFG_GLPI;
-            $CFG_GLPI['root_doc'] = $expected_prefix;
-            foreach (['/previous/glpi/path', '', '/glpi'] as $previous_prefix) {
-                yield [
-                    'content'                => <<<HTML
-    <p>
-      Images path should be corrected when root doc changed:
-      <a href="{$previous_prefix}/front/document.send.php?docid=180&amp;itemtype=Ticket&amp;items_id=515" target="_blank">
-        <img src="{$previous_prefix}/front/document.send.php?docid=180&amp;itemtype=Ticket&amp;items_id=515" alt="34c09468-b2d8e96f-64f991f5ce1660.58639912" width="248">
-      </a>
-    </p>
-HTML,
-                    'encode_output_entities' => false,
-                    'expected_result'        => <<<HTML
-    <p>
-      Images path should be corrected when root doc changed:
-      <a href="{$expected_prefix}/front/document.send.php?docid&#61;180&amp;itemtype&#61;Ticket&amp;items_id&#61;515" target="_blank">
-        <img src="{$expected_prefix}/front/document.send.php?docid&#61;180&amp;itemtype&#61;Ticket&amp;items_id&#61;515" alt="34c09468-b2d8e96f-64f991f5ce1660.58639912" width="248" />
-      </a>
-    </p>
-HTML,
-                ];
-            }
-        }*/
-
         yield 'User mention tag must be preserved' => [
             'content' => <<<HTML
 <p>
@@ -405,6 +376,12 @@ HTML,
             'content' => $tag->html,
             'encode_output_entities' => false,
             'expected_result' => $tag->html,
+        ];
+
+        yield '`class` attributes should be preserved' => [
+            'content'                => '<p class="myclass">Test</p><div class="alert">/!\ Warning !</div>',
+            'encode_output_entities' => false,
+            'expected_result'        => '<p class="myclass">Test</p><div class="alert">/!\ Warning !</div>',
         ];
     }
 

@@ -54,6 +54,6 @@ if (
         'mindate'    => '',
         'maxdate'    => '',
         'mintime'    => $_POST['global_begin'],
-        'maxtime'    => $_POST['global_end']
+        'maxtime'    => $_POST['global_end'],
     ]);
 }

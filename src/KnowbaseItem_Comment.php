@@ -63,12 +63,12 @@ class KnowbaseItem_Comment extends CommonDBTM
             if ($item::class === KnowbaseItem::class) {
                 $where = [
                     'knowbaseitems_id' => $item->getID(),
-                    'language'         => null
+                    'language'         => null,
                 ];
             } else {
                 $where = [
                     'knowbaseitems_id' => $item->fields['knowbaseitems_id'],
-                    'language'         => $item->fields['language']
+                    'language'         => $item->fields['language'],
                 ];
             }
 
@@ -104,7 +104,7 @@ class KnowbaseItem_Comment extends CommonDBTM
             'kbitem_id' => $kbitem_id,
             'lang' => $lang,
             'comments' => $comments,
-            'can_comment' => $kbitem->canComment()
+            'can_comment' => $kbitem->canComment(),
         ]);
     }
 
@@ -126,13 +126,13 @@ class KnowbaseItem_Comment extends CommonDBTM
         $where = [
             'knowbaseitems_id'  => $kbitem_id,
             'language'          => $lang,
-            'parent_comment_id' => $parent
+            'parent_comment_id' => $parent,
         ];
 
         $db_comments = $DB->request([
             'FROM' => 'glpi_knowbaseitems_comments',
             'WHERE' => $where,
-            'ORDER' => 'id ASC'
+            'ORDER' => 'id ASC',
         ]);
 
         $comments = [];
@@ -144,7 +144,7 @@ class KnowbaseItem_Comment extends CommonDBTM
                     'avatar' => User::getThumbnailURLForPicture($user->fields['picture']),
                     'link'   => $user->getLinkURL(),
                     'initials' => $user->getUserInitials(),
-                    'initials_bg_color' => $user->getUserInitialsBgColor()
+                    'initials_bg_color' => $user->getUserInitialsBgColor(),
                 ];
             }
             $db_comment['answers'] = self::getCommentsForKbItem($kbitem_id, $lang, $db_comment['id'], $user_data_cache);

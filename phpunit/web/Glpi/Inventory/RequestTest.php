@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -36,7 +35,6 @@
 namespace tests\units\Glpi\Inventory;
 
 use GuzzleHttp;
-use Psr\Http\Client\RequestExceptionInterface;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Response;
 
@@ -73,7 +71,7 @@ class RequestTest extends \DbTestCase
         );
         $this->assertSame(
             "<?xml version=\"1.0\"?>\n<REPLY>$reply</REPLY>",
-            (string)$res->getBody()
+            (string) $res->getBody()
         );
     }
 
@@ -90,7 +88,7 @@ class RequestTest extends \DbTestCase
     {
         $this->assertSame($code, $res->getStatusCode());
         $this->assertSame('application/json', $res->getHeader('content-type')[0]);
-        $this->assertSame($reply, (string)$res->getBody());
+        $this->assertSame($reply, (string) $res->getBody());
     }
 
     public function testUnsupportedHttpMethod()
@@ -104,7 +102,7 @@ class RequestTest extends \DbTestCase
             $response = $e->getResponse();
             $this->assertInstanceOf(Response::class, $response);
             $this->assertSame(405, $response->getStatusCode());
-            $this->assertSame('', (string)$response->getBody());
+            $this->assertSame('', (string) $response->getBody());
         }
     }
 
@@ -121,7 +119,7 @@ class RequestTest extends \DbTestCase
             $this->assertSame(400, $response->getStatusCode());
             $this->assertSame(
                 '{"status":"error","message":"Protocol not supported","expiration":24}',
-                (string)$response->getBody()
+                (string) $response->getBody()
             );
         }
     }
@@ -134,8 +132,8 @@ class RequestTest extends \DbTestCase
                 $this->base_uri . 'front/inventory.php',
                 [
                     'headers' => [
-                        'Content-Type' => 'application/xml'
-                    ]
+                        'Content-Type' => 'application/xml',
+                    ],
                 ]
             );
         } catch (RequestException $e) {
@@ -144,7 +142,7 @@ class RequestTest extends \DbTestCase
             $this->assertSame(400, $response->getStatusCode());
             $this->assertSame(
                 "<?xml version=\"1.0\"?>\n<REPLY><ERROR><![CDATA[XML not well formed!]]></ERROR></REPLY>",
-                (string)$response->getBody()
+                (string) $response->getBody()
             );
         }
     }
@@ -157,8 +155,8 @@ class RequestTest extends \DbTestCase
                 $this->base_uri . 'front/inventory.php',
                 [
                     'headers' => [
-                        'Content-Type' => 'application/json'
-                    ]
+                        'Content-Type' => 'application/json',
+                    ],
                 ]
             );
         } catch (RequestException $e) {
@@ -167,7 +165,7 @@ class RequestTest extends \DbTestCase
             $this->assertSame(400, $response->getStatusCode());
             $this->assertSame(
                 '{"status":"error","message":"JSON not well formed!","expiration":24}',
-                (string)$response->getBody()
+                (string) $response->getBody()
             );
         }
 
@@ -177,9 +175,9 @@ class RequestTest extends \DbTestCase
                 $this->base_uri . 'front/inventory.php',
                 [
                     'headers' => [
-                        'GLPI-Agent-ID' => 'a31ff7b5-4d8d-4e39-891e-0cca91d9df13'
+                        'GLPI-Agent-ID' => 'a31ff7b5-4d8d-4e39-891e-0cca91d9df13',
                     ],
-                    'body'   => '{ bad content'
+                    'body'   => '{ bad content',
                 ]
             );
         } catch (RequestException $e) {
@@ -188,7 +186,7 @@ class RequestTest extends \DbTestCase
             $this->assertSame(400, $response->getStatusCode());
             $this->assertSame(
                 '{"status":"error","message":"JSON not well formed!","expiration":24}',
-                (string)$response->getBody()
+                (string) $response->getBody()
             );
         }
 
@@ -199,9 +197,9 @@ class RequestTest extends \DbTestCase
                 [
                     'headers' => [
                         'Content-Type' => 'application/x-compress-zlib',
-                        'GLPI-Agent-ID' => 'a31ff7b5-4d8d-4e39-891e-0cca91d9df13'
+                        'GLPI-Agent-ID' => 'a31ff7b5-4d8d-4e39-891e-0cca91d9df13',
                     ],
-                    'body'   => gzcompress('{ bad content')
+                    'body'   => gzcompress('{ bad content'),
                 ]
             );
         } catch (RequestException $e) {
@@ -210,7 +208,7 @@ class RequestTest extends \DbTestCase
             $this->assertSame(400, $response->getStatusCode());
             $this->assertSame(
                 gzcompress('{"status":"error","message":"JSON not well formed!","expiration":24}'),
-                (string)$response->getBody()
+                (string) $response->getBody()
             );
         }
     }
@@ -222,13 +220,13 @@ class RequestTest extends \DbTestCase
             $this->base_uri . 'Inventory',
             [
                 'headers' => [
-                    'Content-Type' => 'application/xml'
+                    'Content-Type' => 'application/xml',
                 ],
                 'body'   => '<?xml version="1.0" encoding="UTF-8" ?>' .
                 '<REQUEST>' .
                   '<DEVICEID>mydeviceuniqueid</DEVICEID>' .
                   '<QUERY>PROLOG</QUERY>' .
-                '</REQUEST>'
+                '</REQUEST>',
             ]
         );
         $this->checkXmlResponse($res, '<PROLOG_FREQ>24</PROLOG_FREQ><RESPONSE>SEND</RESPONSE>', 200);
@@ -241,13 +239,13 @@ class RequestTest extends \DbTestCase
             $this->base_uri . 'front/inventory.php',
             [
                 'headers' => [
-                    'Content-Type' => 'application/xml'
+                    'Content-Type' => 'application/xml',
                 ],
                 'body'   => '<?xml version="1.0" encoding="UTF-8" ?>' .
                 '<REQUEST>' .
                   '<DEVICEID>mydeviceuniqueid</DEVICEID>' .
                   '<QUERY>PROLOG</QUERY>' .
-                '</REQUEST>'
+                '</REQUEST>',
             ]
         );
         $this->checkXmlResponse($res, '<PROLOG_FREQ>24</PROLOG_FREQ><RESPONSE>SEND</RESPONSE>', 200);
@@ -260,13 +258,13 @@ class RequestTest extends \DbTestCase
             $this->base_uri,
             [
                 'headers' => [
-                    'Content-Type' => 'application/xml'
+                    'Content-Type' => 'application/xml',
                 ],
                 'body'   => '<?xml version="1.0" encoding="UTF-8" ?>' .
                 '<REQUEST>' .
                   '<DEVICEID>mydeviceuniqueid</DEVICEID>' .
                   '<QUERY>PROLOG</QUERY>' .
-                '</REQUEST>'
+                '</REQUEST>',
             ]
         );
         $this->checkXmlResponse($res, '<PROLOG_FREQ>24</PROLOG_FREQ><RESPONSE>SEND</RESPONSE>', 200);
@@ -286,7 +284,7 @@ class RequestTest extends \DbTestCase
                 "enabled_inventory" => true,
                 'auth_required' => \Glpi\Inventory\Conf::BASIC_AUTH,
                 'basic_auth_login' => $basic_auth_login,
-                'basic_auth_password' => $basic_auth_password
+                'basic_auth_password' => $basic_auth_password,
             ])
         );
         $DB->commit();
@@ -298,13 +296,13 @@ class RequestTest extends \DbTestCase
                 $this->base_uri . 'Inventory',
                 [
                     'headers' => [
-                        'Content-Type' => 'application/xml'
+                        'Content-Type' => 'application/xml',
                     ],
                     'body'   => '<?xml version="1.0" encoding="UTF-8" ?>' .
                         '<REQUEST>' .
                         '<DEVICEID>mydeviceuniqueid</DEVICEID>' .
                         '<QUERY>PROLOG</QUERY>' .
-                        '</REQUEST>'
+                        '</REQUEST>',
                 ]
             );
         } catch (RequestException $e) {
@@ -320,13 +318,13 @@ class RequestTest extends \DbTestCase
             [
                 'headers' => [
                     'Content-Type' => 'application/xml',
-                    'Authorization' => 'Basic ' . base64_encode($basic_auth_login . ":" . $basic_auth_password)
+                    'Authorization' => 'Basic ' . base64_encode($basic_auth_login . ":" . $basic_auth_password),
                 ],
                 'body'   => '<?xml version="1.0" encoding="UTF-8" ?>' .
                 '<REQUEST>' .
                   '<DEVICEID>mydeviceuniqueid</DEVICEID>' .
                   '<QUERY>PROLOG</QUERY>' .
-                '</REQUEST>'
+                '</REQUEST>',
             ]
         );
         $this->checkXmlResponse($res, '<PROLOG_FREQ>24</PROLOG_FREQ><RESPONSE>SEND</RESPONSE>', 200);
@@ -347,7 +345,7 @@ class RequestTest extends \DbTestCase
                 "enabled_inventory" => true,
                 'auth_required' => \Glpi\Inventory\Conf::BASIC_AUTH,
                 'basic_auth_login' => $basic_auth_login,
-                'basic_auth_password' => $basic_auth_password
+                'basic_auth_password' => $basic_auth_password,
             ])
         );
         $DB->commit();
@@ -360,13 +358,13 @@ class RequestTest extends \DbTestCase
                 $this->base_uri . 'Inventory',
                 [
                     'headers' => [
-                        'Content-Type' => 'application/xml'
+                        'Content-Type' => 'application/xml',
                     ],
                     'body'   => '<?xml version="1.0" encoding="UTF-8" ?>' .
                         '<REQUEST>' .
                         '<DEVICEID>mydeviceuniqueid</DEVICEID>' .
                         '<QUERY>PROLOG</QUERY>' .
-                        '</REQUEST>'
+                        '</REQUEST>',
                 ]
             );
         } catch (RequestException $e) {
@@ -384,13 +382,13 @@ class RequestTest extends \DbTestCase
                     'headers' => [
                         'Content-Type' => 'application/xml',
                         //deliberate omission of "Basic "
-                        'Authorization' => base64_encode($basic_auth_login . ":" . $basic_auth_password)
+                        'Authorization' => base64_encode($basic_auth_login . ":" . $basic_auth_password),
                     ],
                     'body'   => '<?xml version="1.0" encoding="UTF-8" ?>' .
                         '<REQUEST>' .
                         '<DEVICEID>mydeviceuniqueid</DEVICEID>' .
                         '<QUERY>PROLOG</QUERY>' .
-                        '</REQUEST>'
+                        '</REQUEST>',
                 ]
             );
         } catch (RequestException $e) {
@@ -415,7 +413,7 @@ class RequestTest extends \DbTestCase
                 "enabled_inventory" => true,
                 'auth_required' => \Glpi\Inventory\Conf::BASIC_AUTH,
                 'basic_auth_login' => $basic_auth_login,
-                'basic_auth_password' => $basic_auth_password
+                'basic_auth_password' => $basic_auth_password,
             ])
         );
         $DB->commit();
@@ -428,13 +426,13 @@ class RequestTest extends \DbTestCase
                 $this->base_uri . 'Inventory',
                 [
                     'headers' => [
-                        'Content-Type' => 'application/xml'
+                        'Content-Type' => 'application/xml',
                     ],
                     'body'   => '<?xml version="1.0" encoding="UTF-8" ?>' .
                         '<REQUEST>' .
                         '<DEVICEID>mydeviceuniqueid</DEVICEID>' .
                         '<QUERY>PROLOG</QUERY>' .
-                        '</REQUEST>'
+                        '</REQUEST>',
                 ]
             );
         } catch (RequestException $e) {
@@ -451,13 +449,13 @@ class RequestTest extends \DbTestCase
                 [
                     'headers' => [
                         'Content-Type' => 'application/xml',
-                        'Authorization' => base64_encode("Basic wrong_login:wrong_password")
+                        'Authorization' => base64_encode("Basic wrong_login:wrong_password"),
                     ],
                     'body'   => '<?xml version="1.0" encoding="UTF-8" ?>' .
                         '<REQUEST>' .
                         '<DEVICEID>mydeviceuniqueid</DEVICEID>' .
                         '<QUERY>PROLOG</QUERY>' .
-                        '</REQUEST>'
+                        '</REQUEST>',
                 ]
             );
         } catch (RequestException $e) {

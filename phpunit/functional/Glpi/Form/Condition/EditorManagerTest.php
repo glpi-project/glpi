@@ -37,6 +37,7 @@ namespace tests\units\Glpi\Form\Condition;
 use Glpi\Form\Condition\ConditionData;
 use Glpi\Form\Condition\ConditionHandler\NumberConditionHandler;
 use Glpi\Form\Condition\ConditionHandler\StringConditionHandler;
+use Glpi\Form\Condition\ConditionHandler\VisibilityConditionHandler;
 use Glpi\Form\Condition\EditorManager;
 use Glpi\Form\Condition\FormData;
 use Glpi\Form\Condition\LogicOperator;
@@ -45,6 +46,7 @@ use Glpi\Form\QuestionType\QuestionTypeFile;
 use Glpi\Form\QuestionType\QuestionTypeNumber;
 use Glpi\Form\QuestionType\QuestionTypeShortText;
 use GLPITestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 final class EditorManagerTest extends GLPITestCase
 {
@@ -71,7 +73,7 @@ final class EditorManagerTest extends GLPITestCase
                 item_type: '',
                 value_operator: null,
                 value: null,
-            )
+            ),
         ]);
     }
 
@@ -90,6 +92,17 @@ final class EditorManagerTest extends GLPITestCase
                     'item' => 'question-2',
                     'value_operator' => ValueOperator::EQUALS->value,
                     'value' => 'bar',
+                ],
+                [
+                    'logic_operator' => LogicOperator::AND->value,
+                    'item' => 'section-1',
+                    'value_operator' => ValueOperator::VISIBLE->value,
+                ],
+
+                [
+                    'logic_operator' => LogicOperator::AND->value,
+                    'item' => 'comment-1',
+                    'value_operator' => ValueOperator::VISIBLE->value,
                 ],
             ],
         ]);
@@ -112,6 +125,20 @@ final class EditorManagerTest extends GLPITestCase
                 logic_operator: LogicOperator::OR->value,
                 value_operator: ValueOperator::EQUALS->value,
                 value: 'bar',
+            ),
+            new ConditionData(
+                item_uuid: 1,
+                item_type: 'section',
+                logic_operator: LogicOperator::AND->value,
+                value_operator: ValueOperator::VISIBLE->value,
+                value: null,
+            ),
+            new ConditionData(
+                item_uuid: 1,
+                item_type: 'comment',
+                logic_operator: LogicOperator::AND->value,
+                value_operator: ValueOperator::VISIBLE->value,
+                value: null,
             ),
         ]);
     }
@@ -151,7 +178,7 @@ final class EditorManagerTest extends GLPITestCase
                 [
                     'uuid' => 2,
                     'name' => 'Question 2',
-                    'type' => QuestionTypeFile::class, // do not support conditions
+                    'type' => QuestionTypeFile::class, // only support visibility conditions
                 ],
                 [
                     'uuid' => 3,
@@ -168,15 +195,87 @@ final class EditorManagerTest extends GLPITestCase
         // Assert: the dropdown values should not contains the "Question 2"
         // question that do not support conditions.
         $this->assertEquals($dropdown_values, [
-            'question-1' => 'Question 1',
-            'question-3' => 'Question 3',
+            'Questions' => [
+                'question-1' => 'Question 1',
+                'question-2' => 'Question 2',
+                'question-3' => 'Question 3',
+            ],
         ]);
     }
 
-    public function testSelectedQuestionIsExcludedFromDropdownValues(): void
+    public static function provideSelectedFormElementIsExcludedFromDropdownValues(): iterable
     {
-        // Arrange: create an editor manager with three questions
-        // The third question is selected.
+        yield 'section' => [
+            'selected_item_uuid' => 1,
+            'selected_item_type' => 'section',
+            'expected' => [
+                'Questions' => [
+                    'question-1' => 'Question 1',
+                    'question-2' => 'Question 2',
+                    'question-3' => 'Question 3',
+                ],
+                'Steps' => [
+                    'section-2' => 'Section 2',
+                    'section-3' => 'Section 3',
+                ],
+                'Comments' => [
+                    'comment-1' => 'Comment 1',
+                    'comment-2' => 'Comment 2',
+                    'comment-3' => 'Comment 3',
+                ],
+            ],
+        ];
+
+        yield 'question' => [
+            'selected_item_uuid' => 1,
+            'selected_item_type' => 'question',
+            'expected' => [
+                'Questions' => [
+                    'question-2' => 'Question 2',
+                    'question-3' => 'Question 3',
+                ],
+                'Steps' => [
+                    'section-1' => 'Section 1',
+                    'section-2' => 'Section 2',
+                    'section-3' => 'Section 3',
+                ],
+                'Comments' => [
+                    'comment-1' => 'Comment 1',
+                    'comment-2' => 'Comment 2',
+                    'comment-3' => 'Comment 3',
+                ],
+            ],
+        ];
+
+        yield 'comment' => [
+            'selected_item_uuid' => 1,
+            'selected_item_type' => 'comment',
+            'expected' => [
+                'Questions' => [
+                    'question-1' => 'Question 1',
+                    'question-2' => 'Question 2',
+                    'question-3' => 'Question 3',
+                ],
+                'Steps' => [
+                    'section-1' => 'Section 1',
+                    'section-2' => 'Section 2',
+                    'section-3' => 'Section 3',
+                ],
+                'Comments' => [
+                    'comment-2' => 'Comment 2',
+                    'comment-3' => 'Comment 3',
+                ],
+            ],
+        ];
+    }
+
+    #[DataProvider('provideSelectedFormElementIsExcludedFromDropdownValues')]
+    public function testSelectedFormElementIsExcludedFromDropdownValues(
+        int $selected_item_uuid,
+        string $selected_item_type,
+        array $expected
+    ): void {
+        // Arrange: create an editor manager with questions, sections and comments
         $form_data = new FormData([
             'questions' => [
                 [
@@ -195,24 +294,84 @@ final class EditorManagerTest extends GLPITestCase
                     'type' => QuestionTypeShortText::class,
                 ],
             ],
-            'selected_item_uuid' => 3,
-            'selected_item_type' => 'question',
+            'sections' => [
+                [
+                    'uuid' => 1,
+                    'name' => 'Section 1',
+                ],
+                [
+                    'uuid' => 2,
+                    'name' => 'Section 2',
+                ],
+                [
+                    'uuid' => 3,
+                    'name' => 'Section 3',
+                ],
+            ],
+            'comments' => [
+                [
+                    'uuid' => 1,
+                    'name' => 'Comment 1',
+                ],
+                [
+                    'uuid' => 2,
+                    'name' => 'Comment 2',
+                ],
+                [
+                    'uuid' => 3,
+                    'name' => 'Comment 3',
+                ],
+            ],
+            'selected_item_uuid' => $selected_item_uuid,
+            'selected_item_type' => $selected_item_type,
         ]);
         $editor_manager = $this->getManagerWithData($form_data);
 
-        // Act: get the questions dropdown values
+        // Act: get the dropdown values
         $dropdown_values = $editor_manager->getItemsDropdownValues();
 
-        // Assert: the dropdown values should not contains "Question 3" as it
-        // is selected.
-        $this->assertEquals($dropdown_values, [
-            'question-1' => 'Question 1',
-            'question-2' => 'Question 2',
-        ]);
+        // Assert: the dropdown values should not contain the selected item
+        $this->assertEquals($expected, $dropdown_values);
     }
 
-    public function testValueOperatorsForValidQuestionsAreReturned(): void
+    public static function provideValueOperatorsForValidFormElementsAreReturned(): iterable
     {
+        yield 'Question' => [
+            'uuid' => "1",
+            'expected' => [
+                'equals'          => __('Is equal to'),
+                'not_equals'      => __('Is not equal to'),
+                'contains'        => __('Contains'),
+                'not_contains'    => __('Do not contains'),
+                'visible'         => __('Is visible'),
+                'not_visible'     => __('Is not visible'),
+                'match_regex'     => __("Match regular expression"),
+                'not_match_regex' => __("Do not match regular expression"),
+            ],
+        ];
+
+        yield 'Section' => [
+            'uuid' => "2",
+            'expected' => [
+                'visible'     => __('Is visible'),
+                'not_visible' => __('Is not visible'),
+            ],
+        ];
+
+        yield 'Comment' => [
+            'uuid' => "3",
+            'expected' => [
+                'visible'     => __('Is visible'),
+                'not_visible' => __('Is not visible'),
+            ],
+        ];
+    }
+
+    #[DataProvider('provideValueOperatorsForValidFormElementsAreReturned')]
+    public function testValueOperatorsForValidFormElementsAreReturned(
+        string $uuid,
+        array $expected
+    ): void {
         // Arrange: create an editor manager with one question that supports conditions.
         $form_data = new FormData([
             'questions' => [
@@ -222,19 +381,26 @@ final class EditorManagerTest extends GLPITestCase
                     'type' => QuestionTypeShortText::class,
                 ],
             ],
+            'sections' => [
+                [
+                    'uuid' => 2,
+                    'name' => 'Section 1',
+                ],
+            ],
+            'comments' => [
+                [
+                    'uuid' => 3,
+                    'name' => 'Comment 1',
+                ],
+            ],
         ]);
         $editor_manager = $this->getManagerWithData($form_data);
 
         // Act: get the operators for the question.
-        $dropdown_values = $editor_manager->getValueOperatorDropdownValues(1);
+        $dropdown_values = $editor_manager->getValueOperatorDropdownValues($uuid);
 
         // Assert: the expected operators for a "ShortText" questions should be found.
-        $this->assertEquals([
-            'equals'       => __("Is equal to"),
-            'not_equals'   => __("Is not equal to"),
-            'contains'     => __("Contains"),
-            'not_contains' => __("Do not contains"),
-        ], $dropdown_values);
+        $this->assertEquals($expected, $dropdown_values);
     }
 
     public function testValueOperatorsForInvalidQuestionAreNotReturned(): void
@@ -245,7 +411,7 @@ final class EditorManagerTest extends GLPITestCase
                 [
                     'uuid' => 2,
                     'name' => 'Question 2',
-                    'type' => QuestionTypeFile::class, // do not support conditions
+                    'type' => QuestionTypeFile::class, // only support visibility conditions
                 ],
             ],
         ]);
@@ -255,68 +421,123 @@ final class EditorManagerTest extends GLPITestCase
         $dropdown_values = $editor_manager->getValueOperatorDropdownValues(2);
 
         // Assert: no operators should be found.
-        $this->assertEquals([], $dropdown_values);
+        $this->assertEquals([
+            'visible'     => __("Is visible"),
+            'not_visible' => __("Is not visible"),
+        ], $dropdown_values);
     }
 
-    public function testHandlerCanBeComputedFromConditionData(): void
+    public static function provideHandlerCanBeComputedFromConditionData(): iterable
     {
-        // Arrange: create an editor manager with some data
-        $condition_1 = new ConditionData(
-            item_uuid: '1',
-            item_type: 'question',
-            value_operator: ValueOperator::EQUALS->value,
-            value: "foo",
-        );
-        $condition_2 = new ConditionData(
-            item_uuid: '2',
-            item_type: 'question',
-            value_operator: ValueOperator::EQUALS->value,
-            value: "bar",
-        );
-        $form_data = new FormData([
-            'questions' => [
-                [
-                    'uuid' => 1,
-                    'name' => 'Question 1',
-                    'type' => QuestionTypeShortText::class,
-                ],
-                [
-                    'uuid' => 2,
-                    'name' => 'Question 2',
-                    'type' => QuestionTypeNumber::class,
-                ],
-                [
-                    'uuid' => 3,
-                    'name' => 'Question 3',
-                    'type' => QuestionTypeShortText::class,
-                ],
+        yield 'string question' => [
+            'condition' => new ConditionData(
+                item_uuid: '1',
+                item_type: 'question',
+                value_operator: ValueOperator::EQUALS->value,
+                value: "foo",
+            ),
+            'expected_handler' => StringConditionHandler::class,
+            'form_element' => [
+                'uuid' => 1,
+                'name' => 'Question 1',
+                'type' => QuestionTypeShortText::class,
             ],
+            'element_type' => 'questions',
+        ];
+
+        yield 'number question' => [
+            'condition' => new ConditionData(
+                item_uuid: '2',
+                item_type: 'question',
+                value_operator: ValueOperator::EQUALS->value,
+                value: "42",
+            ),
+            'expected_handler' => NumberConditionHandler::class,
+            'form_element' => [
+                'uuid' => 2,
+                'name' => 'Question 2',
+                'type' => QuestionTypeNumber::class,
+            ],
+            'element_type' => 'questions',
+        ];
+
+        yield 'visibility question' => [
+            'condition' => new ConditionData(
+                item_uuid: '3',
+                item_type: 'question',
+                value_operator: ValueOperator::VISIBLE->value,
+                value: null,
+            ),
+            'expected_handler' => VisibilityConditionHandler::class,
+            'form_element' => [
+                'uuid' => 3,
+                'name' => 'Question 3',
+                'type' => QuestionTypeShortText::class,
+            ],
+            'element_type' => 'questions',
+        ];
+
+        yield 'section visibility' => [
+            'condition' => new ConditionData(
+                item_uuid: '4',
+                item_type: 'section',
+                value_operator: ValueOperator::VISIBLE->value,
+                value: null,
+            ),
+            'expected_handler' => VisibilityConditionHandler::class,
+            'form_element' => [
+                'uuid' => 4,
+                'name' => 'Section 1',
+            ],
+            'element_type' => 'sections',
+        ];
+
+        yield 'comment visibility' => [
+            'condition' => new ConditionData(
+                item_uuid: '5',
+                item_type: 'comment',
+                value_operator: ValueOperator::VISIBLE->value,
+                value: null,
+            ),
+            'expected_handler' => VisibilityConditionHandler::class,
+            'form_element' => [
+                'uuid' => 5,
+                'name' => 'Comment 1',
+            ],
+            'element_type' => 'comments',
+        ];
+    }
+
+    #[DataProvider('provideHandlerCanBeComputedFromConditionData')]
+    public function testHandlerCanBeComputedFromConditionData(
+        ConditionData $condition,
+        string $expected_handler,
+        array $form_element,
+        string $element_type
+    ): void {
+        // Arrange: create an editor manager with form data
+        $form_data_array = [
+            $element_type => [$form_element],
             'conditions' => [
                 [
-                    'item'           => $condition_1->getItemDropdownKey(),
-                    'value_operator' => $condition_1->getValueOperator()->value,
-                    'value'          => $condition_1->getValue(),
+                    'item' => $condition->getItemDropdownKey(),
+                    'value_operator' => $condition->getValueOperator()->value,
                 ],
-                [
-                    'logic_operator' => LogicOperator::AND->value,
-                    'item'           => $condition_2->getItemDropdownKey(),
-                    'value_operator' => $condition_2->getValueOperator()->value,
-                    'value'          => $condition_2->getValue(),
-                ],
-            ]
-        ]);
+            ],
+        ];
+
+        // Add value if not null
+        if ($condition->getValue() !== null) {
+            $form_data_array['conditions'][0]['value'] = $condition->getValue();
+        }
+
+        $form_data = new FormData($form_data_array);
         $editor_manager = $this->getManagerWithData($form_data);
 
-        // Act: get the template types using the condition
-        $question_1_handler = $editor_manager->getHandlerForCondition(
-            $condition_1
-        );
-        $question_2_handler = $editor_manager->getHandlerForCondition(
-            $condition_2
-        );
+        // Act: get the handler using the condition
+        $handler = $editor_manager->getHandlerForCondition($condition);
 
-        // Assert: the correct template key must be found
-        $this->assertInstanceOf(StringConditionHandler::class, $question_1_handler);
-        $this->assertInstanceOf(NumberConditionHandler::class, $question_2_handler);
+        // Assert: the correct handler class must be found
+        $this->assertInstanceOf($expected_handler, $handler);
     }
 }

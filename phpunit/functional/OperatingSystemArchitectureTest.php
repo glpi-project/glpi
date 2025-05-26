@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -50,7 +49,7 @@ class OperatingSystemArchitectureTest extends CommonDropdown
             [\OperatingSystemArchitecture::getTypeName(), 'Operating system architectures'],
             [\OperatingSystemArchitecture::getTypeName(0), 'Operating system architectures'],
             [\OperatingSystemArchitecture::getTypeName(10), 'Operating system architectures'],
-            [\OperatingSystemArchitecture::getTypeName(1), 'Operating system architecture']
+            [\OperatingSystemArchitecture::getTypeName(1), 'Operating system architecture'],
         ];
     }
 
@@ -72,7 +71,7 @@ class OperatingSystemArchitectureTest extends CommonDropdown
         $this->assertGreaterThan(
             0,
             $instance->add([
-                'name' => 'Arch name ' . $this->getUniqueString()
+                'name' => 'Arch name ' . $this->getUniqueString(),
             ])
         );
         $this->assertTrue($instance->getFromDB($instance->getID()));

@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+require_once(__DIR__ . '/_check_webserver_config.php');
+
 use Glpi\Event;
 use Glpi\Exception\Http\BadRequestHttpException;
 
@@ -58,7 +60,7 @@ if (isset($_POST["update"])) {
     } else {
         Html::back();
     }
-} else if (isset($_POST['delete'])) {
+} elseif (isset($_POST['delete'])) {
     $link->check($_POST['id'], DELETE);
     $link->delete($_POST);
 

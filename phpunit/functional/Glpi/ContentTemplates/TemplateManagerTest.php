@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -42,7 +41,6 @@ use Glpi\ContentTemplates\TemplateManager;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Problem;
 use Ticket;
-use Twig\Sandbox\SecurityPolicy;
 
 class TemplateManagerTest extends DbTestCase
 {
@@ -90,7 +88,7 @@ class TemplateManagerTest extends DbTestCase
                 'params'    => [],
                 'expected'  => "",
                 'error'     => 'Unexpected end of template in "template" at line 1.',
-                'validation_error' => 'Invalid twig template syntax'
+                'validation_error' => 'Invalid twig template syntax',
             ],
             [
                 'content'   => '<h1>Test HTML template</h1><hr />{{content|raw}}',
@@ -152,7 +150,7 @@ class TemplateManagerTest extends DbTestCase
 
     public function testGetSecurityPolicy(): void
     {
-       // Not much to test here, maybe keepk this for code coverage ?
+        // Not much to test here, maybe keepk this for code coverage ?
         $manager = new TemplateManager();
         $this->assertInstanceOf(\Twig\Sandbox\SecurityPolicy::class, $manager->getSecurityPolicy());
     }
@@ -167,7 +165,7 @@ class TemplateManagerTest extends DbTestCase
         return [
             [Ticket::class],
             [Change::class],
-            [Problem::class]
+            [Problem::class],
         ];
     }
 
@@ -206,9 +204,9 @@ class TemplateManagerTest extends DbTestCase
             '_tasktemplates_id' => [$task_template->getID()],
             '_actors'            => [
                 'requester' => [
-                    ['itemtype' => 'User', 'items_id' => $user->getID()]
-                ]
-            ]
+                    ['itemtype' => 'User', 'items_id' => $user->getID()],
+                ],
+            ],
         ]);
 
         // Validate requester

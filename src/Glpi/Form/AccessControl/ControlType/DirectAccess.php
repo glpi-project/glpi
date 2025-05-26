@@ -41,6 +41,8 @@ use Glpi\Form\AccessControl\FormAccessControl;
 use Glpi\Form\AccessControl\FormAccessParameters;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Form\AccessControl\FormAccessControlManager;
+use Glpi\Form\Export\Context\DatabaseMapper;
+use Glpi\Form\Export\Serializer\DynamicExportDataField;
 use Glpi\Form\Form;
 use Override;
 
@@ -65,20 +67,21 @@ final class DirectAccess implements ControlTypeInterface
     }
 
     #[Override]
-    public function getWarnings(Form $form, array $warnings): array
+    public function getWarnings(Form $form): array
     {
-        return $this->addWarningIfFormHasBlacklistedQuestionTypes($form, $warnings);
+        return $this->getWarningIfFormHasBlacklistedQuestionTypes($form);
     }
 
-    private function addWarningIfFormHasBlacklistedQuestionTypes(
+    private function getWarningIfFormHasBlacklistedQuestionTypes(
         Form $form,
-        array $warnings
     ): array {
+        $warnings = [];
+
         if (
             FormAccessControlManager::getInstance()->allowUnauthenticatedAccess($form)
             && array_reduce(
                 $form->getQuestions(),
-                fn ($carry, $question) => $carry || !$question->getQuestionType()->isAllowedForUnauthenticatedAccess()
+                fn($carry, $question) => $carry || !$question->getQuestionType()->isAllowedForUnauthenticatedAccess()
             )
         ) {
             $warnings[] = __('This form contains question types that are not allowed for unauthenticated access. These questions will be hidden from unauthenticated users.');
@@ -193,5 +196,20 @@ final class DirectAccess implements ControlTypeInterface
         }
 
         return $config->allowUnauthenticated();
+    }
+
+    #[Override]
+    public function exportDynamicConfig(
+        JsonFieldInterface $config
+    ): DynamicExportDataField {
+        return new DynamicExportDataField($config->jsonSerialize(), []);
+    }
+
+    #[Override]
+    public static function prepareDynamicConfigDataForImport(
+        array $config,
+        DatabaseMapper $mapper,
+    ): array {
+        return $config;
     }
 }

@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -51,13 +50,13 @@ class GLPITestCase extends atoum
 
     public function beforeTestMethod($method)
     {
-       // By default, no session, not connected
+        // By default, no session, not connected
         $this->resetSession();
 
         // By default, there shouldn't be any pictures in the test files
         $this->resetPictures();
 
-       // Ensure cache is clear
+        // Ensure cache is clear
         global $GLPI_CACHE;
         $GLPI_CACHE->clear();
 
@@ -147,26 +146,6 @@ class GLPITestCase extends atoum
         $method->setAccessible(true);
 
         return $method->invoke($instance, ...$args);
-    }
-
-    /**
-     * Call a private constructor, and get the created instance.
-     *
-     * @param string    $classname  Class to instanciate
-     * @param mixed     $arg        Constructor arguments
-     *
-     * @return mixed
-     */
-    protected function callPrivateConstructor($classname, $args)
-    {
-        $class = new ReflectionClass($classname);
-        $instance = $class->newInstanceWithoutConstructor();
-
-        $constructor = $class->getConstructor();
-        $constructor->setAccessible(true);
-        $constructor->invokeArgs($instance, $args);
-
-        return $instance;
     }
 
     protected function resetSession()
@@ -322,62 +301,5 @@ class GLPITestCase extends atoum
     protected function getTestRootEntity(bool $only_id = false)
     {
         return getItemByTypeName('Entity', '_test_root_entity', $only_id);
-    }
-
-    /**
-     * Return the minimal fields required for the creation of an item of the given class.
-     *
-     * @param string $class
-     * @return array
-     */
-    protected function getMinimalCreationInput(string $class): array
-    {
-        if (!is_a($class, CommonDBTM::class, true)) {
-            return [];
-        }
-
-        $input = [];
-
-        $item = new $class();
-
-        if ($item->isField($class::getNameField())) {
-            $input[$class::getNameField()] = $this->getUniqueString();
-        }
-
-        if ($item->isField('entities_id')) {
-            $input['entities_id'] = $this->getTestRootEntity(true);
-        }
-
-        switch ($class) {
-            case Cartridge::class:
-                $input['cartridgeitems_id'] = getItemByTypeName(CartridgeItem::class, '_test_cartridgeitem01', true);
-                break;
-            case Change::class:
-                $input['content'] = $this->getUniqueString();
-                break;
-            case Consumable::class:
-                $input['consumableitems_id'] = getItemByTypeName(ConsumableItem::class, '_test_consumableitem01', true);
-                break;
-            case Item_DeviceSimcard::class:
-                $input['itemtype']          = Computer::class;
-                $input['items_id']          = getItemByTypeName(Computer::class, '_test_pc01', true);
-                $input['devicesimcards_id'] = getItemByTypeName(DeviceSimcard::class, '_test_simcard_1', true);
-                break;
-            case Problem::class:
-                $input['content'] = $this->getUniqueString();
-                break;
-            case SoftwareLicense::class:
-                $input['softwares_id'] = getItemByTypeName(Software::class, '_test_soft', true);
-                break;
-            case Ticket::class:
-                $input['content'] = $this->getUniqueString();
-                break;
-        }
-
-        if (is_a($class, Item_Devices::class, true)) {
-            $input[$class::$items_id_2] = 1; // Valid ID is not required (yet)
-        }
-
-        return $input;
     }
 }

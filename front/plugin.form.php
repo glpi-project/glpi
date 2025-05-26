@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+require_once(__DIR__ . '/_check_webserver_config.php');
+
 use Glpi\Exception\Http\BadRequestHttpException;
 
 /**
@@ -43,7 +45,7 @@ Session::checkRight("config", UPDATE);
 
 $plugin = new Plugin();
 
-$id     = isset($_POST['id']) && is_numeric($_POST['id']) ? (int)$_POST['id'] : null;
+$id     = isset($_POST['id']) && is_numeric($_POST['id']) ? (int) $_POST['id'] : null;
 $action = $id > 0 && isset($_POST['action']) ? $_POST['action'] : null;
 
 switch ($action) {

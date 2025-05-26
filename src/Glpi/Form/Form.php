@@ -35,12 +35,15 @@
 
 namespace Glpi\Form;
 
+use AbstractRightsDropdown;
 use Change_Item;
 use CommonDBTM;
 use CommonGLPI;
 use CronTask;
 use Entity;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Form\AccessControl\ControlType\AllowList;
+use Glpi\Form\AccessControl\ControlType\AllowListConfig;
 use Glpi\Form\AccessControl\ControlType\ControlTypeInterface;
 use Glpi\Form\AccessControl\FormAccessControl;
 use Glpi\Form\Condition\FormData;
@@ -50,15 +53,20 @@ use Glpi\Form\QuestionType\QuestionTypeInterface;
 use Glpi\Form\ServiceCatalog\ServiceCatalog;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\Form\AccessControl\FormAccessControlManager;
+use Glpi\Form\Condition\ConditionableVisibilityInterface;
+use Glpi\Form\Condition\ConditionableVisibilityTrait;
 use Glpi\Form\QuestionType\QuestionTypesManager;
 use Glpi\Form\ServiceCatalog\ServiceCatalogLeafInterface;
 use Glpi\UI\IllustrationManager;
+use Glpi\ItemTranslation\Context\TranslationHandler;
+use Glpi\ItemTranslation\Context\ProvideTranslationsInterface;
 use Html;
 use Item_Problem;
 use Item_Ticket;
 use Log;
 use MassiveAction;
 use Override;
+use Ramsey\Uuid\Uuid;
 use ReflectionClass;
 use RuntimeException;
 use Session;
@@ -67,8 +75,17 @@ use Ticket;
 /**
  * Helpdesk form
  */
-final class Form extends CommonDBTM implements ServiceCatalogLeafInterface
+final class Form extends CommonDBTM implements
+    ServiceCatalogLeafInterface,
+    ProvideTranslationsInterface,
+    ConditionableVisibilityInterface
 {
+    use ConditionableVisibilityTrait;
+
+    public const TRANSLATION_KEY_NAME = 'form_name';
+    public const TRANSLATION_KEY_HEADER = 'form_header';
+    public const TRANSLATION_KEY_DESCRIPTION = 'form_description';
+
     public static $rightname = 'form';
 
     public $dohistory = true;
@@ -91,6 +108,12 @@ final class Form extends CommonDBTM implements ServiceCatalogLeafInterface
     }
 
     #[Override]
+    public function getUUID(): string
+    {
+        return $this->fields['uuid'];
+    }
+
+    #[Override]
     public static function getIcon()
     {
         return "ti ti-forms";
@@ -106,19 +129,20 @@ final class Form extends CommonDBTM implements ServiceCatalogLeafInterface
     public function defineTabs($options = [])
     {
         $tabs = parent::defineTabs();
-        $this->addStandardTab(ServiceCatalog::getType(), $tabs, $options);
+        $this->addStandardTab(ServiceCatalog::class, $tabs, $options);
         if (Item_Ticket::countLinkedTickets($this) > 0) {
-            $this->addStandardTab(Item_Ticket::getType(), $tabs, $options);
+            $this->addStandardTab(Item_Ticket::class, $tabs, $options);
         }
         if (Change_Item::countLinkedChanges($this) > 0) {
-            $this->addStandardTab(Change_Item::getType(), $tabs, $options);
+            $this->addStandardTab(Change_Item::class, $tabs, $options);
         }
         if (Item_Problem::countLinkedProblems($this) > 0) {
-            $this->addStandardTab(Item_Problem::getType(), $tabs, $options);
+            $this->addStandardTab(Item_Problem::class, $tabs, $options);
         }
-        $this->addStandardTab(FormAccessControl::getType(), $tabs, $options);
-        $this->addStandardTab(FormDestination::getType(), $tabs, $options);
-        $this->addStandardTab(Log::getType(), $tabs, $options);
+        $this->addStandardTab(FormAccessControl::class, $tabs, $options);
+        $this->addStandardTab(FormDestination::class, $tabs, $options);
+        $this->addStandardTab(FormTranslation::class, $tabs, $options);
+        $this->addStandardTab(Log::class, $tabs, $options);
         return $tabs;
     }
 
@@ -180,8 +204,8 @@ final class Form extends CommonDBTM implements ServiceCatalogLeafInterface
                 'link'       => 'AND',
                 'field'      => 6,  // Service catalog category
                 'searchtype' => 'equals',
-                'value'      => $item->getID()
-            ]
+                'value'      => $item->getID(),
+            ],
         ], 1 /* Sort by name */);
         return true;
     }
@@ -197,7 +221,7 @@ final class Form extends CommonDBTM implements ServiceCatalogLeafInterface
             'field'         => 'id',
             'name'          => __('ID'),
             'massiveaction' => false,
-            'datatype'      => 'number'
+            'datatype'      => 'number',
         ];
         $search_options[] = [
             'id'            => '80',
@@ -212,7 +236,7 @@ final class Form extends CommonDBTM implements ServiceCatalogLeafInterface
             'table'    => $this->getTable(),
             'field'    => 'is_active',
             'name'     => __('Active'),
-            'datatype' => 'bool'
+            'datatype' => 'bool',
         ];
         $search_options[] = [
             'id'            => '4',
@@ -220,7 +244,7 @@ final class Form extends CommonDBTM implements ServiceCatalogLeafInterface
             'field'         => 'date_mod',
             'name'          => __('Last update'),
             'datatype'      => 'datetime',
-            'massiveaction' => false
+            'massiveaction' => false,
         ];
         $search_options[] = [
             'id'            => '5',
@@ -228,7 +252,7 @@ final class Form extends CommonDBTM implements ServiceCatalogLeafInterface
             'field'         => 'date_creation',
             'name'          => __('Creation date'),
             'datatype'      => 'datetime',
-            'massiveaction' => false
+            'massiveaction' => false,
         ];
         $search_options[] = [
             'id'            => '6',
@@ -252,15 +276,46 @@ final class Form extends CommonDBTM implements ServiceCatalogLeafInterface
     #[Override]
     public function post_addItem()
     {
+        $from_import    = $this->input['_from_import']    ?? false;
+        $from_migration = $this->input['_from_migration'] ?? false;
+        if ($from_import || $from_migration) {
+            // Do not run extra process as it is not a real item creation
+            return;
+        }
+
         // Automatically create the first form section unless specified otherwise
-        if (!isset($this->input['_do_not_init_sections'])) {
+        $init_sections = $this->input['_init_sections'] ?? true;
+        if ($init_sections) {
             $this->createFirstSection();
         }
 
-        // Add the mandatory destinations, unless we are importing a form
-        if (!isset($this->input['_from_import'])) {
-            $this->addMandatoryDestinations();
+        // Add the default destinations
+        $add_default_destinations = $this->input['_init_destinations'] ?? true;
+        if ($add_default_destinations) {
+            $this->addDefaultDestinations();
         }
+
+        // Add the default access policies unless specified otherwise
+        $init_policies = $this->input['_init_access_policies'] ?? true;
+        if ($init_policies) {
+            $this->addDefaultAccessPolicies();
+        }
+    }
+
+    #[Override]
+    public function prepareInputForAdd($input)
+    {
+        if (!isset($input['uuid'])) {
+            $input['uuid'] = Uuid::uuid4();
+        }
+
+        // JSON fields must have a value when created to prevent SQL errors
+        if (!isset($input['submit_button_conditions'])) {
+            $input['submit_button_conditions'] = json_encode([]);
+        }
+
+        $input = $this->prepareInput($input);
+        return parent::prepareInputForAdd($input);
     }
 
     #[Override]
@@ -270,6 +325,17 @@ final class Form extends CommonDBTM implements ServiceCatalogLeafInterface
         // This avoid "empty" updates when the form itself is not modified but
         // its questions are
         $input['date_mod'] = $_SESSION['glpi_currenttime'];
+
+        $input = $this->prepareInput($input);
+        return parent::prepareInputForUpdate($input);
+    }
+
+    private function prepareInput($input): array
+    {
+        if (isset($input['_conditions'])) {
+            $input['submit_button_conditions'] = json_encode($input['_conditions']);
+            unset($input['_submit_button_conditions']);
+        }
 
         return $input;
     }
@@ -335,8 +401,12 @@ final class Form extends CommonDBTM implements ServiceCatalogLeafInterface
     #[Override]
     public static function showMassiveActionsSubForm(MassiveAction $ma): bool
     {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
         $ids = array_values($ma->getItems()[Form::class]);
-        $export_url = "/Form/Export?" . http_build_query(['ids' => $ids]);
+        $export_url = $CFG_GLPI['url_base'];
+        $export_url .= "/Form/Export?" . http_build_query(['ids' => $ids]);
 
         $label = __s("Click here to download the exported forms...");
         echo "<a href=\"$export_url\">$label</a>";
@@ -345,11 +415,64 @@ final class Form extends CommonDBTM implements ServiceCatalogLeafInterface
         return true;
     }
 
+    #[Override]
+    public function listTranslationsHandlers(): array
+    {
+        $key = __('Form properties');
+        $handlers = [];
+        if (!empty($this->fields['name'])) {
+            $handlers[$key][] = new TranslationHandler(
+                item: $this,
+                key: self::TRANSLATION_KEY_NAME,
+                name: __('Form title'),
+                value: $this->fields['name'],
+            );
+        }
+
+        if (!empty($this->fields['header'])) {
+            $handlers[$key][] = new TranslationHandler(
+                item: $this,
+                key: self::TRANSLATION_KEY_HEADER,
+                name: __('Form description'),
+                value: $this->fields['header'],
+                is_rich_text: true
+            );
+        }
+
+        if (!empty($this->fields['description'])) {
+            $handlers[$key][] = new TranslationHandler(
+                item: $this,
+                key: self::TRANSLATION_KEY_DESCRIPTION,
+                name: __('Service catalog description'),
+                value: $this->fields['description'],
+                is_rich_text: true
+            );
+        }
+
+        $sections_handlers = array_map(
+            fn($section) => $section->listTranslationsHandlers(),
+            $this->getSections()
+        );
+
+        return array_merge($handlers, ...$sections_handlers);
+    }
+
+    protected function getVisibilityStrategyFieldName(): string
+    {
+        return 'submit_button_visibility_strategy';
+    }
+
+    protected function getConditionsFieldName(): string
+    {
+        return 'submit_button_conditions';
+    }
+
     public static function getAdditionalMenuLinks(): array
     {
         $links = [];
 
         if (self::canCreate()) {
+            $links['view_form_categories'] = Category::getSearchURL(false);
             $links['import_forms'] = '/Form/Import';
         }
 
@@ -533,10 +656,22 @@ final class Form extends CommonDBTM implements ServiceCatalogLeafInterface
         return $this->getQuestionsByTypes([$type]);
     }
 
+    /** @return \Glpi\Form\Condition\SectionData[] */
+    public function getSectionsStateForConditionEditor(): array
+    {
+        return FormData::createFromForm($this)->getSectionsData();
+    }
+
     /** @return \Glpi\Form\Condition\QuestionData[] */
     public function getQuestionsStateForConditionEditor(): array
     {
         return FormData::createFromForm($this)->getQuestionsData();
+    }
+
+    /** @return \Glpi\Form\Condition\CommentData[] */
+    public function getCommentsStateForConditionEditor(): array
+    {
+        return FormData::createFromForm($this)->getCommentsData();
     }
 
     /**
@@ -943,13 +1078,19 @@ final class Form extends CommonDBTM implements ServiceCatalogLeafInterface
     #[Override]
     public function getServiceCatalogItemTitle(): string
     {
-        return $this->fields['name'] ?? "";
+        return FormTranslation::translate(
+            $this,
+            static::TRANSLATION_KEY_NAME
+        ) ?? '';
     }
 
     #[Override]
     public function getServiceCatalogItemDescription(): string
     {
-        return $this->fields['description'] ?? "";
+        return FormTranslation::translate(
+            $this,
+            static::TRANSLATION_KEY_DESCRIPTION
+        ) ?? '';
     }
 
     #[Override]
@@ -970,14 +1111,39 @@ final class Form extends CommonDBTM implements ServiceCatalogLeafInterface
         return "/Form/Render/" . $this->getID();
     }
 
-    private function addMandatoryDestinations(): void
+    /**
+     * Get the number of times this form has been used
+     *
+     * @return int
+     */
+    public function getUsageCount(): int
+    {
+        return $this->fields['usage_count'] ?? 0;
+    }
+
+    private function addDefaultDestinations(): void
     {
         $destination = new FormDestination();
-        $destination->add([
+        $id = $destination->add([
             self::getForeignKeyField() => $this->getId(),
             'itemtype'                 => FormDestinationTicket::class,
             'name'                     => Ticket::getTypeName(1),
-            'is_mandatory'             => true,
+        ]);
+        if (!$id) {
+            throw new RuntimeException("Failed to initialize destinations");
+        }
+    }
+
+    private function addDefaultAccessPolicies(): void
+    {
+        $policy = new FormAccessControl();
+        $policy->add([
+            Form::getForeignKeyField() => $this->getID(),
+            'strategy' => AllowList::class,
+            '_config'   => new AllowListConfig(
+                user_ids: [AbstractRightsDropdown::ALL_USERS]
+            ),
+            'is_active' => 1,
         ]);
     }
 }

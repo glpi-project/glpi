@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -126,12 +125,12 @@ if (!$DB->tableExists('glpi_databaseinstances')) {
 
 // Create glpi_databaseinstances itemtype/items_id if they are not existing (datamodel changed during v10.0 development)
 if (!$DB->fieldExists('glpi_databaseinstances', 'itemtype') || !$DB->fieldExists('glpi_databaseinstances', 'items_id')) {
-   //1- migrate glpi_databaseinstances table
+    //1- migrate glpi_databaseinstances table
     $migration->addField('glpi_databaseinstances', 'itemtype', 'string', [
-        'after' => 'states_id'
+        'after' => 'states_id',
     ]);
     $migration->addField('glpi_databaseinstances', 'items_id', "int {$default_key_sign} NOT NULL DEFAULT '0'", [
-        'after' => 'itemtype'
+        'after' => 'itemtype',
     ]);
     $migration->addKey('glpi_databaseinstances', ['itemtype', 'items_id'], 'item');
     $migration->migrationOneTable('glpi_databaseinstances');
@@ -175,10 +174,10 @@ if ($DB->fieldExists('glpi_states', 'is_visible_database')) {
     // Dev migration
     $migration->changeField('glpi_states', 'is_visible_database', 'is_visible_databaseinstance', 'bool', ['value' => 1]);
     $migration->dropKey('glpi_states', 'is_visible_database');
-} else if (!$DB->fieldExists('glpi_states', 'is_visible_databaseinstance')) {
+} elseif (!$DB->fieldExists('glpi_states', 'is_visible_databaseinstance')) {
     $migration->addField('glpi_states', 'is_visible_databaseinstance', 'bool', [
         'value' => 1,
-        'after' => 'is_visible_appliance'
+        'after' => 'is_visible_appliance',
     ]);
 }
 $migration->addKey('glpi_states', 'is_visible_databaseinstance');
@@ -186,7 +185,7 @@ $migration->addKey('glpi_states', 'is_visible_databaseinstance');
 // Create glpi_databases is_dynamic if not exist (datamodel changed during v10.0 development)
 if (!$DB->fieldExists('glpi_databases', 'is_dynamic')) {
     $migration->addField('glpi_databases', 'is_dynamic', "tinyint NOT NULL DEFAULT '0'", [
-        'after' => 'is_deleted'
+        'after' => 'is_deleted',
     ]);
     $migration->addKey('glpi_databases', 'is_dynamic');
     $migration->migrationOneTable('glpi_databases');

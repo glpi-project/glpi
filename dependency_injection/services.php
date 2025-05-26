@@ -70,6 +70,10 @@ return static function (ContainerConfigurator $container): void {
         'Glpi\Form\Condition\\',
         $projectDir . '/src/Glpi/Form/Condition/*Manager.php'
     );
+    $services->load(
+        'Glpi\UI\\',
+        $projectDir . '/src/Glpi/UI/*Manager.php'
+    );
 
     // Prevent Symfony to register its own default logger.
     // @see \Symfony\Component\HttpKernel\DependencyInjection\LoggerPass

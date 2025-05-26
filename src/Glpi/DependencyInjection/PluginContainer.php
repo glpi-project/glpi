@@ -62,9 +62,12 @@ class PluginContainer implements ContainerInterface
     private Kernel $kernel;
 
     public function __construct(
-        #[Autowire(service: 'service_container')] Container $symfony_container,
-        #[Autowire(service: 'parameter_bag')] ParameterBag $container_parameters,
-        #[Autowire(service: 'kernel')] Kernel $kernel,
+        #[Autowire(service: 'service_container')]
+        Container $symfony_container,
+        #[Autowire(service: 'parameter_bag')]
+        ParameterBag $container_parameters,
+        #[Autowire(service: 'kernel')]
+        Kernel $kernel,
     ) {
         $this->symfony_container = $symfony_container;
         $this->container_parameters = $container_parameters;
@@ -192,7 +195,7 @@ class PluginContainer implements ContainerInterface
         $file = (new \ReflectionObject($this->kernel))->getFileName();
         /* @var PhpFileLoader $kernelLoader */
         $kernelLoader = $loader->getResolver()->resolve($file);
-        $instanceof = \Closure::bind(fn &() => $this->instanceof, $kernelLoader, $kernelLoader)();
+        $instanceof = \Closure::bind(fn&() => $this->instanceof, $kernelLoader, $kernelLoader)();
         $configurator = new ContainerConfigurator($container, $kernelLoader, $instanceof, $file, $file, $this->kernel->getEnvironment());
 
         return $configurator;

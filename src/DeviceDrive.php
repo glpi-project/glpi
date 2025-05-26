@@ -49,20 +49,20 @@ class DeviceDrive extends CommonDevice
             parent::getAdditionalFields(),
             [['name'  => 'is_writer',
                 'label' => __('Writing ability'),
-                'type'  => 'bool'
+                'type'  => 'bool',
             ],
                 ['name'  => 'speed',
                     'label' => __('Speed'),
-                    'type'  => 'text'
+                    'type'  => 'text',
                 ],
                 ['name'  => 'interfacetypes_id',
                     'label' => __('Interface'),
-                    'type'  => 'dropdownValue'
+                    'type'  => 'dropdownValue',
                 ],
                 ['name'  => 'devicedrivemodels_id',
                     'label' => _n('Model', 'Models', 1),
-                    'type'  => 'dropdownValue'
-                ]
+                    'type'  => 'dropdownValue',
+                ],
             ]
         );
     }
@@ -76,7 +76,7 @@ class DeviceDrive extends CommonDevice
             'table'              => static::getTable(),
             'field'              => 'is_writer',
             'name'               => __('Writing ability'),
-            'datatype'           => 'bool'
+            'datatype'           => 'bool',
         ];
 
         $tab[] = [
@@ -92,7 +92,7 @@ class DeviceDrive extends CommonDevice
             'table'              => 'glpi_interfacetypes',
             'field'              => 'name',
             'name'               => __('Interface'),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -100,7 +100,7 @@ class DeviceDrive extends CommonDevice
             'table'              => 'glpi_devicedrivemodels',
             'field'              => 'name',
             'name'               => _n('Model', 'Models', 1),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         return $tab;
@@ -171,12 +171,12 @@ class DeviceDrive extends CommonDevice
         return [
             'designation'       => 'equal',
             'manufacturers_id'  => 'equal',
-            'interfacetypes_id' => 'equal'
+            'interfacetypes_id' => 'equal',
         ];
     }
 
     public static function getIcon()
     {
-        return "far fa-hdd";
+        return "ti ti-server-2";
     }
 }

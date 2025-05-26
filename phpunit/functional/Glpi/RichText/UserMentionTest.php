@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -38,12 +37,14 @@ namespace tests\units\Glpi\RichText;
 use CommonITILActor;
 use CommonITILObject;
 use DbTestCase;
+use Glpi\RichText\UserMention;
 use Notification;
 use Notification_NotificationTemplate;
 use NotificationTarget;
 use NotificationTemplate;
 use NotificationTemplateTranslation;
 use PHPUnit\Framework\Attributes\DataProvider;
+use Profile;
 use Session;
 use Ticket;
 use Ticket_User;
@@ -87,16 +88,14 @@ class UserMentionTest extends DbTestCase
                     // No user mention on creation => no observer
                     'add_content'            => <<<HTML
                   <p>ping @tec</p>
-HTML
-               ,
+HTML,
                     'add_expected_observers' => [],
                     'add_expected_notified'  => [],
 
-                     // Added mentions on update => new observers
+                    // Added mentions on update => new observers
                     'update_content'            => <<<HTML
                   <p>ping <span data-user-mention="true" data-user-id="{$tech_id}">@tech</span></p>
-HTML
-               ,
+HTML,
                     'update_expected_observers' => [$tech_id],
                     'update_expected_notified'  => [$tech_id],
                 ];
@@ -108,16 +107,14 @@ HTML
                     // 1 user mention => 1 observer
                     'add_content'            => <<<HTML
                   <p>ping <span data-user-mention="true" data-user-id="{$tech_id}">@tech</span></p>
-HTML
-               ,
+HTML,
                     'add_expected_observers' => [$tech_id],
                     'add_expected_notified'  => [$tech_id],
 
                     // Same mentions on update => mentionned users are not notified
                     'update_content'            => <<<HTML
                   <p>ping <span data-user-mention="true" data-user-id="{$tech_id}">@tech</span></p>
-HTML
-               ,
+HTML,
                     'update_expected_observers' => [],
                     'update_expected_notified'  => [],
                 ];
@@ -130,8 +127,7 @@ HTML
                     'add_content'            => <<<HTML
                   <p>Hi <span data-user-mention="true" data-user-id="{$tech_id}">@tech</span>,</p>
                   <p>I discussed with <span data-user-id="{$normal_id}" data-user-mention="true">@normal</span> about ...</p>
-HTML
-               ,
+HTML,
                     'add_expected_observers' => [$tech_id, $normal_id],
                     'add_expected_notified'  => [$tech_id, $normal_id],
 
@@ -139,8 +135,7 @@ HTML
                     'update_content'            => <<<HTML
                   <p>Hi <span data-user-mention="true" data-user-id="{$tech_id}">@tech</span>,</p>
                   <p> ... </p>
-HTML
-               ,
+HTML,
                     'update_expected_observers' => [],
                     'update_expected_notified'  => [],
                 ];
@@ -156,8 +151,7 @@ HTML
                      <p>Hi <span data-user-mention="true" data-user-id="{$tech_id}">@tech</span>,</p>
                      <br>
                      <p>I discussed with <span data-user-id="{$normal_id}" data-user-mention="true">@normal</span> about ...</p>
-HTML
-                  ,
+HTML,
                         'add_expected_observers' => [$tech_id, $normal_id],
                         'add_expected_notified'  => [$tech_id],
 
@@ -166,8 +160,7 @@ HTML
                      <p>Hi <span data-user-mention="true" data-user-id="{$tech_id}">@tech</span>,</p>
                      <p>I discussed with <span data-user-id="{$normal_id}" data-user-mention="true">@normal</span> about ...</p>
                      <p> ... </p>
-HTML
-                  ,
+HTML,
                         'update_expected_observers' => [],
                         'update_expected_notified'  => [],
                         'is_private'                => true,
@@ -180,16 +173,14 @@ HTML
                     // bad HTML no users are notified
                     'add_content'            => <<<HTML
                   </span></p></div></body></html>
-HTML
-               ,
+HTML,
                     'add_expected_observers' => [],
                     'add_expected_notified'  => [],
 
                     // update bad HTML => no users are notified
                     'update_content'            => <<<HTML
                   </span></p></div></body></html>
-HTML
-               ,
+HTML,
                     'update_expected_observers' => [],
                     'update_expected_notified'  => [],
                 ];
@@ -326,8 +317,7 @@ HTML
             // No user mention on creation => no observer
             'submission_add'            => <<<HTML
             <p>ping @tec</p>
-HTML
-         ,
+HTML,
             'validation_add'            => null,
 
             'add_expected_observers'    => [],
@@ -336,8 +326,7 @@ HTML
             // Added mentions on update (submission) => new observers
             'submission_update'         => <<<HTML
             <p>ping <span data-user-mention="true" data-user-id="{$tech_id}">@tech</span></p>
-HTML
-         ,
+HTML,
             'validation_update'         => null,
 
             'update_expected_observers' => [$tech_id],
@@ -348,8 +337,7 @@ HTML
             // No user mention on creation => no observer
             'submission_add'            => <<<HTML
             <p>ping @tec</p>
-HTML
-         ,
+HTML,
             'validation_add'            => null,
 
             'add_expected_observers'    => [],
@@ -359,8 +347,7 @@ HTML
             'submission_update'         => null,
             'validation_update'         => <<<HTML
             <p>ping <span data-user-mention="true" data-user-id="{$tech_id}">@tech</span></p>
-HTML
-,
+HTML,
 
             'update_expected_observers' => [$tech_id],
             'update_expected_notified'  => [$tech_id],
@@ -370,8 +357,7 @@ HTML
             // 1 user mention => 1 observer
             'submission_add'            => <<<HTML
             <p>ping <span data-user-mention="true" data-user-id="{$tech_id}">@tech</span></p>
-HTML
-         ,
+HTML,
             'validation_add'            => null,
             'add_expected_observers'    => [$tech_id],
             'add_expected_notified'     => [$tech_id],
@@ -379,8 +365,7 @@ HTML
             // Same mentions on update (submission) => mentionned users are not notified
             'submission_update'         => <<<HTML
             <p>ping <span data-user-mention="true" data-user-id="{$tech_id}">@tech</span></p>
-HTML
-         ,
+HTML,
             'validation_update'         => null,
             'update_expected_observers' => [],
             'update_expected_notified'  => [],
@@ -390,8 +375,7 @@ HTML
             // 1 user mention => 1 observer
             'submission_add'            => <<<HTML
             <p>ping <span data-user-mention="true" data-user-id="{$tech_id}">@tech</span></p>
-HTML
-         ,
+HTML,
             'validation_add'            => null,
             'add_expected_observers'    => [$tech_id],
             'add_expected_notified'     => [$tech_id],
@@ -400,8 +384,7 @@ HTML
             'submission_update'         => null,
             'validation_update'         => <<<HTML
             <p>ping <span data-user-mention="true" data-user-id="{$tech_id}">@tech</span></p>
-HTML
-         ,
+HTML,
             'update_expected_observers' => [],
             'update_expected_notified'  => [],
         ];
@@ -410,8 +393,7 @@ HTML
             // No user mention on creation => no observer
             'submission_add'            => <<<HTML
             <p>ping @tec</p>
-HTML
-         ,
+HTML,
             'validation_add'            => null,
 
             'add_expected_observers'    => [],
@@ -420,12 +402,10 @@ HTML
             // Added mentions on update (submission and validation) => new observers
             'submission_update'         => <<<HTML
             <p>ping <span data-user-mention="true" data-user-id="{$tech_id}">@tech</span></p>
-HTML
-         ,
+HTML,
             'validation_update'         => <<<HTML
             <p>I discussed with <span data-user-id="{$normal_id}" data-user-mention="true">@normal</span> about ...</p>
-HTML
-         ,
+HTML,
 
             'update_expected_observers' => [$tech_id, $normal_id],
             'update_expected_notified'  => [$tech_id, $normal_id],
@@ -437,8 +417,7 @@ HTML
             'submission_add'            => <<<HTML
             <p>Hi <span data-user-mention="true" data-user-id="{$tech_id}">@tech</span>,</p>
             <p>I discussed with <span data-user-id="{$normal_id}" data-user-mention="true">@normal</span> about ...</p>
-HTML
-         ,
+HTML,
             'validation_add'            => null,
             'add_expected_observers'    => [$tech_id, $normal_id],
             'add_expected_notified'     => [$tech_id, $normal_id],
@@ -447,8 +426,7 @@ HTML
             'submission_update'            => <<<HTML
             <p>Hi <span data-user-mention="true" data-user-id="{$tech_id}">@tech</span>,</p>
             <p> ... </p>
-HTML
-         ,
+HTML,
             'validation_update'            => null,
             'update_expected_observers'    => [],
             'update_expected_notified'     => [],
@@ -538,7 +516,7 @@ HTML
 
         // Update TicketValidation
         $input = [
-            'id' => $ticket_validation_id
+            'id' => $ticket_validation_id,
         ];
         if ($submission_update !== null) {
             $input['comment_submission'] = $submission_update;
@@ -633,5 +611,92 @@ HTML
             ]
         );
         $this->assertGreaterThan(0, $target_id);
+    }
+
+    public function testDisableMentions()
+    {
+        global $CFG_GLPI;
+        $CFG_GLPI['use_notifications'] = 1;
+        $CFG_GLPI['notifications_mailing'] = 1;
+
+        $this->login();
+        $profiles_id = $_SESSION['glpiactiveprofile']['id'];
+        $profile = new Profile();
+        $profile->update([
+            'id' => $profiles_id,
+            'use_mentions' => UserMention::USER_MENTION_DISABLED,
+        ]);
+
+        $ticket = new Ticket();
+        $ticket->add([
+            'name' => __FUNCTION__,
+            'content' => __FUNCTION__,
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+
+        $options = UserMention::getMentionOptions($ticket);
+        $this->assertEmpty($options['users']);
+        $this->assertFalse($options['full']);
+    }
+
+    public function testRestrictMentions()
+    {
+        global $CFG_GLPI;
+        $CFG_GLPI['use_notifications'] = 1;
+        $CFG_GLPI['notifications_mailing'] = 1;
+
+        $this->login();
+        $profiles_id = $_SESSION['glpiactiveprofile']['id'];
+        $profile = new Profile();
+        $profile->update([
+            'id' => $profiles_id,
+            'use_mentions' => UserMention::USER_MENTION_RESTRICTED,
+        ]);
+
+        $ticket = new Ticket();
+        $ticket->add([
+            'name' => __FUNCTION__,
+            'content' => __FUNCTION__,
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+        $options = UserMention::getMentionOptions($ticket);
+        $this->assertEmpty($options['users']);
+        $this->assertFalse($options['full']);
+
+        $ticket_user = new Ticket_User();
+        $ticket_user->add([
+            'tickets_id' => $ticket->getID(),
+            'users_id' => Session::getLoginUserID(),
+            'type' => 2,
+        ]);
+
+        $options = UserMention::getMentionOptions($ticket);
+        $this->assertCount(1, $options['users']);
+        $this->assertFalse($options['full']);
+    }
+
+    public function testFullMentions()
+    {
+        global $CFG_GLPI;
+        $CFG_GLPI['use_notifications'] = 1;
+        $CFG_GLPI['notifications_mailing'] = 1;
+
+        $this->login();
+        $profiles_id = $_SESSION['glpiactiveprofile']['id'];
+        $profile = new Profile();
+        $profile->update([
+            'id' => $profiles_id,
+            'use_mentions' => UserMention::USER_MENTION_FULL,
+        ]);
+
+        $ticket = new Ticket();
+        $ticket->add([
+            'name' => __FUNCTION__,
+            'content' => __FUNCTION__,
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+        $options = UserMention::getMentionOptions($ticket);
+        $this->assertEmpty($options['users']);
+        $this->assertTrue($options['full']);
     }
 }

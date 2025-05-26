@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -91,7 +90,7 @@ class OpenAPIGeneratorTest extends HLAPITestCase
         $openapi = $generator->getSchema();
 
         foreach ($to_check as $endpoint) {
-            $this->assertEmpty(array_filter($openapi['paths'][$endpoint['path']]['get']['parameters'], static fn ($v) => $v['name'] === $endpoint['placeholder']));
+            $this->assertEmpty(array_filter($openapi['paths'][$endpoint['path']]['get']['parameters'], static fn($v) => $v['name'] === $endpoint['placeholder']));
         }
     }
 }

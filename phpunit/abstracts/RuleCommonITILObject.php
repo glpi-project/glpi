@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -153,22 +152,22 @@ abstract class RuleCommonITILObject extends DbTestCase
         $itil = $this->getITILObjectInstance();
         $itil_id = $itil->add($itil_input = [
             'name'    => "test ITIL Object, will trigger on rule (title)",
-            'content' => "test"
+            'content' => "test",
         ]);
         $this->checkInput($itil, $itil_id, $itil_input);
-        $this->assertEquals(5, (int)$itil->getField('urgency'));
+        $this->assertEquals(5, (int) $itil->getField('urgency'));
 
         // test create ITIL Object (trigger on user assign)
         $itil = $this->getITILObjectInstance();
         $itil_id = $itil->add($itil_input = [
             'name'             => "test ITIL Object, will trigger on rule (user)",
             'content'          => "test",
-            '_users_id_assign' => getItemByTypeName('User', "tech", true)
+            '_users_id_assign' => getItemByTypeName('User', "tech", true),
         ]);
         // _users_id_assign is stored in glpi_*_users table, so remove it
         unset($itil_input['_users_id_assign']);
         $this->checkInput($itil, $itil_id, $itil_input);
-        $this->assertEquals(5, (int)$itil->getField('urgency'));
+        $this->assertEquals(5, (int) $itil->getField('urgency'));
     }
 
     public function testTriggerUpdate()
@@ -185,27 +184,27 @@ abstract class RuleCommonITILObject extends DbTestCase
         $itil = $this->getITILObjectInstance();
         $itil_id = $itil->add($itil_input = [
             'name'    => "test ITIL Object, will not trigger on rule",
-            'content' => "test"
+            'content' => "test",
         ]);
         $this->checkInput($itil, $itil_id, $itil_input);
-        $this->assertEquals(3, (int)$itil->getField('urgency'));
+        $this->assertEquals(3, (int) $itil->getField('urgency'));
 
         // update ITIL Object title and trigger rule on title updating
         $itil->update([
             'id'   => $itil_id,
-            'name' => 'test ITIL Object, will trigger on rule (title)'
+            'name' => 'test ITIL Object, will trigger on rule (title)',
         ]);
         $itil->getFromDB($itil_id);
-        $this->assertEquals(5, (int)$itil->getField('urgency'));
+        $this->assertEquals(5, (int) $itil->getField('urgency'));
 
         // test create ITIL Object (for check triggering on actor after update)
         $itil = $this->getITILObjectInstance();
         $itil_id = $itil->add($itil_input = [
             'name'    => "test ITIL Object, will not trigger on rule (actor)",
-            'content' => "test"
+            'content' => "test",
         ]);
         $this->checkInput($itil, $itil_id, $itil_input);
-        $this->assertEquals(3, (int)$itil->getField('urgency'));
+        $this->assertEquals(3, (int) $itil->getField('urgency'));
 
         // update ITIL Object title and trigger rule on actor addition
         $itil->update([
@@ -214,14 +213,14 @@ abstract class RuleCommonITILObject extends DbTestCase
             '_lgd'         => true,
             '_itil_assign' => [
                 '_type'    => 'user',
-                'users_id' => $users_id
-            ]
+                'users_id' => $users_id,
+            ],
         ]);
         $itil->getFromDB($itil_id);
         $itil_user = $this->getITILLinkInstance('User');
         $actors = $itil_user->getActors($itil_id);
-        $this->asserTEquals($users_id, (int)$actors[2][0]['users_id']);
-        $this->assertEquals(5, (int)$itil->getField('urgency'));
+        $this->asserTEquals($users_id, (int) $actors[2][0]['users_id']);
+        $this->assertEquals(5, (int) $itil->getField('urgency'));
     }
 
     private function createTestTriggerRule($condition)
@@ -236,28 +235,28 @@ abstract class RuleCommonITILObject extends DbTestCase
             'is_active'    => 1,
             'sub_type'     => $this->getTestedClass(),
             'condition'    => $condition,
-            'is_recursive' => 1
+            'is_recursive' => 1,
         ]);
         $this->checkInput($rule_itil, $ruletid, $ruletinput);
         $crit_id = $rulecrit->add($crit_input = [
             'rules_id'  => $ruletid,
             'criteria'  => 'name',
             'condition' => \Rule::PATTERN_CONTAIN,
-            'pattern'   => "trigger on rule (title)"
+            'pattern'   => "trigger on rule (title)",
         ]);
         $this->checkInput($rulecrit, $crit_id, $crit_input);
         $crit_id = $rulecrit->add($crit_input = [
             'rules_id'  => $ruletid,
             'criteria'  => '_users_id_assign',
             'condition' => \Rule::PATTERN_IS,
-            'pattern'   => getItemByTypeName('User', "tech", true)
+            'pattern'   => getItemByTypeName('User', "tech", true),
         ]);
         $this->checkInput($rulecrit, $crit_id, $crit_input);
         $act_id = $ruleaction->add($act_input = [
             'rules_id'    => $ruletid,
             'action_type' => 'assign',
             'field'       => 'urgency',
-            'value'       => 5
+            'value'       => 5,
         ]);
         $this->checkInput($ruleaction, $act_id, $act_input);
     }
@@ -296,7 +295,7 @@ abstract class RuleCommonITILObject extends DbTestCase
             'rules_id'  => $ruletid,
             'criteria'  => '_users_id_assign',
             'condition' => \Rule::PATTERN_IS,
-            'pattern'   => getItemByTypeName('User', 'tech', true)
+            'pattern'   => getItemByTypeName('User', 'tech', true),
         ]);
         $this->checkInput($rulecrit, $crit_id, $crit_input);
 
@@ -313,11 +312,11 @@ abstract class RuleCommonITILObject extends DbTestCase
         $itil_id = $itil->add($itil_input = [
             'name'             => 'change status to waiting if new and assigned to tech',
             'content'          => 'test',
-            '_users_id_assign' => getItemByTypeName('User', 'tech', true)
+            '_users_id_assign' => getItemByTypeName('User', 'tech', true),
         ]);
         unset($itil_input['_users_id_assign']); // _users_id_assign is stored in glpi_*_users table, so remove it
         $this->checkInput($itil, $itil_id, $itil_input);
-        $this->assertEquals(\CommonITILObject::WAITING, (int)$itil->getField('status'));
+        $this->assertEquals(\CommonITILObject::WAITING, (int) $itil->getField('status'));
     }
 
     /**
@@ -370,13 +369,13 @@ abstract class RuleCommonITILObject extends DbTestCase
         $itil = $this->getITILObjectInstance();
         $itil_id = $itil->add($itil_input = [
             'name'    => 'assign to tech (on creation)',
-            'content' => 'test'
+            'content' => 'test',
         ]);
         $itil_fk = $this->getITILObjectClass()::getForeignKeyField();
         $itil_user_table = $this->getITILLinkClass('User')::getTable();
 
         $this->checkInput($itil, $itil_id, $itil_input);
-        $this->assertEquals(\CommonITILObject::INCOMING, (int)$itil->getField('status'));
+        $this->assertEquals(\CommonITILObject::INCOMING, (int) $itil->getField('status'));
         $this->assertEquals(
             1,
             countElementsInTable(
@@ -396,7 +395,7 @@ abstract class RuleCommonITILObject extends DbTestCase
             ]);
             unset($itil_input['_users_id_assign']);
             $this->checkInput($itil, $itil_id, $itil_input);
-            $this->assertEquals(\Ticket::ASSIGNED, (int)$itil->getField('status'));
+            $this->assertEquals(\Ticket::ASSIGNED, (int) $itil->getField('status'));
             $this->assertEquals(
                 1,
                 countElementsInTable(
@@ -412,7 +411,7 @@ abstract class RuleCommonITILObject extends DbTestCase
                 '_users_id_assign'  => getItemByTypeName('User', 'glpi', true), // rule should erase this value
             ]));
             $this->assertTrue($itil->getFromDB($itil_id));
-            $this->assertEquals(\CommonITILObject::INCOMING, (int)$itil->getField('status'));
+            $this->assertEquals(\CommonITILObject::INCOMING, (int) $itil->getField('status'));
             $this->assertEquals(
                 2,
                 countElementsInTable(
@@ -434,7 +433,7 @@ abstract class RuleCommonITILObject extends DbTestCase
             "code" => "itil_category_for_add",
         ]);
 
-        $this->assertGreaterThan(0, (int)$ITILCategoryForAddId);
+        $this->assertGreaterThan(0, (int) $ITILCategoryForAddId);
 
         // Create ITILCategory with code
         $ITILCategoryForUpdate = new \ITILCategory();
@@ -443,7 +442,7 @@ abstract class RuleCommonITILObject extends DbTestCase
             "code" => "itil_category_for_update",
         ]);
 
-        $this->assertGreaterThan(0, (int)$ITILCategoryForUpdateId);
+        $this->assertGreaterThan(0, (int) $ITILCategoryForUpdateId);
 
         // Create rule
         $rule_itil = $this->getRuleInstance();
@@ -480,20 +479,20 @@ abstract class RuleCommonITILObject extends DbTestCase
         $itil = $this->getITILObjectInstance();
         $itil_id = $itil->add($itil_input = [
             'name'    => 'some ITIL Object (on insert)',
-            'content' => 'some text #itil_category_for_add# some text'
+            'content' => 'some text #itil_category_for_add# some text',
         ]);
 
         $this->checkInput($itil, $itil_id, $itil_input);
-        $this->assertEquals($ITILCategoryForAddId, (int)$itil->getField('itilcategories_id'));
+        $this->assertEquals($ITILCategoryForAddId, (int) $itil->getField('itilcategories_id'));
 
         $this->assertTrue($itil->update($itil_input = [
             'id'      => $itil_id,
             'name'    => 'some ITIL Object (on update)',
-            'content' => 'some text #itil_category_for_update# some text'
+            'content' => 'some text #itil_category_for_update# some text',
         ]));
 
         $this->checkInput($itil, $itil_id, $itil_input);
-        $this->assertEquals($ITILCategoryForUpdateId, (int)$itil->getField('itilcategories_id'));
+        $this->assertEquals($ITILCategoryForUpdateId, (int) $itil->getField('itilcategories_id'));
     }
 
     public function testITILSolutionAssignFromRule()
@@ -503,9 +502,9 @@ abstract class RuleCommonITILObject extends DbTestCase
         // Create solution template
         $solutionTemplate = new \SolutionTemplate();
         $solutionTemplate_id = $solutionTemplate->add($solutionInput = [
-            'content' => "<p>content of solution template  white ' quote</p>"
+            'content' => "<p>content of solution template  white ' quote</p>",
         ]);
-        $this->assertGreaterThan(0, (int)$solutionTemplate_id);
+        $this->assertGreaterThan(0, (int) $solutionTemplate_id);
 
         // Create rule
         $rule_itil = $this->getRuleInstance();
@@ -541,17 +540,17 @@ abstract class RuleCommonITILObject extends DbTestCase
         $itil = $this->getITILObjectInstance();
         $itil_id = $itil->add($itil_input = [
             'name'    => 'some ITIL Object',
-            'content' => 'some text some text'
+            'content' => 'some text some text',
         ]);
 
         $this->checkInput($itil, $itil_id, $itil_input);
-        $this->assertGreaterThan(0, (int)$itil_id);
+        $this->assertGreaterThan(0, (int) $itil_id);
 
         // update ITIL Object content and trigger rule on content updating
         $this->assertTrue(
             $itil->update([
                 'id'   => $itil_id,
-                'content' => 'test ITIL Object, will trigger on rule (content)'
+                'content' => 'test ITIL Object, will trigger on rule (content)',
             ])
         );
 
@@ -562,12 +561,12 @@ abstract class RuleCommonITILObject extends DbTestCase
             'itemtype' => $itil::getType(),
         ]));
 
-        $this->assertGreaterThan(0, (int)$itilSolution->getID());
+        $this->assertGreaterThan(0, (int) $itilSolution->getID());
         $this->assertEquals("<p>content of solution template  white &#039; quote</p>", $itilSolution->fields['content']);
 
         //reload and check ITIL Object status
         $itil->getFromDB($itil_id);
-        $this->assertEquals(\CommonITILObject::SOLVED, (int)$itil->getField('status'));
+        $this->assertEquals(\CommonITILObject::SOLVED, (int) $itil->getField('status'));
     }
 
     public function testAssignGroup()
@@ -578,7 +577,7 @@ abstract class RuleCommonITILObject extends DbTestCase
         $group1 = new \Group();
         $group_id1 = $group1->add($group_input1 = [
             "name" => "group1",
-            "is_requester" => true
+            "is_requester" => true,
         ]);
         $this->checkInput($group1, $group_id1, $group_input1);
 
@@ -586,7 +585,7 @@ abstract class RuleCommonITILObject extends DbTestCase
         $group2 = new \Group();
         $group_id2 = $group2->add($group_input2 = [
             "name" => "group2",
-            "is_requester" => true
+            "is_requester" => true,
         ]);
         $this->checkInput($group2, $group_id2, $group_input2);
 
@@ -667,7 +666,7 @@ abstract class RuleCommonITILObject extends DbTestCase
             $itil_group->getFromDBByCrit([
                 $itil_fk    => $itil_id,
                 'groups_id' => $group_id1,
-                'type'      => \CommonITILActor::REQUESTER
+                'type'      => \CommonITILActor::REQUESTER,
             ])
         );
 
@@ -677,7 +676,7 @@ abstract class RuleCommonITILObject extends DbTestCase
             $itil_group->getFromDBByCrit([
                 $itil_fk    => $itil_id,
                 'groups_id' => $group_id2,
-                'type'      => \CommonITILActor::REQUESTER
+                'type'      => \CommonITILActor::REQUESTER,
             ])
         );
     }
@@ -723,7 +722,7 @@ abstract class RuleCommonITILObject extends DbTestCase
         $group = new \Group();
         $group_id = $group->add($group_input = [
             "name" => "group1",
-            "is_requester" => true
+            "is_requester" => true,
         ]);
         $this->checkInput($group, $group_id, $group_input);
 
@@ -735,7 +734,7 @@ abstract class RuleCommonITILObject extends DbTestCase
         $group_user = new Group_User();
         $group_user_id = $group_user->add($group_user_input = [
             "groups_id" => $group_id,
-            "users_id"  => $user->fields['id']
+            "users_id"  => $user->fields['id'],
         ]);
         $this->checkInput($group_user, $group_user_id, $group_user_input);
 
@@ -748,7 +747,7 @@ abstract class RuleCommonITILObject extends DbTestCase
         $itil_id = $itil->add($itil_input = [
             'name'             => 'Add group requester if requester have default group',
             'content'          => 'test',
-            '_users_id_requester' => $user->fields['id']
+            '_users_id_requester' => $user->fields['id'],
         ]);
         unset($itil_input['_users_id_requester']); // _users_id_requester is stored in glpi_*_users table, so remove it
         $this->checkInput($itil, $itil_id, $itil_input);
@@ -760,7 +759,7 @@ abstract class RuleCommonITILObject extends DbTestCase
             $itil_group->getFromDBByCrit([
                 $itil_fk    => $itil_id,
                 'groups_id' => $group_id,
-                'type'      => \CommonITILActor::REQUESTER
+                'type'      => \CommonITILActor::REQUESTER,
             ])
         );
     }
@@ -773,7 +772,7 @@ abstract class RuleCommonITILObject extends DbTestCase
         // Create solution template
         $task_template = new TaskTemplate();
         $task_template_id = $task_template->add([
-            'content' => "<p>test content</p>"
+            'content' => "<p>test content</p>",
         ]);
         $this->assertGreaterThan(0, $task_template_id);
 
@@ -823,7 +822,7 @@ abstract class RuleCommonITILObject extends DbTestCase
 
         $itil_task_em = $this->getITILLinkInstance('Task');
         $itil_tasks = $itil_task_em->find([
-            $itil_fk => $itil_id
+            $itil_fk => $itil_id,
         ]);
 
         $this->assertCount(1, $itil_tasks);
@@ -842,7 +841,7 @@ abstract class RuleCommonITILObject extends DbTestCase
 
         $itil_task_em = $this->getITILLinkInstance('Task');
         $itil_tasks = $itil_task_em->find([
-            $itil_fk => $itil_id
+            $itil_fk => $itil_id,
         ]);
 
         $this->assertCount(0, $itil_tasks);
@@ -852,7 +851,7 @@ abstract class RuleCommonITILObject extends DbTestCase
             'priority' => 5,
         ]);
         $itil_tasks = $itil_task_em->find([
-            $itil_fk => $itil_id
+            $itil_fk => $itil_id,
         ]);
 
         $this->assertCount(1, $itil_tasks);
@@ -901,7 +900,7 @@ abstract class RuleCommonITILObject extends DbTestCase
         // Create followup template
         $followup_template = new ITILFollowupTemplate();
         $followup_template_id = $followup_template->add([
-            'content' => "<p>test testFollowupTemplateAssignFromRule</p>"
+            'content' => "<p>test testFollowupTemplateAssignFromRule</p>",
         ]);
         $this->assertGreaterThan(0, $followup_template_id);
 
@@ -1073,21 +1072,21 @@ abstract class RuleCommonITILObject extends DbTestCase
         $group = new \Group();
         $group_id1 = $group->add($group_input = [
             "name"         => "group1 (5215)",
-            "is_requester" => true
+            "is_requester" => true,
         ]);
         $this->checkInput($group, $group_id1, $group_input);
 
         //create group that matches the rule
         $group_id2 = $group->add($group_input = [
             "name"         => "group2 (13)",
-            "is_requester" => true
+            "is_requester" => true,
         ]);
         $this->checkInput($group, $group_id2, $group_input);
 
         //create group that not matches the rule
         $group_id3 = $group->add($group_input = [
             "name"         => "group3",
-            "is_requester" => true
+            "is_requester" => true,
         ]);
         $this->checkInput($group, $group_id3, $group_input);
 
@@ -1098,7 +1097,7 @@ abstract class RuleCommonITILObject extends DbTestCase
         $itil_id = $itil->add($itil_input = [
             'name'                  => 'Add group requester',
             'content'               => 'test',
-            '_users_id_requester'   => $user->fields['id']
+            '_users_id_requester'   => $user->fields['id'],
         ]);
         unset($itil_input['_users_id_requester']);
         $this->checkInput($itil, $itil_id, $itil_input);
@@ -1109,7 +1108,7 @@ abstract class RuleCommonITILObject extends DbTestCase
             $itil_group->getFromDBByCrit([
                 $itil_fk    => $itil_id,
                 'groups_id' => $group_id1,
-                'type'      => \CommonITILActor::REQUESTER
+                'type'      => \CommonITILActor::REQUESTER,
             ])
         );
 
@@ -1118,7 +1117,7 @@ abstract class RuleCommonITILObject extends DbTestCase
             $itil_group->getFromDBByCrit([
                 $itil_fk    => $itil_id,
                 'groups_id' => $group_id2,
-                'type'      => \CommonITILActor::REQUESTER
+                'type'      => \CommonITILActor::REQUESTER,
             ])
         );
 
@@ -1127,7 +1126,7 @@ abstract class RuleCommonITILObject extends DbTestCase
             $itil_group->getFromDBByCrit([
                 $itil_fk    => $itil_id,
                 'groups_id' => $group_id3,
-                'type'      => \CommonITILActor::REQUESTER
+                'type'      => \CommonITILActor::REQUESTER,
             ])
         );
 
@@ -1135,21 +1134,21 @@ abstract class RuleCommonITILObject extends DbTestCase
         $group_user = new Group_User();
         $group_user_id1 = $group_user->add($group_user_input = [
             "groups_id" => $group_id1,
-            "users_id"  => $user->fields['id']
+            "users_id"  => $user->fields['id'],
         ]);
         $this->checkInput($group_user, $group_user_id1, $group_user_input);
 
         $group_user = new Group_User();
         $group_user_id2 = $group_user->add($group_user_input = [
             "groups_id" => $group_id2,
-            "users_id"  => $user->fields['id']
+            "users_id"  => $user->fields['id'],
         ]);
         $this->checkInput($group_user, $group_user_id2, $group_user_input);
 
         $group_user = new Group_User();
         $group_user_id3 = $group_user->add($group_user_input = [
             "groups_id" => $group_id3,
-            "users_id"  => $user->fields['id']
+            "users_id"  => $user->fields['id'],
         ]);
         $this->checkInput($group_user, $group_user_id3, $group_user_input);
 
@@ -1166,7 +1165,7 @@ abstract class RuleCommonITILObject extends DbTestCase
             $itil_group->getFromDBByCrit([
                 $itil_fk    => $itil_id,
                 'groups_id' => $group_id1,
-                'type'      => \CommonITILActor::REQUESTER
+                'type'      => \CommonITILActor::REQUESTER,
             ])
         );
 
@@ -1175,7 +1174,7 @@ abstract class RuleCommonITILObject extends DbTestCase
             $itil_group->getFromDBByCrit([
                 $itil_fk    => $itil_id,
                 'groups_id' => $group_id2,
-                'type'      => \CommonITILActor::REQUESTER
+                'type'      => \CommonITILActor::REQUESTER,
             ])
         );
 
@@ -1184,7 +1183,7 @@ abstract class RuleCommonITILObject extends DbTestCase
             $itil_group->getFromDBByCrit([
                 $itil_fk    => $itil_id,
                 'groups_id' => $group_id3,
-                'type'      => \CommonITILActor::REQUESTER
+                'type'      => \CommonITILActor::REQUESTER,
             ])
         );
     }
@@ -1230,21 +1229,21 @@ abstract class RuleCommonITILObject extends DbTestCase
         $group = new \Group();
         $group_id1 = $group->add($group_input = [
             "name"         => "group1 (5215)",
-            "is_requester" => true
+            "is_requester" => true,
         ]);
         $this->checkInput($group, $group_id1, $group_input);
 
         //create group that matches the rule
         $group_id2 = $group->add($group_input = [
             "name"         => "group2 (13)",
-            "is_requester" => true
+            "is_requester" => true,
         ]);
         $this->checkInput($group, $group_id2, $group_input);
 
         //create group that not matches the rule
         $group_id3 = $group->add($group_input = [
             "name"         => "group3",
-            "is_requester" => true
+            "is_requester" => true,
         ]);
         $this->checkInput($group, $group_id3, $group_input);
 
@@ -1256,21 +1255,21 @@ abstract class RuleCommonITILObject extends DbTestCase
         $group_user = new Group_User();
         $group_user_id1 = $group_user->add($group_user_input = [
             "groups_id" => $group_id1,
-            "users_id"  => $user->fields['id']
+            "users_id"  => $user->fields['id'],
         ]);
         $this->checkInput($group_user, $group_user_id1, $group_user_input);
 
         $group_user = new Group_User();
         $group_user_id2 = $group_user->add($group_user_input = [
             "groups_id" => $group_id2,
-            "users_id"  => $user->fields['id']
+            "users_id"  => $user->fields['id'],
         ]);
         $this->checkInput($group_user, $group_user_id2, $group_user_input);
 
         $group_user = new Group_User();
         $group_user_id3 = $group_user->add($group_user_input = [
             "groups_id" => $group_id3,
-            "users_id"  => $user->fields['id']
+            "users_id"  => $user->fields['id'],
         ]);
         $this->checkInput($group_user, $group_user_id3, $group_user_input);
 
@@ -1281,7 +1280,7 @@ abstract class RuleCommonITILObject extends DbTestCase
         $itil_id = $itil->add($itil_input = [
             'name'                  => 'Add group requester',
             'content'               => 'test',
-            '_users_id_requester'   => $user->fields['id']
+            '_users_id_requester'   => $user->fields['id'],
         ]);
         unset($itil_input['_users_id_requester']);
         $this->checkInput($itil, $itil_id, $itil_input);
@@ -1292,7 +1291,7 @@ abstract class RuleCommonITILObject extends DbTestCase
             $itil_group->getFromDBByCrit([
                 $itil_fk    => $itil_id,
                 'groups_id' => $group_id1,
-                'type'      => \CommonITILActor::REQUESTER
+                'type'      => \CommonITILActor::REQUESTER,
             ])
         );
 
@@ -1301,7 +1300,7 @@ abstract class RuleCommonITILObject extends DbTestCase
             $itil_group->getFromDBByCrit([
                 $itil_fk    => $itil_id,
                 'groups_id' => $group_id2,
-                'type'      => \CommonITILActor::REQUESTER
+                'type'      => \CommonITILActor::REQUESTER,
             ])
         );
 
@@ -1310,7 +1309,7 @@ abstract class RuleCommonITILObject extends DbTestCase
             $itil_group->getFromDBByCrit([
                 $itil_fk         => $itil_id,
                 'groups_id'          => $group_id3,
-                'type'               => \CommonITILActor::REQUESTER
+                'type'               => \CommonITILActor::REQUESTER,
             ])
         );
     }
@@ -1356,21 +1355,21 @@ abstract class RuleCommonITILObject extends DbTestCase
         $group = new \Group();
         $group_id1 = $group->add($group_input = [
             "name"         => "group1 (5215)",
-            "is_requester" => true
+            "is_requester" => true,
         ]);
         $this->checkInput($group, $group_id1, $group_input);
 
         //create group that matches the rule
         $group_id2 = $group->add($group_input = [
             "name"         => "group2 (13)",
-            "is_requester" => true
+            "is_requester" => true,
         ]);
         $this->checkInput($group, $group_id2, $group_input);
 
         //create group that not matches the rule
         $group_id3 = $group->add($group_input = [
             "name"         => "group3",
-            "is_requester" => true
+            "is_requester" => true,
         ]);
         $this->checkInput($group, $group_id3, $group_input);
 
@@ -1386,21 +1385,21 @@ abstract class RuleCommonITILObject extends DbTestCase
         $group_user = new Group_User();
         $group_user_id1 = $group_user->add($group_user_input = [
             "groups_id" => $group_id1,
-            "users_id"  => $userNormal->fields['id']
+            "users_id"  => $userNormal->fields['id'],
         ]);
         $this->checkInput($group_user, $group_user_id1, $group_user_input);
 
         $group_user = new Group_User();
         $group_user_id2 = $group_user->add($group_user_input = [
             "groups_id" => $group_id2,
-            "users_id"  => $userNormal->fields['id']
+            "users_id"  => $userNormal->fields['id'],
         ]);
         $this->checkInput($group_user, $group_user_id2, $group_user_input);
 
         $group_user = new Group_User();
         $group_user_id3 = $group_user->add($group_user_input = [
             "groups_id" => $group_id3,
-            "users_id"  => $userNormal->fields['id']
+            "users_id"  => $userNormal->fields['id'],
         ]);
         $this->checkInput($group_user, $group_user_id3, $group_user_input);
 
@@ -1411,7 +1410,7 @@ abstract class RuleCommonITILObject extends DbTestCase
         $itil_id = $itil->add($itil_input = [
             'name'                  => 'Add group requester',
             'content'               => 'test',
-            '_users_id_requester'   => $userPostOnly->fields['id']
+            '_users_id_requester'   => $userPostOnly->fields['id'],
         ]);
         unset($itil_input['_users_id_requester']);
         $this->checkInput($itil, $itil_id, $itil_input);
@@ -1422,7 +1421,7 @@ abstract class RuleCommonITILObject extends DbTestCase
             $itil_group->getFromDBByCrit([
                 $itil_fk         => $itil_id,
                 'groups_id'          => $group_id1,
-                'type'               => \CommonITILActor::REQUESTER
+                'type'               => \CommonITILActor::REQUESTER,
             ])
         );
 
@@ -1431,7 +1430,7 @@ abstract class RuleCommonITILObject extends DbTestCase
             $itil_group->getFromDBByCrit([
                 $itil_fk         => $itil_id,
                 'groups_id'          => $group_id2,
-                'type'               => \CommonITILActor::REQUESTER
+                'type'               => \CommonITILActor::REQUESTER,
             ])
         );
 
@@ -1440,7 +1439,7 @@ abstract class RuleCommonITILObject extends DbTestCase
             $itil_group->getFromDBByCrit([
                 $itil_fk         => $itil_id,
                 'groups_id'          => $group_id3,
-                'type'               => \CommonITILActor::REQUESTER
+                'type'               => \CommonITILActor::REQUESTER,
             ])
         );
 
@@ -1448,7 +1447,7 @@ abstract class RuleCommonITILObject extends DbTestCase
         $itil_user = $this->getITILLinkInstance('User');
         $itil_user->deleteByCriteria([
             "users_id" => $userPostOnly->fields['id'],
-            $itil_fk => $itil_id
+            $itil_fk => $itil_id,
         ]);
 
         //update ITIL Object and change requester
@@ -1457,8 +1456,8 @@ abstract class RuleCommonITILObject extends DbTestCase
             'id'                    => $itil_id,
             'content'               => 'test',
             '_itil_requester'   => ["_type" => "user",
-                "users_id" => $userNormal->fields['id']
-            ]
+                "users_id" => $userNormal->fields['id'],
+            ],
         ]);
         unset($itil_input['_itil_requester']);
         $this->checkInput($itil, $itil_id, $itil_input);
@@ -1469,7 +1468,7 @@ abstract class RuleCommonITILObject extends DbTestCase
             $itil_group->getFromDBByCrit([
                 $itil_fk    => $itil_id,
                 'groups_id' => $group_id1,
-                'type'      => \CommonITILActor::REQUESTER
+                'type'      => \CommonITILActor::REQUESTER,
             ])
         );
 
@@ -1478,7 +1477,7 @@ abstract class RuleCommonITILObject extends DbTestCase
             $itil_group->getFromDBByCrit([
                 $itil_fk         => $itil_id,
                 'groups_id'          => $group_id2,
-                'type'               => \CommonITILActor::REQUESTER
+                'type'               => \CommonITILActor::REQUESTER,
             ])
         );
 
@@ -1487,7 +1486,7 @@ abstract class RuleCommonITILObject extends DbTestCase
             $itil_group->getFromDBByCrit([
                 $itil_fk         => $itil_id,
                 'groups_id'          => $group_id3,
-                'type'               => \CommonITILActor::REQUESTER
+                'type'               => \CommonITILActor::REQUESTER,
             ])
         );
     }
@@ -1652,7 +1651,7 @@ abstract class RuleCommonITILObject extends DbTestCase
         $itil_id = $itil->add($itil_input = [
             'name'     => 'test validation action',
             'content'  => 'test validation action',
-            'priority' => 6
+            'priority' => 6,
         ]);
         $this->checkInput($itil, $itil_id, $itil_input);
         $this->assertTrue($itil->getFromDB($itil_id));
@@ -1713,7 +1712,7 @@ abstract class RuleCommonITILObject extends DbTestCase
         $itil = $this->createItem($this->getITILObjectClass(), [
             'name'              => 'test category code',
             'content'           => 'test category code',
-            'itilcategories_id' => 0
+            'itilcategories_id' => 0,
         ]);
         $itil_id = $itil->getID();
 
@@ -1798,7 +1797,7 @@ abstract class RuleCommonITILObject extends DbTestCase
         $itil_item_table = $this->getITILLinkClass('Item')::getTable();
         $itilCreate_id = $itilCreate->add($itilCreate_input = [
             'name'              => 'test appliance',
-            'content'           => 'test appliance'
+            'content'           => 'test appliance',
         ]);
         $this->checkInput($itilCreate, $itilCreate_id, $itilCreate_input);
 
@@ -1809,7 +1808,7 @@ abstract class RuleCommonITILObject extends DbTestCase
                 $itil_item_table,
                 ['itemtype'  =>  \Appliance::getType(),
                     'items_id'   => $appliancetest1_id,
-                    $itil_fk => $itilCreate_id
+                    $itil_fk => $itilCreate_id,
                 ]
             )
         );
@@ -1818,7 +1817,7 @@ abstract class RuleCommonITILObject extends DbTestCase
         $itilUpdate = $this->getITILObjectInstance();
         $itilUpdate_id = $itilUpdate->add($itilUpdate_input = [
             'name'              => 'test',
-            'content'           => 'test'
+            'content'           => 'test',
         ]);
         $this->checkInput($itilUpdate, $itilUpdate_id, $itilUpdate_input);
 
@@ -1829,7 +1828,7 @@ abstract class RuleCommonITILObject extends DbTestCase
                 $itil_item_table,
                 ['itemtype'  =>  \Appliance::getType(),
                     'items_id'   => $appliancetest1_id,
-                    $itil_fk => $itilUpdate_id
+                    $itil_fk => $itilUpdate_id,
                 ]
             )
         );
@@ -1839,7 +1838,7 @@ abstract class RuleCommonITILObject extends DbTestCase
             [
                 'id'      => $itilUpdate_id,
                 'name'    => 'test erp',
-                'content' => 'appliance'
+                'content' => 'appliance',
             ]
         );
 
@@ -1850,7 +1849,7 @@ abstract class RuleCommonITILObject extends DbTestCase
                 $itil_item_table,
                 ['itemtype'  =>  \Appliance::getType(),
                     'items_id'   => $appliancetest1_id,
-                    $itil_fk => $itilUpdate_id
+                    $itil_fk => $itilUpdate_id,
                 ]
             )
         );
@@ -1910,7 +1909,7 @@ abstract class RuleCommonITILObject extends DbTestCase
         $itil_item_table = $this->getITILLinkClass('Item')::getTable();
         $itilCreate_id = $itilCreate->add($itilCreate_input = [
             'name'              => 'test erp',
-            'content'           => 'test erp'
+            'content'           => 'test erp',
         ]);
 
         $this->checkInput($itilCreate, $itilCreate_id, $itilCreate_input);
@@ -1923,7 +1922,7 @@ abstract class RuleCommonITILObject extends DbTestCase
                 $itil_item_table,
                 ['itemtype'  =>  \Appliance::getType(),
                     'items_id'   => $appliancetest1_id,
-                    $itil_fk => $itilCreate_id
+                    $itil_fk => $itilCreate_id,
                 ]
             )
         );
@@ -1932,7 +1931,7 @@ abstract class RuleCommonITILObject extends DbTestCase
         $itilUpdate = $this->getITILObjectInstance();
         $itilUpdate_id = $itilUpdate->add($itilUpdate_input = [
             'name'              => 'test',
-            'content'           => 'test'
+            'content'           => 'test',
         ]);
         $this->checkInput($itilUpdate, $itilUpdate_id, $itilUpdate_input);
 
@@ -1943,7 +1942,7 @@ abstract class RuleCommonITILObject extends DbTestCase
                 $itil_item_table,
                 ['itemtype'  =>  \Appliance::getType(),
                     'items_id'   => $appliancetest1_id,
-                    $itil_fk => $itilUpdate_id
+                    $itil_fk => $itilUpdate_id,
                 ]
             )
         );
@@ -1952,7 +1951,7 @@ abstract class RuleCommonITILObject extends DbTestCase
         $itilUpdate->update(
             [
                 'id'      => $itilUpdate_id,
-                'name' => 'erp'
+                'name' => 'erp',
             ]
         );
 
@@ -1963,7 +1962,7 @@ abstract class RuleCommonITILObject extends DbTestCase
                 $itil_item_table,
                 ['itemtype'  =>  \Appliance::getType(),
                     'items_id'   => $appliancetest1_id,
-                    $itil_fk => $itilUpdate_id
+                    $itil_fk => $itilUpdate_id,
                 ]
             )
         );
@@ -2041,7 +2040,7 @@ abstract class RuleCommonITILObject extends DbTestCase
         $itilCreate = $this->getITILObjectInstance();
         $itilCreate_id = $itilCreate->add($itilCreate_input = [
             'name'              => 'test erp',
-            'content'           => 'test erp'
+            'content'           => 'test erp',
         ]);
 
         $this->checkInput($itilCreate, $itilCreate_id, $itilCreate_input);
@@ -2054,7 +2053,7 @@ abstract class RuleCommonITILObject extends DbTestCase
                 $itil_item_table,
                 [
                     'itemtype'  =>  \Appliance::getType(),
-                    $itil_fk => $itilCreate_id
+                    $itil_fk => $itilCreate_id,
                 ]
             )
         );
@@ -2063,7 +2062,7 @@ abstract class RuleCommonITILObject extends DbTestCase
         $itilUpdate = $this->getITILObjectInstance();
         $itilUpdate_id = $itilUpdate->add($itilUpdate_input = [
             'name'              => 'test',
-            'content'           => 'test'
+            'content'           => 'test',
         ]);
         $this->checkInput($itilUpdate, $itilUpdate_id, $itilUpdate_input);
 
@@ -2075,7 +2074,7 @@ abstract class RuleCommonITILObject extends DbTestCase
                 [
                     'itemtype'  =>  \Appliance::getType(),
                     'items_id'   => $appliancetest1_id,
-                    $itil_fk => $itilUpdate_id
+                    $itil_fk => $itilUpdate_id,
                 ]
             )
         );
@@ -2084,7 +2083,7 @@ abstract class RuleCommonITILObject extends DbTestCase
         $itilUpdate->update(
             [
                 'id'      => $itilUpdate_id,
-                'name' => 'test erp'
+                'name' => 'test erp',
             ]
         );
 
@@ -2095,7 +2094,7 @@ abstract class RuleCommonITILObject extends DbTestCase
                 $itil_item_table,
                 [
                     'itemtype'  =>  \Appliance::getType(),
-                    $itil_fk => $itilUpdate_id
+                    $itil_fk => $itilUpdate_id,
                 ]
             )
         );
@@ -2185,7 +2184,7 @@ abstract class RuleCommonITILObject extends DbTestCase
         $itil = $this->getITILObjectInstance();
         $itil_id = $itil->add($itil_input = [
             'name'              => 'stopProcessingAction',
-            'content'           => 'test stopProcessingAction'
+            'content'           => 'test stopProcessingAction',
         ]);
         $this->checkInput($itil, $itil_id, $itil_input);
 
@@ -2204,13 +2203,13 @@ abstract class RuleCommonITILObject extends DbTestCase
     {
         // Test 'regex_result' action on the ticket category completename
         $root_category = $this->createItem(ITILCategory::getType(), [
-            'name' => 'Category root'
+            'name' => 'Category root',
         ]);
 
         // Test 'regex_result' action on the ticket category
         $sub_root_category = $this->createItem(ITILCategory::getType(), [
             'name' => 'Category sub',
-            'itilcategories_id' => $root_category->fields['id']
+            'itilcategories_id' => $root_category->fields['id'],
         ]);
 
         yield [
@@ -2227,7 +2226,7 @@ abstract class RuleCommonITILObject extends DbTestCase
                     // to fetch it from the Ticket table
                     return $ticket->fields['itilcategories_id'];
                 },
-                'value'       => '#0'
+                'value'       => '#0',
             ],
             'control_test_value' => 'Test_title_no_match',
             'real_test_value'    => 'Category root > Category sub',
@@ -2236,7 +2235,7 @@ abstract class RuleCommonITILObject extends DbTestCase
 
         // Test 'regex_result' action on the ticket category
         $category = $this->createItem(ITILCategory::getType(), [
-            'name' => 'Category from regex'
+            'name' => 'Category from regex',
         ]);
         yield [
             'criteria' => [
@@ -2247,7 +2246,7 @@ abstract class RuleCommonITILObject extends DbTestCase
             'action' => [
                 'action_type' => 'regex_result',
                 'field'       => 'itilcategories_id',
-                'value'       => '#0'
+                'value'       => '#0',
             ],
             'control_test_value' => 'Test_title_no_match',
             'real_test_value'    => 'Category from regex',
@@ -2256,7 +2255,7 @@ abstract class RuleCommonITILObject extends DbTestCase
 
         // Test 'regex_result' action on the ticket requester group by completename
         $root_requester_group_completename = $this->createItem(Group::getType(), [
-            'name' => 'Requester group root'
+            'name' => 'Requester group root',
         ]);
 
         $sub_requester_group_completename = $this->createItem(Group::getType(), [
@@ -2286,7 +2285,7 @@ abstract class RuleCommonITILObject extends DbTestCase
                     } else {
                         return 0;
                     }
-                }
+                },
             ],
             'control_test_value' => 'Test_title_no_match',
             'real_test_value'    => 'Requester group root > Requester group sub',
@@ -2295,7 +2294,7 @@ abstract class RuleCommonITILObject extends DbTestCase
 
         // Test 'regex_result' action on the ticket requester group
         $requester_group = $this->createItem(Group::getType(), [
-            'name' => 'Requester group from regex'
+            'name' => 'Requester group from regex',
         ]);
         yield [
             'criteria' => [
@@ -2319,7 +2318,7 @@ abstract class RuleCommonITILObject extends DbTestCase
                     } else {
                         return 0;
                     }
-                }
+                },
             ],
             'control_test_value' => 'Test_title_no_match',
             'real_test_value'    => 'Requester group from regex',
@@ -2329,7 +2328,7 @@ abstract class RuleCommonITILObject extends DbTestCase
 
         // Test 'regex_result' action on the ticket observer group by completename
         $root_observer_group_completename = $this->createItem(Group::getType(), [
-            'name' => 'Observer group root'
+            'name' => 'Observer group root',
         ]);
 
         $sub_observer_group_completename = $this->createItem(Group::getType(), [
@@ -2359,7 +2358,7 @@ abstract class RuleCommonITILObject extends DbTestCase
                     } else {
                         return 0;
                     }
-                }
+                },
             ],
             'control_test_value' => 'Test_title_no_match',
             'real_test_value'    => 'Observer group root > Observer group sub',
@@ -2369,7 +2368,7 @@ abstract class RuleCommonITILObject extends DbTestCase
 
         // Test 'regex_result' action on the ticket observer group
         $observer_group = $this->createItem(Group::getType(), [
-            'name' => 'Observer group from regex'
+            'name' => 'Observer group from regex',
         ]);
         yield [
             'criteria' => [
@@ -2393,7 +2392,7 @@ abstract class RuleCommonITILObject extends DbTestCase
                     } else {
                         return 0;
                     }
-                }
+                },
             ],
             'control_test_value' => 'Test_title_no_match',
             'real_test_value'    => 'Observer group from regex',
@@ -2402,7 +2401,7 @@ abstract class RuleCommonITILObject extends DbTestCase
 
         // Test 'regex_result' action on the ticket observer group by completename
         $root_assign_group_completename = $this->createItem(Group::getType(), [
-            'name' => 'Assign group root'
+            'name' => 'Assign group root',
         ]);
 
         $sub_assign_group_completename = $this->createItem(Group::getType(), [
@@ -2432,7 +2431,7 @@ abstract class RuleCommonITILObject extends DbTestCase
                     } else {
                         return 0;
                     }
-                }
+                },
             ],
             'control_test_value' => 'Test_title_no_match',
             'real_test_value'    => 'Assign group root > Assign group sub',
@@ -2441,7 +2440,7 @@ abstract class RuleCommonITILObject extends DbTestCase
 
         // Test 'regex_result' action on the ticket assigned group
         $tech_group = $this->createItem(Group::getType(), [
-            'name' => 'Tech group from regex'
+            'name' => 'Tech group from regex',
         ]);
         yield [
             'criteria' => [
@@ -2465,7 +2464,7 @@ abstract class RuleCommonITILObject extends DbTestCase
                     } else {
                         return 0;
                     }
-                }
+                },
             ],
             'control_test_value' => 'Test_title_no_match',
             'real_test_value'    => 'Tech group from regex',
@@ -2517,7 +2516,7 @@ abstract class RuleCommonITILObject extends DbTestCase
 
             // Disable all others rules before running the test
             $DB->update(Rule::getTable(), ['is_active' => false], [
-                'sub_type' => "RuleAsset"
+                'sub_type' => "RuleAsset",
             ]);
             $active_rules = countElementsInTable(Rule::getTable(), [
                 'is_active' => true,
@@ -2672,7 +2671,7 @@ abstract class RuleCommonITILObject extends DbTestCase
             '_validation_targets' => [
                 [
                     'itemtype_target' => User::class,
-                    'items_id_target' => getItemByTypeName(User::class, 'glpi', true)
+                    'items_id_target' => getItemByTypeName(User::class, 'glpi', true),
                 ],
             ],
             '_add_validation'   => false,
@@ -2682,14 +2681,14 @@ abstract class RuleCommonITILObject extends DbTestCase
 
         // Change category without triggering the rule
         $this->updateItem($this->getITILObjectClass(), $itil_object->getID(), [
-            'itilcategories_id' => $category2->getID()
+            'itilcategories_id' => $category2->getID(),
         ]);
         $itil_object->getFromDB($itil_object->getID());
         $this->assertNotEquals($urgency_if_rule_triggered, $itil_object->fields['urgency']);
 
         // Change category and trigger the rule
         $this->updateItem($this->getITILObjectClass(), $itil_object->getID(), [
-            'itilcategories_id' => $category1->getID()
+            'itilcategories_id' => $category1->getID(),
         ]);
         $itil_object->getFromDB($itil_object->getID());
         $this->assertEquals($urgency_if_rule_triggered, $itil_object->fields['urgency']);
@@ -2792,7 +2791,7 @@ abstract class RuleCommonITILObject extends DbTestCase
             'name' => 'Test',
             'content' => 'Test content',
             'entities_id' => $entity,
-            '_users_id_requester' => $user->fields['id']
+            '_users_id_requester' => $user->fields['id'],
         ]);
 
         // Check if the location "Test location" is assigned
@@ -2823,8 +2822,8 @@ abstract class RuleCommonITILObject extends DbTestCase
             'content'               => 'test',
             '_itil_requester'   => [
                 "_type" => "user",
-                "users_id" => $user->fields['id']
-            ]
+                "users_id" => $user->fields['id'],
+            ],
         ]));
 
         // Check if the location "Test location" is assigned

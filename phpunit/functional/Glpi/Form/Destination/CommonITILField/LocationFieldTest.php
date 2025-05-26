@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -70,7 +69,7 @@ final class LocationFieldTest extends AbstractDestinationFieldTest
 
         // Create location
         $location = $this->createItem(Location::class, [
-            'name' => 'testLocationFromTemplate Location'
+            'name' => 'testLocationFromTemplate Location',
         ]);
 
         // Set the default location using predefined fields
@@ -260,7 +259,7 @@ final class LocationFieldTest extends AbstractDestinationFieldTest
             ],
             'field_config' => new LocationFieldConfig(
                 LocationFieldStrategy::FROM_TEMPLATE
-            )
+            ),
         ];
 
         // Start a transaction to rollback changes
@@ -288,15 +287,15 @@ final class LocationFieldTest extends AbstractDestinationFieldTest
             'field_key'     => LocationField::getKey(),
             'fields_to_set' => [
                 'location_rule'     => 3, // PluginFormcreatorAbstractItilTarget::LOCATION_RULE_ANSWER
-                'location_question' => 73
+                'location_question' => 73,
             ],
-            'field_config' => fn ($migration, $form) => new LocationFieldConfig(
+            'field_config' => fn($migration, $form) => new LocationFieldConfig(
                 strategy: LocationFieldStrategy::SPECIFIC_ANSWER,
                 specific_question_id: $migration->getMappedItemTarget(
                     'PluginFormcreatorQuestion',
                     73
                 )['items_id'] ?? throw new \Exception("Question not found")
-            )
+            ),
         ];
 
         yield 'Last valid answer' => [
@@ -306,7 +305,7 @@ final class LocationFieldTest extends AbstractDestinationFieldTest
             ],
             'field_config' => new LocationFieldConfig(
                 LocationFieldStrategy::LAST_VALID_ANSWER
-            )
+            ),
         ];
     }
 

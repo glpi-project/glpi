@@ -37,10 +37,10 @@ namespace Glpi\Controller\Session;
 use Glpi\Controller\AbstractController;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Http\Firewall;
+use Glpi\Http\RedirectResponse;
 use Glpi\Security\Attribute\SecurityStrategy;
 use Html;
 use Session;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -73,8 +73,9 @@ final class ChangeProfileController extends AbstractController
             $route = $go_to_create_ticket ? "/ServiceCatalog" : "/Helpdesk";
             $redirect = $request->getBasePath() . $route;
         } else {
-            $_SESSION['_redirected_from_profile_selector'] = true;
             $redirect = Html::getBackUrl();
+            $separator = str_contains($redirect, '?') ? "&" : "?";
+            $redirect = $redirect . $separator . '_redirected_from_profile_selector=true';
         }
 
         return new RedirectResponse($redirect);

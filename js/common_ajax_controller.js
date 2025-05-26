@@ -66,7 +66,7 @@ class GlpiCommonAjaxController
         // Send AJAX request
         try {
             const response = await $.post({
-                url: `${CFG_GLPI.root_doc}/ajax/common_ajax_controller.php`,
+                url: `${CFG_GLPI.root_doc}/GenericAjaxCrud`,
                 data: data,
             });
 
@@ -93,7 +93,7 @@ class GlpiCommonAjaxController
                 console.error(error);
                 this.#handleFeedbackMessages({
                     messages: {
-                        error: __("Unexpected error"),
+                        error: __("Unexpected error."),
                     },
                 });
             }

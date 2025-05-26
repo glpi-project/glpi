@@ -30,7 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
-/* global bootstrap, _ */
+/* global bootstrap, _, getAjaxCsrfToken */
 
 export class GlpiIllustrationPickerController
 {
@@ -44,9 +44,22 @@ export class GlpiIllustrationPickerController
      */
     #running_search_requests_count = 0;
 
-    constructor(container)
+    /**
+     * @type {HTMLElement}
+     */
+    #modal_node;
+
+    /**
+     * Const value forwarded from backend code
+     * @type {string}
+     */
+    #custom_icon_prefix;
+
+    constructor(container, modal_node, custom_icon_prefix)
     {
         this.#container = container;
+        this.#modal_node = modal_node;
+        this.#custom_icon_prefix = custom_icon_prefix;
         this.#initEventListeners();
     }
 
@@ -64,7 +77,7 @@ export class GlpiIllustrationPickerController
                 return;
             }
 
-            this.#setIllustration(illustration);
+            this.#setNativeIllustration(illustration);
         });
 
         // Watch for page change
@@ -95,9 +108,36 @@ export class GlpiIllustrationPickerController
 
             debouncedSearch(filter_input.value);
         });
+
+        // Watch for custom file selection
+        this.#container
+            .querySelector('[data-glpi-icon-picker-use-custom-file]')
+            .addEventListener("click", async () => {
+                const file_id = await this.#uploadIcon();
+                if (file_id !== null) {
+                    this.#setCustomIllustration(file_id);
+                }
+                bootstrap.Modal.getInstance(this.#modal_node).hide();
+            })
+        ;
+
+        /**
+         * Sometimes the tab content is not visible when the modal opens.
+         * This problem occurs especially when our modal is contained within a tab.
+         * This solution forces the display of the active tab.
+         */
+        this.#modal_node.addEventListener('show.bs.modal', () => {
+            const active_tab_id = this.#container.querySelector(".nav-link.active").dataset.bsTarget;
+            this.#container.querySelector(active_tab_id).classList.add('show', 'active');
+        });
+
+        // Autofocus search input when the modal is opened
+        this.#modal_node.addEventListener('shown.bs.modal', () => {
+            this.#container.querySelector("[data-glpi-icon-picker-filter]").focus();
+        });
     }
 
-    #setIllustration(illustration)
+    #setNativeIllustration(illustration)
     {
         // Gets details of the newly selected item.
         const illustration_id = illustration.dataset['glpiIconPickerValue'];
@@ -123,6 +163,40 @@ export class GlpiIllustrationPickerController
             xlink.replace(/#.*/, `#${illustration_id}`)
         );
         title.innerHTML = illustration_title.innerHTML;
+
+        this.#container
+            .querySelector('[data-glpi-icon-picker-value-preview-native]')
+            .classList
+            .remove('d-none')
+        ;
+        this.#container
+            .querySelector('[data-glpi-icon-picker-value-preview-custom]')
+            .classList
+            .add('d-none')
+        ;
+    }
+
+    #setCustomIllustration(file_id)
+    {
+        const icon_id = `${this.#custom_icon_prefix}${file_id}`;
+        this.#getSelectedIllustrationsInput().value = icon_id;
+
+        // Update preview
+        this.#container
+            .querySelector('[data-glpi-icon-picker-value-preview-custom]')
+            .querySelector('img')
+            .src = `${CFG_GLPI.root_doc}/UI/Illustration/CustomIllustration/${file_id}`
+        ;
+        this.#container
+            .querySelector('[data-glpi-icon-picker-value-preview-custom]')
+            .classList
+            .remove('d-none')
+        ;
+        this.#container
+            .querySelector('[data-glpi-icon-picker-value-preview-native]')
+            .classList
+            .add('d-none')
+        ;
     }
 
     /**
@@ -197,6 +271,43 @@ export class GlpiIllustrationPickerController
         const response = await fetch(`${url}?${url_params}`);
 
         this.#getSearchResultsDiv().innerHTML = await response.text();
+    }
+
+    async #uploadIcon()
+    {
+        // Multiple files may be uploaded despite calling Html::file()
+        // with the `multiple = false` parameter.
+        // We must thus look for the first input `_custom_icon[X]` input.
+        // Note that it wont always be `_custom_icon[0]`, e.g. the user
+        // can upload two files and delete the first one.
+        const possible_inputs = this.#container.querySelectorAll(
+            "input[name^='_custom_icon']"
+        );
+        let input = null;
+        for (const possible_input of possible_inputs) {
+            input = possible_input;
+            break;
+        }
+
+        if (input === null) {
+            return null;
+        }
+
+        // Save the icon on the server and get its path.
+        const form_data = new FormData();
+        form_data.append('filename', input.value);
+        const url = `${CFG_GLPI.root_doc}/UI/Illustration/Upload`;
+        const response = await fetch(url, {
+            method: 'POST',
+            body: form_data,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'X-Glpi-Csrf-Token': getAjaxCsrfToken(),
+            }
+        });
+
+        const data = await response.json();
+        return data.file;
     }
 
     #getFilterInput()

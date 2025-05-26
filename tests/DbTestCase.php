@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -34,10 +33,6 @@
  */
 
 // Generic test classe, to be extended for CommonDBTM Object
-
-use Glpi\Asset\AssetDefinition;
-use Glpi\Asset\AssetDefinitionManager;
-use Glpi\Dropdown\DropdownDefinition;
 
 class DbTestCase extends \GLPITestCase
 {
@@ -93,21 +88,6 @@ class DbTestCase extends \GLPITestCase
     }
 
     /**
-     * change current entity
-     *
-     * @param int|string $entityname Name of the entity (or its id)
-     * @param boolean $subtree   Recursive load
-     *
-     * @return void
-     */
-    protected function setEntity($entityname, $subtree)
-    {
-        $entity_id = is_int($entityname) ? $entityname : getItemByTypeName('Entity', $entityname, true);
-        $res = Session::changeActiveEntities($entity_id, $subtree);
-        $this->boolean($res)->isTrue();
-    }
-
-    /**
      * Generic method to test if an added object is corretly inserted
      *
      * @param  CommonDBTM $object The object to test
@@ -134,59 +114,6 @@ class DbTestCase extends \GLPITestCase
                 );
             }
         }
-    }
-
-    /**
-     * Get all classes in folder inc/
-     *
-     * @param boolean $function Whether to look for a function
-     * @param array   $excludes List of classes to exclude
-     *
-     * @return array
-     */
-    protected function getClasses($function = false, array $excludes = [])
-    {
-        $files_iterator = new RecursiveIteratorIterator(
-            new RecursiveDirectoryIterator(GLPI_ROOT . '/src'),
-            RecursiveIteratorIterator::SELF_FIRST
-        );
-
-        $classes = [];
-        foreach ($files_iterator as $fileInfo) {
-            if ($fileInfo->getExtension() !== 'php') {
-                continue;
-            }
-
-            $classname = $fileInfo->getBasename('.php');
-
-            $is_excluded = false;
-            foreach ($excludes as $exclude) {
-                if ($classname === $exclude || @preg_match($exclude, $classname) === 1) {
-                     $is_excluded = true;
-                     break;
-                }
-            }
-            if ($is_excluded) {
-                continue;
-            }
-
-            if (!class_exists($classname)) {
-                continue;
-            }
-            $reflectionClass = new ReflectionClass($classname);
-            if ($reflectionClass->isAbstract()) {
-                continue;
-            }
-
-            if ($function) {
-                if (method_exists($classname, $function)) {
-                    $classes[] = $classname;
-                }
-            } else {
-                $classes[] = $classname;
-            }
-        }
-        return array_unique($classes);
     }
 
     /**
@@ -276,217 +203,5 @@ class DbTestCase extends \GLPITestCase
         $input['id'] = $id;
         $success = $item->delete($input, $purge);
         $this->boolean($success)->isTrue();
-    }
-
-    /**
-     * Helper method to avoid writting the same boilerplate code for rule creation
-     *
-     * @param RuleBuilder $builder RuleConfiguration
-     *
-     * @return Rule Created rule
-     */
-    protected function createRule(RuleBuilder $builder): Rule
-    {
-        $rule = $this->createItem(Rule::class, [
-            'is_active'    => 1,
-            'sub_type'     => $builder->getRuleType(),
-            'name'         => $builder->getName(),
-            'match'        => $builder->getOperator(),
-            'condition'    => $builder->getCondition(),
-            'is_recursive' => $builder->isRecursive(),
-            'entities_id'  => $builder->getEntity(),
-        ]);
-
-        foreach ($builder->getCriteria() as $criterion) {
-            $this->createItem(RuleCriteria::class, [
-                'rules_id'  => $rule->getID(),
-                'criteria'  => $criterion['criteria'],
-                'condition' => $criterion['condition'],
-                'pattern'   => $criterion['pattern'],
-            ]);
-        }
-
-        foreach ($builder->getActions() as $criterion) {
-            $this->createItem(RuleAction::class, [
-                'rules_id'    => $rule->getID(),
-                'action_type' => $criterion['action_type'],
-                'field'       => $criterion['field'],
-                'value'       => $criterion['value'],
-            ]);
-        }
-
-        return $rule;
-    }
-
-    /**
-     * Initialize a definition.
-     *
-     * @param ?string $system_name
-     * @param array $capacities
-     * @param ?array $profiles
-     *
-     * @return AssetDefinition
-     */
-    protected function initAssetDefinition(
-        ?string $system_name = null,
-        array $capacities = [],
-        ?array $profiles = null,
-    ): AssetDefinition {
-        if ($profiles === null) {
-            // Initialize with all standard rights for super admin profile
-            $superadmin_p_id = getItemByTypeName(Profile::class, 'Super-Admin', true);
-            $profiles = [
-                $superadmin_p_id => ALLSTANDARDRIGHT,
-            ];
-        }
-
-        $definition = $this->createItem(
-            AssetDefinition::class,
-            [
-                'system_name' => $system_name ?? $this->getUniqueString(),
-                'is_active'   => true,
-                'capacities'  => $capacities,
-                'profiles'    => $profiles,
-                'fields_display' => [],
-            ],
-            skip_fields: ['capacities', 'profiles', 'fields_display'] // JSON encoded fields cannot be automatically checked
-        );
-        $this->array($this->callPrivateMethod($definition, 'getDecodedCapacitiesField'))->isEqualTo($capacities);
-        $this->array($this->callPrivateMethod($definition, 'getDecodedProfilesField'))->isEqualTo($profiles);
-
-        return $definition;
-    }
-
-    /**
-     * Initialize a definition.
-     *
-     * @param ?string $system_name
-     * @param ?array $profiles
-     *
-     * @return DropdownDefinition
-     */
-    protected function initDropdownDefinition(
-        ?string $system_name = null,
-        ?array $profiles = null,
-    ): DropdownDefinition {
-        if ($profiles === null) {
-            // Initialize with all standard rights for super admin profile
-            $superadmin_p_id = getItemByTypeName(Profile::class, 'Super-Admin', true);
-            $profiles = [
-                $superadmin_p_id => ALLSTANDARDRIGHT,
-            ];
-        }
-
-        $definition = $this->createItem(
-            DropdownDefinition::class,
-            [
-                'system_name' => $system_name ?? $this->getUniqueString(),
-                'is_active'   => true,
-                'profiles'    => $profiles,
-            ],
-            skip_fields: ['profiles'] // JSON encoded fields cannot be automatically checked
-        );
-        $this->array($this->callPrivateMethod($definition, 'getDecodedProfilesField'))->isEqualTo($profiles);
-
-        return $definition;
-    }
-
-    /**
-     * Create a random text document.
-     * @return \Document
-     */
-    protected function createTxtDocument(): Document
-    {
-        $entity   = getItemByTypeName('Entity', '_test_root_entity', true);
-        $filename = uniqid('glpitest_', true) . '.txt';
-        $contents = random_bytes(1024);
-
-        $written_bytes = file_put_contents(GLPI_TMP_DIR . '/' . $filename, $contents);
-        $this->integer($written_bytes)->isEqualTo(strlen($contents));
-
-        return $this->createItem(
-            Document::class,
-            [
-                'filename'    => $filename,
-                'entities_id' => $entity,
-                '_filename'   => [
-                    $filename,
-                ],
-            ]
-        );
-    }
-
-    /**
-     * Helper method to enable a capacity on the given asset definition
-     *
-     * @param AssetDefinition $definition Asset definition
-     * @param string          $capacity   Capacity to enable
-     *
-     * @return AssetDefinition Updated asset definition
-     */
-    protected function enableCapacity(
-        AssetDefinition $definition,
-        string $capacity
-    ): AssetDefinition {
-        // Add new capacity
-        $capacities = json_decode($definition->fields['capacities']);
-        $capacities[] = $capacity;
-
-        $this->updateItem(
-            AssetDefinition::class,
-            $definition->getID(),
-            ['capacities' => $capacities],
-            // JSON encoded fields cannot be automatically checked
-            skip_fields: ['capacities']
-        );
-
-        // Reload definition after update
-        $definition->getFromDB($definition->getID());
-
-        // Ensure capacity was added
-        $this->array(
-            $this->callPrivateMethod($definition, 'getDecodedCapacitiesField')
-        )->contains($capacity);
-
-        return $definition;
-    }
-
-    /**
-     * Helper method to disable a capacity on the given asset definition
-     *
-     * @param AssetDefinition $definition Asset definition
-     * @param string          $capacity   Capacity to disable
-     *
-     * @return AssetDefinition Updated asset definition
-     */
-    protected function disableCapacity(
-        AssetDefinition $definition,
-        string $capacity
-    ): AssetDefinition {
-        // Remove capacity
-        $capacities = json_decode($definition->fields['capacities']);
-        $capacities = array_diff($capacities, [$capacity]);
-
-        // Reorder keys to ensure json_decode will return an array instead of an
-        // object
-        $capacities = array_values($capacities);
-
-        $this->updateItem(
-            AssetDefinition::class,
-            $definition->getID(),
-            ['capacities' => $capacities],
-            // JSON encoded fields cannot be automatically checked
-            skip_fields: ['capacities']
-        );
-
-        // Reload definition after update
-        $definition->getFromDB($definition->getID());
-
-        // Ensure capacity was deleted
-        $this->array(
-            $this->callPrivateMethod($definition, 'getDecodedCapacitiesField')
-        )->notContains($capacity);
-
-        return $definition;
     }
 }

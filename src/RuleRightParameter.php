@@ -60,8 +60,8 @@ class RuleRightParameter extends CommonDropdown
                 'name'  => 'value',
                 'label' => _n('Criterion', 'Criteria', 1),
                 'type'  => 'text',
-                'list'  => false
-            ]
+                'list'  => false,
+            ],
         ];
     }
 

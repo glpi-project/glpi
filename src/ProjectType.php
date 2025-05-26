@@ -47,6 +47,6 @@ class ProjectType extends CommonDropdown
 
     public static function getIcon()
     {
-        return "fas fa-columns";
+        return "ti ti-category";
     }
 }

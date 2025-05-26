@@ -36,10 +36,15 @@
 namespace Glpi\Form\QuestionType;
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\DBAL\JsonFieldInterface;
+use Glpi\Form\Condition\ConditionHandler\MultipleChoiceFromValuesConditionHandler;
+use Glpi\Form\Condition\ConditionHandler\SingleChoiceFromValuesConditionHandler;
+use Glpi\Form\Condition\UsedAsCriteriaInterface;
 use Glpi\Form\Question;
+use InvalidArgumentException;
 use Override;
 
-final class QuestionTypeDropdown extends AbstractQuestionTypeSelectable
+final class QuestionTypeDropdown extends AbstractQuestionTypeSelectable implements UsedAsCriteriaInterface
 {
     #[Override]
     public function getInputType(?Question $question): string
@@ -48,7 +53,7 @@ final class QuestionTypeDropdown extends AbstractQuestionTypeSelectable
     }
 
     #[Override]
-    public function getCategory(): QuestionTypeCategory
+    public function getCategory(): QuestionTypeCategoryInterface
     {
         return QuestionTypeCategory::DROPDOWN;
     }
@@ -100,7 +105,7 @@ final class QuestionTypeDropdown extends AbstractQuestionTypeSelectable
     {
         // language=Twig
         $js = <<<TWIG
-            import("{{ js_path('js/modules/Forms/QuestionDropdown.js') }}").then((m) => {
+            import("/js/modules/Forms/QuestionDropdown.js").then((m) => {
                 {% if question is not null %}
                     const container = $('div[data-glpi-form-editor-selectable-question-options="{{ rand }}"]');
                     container.data(
@@ -160,7 +165,7 @@ TWIG;
                     'display_emptychoice': true,
                     'field_class': 'single-preview-dropdown col-12' ~ (is_multiple_dropdown ? ' d-none' : ''),
                     'mb': '',
-                    'aria_label': __('Default option')
+                    'aria_label': default_option_label
                 }
             ) }}
             {{ fields.dropdownArrayField(
@@ -175,7 +180,7 @@ TWIG;
                     'values': checked_values,
                     'field_class': 'multiple-preview-dropdown col-12' ~ (not is_multiple_dropdown ? ' d-none' : ''),
                     'mb': '',
-                    'aria_label': __('Default options')
+                    'aria_label': default_options_label
                 }
             ) }}
         </div>
@@ -185,19 +190,21 @@ TWIG;
 
         $twig = TemplateRenderer::getInstance();
         $values = array_combine(
-            array_map(fn ($option) => $option['uuid'], $this->getValues($question)),
-            array_map(fn ($option) => $option['value'], $this->getValues($question))
+            array_map(fn($option) => $option['uuid'], $this->getValues($question)),
+            array_map(fn($option) => $option['value'], $this->getValues($question))
         );
         $checked_values = array_map(
-            fn ($option) => $option['uuid'],
-            array_filter($this->getValues($question), fn ($option) => $option['checked'])
+            fn($option) => $option['uuid'],
+            array_filter($this->getValues($question), fn($option) => $option['checked'])
         );
         return $twig->renderFromStringTemplate($template, [
-            'question'             => $question,
-            'init'                 => $question != null,
-            'values'               => $values,
-            'checked_values'       => $checked_values,
-            'is_multiple_dropdown' => $this->isMultipleDropdown($question),
+            'question'              => $question,
+            'init'                  => $question != null,
+            'values'                => $values,
+            'checked_values'        => $checked_values,
+            'is_multiple_dropdown'  => $this->isMultipleDropdown($question),
+            'default_option_label'  => __('Default option'),
+            'default_options_label' => __('Default options'),
         ]);
     }
 
@@ -222,7 +229,7 @@ TWIG;
         $twig = TemplateRenderer::getInstance();
         return $twig->renderFromStringTemplate($template, [
             'is_multiple_dropdown'       => $this->isMultipleDropdown($question),
-            'is_multiple_dropdown_label' => __('Allow multiple options')
+            'is_multiple_dropdown_label' => __('Allow multiple options'),
         ]);
     }
 
@@ -239,23 +246,24 @@ TWIG;
                 values,
                 '',
                 {
-                    'no_label': true,
-                    'values'  : checked_values,
-                    'multiple': is_multiple,
-                    'mb'      : '',
+                    'no_label'  : true,
+                    'values'    : checked_values,
+                    'multiple'  : is_multiple,
+                    'mb'        : '',
+                    'aria_label': label,
                 }
             ) }}
 TWIG;
 
         $twig = TemplateRenderer::getInstance();
-        $values = array_map(fn ($option) => $option['value'], $this->getValues($question));
         $checked_values = array_map(
-            fn ($option) => $option['value'],
-            array_filter($this->getValues($question), fn ($option) => $option['checked'])
+            fn($option) => $option['uuid'],
+            array_filter($this->getValues($question), fn($option) => $option['checked'])
         );
         return $twig->renderFromStringTemplate($template, [
             'question'       => $question,
-            'values'         => array_combine($values, $values), // Make keys and values the same to easily store the selected values
+            'label'          => $question->fields['name'],
+            'values'         => $this->getOptions($question),
             'checked_values' => $checked_values,
             'is_multiple'    => $this->isMultipleDropdown($question),
         ]);
@@ -265,5 +273,27 @@ TWIG;
     public function getExtraDataConfigClass(): string
     {
         return QuestionTypeDropdownExtraDataConfig::class;
+    }
+
+    #[Override]
+    public function getConditionHandlers(
+        ?JsonFieldInterface $question_config
+    ): array {
+        if (!$question_config instanceof QuestionTypeDropdownExtraDataConfig) {
+            throw new InvalidArgumentException();
+        }
+
+        $options = $question_config->getOptions();
+        if ($question_config->isMultipleDropdown()) {
+            return array_merge(
+                parent::getConditionHandlers($question_config),
+                [new MultipleChoiceFromValuesConditionHandler($options)]
+            );
+        } else {
+            return array_merge(
+                parent::getConditionHandlers($question_config),
+                [new SingleChoiceFromValuesConditionHandler($options)]
+            );
+        }
     }
 }

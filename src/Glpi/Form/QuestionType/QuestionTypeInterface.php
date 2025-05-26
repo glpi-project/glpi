@@ -36,12 +36,15 @@
 namespace Glpi\Form\QuestionType;
 
 use Glpi\DBAL\JsonFieldInterface;
+use Glpi\Form\Export\Context\DatabaseMapper;
+use Glpi\Form\Export\Serializer\DynamicExportDataField;
+use Glpi\Form\Condition\UsedAsCriteriaInterface;
 use Glpi\Form\Question;
 
 /**
  * Interface that must be implemented by all available questions types
  */
-interface QuestionTypeInterface
+interface QuestionTypeInterface extends UsedAsCriteriaInterface
 {
     public function __construct();
 
@@ -132,7 +135,7 @@ interface QuestionTypeInterface
      *
      * @return string
      */
-    public function formatRawAnswer(mixed $answer): string;
+    public function formatRawAnswer(mixed $answer, Question $question): string;
 
     /**
      * Get the name of this questions type.
@@ -151,9 +154,9 @@ interface QuestionTypeInterface
     /**
      * Get the category of this question type.
      *
-     * @return QuestionTypeCategory
+     * @return QuestionTypeCategoryInterface
      */
-    public function getCategory(): QuestionTypeCategory;
+    public function getCategory(): QuestionTypeCategoryInterface;
 
     /**
      * Get the weight of this question type.
@@ -236,4 +239,38 @@ interface QuestionTypeInterface
      * Apply a predefined value that will be used when rendering the form.
      */
     public function formatPredefinedValue(string $value): ?string;
+
+    /**
+     * Must return a DynamicExportDataField object constructed from the
+     * following values:
+     *  - field_id: "extra_data"
+     *  - data: the extra data content with db names instead of ids
+     *  - requirements: one requirement per database id in the original extra data
+     */
+    public function exportDynamicExtraData(
+        ?JsonFieldInterface $extra_data_config,
+    ): DynamicExportDataField;
+
+    /**
+    * Must return a DynamicExportDataField object constructed from the
+    * following values:
+    *  - field_id: "default_value"
+    *  - data: the default value content with db names instead of ids
+    *  - requirements: one requirement per database id in the original default values
+    */
+    public function exportDynamicDefaultValue(
+        ?JsonFieldInterface $extra_data_config,
+        array|int|float|bool|string|null $default_value_config,
+    ): DynamicExportDataField;
+
+    public static function prepareDynamicExtraDataForImport(
+        ?array $extra_data,
+        DatabaseMapper $mapper,
+    ): ?array;
+
+    public static function prepareDynamicDefaultValueForImport(
+        ?array $extra_data,
+        array|int|float|bool|string|null $default_value_data,
+        DatabaseMapper $mapper,
+    ): array|int|float|bool|string|null;
 }

@@ -36,7 +36,7 @@
 /// Class Ticket_User
 class Ticket_User extends CommonITILActor
 {
-   // From CommonDBRelation
+    // From CommonDBRelation
     public static $itemtype_1 = 'Ticket';
     public static $items_id_1 = 'tickets_id';
     public static $itemtype_2 = 'User';
@@ -57,6 +57,6 @@ class Ticket_User extends CommonITILActor
                 break;
         }
         parent::post_addItem();
-        unset($this->_force_log_option);
+        $this->_force_log_option = 0;
     }
 }

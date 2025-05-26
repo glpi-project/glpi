@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -38,6 +37,7 @@ namespace tests\units\Glpi\Form\Destination\CommonITILField;
 use Computer;
 use DBmysql;
 use Glpi\Form\AnswersHandler\AnswersHandler;
+use Glpi\Form\Destination\AbstractCommonITILFormDestination;
 use Glpi\Form\Destination\CommonITILField\AssociatedItemsField;
 use Glpi\Form\Destination\CommonITILField\AssociatedItemsFieldConfig;
 use Glpi\Form\Destination\CommonITILField\AssociatedItemsFieldStrategy;
@@ -113,7 +113,7 @@ final class AssociatedItemsFieldTest extends AbstractDestinationFieldTest
                 "Computer" => [
                     'itemtype' => Computer::getType(),
                     'items_id' => $computers[0]->getID(),
-                ]
+                ],
             ],
             expected_associated_items: [
                 Computer::getType() => [
@@ -175,7 +175,7 @@ final class AssociatedItemsFieldTest extends AbstractDestinationFieldTest
                 "Computer" => [
                     'itemtype' => Computer::getType(),
                     'items_id' => $computers[1]->getID(),
-                ]
+                ],
             ],
             expected_associated_items: [
                 Computer::getType() => [
@@ -233,7 +233,7 @@ final class AssociatedItemsFieldTest extends AbstractDestinationFieldTest
                 "Computer" => [
                     'itemtype' => Computer::getType(),
                     'items_id' => $computers[1]->getID(),
-                ]
+                ],
             ],
             expected_associated_items: [
                 Computer::getType() => [
@@ -256,7 +256,7 @@ final class AssociatedItemsFieldTest extends AbstractDestinationFieldTest
                 "Your Monitors" => [
                     'Monitor_' . $monitors[0]->getID(),
                     'Monitor_' . $monitors[1]->getID(),
-                ]
+                ],
             ],
             expected_associated_items: [
                 Monitor::getType() => [
@@ -330,7 +330,7 @@ final class AssociatedItemsFieldTest extends AbstractDestinationFieldTest
                 "Computer" => [
                     'itemtype' => Computer::getType(),
                     'items_id' => $computers[1]->getID(),
-                ]
+                ],
             ],
             expected_associated_items: [
                 Computer::getType() => [
@@ -362,7 +362,7 @@ final class AssociatedItemsFieldTest extends AbstractDestinationFieldTest
                 "Computer" => [
                     'itemtype' => Computer::getType(),
                     'items_id' => $computers[0]->getID(),
-                ]
+                ],
             ],
             expected_associated_items: [
                 Computer::getType() => [
@@ -395,7 +395,7 @@ final class AssociatedItemsFieldTest extends AbstractDestinationFieldTest
             config: new AssociatedItemsFieldConfig(
                 strategies: [
                     AssociatedItemsFieldStrategy::SPECIFIC_VALUES,
-                    AssociatedItemsFieldStrategy::SPECIFIC_ANSWERS
+                    AssociatedItemsFieldStrategy::SPECIFIC_ANSWERS,
                 ],
                 specific_associated_items: [
                     Computer::getType() => [
@@ -438,24 +438,24 @@ final class AssociatedItemsFieldTest extends AbstractDestinationFieldTest
             'fields_to_set' => [
                 'associate_rule' => 1, // PluginFormcreatorAbstractItilTarget::ASSOCIATE_RULE_NONE
             ],
-            'field_config' => fn ($migration, $form) => (new AssociatedItemsField())->getDefaultConfig($form)
+            'field_config' => fn($migration, $form) => (new AssociatedItemsField())->getDefaultConfig($form),
         ];
 
         yield 'Equals to the answer to the question' => [
             'field_key'     => AssociatedItemsField::getKey(),
             'fields_to_set' => [
                 'associate_rule'     => 3, // PluginFormcreatorAbstractItilTarget::ASSOCIATE_RULE_ANSWER
-                'associate_question' => 74
+                'associate_question' => 74,
             ],
-            'field_config' => fn ($migration, $form) => new AssociatedItemsFieldConfig(
+            'field_config' => fn($migration, $form) => new AssociatedItemsFieldConfig(
                 strategies: [AssociatedItemsFieldStrategy::SPECIFIC_ANSWERS],
                 specific_question_ids: [
                     $migration->getMappedItemTarget(
                         'PluginFormcreatorQuestion',
                         74
-                    )['items_id'] ?? throw new \Exception("Question not found")
+                    )['items_id'] ?? throw new \Exception("Question not found"),
                 ]
-            )
+            ),
         ];
 
         yield 'Last valid answer' => [
@@ -465,7 +465,7 @@ final class AssociatedItemsFieldTest extends AbstractDestinationFieldTest
             ],
             'field_config' => new AssociatedItemsFieldConfig(
                 strategies: [AssociatedItemsFieldStrategy::LAST_VALID_ANSWER]
-            )
+            ),
         ];
     }
 
@@ -475,7 +475,7 @@ final class AssociatedItemsFieldTest extends AbstractDestinationFieldTest
         global $DB;
         $computer_id = (new Computer())->add([
             'name'        => 'Test Computer for associated items',
-            'entities_id' => $this->getTestRootEntity(true)
+            'entities_id' => $this->getTestRootEntity(true),
         ]);
         $DB->insert(
             'glpi_plugin_formcreator_items_targettickets',
@@ -489,7 +489,7 @@ final class AssociatedItemsFieldTest extends AbstractDestinationFieldTest
         );
         $monitor_id = (new Monitor())->add([
             'name'        => 'Test Monitor for associated items',
-            'entities_id' => $this->getTestRootEntity(true)
+            'entities_id' => $this->getTestRootEntity(true),
         ]);
         $DB->insert(
             'glpi_plugin_formcreator_items_targettickets',
@@ -514,6 +514,75 @@ final class AssociatedItemsFieldTest extends AbstractDestinationFieldTest
                     Monitor::getType()  => $monitor_id,
                 ]
             )
+        );
+    }
+
+    /**
+     * Test that we can submit an empty value for a specific values strategy.
+     * A peculiarity of the front-end integration returns the value "0" if no
+     * itemtype is selected.
+     *
+     * However, no corresponding id is returned, so we need to ensure
+     * that the "0" value is properly ignored.
+     */
+    public function testSubmitEmptyValueForSpecificValuesStrategy(): void
+    {
+        $this->login();
+
+        // Create a computer
+        $computer = $this->createItem(Computer::class, [
+            'name' => "Computer",
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+
+        // Create a form
+        $form = $this->createForm(new FormBuilder());
+
+        $destination = current($form->getDestinations());
+        $this->updateItem(
+            $destination::getType(),
+            $destination->getId(),
+            [
+                'config' => [
+                    AssociatedItemsField::getKey() => [
+                        'strategies' => [AssociatedItemsFieldStrategy::SPECIFIC_VALUES],
+                        'specific_associated_items' => [
+                            'itemtype' => [
+                                \Computer::getType(),
+                                '0',
+                            ],
+                            'items_id' => [
+                                $computer->getID(),
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+            ["config"],
+        );
+
+        $destination = current($form->getDestinations());
+        $concrete_destination = $destination->getConcreteDestinationItem();
+        $this->assertInstanceOf(
+            AbstractCommonITILFormDestination::class,
+            $concrete_destination
+        );
+
+        /**
+         * @var AbstractCommonITILFormDestination $concrete_destination
+         * @var AssociatedItemsFieldConfig $config
+         */
+        $config = $concrete_destination->getConfigurableFieldByKey(
+            AssociatedItemsField::getKey()
+        )->getConfig($form, $destination->getConfig());
+
+        $this->assertEquals(
+            [
+                Computer::getType() => [
+                    $computer->getID(),
+                ],
+            ],
+            $config->getSpecificAssociatedItems()
         );
     }
 

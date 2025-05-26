@@ -40,14 +40,14 @@
  */
 class KnowbaseItem_KnowbaseItemCategory extends CommonDBRelation
 {
-   // From CommonDBRelation
+    // From CommonDBRelation
     public static $itemtype_1          = 'KnowbaseItem';
     public static $items_id_1          = 'knowbaseitems_id';
     public static $itemtype_2          = 'KnowbaseItemCategory';
     public static $items_id_2          = 'knowbaseitemcategories_id';
     public static $checkItem_2_Rights  = self::HAVE_VIEW_RIGHT_ON_ITEM;
 
-   // From CommonDBTM
+    // From CommonDBTM
     public $dohistory = true;
 
     public static $rightname = 'knowbase';
@@ -71,14 +71,14 @@ class KnowbaseItem_KnowbaseItemCategory extends CommonDBRelation
                 'glpi_knowbaseitems' => [
                     'ON'  => [
                         $kbi_cat_table        => 'knowbaseitems_id',
-                        'glpi_knowbaseitems' => 'id'
-                    ]
-                ]
+                        'glpi_knowbaseitems' => 'id',
+                    ],
+                ],
             ],
             'WHERE'     => [],
             'GROUPBY'   => [
-                $kbi_cat_table . '.id'
-            ]
+                $kbi_cat_table . '.id',
+            ],
         ];
         $where = [];
 
@@ -99,8 +99,8 @@ class KnowbaseItem_KnowbaseItemCategory extends CommonDBRelation
         }
 
         if ($limit) {
-            $criteria['START'] = (int)$start;
-            $criteria['LIMIT'] = (int)$limit;
+            $criteria['START'] = (int) $start;
+            $criteria['LIMIT'] = (int) $limit;
         }
 
         $linked_items = [];
@@ -136,7 +136,7 @@ class KnowbaseItem_KnowbaseItemCategory extends CommonDBRelation
             $action_prefix = __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR;
 
             $actions[$action_prefix . 'add']
-            = "<i class='ma-icon fas fa-book'></i>" .
+            = "<i class='ma-icon ti ti-book'></i>" .
               _sx('button', 'Link knowledgebase article');
         }
 

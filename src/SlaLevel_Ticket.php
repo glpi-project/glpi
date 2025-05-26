@@ -33,7 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 
 /// Class SLALevel
@@ -67,21 +66,21 @@ class SlaLevel_Ticket extends CommonDBTM
                 'glpi_slalevels' => [
                     'FKEY'   => [
                         static::getTable()   => 'slalevels_id',
-                        'glpi_slalevels'     => 'id'
-                    ]
+                        'glpi_slalevels'     => 'id',
+                    ],
                 ],
                 'glpi_slas'       => [
                     'FKEY'   => [
                         'glpi_slalevels'     => 'slas_id',
-                        'glpi_slas'          => 'id'
-                    ]
-                ]
+                        'glpi_slas'          => 'id',
+                    ],
+                ],
             ],
             'WHERE'        => [
                 static::getTable() . '.tickets_id'  => $ID,
-                'glpi_slas.type'                    => $slaType
+                'glpi_slas.type'                    => $slaType,
             ],
-            'LIMIT'        => 1
+            'LIMIT'        => 1,
         ]);
         if (count($iterator) === 1) {
             $row = $iterator->current();
@@ -112,20 +111,20 @@ class SlaLevel_Ticket extends CommonDBTM
                 'glpi_slalevels'  => [
                     'ON' => [
                         'glpi_slalevels_tickets'   => 'slalevels_id',
-                        'glpi_slalevels'           => 'id'
-                    ]
+                        'glpi_slalevels'           => 'id',
+                    ],
                 ],
                 'glpi_slas'       => [
                     'ON' => [
                         'glpi_slalevels'  => 'slas_id',
-                        'glpi_slas'       => 'id'
-                    ]
-                ]
+                        'glpi_slas'       => 'id',
+                    ],
+                ],
             ],
             'WHERE'     => [
                 'glpi_slalevels_tickets.tickets_id' => $tickets_id,
-                'glpi_slas.type'                    => $slaType
-            ]
+                'glpi_slas.type'                    => $slaType,
+            ],
         ]);
 
         foreach ($iterator as $data) {
@@ -175,19 +174,19 @@ class SlaLevel_Ticket extends CommonDBTM
                 'glpi_slalevels'  => [
                     'ON' => [
                         'glpi_slalevels_tickets'   => 'slalevels_id',
-                        'glpi_slalevels'           => 'id'
-                    ]
+                        'glpi_slalevels'           => 'id',
+                    ],
                 ],
                 'glpi_slas'       => [
                     'ON' => [
                         'glpi_slalevels'  => 'slas_id',
-                        'glpi_slas'       => 'id'
-                    ]
-                ]
+                        'glpi_slas'       => 'id',
+                    ],
+                ],
             ],
             'WHERE'     => [
-                'glpi_slalevels_tickets.date' => ['<', QueryFunction::now()]
-            ]
+                'glpi_slalevels_tickets.date' => ['<', QueryFunction::now()],
+            ],
         ]);
 
         foreach ($iterator as $data) {
@@ -219,7 +218,7 @@ class SlaLevel_Ticket extends CommonDBTM
             $ticket->getFromDB($data['tickets_id'])
             && !$ticket->isDeleted()
         ) {
-           // search all actors of a ticket
+            // search all actors of a ticket
             foreach ($ticket->getUsers(CommonITILActor::REQUESTER) as $user) {
                 $ticket->fields['_users_id_requester'][] = $user['users_id'];
             }
@@ -252,19 +251,19 @@ class SlaLevel_Ticket extends CommonDBTM
 
             $slalevel = new SlaLevel();
             $sla      = new SLA();
-           // Check if sla datas are OK
+            // Check if sla datas are OK
             [, $slaField] = SLA::getFieldNames($slaType);
             if (($ticket->fields[$slaField] > 0)) {
                 if ($ticket->fields['status'] == CommonITILObject::CLOSED) {
-                   // Drop line when status is closed
+                    // Drop line when status is closed
                     $slalevelticket->delete(['id' => $data['id']]);
-                } else if ($ticket->fields['status'] != CommonITILObject::SOLVED) {
-                   // No execution if ticket has been taken into account
+                } elseif ($ticket->fields['status'] != CommonITILObject::SOLVED) {
+                    // No execution if ticket has been taken into account
                     if (
                         !(($slaType == SLM::TTO)
                         && ($ticket->fields['takeintoaccount_delay_stat'] > 0))
                     ) {
-                       // If status = solved : keep the line in case of solution not validated
+                        // If status = solved : keep the line in case of solution not validated
                         $input['id']           = $ticket->getID();
                         $input['_auto_update'] = true;
 
@@ -276,13 +275,13 @@ class SlaLevel_Ticket extends CommonDBTM
                             if (count($slalevel->criterias)) {
                                 $doit = $slalevel->checkCriterias($ticket->fields);
                             }
-                           // Process rules
+                            // Process rules
                             if ($doit) {
                                 $input = $slalevel->executeActions($input, [], $ticket->fields);
                             }
                         }
 
-                       // Put next level in todo list
+                        // Put next level in todo list
                         if (
                             $next = $slalevel->getNextSlaLevel(
                                 $ticket->fields[$slaField],
@@ -291,21 +290,21 @@ class SlaLevel_Ticket extends CommonDBTM
                         ) {
                             $sla->addLevelToDo($ticket, $next);
                         }
-                       // Action done : drop the line
+                        // Action done : drop the line
                         $slalevelticket->delete(['id' => $data['id']]);
 
                         $ticket->update($input);
                     } else {
-                       // Drop line
+                        // Drop line
                         $slalevelticket->delete(['id' => $data['id']]);
                     }
                 }
             } else {
-               // Drop line
+                // Drop line
                 $slalevelticket->delete(['id' => $data['id']]);
             }
         } else {
-           // Drop line
+            // Drop line
             $slalevelticket->delete(['id' => $data['id']]);
         }
     }
@@ -330,21 +329,21 @@ class SlaLevel_Ticket extends CommonDBTM
                 'glpi_slalevels'  => [
                     'ON' => [
                         'glpi_slalevels_tickets'   => 'slalevels_id',
-                        'glpi_slalevels'           => 'id'
-                    ]
+                        'glpi_slalevels'           => 'id',
+                    ],
                 ],
                 'glpi_slas'       => [
                     'ON' => [
                         'glpi_slalevels'  => 'slas_id',
-                        'glpi_slas'       => 'id'
-                    ]
-                ]
+                        'glpi_slas'       => 'id',
+                    ],
+                ],
             ],
             'WHERE'     => [
                 'glpi_slalevels_tickets.date'       => ['<', QueryFunction::now()],
                 'glpi_slalevels_tickets.tickets_id' => $tickets_id,
-                'glpi_slas.type'                    => $slaType
-            ]
+                'glpi_slas.type'                    => $slaType,
+            ],
         ];
 
         $last_escalation = -1;

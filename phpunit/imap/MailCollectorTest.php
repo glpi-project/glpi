@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -90,17 +89,17 @@ class MailCollectorTest extends DbTestCase
         return [
             [
                 'raw'       => 'This is a subject',
-                'expected'  => 'This is a subject'
+                'expected'  => 'This is a subject',
             ], [
                 'raw'       => "With a \ncarriage return",
-                'expected'  => "With a \ncarriage return"
+                'expected'  => "With a \ncarriage return",
             ], [
                 'raw'       => 'We have a problem, <strong>URGENT</strong>',
-                'expected'  => 'We have a problem, <strong>URGENT</strong>'
+                'expected'  => 'We have a problem, <strong>URGENT</strong>',
             ], [ //dunno why...
                 'raw'       => 'Subject with =20 character',
-                'expected'  => "Subject with \n character"
-            ]
+                'expected'  => "Subject with \n character",
+            ],
         ];
     }
 
@@ -120,7 +119,7 @@ class MailCollectorTest extends DbTestCase
             'mail_server' => 'test',
             'server_type' => '/imap',
             'passwd'    => 'Ph34r',
-            'is_active' => true
+            'is_active' => true,
         ];
 
         $prepared = $instance->prepareInput($oinput, 'add');
@@ -133,7 +132,7 @@ class MailCollectorTest extends DbTestCase
             'mail_server' => 'test',
             'server_type' => '/imap',
             'passwd'    => '',
-            'is_active' => true
+            'is_active' => true,
         ];
 
         $this->assertSame(
@@ -141,7 +140,7 @@ class MailCollectorTest extends DbTestCase
                 'mail_server' => 'test',
                 'server_type' => '/imap',
                 'is_active' => true,
-                'host' => '{test/imap}'
+                'host' => '{test/imap}',
             ],
             $instance->prepareInput($oinput, 'add')
         );
@@ -162,7 +161,7 @@ class MailCollectorTest extends DbTestCase
             'mail_server'     => 'mail.example.com',
             'server_type' => '/imap',
             'server_port'     => 143,
-            'server_mailbox'  => 'bugs'
+            'server_mailbox'  => 'bugs',
         ];
 
         $this->assertSame(
@@ -171,7 +170,7 @@ class MailCollectorTest extends DbTestCase
                 'server_type' => '/imap',
                 'server_port'      => 143,
                 'server_mailbox'   => 'bugs',
-                'host'             => '{mail.example.com:143/imap}bugs'
+                'host'             => '{mail.example.com:143/imap}bugs',
             ],
             $instance->prepareInput($oinput, 'add')
         );
@@ -188,7 +187,7 @@ class MailCollectorTest extends DbTestCase
                 'server_type' => '/imap',
                 'passwd' => '',
                 '_blank_passwd' => true,
-                'host' => '{mail.example.com/imap}'
+                'host' => '{mail.example.com/imap}',
             ],
             $instance->prepareInputForUpdate($oinput)
         );
@@ -196,17 +195,17 @@ class MailCollectorTest extends DbTestCase
         unset($_SESSION['glpicronuserrunning']);
         $this->assertFalse($instance->prepareInput(['mail_server' => '', 'server_type' => '/imap']));
         $this->hasSessionMessages(ERROR, [
-            'Mandatory fields are not filled. Please correct: Server'
+            'Mandatory fields are not filled. Please correct: Server',
         ]);
 
         $this->assertFalse($instance->prepareInput(['mail_server' => 'test', 'server_type' => '']));
         $this->hasSessionMessages(ERROR, [
-            'Mandatory fields are not filled. Please correct: Connection options'
+            'Mandatory fields are not filled. Please correct: Connection options',
         ]);
 
         $this->assertFalse($instance->prepareInput([]));
         $this->hasSessionMessages(ERROR, [
-            'Mandatory fields are not filled. Please correct: Server, Connection options'
+            'Mandatory fields are not filled. Please correct: Server, Connection options',
         ]);
     }
 
@@ -220,11 +219,11 @@ class MailCollectorTest extends DbTestCase
         $this->assertEquals(0, $instance->countCollectors());
 
         //Add an active collector
-        $nid = (int)$instance->add([
+        $nid = (int) $instance->add([
             'name'      => 'Maille name',
             'mail_server' => 'test',
             'server_type' => '/imap',
-            'is_active' => true
+            'is_active' => true,
         ]);
         $this->assertGreaterThan(0, $nid);
 
@@ -235,7 +234,7 @@ class MailCollectorTest extends DbTestCase
         $this->assertTrue(
             $instance->update([
                 'id'        => $instance->fields['id'],
-                'is_active' => false
+                'is_active' => false,
             ])
         );
 
@@ -248,124 +247,161 @@ class MailCollectorTest extends DbTestCase
     {
         $root_ent_id = getItemByTypeName('Entity', '_test_root_entity', true);
 
-        $ticket_notif = new NotificationTargetTicket($root_ent_id, 'test_event', getItemByTypeName('Ticket', '_ticket01'));
-        $soft_notif = new NotificationTargetSoftwareLicense($root_ent_id, 'test_event', getItemByTypeName('SoftwareLicense', '_test_softlic_1'));
-        $base_notif = new NotificationTarget();
-
         $uuid = Config::getUuid('notification');
 
         $time = time();
         $rand = rand();
         $uname = 'localhost';
 
-        return [
-            [
-                'headers'  => [],
-                'expected' => false,
+        yield 'invalid message-id header' => [
+            'message_id'                => 'donotknow',
+            'is_self_itil_notification' => false,
+            'values'                    => null,
+        ];
+
+        yield 'GLPI < 10.0.0 ticket notification' => [
+            'message_id'                => "GLPI-150.{$time}.{$rand}@{$uname}",
+            'is_self_itil_notification' => true,
+            'values'                    => [
+                'uuid'     => null,
+                'itemtype' => 'Ticket',
+                'items_id' => 150,
+                'event'    => null,
             ],
-            [
-                'headers'  => [
-                    'message-id' => 'donotknow',
-                ],
-                'expected' => false,
+        ];
+
+        yield 'GLPI < 10.0.0 software licence notification' => [
+            'message_id'                => "GLPI-SoftwareLicence-1.{$time}.{$rand}@{$uname}",
+            'is_self_itil_notification' => false,
+            'values'                    => [
+                'uuid'     => null,
+                'itemtype' => 'SoftwareLicence',
+                'items_id' => 1,
+                'event'    => null,
             ],
-            // Message-Id generated by GLPI < 10.0.0
-            [
-                'headers'  => [
-                    'message-id' => "GLPI-1.{$time}.{$rand}@{$uname}", // for ticket
-                ],
-                'expected' => true,
+        ];
+
+        yield 'GLPI < 10.0.0 notification with no object relation' => [
+            'message_id'                => "GLPI.{$time}.{$rand}@{$uname}",
+            'is_self_itil_notification' => false,
+            'values'                    => [
+                'uuid'     => null,
+                'itemtype' => null,
+                'items_id' => null,
+                'event'    => null,
             ],
-            [
-                'headers'  => [
-                    'message-id' => "GLPI-SoftwareLicence-1.{$time}.{$rand}@{$uname}", // with object relation
-                ],
-                'expected' => true,
+        ];
+
+        yield 'GLPI >= 10.0.0 < 10.0.7 ticket notification' => [
+            'message_id'                => "GLPI_{$uuid}-Ticket-12.{$time}.{$rand}@{$uname}",
+            'is_self_itil_notification' => true,
+            'values'                    => [
+                'uuid'     => $uuid,
+                'itemtype' => 'Ticket',
+                'items_id' => 12,
+                'event'    => null,
             ],
-            [
-                'headers'  => [
-                    'message-id' => "GLPI.{$time}.{$rand}@{$uname}", // without object relation
-                ],
-                'expected' => true,
+        ];
+
+        yield 'GLPI >= 10.0.0 < 10.0.7 ticket notification from another GLPI instance' => [
+            'message_id'                => "GLPI_notmyuuid-Ticket-12.{$time}.{$rand}@{$uname}",
+            'is_self_itil_notification' => false,
+            'values'                    => [
+                'uuid'     => 'notmyuuid',
+                'itemtype' => 'Ticket',
+                'items_id' => 12,
+                'event'    => null,
             ],
-            // Message-Id generated by GLPI >= 10.0.0 < 10.0.7
-            [
-                'headers'  => [
-                    'message-id' => "GLPI_{$uuid}-Ticket-1.{$time}.{$rand}@{$uname}", // for ticket
-                ],
-                'expected' => true,
+        ];
+
+        yield 'GLPI >= 10.0.0 < 10.0.7 software licence notification' => [
+            'message_id'                => "GLPI_{$uuid}-SoftwareLicense-23.{$time}.{$rand}@{$uname}",
+            'is_self_itil_notification' => false,
+            'values'                    => [
+                'uuid'     => $uuid,
+                'itemtype' => 'SoftwareLicense',
+                'items_id' => 23,
+                'event'    => null,
             ],
-            [
-                'headers'  => [
-                    'message-id' => "GLPI_{$uuid}-SoftwareLicense-1.{$time}.{$rand}@{$uname}", // with object relation
-                ],
-                'expected' => true,
+        ];
+
+        yield 'GLPI >= 10.0.0 < 10.0.7 notification with no object relation' => [
+            'message_id'                => "GLPI_{$uuid}.{$time}.{$rand}@{$uname}",
+            'is_self_itil_notification' => false,
+            'values'                    => [
+                'uuid'     => $uuid,
+                'itemtype' => null,
+                'items_id' => null,
+                'event'    => null,
             ],
-            [
-                'headers'  => [
-                    'message-id' => "GLPI_{$uuid}.{$time}.{$rand}@{$uname}", // without object relation
-                ],
-                'expected' => true,
+        ];
+
+        yield 'GLPI >= 10.0.7 ticket notification' => [
+            'message_id'                => (new NotificationTargetTicket($root_ent_id, 'test_event', getItemByTypeName('Ticket', '_ticket01')))->getMessageID(),
+            'is_self_itil_notification' => true,
+            'values'                    => [
+                'uuid'     => $uuid,
+                'itemtype' => 'Ticket',
+                'items_id' => getItemByTypeName('Ticket', '_ticket01', true),
+                'event'    => 'test_event',
             ],
-            [
-                'headers'  => [
-                    'message-id' => "GLPI_notmyuuid-Ticket-1.{$time}.{$rand}@{$uname}", // with object relation
-                ],
-                'expected' => false,
+        ];
+
+        yield 'GLPI >= 10.0.7 ticket notification from another GLPI instance' => [
+            'message_id'                => "GLPI_notmyuuid-Ticket-1/new.{$time}.{$rand}@{$uname}",
+            'is_self_itil_notification' => false,
+            'values'                    => [
+                'uuid'     => 'notmyuuid',
+                'itemtype' => 'Ticket',
+                'items_id' => 1,
+                'event'    => 'new',
             ],
-            [
-                'headers'  => [
-                    'message-id' => "GLPI_notmyuuid.{$time}.{$rand}@{$uname}", // without object relation
-                ],
-                'expected' => false,
+        ];
+
+        yield 'GLPI >= 10.0.7 software licence notification' => [
+            'message_id'                => (new NotificationTargetSoftwareLicense($root_ent_id, 'myevent', getItemByTypeName('SoftwareLicense', '_test_softlic_1')))->getMessageID(),
+            'is_self_itil_notification' => false,
+            'values'                    => [
+                'uuid'     => $uuid,
+                'itemtype' => 'SoftwareLicense',
+                'items_id' => getItemByTypeName('SoftwareLicense', '_test_softlic_1', true),
+                'event'    => 'myevent',
             ],
-            // Message-Id generated by GLPI >= 10.0.7
-            [
-                'headers'  => [
-                    'message-id' => $ticket_notif->getMessageID(), // for ticket
-                ],
-                'expected' => true,
-            ],
-            [
-                'headers'  => [
-                    'message-id' => $soft_notif->getMessageID(), // with object relation
-                ],
-                'expected' => true,
-            ],
-            [
-                'headers'  => [
-                    'message-id' => $base_notif->getMessageID(), // without object relation
-                ],
-                'expected' => true,
-            ],
-            [
-                'headers'  => [
-                    'message-id' => "GLPI_notmyuuid-Ticket-1/new.{$time}.{$rand}@{$uname}", // with object relation
-                ],
-                'expected' => false,
-            ],
-            [
-                'headers'  => [
-                    'message-id' => "GLPI_notmyuuid/evt.{$time}.{$rand}@{$uname}", // without object relation
-                ],
-                'expected' => false,
+        ];
+
+        yield 'GLPI >= 10.0.7 base notification' => [
+            'message_id'                => (new NotificationTarget())->getMessageID(),
+            'is_self_itil_notification' => false,
+            'values'                    => [
+                'uuid'     => $uuid,
+                'itemtype' => null,
+                'items_id' => null,
+                'event'    => 'none',
             ],
         ];
     }
 
     #[DataProvider('messageIdHeaderProvider')]
-    public function testIsMessageSentByGlpi(array $headers, bool $expected)
+    public function testIsItilNotificationFromSelf(string $message_id, bool $is_self_itil_notification, ?array $values)
     {
         $instance = new \MailCollector();
 
         $message = new Message(
             [
-                'headers' => $headers,
+                'headers' => ['Message-Id' => $message_id],
                 'content' => 'Message contents...',
             ]
         );
 
-        $this->assertEquals($expected, $instance->isMessageSentByGlpi($message));
+        $this->assertEquals($is_self_itil_notification, $this->callPrivateMethod($instance, 'isItilNotificationFromSelf', $message));
+    }
+
+    #[DataProvider('messageIdHeaderProvider')]
+    public function testExtractValuesFromRefHeader(string $message_id, bool $is_self_itil_notification, ?array $values)
+    {
+        $instance = new \MailCollector();
+
+        $this->assertEquals($values, $this->callPrivateMethod($instance, 'extractValuesFromRefHeader', $message_id));
     }
 
     public static function itemReferenceHeaderProvider()
@@ -623,7 +659,7 @@ class MailCollectorTest extends DbTestCase
             $collector = $this->collector;
         }
 
-        $this->mailgate_id = (int)$collector->add([
+        $this->mailgate_id = (int) $collector->add([
             'name'                  => 'testuser',
             'login'                 => 'testuser',
             'is_active'             => true,
@@ -660,19 +696,19 @@ class MailCollectorTest extends DbTestCase
         $uemail = new \UserEmail();
         $this->assertGreaterThan(
             0,
-            (int)$uemail->add([
+            (int) $uemail->add([
                 'users_id'     => $nuid,
                 'is_default'   => 1,
-                'email'        => 'normal@glpi-project.org'
+                'email'        => 'normal@glpi-project.org',
             ])
         );
         $tuid = getItemByTypeName('User', 'tech', true);
         $this->assertGreaterThan(
             0,
-            (int)$uemail->add([
+            (int) $uemail->add([
                 'users_id'     => $tuid,
                 'is_default'   => 1,
-                'email'        => 'tech@glpi-project.org'
+                'email'        => 'tech@glpi-project.org',
             ])
         );
 
@@ -682,7 +718,7 @@ class MailCollectorTest extends DbTestCase
             0,
             $doctype->add([
                 'name'   => 'Type test',
-                'ext'    => '/^1234567890(_\d+)?$/'
+                'ext'    => '/^1234567890(_\d+)?$/',
             ])
         );
 
@@ -709,9 +745,9 @@ class MailCollectorTest extends DbTestCase
         }
 
         $total_count                     = count(glob(GLPI_ROOT . '/tests/emails-tests/*.eml'));
-        $expected_refused_count          = 3;
+        $expected_refused_count          = 11;
         $expected_error_count            = 2;
-        $expected_blacklist_count        = 3;
+        $expected_blacklist_count        = 1;
         $expected_expected_already_seen  = 0;
 
         $this->assertSame(
@@ -746,7 +782,7 @@ class MailCollectorTest extends DbTestCase
                 'from'    => '', // '' as value is not nullable in DB
                 'to'      => '', // '' as value is not nullable in DB
                 'reason'  => \NotImportedEmail::FAILED_OPERATION,
-            ]
+            ],
         ];
         $iterator = $DB->request(['FROM' => \NotImportedEmail::getTable()]);
         $this->assertEquals(count($not_imported_specs), count($iterator));
@@ -775,7 +811,8 @@ class MailCollectorTest extends DbTestCase
                     'Re: [GLPI #0038927] Update - Issues with new Windows 10 machine',
                     'A message without to header',
                     'Ticket with multiple to',
-                ]
+                    'Re: [GLPI #0000001] Ticket from another GLPI',
+                ],
             ],
             // Mails having "normal" user as requester
             [
@@ -816,7 +853,7 @@ class MailCollectorTest extends DbTestCase
                     '41 - Image src without quotes',
                     '42 - Missing Content Type',
                     '43 - Korean encoding issue',
-                ]
+                ],
             ],
             // Mails having "normal" user as observer
             [
@@ -825,7 +862,7 @@ class MailCollectorTest extends DbTestCase
                 'tickets_names' => [
                     'Ticket with observer',     // add_cc_to_observer = true
                     'Ticket with multiple to',  // add_to_to_observer = true
-                ]
+                ],
             ],
         ];
 
@@ -950,17 +987,15 @@ PLAINTEXT,
                     \Ticket_User::getTable() . " AS tu"  => [
                         'ON'  => [
                             't'   => 'id',
-                            'tu'  => 'tickets_id'
-                        ]
-                    ]
+                            'tu'  => 'tickets_id',
+                        ],
+                    ],
                 ],
                 'WHERE'  => [
                     'tu.users_id'  => $actor_specs['users_id'],
                     'tu.type'      => $actor_specs['actor_type'],
-                ]
+                ],
             ]);
-
-            $this->assertSame(count($actor_specs['tickets_names']), count($iterator));
 
             $names = [];
             foreach ($iterator as $data) {
@@ -978,6 +1013,7 @@ PLAINTEXT,
             sort($names);
             sort($actor_specs['tickets_names']);
             $this->assertSame($actor_specs['tickets_names'], $names);
+            $this->assertSame(count($actor_specs['tickets_names']), count($iterator));
         }
 
         // Check creation of expected documents
@@ -1012,11 +1048,11 @@ PLAINTEXT,
                                 'AND' => [
                                     'd_item.itemtype'      => 'Ticket',
                                     'd_item.date_creation' => $_SESSION["glpi_currenttime"],
-                                ]
-                            ]
-                        ]
-                    ]
-                ]
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
             ]
         );
 
@@ -1346,8 +1382,6 @@ PLAINTEXT,
     ) {
         global $PLUGIN_HOOKS;
 
-        (new \Plugin())->init(true); // The `tester` plugin must be considered as loaded/active.
-
         $hooks_backup = $PLUGIN_HOOKS;
 
         $PLUGIN_HOOKS['mail_server_protocols']['tester'] = function () use ($hook_result) {
@@ -1430,7 +1464,7 @@ PLAINTEXT,
             'BlacklistedMailContent',
             [
                 'name' => __METHOD__,
-                'content' => $filter
+                'content' => $filter,
             ]
         );
 

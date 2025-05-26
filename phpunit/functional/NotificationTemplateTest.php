@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -49,14 +48,14 @@ class NotificationTemplateTest extends DbTestCase
         $iterator = $DB->request([
             'SELECT' => 'notificationtemplates_id',
             'FROM'   => \NotificationTemplateTranslation::getTable(),
-            'LIMIT'  => 1
+            'LIMIT'  => 1,
         ]);
 
         $data = $iterator->current();
         $template = new \NotificationTemplate();
         $template->getFromDB($data['notificationtemplates_id']);
         $added = $template->clone();
-        $this->assertGreaterThan(0, (int)$added);
+        $this->assertGreaterThan(0, (int) $added);
 
         $clonedTemplate = new \NotificationTemplate();
         $this->assertTrue($clonedTemplate->getFromDB($added));

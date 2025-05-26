@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -53,24 +52,24 @@ class PlanningCsvTest extends CsvTestCase
         $end = new \DateTime();
         $end->add(new \DateInterval('P5D'));
         $fend = $end->format('Y-m-d H:i:s');
-        $rid = (int)$reminder->add([
+        $rid = (int) $reminder->add([
             'name'            => 'This is a "test"',
             'is_planned'      => 1,
             'begin_view_date' => $fbegin,
             'end_view_date'   => $fend,
             'plan'            => [
                 'begin'           => $fbegin,
-                'end'             => $fend
-            ]
+                'end'             => $fend,
+            ],
         ]);
         $this->assertGreaterThan(0, $rid);
 
         $ticket = new \Ticket();
-        $tid = (int)$ticket->add([
-            'name'         => 'ticket title',
+        $tid = (int) $ticket->add([
+            'name'         => 'ticket \d\rtitle',
             'description'  => 'a description',
             'content'      => '',
-            'entities_id'  => getItemByTypeName('Entity', '_test_root_entity', true)
+            'entities_id'  => getItemByTypeName('Entity', '_test_root_entity', true),
         ]);
         $this->assertGreaterThan(0, $tid);
         $this->assertFalse($ticket->isNewItem());
@@ -79,7 +78,7 @@ class PlanningCsvTest extends CsvTestCase
         $tasksstates = [
             \Planning::TODO,
             \Planning::TODO,
-            \Planning::INFO
+            \Planning::INFO,
         ];
         $date = new \DateTime();
         $date->sub(new \DateInterval('P6M'));
@@ -94,14 +93,14 @@ class PlanningCsvTest extends CsvTestCase
                 'users_id_tech'   => \Session::getLoginUserID(),
                 'begin'           => $date->format('Y-m-d H:i:s'),
                 'end'             => $edate->format('Y-m-d H:i:s'),
-                'actiontime'      => 172800
+                'actiontime'      => 172800,
             ];
-            $ttid = (int)$task->add($input);
+            $ttid = (int) $task->add($input);
             $this->assertGreaterThan(0, $ttid);
             $this->assertTrue($task->getFromDB($ttid));
             $input['id'] = $task->fields['id'];
             if ($taskstate !== \Planning::INFO) {
-               //INFO are not present in planning
+                //INFO are not present in planning
                 $tasks[] = $input;
             }
             $date->add(new \DateInterval('P1Y'));
@@ -116,7 +115,7 @@ class PlanningCsvTest extends CsvTestCase
             'Item type',
             'Item id',
             'Begin date',
-            'End date'
+            'End date',
         ];
 
         $expected_content = [
@@ -126,18 +125,18 @@ class PlanningCsvTest extends CsvTestCase
                 'itemtype'  => 'Reminder',
                 'items_id'  => $rid,
                 'begindate' => $fbegin,
-                'enddate'   => $fend
-            ]
+                'enddate'   => $fend,
+            ],
         ];
 
         foreach ($tasks as $input) {
             $expected_content[] = [
                 'actor'     => $user->getFriendlyName(),
-                'title'     => 'ticket title',
+                'title'     => 'ticket \d\rtitle',
                 'itemtype'  => 'Ticket task',
                 'items_id'  => $input['id'],
                 'begindate' => $input['begin'],
-                'enddate'   => $input['end']
+                'enddate'   => $input['end'],
             ];
         }
 
@@ -150,7 +149,7 @@ class PlanningCsvTest extends CsvTestCase
                     'filename' => 'planning.csv',
                     'header'   => $expected_header,
                     'content'  => $expected_content,
-                ]
+                ],
             ],
             [
                 'export' => new \Glpi\Csv\PlanningCsv(\Session::getLoginUserID(), 0, 'Reminder'),
@@ -160,8 +159,8 @@ class PlanningCsvTest extends CsvTestCase
                     'filename' => 'planning.csv',
                     'header'   => $expected_header,
                     'content'  => [$expected_content[0]],
-                ]
-            ]
+                ],
+            ],
         ];
     }
 }

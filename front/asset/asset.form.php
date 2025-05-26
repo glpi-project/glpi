@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+require_once(__DIR__ . '/../_check_webserver_config.php');
+
 /**
  * @var array $CFG_GLPI
  */
@@ -49,7 +51,7 @@ if (array_key_exists('id', $_REQUEST) && !Asset::isNewId($_REQUEST['id'])) {
     }
 } else {
     $definition = new AssetDefinition();
-    $classname  = array_key_exists('class', $_GET) && $definition->getFromDBBySystemName((string)$_GET['class'])
+    $classname  = array_key_exists('class', $_GET) && $definition->getFromDBBySystemName((string) $_GET['class'])
         ? $definition->getAssetClassName()
         : null;
     $asset      = $classname !== null && class_exists($classname)
@@ -128,7 +130,7 @@ if (isset($_POST['add'])) {
     }
     $asset->redirectToList();
 } else {
-    $id = (int)($_GET['id'] ?? null);
+    $id = (int) ($_GET['id'] ?? null);
     $menus = ['assets', $asset::class];
     $asset::displayFullPageForItem($id, $menus, [
         AssetDefinition::getForeignKeyField() => $asset::getDefinition()->getID(),

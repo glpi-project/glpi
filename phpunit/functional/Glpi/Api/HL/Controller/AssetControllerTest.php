@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -35,6 +34,7 @@
 
 namespace tests\units\Glpi\Api\HL\Controller;
 
+use Glpi\Asset\Asset;
 use Glpi\Http\Request;
 use PHPUnit\Framework\Attributes\DataProvider;
 
@@ -44,6 +44,9 @@ class AssetControllerTest extends \HLAPITestCase
     {
         global $CFG_GLPI;
         $types = $CFG_GLPI['asset_types'];
+
+        // Ignore custom assets
+        $types = array_filter($types, static fn($t) => !is_subclass_of($t, Asset::class));
 
         $this->login();
         $this->api->call(new Request('GET', '/Assets'), function ($call) use ($types) {
@@ -69,18 +72,18 @@ class AssetControllerTest extends \HLAPITestCase
             ['schema' => 'Computer', 'filters' => ['name=like=_test_pc1*'], 'expected' => ['count' => ['>=', 3]]],
             [
                 'schema' => 'Computer', 'filters' => [
-                    'name=like=_test_pc1*;name=like=*3*'
-                ], 'expected' => ['count' => ['>=', 1]]
+                    'name=like=_test_pc1*;name=like=*3*',
+                ], 'expected' => ['count' => ['>=', 1]],
             ],
             [
                 'schema' => 'Computer', 'filters' => [
-                    '(name=like=_test_pc1*;name=like=*3*)'
-                ], 'expected' => ['count' => ['>=', 1]]
+                    '(name=like=_test_pc1*;name=like=*3*)',
+                ], 'expected' => ['count' => ['>=', 1]],
             ],
             [
                 'schema' => 'Computer', 'filters' => [
-                    '(name=like=_test_pc1*;name=like=*3*),name==_test_pc_with_encoded_comment'
-                ], 'expected' => ['count' => ['>=', 2]]
+                    '(name=like=_test_pc1*;name=like=*3*),name==_test_pc_with_encoded_comment',
+                ], 'expected' => ['count' => ['>=', 2]],
             ],
             ['schema' => 'Monitor', 'filters' => [], 'expected' => ['count' => ['>', 0]]],
             ['schema' => 'Monitor', 'filters' => ['name=="_test_monitor_1"'], 'expected' => ['count' => ['>=', 1]]],
@@ -115,16 +118,16 @@ class AssetControllerTest extends \HLAPITestCase
         $dataset = [
             [
                 'name' => 'testAutoSearch_1',
-                'entity' => $entity
+                'entity' => $entity,
             ],
             [
                 'name' => 'testAutoSearch_2',
-                'entity' => $entity
+                'entity' => $entity,
             ],
             [
                 'name' => 'testAutoSearch_3',
-                'entity' => $entity
-            ]
+                'entity' => $entity,
+            ],
         ];
         $this->api->call(new Request('GET', '/Assets'), function ($call) use ($dataset) {
             /** @var \HLAPICallAsserter $call */
@@ -176,7 +179,7 @@ class AssetControllerTest extends \HLAPITestCase
     {
         $types = [
             'Computer', 'Monitor', 'NetworkEquipment', 'Peripheral', 'Phone', 'Printer',
-            'Software', 'Rack', 'Enclosure', 'PDU', 'PassiveDCEquipment', 'Cable', 'Socket'
+            'Software', 'Rack', 'Enclosure', 'PDU', 'PassiveDCEquipment', 'Cable', 'Socket',
         ];
         foreach ($types as $type) {
             $unique_id = __FUNCTION__ . '_' . random_int(0, 10000);
@@ -187,7 +190,7 @@ class AssetControllerTest extends \HLAPITestCase
                 $fields['entity'] = getItemByTypeName('Entity', '_test_root_entity', true);
             }
             yield [
-                $type, $fields
+                $type, $fields,
             ];
         }
     }
@@ -206,7 +209,7 @@ class AssetControllerTest extends \HLAPITestCase
         $rack_id = $rack->add([
             'name' => __FUNCTION__,
             'entities_id' => $this->getTestRootEntity(true),
-            'number_units' => 20
+            'number_units' => 20,
         ]);
         // Create computer
         $computer = new \Computer();

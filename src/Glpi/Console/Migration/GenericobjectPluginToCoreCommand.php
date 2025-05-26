@@ -50,7 +50,7 @@ class GenericobjectPluginToCoreCommand extends AbstractPluginMigrationCommand
     #[Override]
     public function getDescription(): string
     {
-        return __('Migrate GenericObject plugin data into GLPI core tables');
+        return sprintf(__('Migrate plugin data into GLPI core tables'), 'GenericObject');
     }
 
     #[Override]

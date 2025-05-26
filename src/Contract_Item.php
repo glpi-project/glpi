@@ -42,7 +42,7 @@ use Glpi\Application\View\TemplateRenderer;
  **/
 class Contract_Item extends CommonDBRelation
 {
-   // From CommonDBRelation
+    // From CommonDBRelation
     public static $itemtype_1 = 'Contract';
     public static $items_id_1 = 'contracts_id';
 
@@ -100,11 +100,11 @@ class Contract_Item extends CommonDBRelation
                     $name = Dropdown::getDropdownName($table, $value);
                     if (isset($options['comments']) && $options['comments']) {
                         $comments = Dropdown::getDropdownComments($table, $value);
-                         return sprintf(
-                             __('%1$s %2$s'),
-                             htmlescape($name),
-                             Html::showToolTip($comments, ['display' => false])
-                         );
+                        return sprintf(
+                            __('%1$s %2$s'),
+                            htmlescape($name),
+                            Html::showToolTip($comments, ['display' => false])
+                        );
                     }
                     return htmlescape($name);
                 }
@@ -141,7 +141,7 @@ class Contract_Item extends CommonDBRelation
             'field'              => 'id',
             'name'               => __('ID'),
             'massiveaction'      => false,
-            'datatype'           => 'number'
+            'datatype'           => 'number',
         ];
 
         $tab[] = [
@@ -151,7 +151,7 @@ class Contract_Item extends CommonDBRelation
             'name'               => __('Associated item ID'),
             'massiveaction'      => false,
             'datatype'           => 'specific',
-            'additionalfields'   => ['itemtype']
+            'additionalfields'   => ['itemtype'],
         ];
 
         $tab[] = [
@@ -161,7 +161,7 @@ class Contract_Item extends CommonDBRelation
             'name'               => _n('Type', 'Types', 1),
             'massiveaction'      => false,
             'datatype'           => 'itemtypename',
-            'itemtype_list'      => 'contract_types'
+            'itemtype_list'      => 'contract_types',
         ];
 
         return $tab;
@@ -201,7 +201,7 @@ class Contract_Item extends CommonDBRelation
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-       // Can exists on template
+        // Can exists on template
         if (Contract::canView()) {
             $nb = 0;
             switch ($item::class) {
@@ -309,7 +309,7 @@ TWIG, $twig_params);
                 'itemtype' => self::class,
                 'id'       => $data['linkid'],
                 'row_class' => $data['is_deleted'] ? 'table-danger' : '',
-                'num'      => $data['num']
+                'num'      => $data['num'],
             ];
             $con         = new Contract();
             $con->getFromResultSet($data);
@@ -352,7 +352,6 @@ TWIG, $twig_params);
 
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'is_tab' => true,
-            'nopager' => true,
             'nofilter' => true,
             'nosort' => true,
             'columns' => [
@@ -375,7 +374,7 @@ TWIG, $twig_params);
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
                 'container'     => 'mass' . static::class . $rand,
-            ]
+            ],
         ]);
     }
 
@@ -424,13 +423,13 @@ TWIG, $twig_params);
                     'SELECT' => [
                         $itemtable . '.*',
                         self::getTable() . '.id AS linkid',
-                        'glpi_entities.id AS entity'
+                        'glpi_entities.id AS entity',
                     ],
                     'FROM'   => 'glpi_contracts_items',
                     'WHERE'  => [
                         'glpi_contracts_items.itemtype'     => $itemtype,
-                        'glpi_contracts_items.contracts_id' => $instID
-                    ]
+                        'glpi_contracts_items.contracts_id' => $instID,
+                    ],
                 ];
 
                 if ($item instanceof Item_Devices) {
@@ -446,15 +445,15 @@ TWIG, $twig_params);
                 $params['LEFT JOIN'][$itemtable] = [
                     'FKEY' => [
                         $itemtable        => 'id',
-                        self::getTable()  => 'items_id'
-                    ]
+                        self::getTable()  => 'items_id',
+                    ],
                 ];
                 if ($itemtype !== Entity::class) {
                     $params['LEFT JOIN']['glpi_entities'] = [
                         'FKEY' => [
                             $itemtable        => 'entities_id',
-                            'glpi_entities'   => 'id'
-                        ]
+                            'glpi_entities'   => 'id',
+                        ],
                     ];
                 }
 
@@ -465,8 +464,8 @@ TWIG, $twig_params);
                     $params['LEFT JOIN'][$itemtable_2] = [
                         'FKEY' => [
                             $itemtable     => $fid_2,
-                            $itemtable_2   => $id_2
-                        ]
+                            $itemtable_2   => $id_2,
+                        ],
                     ];
                 }
 
@@ -500,14 +499,14 @@ TWIG, $twig_params);
                 $users_table => [
                     'FKEY' => [
                         $contract_users_table => 'users_id',
-                        $users_table          => 'id'
-                    ]
+                        $users_table          => 'id',
+                    ],
                 ],
             ],
             'WHERE'  => [
-                "$contract_users_table.contracts_id" => $instID
+                "$contract_users_table.contracts_id" => $instID,
             ],
-            'ORDER' => "$users_table.name"
+            'ORDER' => "$users_table.name",
         ];
 
         $user_iterator = $DB->request($user_params);
@@ -605,7 +604,6 @@ TWIG, $twig_params);
 
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'is_tab' => true,
-            'nopager' => true,
             'nofilter' => true,
             'nosort' => true,
             'columns' => [
@@ -617,7 +615,7 @@ TWIG, $twig_params);
                 'status' => __('Status'),
             ],
             'formatters' => [
-                'name' => 'raw_html'
+                'name' => 'raw_html',
             ],
             'entries' => $entries,
             'total_number' => count($entries),
@@ -626,7 +624,7 @@ TWIG, $twig_params);
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
                 'container'     => 'mass' . static::class . $rand,
-            ]
+            ],
         ]);
     }
 

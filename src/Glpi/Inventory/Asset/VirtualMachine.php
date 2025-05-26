@@ -41,7 +41,6 @@ use Computer;
 use ItemVirtualMachine;
 use Glpi\Inventory\Conf;
 use RuleImportAssetCollection;
-use Toolbox;
 
 class VirtualMachine extends InventoryAsset
 {
@@ -54,7 +53,7 @@ class VirtualMachine extends InventoryAsset
         'storages'  => 'Drive',
         'drives'    => 'Volume',
         'cpus'      => 'Processor',
-        'memories'  => 'Memory'
+        'memories'  => 'Memory',
     ];
 
     public function prepare(): array
@@ -66,19 +65,19 @@ class VirtualMachine extends InventoryAsset
             'memory'      => 'ram',
             'vmtype'      => 'virtualmachinetypes_id',
             'subsystem'   => 'virtualmachinesystems_id',
-            'status'      => 'virtualmachinestates_id'
+            'status'      => 'virtualmachinestates_id',
         ];
 
         $vm_mapping = [
             'memory'          => 'ram',
             'vmtype'          => 'computertypes_id',
             'operatingsystem' => 'operatingsystems_id',
-            'customfields'    => 'comment'
+            'customfields'    => 'comment',
         ];
 
         $net_mapping = [
             'description' => 'name',
-            'macaddr'     => 'mac'
+            'macaddr'     => 'mac',
         ];
 
         if (!in_array($this->item->getType(), $CFG_GLPI['itemvirtualmachines_types'])) {
@@ -117,11 +116,11 @@ class VirtualMachine extends InventoryAsset
             if (property_exists($vm_val, 'ram')) {
                 if (strstr($vm_val->ram, 'MB')) {
                     $vm_val = str_replace('MB', '', $vm_val->ram);
-                } else if (strstr($vm_val->ram, 'KB')) {
+                } elseif (strstr($vm_val->ram, 'KB')) {
                     $vm_val = (float) str_replace('KB', '', $vm_val->ram) / 1000;
-                } else if (strstr($vm_val->ram, 'GB')) {
+                } elseif (strstr($vm_val->ram, 'GB')) {
                     $vm_val->ram = (float) str_replace('GB', '', $vm_val->ram) * 1000;
-                } else if (strstr($vm_val->ram, 'B')) {
+                } elseif (strstr($vm_val->ram, 'B')) {
                     $vm_val->ram = (float) str_replace('B', '', $vm_val->ram) / 1000000;
                 }
             }
@@ -207,8 +206,8 @@ class VirtualMachine extends InventoryAsset
             'WHERE'  => [
                 'itemtype' => $this->item->getType(),
                 'items_id' => $this->item->fields['id'],
-                'is_dynamic'   => 1
-            ]
+                'is_dynamic'   => 1,
+            ],
         ]);
 
         foreach ($iterator as $row) {
@@ -238,7 +237,7 @@ class VirtualMachine extends InventoryAsset
                     $sinput = [
                         'name'                     => $handled_input['name'] ?? '',
                         'uuid'                     => $cleaned_uuid ?? '',
-                        'virtualmachinesystems_id' => $handled_input['virtualmachinesystems_id'] ?? 0
+                        'virtualmachinesystems_id' => $handled_input['virtualmachinesystems_id'] ?? 0,
                     ];
 
                     //strtolower to be the same as getUUIDRestrictCriteria()
@@ -248,7 +247,7 @@ class VirtualMachine extends InventoryAsset
                         $input = [
                             'id'           => $keydb,
                             'uuid'         => strtolower($handled_input['uuid'] ?? ''),
-                            'is_dynamic'   => 1
+                            'is_dynamic'   => 1,
                         ];
 
                         foreach (['vcpu', 'ram', 'virtualmachinetypes_id', 'virtualmachinestates_id', 'comment'] as $prop) {
@@ -380,7 +379,7 @@ class VirtualMachine extends InventoryAsset
 
                 //manage operating system
                 if (property_exists($vm, 'operatingsystem')) {
-                    $os = new OperatingSystem($computervm, (array)$vm->operatingsystem);
+                    $os = new OperatingSystem($computervm, (array) $vm->operatingsystem);
                     if ($os->checkConf($this->conf)) {
                         $os->setAgent($this->getAgent());
                         $os->setExtraData($this->data);
@@ -423,10 +422,10 @@ class VirtualMachine extends InventoryAsset
             'FROM'   => 'glpi_computers',
             'WHERE'  => [
                 'RAW' => [
-                    'LOWER(uuid)'  => ItemVirtualMachine::getUUIDRestrictCriteria($vm->uuid)
-                ]
+                    'LOWER(uuid)'  => ItemVirtualMachine::getUUIDRestrictCriteria($vm->uuid),
+                ],
             ],
-            'LIMIT'  => 1
+            'LIMIT'  => 1,
         ]);
 
         foreach ($iterator as $data) {

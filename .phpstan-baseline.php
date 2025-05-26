@@ -2,16 +2,292 @@
 
 $ignoreErrors = [];
 $ignoreErrors[] = [
+	'message' => '#^Function preg_grep is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_grep;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/ajax/actorinformation.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/ajax/agent.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/ajax/compareKbRevisions.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_decode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_decode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/ajax/dashboard.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/ajax/dashboard.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 4,
+	'path' => __DIR__ . '/ajax/debug.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function session_write_close is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\session_write_close;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/ajax/debug.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/ajax/displayMessageAfterRedirect.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Call to function is_array\\(\\) with array\\{value_fieldname\\: \'value\', to_update\\: non\\-falsy\\-string, url\\: non\\-falsy\\-string, moreparams\\: array\\{value\\: \'__VALUE__\', allow_email\\: bool, field\\: non\\-falsy\\-string, typefield\\: \'supplier\', use_notification\\: mixed\\}\\} will always evaluate to true\\.$#',
 	'identifier' => 'function.alreadyNarrowedType',
 	'count' => 1,
 	'path' => __DIR__ . '/ajax/dropdownItilActors.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/ajax/dropdownRubDocument.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/ajax/entitytreesons.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/ajax/getAbstractRightDropdownValue.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/ajax/getFileTag.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/ajax/getKbRevision.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/ajax/getMapPoint.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/ajax/getPlurals.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/ajax/getUserPicture.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_decode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_decode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/ajax/impact.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/ajax/impact.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/ajax/itilfollowup.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/ajax/itillayout.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/ajax/itilvalidation.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 6,
+	'path' => __DIR__ . '/ajax/kanban.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_split is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_split;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/ajax/kanban.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Offset \'action\' on non\\-empty\\-array on left side of \\?\\? always exists and is not nullable\\.$#',
+	'identifier' => 'nullCoalesce.offset',
+	'count' => 2,
+	'path' => __DIR__ . '/ajax/kanban.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^PHPDoc tag @var with type CommonDBTM is not subtype of native type null\\.$#',
 	'identifier' => 'varTag.nativeType',
 	'count' => 1,
 	'path' => __DIR__ . '/ajax/kanban.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/ajax/map.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/ajax/marketplace.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/ajax/notificationmailingsettings.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/ajax/notifications_ajax.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/ajax/pendingreason.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/ajax/pin_savedsearches.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_decode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_decode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/ajax/planning.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/ajax/planning.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/ajax/priority.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/ajax/projecttask.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/ajax/rack.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 3,
+	'path' => __DIR__ . '/ajax/reservations.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 3,
+	'path' => __DIR__ . '/ajax/savedsearch.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/ajax/solution.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/ajax/switchfoldmenu.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/ajax/task.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/ajax/telemetry.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/ajax/timeline.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/ajax/uemailUpdate.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/ajax/webhook.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function readfile is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\readfile;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/front/_check_webserver_config.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_decode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_decode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/front/change.form.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Instanceof between CommonITILCost and CommonITILCost will always evaluate to true\\.$#',
@@ -50,40 +326,28 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/front/commonitilvalidation.form.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Instanceof between CommonDropdown and CommonDropdown will always evaluate to true\\.$#',
-	'identifier' => 'instanceof.alwaysTrue',
+	'message' => '#^Function ob_end_clean is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\ob_end_clean;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
 	'count' => 1,
-	'path' => __DIR__ . '/front/dropdown.common.form.php',
+	'path' => __DIR__ . '/front/cron.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Instanceof between Glpi\\\\Controller\\\\LegacyFileLoadController and Glpi\\\\Controller\\\\LegacyFileLoadController will always evaluate to true\\.$#',
-	'identifier' => 'instanceof.alwaysTrue',
+	'message' => '#^Function ini_set is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\ini_set;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
 	'count' => 1,
-	'path' => __DIR__ . '/front/dropdown.common.form.php',
+	'path' => __DIR__ . '/front/css.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Result of \\|\\| is always false\\.$#',
-	'identifier' => 'booleanOr.alwaysFalse',
+	'message' => '#^Function sha1_file is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\sha1_file;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
 	'count' => 1,
-	'path' => __DIR__ . '/front/dropdown.common.form.php',
+	'path' => __DIR__ . '/front/document.send.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Instanceof between CommonDropdown and CommonDropdown will always evaluate to true\\.$#',
-	'identifier' => 'instanceof.alwaysTrue',
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
 	'count' => 1,
-	'path' => __DIR__ . '/front/dropdown.common.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Instanceof between Glpi\\\\Controller\\\\LegacyFileLoadController and Glpi\\\\Controller\\\\LegacyFileLoadController will always evaluate to true\\.$#',
-	'identifier' => 'instanceof.alwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/front/dropdown.common.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Result of \\|\\| is always false\\.$#',
-	'identifier' => 'booleanOr.alwaysFalse',
-	'count' => 1,
-	'path' => __DIR__ . '/front/dropdown.common.php',
+	'path' => __DIR__ . '/front/form/access_control.form.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^The overwriting exit point is on this line\\.$#',
@@ -98,10 +362,46 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/front/form/access_control.form.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @var with type class\\-string is not subtype of native type array\\<mixed\\>\\.$#',
-	'identifier' => 'varTag.nativeType',
+	'message' => '#^Offset \'knowbaseitems_id\' on non\\-empty\\-array in isset\\(\\) always exists and is not nullable\\.$#',
+	'identifier' => 'isset.offset',
 	'count' => 2,
-	'path' => __DIR__ . '/front/item_device.php',
+	'path' => __DIR__ . '/front/knowbaseitem_comment.form.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function fopen is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\fopen;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/front/locale.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/front/locale.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 3,
+	'path' => __DIR__ . '/front/locale.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_replace is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/front/locale.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function session_write_close is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\session_write_close;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/front/locale.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function session_destroy is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\session_destroy;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/front/login.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Call to an undefined method Glpi\\\\Mail\\\\SMTP\\\\OauthProvider\\\\ProviderInterface\\:\\:getState\\(\\)\\.$#',
@@ -110,10 +410,136 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/front/notificationmailingsetting.form.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Function base64_decode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\base64_decode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/front/palette_preview.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function filesize is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\filesize;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/front/palette_preview.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function readfile is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\readfile;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/front/palette_preview.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function strtotime is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\strtotime;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/front/planningexternalevent.form.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function readfile is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\readfile;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/front/pluginimage.send.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function realpath is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\realpath;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/front/pluginimage.send.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Class DateTime is unsafe to use\\. Its methods can return FALSE instead of throwing an exception\\. Please add \'use Safe\\\\DateTime;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.class',
+	'count' => 3,
+	'path' => __DIR__ . '/front/printerlogcsv.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_decode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_decode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/front/problem.form.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function mktime is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\mktime;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/front/stat.global.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/front/stat.global.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/front/stat.graph.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_replace is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/front/stat.graph.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Match expression does not handle remaining value\\: mixed$#',
 	'identifier' => 'match.unhandled',
 	'count' => 1,
 	'path' => __DIR__ . '/front/stat.graph.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function mktime is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\mktime;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/front/stat.item.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function mktime is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\mktime;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/front/stat.location.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/front/stat.location.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Offset \'showgraph\' on non\\-empty\\-array on left side of \\?\\? always exists and is not nullable\\.$#',
+	'identifier' => 'nullCoalesce.offset',
+	'count' => 1,
+	'path' => __DIR__ . '/front/stat.location.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function mktime is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\mktime;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/front/stat.tracking.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/front/stat.tracking.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_decode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_decode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/front/ticket.form.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function ini_get is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\ini_get;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/install/empty_data.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function file_get_contents is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\file_get_contents;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/install/install.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^PHPDoc tag @var with type DBmysql is not subtype of native type DB\\.$#',
@@ -131,60 +557,126 @@ $ignoreErrors[] = [
 	'message' => '#^Empty array passed to foreach\\.$#',
 	'identifier' => 'foreach.emptyArray',
 	'count' => 2,
-	'path' => __DIR__ . '/install/migrations/update_0.85.x_to_0.90.0.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^If condition is always false\\.$#',
-	'identifier' => 'if.alwaysFalse',
-	'count' => 1,
-	'path' => __DIR__ . '/install/migrations/update_0.85.x_to_0.90.0.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Empty array passed to foreach\\.$#',
-	'identifier' => 'foreach.emptyArray',
-	'count' => 1,
-	'path' => __DIR__ . '/install/migrations/update_0.90.0_to_0.90.1.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^If condition is always false\\.$#',
-	'identifier' => 'if.alwaysFalse',
-	'count' => 1,
-	'path' => __DIR__ . '/install/migrations/update_0.90.0_to_0.90.1.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Empty array passed to foreach\\.$#',
-	'identifier' => 'foreach.emptyArray',
-	'count' => 1,
-	'path' => __DIR__ . '/install/migrations/update_0.90.1_to_0.90.5.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^If condition is always false\\.$#',
-	'identifier' => 'if.alwaysFalse',
-	'count' => 1,
-	'path' => __DIR__ . '/install/migrations/update_0.90.1_to_0.90.5.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Empty array passed to foreach\\.$#',
-	'identifier' => 'foreach.emptyArray',
-	'count' => 1,
-	'path' => __DIR__ . '/install/migrations/update_0.90.x_to_9.1.0.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^If condition is always false\\.$#',
-	'identifier' => 'if.alwaysFalse',
-	'count' => 1,
-	'path' => __DIR__ . '/install/migrations/update_0.90.x_to_9.1.0.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Empty array passed to foreach\\.$#',
-	'identifier' => 'foreach.emptyArray',
-	'count' => 2,
 	'path' => __DIR__ . '/install/migrations/update_10.0.0_to_10.0.1.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/install/migrations/update_10.0.0_to_10.0.1.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function scandir is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\scandir;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/install/migrations/update_10.0.0_to_10.0.1.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/install/migrations/update_10.0.10_to_10.0.11.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function scandir is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\scandir;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/install/migrations/update_10.0.10_to_10.0.11.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/install/migrations/update_10.0.11_to_10.0.12.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function scandir is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\scandir;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/install/migrations/update_10.0.11_to_10.0.12.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_decode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_decode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/install/migrations/update_10.0.11_to_10.0.12/duplicate_searchopt_fixes.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/install/migrations/update_10.0.12_to_10.0.13.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function scandir is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\scandir;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/install/migrations/update_10.0.12_to_10.0.13.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/install/migrations/update_10.0.14_to_10.0.15.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function scandir is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\scandir;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/install/migrations/update_10.0.14_to_10.0.15.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/install/migrations/update_10.0.15_to_10.0.16.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function scandir is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\scandir;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/install/migrations/update_10.0.15_to_10.0.16.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/install/migrations/update_10.0.16_to_10.0.17.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function scandir is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\scandir;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/install/migrations/update_10.0.16_to_10.0.17.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/install/migrations/update_10.0.17_to_10.0.18.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function scandir is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\scandir;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/install/migrations/update_10.0.17_to_10.0.18.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Empty array passed to foreach\\.$#',
 	'identifier' => 'foreach.emptyArray',
 	'count' => 2,
+	'path' => __DIR__ . '/install/migrations/update_10.0.1_to_10.0.2.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/install/migrations/update_10.0.1_to_10.0.2.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function scandir is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\scandir;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
 	'path' => __DIR__ . '/install/migrations/update_10.0.1_to_10.0.2.php',
 ];
 $ignoreErrors[] = [
@@ -194,9 +686,33 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/install/migrations/update_10.0.2_to_10.0.3.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/install/migrations/update_10.0.2_to_10.0.3.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function scandir is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\scandir;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/install/migrations/update_10.0.2_to_10.0.3.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Empty array passed to foreach\\.$#',
 	'identifier' => 'foreach.emptyArray',
 	'count' => 2,
+	'path' => __DIR__ . '/install/migrations/update_10.0.3_to_10.0.4.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/install/migrations/update_10.0.3_to_10.0.4.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function scandir is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\scandir;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
 	'path' => __DIR__ . '/install/migrations/update_10.0.3_to_10.0.4.php',
 ];
 $ignoreErrors[] = [
@@ -206,34 +722,124 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/install/migrations/update_10.0.4_to_10.0.5.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/install/migrations/update_10.0.4_to_10.0.5.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function scandir is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\scandir;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/install/migrations/update_10.0.4_to_10.0.5.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/install/migrations/update_10.0.5_to_10.0.6.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function scandir is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\scandir;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/install/migrations/update_10.0.5_to_10.0.6.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/install/migrations/update_10.0.6_to_10.0.7.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function scandir is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\scandir;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/install/migrations/update_10.0.6_to_10.0.7.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/install/migrations/update_10.0.7_to_10.0.8.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function scandir is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\scandir;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/install/migrations/update_10.0.7_to_10.0.8.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_replace is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/install/migrations/update_10.0.7_to_10.0.8/ram_field.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/install/migrations/update_10.0.8_to_10.0.9.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function scandir is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\scandir;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/install/migrations/update_10.0.8_to_10.0.9.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/install/migrations/update_10.0.9_to_10.0.10.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function scandir is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\scandir;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/install/migrations/update_10.0.9_to_10.0.10.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/install/migrations/update_10.0.9_to_10.0.10/ldap_fields.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Empty array passed to foreach\\.$#',
 	'identifier' => 'foreach.emptyArray',
 	'count' => 3,
 	'path' => __DIR__ . '/install/migrations/update_10.0.x_to_11.0.0.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Empty array passed to foreach\\.$#',
-	'identifier' => 'foreach.emptyArray',
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
 	'count' => 1,
-	'path' => __DIR__ . '/install/migrations/update_9.1.0_to_9.1.1.php',
+	'path' => __DIR__ . '/install/migrations/update_10.0.x_to_11.0.0.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^If condition is always false\\.$#',
-	'identifier' => 'if.alwaysFalse',
+	'message' => '#^Function scandir is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\scandir;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
 	'count' => 1,
-	'path' => __DIR__ . '/install/migrations/update_9.1.0_to_9.1.1.php',
+	'path' => __DIR__ . '/install/migrations/update_10.0.x_to_11.0.0.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Empty array passed to foreach\\.$#',
-	'identifier' => 'foreach.emptyArray',
+	'message' => '#^Function json_decode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_decode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
 	'count' => 1,
-	'path' => __DIR__ . '/install/migrations/update_9.1.1_to_9.1.3.php',
+	'path' => __DIR__ . '/install/migrations/update_10.0.x_to_11.0.0/assets.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^If condition is always false\\.$#',
-	'identifier' => 'if.alwaysFalse',
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
 	'count' => 1,
-	'path' => __DIR__ . '/install/migrations/update_9.1.1_to_9.1.3.php',
+	'path' => __DIR__ . '/install/migrations/update_10.0.x_to_11.0.0/assets.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_replace is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 4,
+	'path' => __DIR__ . '/install/migrations/update_10.0.x_to_11.0.0/links.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method Migration\\:\\:addPostQuery\\(\\) invoked with 4 parameters, 1\\-2 required\\.$#',
@@ -248,6 +854,48 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/install/migrations/update_9.1.x_to_9.2.0.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Function preg_replace is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/install/migrations/update_9.4.0_to_9.4.1.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_replace is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/install/migrations/update_9.4.1_to_9.4.2.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_replace is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/install/migrations/update_9.4.2_to_9.4.3.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function base64_decode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\base64_decode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/install/migrations/update_9.4.x_to_9.5.0.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_decode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_decode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/install/migrations/update_9.4.x_to_9.5.0.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_replace is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/install/migrations/update_9.4.x_to_9.5.0.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match_all is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match_all;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/install/migrations/update_9.5.1_to_9.5.2.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Offset 1 on array\\{list\\<string\\>, list\\<numeric\\-string\\>\\} in isset\\(\\) always exists and is not nullable\\.$#',
 	'identifier' => 'isset.offset',
 	'count' => 1,
@@ -258,6 +906,30 @@ $ignoreErrors[] = [
 	'identifier' => 'foreach.emptyArray',
 	'count' => 2,
 	'path' => __DIR__ . '/install/migrations/update_9.5.x_to_10.0.0.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/install/migrations/update_9.5.x_to_10.0.0.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function scandir is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\scandir;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/install/migrations/update_9.5.x_to_10.0.0.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function ini_get is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\ini_get;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/install/migrations/update_9.5.x_to_10.0.0/documents.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/install/migrations/update_9.5.x_to_10.0.0/domains.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^PHPDoc tag @var with type CommonDBTM is not subtype of native type \'PhoneModel\'\\|\'PrinterModel\'\\.$#',
@@ -296,6 +968,36 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Agent.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Class DateTime is unsafe to use\\. Its methods can return FALSE instead of throwing an exception\\. Please add \'use Safe\\\\DateTime;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.class',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Agent.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_decode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_decode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Agent.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Agent.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Agent.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_replace is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Agent.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Method Agent\\:\\:requestAgent\\(\\) should return GuzzleHttp\\\\Psr7\\\\Response but returns Psr\\\\Http\\\\Message\\\\ResponseInterface\\|null\\.$#',
 	'identifier' => 'return.type',
 	'count' => 1,
@@ -314,8 +1016,20 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Ajax.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Right side of && is always false\\.$#',
-	'identifier' => 'booleanAnd.rightAlwaysFalse',
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 5,
+	'path' => __DIR__ . '/src/Ajax.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Ajax.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Ternary operator condition is always true\\.$#',
+	'identifier' => 'ternary.alwaysTrue',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Ajax.php',
 ];
@@ -332,6 +1046,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Appliance.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Appliance_Item_Relation.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
 	'identifier' => 'function.alreadyNarrowedType',
 	'count' => 1,
@@ -344,20 +1064,50 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Auth.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Function ini_get is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\ini_get;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 4,
+	'path' => __DIR__ . '/src/Auth.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_decode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_decode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Auth.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Auth.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function ldap_bind is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\ldap_bind;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Auth.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function parse_url is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\parse_url;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Auth.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Auth.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function session_name is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\session_name;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 3,
+	'path' => __DIR__ . '/src/Auth.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Method Auth\\:\\:connection_ldap\\(\\) never assigns null to &\\$error so it can be removed from the by\\-ref type\\.$#',
 	'identifier' => 'parameterByRef.unusedType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Auth.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Auth\\:\\:login\\(\\) should return bool but returns int\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Auth.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Auth\\:\\:validateLogin\\(\\) should return bool but returns int\\.$#',
-	'identifier' => 'return.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Auth.php',
 ];
@@ -374,44 +1124,8 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Auth.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Property Auth\\:\\:\\$auth_succeded \\(int\\) does not accept bool\\.$#',
-	'identifier' => 'assign.propertyType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Auth.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Property Auth\\:\\:\\$auth_succeded \\(int\\) does not accept false\\.$#',
-	'identifier' => 'assign.propertyType',
-	'count' => 8,
-	'path' => __DIR__ . '/src/Auth.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Property Auth\\:\\:\\$auth_succeded \\(int\\) does not accept true\\.$#',
-	'identifier' => 'assign.propertyType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Auth.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Property Auth\\:\\:\\$password_expired \\(int\\) does not accept default value of type false\\.$#',
-	'identifier' => 'property.defaultValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Auth.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Property Auth\\:\\:\\$user_present \\(int\\) does not accept bool\\.$#',
-	'identifier' => 'assign.propertyType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Auth.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Strict comparison using \\!\\=\\= between string and null will always evaluate to true\\.$#',
 	'identifier' => 'notIdentical.alwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Auth.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\=\\=\\= between \'external\' and \'external\' will always evaluate to true\\.$#',
-	'identifier' => 'identical.alwaysTrue',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Auth.php',
 ];
@@ -430,6 +1144,66 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Comparison operation "\\>" between array\\|int and 0 results in an error\\.$#',
 	'identifier' => 'greater.invalid',
+	'count' => 1,
+	'path' => __DIR__ . '/src/AuthLDAP.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function fsockopen is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\fsockopen;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/AuthLDAP.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function gmmktime is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\gmmktime;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/AuthLDAP.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function ldap_bind is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\ldap_bind;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/AuthLDAP.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function ldap_get_entries is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\ldap_get_entries;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/AuthLDAP.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function ldap_get_option is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\ldap_get_option;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/AuthLDAP.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function ldap_parse_result is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\ldap_parse_result;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/AuthLDAP.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function ldap_set_option is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\ldap_set_option;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 4,
+	'path' => __DIR__ . '/src/AuthLDAP.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 4,
+	'path' => __DIR__ . '/src/AuthLDAP.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function strtotime is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\strtotime;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/AuthLDAP.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function unpack is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\unpack;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
 	'count' => 1,
 	'path' => __DIR__ . '/src/AuthLDAP.php',
 ];
@@ -455,30 +1229,6 @@ $ignoreErrors[] = [
 	'message' => '#^Negated boolean expression is always true\\.$#',
 	'identifier' => 'booleanNot.alwaysTrue',
 	'count' => 1,
-	'path' => __DIR__ . '/src/AuthLDAP.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Property Auth\\:\\:\\$auth_succeded \\(int\\) does not accept false\\.$#',
-	'identifier' => 'assign.propertyType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/AuthLDAP.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Property Auth\\:\\:\\$auth_succeded \\(int\\) does not accept true\\.$#',
-	'identifier' => 'assign.propertyType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/AuthLDAP.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Property Auth\\:\\:\\$user_present \\(int\\) does not accept false\\.$#',
-	'identifier' => 'assign.propertyType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/AuthLDAP.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Property Auth\\:\\:\\$user_present \\(int\\) does not accept true\\.$#',
-	'identifier' => 'assign.propertyType',
-	'count' => 2,
 	'path' => __DIR__ . '/src/AuthLDAP.php',
 ];
 $ignoreErrors[] = [
@@ -530,6 +1280,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Blacklist.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 3,
+	'path' => __DIR__ . '/src/Blacklist.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Property Blacklist\\:\\:\\$blacklists \\(array\\) on left side of \\?\\? is not nullable\\.$#',
 	'identifier' => 'nullCoalesce.property',
 	'count' => 1,
@@ -578,6 +1334,18 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/CableStrand.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Function strtotime is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\strtotime;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 15,
+	'path' => __DIR__ . '/src/Calendar.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function mktime is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\mktime;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 8,
+	'path' => __DIR__ . '/src/Cartridge.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Call to function method_exists\\(\\) with \\$this\\(CartridgeItem\\) and \'prepareGroupFields\' will always evaluate to true\\.$#',
 	'identifier' => 'function.alreadyNarrowedType',
 	'count' => 1,
@@ -602,6 +1370,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Certificate.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Function strtotime is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\strtotime;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Certificate.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Strict comparison using \\=\\=\\= between array and false will always evaluate to false\\.$#',
 	'identifier' => 'identical.alwaysFalse',
 	'count' => 1,
@@ -616,12 +1390,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Call to an undefined method CommonGLPI\\:\\:getID\\(\\)\\.$#',
 	'identifier' => 'method.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Change.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Loose comparison using \\!\\= between \'\' and \'\' will always evaluate to false\\.$#',
-	'identifier' => 'notEqual.alwaysFalse',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Change.php',
 ];
@@ -656,10 +1424,34 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/CommonDBChild.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Function ob_get_clean is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\ob_get_clean;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/CommonDBChild.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function ob_start is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\ob_start;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/CommonDBChild.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 4,
+	'path' => __DIR__ . '/src/CommonDBChild.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Instanceof between CommonDBTM and CommonDBTM will always evaluate to true\\.$#',
 	'identifier' => 'instanceof.alwaysTrue',
 	'count' => 1,
 	'path' => __DIR__ . '/src/CommonDBChild.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 10,
+	'path' => __DIR__ . '/src/CommonDBConnexity.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Parameter &\\$item by\\-ref type of method CommonDBConnexity\\:\\:canConnexityItem\\(\\) expects CommonDBTM\\|null, CommonDBTM\\|false given\\.$#',
@@ -674,14 +1466,20 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/CommonDBRelation.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 24,
+	'path' => __DIR__ . '/src/CommonDBRelation.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Method CommonDBRelation\\:\\:processMassiveActionsForOneItemtype\\(\\) with return type void returns false but should not return anything\\.$#',
 	'identifier' => 'return.void',
 	'count' => 1,
 	'path' => __DIR__ . '/src/CommonDBRelation.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Property CommonDBRelation\\:\\:\\$_force_log_option \\(int\\) in isset\\(\\) is not nullable\\.$#',
-	'identifier' => 'isset.property',
+	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
+	'identifier' => 'deadCode.unreachable',
 	'count' => 1,
 	'path' => __DIR__ . '/src/CommonDBRelation.php',
 ];
@@ -695,6 +1493,30 @@ $ignoreErrors[] = [
 	'message' => '#^Call to function is_numeric\\(\\) with int will always evaluate to true\\.$#',
 	'identifier' => 'function.alreadyNarrowedType',
 	'count' => 1,
+	'path' => __DIR__ . '/src/CommonDBTM.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function getimagesize is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\getimagesize;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/CommonDBTM.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_grep is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_grep;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 6,
+	'path' => __DIR__ . '/src/CommonDBTM.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 3,
+	'path' => __DIR__ . '/src/CommonDBTM.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_replace is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
 	'path' => __DIR__ . '/src/CommonDBTM.php',
 ];
 $ignoreErrors[] = [
@@ -818,6 +1640,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/CommonDBVisible.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Function preg_grep is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_grep;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/CommonDropdown.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Instanceof between \\$this\\(CommonDropdown\\) and IPAddress will always evaluate to false\\.$#',
 	'identifier' => 'instanceof.alwaysFalse',
 	'count' => 1,
@@ -845,6 +1673,12 @@ $ignoreErrors[] = [
 	'message' => '#^Call to function is_integer\\(\\) with string will always evaluate to false\\.$#',
 	'identifier' => 'function.impossibleType',
 	'count' => 2,
+	'path' => __DIR__ . '/src/CommonGLPI.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function parse_url is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\parse_url;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
 	'path' => __DIR__ . '/src/CommonGLPI.php',
 ];
 $ignoreErrors[] = [
@@ -914,6 +1748,42 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/CommonITILObject.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Function getimagesize is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\getimagesize;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/CommonITILObject.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function ob_get_clean is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\ob_get_clean;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/CommonITILObject.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function ob_start is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\ob_start;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/CommonITILObject.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/CommonITILObject.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_replace is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 3,
+	'path' => __DIR__ . '/src/CommonITILObject.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function strtotime is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\strtotime;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 11,
+	'path' => __DIR__ . '/src/CommonITILObject.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Method CommonITILObject\\:\\:computePriority\\(\\) should return int but returns float\\.$#',
 	'identifier' => 'return.type',
 	'count' => 1,
@@ -974,6 +1844,18 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/CommonITILObject_CommonITILObject.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 5,
+	'path' => __DIR__ . '/src/CommonITILRecurrent.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function strtotime is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\strtotime;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 13,
+	'path' => __DIR__ . '/src/CommonITILRecurrent.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^PHPDoc tag @var with type CommonITILRecurrent is not subtype of native type RecurrentChange\\|TicketRecurrent\\.$#',
 	'identifier' => 'varTag.nativeType',
 	'count' => 1,
@@ -983,6 +1865,18 @@ $ignoreErrors[] = [
 	'message' => '#^Call to function is_null\\(\\) with int will always evaluate to false\\.$#',
 	'identifier' => 'function.impossibleType',
 	'count' => 1,
+	'path' => __DIR__ . '/src/CommonITILSatisfaction.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_replace is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/CommonITILSatisfaction.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function strtotime is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\strtotime;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
 	'path' => __DIR__ . '/src/CommonITILSatisfaction.php',
 ];
 $ignoreErrors[] = [
@@ -1010,9 +1904,33 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/CommonITILTask.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Class DateTime is unsafe to use\\. Its methods can return FALSE instead of throwing an exception\\. Please add \'use Safe\\\\DateTime;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.class',
+	'count' => 14,
+	'path' => __DIR__ . '/src/CommonITILTask.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Comparison operation "\\>" between int\\<1, max\\> and 0 is always true\\.$#',
 	'identifier' => 'greater.alwaysTrue',
 	'count' => 2,
+	'path' => __DIR__ . '/src/CommonITILTask.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_decode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_decode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 4,
+	'path' => __DIR__ . '/src/CommonITILTask.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/CommonITILTask.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function strtotime is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\strtotime;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 13,
 	'path' => __DIR__ . '/src/CommonITILTask.php',
 ];
 $ignoreErrors[] = [
@@ -1064,8 +1982,8 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/CommonITILValidation.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^If condition is always true\\.$#',
-	'identifier' => 'if.alwaysTrue',
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
 	'count' => 1,
 	'path' => __DIR__ . '/src/CommonITILValidation.php',
 ];
@@ -1106,6 +2024,18 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/CommonItilObject_Item.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Function ob_get_clean is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\ob_get_clean;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/CommonItilObject_Item.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function ob_start is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\ob_start;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/CommonItilObject_Item.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Method CommonItilObject_Item\\:\\:displayItemAddForm\\(\\) with return type void returns false but should not return anything\\.$#',
 	'identifier' => 'return.void',
 	'count' => 2,
@@ -1136,8 +2066,20 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Computer.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Function unlink is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\unlink;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Computer.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Instanceof between static\\(Computer\\) and PDU will always evaluate to false\\.$#',
 	'identifier' => 'instanceof.alwaysFalse',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Computer.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Computer\\:\\:getInventoryAgent\\(\\) should return Agent\\|null but returns CommonDBTM\\|null\\.$#',
+	'identifier' => 'return.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Computer.php',
 ];
@@ -1184,6 +2126,66 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Computer.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Function chdir is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\chdir;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Config.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function exec is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\exec;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Config.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function getcwd is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\getcwd;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Config.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function glob is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\glob;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Config.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_decode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_decode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Config.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Config.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function opcache_get_status is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\opcache_get_status;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Config.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function parse_url is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\parse_url;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Config.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Config.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_replace is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 3,
+	'path' => __DIR__ . '/src/Config.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^PHPDoc tag @phpstan\\-return has invalid value \\(\\$expanded_info \\? array\\<string, \\{name\\: string, dark\\: boolean\\}\\> \\: array\\<string, string\\>\\)\\: Unexpected token "\\$expanded_info", expected type at offset 154 on line 6$#',
 	'identifier' => 'phpDoc.parseError',
 	'count' => 1,
@@ -1192,6 +2194,18 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Default value of the parameter \\#3 \\$is_deleted \\(int\\) of method Consumable\\:\\:getMassiveActionsForItemtype\\(\\) is incompatible with type bool\\.$#',
 	'identifier' => 'parameter.defaultValue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Consumable.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function ob_get_clean is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\ob_get_clean;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Consumable.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function ob_start is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\ob_start;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Consumable.php',
 ];
@@ -1208,9 +2222,21 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/ConsumableItem.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Contact_Supplier.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
 	'identifier' => 'function.alreadyNarrowedType',
 	'count' => 1,
+	'path' => __DIR__ . '/src/Contract.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function strtotime is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\strtotime;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 4,
 	'path' => __DIR__ . '/src/Contract.php',
 ];
 $ignoreErrors[] = [
@@ -1220,9 +2246,69 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/ContractCost.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Default value of the parameter \\#4 \\$options \\(array\\{\\}\\) of method CronTask\\:\\:register\\(\\) is incompatible with type array\\{state\\: 0\\|1\\|2, mode\\: 1\\|2, allowmode\\: int, hourmin\\: int, hourmax\\: int, logs_lifetime\\: int, param\\: int, comment\\: string\\}\\.$#',
-	'identifier' => 'parameter.defaultValue',
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
 	'count' => 1,
+	'path' => __DIR__ . '/src/Contract_Supplier.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function filemtime is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\filemtime;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 3,
+	'path' => __DIR__ . '/src/CronTask.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function glob is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\glob;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 5,
+	'path' => __DIR__ . '/src/CronTask.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function ini_get is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\ini_get;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/CronTask.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function pcntl_signal is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\pcntl_signal;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/CronTask.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/CronTask.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function rename is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\rename;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/CronTask.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function rmdir is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\rmdir;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/CronTask.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function scandir is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\scandir;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/CronTask.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function strtotime is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\strtotime;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 4,
+	'path' => __DIR__ . '/src/CronTask.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function unlink is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\unlink;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 4,
 	'path' => __DIR__ . '/src/CronTask.php',
 ];
 $ignoreErrors[] = [
@@ -1238,14 +2324,26 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/CronTask.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'allowmode\'\\|\'comment\'\\|\'hourmax\'\\|\'hourmin\'\\|\'logs_lifetime\'\\|\'mode\'\\|\'param\'\\|\'state\' on array\\{state\\: 0\\|1\\|2, mode\\: 1\\|2, allowmode\\: int, hourmin\\: int, hourmax\\: int, logs_lifetime\\: int, param\\: int, comment\\: string\\} in isset\\(\\) always exists and is not nullable\\.$#',
-	'identifier' => 'isset.offset',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CronTask.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Cannot access property \\$first_connection on null\\.$#',
 	'identifier' => 'property.nonObject',
+	'count' => 1,
+	'path' => __DIR__ . '/src/DBConnection.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function file_get_contents is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\file_get_contents;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/DBConnection.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/DBConnection.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function unlink is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\unlink;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
 	'count' => 1,
 	'path' => __DIR__ . '/src/DBConnection.php',
 ];
@@ -1265,6 +2363,48 @@ $ignoreErrors[] = [
 	'message' => '#^Call to function is_string\\(\\) with string will always evaluate to true\\.$#',
 	'identifier' => 'function.alreadyNarrowedType',
 	'count' => 1,
+	'path' => __DIR__ . '/src/DBmysql.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Class DateTime is unsafe to use\\. Its methods can return FALSE instead of throwing an exception\\. Please add \'use Safe\\\\DateTime;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.class',
+	'count' => 1,
+	'path' => __DIR__ . '/src/DBmysql.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function filesize is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\filesize;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/DBmysql.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function fopen is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\fopen;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/DBmysql.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function fread is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\fread;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/DBmysql.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function ini_get is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\ini_get;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/DBmysql.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 11,
+	'path' => __DIR__ . '/src/DBmysql.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_split is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_split;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
 	'path' => __DIR__ . '/src/DBmysql.php',
 ];
 $ignoreErrors[] = [
@@ -1298,6 +2438,18 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/DBmysqlIterator.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Function preg_replace is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/DBmysqlIterator.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_split is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_split;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/DBmysqlIterator.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Instanceof between array\\|string and AbstractQuery will always evaluate to false\\.$#',
 	'identifier' => 'instanceof.alwaysFalse',
 	'count' => 1,
@@ -1328,6 +2480,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/DBmysqlIterator.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/DCRoom.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Instanceof between static\\(DCRoom\\) and PDU will always evaluate to false\\.$#',
 	'identifier' => 'instanceof.alwaysFalse',
 	'count' => 1,
@@ -1342,6 +2500,12 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Call to function method_exists\\(\\) with \\$this\\(DatabaseInstance\\) and \'updateGroupFields\' will always evaluate to true\\.$#',
 	'identifier' => 'function.alreadyNarrowedType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/DatabaseInstance.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method DatabaseInstance\\:\\:getInventoryAgent\\(\\) should return Agent\\|null but returns CommonDBTM\\|null\\.$#',
+	'identifier' => 'return.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/DatabaseInstance.php',
 ];
@@ -1367,6 +2531,42 @@ $ignoreErrors[] = [
 	'message' => '#^Cannot use array destructuring on string\\.$#',
 	'identifier' => 'offsetAccess.nonArray',
 	'count' => 1,
+	'path' => __DIR__ . '/src/DbUtils.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_decode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_decode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/DbUtils.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 4,
+	'path' => __DIR__ . '/src/DbUtils.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_grep is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_grep;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 5,
+	'path' => __DIR__ . '/src/DbUtils.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 8,
+	'path' => __DIR__ . '/src/DbUtils.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_replace is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 6,
+	'path' => __DIR__ . '/src/DbUtils.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function realpath is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\realpath;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 6,
 	'path' => __DIR__ . '/src/DbUtils.php',
 ];
 $ignoreErrors[] = [
@@ -1424,6 +2624,18 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/DbUtils.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Function json_decode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_decode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/DefaultFilter.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/DefaultFilter.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
 	'identifier' => 'function.alreadyNarrowedType',
 	'count' => 1,
@@ -1448,6 +2660,90 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Document.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Function copy is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\copy;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Document.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function filesize is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\filesize;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Document.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function finfo_open is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\finfo_open;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Document.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function getimagesize is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\getimagesize;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Document.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 4,
+	'path' => __DIR__ . '/src/Document.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function mkdir is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\mkdir;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Document.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function opendir is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\opendir;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Document.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Document.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_replace is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Document.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function rename is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\rename;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Document.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function session_destroy is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\session_destroy;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Document.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function session_id is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\session_id;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Document.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function sha1_file is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\sha1_file;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 5,
+	'path' => __DIR__ . '/src/Document.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function unlink is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\unlink;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 6,
+	'path' => __DIR__ . '/src/Document.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Instanceof between CommonDBTM and CommonDBTM will always evaluate to true\\.$#',
 	'identifier' => 'instanceof.alwaysTrue',
 	'count' => 1,
@@ -1456,12 +2752,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Left side of && is always true\\.$#',
 	'identifier' => 'booleanAnd.leftAlwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Document.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @phpstan\\-return has invalid value \\(\\$return_response \\? Response \\: void\\)\\: Unexpected token "\\$return_response", expected type at offset 137 on line 6$#',
-	'identifier' => 'phpDoc.parseError',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Document.php',
 ];
@@ -1476,6 +2766,12 @@ $ignoreErrors[] = [
 	'identifier' => 'method.childReturnType',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Document.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/DocumentType.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method Document_Item\\:\\:showForDocument\\(\\) with return type void returns false but should not return anything\\.$#',
@@ -1526,6 +2822,18 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/DomainRecordType.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Function json_decode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_decode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 3,
+	'path' => __DIR__ . '/src/DomainRecordType.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/DomainRecordType.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Right side of && is always true\\.$#',
 	'identifier' => 'booleanAnd.rightAlwaysTrue',
 	'count' => 1,
@@ -1541,6 +2849,24 @@ $ignoreErrors[] = [
 	'message' => '#^Call to function is_numeric\\(\\) with int will always evaluate to true\\.$#',
 	'identifier' => 'function.alreadyNarrowedType',
 	'count' => 1,
+	'path' => __DIR__ . '/src/Dropdown.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 7,
+	'path' => __DIR__ . '/src/Dropdown.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function opendir is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\opendir;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Dropdown.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 3,
 	'path' => __DIR__ . '/src/Dropdown.php',
 ];
 $ignoreErrors[] = [
@@ -1634,6 +2960,18 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Enclosure.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 3,
+	'path' => __DIR__ . '/src/Entity.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function realpath is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\realpath;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Entity.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Left side of && is always true\\.$#',
 	'identifier' => 'booleanAnd.leftAlwaysTrue',
 	'count' => 1,
@@ -1658,6 +2996,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Entity.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 3,
+	'path' => __DIR__ . '/src/FQDNLabel.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
 	'identifier' => 'function.alreadyNarrowedType',
 	'count' => 1,
@@ -1676,6 +3020,36 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Fieldblacklist.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Function base64_decode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\base64_decode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/GLPIKey.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function file_get_contents is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\file_get_contents;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/GLPIKey.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function file_put_contents is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\file_put_contents;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/GLPIKey.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function sodium_crypto_aead_xchacha20poly1305_ietf_decrypt is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\sodium_crypto_aead_xchacha20poly1305_ietf_decrypt;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/GLPIKey.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function sodium_crypto_aead_xchacha20poly1305_ietf_encrypt is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\sodium_crypto_aead_xchacha20poly1305_ietf_encrypt;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/GLPIKey.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Method GLPIKey\\:\\:keyExists\\(\\) should return string but returns bool\\.$#',
 	'identifier' => 'return.type',
 	'count' => 1,
@@ -1688,8 +3062,20 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/GLPIMailer.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Class DateTime is unsafe to use\\. Its methods can return FALSE instead of throwing an exception\\. Please add \'use Safe\\\\DateTime;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.class',
+	'count' => 1,
+	'path' => __DIR__ . '/src/GLPIMailer.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Expression on left side of \\?\\? is not nullable\\.$#',
 	'identifier' => 'nullCoalesce.expr',
+	'count' => 3,
+	'path' => __DIR__ . '/src/GLPIMailer.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_replace is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
 	'count' => 3,
 	'path' => __DIR__ . '/src/GLPIMailer.php',
 ];
@@ -1700,9 +3086,171 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/GLPIMailer.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Function json_decode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_decode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/GLPINetwork.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_replace is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 3,
+	'path' => __DIR__ . '/src/GLPINetwork.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function glob is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\glob;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/GLPIPDF.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/GLPIUploadHandler.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function unlink is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\unlink;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/GLPIUploadHandler.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function base64_decode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\base64_decode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Agent/Communication/AbstractRequest.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function gzcompress is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\gzcompress;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Agent/Communication/AbstractRequest.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function gzdecode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\gzdecode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Agent/Communication/AbstractRequest.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function gzdeflate is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\gzdeflate;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Agent/Communication/AbstractRequest.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function gzencode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\gzencode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Agent/Communication/AbstractRequest.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function gzinflate is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\gzinflate;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Agent/Communication/AbstractRequest.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function gzuncompress is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\gzuncompress;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Agent/Communication/AbstractRequest.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function iconv is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\iconv;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Agent/Communication/AbstractRequest.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function ini_get is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\ini_get;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Agent/Communication/AbstractRequest.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function ini_set is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\ini_set;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Agent/Communication/AbstractRequest.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_decode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_decode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Agent/Communication/AbstractRequest.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Agent/Communication/AbstractRequest.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Agent/Communication/AbstractRequest.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function simplexml_load_string is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\simplexml_load_string;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Agent/Communication/AbstractRequest.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Dead catch \\- Glpi\\\\Exception\\\\PasswordTooWeakException is never thrown in the try block\\.$#',
 	'identifier' => 'catch.neverThrown',
 	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/API.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function file_get_contents is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\file_get_contents;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Api/API.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/API.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function ob_get_clean is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\ob_get_clean;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/API.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function ob_start is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\ob_start;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/API.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Api/API.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function session_destroy is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\session_destroy;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/API.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function session_id is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\session_id;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 3,
+	'path' => __DIR__ . '/src/Glpi/Api/API.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function session_write_close is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\session_write_close;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
 	'path' => __DIR__ . '/src/Glpi/Api/API.php',
 ];
 $ignoreErrors[] = [
@@ -1722,6 +3270,48 @@ $ignoreErrors[] = [
 	'identifier' => 'return.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Api/API.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^You should not use the `exit` function\\. It prevents the execution of post\\-request/post\\-command routines\\.$#',
+	'identifier' => 'glpi.forbidExit',
+	'count' => 3,
+	'path' => __DIR__ . '/src/Glpi/Api/API.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^You should not use the `http_response_code` function to change the response code\\. Due to a PHP bug, it may not provide the expected result \\(see https\\://bugs\\.php\\.net/bug\\.php\\?id\\=81451\\)\\.$#',
+	'identifier' => 'glpi.forbidHttpResponseCode',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/API.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function file_get_contents is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\file_get_contents;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/APIRest.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_decode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_decode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 6,
+	'path' => __DIR__ . '/src/Glpi/Api/APIRest.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 5,
+	'path' => __DIR__ . '/src/Glpi/Api/APIRest.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/APIRest.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function strtotime is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\strtotime;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/APIRest.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Api\\\\APIRest\\:\\:parseIncomingParams\\(\\) with return type void returns string but should not return anything\\.$#',
@@ -1748,52 +3338,46 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Api/APIRest.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
-	'identifier' => 'function.alreadyNarrowedType',
+	'message' => '#^You should not use the `exit` function\\. It prevents the execution of post\\-request/post\\-command routines\\.$#',
+	'identifier' => 'glpi.forbidExit',
 	'count' => 3,
-	'path' => __DIR__ . '/src/Glpi/Api/Deprecated/ComputerAntivirus.php',
+	'path' => __DIR__ . '/src/Glpi/Api/APIRest.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
-	'identifier' => 'function.alreadyNarrowedType',
-	'count' => 3,
-	'path' => __DIR__ . '/src/Glpi/Api/Deprecated/ComputerVirtualMachine.php',
+	'message' => '#^You should not use the `http_response_code` function to change the response code\\. Due to a PHP bug, it may not provide the expected result \\(see https\\://bugs\\.php\\.net/bug\\.php\\?id\\=81451\\)\\.$#',
+	'identifier' => 'glpi.forbidHttpResponseCode',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/APIRest.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
-	'identifier' => 'function.alreadyNarrowedType',
-	'count' => 3,
-	'path' => __DIR__ . '/src/Glpi/Api/Deprecated/Computer_Item.php',
+	'message' => '#^Function json_decode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_decode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/AssetController.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
-	'identifier' => 'function.alreadyNarrowedType',
-	'count' => 3,
-	'path' => __DIR__ . '/src/Glpi/Api/Deprecated/Computer_SoftwareLicense.php',
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/AssetController.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
-	'identifier' => 'function.alreadyNarrowedType',
-	'count' => 3,
-	'path' => __DIR__ . '/src/Glpi/Api/Deprecated/Computer_SoftwareVersion.php',
+	'message' => '#^Function file_get_contents is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\file_get_contents;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/CoreController.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
-	'identifier' => 'function.alreadyNarrowedType',
-	'count' => 3,
-	'path' => __DIR__ . '/src/Glpi/Api/Deprecated/Netpoint.php',
+	'message' => '#^Function preg_replace is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/CoreController.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
-	'identifier' => 'function.alreadyNarrowedType',
-	'count' => 3,
-	'path' => __DIR__ . '/src/Glpi/Api/Deprecated/Pdu_Plug.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
-	'identifier' => 'function.alreadyNarrowedType',
-	'count' => 3,
-	'path' => __DIR__ . '/src/Glpi/Api/Deprecated/TicketFollowup.php',
+	'message' => '#^Function strtotime is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\strtotime;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/CoreController.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Api\\\\HL\\\\Controller\\\\CoreController\\:\\:authorize\\(\\) should return Glpi\\\\Http\\\\Response but returns Psr\\\\Http\\\\Message\\\\ResponseInterface\\.$#',
@@ -1812,6 +3396,12 @@ $ignoreErrors[] = [
 	'identifier' => 'phpDoc.parseError',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/CoreController.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_decode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_decode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ITILController.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Api\\\\HL\\\\Controller\\\\ITILController\\:\\:getSubitemLinkFields\\(\\) is unused\\.$#',
@@ -1886,10 +3476,58 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ManagementController.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Function mktime is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\mktime;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 3,
+	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ReportController.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function ob_get_clean is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\ob_get_clean;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 3,
+	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ReportController.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function ob_start is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\ob_start;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 3,
+	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ReportController.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function parse_url is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\parse_url;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ReportController.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ReportController.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function strtotime is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\strtotime;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 12,
+	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ReportController.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Offset \'fields\' on string on left side of \\?\\? does not exist\\.$#',
 	'identifier' => 'nullCoalesce.offset',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/RuleController.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 3,
+	'path' => __DIR__ . '/src/Glpi/Api/HL/Doc/Schema.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function strtotime is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\strtotime;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/HL/Doc/Schema.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Api\\\\HL\\\\Doc\\\\Schema\\:\\:getUnionSchema\\(\\) should return array\\{x\\-subtypes\\: array\\{schema_name\\: string, itemtype\\: string\\}, type\\: \'object\', properties\\: array\\} but returns array\\{x\\-subtypes\\: non\\-empty\\-list\\<array\\{schema_name\\: string, itemtype\\: mixed\\}\\>, type\\: \'object\', properties\\: mixed\\}\\.$#',
@@ -1922,15 +3560,57 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Api/HL/Doc/SchemaReference.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Function json_decode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_decode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Api/HL/GraphQL.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function ini_set is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\ini_set;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/HL/Middleware/CookieAuthMiddleware.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Right side of && is always false\\.$#',
 	'identifier' => 'booleanAnd.rightAlwaysFalse',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Api/HL/Middleware/DebugRequestMiddleware.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @var with type array\\{type\\: string, format\\?\\: string, pattern\\?\\: string, properties\\?\\: array\\<string, array\\{type\\: string, format\\?\\: string\\}\\>\\} is not subtype of native type array\\{type\\: \'integer\', pattern\\: \'\\\\\\\\d\\+\'\\}\\|array\\{type\\: \'string\', pattern\\: mixed\\}\\.$#',
-	'identifier' => 'varTag.nativeType',
+	'message' => '#^Function json_decode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_decode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
 	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/HL/Middleware/DebugResponseMiddleware.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/HL/Middleware/DebugResponseMiddleware.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function ob_get_clean is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\ob_get_clean;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/HL/Middleware/DebugResponseMiddleware.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function inet_pton is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\inet_pton;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Api/HL/Middleware/IPRestrictionRequestMiddleware.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Api/HL/OpenAPIGenerator.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_replace is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
 	'path' => __DIR__ . '/src/Glpi/Api/HL/OpenAPIGenerator.php',
 ];
 $ignoreErrors[] = [
@@ -1938,6 +3618,42 @@ $ignoreErrors[] = [
 	'identifier' => 'smaller.alwaysFalse',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Api/HL/RSQL/Lexer.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/HL/RSQL/Lexer.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 5,
+	'path' => __DIR__ . '/src/Glpi/Api/HL/RSQL/Parser.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_replace is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/HL/RSQL/Parser.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/HL/RoutePath.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match_all is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match_all;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Api/HL/RoutePath.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_replace_callback is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace_callback;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/HL/RoutePath.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Strict comparison using \\!\\=\\= between Glpi\\\\Api\\\\HL\\\\Doc\\\\Route and null will always evaluate to true\\.$#',
@@ -1948,6 +3664,42 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Expression "\\$action\\(\\$input\\)" on a separate line does not do anything\\.$#',
 	'identifier' => 'expr.resultUnused',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Api/HL/Router.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function class_implements is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\class_implements;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Api/HL/Router.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function ob_end_clean is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\ob_end_clean;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/HL/Router.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function ob_start is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\ob_start;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/HL/Router.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Api/HL/Router.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function session_destroy is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\session_destroy;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Api/HL/Router.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function session_id is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\session_id;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
 	'count' => 2,
 	'path' => __DIR__ . '/src/Glpi/Api/HL/Router.php',
 ];
@@ -1964,12 +3716,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Api/HL/Router.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Property Auth\\:\\:\\$auth_succeded \\(int\\) does not accept true\\.$#',
-	'identifier' => 'assign.propertyType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Router.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Property Glpi\\\\Api\\\\HL\\\\Router\\:\\:\\$final_request \\(Glpi\\\\Http\\\\Request\\|null\\) is never assigned null so it can be removed from the property type\\.$#',
 	'identifier' => 'property.unusedType',
 	'count' => 1,
@@ -1980,6 +3726,18 @@ $ignoreErrors[] = [
 	'identifier' => 'property.unusedType',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Api/HL/Router.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 4,
+	'path' => __DIR__ . '/src/Glpi/Api/HL/Search.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_replace is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Api/HL/Search.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Offset 0 does not exist on array\\<class\\-string\\<Glpi\\\\Api\\\\HL\\\\Controller\\\\AbstractController\\>, string\\>\\.$#',
@@ -1994,10 +3752,106 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Api/HL/Search.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\=\\=\\= between null and 2 will always evaluate to false\\.$#',
-	'identifier' => 'identical.alwaysFalse',
+	'message' => '#^Function preg_replace is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
 	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Application/View/TemplateRenderer.php',
+	'path' => __DIR__ . '/src/Glpi/Application/ImportMapGenerator.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function file_get_contents is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\file_get_contents;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Application/ResourcesChecker.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function filemtime is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\filemtime;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Application/ResourcesChecker.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_grep is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_grep;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Application/ResourcesChecker.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_replace is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Application/ResourcesChecker.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function scandir is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\scandir;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Application/ResourcesChecker.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function sha1_file is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\sha1_file;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Application/ResourcesChecker.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function ini_set is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\ini_set;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 3,
+	'path' => __DIR__ . '/src/Glpi/Application/SystemConfigurator.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function mkdir is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\mkdir;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Application/SystemConfigurator.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_grep is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_grep;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Application/SystemConfigurator.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 6,
+	'path' => __DIR__ . '/src/Glpi/Application/SystemConfigurator.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_replace_callback is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace_callback;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Application/SystemConfigurator.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function session_name is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\session_name;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Application/SystemConfigurator.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function filesize is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\filesize;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Application/View/Extension/DocumentExtension.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function parse_url is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\parse_url;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Application/View/Extension/FrontEndAssetsExtension.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Application/View/Extension/FrontEndAssetsExtension.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function ini_get is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\ini_get;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Application/View/Extension/PhpExtension.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Call to function method_exists\\(\\) with \\$this\\(Glpi\\\\Asset\\\\Asset\\) and \'prepareGroupFields\' will always evaluate to true\\.$#',
@@ -2012,7 +3866,31 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Asset/Asset.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Function json_decode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_decode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Asset/Asset.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Asset/Asset.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function unlink is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\unlink;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Asset/Asset.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Asset\\\\Asset\\:\\:getById\\(\\) should return static\\(Glpi\\\\Asset\\\\Asset\\)\\|false but returns object\\.$#',
+	'identifier' => 'return.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Asset/Asset.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Glpi\\\\Asset\\\\Asset\\:\\:getInventoryAgent\\(\\) should return Agent\\|null but returns CommonDBTM\\|null\\.$#',
 	'identifier' => 'return.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Asset/Asset.php',
@@ -2028,6 +3906,36 @@ $ignoreErrors[] = [
 	'identifier' => 'varTag.nativeType',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Asset/Asset.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_decode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_decode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 4,
+	'path' => __DIR__ . '/src/Glpi/Asset/AssetDefinition.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 3,
+	'path' => __DIR__ . '/src/Glpi/Asset/AssetDefinition.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Asset/AssetDefinition.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Asset/AssetDefinitionManager.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_replace is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Asset/AssetDefinitionManager.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^PHPDoc tag @var with type SplFileObject is not subtype of native type DirectoryIterator\\.$#',
@@ -2066,8 +3974,98 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Asset/Capacity/CapacityInterface.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Function json_decode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_decode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Asset/Capacity/HasImpactCapacity.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Asset/Capacity/HasImpactCapacity.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_decode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_decode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 5,
+	'path' => __DIR__ . '/src/Glpi/Asset/CustomFieldDefinition.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 4,
+	'path' => __DIR__ . '/src/Glpi/Asset/CustomFieldDefinition.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Asset/CustomFieldDefinition.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Asset/CustomFieldType/DateTimeType.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function strtotime is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\strtotime;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Asset/CustomFieldType/DateTimeType.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Asset/CustomFieldType/DateType.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function strtotime is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\strtotime;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Asset/CustomFieldType/DateType.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Call to function is_string\\(\\) with string will always evaluate to true\\.$#',
 	'identifier' => 'function.alreadyNarrowedType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Cache/CacheManager.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function glob is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\glob;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Cache/CacheManager.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Cache/CacheManager.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 3,
+	'path' => __DIR__ . '/src/Glpi/Cache/CacheManager.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_replace is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Cache/CacheManager.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function rmdir is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\rmdir;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Cache/CacheManager.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function unlink is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\unlink;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Cache/CacheManager.php',
 ];
@@ -2150,8 +4148,26 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/CalDAV/Backend/Calendar.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Class DateTime is unsafe to use\\. Its methods can return FALSE instead of throwing an exception\\. Please add \'use Safe\\\\DateTime;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.class',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/CalDAV/Backend/Calendar.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_replace is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/CalDAV/Backend/Calendar.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Call to an undefined method Glpi\\\\CalDAV\\\\Contracts\\\\CalDAVCompatibleItemInterface\\:\\:getFromDB\\(\\)\\.$#',
 	'identifier' => 'method.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/CalDAV/Backend/Principal.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_replace is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/CalDAV/Backend/Principal.php',
 ];
@@ -2162,14 +4178,32 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/CalDAV/Backend/Principal.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Function preg_replace is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/CalDAV/Node/CalendarRoot.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Call to an undefined method Glpi\\\\CalDAV\\\\Contracts\\\\CalDAVCompatibleItemInterface\\:\\:getFromDB\\(\\)\\.$#',
 	'identifier' => 'method.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/CalDAV/Plugin/Acl.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Function preg_replace is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/CalDAV/Plugin/Acl.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Call to an undefined method Glpi\\\\CalDAV\\\\Contracts\\\\CalDAVCompatibleItemInterface\\:\\:getFromDB\\(\\)\\.$#',
 	'identifier' => 'method.notFound',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/CalDAV/Plugin/Browser.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_replace is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/CalDAV/Plugin/Browser.php',
 ];
@@ -2186,6 +4220,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/CalDAV/Plugin/CalDAV.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Function preg_replace is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/CalDAV/Plugin/CalDAV.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Call to an undefined method Symfony\\\\Component\\\\Console\\\\Helper\\\\HelperInterface\\:\\:ask\\(\\)\\.$#',
 	'identifier' => 'method.notFound',
 	'count' => 1,
@@ -2194,6 +4234,12 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Call to function property_exists\\(\\) with \\$this\\(Glpi\\\\Console\\\\AbstractCommand\\) and \'db\' will always evaluate to true\\.$#',
 	'identifier' => 'function.alreadyNarrowedType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/AbstractCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_replace is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Console/AbstractCommand.php',
 ];
@@ -2210,10 +4256,94 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Console/Application.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Function preg_replace is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Application.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function file_put_contents is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\file_put_contents;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Build/CompileScssCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function mkdir is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\mkdir;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Build/CompileScssCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Console/Build/CompileScssCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_replace is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Build/CompileScssCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function realpath is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\realpath;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Build/CompileScssCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function file_put_contents is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\file_put_contents;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Build/GenerateCodeManifestCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Build/GenerateCodeManifestCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Cache/ConfigureCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Cache/DebugCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 5,
+	'path' => __DIR__ . '/src/Glpi/Console/CommandLoader.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^PHPDoc tag @var with type SplFileInfo is not subtype of native type DirectoryIterator\\.$#',
 	'identifier' => 'varTag.nativeType',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Console/CommandLoader.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Config/SetCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function ob_get_clean is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\ob_get_clean;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Database/AbstractConfigureCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function ob_start is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\ob_start;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Database/AbstractConfigureCommand.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Console\\\\Database\\\\InstallCommand\\:\\:shouldSetDBConfig\\(\\) is unused\\.$#',
@@ -2222,9 +4352,45 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Console/Database/InstallCommand.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Database/UpdateCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_replace is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Database/UpdateCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function sha1_file is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\sha1_file;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Database/UpdateCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function sha1_file is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\sha1_file;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Diagnostic/CheckDocumentsIntegrityCommand.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Call to an undefined method Symfony\\\\Component\\\\Console\\\\Helper\\\\HelperInterface\\:\\:ask\\(\\)\\.$#',
 	'identifier' => 'method.notFound',
 	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Diagnostic/CheckHtmlEncodingCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function file_put_contents is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\file_put_contents;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Diagnostic/CheckHtmlEncodingCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_replace is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
 	'path' => __DIR__ . '/src/Glpi/Console/Diagnostic/CheckHtmlEncodingCommand.php',
 ];
 $ignoreErrors[] = [
@@ -2234,10 +4400,46 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Console/Diagnostic/CheckSourceCodeIntegrityCommand.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Function ini_set is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\ini_set;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Diagnostic/CheckSourceCodeIntegrityCommand.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Match expression does not handle remaining value\\: mixed$#',
 	'identifier' => 'match.unhandled',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Console/Diagnostic/CheckSourceCodeIntegrityCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Ldap/SynchronizeUsersCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function strtotime is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\strtotime;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Ldap/SynchronizeUsersCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Migration/AbstractPluginToCoreCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function ob_end_clean is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\ob_end_clean;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Migration/RacksPluginToCoreCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function ob_start is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\ob_start;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Migration/RacksPluginToCoreCommand.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Console\\\\Migration\\\\RacksPluginToCoreCommand\\:\\:getFallbackRoomId\\(\\) never returns float so it can be removed from the return type\\.$#',
@@ -2258,22 +4460,76 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Console/Migration/RacksPluginToCoreCommand.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Class DateTime is unsafe to use\\. Its methods can return FALSE instead of throwing an exception\\. Please add \'use Safe\\\\DateTime;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.class',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Console/Migration/TimestampsCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Migration/TimestampsCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Migration/UnsignedKeysCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function ob_end_clean is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\ob_end_clean;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Plugin/InstallCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function ob_start is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\ob_start;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Plugin/InstallCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function opendir is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\opendir;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/Plugin/InstallCommand.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Console\\\\Plugin\\\\InstallCommand\\:\\:isAlreadyInstalled\\(\\) should return array but returns bool\\.$#',
 	'identifier' => 'return.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Console/Plugin/InstallCommand.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Property Auth\\:\\:\\$auth_succeded \\(int\\) does not accept true\\.$#',
-	'identifier' => 'assign.propertyType',
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
 	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Console/Plugin/InstallCommand.php',
+	'path' => __DIR__ . '/src/Glpi/Console/Plugin/ListCommand.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Call to an undefined method Symfony\\\\Component\\\\Console\\\\Helper\\\\HelperInterface\\:\\:ask\\(\\)\\.$#',
 	'identifier' => 'method.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Console/Security/DisableTFACommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/System/CheckStatusCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Console/System/ListServicesCommand.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Console/Task/UnlockCommand.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Call to an undefined method Symfony\\\\Component\\\\Console\\\\Helper\\\\HelperInterface\\:\\:ask\\(\\)\\.$#',
@@ -2294,10 +4550,88 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Controller/ApiController.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Function file_get_contents is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\file_get_contents;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Controller/ApiController.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Controller/ApiController.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_replace is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Controller/ApiController.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function ob_get_clean is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\ob_get_clean;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 3,
+	'path' => __DIR__ . '/src/Glpi/Controller/DropdownFormController.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function ob_start is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\ob_start;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 3,
+	'path' => __DIR__ . '/src/Glpi/Controller/DropdownFormController.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function ini_set is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\ini_set;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Controller/InstallController.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function unlink is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\unlink;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Controller/InstallController.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function file_get_contents is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\file_get_contents;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Controller/InventoryController.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function ob_get_clean is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\ob_get_clean;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Controller/LegacyFileLoadController.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function ob_start is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\ob_start;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Controller/LegacyFileLoadController.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function base64_decode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\base64_decode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Controller/Plugin/LogoController.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Expression on left side of \\?\\? is not nullable\\.$#',
 	'identifier' => 'nullCoalesce.expr',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Controller/StatusController.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function realpath is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\realpath;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Controller/UI/Illustration/UploadController.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Class DateTime is unsafe to use\\. Its methods can return FALSE instead of throwing an exception\\. Please add \'use Safe\\\\DateTime;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.class',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Csv/PlanningCsv.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Negated boolean expression is always false\\.$#',
@@ -2312,10 +4646,46 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Csv/StatCsvExport.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Function json_decode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_decode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 3,
+	'path' => __DIR__ . '/src/Glpi/CustomObject/AbstractDefinition.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/CustomObject/AbstractDefinition.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/CustomObject/AbstractDefinition.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function spl_autoload_register is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\spl_autoload_register;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/CustomObject/AbstractDefinitionManager.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Strict comparison using \\=\\=\\= between string and null will always evaluate to false\\.$#',
 	'identifier' => 'identical.alwaysFalse',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/DBAL/QueryExpression.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/DBAL/QueryFunction.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_replace is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/DBAL/QueryFunction.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^PHPDoc tag @param for parameter \\$interval_unit with type Glpi\\\\DBAL\\\\QueryExpression\\|int\\|string is not subtype of native type string\\.$#',
@@ -2324,16 +4694,46 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/DBAL/QueryFunction.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Function json_decode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_decode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Dashboard/Dashboard.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function strtotime is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\strtotime;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 5,
+	'path' => __DIR__ . '/src/Glpi/Dashboard/FakeProvider.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Match expression does not handle remaining value\\: string$#',
 	'identifier' => 'match.unhandled',
 	'count' => 2,
 	'path' => __DIR__ . '/src/Glpi/Dashboard/FakeProvider.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Function strtotime is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\strtotime;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 4,
+	'path' => __DIR__ . '/src/Glpi/Dashboard/Filters/AbstractFilter.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Call to function is_array\\(\\) with array\\<mixed\\> will always evaluate to true\\.$#',
 	'identifier' => 'function.alreadyNarrowedType',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Dashboard/Filters/DatesModFilter.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Dashboard/Grid.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_replace is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Dashboard/Grid.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Call to an undefined static method CommonDBVisible\\:\\:getVisibilityCriteria\\(\\)\\.$#',
@@ -2348,10 +4748,52 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Dashboard/Provider.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Function mktime is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\mktime;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Dashboard/Provider.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function strtotime is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\strtotime;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 4,
+	'path' => __DIR__ . '/src/Glpi/Dashboard/Provider.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Static method Glpi\\\\Dashboard\\\\Provider\\:\\:getSearchOptionID\\(\\) is unused\\.$#',
 	'identifier' => 'method.unused',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Dashboard/Provider.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Dashboard/Widget.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function ob_get_clean is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\ob_get_clean;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Dashboard/Widget.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function ob_start is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\ob_start;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Dashboard/Widget.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function gzdecode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\gzdecode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Debug/Profile.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function gzencode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\gzencode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Debug/Profile.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Strict comparison using \\!\\=\\= between int and null will always evaluate to true\\.$#',
@@ -2366,16 +4808,364 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Dropdown/Dropdown.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Dropdown/DropdownDefinitionManager.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_replace is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Dropdown/DropdownDefinitionManager.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function ini_set is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\ini_set;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Error/ErrorHandler.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function ob_get_clean is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\ob_get_clean;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Event.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function ob_start is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\ob_start;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Event.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_decode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_decode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Form/AccessControl/FormAccessControl.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Form/AccessControl/FormAccessControl.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 3,
+	'path' => __DIR__ . '/src/Glpi/Form/AnswersHandler/AnswersHandler.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_decode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_decode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Form/AnswersSet.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_decode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_decode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Form/Comment.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Form/Comment.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_decode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_decode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Form/Condition/ConditionHandler/ItemConditionHandler.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Form/Condition/ConditionHandler/StringConditionHandler.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Form/Condition/ConditionHandler/UserDevicesConditionHandler.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_decode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_decode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Form/Condition/Engine.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_decode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_decode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Form/Condition/FormData.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Form/Destination/AbstractCommonITILFormDestination.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_decode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_decode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Form/Destination/CommonITILField/AssociatedItemsField.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match_all is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match_all;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Form/Destination/CommonITILField/ContentField.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function class_uses is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\class_uses;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Form/Destination/CommonITILField/ITILActorField.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match_all is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match_all;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Form/Destination/CommonITILField/TitleField.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_decode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_decode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Form/Destination/CommonITILField/ValidationField.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_decode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_decode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Form/Destination/FormDestination.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 4,
+	'path' => __DIR__ . '/src/Glpi/Form/Destination/FormDestination.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Form/EndUserInputNameProvider.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_replace is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Form/EndUserInputNameProvider.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_decode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_decode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Form/Export/Serializer/FormSerializer.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 6,
+	'path' => __DIR__ . '/src/Glpi/Form/Export/Serializer/FormSerializer.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_decode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_decode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 3,
+	'path' => __DIR__ . '/src/Glpi/Form/Form.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 5,
+	'path' => __DIR__ . '/src/Glpi/Form/Form.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function strtotime is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\strtotime;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Form/Form.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_decode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_decode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 5,
+	'path' => __DIR__ . '/src/Glpi/Form/Migration/FormMigration.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_decode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_decode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 5,
+	'path' => __DIR__ . '/src/Glpi/Form/Question.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 5,
+	'path' => __DIR__ . '/src/Glpi/Form/Question.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_decode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_decode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 3,
+	'path' => __DIR__ . '/src/Glpi/Form/QuestionType/AbstractQuestionTypeActors.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Form/QuestionType/AbstractQuestionTypeActors.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_decode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_decode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 4,
+	'path' => __DIR__ . '/src/Glpi/Form/QuestionType/AbstractQuestionTypeSelectable.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Class DateTime is unsafe to use\\. Its methods can return FALSE instead of throwing an exception\\. Please add \'use Safe\\\\DateTime;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.class',
+	'count' => 4,
+	'path' => __DIR__ . '/src/Glpi/Form/QuestionType/QuestionTypeDateTime.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_decode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_decode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 3,
+	'path' => __DIR__ . '/src/Glpi/Form/QuestionType/QuestionTypeDateTime.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Form/QuestionType/QuestionTypeDateTime.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_decode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_decode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Form/QuestionType/QuestionTypeDropdown.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_decode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_decode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Form/QuestionType/QuestionTypeItem.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Form/QuestionType/QuestionTypeItem.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_decode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_decode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Form/QuestionType/QuestionTypeUserDevice.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Form/QuestionType/QuestionTypeUserDevice.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 4,
+	'path' => __DIR__ . '/src/Glpi/Form/QuestionType/QuestionTypesManager.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_decode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_decode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Form/Section.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Form/Section.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Form/Tag/FormTagsManager.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_replace_callback is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace_callback;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Form/Tag/FormTagsManager.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 5,
+	'path' => __DIR__ . '/src/Glpi/Helpdesk/DefaultDataManager.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 3,
+	'path' => __DIR__ . '/src/Glpi/Http/Firewall.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_replace is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Http/Firewall.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Http/Response.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Negated boolean expression is always false\\.$#',
 	'identifier' => 'booleanNot.alwaysFalse',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/Cartridge.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Offset \'cartridgeblackmatte\'\\|\'cartridgeblackphoto\' on array\\{tonerblack\\: array\\{\'tonerblack2\'\\}, tonerblackmax\\: array\\{\'tonerblack2max\'\\}, tonerblackused\\: array\\{\'tonerblack2used\'\\}, tonerblackremaining\\: array\\{\'tonerblack2remaining\'\\}\\} in isset\\(\\) does not exist\\.$#',
+	'identifier' => 'isset.offset',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/Cartridge.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Offset \'cartridgematteblack\'\\|\'cartridgephotoblack\' on array\\{tonerblack\\: array\\{\'tonerblack2\'\\}, tonerblackmax\\: array\\{\'tonerblack2max\'\\}, tonerblackused\\: array\\{\'tonerblack2used\'\\}, tonerblackremaining\\: array\\{\'tonerblack2remaining\'\\}\\} in isset\\(\\) does not exist\\.$#',
+	'identifier' => 'isset.offset',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/Cartridge.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function strtotime is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\strtotime;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/Device.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^PHPDoc tag @var with type Item_Devices is not subtype of native type string\\.$#',
 	'identifier' => 'varTag.nativeType',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/Device.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/Drive.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Negated boolean expression is always false\\.$#',
@@ -2394,6 +5184,24 @@ $ignoreErrors[] = [
 	'identifier' => 'foreach.nonIterable',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/InventoryAsset.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/InventoryAsset.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_replace is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/InventoryAsset.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/Memory.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Call to function method_exists\\(\\) with Glpi\\\\Inventory\\\\MainAsset\\\\MainAsset and \'isPartial\' will always evaluate to true\\.$#',
@@ -2435,6 +5243,24 @@ $ignoreErrors[] = [
 	'message' => '#^Empty array passed to foreach\\.$#',
 	'identifier' => 'foreach.emptyArray',
 	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkPort.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function file_get_contents is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\file_get_contents;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkPort.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_decode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_decode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkPort.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
 	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkPort.php',
 ];
 $ignoreErrors[] = [
@@ -2510,6 +5336,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/NetworkPort.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Function strtotime is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\strtotime;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/OperatingSystem.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Negated boolean expression is always false\\.$#',
 	'identifier' => 'booleanNot.alwaysFalse',
 	'count' => 1,
@@ -2522,6 +5354,18 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/Peripheral.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/Printer.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_replace is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/Printer.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Negated boolean expression is always false\\.$#',
 	'identifier' => 'booleanNot.alwaysFalse',
 	'count' => 1,
@@ -2532,6 +5376,12 @@ $ignoreErrors[] = [
 	'identifier' => 'booleanNot.alwaysFalse',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/RemoteManagement.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Asset/Software.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Left side of && is always true\\.$#',
@@ -2600,6 +5450,36 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Inventory/Conf.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Function file_get_contents is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\file_get_contents;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Conf.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_decode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_decode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Conf.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Conf.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Conf.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function simplexml_load_string is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\simplexml_load_string;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Conf.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Offset \'label\' on array\\{label\\: string, item_action\\: bool, render_callback\\: callable\\(\\)\\: mixed, action_callback\\: callable\\(\\)\\: mixed\\} on left side of \\?\\? always exists and is not nullable\\.$#',
 	'identifier' => 'nullCoalesce.offset',
 	'count' => 1,
@@ -2616,6 +5496,66 @@ $ignoreErrors[] = [
 	'identifier' => 'identical.alwaysFalse',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Inventory/Conf.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function copy is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\copy;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Inventory.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function file_put_contents is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\file_put_contents;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Inventory.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function filemtime is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\filemtime;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Inventory.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function glob is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\glob;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Inventory.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_decode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_decode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Inventory.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Inventory.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function mkdir is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\mkdir;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Inventory.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_replace is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Inventory.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function tempnam is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\tempnam;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Inventory.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function unlink is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\unlink;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 4,
+	'path' => __DIR__ . '/src/Glpi/Inventory/Inventory.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^If condition is always true\\.$#',
@@ -2660,6 +5600,24 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Inventory/MainAsset/MainAsset.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/MainAsset/MainAsset.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/MainAsset/MainAsset.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_replace is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/MainAsset/MainAsset.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Property Glpi\\\\Inventory\\\\Asset\\\\InventoryAsset\\:\\:\\$itemtype \\(string\\) does not accept null\\.$#',
 	'identifier' => 'assign.propertyType',
 	'count' => 1,
@@ -2696,6 +5654,30 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Inventory/MainAsset/NetworkEquipment.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Function preg_replace is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/MainAsset/NetworkEquipment.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/MainAsset/Printer.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_replace is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/MainAsset/Printer.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function strtotime is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\strtotime;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Inventory/MainAsset/Printer.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Argument of an invalid type stdClass supplied for foreach, only iterables are supported\\.$#',
 	'identifier' => 'foreach.nonIterable',
 	'count' => 1,
@@ -2720,10 +5702,286 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Inventory/MainAsset/Unmanaged.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Function json_decode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_decode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/ItemTranslation/ItemTranslation.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/ItemTranslation/ItemTranslation.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function mkdir is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\mkdir;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Kernel/Kernel.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function ini_set is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\ini_set;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Kernel/Listener/PostBootListener/SessionStart.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function parse_url is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\parse_url;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Kernel/Listener/PostBootListener/SessionStart.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 8,
+	'path' => __DIR__ . '/src/Glpi/Kernel/Listener/PostBootListener/SessionStart.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_replace is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 3,
+	'path' => __DIR__ . '/src/Glpi/Kernel/Listener/PostBootListener/SessionStart.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function mime_content_type is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\mime_content_type;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Kernel/Listener/RequestListener/FrontEndAssetsListener.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function parse_url is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\parse_url;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Kernel/Listener/RequestListener/FrontEndAssetsListener.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 9,
+	'path' => __DIR__ . '/src/Glpi/Kernel/Listener/RequestListener/FrontEndAssetsListener.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_replace is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 3,
+	'path' => __DIR__ . '/src/Glpi/Kernel/Listener/RequestListener/FrontEndAssetsListener.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 6,
+	'path' => __DIR__ . '/src/Glpi/Kernel/Listener/RequestListener/LegacyItemtypeRouteListener.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_replace_callback is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace_callback;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Kernel/Listener/RequestListener/LegacyItemtypeRouteListener.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function chdir is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\chdir;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Kernel/Listener/RequestListener/LegacyRouterListener.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function parse_url is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\parse_url;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Kernel/Listener/RequestListener/LegacyRouterListener.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 9,
+	'path' => __DIR__ . '/src/Glpi/Kernel/Listener/RequestListener/LegacyRouterListener.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_replace is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 3,
+	'path' => __DIR__ . '/src/Glpi/Kernel/Listener/RequestListener/LegacyRouterListener.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Kernel/Listener/RequestListener/PluginsRouterListener.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_split is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_split;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Kernel/Listener/RequestListener/PluginsRouterListener.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function ini_get is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\ini_get;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Kernel/Listener/RequestListener/SessionCheckCookieListener.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_decode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_decode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Mail/SMTP/OauthConfig.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_decode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_decode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Marketplace/Api/Plugins.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Marketplace/Api/Plugins.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function session_write_close is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\session_write_close;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Marketplace/Api/Plugins.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function ini_set is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\ini_set;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Marketplace/Controller.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function ob_end_clean is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\ob_end_clean;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Marketplace/Controller.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function ob_start is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\ob_start;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Marketplace/Controller.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function parse_url is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\parse_url;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Marketplace/Controller.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function realpath is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\realpath;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 3,
+	'path' => __DIR__ . '/src/Glpi/Marketplace/Controller.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function session_write_close is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\session_write_close;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Marketplace/Controller.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Strict comparison using \\!\\=\\= between int and false will always evaluate to true\\.$#',
 	'identifier' => 'notIdentical.alwaysTrue',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Marketplace/Controller.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Marketplace/View.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function ob_end_clean is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\ob_end_clean;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Marketplace/View.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function ob_start is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\ob_start;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Marketplace/View.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function parse_url is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\parse_url;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Marketplace/View.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_decode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_decode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Migration/AbstractPluginMigration.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_replace is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Migration/AbstractPluginMigration.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function strtotime is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\strtotime;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Migration/AbstractPluginMigration.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 7,
+	'path' => __DIR__ . '/src/Glpi/Migration/GenericobjectPluginMigration.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_replace is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 6,
+	'path' => __DIR__ . '/src/Glpi/Migration/GenericobjectPluginMigration.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function strtotime is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\strtotime;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 4,
+	'path' => __DIR__ . '/src/Glpi/Migration/GenericobjectPluginMigration.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Class DateTime is unsafe to use\\. Its methods can return FALSE instead of throwing an exception\\. Please add \'use Safe\\\\DateTime;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.class',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/OAuth/AccessTokenRepository.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_decode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_decode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/OAuth/ClientRepository.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_decode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_decode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/OAuth/ScopeRepository.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function chmod is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\chmod;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/OAuth/Server.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function openssl_pkey_get_details is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\openssl_pkey_get_details;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/OAuth/Server.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function unlink is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\unlink;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/OAuth/Server.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^PHPDoc tag @phpstan\\-return has invalid value \\(\\{client_id\\: string, user_id\\: string, scopes\\: string\\[\\]\\}\\)\\: Unexpected token "\\{", expected type at offset 79 on line 4$#',
@@ -2732,10 +5990,88 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/OAuth/Server.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Class DateTimeImmutable is unsafe to use\\. Its methods can return FALSE instead of throwing an exception\\. Please add \'use Safe\\\\DateTimeImmutable;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.class',
+	'count' => 3,
+	'path' => __DIR__ . '/src/Glpi/Progress/AbstractProgressIndicator.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function ini_set is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\ini_set;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Progress/ProgressStorage.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function session_write_close is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\session_write_close;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Progress/ProgressStorage.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
 	'identifier' => 'function.alreadyNarrowedType',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/RichText/RichText.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function getimagesize is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\getimagesize;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/RichText/RichText.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 8,
+	'path' => __DIR__ . '/src/Glpi/RichText/RichText.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 4,
+	'path' => __DIR__ . '/src/Glpi/RichText/RichText.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match_all is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match_all;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/RichText/RichText.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_replace is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 9,
+	'path' => __DIR__ . '/src/Glpi/RichText/RichText.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_replace is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/RichText/UserMention.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function simplexml_import_dom is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\simplexml_import_dom;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/RichText/UserMention.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_decode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_decode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Rules/RulesManager.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Rules/RulesManager.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_decode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_decode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Search/CriteriaFilter.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Search\\\\CriteriaFilter\\:\\:getTabNameForItem\\(\\) never returns array\\<string\\> so it can be removed from the return type\\.$#',
@@ -2756,13 +6092,49 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Search/Input/QueryBuilder.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Function parse_url is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\parse_url;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Search/Input/QueryBuilder.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Negated boolean expression is always true\\.$#',
 	'identifier' => 'booleanNot.alwaysTrue',
 	'count' => 2,
 	'path' => __DIR__ . '/src/Glpi/Search/Input/QueryBuilder.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Call to an undefined method PhpOffice\\\\PhpSpreadsheet\\\\Writer\\\\IWriter\\:\\:setOrientation\\(\\)\\.$#',
+	'message' => '#^Function strtotime is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\strtotime;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Search/Output/ExportSearchOutput.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Search/Output/HTMLSearchOutput.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_replace is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 4,
+	'path' => __DIR__ . '/src/Glpi/Search/Output/HTMLSearchOutput.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_split is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_split;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Search/Output/HTMLSearchOutput.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Search/Output/NamesListSearchOutput.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to an undefined method PhpOffice\\\\PhpSpreadsheet\\\\Writer\\\\BaseWriter\\:\\:setOrientation\\(\\)\\.$#',
 	'identifier' => 'method.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Search/Output/Pdf.php',
@@ -2774,10 +6146,10 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Search/Output/Pdf.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Negated boolean expression is always true\\.$#',
-	'identifier' => 'booleanNot.alwaysTrue',
+	'message' => '#^Function preg_replace is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
 	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Search/Output/Spreadsheet.php',
+	'path' => __DIR__ . '/src/Glpi/Search/Output/Tcpdf.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Call to function is_string\\(\\) with string will always evaluate to true\\.$#',
@@ -2813,6 +6185,30 @@ $ignoreErrors[] = [
 	'message' => '#^Expression on left side of \\?\\? is not nullable\\.$#',
 	'identifier' => 'nullCoalesce.expr',
 	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 23,
+	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_replace is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 12,
+	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_split is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_split;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function strtotime is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\strtotime;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 4,
 	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
 ];
 $ignoreErrors[] = [
@@ -2912,12 +6308,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\=\\=\\= between \'Problem\' and \'Problem\' will always evaluate to true\\.$#',
-	'identifier' => 'identical.alwaysTrue',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Search/Provider/SQLProvider.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Strict comparison using \\=\\=\\= between 2 and 2 will always evaluate to true\\.$#',
 	'identifier' => 'identical.alwaysTrue',
 	'count' => 2,
@@ -2972,10 +6362,28 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Search/SearchEngine.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Search/SearchEngine.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^PHPDoc tag @var with type Glpi\\\\Search\\\\Input\\\\SearchInputInterface is not subtype of native type string\\.$#',
 	'identifier' => 'varTag.nativeType',
 	'count' => 2,
 	'path' => __DIR__ . '/src/Glpi/Search/SearchEngine.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Class DateTimeImmutable is unsafe to use\\. Its methods can return FALSE instead of throwing an exception\\. Please add \'use Safe\\\\DateTimeImmutable;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.class',
+	'count' => 3,
+	'path' => __DIR__ . '/src/Glpi/Security/TOTPManager.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Security/TOTPManager.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
@@ -2990,16 +6398,376 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Socket.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\System\\\\Diagnostic\\\\SourceCodeIntegrityChecker\\:\\:getBaselineManifest\\(\\) never returns null so it can be removed from the return type\\.$#',
-	'identifier' => 'return.unusedType',
+	'message' => '#^Function preg_grep is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_grep;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/System/Diagnostic/DatabaseKeysChecker.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 4,
+	'path' => __DIR__ . '/src/Glpi/System/Diagnostic/DatabaseKeysChecker.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function file_get_contents is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\file_get_contents;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/System/Diagnostic/DatabaseSchemaIntegrityChecker.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 10,
+	'path' => __DIR__ . '/src/Glpi/System/Diagnostic/DatabaseSchemaIntegrityChecker.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match_all is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match_all;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 4,
+	'path' => __DIR__ . '/src/Glpi/System/Diagnostic/DatabaseSchemaIntegrityChecker.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_replace is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 7,
+	'path' => __DIR__ . '/src/Glpi/System/Diagnostic/DatabaseSchemaIntegrityChecker.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_replace_callback is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace_callback;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/System/Diagnostic/DatabaseSchemaIntegrityChecker.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function file_get_contents is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\file_get_contents;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 3,
+	'path' => __DIR__ . '/src/Glpi/System/Diagnostic/SourceCodeIntegrityChecker.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function fileperms is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\fileperms;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/System/Diagnostic/SourceCodeIntegrityChecker.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_decode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_decode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/System/Diagnostic/SourceCodeIntegrityChecker.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_replace is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/System/Diagnostic/SourceCodeIntegrityChecker.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function file_get_contents is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\file_get_contents;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/System/Log/LogParser.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function file_put_contents is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\file_put_contents;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/System/Log/LogParser.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function filemtime is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\filemtime;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/System/Log/LogParser.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function filesize is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\filesize;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/System/Log/LogParser.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/System/Log/LogParser.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_replace_callback is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace_callback;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/System/Log/LogParser.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_split is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_split;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/System/Log/LogParser.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function readfile is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\readfile;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/System/Log/LogParser.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function scandir is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\scandir;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/System/Log/LogParser.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function unlink is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\unlink;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/System/Log/LogParser.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\System\\\\Log\\\\LogViewer\\:\\:getMenuContent\\(\\) never returns false so it can be removed from the return type\\.$#',
 	'identifier' => 'return.unusedType',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/System/Log/LogViewer.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/System/Requirement/DbEngine.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_replace is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/System/Requirement/DbEngine.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function ini_get is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\ini_get;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/System/Requirement/DirectoryWriteAccess.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function realpath is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\realpath;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 14,
+	'path' => __DIR__ . '/src/Glpi/System/Requirement/DirectoryWriteAccess.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_replace is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/System/Requirement/PhpSupportedVersion.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_replace is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/System/Requirement/PhpVersion.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function exec is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\exec;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/System/Requirement/SeLinux.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function ini_get is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\ini_get;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/System/Requirement/SeLinux.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_replace is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/System/Requirement/SeLinux.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function ini_get is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\ini_get;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/System/Requirement/SessionsConfiguration.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function session_name is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\session_name;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/System/Requirement/SessionsConfiguration.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function ini_get is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\ini_get;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 3,
+	'path' => __DIR__ . '/src/Glpi/System/Requirement/SessionsSecurityConfiguration.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function fclose is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\fclose;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/System/Status/StatusChecker.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function fsockopen is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\fsockopen;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/System/Status/StatusChecker.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function ini_get is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\ini_get;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/System/Status/StatusChecker.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Toolbox/ArrayPathAccessor.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_replace is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Toolbox/DataExport.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function realpath is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\realpath;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Toolbox/DatabaseSchema.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function fclose is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\fclose;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Toolbox/Filesystem.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function fopen is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\fopen;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Toolbox/Filesystem.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function parse_url is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\parse_url;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 3,
+	'path' => __DIR__ . '/src/Glpi/Toolbox/Filesystem.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Toolbox/Filesystem.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_replace is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Toolbox/Filesystem.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function realpath is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\realpath;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Toolbox/Filesystem.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function unlink is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\unlink;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Toolbox/Filesystem.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function gethostname is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\gethostname;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Toolbox/FrontEnd.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 4,
+	'path' => __DIR__ . '/src/Glpi/Toolbox/Sanitizer.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function parse_url is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\parse_url;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/Toolbox/URL.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 7,
+	'path' => __DIR__ . '/src/Glpi/Toolbox/URL.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 3,
+	'path' => __DIR__ . '/src/Glpi/Toolbox/VersionParser.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_replace is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/Toolbox/VersionParser.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function file_get_contents is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\file_get_contents;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/UI/IllustrationManager.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_decode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_decode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/UI/IllustrationManager.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function mkdir is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\mkdir;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/UI/IllustrationManager.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function realpath is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\realpath;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 4,
+	'path' => __DIR__ . '/src/Glpi/UI/IllustrationManager.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function rename is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\rename;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Glpi/UI/IllustrationManager.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function file_get_contents is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\file_get_contents;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/UI/ThemeManager.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function glob is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\glob;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/UI/ThemeManager.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/UI/ThemeManager.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function scandir is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\scandir;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Glpi/UI/ThemeManager.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Default value of the parameter \\#1 \\$history \\(int\\) of method Group\\:\\:post_updateItem\\(\\) is incompatible with type bool\\.$#',
@@ -3074,9 +6842,81 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Html.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Class DateTime is unsafe to use\\. Its methods can return FALSE instead of throwing an exception\\. Please add \'use Safe\\\\DateTime;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.class',
+	'count' => 6,
+	'path' => __DIR__ . '/src/Html.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Default value of the parameter \\#2 \\$http_response_code \\(int\\) of method Html\\:\\:redirect\\(\\) is incompatible with type string\\.$#',
 	'identifier' => 'parameter.defaultValue',
 	'count' => 1,
+	'path' => __DIR__ . '/src/Html.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function file_get_contents is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\file_get_contents;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Html.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function filemtime is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\filemtime;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Html.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function filesize is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\filesize;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Html.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 29,
+	'path' => __DIR__ . '/src/Html.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function mktime is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\mktime;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 3,
+	'path' => __DIR__ . '/src/Html.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function parse_url is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\parse_url;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 4,
+	'path' => __DIR__ . '/src/Html.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 9,
+	'path' => __DIR__ . '/src/Html.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match_all is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match_all;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Html.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_replace is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 12,
+	'path' => __DIR__ . '/src/Html.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function realpath is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\realpath;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 4,
+	'path' => __DIR__ . '/src/Html.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function strtotime is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\strtotime;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 5,
 	'path' => __DIR__ . '/src/Html.php',
 ];
 $ignoreErrors[] = [
@@ -3131,6 +6971,12 @@ $ignoreErrors[] = [
 	'message' => '#^Call to function is_string\\(\\) with string will always evaluate to true\\.$#',
 	'identifier' => 'function.alreadyNarrowedType',
 	'count' => 1,
+	'path' => __DIR__ . '/src/IPAddress.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
 	'path' => __DIR__ . '/src/IPAddress.php',
 ];
 $ignoreErrors[] = [
@@ -3194,6 +7040,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/ITILFollowup.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Function preg_replace is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/ITILTemplate.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Method ITILTemplate\\:\\:showCentralPreview\\(\\) with return type void returns false but should not return anything\\.$#',
 	'identifier' => 'return.void',
 	'count' => 1,
@@ -3218,9 +7070,9 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/ITILValidationTemplate.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^If condition is always true\\.$#',
-	'identifier' => 'if.alwaysTrue',
-	'count' => 1,
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 4,
 	'path' => __DIR__ . '/src/Impact.php',
 ];
 $ignoreErrors[] = [
@@ -3234,6 +7086,30 @@ $ignoreErrors[] = [
 	'identifier' => 'booleanNot.alwaysTrue',
 	'count' => 1,
 	'path' => __DIR__ . '/src/ImpactItem.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Class DateTime is unsafe to use\\. Its methods can return FALSE instead of throwing an exception\\. Please add \'use Safe\\\\DateTime;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.class',
+	'count' => 6,
+	'path' => __DIR__ . '/src/Infocom.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function mktime is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\mktime;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 4,
+	'path' => __DIR__ . '/src/Infocom.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Infocom.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function strtotime is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\strtotime;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 4,
+	'path' => __DIR__ . '/src/Infocom.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method Infocom\\:\\:showTco\\(\\) should return float but returns string\\.$#',
@@ -3263,6 +7139,18 @@ $ignoreErrors[] = [
 	'message' => '#^Call to an undefined method CommonGLPI\\:\\:getID\\(\\)\\.$#',
 	'identifier' => 'method.notFound',
 	'count' => 1,
+	'path' => __DIR__ . '/src/ItemVirtualMachine.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/ItemVirtualMachine.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_replace is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
 	'path' => __DIR__ . '/src/ItemVirtualMachine.php',
 ];
 $ignoreErrors[] = [
@@ -3338,6 +7226,24 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Item_Kanban.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Function json_decode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_decode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Item_Kanban.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Item_Kanban.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function strtotime is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\strtotime;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Item_Kanban.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Method Item_Kanban\\:\\:loadStateForItem\\(\\) should return array but returns null\\.$#',
 	'identifier' => 'return.type',
 	'count' => 1,
@@ -3398,14 +7304,14 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Item_Project.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Item_Rack\\:\\:showItems\\(\\) with return type void returns false but should not return anything\\.$#',
-	'identifier' => 'return.void',
-	'count' => 1,
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 3,
 	'path' => __DIR__ . '/src/Item_Rack.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @var with type int is not subtype of native type mixed\\.$#',
-	'identifier' => 'varTag.nativeType',
+	'message' => '#^Method Item_Rack\\:\\:showItems\\(\\) with return type void returns false but should not return anything\\.$#',
+	'identifier' => 'return.void',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Item_Rack.php',
 ];
@@ -3458,6 +7364,30 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/KnowbaseItem.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 4,
+	'path' => __DIR__ . '/src/KnowbaseItem.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 3,
+	'path' => __DIR__ . '/src/KnowbaseItem.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_replace is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 16,
+	'path' => __DIR__ . '/src/KnowbaseItem.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_replace_callback is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace_callback;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/KnowbaseItem.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Return type \\(void\\) of method KnowbaseItem\\:\\:showForm\\(\\) should be compatible with return type \\(bool\\) of method CommonDBTM\\:\\:showForm\\(\\)$#',
 	'identifier' => 'method.childReturnType',
 	'count' => 1,
@@ -3473,6 +7403,12 @@ $ignoreErrors[] = [
 	'message' => '#^Call to an undefined method CommonDBTM\\:\\:getFromDBForTicket\\(\\)\\.$#',
 	'identifier' => 'method.notFound',
 	'count' => 1,
+	'path' => __DIR__ . '/src/LevelAgreement.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function strtotime is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\strtotime;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 4,
 	'path' => __DIR__ . '/src/LevelAgreement.php',
 ];
 $ignoreErrors[] = [
@@ -3520,6 +7456,12 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Default value of the parameter \\#2 \\$params \\(array\\{\\}\\) of method Link\\:\\:getAllLinksFor\\(\\) is incompatible with type array\\{id\\: int, name\\: string, link\\: string, data\\: string, open_window\\: bool\\|null\\}\\.$#',
 	'identifier' => 'parameter.defaultValue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Link.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Link.php',
 ];
@@ -3572,6 +7514,18 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Location.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Function ob_get_clean is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\ob_get_clean;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Lock.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function ob_start is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\ob_start;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Lock.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Strict comparison using \\=\\=\\= between CommonDBTM and false will always evaluate to false\\.$#',
 	'identifier' => 'identical.alwaysFalse',
 	'count' => 1,
@@ -3590,8 +7544,14 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Log.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^If condition is always true\\.$#',
-	'identifier' => 'if.alwaysTrue',
+	'message' => '#^Function json_decode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_decode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Log.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Log.php',
 ];
@@ -3629,6 +7589,48 @@ $ignoreErrors[] = [
 	'message' => '#^Cannot call method getAddressList\\(\\) on array\\|ArrayIterator\\|Laminas\\\\Mail\\\\Header\\\\HeaderInterface\\|string\\.$#',
 	'identifier' => 'method.nonObject',
 	'count' => 2,
+	'path' => __DIR__ . '/src/MailCollector.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function base64_decode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\base64_decode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/MailCollector.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function file_put_contents is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\file_put_contents;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/MailCollector.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function iconv is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\iconv;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/MailCollector.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function mb_convert_encoding is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\mb_convert_encoding;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 6,
+	'path' => __DIR__ . '/src/MailCollector.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 16,
+	'path' => __DIR__ . '/src/MailCollector.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_replace is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 10,
+	'path' => __DIR__ . '/src/MailCollector.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function strtotime is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\strtotime;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
 	'path' => __DIR__ . '/src/MailCollector.php',
 ];
 $ignoreErrors[] = [
@@ -3692,6 +7694,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/MassiveAction.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/MassiveAction.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Instanceof between CommonDBTM and CommonDBTM will always evaluate to true\\.$#',
 	'identifier' => 'instanceof.alwaysTrue',
 	'count' => 1,
@@ -3722,15 +7730,9 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Migration.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Instanceof between Glpi\\\\Console\\\\Application and Glpi\\\\Console\\\\Application will always evaluate to true\\.$#',
-	'identifier' => 'instanceof.alwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Migration.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Strict comparison using \\!\\=\\= between null and \'comment\'\\|\'error\'\\|\'info\' will always evaluate to true\\.$#',
-	'identifier' => 'notIdentical.alwaysTrue',
-	'count' => 1,
+	'message' => '#^Function preg_replace is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
 	'path' => __DIR__ . '/src/Migration.php',
 ];
 $ignoreErrors[] = [
@@ -3746,8 +7748,20 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Monitor.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Function unlink is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\unlink;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Monitor.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Instanceof between static\\(Monitor\\) and PDU will always evaluate to false\\.$#',
 	'identifier' => 'instanceof.alwaysFalse',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Monitor.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Monitor\\:\\:getInventoryAgent\\(\\) should return Agent\\|null but returns CommonDBTM\\|null\\.$#',
+	'identifier' => 'return.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Monitor.php',
 ];
@@ -3770,6 +7784,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/NetworkEquipment.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Function unlink is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\unlink;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/NetworkEquipment.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^If condition is always true\\.$#',
 	'identifier' => 'if.alwaysTrue',
 	'count' => 1,
@@ -3778,6 +7798,12 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Instanceof between static\\(NetworkEquipment\\) and PDU will always evaluate to false\\.$#',
 	'identifier' => 'instanceof.alwaysFalse',
+	'count' => 1,
+	'path' => __DIR__ . '/src/NetworkEquipment.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method NetworkEquipment\\:\\:getInventoryAgent\\(\\) should return Agent\\|null but returns CommonDBTM\\|null\\.$#',
+	'identifier' => 'return.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/NetworkEquipment.php',
 ];
@@ -3800,10 +7826,28 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/NetworkPort.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Function preg_replace is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/NetworkPort.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function strtotime is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\strtotime;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 3,
+	'path' => __DIR__ . '/src/NetworkPort.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^PHPDoc tag @var with type CommonDBTM is not subtype of native type class\\-string\\.$#',
 	'identifier' => 'varTag.nativeType',
 	'count' => 1,
 	'path' => __DIR__ . '/src/NetworkPort.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_replace is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/NetworkPortEthernet.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^PHPDoc tag @phpstan\\-return has invalid value \\(\\$val \\!\\=\\= null \\? string \\: array\\)\\: Unexpected token "\\$val", expected type at offset 218 on line 7$#',
@@ -3818,6 +7862,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/NetworkPortEthernet.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Function preg_replace is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/NetworkPortFiberchannel.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
 	'identifier' => 'function.alreadyNarrowedType',
 	'count' => 1,
@@ -3830,16 +7880,46 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/NetworkPortInstantiation.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Class DateTime is unsafe to use\\. Its methods can return FALSE instead of throwing an exception\\. Please add \'use Safe\\\\DateTime;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.class',
+	'count' => 2,
+	'path' => __DIR__ . '/src/NetworkPortMetrics.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function file_get_contents is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\file_get_contents;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/NetworkPortType.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_decode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_decode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/NetworkPortType.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Strict comparison using \\=\\=\\= between mixed~\'NetworkEquipment\' and \'NetworkEquipment\' will always evaluate to false\\.$#',
 	'identifier' => 'identical.alwaysFalse',
 	'count' => 1,
 	'path' => __DIR__ . '/src/NetworkPort_NetworkPort.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Function getimagesize is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\getimagesize;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Notepad.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Right side of && is always true\\.$#',
 	'identifier' => 'booleanAnd.rightAlwaysTrue',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Notepad.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Notification.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
@@ -3850,6 +7930,36 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
 	'identifier' => 'function.alreadyNarrowedType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/NotificationEventMailing.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function getimagesize is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\getimagesize;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/NotificationEventMailing.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/NotificationEventMailing.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match_all is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match_all;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/NotificationEventMailing.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_replace is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/NotificationEventMailing.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function strtotime is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\strtotime;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
 	'count' => 1,
 	'path' => __DIR__ . '/src/NotificationEventMailing.php',
 ];
@@ -3872,6 +7982,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/NotificationEventMailing.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Function json_decode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_decode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/NotificationMailingSetting.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Method NotificationTarget\\:\\:showForGroup\\(\\) with return type void returns false but should not return anything\\.$#',
 	'identifier' => 'return.void',
 	'count' => 1,
@@ -3888,6 +8004,30 @@ $ignoreErrors[] = [
 	'identifier' => 'return.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/NotificationTargetCommonITILObject.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function strtotime is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\strtotime;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/NotificationTargetUser.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/NotificationTemplate.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match_all is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match_all;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/NotificationTemplate.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_replace is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 5,
+	'path' => __DIR__ . '/src/NotificationTemplate.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method NotificationTemplate\\:\\:getTemplateByLanguage\\(\\) should return int\\|false but returns non\\-falsy\\-string\\.$#',
@@ -3926,6 +8066,18 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Notification_NotificationTemplate.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Function json_decode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_decode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 3,
+	'path' => __DIR__ . '/src/OAuthClient.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 6,
+	'path' => __DIR__ . '/src/OAuthClient.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^PHPDoc tag @return has invalid value \\(array\\: empty array if itemtype is not lockable; else returns UNLOCK right\\)\\: Unexpected token "\\:", expected TOKEN_HORIZONTAL_WS at offset 96 on line 5$#',
 	'identifier' => 'phpDoc.parseError',
 	'count' => 1,
@@ -3942,6 +8094,18 @@ $ignoreErrors[] = [
 	'identifier' => 'parameter.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/OlaLevel_Ticket.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function file_get_contents is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\file_get_contents;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/PCIVendor.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_decode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_decode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/PCIVendor.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Call to function method_exists\\(\\) with \\$this\\(PDU\\) and \'prepareGroupFields\' will always evaluate to true\\.$#',
@@ -3992,6 +8156,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/PassiveDCEquipment.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Class DateTime is unsafe to use\\. Its methods can return FALSE instead of throwing an exception\\. Please add \'use Safe\\\\DateTime;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.class',
+	'count' => 2,
+	'path' => __DIR__ . '/src/PendingReason_Item.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Expression on left side of \\?\\? is not nullable\\.$#',
 	'identifier' => 'nullCoalesce.expr',
 	'count' => 1,
@@ -4022,8 +8192,20 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Peripheral.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Function unlink is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\unlink;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Peripheral.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Instanceof between static\\(Peripheral\\) and PDU will always evaluate to false\\.$#',
 	'identifier' => 'instanceof.alwaysFalse',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Peripheral.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Peripheral\\:\\:getInventoryAgent\\(\\) should return Agent\\|null but returns CommonDBTM\\|null\\.$#',
+	'identifier' => 'return.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Peripheral.php',
 ];
@@ -4046,6 +8228,18 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Phone.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Function unlink is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\unlink;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Phone.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Phone\\:\\:getInventoryAgent\\(\\) should return Agent\\|null but returns CommonDBTM\\|null\\.$#',
+	'identifier' => 'return.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Phone.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Strict comparison using \\=\\=\\= between array and false will always evaluate to false\\.$#',
 	'identifier' => 'identical.alwaysFalse',
 	'count' => 1,
@@ -4058,9 +8252,33 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Planning.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^If condition is always true\\.$#',
-	'identifier' => 'if.alwaysTrue',
+	'message' => '#^Class DateTime is unsafe to use\\. Its methods can return FALSE instead of throwing an exception\\. Please add \'use Safe\\\\DateTime;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.class',
+	'count' => 6,
+	'path' => __DIR__ . '/src/Planning.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function parse_url is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\parse_url;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
 	'count' => 1,
+	'path' => __DIR__ . '/src/Planning.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Planning.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_replace is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Planning.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function strtotime is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\strtotime;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 17,
 	'path' => __DIR__ . '/src/Planning.php',
 ];
 $ignoreErrors[] = [
@@ -4106,9 +8324,33 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/PlanningExternalEvent.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Class DateTime is unsafe to use\\. Its methods can return FALSE instead of throwing an exception\\. Please add \'use Safe\\\\DateTime;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.class',
+	'count' => 12,
+	'path' => __DIR__ . '/src/PlanningExternalEvent.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Comparison operation "\\>" between int\\<1, max\\> and 0 is always true\\.$#',
 	'identifier' => 'greater.alwaysTrue',
 	'count' => 1,
+	'path' => __DIR__ . '/src/PlanningExternalEvent.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_decode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_decode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 5,
+	'path' => __DIR__ . '/src/PlanningExternalEvent.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/PlanningExternalEvent.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function strtotime is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\strtotime;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 3,
 	'path' => __DIR__ . '/src/PlanningExternalEvent.php',
 ];
 $ignoreErrors[] = [
@@ -4124,9 +8366,33 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/PlanningExternalEvent.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Class DateTime is unsafe to use\\. Its methods can return FALSE instead of throwing an exception\\. Please add \'use Safe\\\\DateTime;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.class',
+	'count' => 4,
+	'path' => __DIR__ . '/src/PlanningExternalEventTemplate.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Comparison operation "\\>" between int\\<1, max\\> and 0 is always true\\.$#',
 	'identifier' => 'greater.alwaysTrue',
 	'count' => 1,
+	'path' => __DIR__ . '/src/PlanningExternalEventTemplate.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_decode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_decode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 3,
+	'path' => __DIR__ . '/src/PlanningExternalEventTemplate.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/PlanningExternalEventTemplate.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function strtotime is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\strtotime;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 3,
 	'path' => __DIR__ . '/src/PlanningExternalEventTemplate.php',
 ];
 $ignoreErrors[] = [
@@ -4148,10 +8414,52 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/PlanningRecall.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Function strtotime is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\strtotime;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/PlanningRecall.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Left side of && is always true\\.$#',
 	'identifier' => 'booleanAnd.leftAlwaysTrue',
 	'count' => 1,
 	'path' => __DIR__ . '/src/PlanningRecall.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function ini_get is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\ini_get;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Plugin.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function ob_end_clean is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\ob_end_clean;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 7,
+	'path' => __DIR__ . '/src/Plugin.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function ob_start is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\ob_start;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 7,
+	'path' => __DIR__ . '/src/Plugin.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_grep is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_grep;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Plugin.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 3,
+	'path' => __DIR__ . '/src/Plugin.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function scandir is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\scandir;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Plugin.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^If condition is always false\\.$#',
@@ -4190,15 +8498,39 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Printer.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @param references unknown parameter\\: \\$printer$#',
-	'identifier' => 'parameter.notFound',
+	'message' => '#^Function unlink is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\unlink;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
 	'count' => 1,
+	'path' => __DIR__ . '/src/Printer.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Printer\\:\\:getInventoryAgent\\(\\) should return Agent\\|null but returns CommonDBTM\\|null\\.$#',
+	'identifier' => 'return.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Printer.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Class DateTime is unsafe to use\\. Its methods can return FALSE instead of throwing an exception\\. Please add \'use Safe\\\\DateTime;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.class',
+	'count' => 5,
+	'path' => __DIR__ . '/src/PrinterLog.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function strtotime is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\strtotime;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
 	'path' => __DIR__ . '/src/PrinterLog.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Call to function is_array\\(\\) with non\\-empty\\-array will always evaluate to true\\.$#',
 	'identifier' => 'function.alreadyNarrowedType',
 	'count' => 1,
+	'path' => __DIR__ . '/src/Printer_CartridgeInfo.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
 	'path' => __DIR__ . '/src/Printer_CartridgeInfo.php',
 ];
 $ignoreErrors[] = [
@@ -4222,12 +8554,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^If condition is always false\\.$#',
 	'identifier' => 'if.alwaysFalse',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Profile.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Profile\\:\\:showFormSetupHelpdesk\\(\\) with return type void returns false but should not return anything\\.$#',
-	'identifier' => 'return.void',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Profile.php',
 ];
@@ -4286,10 +8612,40 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/ProjectTask.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Class DateTime is unsafe to use\\. Its methods can return FALSE instead of throwing an exception\\. Please add \'use Safe\\\\DateTime;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.class',
+	'count' => 16,
+	'path' => __DIR__ . '/src/ProjectTask.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Comparison operation "\\>" between int\\<1, max\\> and 0 is always true\\.$#',
 	'identifier' => 'greater.alwaysTrue',
 	'count' => 1,
 	'path' => __DIR__ . '/src/ProjectTask.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_decode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_decode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 4,
+	'path' => __DIR__ . '/src/ProjectTask.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/ProjectTask.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function strtotime is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\strtotime;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 5,
+	'path' => __DIR__ . '/src/ProjectTask.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Offset \'sort\' on non\\-empty\\-array in empty\\(\\) always exists and is not falsy\\.$#',
+	'identifier' => 'empty.offset',
+	'count' => 1,
+	'path' => __DIR__ . '/src/ProjectTask_Ticket.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Call to an undefined method CommonDBTM\\:\\:setVolume\\(\\)\\.$#',
@@ -4304,10 +8660,40 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/QueuedNotification.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/QueuedNotification.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function strtotime is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\strtotime;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/QueuedNotification.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_decode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_decode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 3,
+	'path' => __DIR__ . '/src/QueuedWebhook.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function strtotime is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\strtotime;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/QueuedWebhook.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Strict comparison using \\=\\=\\= between array and false will always evaluate to false\\.$#',
 	'identifier' => 'identical.alwaysFalse',
 	'count' => 1,
 	'path' => __DIR__ . '/src/QueuedWebhook.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function parse_url is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\parse_url;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/RSSFeed.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^If condition is always true\\.$#',
@@ -4340,6 +8726,18 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Rack.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Function unlink is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\unlink;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/RefusedEquipment.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method RefusedEquipment\\:\\:getInventoryAgent\\(\\) should return Agent\\|null but returns CommonDBTM\\|null\\.$#',
+	'identifier' => 'return.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/RefusedEquipment.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Call to an undefined method Sabre\\\\VObject\\\\Document\\:\\:getBaseComponent\\(\\)\\.$#',
 	'identifier' => 'method.notFound',
 	'count' => 1,
@@ -4352,9 +8750,39 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Reminder.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Class DateTime is unsafe to use\\. Its methods can return FALSE instead of throwing an exception\\. Please add \'use Safe\\\\DateTime;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.class',
+	'count' => 12,
+	'path' => __DIR__ . '/src/Reminder.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Comparison operation "\\>" between int\\<1, max\\> and 0 is always true\\.$#',
 	'identifier' => 'greater.alwaysTrue',
 	'count' => 1,
+	'path' => __DIR__ . '/src/Reminder.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_decode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_decode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 4,
+	'path' => __DIR__ . '/src/Reminder.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Reminder.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_replace is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Reminder.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function strtotime is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\strtotime;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 3,
 	'path' => __DIR__ . '/src/Reminder.php',
 ];
 $ignoreErrors[] = [
@@ -4391,6 +8819,12 @@ $ignoreErrors[] = [
 	'message' => '#^Comparison operation "\\>" between int\\<1, max\\> and 0 is always true\\.$#',
 	'identifier' => 'greater.alwaysTrue',
 	'count' => 4,
+	'path' => __DIR__ . '/src/Report.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function mktime is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\mktime;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
 	'path' => __DIR__ . '/src/Report.php',
 ];
 $ignoreErrors[] = [
@@ -4448,6 +8882,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Reservation.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Function strtotime is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\strtotime;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 42,
+	'path' => __DIR__ . '/src/Reservation.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^If condition is always false\\.$#',
 	'identifier' => 'if.alwaysFalse',
 	'count' => 1,
@@ -4502,6 +8942,12 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Rule.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Function simplexml_load_file is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\simplexml_load_file;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Rule.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Negated boolean expression is always true\\.$#',
 	'identifier' => 'booleanNot.alwaysTrue',
 	'count' => 2,
@@ -4538,6 +8984,18 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/RuleAction.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Function preg_match_all is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match_all;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/RuleAction.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_replace is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/RuleAction.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Method RuleAction\\:\\:dropdownActions\\(\\) should return int\\|string but returns false\\.$#',
 	'identifier' => 'return.type',
 	'count' => 1,
@@ -4546,6 +9004,36 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
 	'identifier' => 'function.alreadyNarrowedType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/RuleCollection.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function file_get_contents is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\file_get_contents;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/RuleCollection.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_decode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_decode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/RuleCollection.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/RuleCollection.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/RuleCollection.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function simplexml_load_string is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\simplexml_load_string;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
 	'count' => 1,
 	'path' => __DIR__ . '/src/RuleCollection.php',
 ];
@@ -4562,10 +9050,22 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/RuleCollection.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/RuleCommonITILObject.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^PHPDoc tag @var with type CommonITILObject is not subtype of native type string\\.$#',
 	'identifier' => 'varTag.nativeType',
 	'count' => 2,
 	'path' => __DIR__ . '/src/RuleCommonITILObject.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/RuleCommonITILObjectCollection.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^PHPDoc tag @var with type CommonITILObject is not subtype of native type string\\.$#',
@@ -4588,6 +9088,24 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Default value of the parameter \\#2 \\$options \\(array\\{\\}\\) of method RuleCriteria\\:\\:showForm\\(\\) is incompatible with type array\\{parent\\: Rule\\}\\.$#',
 	'identifier' => 'parameter.defaultValue',
+	'count' => 1,
+	'path' => __DIR__ . '/src/RuleCriteria.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/RuleCriteria.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match_all is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match_all;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/RuleCriteria.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_replace is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
 	'count' => 1,
 	'path' => __DIR__ . '/src/RuleCriteria.php',
 ];
@@ -4616,10 +9134,28 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/RuleImportAsset.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Function file_get_contents is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\file_get_contents;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/RuleImportAssetCollection.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Strict comparison using \\!\\=\\= between string and null will always evaluate to true\\.$#',
 	'identifier' => 'notIdentical.alwaysTrue',
 	'count' => 1,
 	'path' => __DIR__ . '/src/RuleMailCollector.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/RuleMailCollectorCollection.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_decode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_decode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/RuleMatchedLog.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Strict comparison using \\!\\=\\= between string and null will always evaluate to true\\.$#',
@@ -4634,34 +9170,22 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/RuleRightCollection.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
-	'identifier' => 'function.alreadyNarrowedType',
+	'message' => '#^Class DateTime is unsafe to use\\. Its methods can return FALSE instead of throwing an exception\\. Please add \'use Safe\\\\DateTime;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.class',
+	'count' => 1,
+	'path' => __DIR__ . '/src/SavedSearch.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function parse_url is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\parse_url;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
 	'count' => 2,
 	'path' => __DIR__ . '/src/SavedSearch.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method SavedSearch\\:\\:croncountAll\\(\\) with return type void returns int but should not return anything\\.$#',
-	'identifier' => 'return.void',
+	'message' => '#^Function preg_replace is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
 	'count' => 1,
 	'path' => __DIR__ . '/src/SavedSearch.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Return type \\(void\\) of method SavedSearch\\:\\:showForm\\(\\) should be compatible with return type \\(bool\\) of method CommonDBTM\\:\\:showForm\\(\\)$#',
-	'identifier' => 'method.childReturnType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/SavedSearch.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method SavedSearch_Alert\\:\\:showForSavedSearch\\(\\) with return type void returns false but should not return anything\\.$#',
-	'identifier' => 'return.void',
-	'count' => 1,
-	'path' => __DIR__ . '/src/SavedSearch_Alert.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Property Auth\\:\\:\\$auth_succeded \\(int\\) does not accept true\\.$#',
-	'identifier' => 'assign.propertyType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/SavedSearch_Alert.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method Search\\:\\:displayData\\(\\) with return type void returns false\\|null but should not return anything\\.$#',
@@ -4712,6 +9236,66 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Session.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Function ini_get is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\ini_get;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Session.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Session.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function scandir is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\scandir;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Session.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function session_id is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\session_id;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Session.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function session_regenerate_id is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\session_regenerate_id;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Session.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function session_save_path is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\session_save_path;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Session.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function session_start is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\session_start;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Session.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function session_unset is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\session_unset;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Session.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function session_write_close is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\session_write_close;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Session.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function strtotime is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\strtotime;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Session.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Loose comparison using \\=\\= between non\\-empty\\-string and \'\' will always evaluate to false\\.$#',
 	'identifier' => 'equal.alwaysFalse',
 	'count' => 2,
@@ -4721,18 +9305,6 @@ $ignoreErrors[] = [
 	'message' => '#^Method Session\\:\\:loadLanguage\\(\\) with return type void returns mixed but should not return anything\\.$#',
 	'identifier' => 'return.void',
 	'count' => 1,
-	'path' => __DIR__ . '/src/Session.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Property Auth\\:\\:\\$auth_succeded \\(int\\) does not accept false\\.$#',
-	'identifier' => 'assign.propertyType',
-	'count' => 3,
-	'path' => __DIR__ . '/src/Session.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Property Auth\\:\\:\\$auth_succeded \\(int\\) does not accept true\\.$#',
-	'identifier' => 'assign.propertyType',
-	'count' => 3,
 	'path' => __DIR__ . '/src/Session.php',
 ];
 $ignoreErrors[] = [
@@ -4769,6 +9341,24 @@ $ignoreErrors[] = [
 	'message' => '#^Default value of the parameter \\#2 \\$comment \\(string\\) of method Software\\:\\:putInTrash\\(\\) is incompatible with type comment\\.$#',
 	'identifier' => 'parameter.defaultValue',
 	'count' => 1,
+	'path' => __DIR__ . '/src/Software.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 4,
+	'path' => __DIR__ . '/src/Software.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Software.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_replace is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
 	'path' => __DIR__ . '/src/Software.php',
 ];
 $ignoreErrors[] = [
@@ -4826,6 +9416,18 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Stat.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Function mktime is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\mktime;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Stat.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function strtotime is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\strtotime;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 4,
+	'path' => __DIR__ . '/src/Stat.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^PHPDoc tag @phpstan\\-return has invalid value \\(\\$display \\? void \\: string\\)\\: Unexpected token "\\$display", expected type at offset 301 on line 10$#',
 	'identifier' => 'phpDoc.parseError',
 	'count' => 1,
@@ -4844,10 +9446,88 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Stat.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Function json_decode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_decode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 5,
+	'path' => __DIR__ . '/src/Stencil.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Stencil.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Comparison operation "\\>" between int\\<1, max\\> and 0 is always true\\.$#',
 	'identifier' => 'greater.alwaysTrue',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Supplier.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function curl_exec is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\curl_exec;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Telemetry.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function curl_getinfo is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\curl_getinfo;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Telemetry.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function curl_init is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\curl_init;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Telemetry.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function curl_setopt is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\curl_setopt;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 6,
+	'path' => __DIR__ . '/src/Telemetry.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function file_get_contents is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\file_get_contents;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Telemetry.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function ini_get is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\ini_get;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 6,
+	'path' => __DIR__ . '/src/Telemetry.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_decode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_decode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Telemetry.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Telemetry.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function parse_url is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\parse_url;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Telemetry.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Telemetry.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_replace is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Telemetry.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method Telemetry\\:\\:cronTelemetry\\(\\) with return type void returns int but should not return anything\\.$#',
@@ -4868,9 +9548,39 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Ticket.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Class DateTime is unsafe to use\\. Its methods can return FALSE instead of throwing an exception\\. Please add \'use Safe\\\\DateTime;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.class',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Ticket.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Comparison operation "\\>" between int\\<1, max\\> and 0 is always true\\.$#',
 	'identifier' => 'greater.alwaysTrue',
 	'count' => 1,
+	'path' => __DIR__ . '/src/Ticket.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Ticket.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match_all is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match_all;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Ticket.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_replace is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Ticket.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function strtotime is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\strtotime;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 10,
 	'path' => __DIR__ . '/src/Ticket.php',
 ];
 $ignoreErrors[] = [
@@ -4952,14 +9662,290 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Toolbox.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^If condition is always true\\.$#',
-	'identifier' => 'if.alwaysTrue',
+	'message' => '#^Function base64_decode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\base64_decode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Toolbox.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Instanceof between CommonDBTM and CommonDBTM will always evaluate to true\\.$#',
-	'identifier' => 'instanceof.alwaysTrue',
+	'message' => '#^Function chmod is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\chmod;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Toolbox.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function class_uses is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\class_uses;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Toolbox.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function copy is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\copy;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Toolbox.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function curl_exec is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\curl_exec;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Toolbox.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function curl_getinfo is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\curl_getinfo;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Toolbox.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function curl_init is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\curl_init;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Toolbox.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function error_log is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\error_log;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Toolbox.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function fclose is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\fclose;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 3,
+	'path' => __DIR__ . '/src/Toolbox.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function file_get_contents is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\file_get_contents;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Toolbox.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function filemtime is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\filemtime;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Toolbox.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function finfo_close is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\finfo_close;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Toolbox.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function finfo_open is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\finfo_open;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Toolbox.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function fopen is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\fopen;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 3,
+	'path' => __DIR__ . '/src/Toolbox.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function fwrite is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\fwrite;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 3,
+	'path' => __DIR__ . '/src/Toolbox.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function getimagesize is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\getimagesize;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Toolbox.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function gzcompress is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\gzcompress;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Toolbox.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function gzuncompress is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\gzuncompress;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Toolbox.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function imagealphablending is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\imagealphablending;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Toolbox.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function imagecopyresampled is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\imagecopyresampled;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Toolbox.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function imagecreatefrombmp is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\imagecreatefrombmp;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Toolbox.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function imagecreatefromgif is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\imagecreatefromgif;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Toolbox.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function imagecreatefromjpeg is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\imagecreatefromjpeg;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Toolbox.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function imagecreatefrompng is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\imagecreatefrompng;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Toolbox.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function imagecreatefromwebp is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\imagecreatefromwebp;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Toolbox.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function imagecreatetruecolor is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\imagecreatetruecolor;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Toolbox.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function imagejpeg is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\imagejpeg;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Toolbox.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function imagepng is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\imagepng;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Toolbox.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function imagesavealpha is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\imagesavealpha;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Toolbox.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function imagewebp is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\imagewebp;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Toolbox.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function ini_get is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\ini_get;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 5,
+	'path' => __DIR__ . '/src/Toolbox.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_decode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_decode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 4,
+	'path' => __DIR__ . '/src/Toolbox.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Toolbox.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function mb_convert_encoding is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\mb_convert_encoding;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 4,
+	'path' => __DIR__ . '/src/Toolbox.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function md5_file is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\md5_file;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Toolbox.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function mkdir is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\mkdir;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Toolbox.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function opendir is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\opendir;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Toolbox.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function parse_url is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\parse_url;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Toolbox.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 10,
+	'path' => __DIR__ . '/src/Toolbox.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match_all is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match_all;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 3,
+	'path' => __DIR__ . '/src/Toolbox.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_replace is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 21,
+	'path' => __DIR__ . '/src/Toolbox.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function realpath is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\realpath;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Toolbox.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function rename is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\rename;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Toolbox.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function rmdir is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\rmdir;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Toolbox.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function strtotime is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\strtotime;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/Toolbox.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function unlink is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\unlink;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 4,
+	'path' => __DIR__ . '/src/Toolbox.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function unpack is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\unpack;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Toolbox.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^If condition is always true\\.$#',
+	'identifier' => 'if.alwaysTrue',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Toolbox.php',
 ];
@@ -4988,12 +9974,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Toolbox.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @phpstan\\-return has invalid value \\(\\$return_response \\? Response \\: void\\)\\: Unexpected token "\\$return_response", expected type at offset 498 on line 12$#',
-	'identifier' => 'phpDoc.parseError',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Toolbox.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Parameter &\\$curl_info by\\-ref type of method Toolbox\\:\\:callCurl\\(\\) expects array\\|null, \\(array\\<string, array\\<int, array\\<string, string\\>\\>\\|float\\|int\\|string\\|null\\>\\|false\\) given\\.$#',
 	'identifier' => 'parameterByRef.type',
 	'count' => 1,
@@ -5012,10 +9992,52 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Toolbox.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Function file_get_contents is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\file_get_contents;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/USBVendor.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_decode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_decode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/USBVendor.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_replace is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/USBVendor.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function unlink is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\unlink;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Unmanaged.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Method Unmanaged\\:\\:getInventoryAgent\\(\\) should return Agent\\|null but returns CommonDBTM\\|null\\.$#',
+	'identifier' => 'return.type',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Unmanaged.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Strict comparison using \\=\\=\\= between array and false will always evaluate to false\\.$#',
 	'identifier' => 'identical.alwaysFalse',
 	'count' => 2,
 	'path' => __DIR__ . '/src/Unmanaged.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Update.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_replace is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 3,
+	'path' => __DIR__ . '/src/Update.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Property Update\\:\\:\\$dbversion is never read, only written\\.$#',
@@ -5027,6 +10049,186 @@ $ignoreErrors[] = [
 	'message' => '#^Comparison operation "\\>\\=" between 1 and 0 is always true\\.$#',
 	'identifier' => 'greaterOrEqual.alwaysTrue',
 	'count' => 1,
+	'path' => __DIR__ . '/src/UploadHandler.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function copy is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\copy;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/UploadHandler.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function error_log is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\error_log;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 3,
+	'path' => __DIR__ . '/src/UploadHandler.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function fclose is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\fclose;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/UploadHandler.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function file_put_contents is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\file_put_contents;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/UploadHandler.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function filemtime is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\filemtime;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/UploadHandler.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function filesize is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\filesize;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/UploadHandler.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function fopen is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\fopen;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 4,
+	'path' => __DIR__ . '/src/UploadHandler.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function fread is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\fread;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/UploadHandler.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function getimagesize is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\getimagesize;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/UploadHandler.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function imagealphablending is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\imagealphablending;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/UploadHandler.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function imagecopyresampled is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\imagecopyresampled;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/UploadHandler.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function imagecreatetruecolor is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\imagecreatetruecolor;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 3,
+	'path' => __DIR__ . '/src/UploadHandler.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function imagedestroy is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\imagedestroy;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 3,
+	'path' => __DIR__ . '/src/UploadHandler.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function imageflip is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\imageflip;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/UploadHandler.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function imagerotate is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\imagerotate;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 5,
+	'path' => __DIR__ . '/src/UploadHandler.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function imagesavealpha is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\imagesavealpha;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/UploadHandler.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function ini_get is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\ini_get;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/UploadHandler.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/UploadHandler.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function mkdir is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\mkdir;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/UploadHandler.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function ob_flush is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\ob_flush;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/UploadHandler.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function parse_url is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\parse_url;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/UploadHandler.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 5,
+	'path' => __DIR__ . '/src/UploadHandler.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_replace is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/UploadHandler.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_replace_callback is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace_callback;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/UploadHandler.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_split is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_split;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/UploadHandler.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function readfile is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\readfile;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/UploadHandler.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function scandir is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\scandir;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/UploadHandler.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function session_id is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\session_id;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/UploadHandler.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function session_start is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\session_start;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/UploadHandler.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function unlink is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\unlink;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 4,
 	'path' => __DIR__ . '/src/UploadHandler.php',
 ];
 $ignoreErrors[] = [
@@ -5054,6 +10256,96 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/User.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Class DateTime is unsafe to use\\. Its methods can return FALSE instead of throwing an exception\\. Please add \'use Safe\\\\DateTime;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.class',
+	'count' => 2,
+	'path' => __DIR__ . '/src/User.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function fclose is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\fclose;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/User.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function fopen is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\fopen;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/User.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function fwrite is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\fwrite;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/User.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 5,
+	'path' => __DIR__ . '/src/User.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function mb_convert_encoding is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\mb_convert_encoding;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/User.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function mkdir is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\mkdir;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/User.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 7,
+	'path' => __DIR__ . '/src/User.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match_all is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match_all;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/User.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_replace is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/User.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_replace_callback is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace_callback;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/User.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function realpath is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\realpath;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 6,
+	'path' => __DIR__ . '/src/User.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function sha1_file is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\sha1_file;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/User.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function strtotime is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\strtotime;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 9,
+	'path' => __DIR__ . '/src/User.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function unlink is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\unlink;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 4,
+	'path' => __DIR__ . '/src/User.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Negated boolean expression is always true\\.$#',
 	'identifier' => 'booleanNot.alwaysTrue',
 	'count' => 1,
@@ -5064,6 +10356,12 @@ $ignoreErrors[] = [
 	'identifier' => 'varTag.nativeType',
 	'count' => 1,
 	'path' => __DIR__ . '/src/User.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function strtotime is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\strtotime;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/ValidatorSubstitute.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Method ValidatorSubstitute\\:\\:getTabNameForItem\\(\\) never returns array\\<string\\> so it can be removed from the return type\\.$#',
@@ -5138,6 +10436,18 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Webhook.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Function json_decode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_decode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Webhook.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 5,
+	'path' => __DIR__ . '/src/Webhook.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^PHPDoc tag @return with type bool is incompatible with native type array\\.$#',
 	'identifier' => 'return.phpDocType',
 	'count' => 1,
@@ -5180,6 +10490,18 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/XHProf.php',
 ];
 $ignoreErrors[] = [
+	'message' => '#^Function preg_replace is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/autoload/constants.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function sha1_file is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\sha1_file;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/autoload/constants.php',
+];
+$ignoreErrors[] = [
 	'message' => '#^Function getDateCriteria\\(\\) should return string but returns array\\.$#',
 	'identifier' => 'return.type',
 	'count' => 1,
@@ -5196,6 +10518,18 @@ $ignoreErrors[] = [
 	'identifier' => 'notIdentical.alwaysTrue',
 	'count' => 2,
 	'path' => __DIR__ . '/src/autoload/i18n.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function spl_autoload_register is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\spl_autoload_register;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/autoload/legacy-autoloader.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 1,
+	'path' => __DIR__ . '/src/autoload/misc-functions.php',
 ];
 
 return ['parameters' => ['ignoreErrors' => $ignoreErrors]];

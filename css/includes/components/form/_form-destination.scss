@@ -31,6 +31,28 @@
  * ---------------------------------------------------------------------
  */
 
+// Hide the dynamic input when the accordion is collapsed
+// and show the name when the accordion is expanded
+#glpi-destinations-accordion {
+    > .accordion-item > .accordion-header > .accordion-button {
+        &.collapsed {
+            input.glpi-form-destination-name {
+                display: none !important;
+            }
+        }
+
+        &:not(.collapsed) {
+            span.glpi-form-destination-name {
+                display: none !important;
+            }
+
+            // Update vertical padding to match with the collapsed height state
+            padding-top: 11px !important;
+            padding-bottom: 11px !important;
+        }
+    }
+}
+
 [data-glpi-associated-items-specific-values-extra-field] {
     [data-glpi-associated-items-specific-values-extra-field-container] {
         [data-glpi-associated-items-specific-values-extra-field-item] {
@@ -116,92 +138,75 @@
 
     [data-glpi-itildestination-field-config] {
         display: flex;
-        flex-wrap: wrap;
-        align-items: stretch;
 
-        &:has(div[data-glpi-itildestination-field-config-display-condition]:not(.d-none)) {
+        [data-glpi-itildestination-field-config-content] {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            width: 1%; // Small hack to make the select2 dropdown only take the available space
+
+            &:has(div[data-glpi-itildestination-field-config-display-condition]:not(.d-none)) {
+                &:not(:has([data-glpi-associated-items-specific-values-extra-field]:not(.d-none))) {
+                    >div {
+                        &:first-child {
+                            .select2-selection {
+                                border-bottom-left-radius: 0 !important;
+                                border-bottom-right-radius: 0 !important;
+                            }
+                        }
+                    }
+                }
+            }
+
             &:not(:has([data-glpi-associated-items-specific-values-extra-field]:not(.d-none))) {
                 >div {
-                    &:first-child {
+                    &[data-glpi-itildestination-field-config-display-condition] {
+                        margin-top: calc(-1 * var(--tblr-border-width));
+
                         .select2-selection {
+                            border-top-left-radius: 0 !important;
                             border-top-right-radius: 0 !important;
-                            border-bottom-right-radius: 0 !important;
                         }
                     }
                 }
             }
-        }
 
-        >div {
-            flex: 1;
-
-            // Fix height issue with multiple select2
-            &:has(.select2-selection--multiple) {
-                >div {
-                    height: 100%;
-
-                    >div.btn-group.btn-group-sm {
-                        height: 100%;
+            // Specific layout for associated items
+            &:has([data-glpi-associated-items-specific-values-extra-field]:not(.d-none)) {
+                &:has([data-glpi-itildestination-field-config-display-condition="specific_values"]) {
+                    >div {
+                        &:first-child {
+                            .select2-selection {
+                                border-bottom-left-radius: 0 !important;
+                                border-bottom-right-radius: 0 !important;
+                            }
+                        }
                     }
+                }
 
-                    .select2-container {
-                        height: 100%;
+                // Make the strategy select fill the whole line
+                [data-glpi-associated-items-specific-values-extra-field] {
+                    flex-basis: 100%;
+                    order: 1;
 
+                    [data-glpi-associated-items-specific-values-extra-field-item] {
                         .select2-selection {
-                            height: 100%;
-                        }
-                    }
-                }
-            }
-        }
-
-        &:not(:has([data-glpi-associated-items-specific-values-extra-field]:not(.d-none))) {
-            >div {
-                &[data-glpi-itildestination-field-config-display-condition] {
-                    margin-left: calc(-1 * var(--tblr-border-width));
-
-                    .select2-selection {
-                        border-top-left-radius: 0 !important;
-                        border-bottom-left-radius: 0 !important;
-                    }
-                }
-            }
-        }
-
-        // Specific layout for associated items
-        &:has([data-glpi-associated-items-specific-values-extra-field]:not(.d-none)) {
-            &:has([data-glpi-itildestination-field-config-display-condition="specific_values"]) {
-                >div {
-                    &:first-child {
-                        .select2-selection {
-                            border-bottom-left-radius: 0 !important;
                             border-bottom-right-radius: 0 !important;
+                            border-top-left-radius: 0 !important;
+                        }
+
+                        &:not(:last-of-type) {
+                            .select2-selection {
+                                border-bottom-left-radius: 0 !important;
+                            }
                         }
                     }
                 }
-            }
-
-            // Make the strategy select fill the whole line
-            [data-glpi-associated-items-specific-values-extra-field] {
-                flex-basis: 100%;
-                order: 1;
 
                 [data-glpi-associated-items-specific-values-extra-field-item] {
-                    .select2-selection {
-                        border-bottom-right-radius: 0 !important;
-                        border-top-left-radius: 0 !important;
-                    }
-
-                    &:not(:last-of-type) {
-                        .select2-selection {
-                            border-bottom-left-radius: 0 !important;
-                        }
-                    }
+                    margin-top: calc(-1 * var(--tblr-border-width));
                 }
-            }
-
-            [data-glpi-associated-items-specific-values-extra-field-item] {
-                margin-top: calc(-1 * var(--tblr-border-width));
             }
         }
 
@@ -210,12 +215,19 @@
             border-bottom-left-radius: 0 !important;
             margin-left: calc(-1 * var(--tblr-border-width));
         }
-    }
 
-    [data-glpi-itildestination-remove-field-config],
-    [data-glpi-remove-associated-item-button] {
-        &:hover {
-            z-index: 99;
+        [data-glpi-itildestination-remove-field-config],
+        [data-glpi-remove-associated-item-button] {
+            &:hover {
+                z-index: 99;
+            }
         }
+    }
+}
+
+// Hide the condition on creation badge when accordion is expanded
+.accordion-button:not(.collapsed) {
+    [data-glpi-editor-destination-badges-container] {
+        display: none !important;
     }
 }

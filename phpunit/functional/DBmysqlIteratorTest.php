@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -315,16 +314,16 @@ class DBmysqlIteratorTest extends DbTestCase
                     'bar' => [
                         'FKEY' => [
                             'bar' => 'id',
-                            'foo' => 'fk'
-                        ]
+                            'foo' => 'fk',
+                        ],
                     ],
                     'baz' => [
                         'FKEY' => [
                             'baz' => 'id',
-                            'foo' => 'baz_id'
-                        ]
-                    ]
-                ]
+                            'foo' => 'baz_id',
+                        ],
+                    ],
+                ],
             ]
         );
         $this->assertSame(
@@ -354,11 +353,11 @@ class DBmysqlIteratorTest extends DbTestCase
                         'FKEY' => [
                             'bar' => 'id',
                             'foo' => 'fk', [
-                                'OR'  => ['field' => ['>', 20]]
-                            ]
-                        ]
-                    ]
-                ]
+                                'OR'  => ['field' => ['>', 20]],
+                            ],
+                        ],
+                    ],
+                ],
             ]
         );
         $this->assertSame(
@@ -374,11 +373,11 @@ class DBmysqlIteratorTest extends DbTestCase
                         'FKEY' => [
                             'bar' => 'id',
                             'foo' => 'fk', [
-                                'AND'  => ['field' => 42]
-                            ]
-                        ]
-                    ]
-                ]
+                                'AND'  => ['field' => 42],
+                            ],
+                        ],
+                    ],
+                ],
             ]
         );
         $this->assertSame(
@@ -394,13 +393,13 @@ class DBmysqlIteratorTest extends DbTestCase
                     'bar' => [
                         'FKEY' => [
                             [
-                                'AND'  => ['field' => 42]
+                                'AND'  => ['field' => 42],
                             ],
                             'bar' => 'id',
-                            'foo' => 'fk'
-                        ]
-                    ]
-                ]
+                            'foo' => 'fk',
+                        ],
+                    ],
+                ],
             ]
         );
         $this->assertSame(
@@ -418,11 +417,11 @@ class DBmysqlIteratorTest extends DbTestCase
                             'bar' => 'id',
                             'foo' => 'fk',
                             'acondition' => [
-                                'AND'  => ['field' => 42]
-                            ]
-                        ]
-                    ]
-                ]
+                                'AND'  => ['field' => 42],
+                            ],
+                        ],
+                    ],
+                ],
             ]
         );
         $this->assertSame(
@@ -440,10 +439,10 @@ class DBmysqlIteratorTest extends DbTestCase
                         'TABLE'  => new \Glpi\DBAL\QuerySubQuery(['FROM' => 'bar'], 't2'),
                         'FKEY'   => [
                             't2'  => 'id',
-                            'foo' => 'fk'
-                        ]
-                    ]
-                ]
+                            'foo' => 'fk',
+                        ],
+                    ],
+                ],
             ]
         );
         $this->assertSame(
@@ -645,11 +644,11 @@ class DBmysqlIteratorTest extends DbTestCase
                 'OR' => [
                     [
                         'items_id' => 15,
-                        'itemtype' => 'Computer'
+                        'itemtype' => 'Computer',
                     ],
                     [
                         'items_id' => 3,
-                        'itemtype' => 'Document'
+                        'itemtype' => 'Document',
                     ],
                 ],
             ],
@@ -682,8 +681,8 @@ class DBmysqlIteratorTest extends DbTestCase
             'FROM'   => 'foo',
             'WHERE'  => [
                 'bar' => 'baz',
-                'RAW' => ['SELECT COUNT(*) FROM xyz' => 5]
-            ]
+                'RAW' => ['SELECT COUNT(*) FROM xyz' => 5],
+            ],
         ];
         $it = $this->it->execute($crit);
         $this->assertSame("SELECT * FROM `foo` WHERE `bar` = 'baz' AND ((SELECT COUNT(*) FROM xyz) = '5')", $it->getSql());
@@ -692,8 +691,8 @@ class DBmysqlIteratorTest extends DbTestCase
             'FROM'   => 'foo',
             'WHERE'  => [
                 'bar' => 'baz',
-                'RAW' => ['SELECT COUNT(*) FROM xyz' => ['>', 2]]
-            ]
+                'RAW' => ['SELECT COUNT(*) FROM xyz' => ['>', 2]],
+            ],
         ];
         $it = $this->it->execute($crit);
         $this->assertSame("SELECT * FROM `foo` WHERE `bar` = 'baz' AND ((SELECT COUNT(*) FROM xyz) > '2')", $it->getSql());
@@ -702,8 +701,8 @@ class DBmysqlIteratorTest extends DbTestCase
             'FROM'   => 'foo',
             'WHERE'  => [
                 'bar' => 'baz',
-                'RAW' => ['SELECT COUNT(*) FROM xyz' => [3, 4]]
-            ]
+                'RAW' => ['SELECT COUNT(*) FROM xyz' => [3, 4]],
+            ],
         ];
         $it = $this->it->execute($crit);
         $this->assertSame("SELECT * FROM `foo` WHERE `bar` = 'baz' AND ((SELECT COUNT(*) FROM xyz) IN ('3', '4'))", $it->getSql());
@@ -765,10 +764,10 @@ class DBmysqlIteratorTest extends DbTestCase
                 'foo AS f' => [
                     'FKEY' => [
                         'b'   => 'fid',
-                        'f'   => 'id'
-                    ]
-                ]
-            ]
+                        'f'   => 'id',
+                    ],
+                ],
+            ],
         ]);
         $this->assertSame('SELECT * FROM `bar` AS `b` INNER JOIN `foo` AS `f` ON (`b`.`fid` = `f`.`id`)', $it->getSql());
 
@@ -779,10 +778,10 @@ class DBmysqlIteratorTest extends DbTestCase
                 'foo AS  f' => [
                     'FKEY' => [
                         'b'   => 'fid',
-                        'f'   => 'id'
-                    ]
-                ]
-            ]
+                        'f'   => 'id',
+                    ],
+                ],
+            ],
         ]);
         $this->assertSame('SELECT `id`, `field` AS `f`, `baz` AS `Z` FROM `bar` AS `b` INNER JOIN `foo` AS `f` ON (`b`.`fid` = `f`.`id`)', $it->getSql());
     }
@@ -833,7 +832,7 @@ class DBmysqlIteratorTest extends DbTestCase
 
         $it = $this->it->execute([
             'SELECT' => ['bar', $sub_query],
-            'FROM'   => 'foo'
+            'FROM'   => 'foo',
         ]);
         $this->assertSame(
             "SELECT `bar`, $raw_subq AS `thesubquery` FROM `foo`",
@@ -845,7 +844,7 @@ class DBmysqlIteratorTest extends DbTestCase
     {
         $union_crit = [
             ['FROM' => 'table1'],
-            ['FROM' => 'table2']
+            ['FROM' => 'table2'],
         ];
         $union = new \Glpi\DBAL\QueryUnion($union_crit);
         $union_raw_query = '((SELECT * FROM `table1`) UNION ALL (SELECT * FROM `table2`))';
@@ -897,44 +896,44 @@ class DBmysqlIteratorTest extends DbTestCase
         $subquery1 = new \Glpi\DBAL\QuerySubQuery([
             'SELECT'    => [
                 'usr.id AS users_id',
-                'tu.type AS type'
+                'tu.type AS type',
             ],
             'FROM'      => "$users_table AS tu",
             'LEFT JOIN' => [
                 \User::getTable() . ' AS usr' => [
                     'ON' => [
                         'tu'  => 'users_id',
-                        'usr' => 'id'
-                    ]
-                ]
+                        'usr' => 'id',
+                    ],
+                ],
             ],
             'WHERE'     => [
-                "tu.$fk" => 42
-            ]
+                "tu.$fk" => 42,
+            ],
         ]);
         $subquery2 = new \Glpi\DBAL\QuerySubQuery([
             'SELECT'    => [
                 'usr.id AS users_id',
-                'gt.type AS type'
+                'gt.type AS type',
             ],
             'FROM'      => "$groups_table AS gt",
             'LEFT JOIN' => [
                 \Group_User::getTable() . ' AS gu'   => [
                     'ON' => [
                         'gu'  => 'groups_id',
-                        'gt'  => 'groups_id'
-                    ]
+                        'gt'  => 'groups_id',
+                    ],
                 ],
                 \User::getTable() . ' AS usr'        => [
                     'ON' => [
                         'gu'  => 'users_id',
-                        'usr' => 'id'
-                    ]
-                ]
+                        'usr' => 'id',
+                    ],
+                ],
             ],
             'WHERE'     => [
-                "gt.$fk" => 42
-            ]
+                "gt.$fk" => 42,
+            ],
         ]);
 
         $raw_query = "SELECT DISTINCT `users_id`, `type`"
@@ -954,10 +953,10 @@ class DBmysqlIteratorTest extends DbTestCase
         $it = $this->it->execute([
             'FIELDS'          => [
                 'users_id',
-                'type'
+                'type',
             ],
             'DISTINCT'        => true,
-            'FROM'            => $union
+            'FROM'            => $union,
         ]);
         $this->assertSame($raw_query, $it->getSql());
     }
@@ -966,7 +965,7 @@ class DBmysqlIteratorTest extends DbTestCase
     {
         global $CFG_GLPI, $DB;
 
-       //Old build way
+        //Old build way
         $queries = [];
 
         foreach ($CFG_GLPI["networkport_types"] as $itemtype) {
@@ -1068,7 +1067,7 @@ class DBmysqlIteratorTest extends DbTestCase
         $union_raw_query = '(' . preg_replace('/\s+/', ' ', implode(' UNION ALL ', $queries)) . ')';
         $raw_query = 'SELECT * FROM ' . $union_raw_query . ' AS `union_' . md5($union_raw_query) . '`';
 
-       //New build way
+        //New build way
         $queries = [];
         $main_criteria = [
             'SELECT'       => [
@@ -1090,23 +1089,23 @@ class DBmysqlIteratorTest extends DbTestCase
                         'LINK'   => 'ipaddresses_id', [
                             'AND' => [
                                 'ADDR.itemtype' => 'NetworkName',
-                                'ADDR.is_deleted' => 0
-                            ]
-                        ]
-                    ]
-                ]
+                                'ADDR.is_deleted' => 0,
+                            ],
+                        ],
+                    ],
+                ],
             ],
             'LEFT JOIN'    => [
                 'glpi_entities'             => [
                     'ON' => [
                         'ADDR'            => 'entities_id',
-                        'glpi_entities'   => 'id'
-                    ]
-                ]
+                        'glpi_entities'   => 'id',
+                    ],
+                ],
             ],
             'WHERE'        => [
                 'LINK.ipnetworks_id' => 42,
-            ]
+            ],
         ];
 
         foreach ($CFG_GLPI["networkport_types"] as $itemtype) {
@@ -1116,7 +1115,7 @@ class DBmysqlIteratorTest extends DbTestCase
                 'NAME.id AS name_id',
                 'PORT.id AS port_id',
                 'ITEM.id AS item_id',
-                new \Glpi\DBAL\QueryExpression("'$itemtype' AS " . $DB->quoteName('item_type'))
+                new \Glpi\DBAL\QueryExpression("'$itemtype' AS " . $DB->quoteName('item_type')),
             ]);
             $criteria['INNER JOIN'] = $criteria['INNER JOIN'] + [
                 'glpi_networknames AS NAME'   => [
@@ -1124,27 +1123,27 @@ class DBmysqlIteratorTest extends DbTestCase
                         'NAME'   => 'id',
                         'ADDR'   => 'items_id', [
                             'AND' => [
-                                'NAME.itemtype' => 'NetworkPort'
-                            ]
-                        ]
-                    ]
+                                'NAME.itemtype' => 'NetworkPort',
+                            ],
+                        ],
+                    ],
                 ],
                 'glpi_networkports AS PORT'   => [
                     'ON' => [
                         'NAME'   => 'items_id',
                         'PORT'   => 'id', [
                             'AND' => [
-                                'PORT.itemtype' => $itemtype
-                            ]
-                        ]
-                    ]
+                                'PORT.itemtype' => $itemtype,
+                            ],
+                        ],
+                    ],
                 ],
                 "$table AS ITEM"              => [
                     'ON' => [
                         'ITEM'   => 'id',
-                        'PORT'   => 'items_id'
-                    ]
-                ]
+                        'PORT'   => 'items_id',
+                    ],
+                ],
             ];
             $queries[] = $criteria;
         }
@@ -1162,10 +1161,10 @@ class DBmysqlIteratorTest extends DbTestCase
                     'NAME'   => 'id',
                     'ADDR'   => 'items_id', [
                         'AND' => [
-                            'NAME.itemtype' => 'NetworkPort'
-                        ]
-                    ]
-                ]
+                            'NAME.itemtype' => 'NetworkPort',
+                        ],
+                    ],
+                ],
             ],
             'glpi_networkports AS PORT'   => [
                 'ON' => [
@@ -1173,12 +1172,12 @@ class DBmysqlIteratorTest extends DbTestCase
                     'PORT'   => 'id', [
                         'AND' => [
                             'NOT' => [
-                                'PORT.itemtype' => $CFG_GLPI['networkport_types']
-                            ]
-                        ]
-                    ]
-                ]
-            ]
+                                'PORT.itemtype' => $CFG_GLPI['networkport_types'],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
         ];
         $queries[] = $criteria;
 
@@ -1187,7 +1186,7 @@ class DBmysqlIteratorTest extends DbTestCase
             'NAME.id AS name_id',
             new \Glpi\DBAL\QueryExpression("NULL AS " . $DB->quoteName('port_id')),
             new \Glpi\DBAL\QueryExpression('NULL AS ' . $DB->quoteName('item_id')),
-            new \Glpi\DBAL\QueryExpression("NULL AS " . $DB->quoteName('item_type'))
+            new \Glpi\DBAL\QueryExpression("NULL AS " . $DB->quoteName('item_type')),
         ]);
         $criteria['INNER JOIN'] = $criteria['INNER JOIN'] + [
             'glpi_networknames AS NAME'   => [
@@ -1195,11 +1194,11 @@ class DBmysqlIteratorTest extends DbTestCase
                     'NAME'   => 'id',
                     'ADDR'   => 'items_id', [
                         'AND' => [
-                            'NAME.itemtype' => ['!=', 'NetworkPort']
-                        ]
-                    ]
-                ]
-            ]
+                            'NAME.itemtype' => ['!=', 'NetworkPort'],
+                        ],
+                    ],
+                ],
+            ],
         ];
         $queries[] = $criteria;
 
@@ -1208,7 +1207,7 @@ class DBmysqlIteratorTest extends DbTestCase
             new \Glpi\DBAL\QueryExpression("NULL AS " . $DB->quoteName('name_id')),
             new \Glpi\DBAL\QueryExpression("NULL AS " . $DB->quoteName('port_id')),
             new \Glpi\DBAL\QueryExpression('NULL AS ' . $DB->quoteName('item_id')),
-            new \Glpi\DBAL\QueryExpression("NULL AS " . $DB->quoteName('item_type'))
+            new \Glpi\DBAL\QueryExpression("NULL AS " . $DB->quoteName('item_type')),
         ]);
         $criteria['INNER JOIN']['glpi_ipaddresses AS ADDR']['ON'][0]['AND']['ADDR.itemtype'] = ['!=', 'NetworkName'];
         $queries[] = $criteria;
@@ -1227,8 +1226,8 @@ class DBmysqlIteratorTest extends DbTestCase
         $crit = [new \Glpi\DBAL\QuerySubQuery([
             'SELECT' => ['COUNT' => ['users_id']],
             'FROM'   => 'glpi_groups_users',
-            'WHERE'  => ['groups_id' => new \Glpi\DBAL\QueryExpression('glpi_groups.id')]
-        ])
+            'WHERE'  => ['groups_id' => new \Glpi\DBAL\QueryExpression('glpi_groups.id')],
+        ]),
         ];
         $this->assertSame(
             "(SELECT COUNT(`users_id`) FROM `glpi_groups_users` WHERE `groups_id` = glpi_groups.id)",
@@ -1240,11 +1239,11 @@ class DBmysqlIteratorTest extends DbTestCase
     {
         global $DB;
 
-       // Select "id" field, keys will correspond to ids
+        // Select "id" field, keys will correspond to ids
         $iterator = $DB->request(
             [
                 'SELECT' => ['id', 'name'],
-                'FROM'   => $this->getUsersFakeTable()
+                'FROM'   => $this->getUsersFakeTable(),
             ]
         );
 
@@ -1262,11 +1261,11 @@ class DBmysqlIteratorTest extends DbTestCase
     {
         global $DB;
 
-       // Do not select "id" field, keys will be numeric, starting at 0
+        // Do not select "id" field, keys will be numeric, starting at 0
         $iterator = $DB->request(
             [
                 'SELECT' => 'name',
-                'FROM'   => $this->getUsersFakeTable()
+                'FROM'   => $this->getUsersFakeTable(),
             ]
         );
 
@@ -1287,7 +1286,7 @@ class DBmysqlIteratorTest extends DbTestCase
         $iterator = $DB->request(
             [
                 'SELECT' => ['id', 'name'],
-                'FROM'   => $this->getUsersFakeTable()
+                'FROM'   => $this->getUsersFakeTable(),
             ]
         );
 
@@ -1308,7 +1307,7 @@ class DBmysqlIteratorTest extends DbTestCase
         $iterator = $DB->request(
             [
                 'SELECT' => ['name'],
-                'FROM'   => $this->getUsersFakeTable()
+                'FROM'   => $this->getUsersFakeTable(),
             ]
         );
 
@@ -1322,7 +1321,7 @@ class DBmysqlIteratorTest extends DbTestCase
         $iterator = $DB->request(
             [
                 'SELECT' => ['name'],
-                'FROM'   => $this->getUsersFakeTable()
+                'FROM'   => $this->getUsersFakeTable(),
             ]
         );
 
@@ -1343,7 +1342,7 @@ class DBmysqlIteratorTest extends DbTestCase
         $iterator = $DB->request(
             [
                 'SELECT' => ['name'],
-                'FROM'   => $this->getUsersFakeTable()
+                'FROM'   => $this->getUsersFakeTable(),
             ]
         );
 
@@ -1364,7 +1363,7 @@ class DBmysqlIteratorTest extends DbTestCase
         $iterator = $DB->request(
             [
                 'SELECT' => ['id', 'name'],
-                'FROM'   => $this->getUsersFakeTable()
+                'FROM'   => $this->getUsersFakeTable(),
             ]
         );
 
@@ -1414,21 +1413,21 @@ class DBmysqlIteratorTest extends DbTestCase
 
         // Reguar IN
         $criteria = [
-            'id' => [1, 2, 3]
+            'id' => [1, 2, 3],
         ];
         $expected = $DB::quoteName('id') . " IN " . $to_sql_array($criteria['id']);
         $this->assertEquals($expected, $iterator->analyseCrit($criteria));
 
         // Explicit IN (array form)
         $criteria = [
-            'id' => ['IN', [1, 2, 3]]
+            'id' => ['IN', [1, 2, 3]],
         ];
         $expected = $DB::quoteName('id') . " IN " . $to_sql_array($criteria['id'][1]);
         $this->assertEquals($expected, $iterator->analyseCrit($criteria));
 
         // Explicit NOT IN (array form)
         $criteria = [
-            'id' => ['NOT IN', [1, 2, 3]]
+            'id' => ['NOT IN', [1, 2, 3]],
         ];
         $expected = $DB::quoteName('id') . " NOT IN " . $to_sql_array($criteria['id'][1]);
         $this->assertEquals($expected, $iterator->analyseCrit($criteria));
@@ -1447,7 +1446,7 @@ class DBmysqlIteratorTest extends DbTestCase
                 'id'      => 1,
                 'name'    => 'A&B',
                 'content' => '<p>Test</p>',
-            ]
+            ],
         ];
 
         // Data from GLPI 10.0.x (autosanitized)
@@ -1461,7 +1460,7 @@ class DBmysqlIteratorTest extends DbTestCase
                 'id'      => 1,
                 'name'    => 'A&B',
                 'content' => '<p>Test</p>',
-            ]
+            ],
         ];
 
         // Data from GLPI 11.0+ (not autosanitized)
@@ -1475,7 +1474,7 @@ class DBmysqlIteratorTest extends DbTestCase
                 'id'      => 1,
                 'name'    => 'A&B',
                 'content' => '<p>Test</p>',
-            ]
+            ],
         ];
     }
 
@@ -1504,7 +1503,7 @@ class DBmysqlIteratorTest extends DbTestCase
         $this->assertEquals(
             "glpi_tickets.id=(CASE WHEN glpi_tickets_tickets.tickets_id_1=103 THEN glpi_tickets_tickets.tickets_id_2 ELSE glpi_tickets_tickets.tickets_id_1 END)",
             $this->it->analyseCrit([
-                'ON' => new \Glpi\DBAL\QueryExpression("glpi_tickets.id=(CASE WHEN glpi_tickets_tickets.tickets_id_1=103 THEN glpi_tickets_tickets.tickets_id_2 ELSE glpi_tickets_tickets.tickets_id_1 END)")
+                'ON' => new \Glpi\DBAL\QueryExpression("glpi_tickets.id=(CASE WHEN glpi_tickets_tickets.tickets_id_1=103 THEN glpi_tickets_tickets.tickets_id_2 ELSE glpi_tickets_tickets.tickets_id_1 END)"),
             ])
         );
     }
@@ -1525,7 +1524,7 @@ class DBmysqlIteratorTest extends DbTestCase
             'params'   => ['glpi_computers', 'is_deleted = 0'],
             'expected' => [
                 'FROM'  => 'glpi_computers',
-                'WHERE' => [new QueryExpression('is_deleted = 0')]
+                'WHERE' => [new QueryExpression('is_deleted = 0')],
             ],
             'sql'      => 'SELECT * FROM `glpi_computers` WHERE is_deleted = 0',
         ];
@@ -1536,7 +1535,7 @@ class DBmysqlIteratorTest extends DbTestCase
             'expected' => [
                 'FROM'  => 'glpi_computers',
                 'WHERE' => ['is_deleted' => 0],
-                'ORDER' => 'id DESC'
+                'ORDER' => 'id DESC',
             ],
             'sql'      => 'SELECT * FROM `glpi_computers` WHERE `is_deleted` = \'0\' ORDER BY `id` DESC',
         ];
@@ -1555,7 +1554,7 @@ class DBmysqlIteratorTest extends DbTestCase
         $union = new QueryUnion(
             [
                 ['SELECT' => 'serial', 'FROM' => 'glpi_computers'],
-                ['SELECT' => 'serial', 'FROM' => 'glpi_printers']
+                ['SELECT' => 'serial', 'FROM' => 'glpi_printers'],
             ],
             false,
             'testalias'

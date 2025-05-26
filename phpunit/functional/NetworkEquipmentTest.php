@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -45,11 +44,11 @@ class NetworkEquipmentTest extends DbTestCase
     {
         $this->login();
 
-       //create network equipment
+        //create network equipment
         $device = new \NetworkEquipment();
         $input = [
             'name'         => 'Test equipment',
-            'entities_id'  => 0
+            'entities_id'  => 0,
         ];
         $netequipments_id = $device->add($input);
         $this->assertGreaterThan(0, $netequipments_id);
@@ -57,7 +56,7 @@ class NetworkEquipmentTest extends DbTestCase
         $this->assertTrue($device->getFromDB($netequipments_id));
         $this->assertSame('Test equipment', $device->fields['name']);
 
-       //create ports attached
+        //create ports attached
         $netport = new \NetworkPort();
         $input = [
             'itemtype'           => $device->getType(),
@@ -65,7 +64,7 @@ class NetworkEquipmentTest extends DbTestCase
             'entities_id'        => 0,
             'logical_number'     => 1256,
             'name'               => 'Test port',
-            'instantiation_type' => 'NetworkPortEthernet'
+            'instantiation_type' => 'NetworkPortEthernet',
         ];
         $netports_id = $netport->add($input);
         $this->assertGreaterThan(0, $netports_id);
@@ -79,7 +78,7 @@ class NetworkEquipmentTest extends DbTestCase
             'entities_id'        => 0,
             'logical_number'     => 1257,
             'name'               => 'Another test port',
-            'instantiation_type' => 'NetworkPortAggregate'
+            'instantiation_type' => 'NetworkPortAggregate',
         ];
         $netports_id = $netport->add($input);
         $this->assertGreaterThan(0, $netports_id);
@@ -89,10 +88,10 @@ class NetworkEquipmentTest extends DbTestCase
 
         $this->assertSame(2, $netport->countForItem($device));
 
-       //remove network equipment
+        //remove network equipment
         $this->assertTrue($device->delete(['id' => $netequipments_id], true));
 
-       //see if links are dropped
+        //see if links are dropped
         $this->assertSame(0, $netport->countForItem($device));
     }
 }

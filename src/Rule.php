@@ -49,16 +49,16 @@ class Rule extends CommonDBTM
 
     public $dohistory             = true;
 
-   // Specific ones
-   ///Actions affected to this rule
+    // Specific ones
+    ///Actions affected to this rule
     public $actions               = [];
-   ///Criterias affected to this rule
+    ///Criterias affected to this rule
     public $criterias             = [];
 
     // preview context ?
     protected $is_preview = false;
 
-   /// restrict matching to self::AND_MATCHING or self::OR_MATCHING : specify value to activate
+    /// restrict matching to self::AND_MATCHING or self::OR_MATCHING : specify value to activate
     public $restrict_matching     = false;
 
     protected $rules_id_field     = 'rules_id';
@@ -106,7 +106,7 @@ class Rule extends CommonDBTM
     {
         return [
             $this->ruleactionclass,
-            $this->rulecriteriaclass
+            $this->rulecriteriaclass,
         ];
     }
 
@@ -178,7 +178,7 @@ class Rule extends CommonDBTM
             'name'      => 'condition',
             'value'     => 0,
             'display'   => true,
-            'on_change' => ''
+            'on_change' => '',
         ], $options);
 
         $elements = static::getConditionsArray();
@@ -516,8 +516,8 @@ class Rule extends CommonDBTM
                 'title' => $definition->getAssetModelClassName()::getTypeName(Session::getPluralNumber()),
                 'page'  => $model_dictionary::getSearchURL(false),
                 'links' => [
-                    'search' => $model_dictionary::getSearchURL(false)
-                ]
+                    'search' => $model_dictionary::getSearchURL(false),
+                ],
             ];
             if ($model_dictionary::canCreate()) {
                 $model_entry['links']['add'] = $model_dictionary::getFormURL(false);
@@ -530,8 +530,8 @@ class Rule extends CommonDBTM
                 'title' => $definition->getAssetTypeClassName()::getTypeName(Session::getPluralNumber()),
                 'page'  => $type_dictionary::getSearchURL(false),
                 'links' => [
-                    'search' => $type_dictionary::getSearchURL(false)
-                ]
+                    'search' => $type_dictionary::getSearchURL(false),
+                ],
             ];
             if ($type_dictionary::canCreate()) {
                 $type_entry['links']['add'] = $type_dictionary::getFormURL(false);
@@ -631,7 +631,7 @@ class Rule extends CommonDBTM
                 $input = $ma->getInput();
                 $values = [
                     RuleCollection::MOVE_AFTER  => __('After'),
-                    RuleCollection::MOVE_BEFORE => __('Before')
+                    RuleCollection::MOVE_BEFORE => __('Before'),
                 ];
                 Dropdown::showFromArray('move_type', $values, ['width' => '20%']);
 
@@ -645,7 +645,7 @@ class Rule extends CommonDBTM
                     'condition'       => $condition,
                     'entity'          => $entity,
                     'width'           => '50%',
-                    'order'           => 'ranking'
+                    'order'           => 'ranking',
                 ]);
                 echo "<br><br><input type='submit' name='massiveaction' class='btn btn-primary' value='" .
                            _sx('button', 'Move') . "'>\n";
@@ -721,7 +721,7 @@ class Rule extends CommonDBTM
             'field'              => 'id',
             'name'               => __('ID'),
             'massiveaction'      => false,
-            'datatype'           => 'number'
+            'datatype'           => 'number',
         ];
 
         $tab[] = [
@@ -730,7 +730,7 @@ class Rule extends CommonDBTM
             'field'              => 'ranking',
             'name'               => __('Ranking'),
             'datatype'           => 'number',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -747,7 +747,7 @@ class Rule extends CommonDBTM
             'field'              => 'match',
             'name'               => __('Logical operator'),
             'datatype'           => 'specific',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -755,15 +755,15 @@ class Rule extends CommonDBTM
             'table'              => static::getTable(),
             'field'              => 'is_active',
             'name'               => __('Active'),
-            'datatype'           => 'bool'
+            'datatype'           => 'bool',
         ];
 
         $tab[] = [
             'id'                 => '16',
             'table'              => static::getTable(),
             'field'              => 'comment',
-            'name'               => __('Comments'),
-            'datatype'           => 'text'
+            'name'               => _n('Comment', 'Comments', Session::getPluralNumber()),
+            'datatype'           => 'text',
         ];
 
         $tab[] = [
@@ -771,7 +771,7 @@ class Rule extends CommonDBTM
             'table'              => static::getTable(),
             'field'              => 'sub_type',
             'name'               => __('Subtype'),
-            'datatype'           => 'text'
+            'datatype'           => 'text',
         ];
 
         $tab[] = [
@@ -780,7 +780,7 @@ class Rule extends CommonDBTM
             'field'              => 'completename',
             'name'               => Entity::getTypeName(1),
             'massiveaction'      => false,
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
@@ -789,7 +789,7 @@ class Rule extends CommonDBTM
             'field'              => 'is_recursive',
             'name'               => __('Child entities'),
             'datatype'           => 'bool',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -798,7 +798,7 @@ class Rule extends CommonDBTM
             'field'              => 'date_mod',
             'name'               => __('Last update'),
             'datatype'           => 'datetime',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -807,7 +807,7 @@ class Rule extends CommonDBTM
             'field'              => 'date_creation',
             'name'               => __('Creation date'),
             'datatype'           => 'datetime',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         return $tab;
@@ -894,7 +894,7 @@ class Rule extends CommonDBTM
         if (!$new_item) {
             $this->check($ID, READ);
         } else {
-           // Create item
+            // Create item
             $this->checkGlobal(UPDATE);
         }
 
@@ -911,7 +911,7 @@ class Rule extends CommonDBTM
                     'text' => _x('button', 'Test'),
                     'type' => 'button',
                     'onclick' => "$('#ruletestmodal').modal('show');",
-                ]
+                ],
             ];
         }
 
@@ -924,7 +924,7 @@ class Rule extends CommonDBTM
             'params' => [
                 'canedit' => $canedit,
                 'addbuttons' => $add_buttons,
-            ]
+            ],
         ], $options);
         TemplateRenderer::getInstance()->display('pages/admin/rules/form.html.twig', $twig_params);
     }
@@ -963,7 +963,7 @@ class Rule extends CommonDBTM
             'name'     => 'match',
             'value'    => '',
             'restrict' => $this->restrict_matching,
-            'display'  => true
+            'display'  => true,
         ], $options);
         $p['restrict'] = is_string($p['restrict']) ? $p['restrict'] : null;
 
@@ -1031,7 +1031,7 @@ class Rule extends CommonDBTM
      **/
     public function maxActionsCount()
     {
-        return count(array_filter($this->getAllActions(), static fn ($action_obj) => !isset($action_obj['duplicatewith'])));
+        return count(array_filter($this->getAllActions(), static fn($action_obj) => !isset($action_obj['duplicatewith'])));
     }
 
     /**
@@ -1074,7 +1074,7 @@ class Rule extends CommonDBTM
                     'type' => $this->ruleactionclass,
                     'parenttype' => static::class,
                     $this->rules_id_field => $rules_id,
-                    'id' => -1
+                    'id' => -1,
                 ],
             ];
             // language=Twig
@@ -1105,7 +1105,7 @@ TWIG, $twig_params);
                 'id' => $action->getID(),
                 'field' => $field,
                 'action_type' => $action_type,
-                'value' => $value
+                'value' => $value,
             ];
         }
 
@@ -1115,8 +1115,8 @@ TWIG, $twig_params);
             'check_items_id' => $rules_id,
             'container'      => 'mass' . $this->ruleactionclass . $rand,
             'extraparams'    => [
-                'rule_class_name' => static::class
-            ]
+                'rule_class_name' => static::class,
+            ],
         ];
 
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
@@ -1126,7 +1126,7 @@ TWIG, $twig_params);
             'columns' => [
                 'field' => _n('Field', 'Fields', Session::getPluralNumber()),
                 'action_type' => __('Action type'),
-                'value' => __('Value')
+                'value' => __('Value'),
             ],
             'entries' => $entries,
             'row_class' => 'cursor-pointer',
@@ -1138,7 +1138,8 @@ TWIG, $twig_params);
 
         if ($canedit) {
             $rule_class = static::class;
-            echo Html::scriptBlock(<<<JS
+            echo Html::scriptBlock(
+                <<<JS
                 $(() => {
                     $('#datatable_ruleaction{$rules_id}{$rand}').on('click', 'tbody tr', (e) => {
                         //ignore click in first column (the massive action checkbox)
@@ -1195,7 +1196,7 @@ JS
                     'type' => $this->rulecriteriaclass,
                     'parenttype' => static::class,
                     $this->rules_id_field => $rules_id,
-                    'id' => -1
+                    'id' => -1,
                 ],
             ];
             // language=Twig
@@ -1222,7 +1223,7 @@ TWIG, $twig_params);
                 'id' => $criteria->getID(),
                 'criteria' => $criterion,
                 'condition' => $condition,
-                'pattern' => $pattern
+                'pattern' => $pattern,
             ];
         }
 
@@ -1232,8 +1233,8 @@ TWIG, $twig_params);
             'check_items_id' => $rules_id,
             'container'      => 'mass' . $this->rulecriteriaclass . $rand,
             'extraparams'    => [
-                'rule_class_name' => static::class
-            ]
+                'rule_class_name' => static::class,
+            ],
         ];
 
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
@@ -1243,7 +1244,7 @@ TWIG, $twig_params);
             'columns' => [
                 'criteria' => _n('Criterion', 'Criteria', 1),
                 'condition' => __('Condition'),
-                'pattern' => __('Reason')
+                'pattern' => __('Reason'),
             ],
             'entries' => $entries,
             'row_class' => 'cursor-pointer',
@@ -1255,7 +1256,8 @@ TWIG, $twig_params);
 
         if ($canedit) {
             $rule_class = static::class;
-            echo Html::scriptBlock(<<<JS
+            echo Html::scriptBlock(
+                <<<JS
                 $(() => {
                     $('#datatable_rulecriteria{$rules_id}{$rand}').on('click', 'tbody tr', (e) => {
                         //ignore click in first column (the massive action checkbox)
@@ -1304,7 +1306,7 @@ JS
         $group      = [];
         $groupname  = _n('Criterion', 'Criteria', Session::getPluralNumber());
         foreach ($this->getAllCriteria() as $ID => $crit) {
-           // Manage group system
+            // Manage group system
             if (!is_array($crit)) {
                 if (count($group)) {
                     asort($group);
@@ -1346,23 +1348,23 @@ JS
 
         $actions = $this->getAllActions();
 
-       // For each used actions see if several set is available
-       // Force actions to available actions for several
+        // For each used actions see if several set is available
+        // Force actions to available actions for several
         foreach ($p['used'] as $key => $ID) {
             if (isset($actions[$ID]['permitseveral'])) {
                 unset($p['used'][$key]);
             }
         }
 
-       // Complete used array with duplicate items
-       // add duplicates of used items
+        // Complete used array with duplicate items
+        // add duplicates of used items
         foreach ($p['used'] as $ID) {
             if (isset($actions[$ID]['duplicatewith'])) {
                 $p['used'][$actions[$ID]['duplicatewith']] = $actions[$ID]['duplicatewith'];
             }
         }
 
-       // Parse for duplicates of already used items
+        // Parse for duplicates of already used items
         foreach ($actions as $ID => $act) {
             if (
                 isset($actions[$ID]['duplicatewith'])
@@ -1494,7 +1496,7 @@ JS
                             $options['only_criteria'][] = $action->fields["field"];
                         }
 
-                       // Add linked criteria if available
+                        // Add linked criteria if available
                         $crit = $this->getCriteria($action->fields["field"]);
                         if (isset($crit['linked_criteria'])) {
                             $tmp = $crit['linked_criteria'];
@@ -1532,7 +1534,7 @@ JS
             ) {
                 foreach ($this->criterias as $criterion) {
                     if (in_array($criterion->fields['criteria'], $options['only_criteria'])) {
-                         return true;
+                        return true;
                     }
                 }
                 return false;
@@ -1583,7 +1585,7 @@ JS
             }
         }
 
-       //If all simple criteria match, and if necessary, check complex criteria
+        //If all simple criteria match, and if necessary, check complex criteria
         if ($doactions) {
             return $this->findWithGlobalCriteria($input);
         }
@@ -1662,7 +1664,7 @@ JS
                         $partial_regex_result
                     );
                     if (!$res) {
-                           break;
+                        break;
                     }
                 }
             } else {
@@ -1752,7 +1754,7 @@ JS
                         $plugin,
                         "rulePrepareInputDataForProcess",
                         ['input'  => $input,
-                            'params' => $params
+                            'params' => $params,
                         ]
                     );
                     if (is_array($results)) {
@@ -1795,7 +1797,7 @@ JS
                     $results = Plugin::doOneHook($plugin, "executeActions", ['output' => $output,
                         'params' => $params,
                         'action' => $action,
-                        'input'  => $input
+                        'input'  => $input,
                     ]);
                     if (is_array($results)) {
                         foreach ($results as $id => $result) {
@@ -1835,8 +1837,8 @@ JS
                             isset($actions[$action->fields["field"]]["appendtoarray"])
                             && isset($actions[$action->fields["field"]]["appendtoarrayfield"])
                         ) {
-                             $value = $actions[$action->fields["field"]]["appendtoarray"];
-                             $value[$actions[$action->fields["field"]]["appendtoarrayfield"]]
+                            $value = $actions[$action->fields["field"]]["appendtoarray"];
+                            $value[$actions[$action->fields["field"]]["appendtoarrayfield"]]
                             = $action->fields["value"];
                         }
                         $output[$actions[$action->fields["field"]]["appendto"]][] = $value;
@@ -1844,8 +1846,8 @@ JS
 
                     case "regex_result":
                     case "append_regex_result":
-                     //Regex result : assign value from the regex
-                     //Append regex result : append result from a regex
+                        //Regex result : assign value from the regex
+                        //Append regex result : append result from a regex
                         if (isset($this->regex_results[0])) {
                             $res = RuleAction::getRegexResultById(
                                 $action->fields["value"],
@@ -1859,7 +1861,7 @@ JS
                             if (isset($params[$action->fields["field"]])) {
                                 $res = $params[$action->fields["field"]] . $res;
                             } else {
-                             //keep rule value to append in a separate entry
+                                //keep rule value to append in a separate entry
                                 $output[$action->fields['field'] . '_append'] = $res;
                             }
                         }
@@ -1953,6 +1955,8 @@ JS
             $active ? __s('Rule is active') : __s('Rule is inactive'),
         );
 
+        $data['rank'] = '<span class="badge">' . $this->fields["ranking"] . '</span>';
+
         if ($display_entity) {
             $entname = htmlescape(Dropdown::getDropdownName('glpi_entities', $this->fields['entities_id']));
             if ($this->maybeRecursive() && $this->fields['is_recursive']) {
@@ -1983,7 +1987,7 @@ JS
 
         if (!isset($input['sub_type'])) {
             $input['sub_type'] = static::class;
-        } else if (static::class !== 'Rule' && $input['sub_type'] !== static::class) {
+        } elseif (static::class !== 'Rule' && $input['sub_type'] !== static::class) {
             Toolbox::logDebug(
                 sprintf(
                     'Creating a %s rule with %s subtype.',
@@ -2011,7 +2015,7 @@ JS
                 // In this case, we should use moveRule rather than updating directly.
                 $input["_ranking"] = $input['ranking'];
                 unset($input['ranking']);
-            } else if (isset($input['_ranking'])) {
+            } elseif (isset($input['_ranking'])) {
                 // Set this way from RuleCollection::moveRule to avoid infinite loop
                 $input['ranking'] = $input['_ranking'];
                 unset($input['_ranking']);
@@ -2068,7 +2072,7 @@ JS
         $iterator = $DB->request([
             'SELECT' => ['MAX' => 'ranking AS rank'],
             'FROM'   => self::getTable(),
-            'WHERE'  => ['sub_type' => $sub_type ?? static::class]
+            'WHERE'  => ['sub_type' => $sub_type ?? static::class],
         ]);
 
         if (count($iterator)) {
@@ -2116,7 +2120,6 @@ JS
             'is_tab' => true,
             'nofilter' => true,
             'nosort' => true,
-            'nopager' => true,
             'super_header' => __('Result details'),
             'columns' => [
                 'criterion' => _n('Criterion', 'Criteria', 1),
@@ -2127,16 +2130,16 @@ JS
             'entries' => $entries,
             'total_number' => count($entries),
             'filtered_number' => count($entries),
-            'showmassiveactions' => false
+            'showmassiveactions' => false,
         ]);
 
         $global_result = (isset($output["_rule_process"]) ? 1 : 0);
 
         $entries = [
             [
-                'action' => __('Validation'),
+                'action' => _n('Validation', 'Validations', 1),
                 'result' => htmlescape(Dropdown::getYesNo($global_result)),
-            ]
+            ],
         ];
         $output = $this->preProcessPreviewResults($output);
 
@@ -2160,7 +2163,7 @@ JS
             foreach ($value as $v) {
                 $entries[] = [
                     'action' => $action_def["name"],
-                    'result' => htmlescape($this->getActionValue($action_def_key, $actiontype, $v))
+                    'result' => htmlescape($this->getActionValue($action_def_key, $actiontype, $v)),
                 ];
             }
         }
@@ -2178,7 +2181,7 @@ JS
             }
             $entries[] = [
                 'action' => __('Result of the regular expression'),
-                'result' => $regex_results
+                'result' => $regex_results,
             ];
         }
 
@@ -2186,19 +2189,18 @@ JS
             'is_tab' => true,
             'nofilter' => true,
             'nosort' => true,
-            'nopager' => true,
             'super_header' => __('Rule results'),
             'columns' => [
-                'action' => __('Action'),
-                'result' => __('Result')
+                'action' => _n('Action', 'Actions', 1),
+                'result' => __('Result'),
             ],
             'formatters' => [
-                'result' => 'raw_html'
+                'result' => 'raw_html',
             ],
             'entries' => $entries,
             'total_number' => count($entries),
             'filtered_number' => count($entries),
-            'showmassiveactions' => false
+            'showmassiveactions' => false,
         ]);
     }
 
@@ -2284,7 +2286,7 @@ JS
             || ($condition == self::PATTERN_FIND)
         ) {
             return __('Yes');
-        } else if (
+        } elseif (
             in_array($condition, self::getConditionsWithComplexValues())
         ) {
             $crit = $this->getCriteria($ID);
@@ -2353,6 +2355,7 @@ JS
                             return Ticket::getStatus($pattern);
                         }
 
+                        // no break
                     case "dropdown_priority":
                         return CommonITILObject::getPriorityName($pattern);
 
@@ -2440,7 +2443,7 @@ JS
 
                 case "dropdown":
                     $param = ['name'  => $name,
-                        'value' => $value
+                        'value' => $value,
                     ];
                     if (isset($crit['condition'])) {
                         $param['condition'] = $crit['condition'];
@@ -2453,7 +2456,7 @@ JS
                 case "dropdown_users":
                     User::dropdown(['value'  => $value,
                         'name'   => $name,
-                        'right'  => 'all'
+                        'right'  => 'all',
                     ]);
                     $display = true;
                     break;
@@ -2481,7 +2484,7 @@ JS
                         Computer::class,
                         Phone::class,
                         NetworkEquipment::class,
-                        Printer::class
+                        Printer::class,
                     ];
                     Dropdown::showItemTypes($name, $itemtypes, ['value' => $value]);
                     $display = true;
@@ -2489,14 +2492,14 @@ JS
 
                 case "dropdown_urgency":
                     CommonITILObject::dropdownUrgency(['name'  => $name,
-                        'value' => $value
+                        'value' => $value,
                     ]);
                     $display = true;
                     break;
 
                 case "dropdown_impact":
                     CommonITILObject::dropdownImpact(['name'  => $name,
-                        'value' => $value
+                        'value' => $value,
                     ]);
                     $display = true;
                     break;
@@ -2504,7 +2507,7 @@ JS
                 case "dropdown_priority":
                     CommonITILObject::dropdownPriority(['name'  => $name,
                         'value' => $value,
-                        'withmajor' => true
+                        'withmajor' => true,
                     ]);
                     $display = true;
                     break;
@@ -2513,11 +2516,11 @@ JS
                     if ($this instanceof RuleCommonITILObject) {
                         $itil = $this::getItemtype();
                         $itil::dropdownStatus(['name' => $name,
-                            'value' => $value
+                            'value' => $value,
                         ]);
                     } else {
                         Ticket::dropdownStatus(['name' => $name,
-                            'value' => $value
+                            'value' => $value,
                         ]);
                     }
                     $display = true;
@@ -2541,7 +2544,7 @@ JS
                     break;
             }
         }
-       //Not a standard condition
+        //Not a standard condition
         if (!$tested) {
             $display = $this->displayAdditionalRuleCondition($condition, $crit, $name, $value, $test);
         }
@@ -2580,12 +2583,18 @@ JS
         $action = $this->getAction($ID);
         if (isset($action['type'])) {
             switch ($action['type']) {
+                case "dropdown_entity":
+                    if ($value == -1) {
+                        return __('Full structure');
+                    }
+                    // Intentional fall-through to handle dropdown cases
+                    // no break
                 case "dropdown":
                     if (in_array($type, ['defaultfromuser', 'fromuser', 'fromitem', 'firstgroupfromuser'], true)) {
                         return Dropdown::getYesNo($value);
                     }
 
-                   // $type == regex_result display text
+                    // $type == regex_result display text
                     if ($type == 'regex_result') {
                         return $this->displayAdditionRuleActionValue($value);
                     }
@@ -2597,7 +2606,7 @@ JS
                         return $value;
                     }
 
-                   // $type == assign
+                    // $type == assign
                     $name = Dropdown::getDropdownName($action["table"], $value);
                     return $name === '' ? NOT_AVAILABLE : $name;
 
@@ -2609,6 +2618,7 @@ JS
                         return Ticket::getStatus($value);
                     }
 
+                    // no break
                 case "dropdown_assign":
                 case "dropdown_users":
                 case "dropdown_users_validate":
@@ -2664,7 +2674,7 @@ JS
     {
         $conditions = array_merge([
             self::PATTERN_DOES_NOT_EXISTS,
-            self::PATTERN_EXISTS
+            self::PATTERN_EXISTS,
         ], self::getConditionsWithComplexValues());
 
         if (!in_array($condition, $conditions)) {
@@ -2691,9 +2701,7 @@ JS
      *
      * @param array $fields fields values
      **/
-    public function showSpecificCriteriasForPreview($fields)
-    {
-    }
+    public function showSpecificCriteriasForPreview($fields) {}
 
     /**
      * Function used to add specific params before rule processing
@@ -2770,7 +2778,7 @@ JS
                         $plugin,
                         "preProcessRulePreviewResults",
                         ['output' => $output,
-                            'params' => $params
+                            'params' => $params,
                         ]
                     );
                     if (is_array($results)) {
@@ -2807,10 +2815,10 @@ JS
         }
 
         $conditions = [
-            'sub_type' => $p['sub_type']
+            'sub_type' => $p['sub_type'],
         ];
         if ($p['condition'] > 0) {
-            $conditions['condition'] = ['&', (int)$p['condition']];
+            $conditions['condition'] = ['&', (int) $p['condition']];
         }
 
         $p['condition'] = $conditions;
@@ -2871,7 +2879,7 @@ JS
             $itemtype = static::getType();
         }
 
-       //Agregate all plugins criteria for this rules engine
+        //Agregate all plugins criteria for this rules engine
         $toreturn = $params;
         if (isset($PLUGIN_HOOKS['use_rules'])) {
             foreach ($PLUGIN_HOOKS['use_rules'] as $plugin => $val) {
@@ -2880,7 +2888,7 @@ JS
                 }
                 if (is_array($val) && in_array($itemtype, $val)) {
                     $results = Plugin::doOneHook($plugin, $hook, ['rule_itemtype' => $itemtype,
-                        'values'        => $params
+                        'values'        => $params,
                     ]);
                     if (is_array($results)) {
                         foreach ($results as $id => $result) {
@@ -2920,20 +2928,20 @@ JS
 
         $rules = [];
 
-       /// TODO : not working for SLALevels : no sub_type
+        /// TODO : not working for SLALevels : no sub_type
 
-       //Get all the rules whose sub_type is $sub_type and entity is $ID
+        //Get all the rules whose sub_type is $sub_type and entity is $ID
         $query = [
             'SELECT' => static::getTable() . '.id',
             'FROM'   => [
                 getTableForItemType($this->ruleactionclass),
-                static::getTable()
+                static::getTable(),
             ],
             'WHERE'  => [
                 getTableForItemType($this->ruleactionclass) . "." . $this->rules_id_field   => new QueryExpression(DBmysql::quoteName(static::getTable() . '.id')),
-                static::getTable() . '.sub_type'                                           => static::class
+                static::getTable() . '.sub_type'                                           => static::class,
 
-            ]
+            ],
         ];
 
         foreach ($crit as $field => $value) {
@@ -2965,15 +2973,15 @@ JS
                 'short'     => true,
                 'entities_id' => $item->getField('id'),
                 'params' => [
-                    'formfooter' => false
-                ]
+                    'formfooter' => false,
+                ],
             ]);
         }
 
         // Get all rules and actions
         $crit = [
             'field' => getForeignKeyFieldForTable($item->getTable()),
-            'value' => $item->getField('id')
+            'value' => $item->getField('id'),
         ];
 
         $rules = $this->getRulesForCriteria($crit);
@@ -2989,7 +2997,9 @@ JS
             $entries[] = [
                 'name' => $name,
                 'description' => $rule->fields["description"],
-                'is_active'   => Dropdown::getYesNo($rule->fields["is_active"])
+                'is_active'   => Dropdown::getYesNo($rule->fields["is_active"]),
+                'itemtype' => $rule::class,
+                'id' => $rule->fields["id"],
             ];
         }
 
@@ -2997,14 +3007,13 @@ JS
             'is_tab' => true,
             'nofilter' => true,
             'nosort' => true,
-            'nopager' => true,
             'columns' => [
                 'name' => $this->getTitle(),
                 'description' => __('Description'),
                 'is_active' => __('Active'),
             ],
             'formatters' => [
-                'name' => 'raw_html'
+                'name' => 'raw_html',
             ],
             'entries' => $entries,
             'row_class' => 'cursor-pointer',
@@ -3017,9 +3026,9 @@ JS
                 'item'          => $this,
                 'specific_actions' => [
                     'update' => _x('button', 'Update'),
-                    'purge'  => _x('button', 'Delete permanently')
-                ]
-            ]
+                    'purge'  => _x('button', 'Delete permanently'),
+                ],
+            ],
         ]);
     }
 
@@ -3028,7 +3037,7 @@ JS
         $ong = [];
         $this->addDefaultFormTab($ong);
         $this->addStandardTab(__CLASS__, $ong, $options);
-        $this->addStandardTab('Log', $ong, $options);
+        $this->addStandardTab(Log::class, $ong, $options);
 
         return $ong;
     }
@@ -3110,11 +3119,11 @@ JS
             $DB->update(
                 $table,
                 [
-                    $valfield => $item->input['_replace_by']
+                    $valfield => $item->input['_replace_by'],
                 ],
                 [
                     $valfield   => $item->getField('id'),
-                    $fieldfield => ['LIKE', $field]
+                    $fieldfield => ['LIKE', $field],
                 ]
             );
         } else {
@@ -3123,8 +3132,8 @@ JS
                 'FROM'   => $table,
                 'WHERE'  => [
                     $valfield   => $item->getField('id'),
-                    $fieldfield => ['LIKE', $field]
-                ]
+                    $fieldfield => ['LIKE', $field],
+                ],
             ]);
 
             if (count($iterator) > 0) {
@@ -3214,18 +3223,18 @@ JS
                         }
                         $collection = new RuleMailCollectorCollection();
                         if ($collection->canList()) {
-                             $types[] = 'RuleMailCollector';
+                            $types[] = 'RuleMailCollector';
                         }
                         if (count($types)) {
-                             $nb = countElementsInTable(
-                                 ['glpi_rules', 'glpi_ruleactions'],
-                                 [
-                                     'glpi_ruleactions.rules_id'   => new QueryExpression(DBmysql::quoteName('glpi_rules.id')),
-                                     'glpi_rules.sub_type'         => $types,
-                                     'glpi_ruleactions.field'      => 'entities_id',
-                                     'glpi_ruleactions.value'      => $item->getID()
-                                 ]
-                             );
+                            $nb = countElementsInTable(
+                                ['glpi_rules', 'glpi_ruleactions'],
+                                [
+                                    'glpi_ruleactions.rules_id'   => new QueryExpression(DBmysql::quoteName('glpi_rules.id')),
+                                    'glpi_rules.sub_type'         => $types,
+                                    'glpi_ruleactions.field'      => 'entities_id',
+                                    'glpi_ruleactions.value'      => $item->getID(),
+                                ]
+                            );
                         }
                     }
                     return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::class);
@@ -3236,7 +3245,7 @@ JS
                         $nb = countElementsInTable(
                             'glpi_ruleactions',
                             ['field' => $item::getFieldNames($item->fields['type'])[1],
-                                'value' => $item->getID()
+                                'value' => $item->getID(),
                             ]
                         );
                     }
@@ -3248,14 +3257,14 @@ JS
                         $nbcriteria = 0;
                         $nbaction   = 0;
                         if ($_SESSION['glpishow_count_on_tabs']) {
-                              $nbcriteria = countElementsInTable(
-                                  getTableForItemType($item->getRuleCriteriaClass()),
-                                  [$item->getRuleIdField() => $item->getID()]
-                              );
-                              $nbaction   = countElementsInTable(
-                                  getTableForItemType($item->getRuleActionClass()),
-                                  [$item->getRuleIdField() => $item->getID()]
-                              );
+                            $nbcriteria = countElementsInTable(
+                                getTableForItemType($item->getRuleCriteriaClass()),
+                                [$item->getRuleIdField() => $item->getID()]
+                            );
+                            $nbaction   = countElementsInTable(
+                                getTableForItemType($item->getRuleActionClass()),
+                                [$item->getRuleIdField() => $item->getID()]
+                            );
                         }
 
                         $ong[1] = self::createTabEntry(
@@ -3302,9 +3311,9 @@ JS
                 $mailcollector = new RuleMailCollector();
                 $mailcollector->showAndAddRuleForm($item);
             }
-        } else if ($item instanceof LevelAgreement) {
+        } elseif ($item instanceof LevelAgreement) {
             $item->showRulesList();
-        } else if ($item instanceof self) {
+        } elseif ($item instanceof self) {
             $item->getRuleWithCriteriasAndActions($item->getID(), 1, 1);
             switch ($tabnum) {
                 case 1:
@@ -3427,14 +3436,14 @@ JS
                         'glpi_rulecriterias' => [
                             'FKEY' => [
                                 'glpi_rules' => 'id',
-                                'glpi_rulecriterias' => 'rules_id'
-                            ]
-                        ]
-                    ]
+                                'glpi_rulecriterias' => 'rules_id',
+                            ],
+                        ],
+                    ],
                 ];
                 $where += [
                     'criteria' => 'itemtype',
-                    'pattern' => $itemtype
+                    'pattern' => $itemtype,
                 ];
             }
 
@@ -3455,7 +3464,7 @@ JS
             $ranking_increment = $DB->request([
                 'SELECT' => ['MAX' => 'ranking AS rank'],
                 'FROM'   => static::getTable(),
-                'WHERE'  => ['sub_type' => static::class]
+                'WHERE'  => ['sub_type' => static::class],
             ])->current()['rank'];
         }
 
@@ -3468,23 +3477,23 @@ JS
             );
         }
         foreach ($xml->xpath($xpath) as $rulexml) {
-            if ((string)$rulexml->sub_type !== self::getType()) {
+            if ((string) $rulexml->sub_type !== self::getType()) {
                 trigger_error(
                     sprintf(
                         'Unexpected rule type %s for rule `%s`.',
-                        (string)$rulexml->sub_type,
-                        (string)$rulexml->uuid
+                        (string) $rulexml->sub_type,
+                        (string) $rulexml->uuid
                     ),
                     E_USER_WARNING
                 );
                 $has_errors = true;
                 continue;
             }
-            if ((string)$rulexml->entities_id !== 'Root entity') {
+            if ((string) $rulexml->entities_id !== 'Root entity') {
                 trigger_error(
                     sprintf(
                         'Unexpected entity value for rule `%s`.',
-                        (string)$rulexml->uuid
+                        (string) $rulexml->uuid
                     ),
                     E_USER_WARNING
                 );
@@ -3496,7 +3505,7 @@ JS
 
             if (
                 $reset === false // bypass this check in reset mode to save a query
-                && $rule->getFromDBByCrit(['uuid' => (string)$rulexml->uuid])
+                && $rule->getFromDBByCrit(['uuid' => (string) $rulexml->uuid])
             ) {
                 // Rule already exists, ignore it.
                 continue;
@@ -3505,21 +3514,21 @@ JS
             $rule_input = [
                 'entities_id'  => 0, // Always add default rules to root entity
                 'sub_type'     => self::getType(),
-                'ranking'      => (int)$rulexml->ranking + $ranking_increment,
-                'name'         => (string)$rulexml->name,
-                'description'  => (string)$rulexml->description,
-                'match'        => (string)$rulexml->match,
-                'is_active'    => (int)$rulexml->is_active,
-                'comment'      => (string)$rulexml->comment,
-                'is_recursive' => (int)$rulexml->is_recursive,
-                'uuid'         => (string)$rulexml->uuid,
-                'condition'    => (string)$rulexml->condition,
+                'ranking'      => (int) $rulexml->ranking + $ranking_increment,
+                'name'         => (string) $rulexml->name,
+                'description'  => (string) $rulexml->description,
+                'match'        => (string) $rulexml->match,
+                'is_active'    => (int) $rulexml->is_active,
+                'comment'      => (string) $rulexml->comment,
+                'is_recursive' => (int) $rulexml->is_recursive,
+                'uuid'         => (string) $rulexml->uuid,
+                'condition'    => (string) $rulexml->condition,
             ];
 
             $rule_id = $rule->add($rule_input);
             if ($rule_id === false) {
                 trigger_error(
-                    sprintf('Unable to create rule `%s`.', (string)$rulexml->uuid),
+                    sprintf('Unable to create rule `%s`.', (string) $rulexml->uuid),
                     E_USER_WARNING
                 );
                 $has_errors = true;
@@ -3529,16 +3538,16 @@ JS
             foreach ($rulexml->xpath('./rulecriteria') as $criteriaxml) {
                 $criteria_input = [
                     'rules_id'  => $rule_id,
-                    'criteria'  => (string)$criteriaxml->criteria,
-                    'condition' => (string)$criteriaxml->condition,
-                    'pattern'   => (string)$criteriaxml->pattern,
+                    'criteria'  => (string) $criteriaxml->criteria,
+                    'condition' => (string) $criteriaxml->condition,
+                    'pattern'   => (string) $criteriaxml->pattern,
                 ];
 
                 $criteria = new RuleCriteria();
                 $criteria_id = $criteria->add($criteria_input);
                 if ($criteria_id === false) {
                     trigger_error(
-                        sprintf('Unable to create criteria for rule `%s`.', (string)$rulexml->uuid),
+                        sprintf('Unable to create criteria for rule `%s`.', (string) $rulexml->uuid),
                         E_USER_WARNING
                     );
                     $has_errors = true;
@@ -3549,16 +3558,16 @@ JS
             foreach ($rulexml->xpath('./ruleaction') as $actionxml) {
                 $action_input = [
                     'rules_id'    => $rule_id,
-                    'action_type' => (string)$actionxml->action_type,
-                    'field'       => (string)$actionxml->field,
-                    'value'       => (string)$actionxml->value,
+                    'action_type' => (string) $actionxml->action_type,
+                    'field'       => (string) $actionxml->field,
+                    'value'       => (string) $actionxml->value,
                 ];
 
                 $action = new RuleAction();
                 $action_id = $action->add($action_input);
                 if ($action_id === false) {
                     trigger_error(
-                        sprintf('Unable to create action for rule `%s`.', (string)$rulexml->uuid),
+                        sprintf('Unable to create action for rule `%s`.', (string) $rulexml->uuid),
                         E_USER_WARNING
                     );
                     $has_errors = true;

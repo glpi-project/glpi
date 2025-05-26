@@ -35,7 +35,7 @@
 
 class RuleTicket extends RuleCommonITILObject
 {
-   // From Rule
+    // From Rule
     public static $rightname = 'rule_ticket';
 
     public function getTitle()
@@ -122,12 +122,12 @@ class RuleTicket extends RuleCommonITILObject
                     case 'regex_result':
                         if ($action->fields["field"] == "assign_project") {
                             if (isset($this->regex_results[0])) {
-                                 $regexvalue = RuleAction::getRegexResultById(
-                                     $action->fields["value"],
-                                     $this->regex_results[0]
-                                 );
+                                $regexvalue = RuleAction::getRegexResultById(
+                                    $action->fields["value"],
+                                    $this->regex_results[0]
+                                );
                             } else {
-                                  $regexvalue = $action->fields["value"];
+                                $regexvalue = $action->fields["value"];
                             }
 
                             if (!is_null($regexvalue)) {

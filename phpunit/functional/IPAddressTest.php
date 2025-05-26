@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -45,7 +44,7 @@ class IPAddressTest extends DbTestCase
     {
         $this->login();
 
-       //first create NetworkName
+        //first create NetworkName
         $networkName = new \NetworkName();
         $networkName_id = $networkName->add(["name" => "test", "itemtype" => ""]);
         $this->assertGreaterThan(0, $networkName_id);
@@ -57,8 +56,8 @@ class IPAddressTest extends DbTestCase
             "name" => "1.0.1.0",
             "binary_0" => 0,
             "binary_1" => 0,
-            "binary_2" => 65535 ,
-            "binary_3" => 16777472
+            "binary_2" => 65535,
+            "binary_3" => 16777472,
         ];
         $IPV4ShouldWork["8.8.8.8"] = ["items_id" => $networkName_id,
             "itemtype" => "NetworkName",
@@ -66,8 +65,8 @@ class IPAddressTest extends DbTestCase
             "name" => "8.8.8.8",
             "binary_0" => 0,
             "binary_1" => 0,
-            "binary_2" => 65535 ,
-            "binary_3" => 134744072
+            "binary_2" => 65535,
+            "binary_3" => 134744072,
         ];
         $IPV4ShouldWork["100.1.2.3"] = ["items_id" => $networkName_id,
             "itemtype" => "NetworkName",
@@ -75,8 +74,8 @@ class IPAddressTest extends DbTestCase
             "name" => "100.1.2.3",
             "binary_0" => 0,
             "binary_1" => 0,
-            "binary_2" => 65535 ,
-            "binary_3" => 1677787651
+            "binary_2" => 65535,
+            "binary_3" => 1677787651,
         ];
         $IPV4ShouldWork["100.1.2.3"] = ["items_id" => $networkName_id,
             "itemtype" => "NetworkName",
@@ -84,8 +83,8 @@ class IPAddressTest extends DbTestCase
             "name" => "100.1.2.3",
             "binary_0" => 0,
             "binary_1" => 0,
-            "binary_2" => 65535 ,
-            "binary_3" => 1677787651
+            "binary_2" => 65535,
+            "binary_3" => 1677787651,
         ];
         $IPV4ShouldWork["172.15.1.2"] = ["items_id" => $networkName_id,
             "itemtype" => "NetworkName",
@@ -93,8 +92,8 @@ class IPAddressTest extends DbTestCase
             "name" => "172.15.1.2",
             "binary_0" => 0,
             "binary_1" => 0,
-            "binary_2" => 65535 ,
-            "binary_3" => 2886664450
+            "binary_2" => 65535,
+            "binary_3" => 2886664450,
         ];
         $IPV4ShouldWork["172.32.1.2"] = ["items_id" => $networkName_id,
             "itemtype" => "NetworkName",
@@ -102,8 +101,8 @@ class IPAddressTest extends DbTestCase
             "name" => "172.32.1.2",
             "binary_0" => 0,
             "binary_1" => 0,
-            "binary_2" => 65535 ,
-            "binary_3" => 2887778562
+            "binary_2" => 65535,
+            "binary_3" => 2887778562,
         ];
         $IPV4ShouldWork["192.167.1.8"] = ["items_id" => $networkName_id,
             "itemtype" => "NetworkName",
@@ -111,8 +110,8 @@ class IPAddressTest extends DbTestCase
             "name" => "192.167.1.8",
             "binary_0" => 0,
             "binary_1" => 0,
-            "binary_2" => 65535 ,
-            "binary_3" => 3232170248
+            "binary_2" => 65535,
+            "binary_3" => 3232170248,
         ];
         $IPV4ShouldWork["::ffff:192.168.0.1"] = ["items_id" => $networkName_id,
             "itemtype" => "NetworkName",
@@ -120,22 +119,22 @@ class IPAddressTest extends DbTestCase
             "name" => "::ffff:192.168.0.1",
             "binary_0" => 0,
             "binary_1" => 0,
-            "binary_2" => 65535 ,
-            "binary_3" => 3232235521
+            "binary_2" => 65535,
+            "binary_3" => 3232235521,
         ];
 
-       //try to create each IPV4
+        //try to create each IPV4
         foreach ($IPV4ShouldWork as $name => $expected) {
             $ipAdress = new \IPAddress();
             $input = [
                 "name" => $name,
                 "itemtype" => "NetworkName",
-                "items_id" => "$networkName_id"
+                "items_id" => "$networkName_id",
             ];
             $id = $ipAdress->add($input);
             $this->assertGreaterThan(0, $id);
 
-           //check name store in DB
+            //check name store in DB
             $all_IP = getAllDataFromTable('glpi_ipaddresses', ['ORDER' => 'id']);
             $currentIP = end($all_IP);
             unset($currentIP['id']);
@@ -166,7 +165,7 @@ class IPAddressTest extends DbTestCase
             $id = $ipAdress->add([
                 "name" => $name,
                 "itemtype" => "NetworkName",
-                "items_id" => "$networkName_id"
+                "items_id" => "$networkName_id",
             ]);
 
             $expectedSession = [];
@@ -184,7 +183,7 @@ class IPAddressTest extends DbTestCase
     {
         $this->login();
 
-       //first create NetworkName
+        //first create NetworkName
         $networkName = new \NetworkName();
         $networkName_id = $networkName->add(["name" => "test", "itemtype" => ""]);
         $this->assertGreaterThan(0, $networkName_id);
@@ -197,7 +196,7 @@ class IPAddressTest extends DbTestCase
             "binary_0" => 1509621760,
             "binary_1" => 0,
             "binary_2" => 4101,
-            "binary_3" => 3428279665
+            "binary_3" => 3428279665,
         ];
         $IPV6ShouldWork["21e5:69aa:ffff:1:e100:b691:1285:f56e"] = ["items_id" => $networkName_id,
             "itemtype" => "NetworkName",
@@ -206,7 +205,7 @@ class IPAddressTest extends DbTestCase
             "binary_0" => 568682922,
             "binary_1" => 4294901761,
             "binary_2" => 3774920337,
-            "binary_3" => 310769006
+            "binary_3" => 310769006,
         ];
         $IPV6ShouldWork["::1"] = ["items_id" => $networkName_id,
             "itemtype" => "NetworkName",
@@ -215,7 +214,7 @@ class IPAddressTest extends DbTestCase
             "binary_0" => 0,
             "binary_1" => 0,
             "binary_2" => 0,
-            "binary_3" => 1
+            "binary_3" => 1,
         ];
         $IPV6ShouldWork["2001:db8:0:85a3:0:0:ac1f:8001"] = ["items_id" => $networkName_id,
             "itemtype" => "NetworkName",
@@ -224,7 +223,7 @@ class IPAddressTest extends DbTestCase
             "binary_0" => 536939960,
             "binary_1" => 34211,
             "binary_2" => 0,
-            "binary_3" => 2887745537
+            "binary_3" => 2887745537,
         ];
         $IPV6ShouldWork["2001:db8:1f89:ffff:ffff:ffff:ffff:ffff"] = ["items_id" => $networkName_id,
             "itemtype" => "NetworkName",
@@ -233,21 +232,21 @@ class IPAddressTest extends DbTestCase
             "binary_0" => 536939960,
             "binary_1" => 529137663,
             "binary_2" => 4294967295,
-            "binary_3" => 4294967295
+            "binary_3" => 4294967295,
         ];
 
-       //try to create each IPV6
+        //try to create each IPV6
         foreach ($IPV6ShouldWork as $name => $expected) {
             $ipAdress = new \IPAddress();
             $input = [
                 "name" => $name,
                 "itemtype" => "NetworkName",
-                "items_id" => "$networkName_id"
+                "items_id" => "$networkName_id",
             ];
             $id = $ipAdress->add($input);
             $this->assertGreaterThan(0, $id);
 
-           //check name store in DB
+            //check name store in DB
             $all_IP = getAllDataFromTable('glpi_ipaddresses', ['ORDER' => 'id']);
             $currentIP = end($all_IP);
             unset($currentIP['id']);
@@ -258,7 +257,7 @@ class IPAddressTest extends DbTestCase
             unset($currentIP['is_dynamic']);
             unset($currentIP['mainitems_id']);
             unset($currentIP['mainitemtype']);
-           //var_dump($currentIP);
+            //var_dump($currentIP);
             $this->assertSame($expected, $currentIP);
         }
 
@@ -272,7 +271,7 @@ class IPAddressTest extends DbTestCase
             "::1111:2222:3333:4444:5555:6666::", //double "::"
             "", //empty "::"
             "1:2:3::4:5::7:8",  // Double "::""
-            "12345::6:7:8" //more than 4 digit
+            "12345::6:7:8", //more than 4 digit
         ];
 
         unset($_SESSION['glpicronuserrunning']);
@@ -281,7 +280,7 @@ class IPAddressTest extends DbTestCase
             $id = $ipAdress->add([
                 "name" => $name,
                 "itemtype" => "NetworkName",
-                "items_id" => "$networkName_id"
+                "items_id" => "$networkName_id",
             ]);
 
             $expectedSession = [];

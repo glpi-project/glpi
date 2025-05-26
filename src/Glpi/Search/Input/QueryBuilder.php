@@ -36,7 +36,7 @@
 namespace Glpi\Search\Input;
 
 use AllAssets;
-use GLPI;
+use Glpi\Application\Environment;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Search\SearchEngine;
 use Glpi\Search\SearchOption;
@@ -85,6 +85,7 @@ final class QueryBuilder implements SearchInputInterface
         $p['showmassiveactions']            = true;
         $p['extra_actions_templates']       = [];
         $p['hide_criteria']                 = $params['hide_criteria'] ?? false;
+        $p['is_criteria_filter']            = $params['is_criteria_filter'] ?? false;
 
         foreach ($params as $key => $val) {
             $p[$key] = $val;
@@ -303,13 +304,13 @@ final class QueryBuilder implements SearchInputInterface
                             break;
 
                         case "glpi_users.name":
-                            $options2['right']            = (isset($searchopt['right']) ? $searchopt['right'] : 'all');
+                            $options2['right']            = ($searchopt['right'] ?? 'all');
                             $options2['inactive_deleted'] = 1;
                             $searchopt['toadd'] = [
                                 [
                                     'id'    => 'myself',
                                     'text'  => __('Myself'),
-                                ]
+                                ],
                             ];
 
                             break;
@@ -344,7 +345,7 @@ final class QueryBuilder implements SearchInputInterface
                                 'name'           => $inputname,
                                 'searchtype'     => $request['searchtype'],
                                 'searchoption'   => $searchopt,
-                                'value'          => $request['value']
+                                'value'          => $request['value'],
                             ]
                         );
                     }
@@ -405,7 +406,7 @@ final class QueryBuilder implements SearchInputInterface
         $normalized_itemtype = Toolbox::getNormalizedItemtype($request["itemtype"]);
         $rowid       = 'searchrow' . $normalized_itemtype . $randrow;
         $prefix      = isset($p['prefix_crit']) ? htmlescape($p['prefix_crit']) : '';
-        $parents_num = isset($p['parents_num']) ? $p['parents_num'] : [];
+        $parents_num = $p['parents_num'] ?? [];
         $criteria    = [];
         $from_meta   = isset($request['from_meta']) && $request['from_meta'];
 
@@ -431,7 +432,7 @@ final class QueryBuilder implements SearchInputInterface
             // print groups
             if (!is_array($val)) {
                 $group = $val;
-            } else if (count($val) == 1) {
+            } elseif (count($val) == 1) {
                 $group = $val['name'];
             } else {
                 if (
@@ -495,7 +496,7 @@ final class QueryBuilder implements SearchInputInterface
         $p            = $request['p'];
         $num          = (int) $request['num'];
         $prefix       = isset($p['prefix_crit']) ? htmlescape($p['prefix_crit']) : '';
-        $parents_num  = isset($p['parents_num']) ? $p['parents_num'] : [];
+        $parents_num  = $p['parents_num'] ?? [];
         $itemtype     = $request["itemtype"];
         $metacriteria = self::findCriteriaInSession($itemtype, $num, $parents_num);
 
@@ -578,7 +579,7 @@ final class QueryBuilder implements SearchInputInterface
             // print groups
             if (!is_array($val)) {
                 $group = $val;
-            } else if (count($val) == 1) {
+            } elseif (count($val) == 1) {
                 $group = $val['name'];
             } else {
                 if (
@@ -617,7 +618,7 @@ final class QueryBuilder implements SearchInputInterface
         $randrow     = mt_rand();
         $rowid       = 'searchrow' . Toolbox::getNormalizedItemtype($request['itemtype']) . $randrow;
         $prefix      = isset($p['prefix_crit']) ? htmlescape($p['prefix_crit']) : '';
-        $parents_num = isset($p['parents_num']) ? $p['parents_num'] : [];
+        $parents_num = $p['parents_num'] ?? [];
 
         if (!$criteria = self::findCriteriaInSession($request['itemtype'], $num, $parents_num)) {
             $criteria = [
@@ -685,7 +686,7 @@ final class QueryBuilder implements SearchInputInterface
         $default_values["unpublished"] = 1;
 
         if (isset($params['start'])) {
-            $params['start'] = (int)$params['start'];
+            $params['start'] = (int) $params['start'];
         }
 
         $default_values["criteria"]     = self::getDefaultCriteria($itemtype);
@@ -836,17 +837,17 @@ final class QueryBuilder implements SearchInputInterface
     public static function cleanParams(array $params): array
     {
         $int_params = [
-            'sort'
+            'sort',
         ];
 
         foreach ($params as $key => &$val) {
             if (in_array($key, $int_params)) {
                 if (is_array($val)) {
                     foreach ($val as &$subval) {
-                        $subval = (int)$subval;
+                        $subval = (int) $subval;
                     }
                 } else {
-                    $val = (int)$val;
+                    $val = (int) $val;
                 }
             }
         }
@@ -876,7 +877,7 @@ final class QueryBuilder implements SearchInputInterface
                     $invalid_criteria[] = (int) $criterion['field'];
                     unset($params['criteria'][$k]);
                 }
-            } else if (!isset($valid_main_opts[(int) $criterion['field']])) {
+            } elseif (!isset($valid_main_opts[(int) $criterion['field']])) {
                 $invalid_criteria[] = (int) $criterion['field'];
                 unset($params['criteria'][$k]);
             }
@@ -903,7 +904,10 @@ final class QueryBuilder implements SearchInputInterface
         if (!($params['silent_validation'] ?? false) && count($invalid_criteria) > 0) {
             // There is probably no need to show more information about the invalid criteria
             Session::addMessageAfterRedirect(__s('Some search criteria were removed because they are invalid'), false, WARNING);
-            if (GLPI_ENVIRONMENT_TYPE === GLPI::ENV_DEVELOPMENT || $_SESSION['glpi_use_mode'] === Session::DEBUG_MODE) {
+            if (
+                Environment::get()->shouldEnableExtraDevAndDebugTools()
+                || $_SESSION['glpi_use_mode'] === Session::DEBUG_MODE
+            ) {
                 trigger_error(
                     'Attempted to use invalid search options from itemtype: "' . $params['itemtype'] . '" with IDs ' . implode(', ', $invalid_criteria),
                     E_USER_WARNING
@@ -958,8 +962,8 @@ final class QueryBuilder implements SearchInputInterface
                 'link'       => 'AND',
                 'field'      => $field,
                 'searchtype' => 'contains',
-                'value'      => ''
-            ]
+                'value'      => '',
+            ],
         ];
     }
 

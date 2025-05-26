@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -36,6 +35,7 @@
 namespace tests\units\Glpi;
 
 use DbTestCase;
+use Glpi\Asset\Capacity;
 use Glpi\Asset\Capacity\HasSocketCapacity;
 use Glpi\Features\Clonable;
 use Glpi\Socket;
@@ -48,7 +48,7 @@ class SocketTest extends DbTestCase
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        $this->initAssetDefinition(capacities: [HasSocketCapacity::class]);
+        $this->initAssetDefinition(capacities: [new Capacity(name: HasSocketCapacity::class)]);
 
         $this->login(); // tab will be available only if corresponding right is available in the current session
 
@@ -68,7 +68,7 @@ class SocketTest extends DbTestCase
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        $this->initAssetDefinition(capacities: [HasSocketCapacity::class]);
+        $this->initAssetDefinition(capacities: [new Capacity(name: HasSocketCapacity::class)]);
 
         foreach ($CFG_GLPI['socket_types'] as $itemtype) {
             if (!Toolbox::hasTrait($itemtype, Clonable::class)) {

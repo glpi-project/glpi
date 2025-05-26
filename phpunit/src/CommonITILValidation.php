@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -58,7 +57,7 @@ abstract class CommonITILValidation extends DbTestCase
     public static function testComputeValidationProvider(): array
     {
         return [
-         // 100% validation required
+            // 100% validation required
             [
                 'accepted'           => 0,
                 'refused'            => 0,
@@ -89,7 +88,7 @@ abstract class CommonITILValidation extends DbTestCase
                 'validation_percent' => 100,
                 'result'             => \CommonITILValidation::REFUSED,
             ],
-         // 50% validation required
+            // 50% validation required
             [
                 'accepted'           => 0,
                 'refused'            => 0,
@@ -126,7 +125,7 @@ abstract class CommonITILValidation extends DbTestCase
                 'validation_percent' => 50,
                 'result'             => \CommonITILValidation::REFUSED,
             ],
-         // 0% validation required
+            // 0% validation required
             [
                 'accepted'           => 0,
                 'refused'            => 0,
@@ -177,24 +176,24 @@ abstract class CommonITILValidation extends DbTestCase
         $this->assertGreaterThan(0, $itil_items_id);
 
         $validation_class = $this->getTestedClass();
-        $validation = new $validation_class();
 
         // Test the current user cannot approve since there are no approvals
-        $this->assertFalse($validation::canValidate($itil_items_id));
+        $this->assertFalse($validation_class::canValidate($itil_items_id));
 
         // Add user approval for current user
-        $validations_id_1 = $validation->add([
+        $validation_1 = new $validation_class();
+        $validations_id_1 = $validation_1->add([
             $itil_class::getForeignKeyField()   => $itil_items_id,
             'itemtype_target'                   => 'User',
             'items_id_target'                   => $_SESSION['glpiID'],
             'comment_submission'                => __FUNCTION__,
         ]);
         $this->assertGreaterThan(0, $validations_id_1);
-        $this->assertTrue($validation::canValidate($itil_items_id));
+        $this->assertTrue($validation_class::canValidate($itil_items_id));
 
         // Add user approval for other user
-        $validation = new $validation_class();
-        $validations_id_2 = $validation->add([
+        $validation_2 = new $validation_class();
+        $validations_id_2 = $validation_2->add([
             $itil_class::getForeignKeyField()   => $itil_items_id,
             'itemtype_target'                   => 'User',
             'items_id_target'                   => \User::getIdByName('normal'), // Other user.
@@ -203,11 +202,15 @@ abstract class CommonITILValidation extends DbTestCase
         $this->assertGreaterThan(0, $validations_id_2);
 
         // Test the current user can still approve since they still have an approval
-        $this->assertTrue($validation::canValidate($itil_items_id));
+        $this->assertTrue($validation_class::canValidate($itil_items_id));
+        // Test the current user can specifically approve their own approval
+        $this->assertTrue($validation_1->canAnswer());
+        // Test the current user cannot approve the other user's approval
+        $this->assertFalse($validation_2->canAnswer());
         // Remove user approval for current user
-        $this->assertTrue($validation->delete(['id' => $validations_id_1]));
+        $this->assertTrue($validation_1->delete(['id' => $validations_id_1]));
         // Test the current user cannot still approve since the remaining approval isn't for them
-        $this->assertFalse($validation::canValidate($itil_items_id));
+        $this->assertFalse($validation_class::canValidate($itil_items_id));
 
         // Test the current user, as a substitute of the validator, can approve
         // without substitution period
@@ -224,7 +227,7 @@ abstract class CommonITILValidation extends DbTestCase
             'substitution_start_date' => 'NULL',
             'substitution_end_date' => 'NULL',
         ]);
-        $this->assertTrue($validation::canValidate($itil_items_id));
+        $this->assertTrue($validation_class::canValidate($itil_items_id));
 
         // Test the current user, as a substitute of the validator, can approve
         // with substitution period start date only
@@ -234,7 +237,7 @@ abstract class CommonITILValidation extends DbTestCase
             'substitution_start_date' => '2021-01-01 00:00:00',
             'substitution_end_date' => 'NULL',
         ]);
-        $this->assertTrue($validation::canValidate($itil_items_id));
+        $this->assertTrue($validation_class::canValidate($itil_items_id));
 
         // Test the current user, as a substitute of the validator, can approve
         // with substitution period start date only excluding now
@@ -244,7 +247,7 @@ abstract class CommonITILValidation extends DbTestCase
             'substitution_start_date' => (new \DateTime())->modify("+1 month")->format("Y-m-d h:i:s"),
             'substitution_end_date' => 'NULL',
         ]);
-        $this->assertFalse($validation::canValidate($itil_items_id));
+        $this->assertFalse($validation_class::canValidate($itil_items_id));
 
         // Test the current user, as a substitute of the validator, can approve
         // with substitution period end date only
@@ -254,7 +257,7 @@ abstract class CommonITILValidation extends DbTestCase
             'substitution_start_date' => 'NULL',
             'substitution_end_date' => (new \DateTime())->modify("+1 month")->format("Y-m-d h:i:s"),
         ]);
-        $this->assertTrue($validation::canValidate($itil_items_id));
+        $this->assertTrue($validation_class::canValidate($itil_items_id));
 
         // Test the current user, as a substitute of the validator, can approve
         // with substitution period end date only excluding now
@@ -264,7 +267,7 @@ abstract class CommonITILValidation extends DbTestCase
             'substitution_start_date' => 'NULL',
             'substitution_end_date' => '2021-01-01 00:00:00',
         ]);
-        $this->assertFalse($validation::canValidate($itil_items_id));
+        $this->assertFalse($validation_class::canValidate($itil_items_id));
 
         // Test the current user, as a substitute of the validator, can approve
         // with substitution period
@@ -274,7 +277,7 @@ abstract class CommonITILValidation extends DbTestCase
             'substitution_start_date' => '2021-01-01 00:00:00',
             'substitution_end_date' => (new \DateTime())->modify("+1 month")->format("Y-m-d h:i:s"),
         ]);
-        $this->assertTrue($validation::canValidate($itil_items_id));
+        $this->assertTrue($validation_class::canValidate($itil_items_id));
 
         // Test the current user, as a substitute of the validator, can approve
         // with substitution period
@@ -284,7 +287,7 @@ abstract class CommonITILValidation extends DbTestCase
             'substitution_start_date' => '2021-01-01 00:00:00',
             'substitution_end_date' => (new \DateTime())->modify("-1 month")->format("Y-m-d h:i:s"),
         ]);
-        $this->assertFalse($validation::canValidate($itil_items_id));
+        $this->assertFalse($validation_class::canValidate($itil_items_id));
     }
 
     public function testCanValidateGroup()
@@ -564,7 +567,7 @@ abstract class CommonITILValidation extends DbTestCase
                     'status' => \CommonITILValidation::ACCEPTED,
                     'validation_date' => '_CURRENT_TIME_',
                 ],
-            ]
+            ],
         ];
     }
 
@@ -585,7 +588,7 @@ abstract class CommonITILValidation extends DbTestCase
                 // Using placeholder for current user as the session is started after the data in retrieved from the provider
                 if ($v === '_CURRENT_USER_') {
                     $array[$k] = \Session::getLoginUserID();
-                } else if ($v === '_CURRENT_TIME_') {
+                } elseif ($v === '_CURRENT_TIME_') {
                     $array[$k] = $_SESSION["glpi_currenttime"];
                 }
             }
@@ -617,6 +620,33 @@ abstract class CommonITILValidation extends DbTestCase
         } else {
             $this->assertFalse($validation->prepareInputForUpdate($input));
         }
+    }
+
+    public function testPrepareInputForUpdateNotMineToAnswer()
+    {
+        $this->login();
+
+        /** @var class-string<\CommonITILValidation> $validation_class */
+        $validation_class = $this->getTestedClass();
+        $itilobject = new ($validation_class::$itemtype)();
+        $itil_id = $itilobject->add([
+            'name' => __FUNCTION__,
+            'content' => __FUNCTION__,
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+        $validation = new $validation_class();
+        $notmine_validation = $validation->add([
+            $validation::$items_id => $itil_id,
+            'itemtype_target' => 'User',
+            'items_id_target' => \User::getIdByName('normal'),
+            'status' => \TicketValidation::WAITING,
+        ]);
+        $validation->getFromDB($notmine_validation);
+        $input = $validation->prepareInputForUpdate([
+            'status' => \CommonITILValidation::ACCEPTED,
+            'comment_validation' => 'test',
+        ]);
+        $this->assertEmpty($input);
     }
 
     public static function getHistoryChangeWhenUpdateFieldProvider()
@@ -656,7 +686,7 @@ abstract class CommonITILValidation extends DbTestCase
                 ],
                 'field'    => 'validation_comment',
                 'expected' => [],
-            ]
+            ],
         ];
     }
 
@@ -704,7 +734,7 @@ abstract class CommonITILValidation extends DbTestCase
                 ],
                 'case'    => 'delete',
                 'expected' => sprintf(__('Cancel the approval request to %s'), '_test_group_1'),
-            ]
+            ],
         ];
     }
 

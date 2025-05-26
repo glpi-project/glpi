@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -53,7 +52,7 @@ class ComputerTest extends \FrontBaseClass
                 'name' => 'A test > computer & name',
                 'uuid' => 'thetestuuidtoremove',
                 'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
-                '_glpi_csrf_token' => $crawler->filter('input[name=_glpi_csrf_token]')->attr('value')
+                '_glpi_csrf_token' => $crawler->filter('input[name=_glpi_csrf_token]')->attr('value'),
             ]
         );
 

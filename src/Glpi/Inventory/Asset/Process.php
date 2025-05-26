@@ -38,7 +38,6 @@ namespace Glpi\Inventory\Asset;
 
 use Glpi\Inventory\Conf;
 use Item_Process;
-use Toolbox;
 
 class Process extends InventoryAsset
 {
@@ -88,8 +87,8 @@ class Process extends InventoryAsset
             'FROM'   => Item_Process::getTable(),
             'WHERE'  => [
                 'items_id' => $this->item->fields['id'],
-                'itemtype' => $this->item->getType()
-            ]
+                'itemtype' => $this->item->getType(),
+            ],
         ]);
         foreach ($iterator as $data) {
             $dbid = $data['id'];
@@ -118,7 +117,7 @@ class Process extends InventoryAsset
             foreach ($db_itemProcess as $keydb => $arraydb) {
                 unset($arraydb['is_dynamic']);
                 if ($db_elt == $arraydb) {
-                    $input = (array)$val + [
+                    $input = (array) $val + [
                         'id'           => $keydb,
                     ];
                     $itemProcess->update($input);
@@ -130,7 +129,7 @@ class Process extends InventoryAsset
         }
 
         if ((!$this->main_asset || !$this->main_asset->isPartial()) && count($db_itemProcess) != 0) {
-           // Delete Item_Process in DB
+            // Delete Item_Process in DB
             foreach ($db_itemProcess as $dbid => $data) {
                 if ($data['is_dynamic'] == 1) {
                     //Delete only dynamics
@@ -140,9 +139,9 @@ class Process extends InventoryAsset
         }
         if (count($value)) {
             foreach ($value as $val) {
-                $input = (array)$val + [
+                $input = (array) $val + [
                     'items_id'     => $this->item->fields['id'],
-                    'itemtype'     => $this->item->getType()
+                    'itemtype'     => $this->item->getType(),
                 ];
 
                 $itemProcess->add($input);

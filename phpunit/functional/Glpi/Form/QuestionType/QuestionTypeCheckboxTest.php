@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -36,8 +35,8 @@
 namespace tests\units\Glpi\Form\QuestionType;
 
 use DbTestCase;
-use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\QuestionType\QuestionTypeCheckbox;
+use Glpi\Form\QuestionType\QuestionTypeSelectableExtraDataConfig;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
 
@@ -51,14 +50,18 @@ final class QuestionTypeCheckboxTest extends DbTestCase
         $builder->addQuestion(
             name: "Shopping list",
             type: QuestionTypeCheckbox::class,
-            extra_data: json_encode([
-                'options' => ['Bread', 'Milk', 'Cheese', 'Eggs', 'Butter'],
-            ])
+            extra_data: json_encode(new QuestionTypeSelectableExtraDataConfig([
+                'bread'  => 'Bread',
+                'milk'   => 'Milk',
+                'cheese' => 'Cheese',
+                'eggs'   => 'Eggs',
+                'butter' => 'Butter',
+            ]))
         );
         $form = $this->createForm($builder);
 
         $ticket = $this->sendFormAndGetCreatedTicket($form, [
-            "Shopping list" => ['Bread', 'Milk', 'Cheese'],
+            "Shopping list" => ['bread', 'milk', 'cheese'],
         ]);
 
         $this->assertStringContainsString(

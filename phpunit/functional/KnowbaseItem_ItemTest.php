@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -36,6 +35,7 @@
 namespace test\units;
 
 use DbTestCase;
+use Glpi\Asset\Capacity;
 use Glpi\Asset\Capacity\HasKnowbaseCapacity;
 use Glpi\Features\Clonable;
 use KnowbaseItem_Item;
@@ -48,7 +48,7 @@ class KnowbaseItem_ItemTest extends DbTestCase
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        $this->initAssetDefinition(capacities: [HasKnowbaseCapacity::class]);
+        $this->initAssetDefinition(capacities: [new Capacity(name: HasKnowbaseCapacity::class)]);
 
         $this->login(); // tab will be available only if corresponding right is available in the current session
 
@@ -68,7 +68,7 @@ class KnowbaseItem_ItemTest extends DbTestCase
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        $this->initAssetDefinition(capacities: [HasKnowbaseCapacity::class]);
+        $this->initAssetDefinition(capacities: [new Capacity(name: HasKnowbaseCapacity::class)]);
 
         foreach ($CFG_GLPI['kb_types'] as $itemtype) {
             if (!Toolbox::hasTrait($itemtype, Clonable::class)) {
@@ -110,7 +110,7 @@ class KnowbaseItem_ItemTest extends DbTestCase
             2 => [
                 'id'       => '_ticket03',
                 'itemtype' => \Ticket::getType(),
-            ]
+            ],
         ];
 
         foreach ($expecteds as $key => $expected) {
@@ -127,7 +127,7 @@ class KnowbaseItem_ItemTest extends DbTestCase
             1 => [
                 'id'       => '_ticket02',
                 'itemtype' => \Ticket::getType(),
-            ]
+            ],
         ];
 
         foreach ($expecteds as $key => $expected) {
@@ -147,7 +147,7 @@ class KnowbaseItem_ItemTest extends DbTestCase
             1 => [
                 'id'       => '_test_pc21',
                 'itemtype' => \Computer::getType(),
-            ]
+            ],
         ];
 
         foreach ($expecteds as $key => $expected) {

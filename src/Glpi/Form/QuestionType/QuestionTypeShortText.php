@@ -36,12 +36,15 @@
 namespace Glpi\Form\QuestionType;
 
 use Glpi\DBAL\JsonFieldInterface;
-use Glpi\Form\Condition\ConditionHandler\ConditionHandlerInterface;
 use Glpi\Form\Condition\ConditionHandler\StringConditionHandler;
 use Glpi\Form\Condition\UsedAsCriteriaInterface;
+use Glpi\Form\Question;
+use Glpi\ItemTranslation\Context\TranslationHandler;
 use Override;
 
-final class QuestionTypeShortText extends AbstractQuestionTypeShortAnswer implements UsedAsCriteriaInterface
+final class QuestionTypeShortText extends AbstractQuestionTypeShortAnswer implements
+    UsedAsCriteriaInterface,
+    TranslationAwareQuestionType
 {
     #[Override]
     public function getInputType(): string
@@ -68,9 +71,22 @@ final class QuestionTypeShortText extends AbstractQuestionTypeShortAnswer implem
     }
 
     #[Override]
-    public function getConditionHandler(
+    public function getConditionHandlers(
         ?JsonFieldInterface $question_config
-    ): ConditionHandlerInterface {
-        return new StringConditionHandler();
+    ): array {
+        return array_merge(parent::getConditionHandlers($question_config), [new StringConditionHandler()]);
+    }
+
+    #[Override]
+    public function listTranslationsHandlers(Question $question): array
+    {
+        return [
+            new TranslationHandler(
+                item: $question,
+                key: Question::TRANSLATION_KEY_DEFAULT_VALUE,
+                name: __('Default value'),
+                value: $question->fields['default_value'] ?? '',
+            ),
+        ];
     }
 }

@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -86,7 +85,7 @@ foreach ($fkey_config_fields as $fkey_config_field) {
             [
                 // 0 value for root entity
                 'update'    => '0',
-                'condition' => 'WHERE `id` = 0'
+                'condition' => 'WHERE `id` = 0',
             ]
         );
         $migration->migrationOneTable('glpi_entities'); // Ensure strategy field is created to be able to fill it
@@ -126,7 +125,7 @@ foreach ($fkey_config_fields as $fkey_config_field) {
                 'after'     => "anonymize_support_agents",
                 'value'     => -2,               // Inherit as default value
                 'update'    => '1',              // Enabled for root entity
-                'condition' => 'WHERE `id` = 0'
+                'condition' => 'WHERE `id` = 0',
             ]
         );
     }
@@ -152,7 +151,7 @@ if (!$DB->fieldExists("glpi_entities", "certificates_alert_repeat_interval")) {
             'after'     => "send_certificates_alert_before_delay",
             'value'     => -2,               // Inherit as default value
             'update'    => '0',              // Disabled for root entity
-            'condition' => 'WHERE `id` = 0'
+            'condition' => 'WHERE `id` = 0',
         ]
     );
 }

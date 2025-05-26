@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -44,7 +43,7 @@ class LogsWriteAccessTest extends \GLPITestCase
 {
     public function testCheckOnExistingWritableDir()
     {
-        vfsStream::setup('root', 0777, []);
+        vfsStream::setup('root', 0o777, []);
 
         $logger = new Logger('test_log');
         $logger->pushHandler(new StreamHandler(vfsStream::url('root/test.log')));
@@ -59,7 +58,7 @@ class LogsWriteAccessTest extends \GLPITestCase
 
     public function testCheckOnExistingProtectedDir()
     {
-        vfsStream::setup('root', 0555, []);
+        vfsStream::setup('root', 0o555, []);
 
         $logger = new Logger('test_log');
         $logger->pushHandler(new StreamHandler(vfsStream::url('root/test.log')));

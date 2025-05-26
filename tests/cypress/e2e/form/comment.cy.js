@@ -6,7 +6,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -44,8 +43,8 @@ describe('Comment form', () => {
             const tab = 'Glpi\\Form\\Form$main';
             cy.visit(`/front/form/form.form.php?id=${form_id}&forcetab=${tab}`);
 
-            // Add a new comment
-            cy.findByRole("button", { name: "Add a new comment" }).should('exist').click();
+            // Add a comment
+            cy.findByRole("button", { name: "Add a comment" }).should('exist').click();
         });
     });
 

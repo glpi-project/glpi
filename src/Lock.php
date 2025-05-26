@@ -119,13 +119,13 @@ TWIG;
                     'OR' => [
                         [
                             $lockedfield_table . '.itemtype'  => $itemtype,
-                            $lockedfield_table . '.items_id'  => $ID
+                            $lockedfield_table . '.items_id'  => $ID,
                         ], [
                             $lockedfield_table . '.itemtype'  => $itemtype,
-                            $lockedfield_table . '.is_global' => 1
-                        ]
-                    ]
-                ]
+                            $lockedfield_table . '.is_global' => 1,
+                        ],
+                    ],
+                ],
             ]);
 
             // get locked field for other lockable object
@@ -139,21 +139,21 @@ TWIG;
                         $lockable_itemtype_table   => [
                             'FKEY'   => [
                                 $lockedfield_table  => 'items_id',
-                                $lockable_itemtype_table   => 'id'
-                            ]
-                        ]
+                                $lockable_itemtype_table   => 'id',
+                            ],
+                        ],
                     ],
                     'WHERE'  => [
                         'OR' => [
                             [
                                 $lockedfield_table . '.itemtype'  => $lockable_itemtype,
-                                $lockedfield_table . '.items_id'  => new QueryExpression($DB::quoteName($lockable_itemtype_table . '.id'))
+                                $lockedfield_table . '.items_id'  => new QueryExpression($DB::quoteName($lockable_itemtype_table . '.id')),
                             ], [
                                 $lockedfield_table . '.itemtype'  => $lockable_itemtype,
-                                $lockedfield_table . '.is_global' => 1
-                            ]
-                        ]
-                    ]
+                                $lockedfield_table . '.is_global' => 1,
+                            ],
+                        ],
+                    ],
                 ];
 
                 if ($lockable_object instanceof CommonDBConnexity) {
@@ -164,7 +164,7 @@ TWIG;
                     $query['WHERE'][] = $connexity_criteria['WHERE'];
                     if ($lockable_object->isField('is_deleted')) {
                         $query['WHERE'][] = [
-                            $lockable_object::getTableField('is_deleted') => 0
+                            $lockable_object::getTableField('is_deleted') => 0,
                         ];
                     }
                 } elseif (in_array($lockable_itemtype, $CFG_GLPI['directconnect_types'], true)) {
@@ -173,22 +173,22 @@ TWIG;
                     [
                         'FKEY'   => [
                             Asset_PeripheralAsset::getTable() => 'items_id_peripheral',
-                            $lockable_itemtype::getTable()    => 'id'
-                        ]
+                            $lockable_itemtype::getTable()    => 'id',
+                        ],
                     ];
                     $query['WHERE'][] = [
                         Asset_PeripheralAsset::getTable() . '.' . 'itemtype_asset' => $itemtype,
                         Asset_PeripheralAsset::getTable() . '.' . 'items_id_asset' => $ID,
-                        Asset_PeripheralAsset::getTable() . '.is_deleted'          => 0
+                        Asset_PeripheralAsset::getTable() . '.is_deleted'          => 0,
                     ];
                 } elseif ($lockable_object->isField('itemtype') && $lockable_object->isField('items_id')) {
                     $query['WHERE'][] = [
                         $lockable_itemtype::getTable() . '.itemtype'  => $itemtype,
-                        $lockable_itemtype::getTable() . '.items_id'  => $ID
+                        $lockable_itemtype::getTable() . '.items_id'  => $ID,
                     ];
                     if ($lockable_object->isField('is_deleted')) {
                         $query['WHERE'][] = [
-                            $lockable_object::getTableField('is_deleted') => 0
+                            $lockable_object::getTableField('is_deleted') => 0,
                         ];
                     }
                 }
@@ -197,7 +197,7 @@ TWIG;
 
             $union = new QueryUnion($subquery);
             $locked_iterator = $DB->request([
-                'FROM' => $union
+                'FROM' => $union,
             ]);
 
             //get fields labels
@@ -208,7 +208,7 @@ TWIG;
                 if (isset($search_option['table']) && $search_option['table'] === getTableForItemType($itemtype)) {
                     if (isset($search_option['linkfield'])) {
                         $so_fields[$search_option['linkfield']] = $search_option['name'];
-                    } else if (isset($search_option['field'])) {
+                    } elseif (isset($search_option['field'])) {
                         $so_fields[$search_option['field']] = $search_option['name'];
                     }
                 }
@@ -218,7 +218,7 @@ TWIG;
                 $field_label = $row['field'];
                 if (isset($so_fields[$row['field']])) {
                     $field_label = $so_fields[$row['field']];
-                } else if (isForeignKeyField($row['field'])) {
+                } elseif (isForeignKeyField($row['field'])) {
                     // on fkey, we can try to retrieve the object
                     $object = getItemtypeForForeignKeyField($row['field']);
                     if ($object !== 'UNKNOWN') {
@@ -289,14 +289,13 @@ TWIG;
                     'field'    => $field_label,
                     'type'     => $default_itemtype_label,
                     'link'     => $default_object_link,
-                    'value'    => $row['value']
+                    'value'    => $row['value'],
                 ];
             }
         }
 
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'is_tab' => true,
-            'nopager' => true,
             'nofilter' => true,
             'nosort' => true,
             'super_header' => _n('Locked field', 'Locked fields', Session::getPluralNumber()),
@@ -304,7 +303,7 @@ TWIG;
                 'field' => _n('Field', 'Fields', 1),
                 'type' => __('Itemtype'),
                 'link' => _n('Link', 'Links', 1),
-                'value' => __('Last inventoried value')
+                'value' => __('Last inventoried value'),
             ],
             'formatters' => [
                 'link' => 'raw_html',
@@ -317,14 +316,14 @@ TWIG;
             })) > 0,
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
-                'container'     => 'mass' . static::class . mt_rand()
-            ]
+                'container'     => 'mass' . static::class . mt_rand(),
+            ],
         ]);
 
         // Open the form used for the custom checkboxes to unlock items (Not using massive actions)
         $twig_params = [
             'itemtype' => $itemtype,
-            'id'       => $ID
+            'id'       => $ID,
         ];
         // language=Twig
         echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
@@ -338,11 +337,11 @@ TWIG, $twig_params);
         ob_start();
         Plugin::doHookFunction(Hooks::DISPLAY_LOCKED_FIELDS, [
             'item'   => $item,
-            'header' => false
+            'header' => false,
         ]);
         $results = ob_get_clean();
         $subtables[] = [
-            'raw_body' => $results
+            'raw_body' => $results,
         ];
 
         echo TemplateRenderer::getInstance()->renderFromStringTemplate($list_info_alert_template, [
@@ -364,7 +363,7 @@ TWIG, $twig_params);
                     'is_dynamic'          => 1,
                     'is_deleted'          => 1,
                     'itemtype_peripheral' => $CFG_GLPI['directconnect_types'],
-                ]
+                ],
             ]);
             $results = iterator_to_array($it);
             // Calculate reverse lookup array to avoid array_search in the callback
@@ -381,13 +380,13 @@ TWIG, $twig_params);
                     'item' => _n('Item', 'Items', 1),
                     'serial' => __('Serial number'),
                     'inventory' => __('Inventory number'),
-                    'is_dynamic' => __('Automatic inventory')
+                    'is_dynamic' => __('Automatic inventory'),
                 ],
                 'formatters' => [
                     'chk' => 'raw_html',
                     'item' => 'raw_html',
                 ],
-                'entries' => []
+                'entries' => [],
             ];
 
             foreach ($results as $result) {
@@ -405,7 +404,7 @@ TWIG, $twig_params);
                     'item' => $peripheral->getLink(),
                     'serial' => $peripheral->fields['serial'],
                     'inventory' => $peripheral->fields['otherserial'],
-                    'is_dynamic' => Dropdown::getYesNo($peripheral->fields['is_dynamic'])
+                    'is_dynamic' => Dropdown::getYesNo($peripheral->fields['is_dynamic']),
                 ];
             }
             $subtables[] = $subtable;
@@ -420,11 +419,10 @@ TWIG, $twig_params);
                     'is_dynamic'   => 1,
                     'is_deleted'   => 1,
                     'items_id'     => $ID,
-                    'itemtype'     => $itemtype
-                ]
+                    'itemtype'     => $itemtype,
+                ],
             ]);
             $subtable = [
-                'nopager' => true,
                 'nosort' => true,
                 'nofilter' => true,
                 'columns' => [
@@ -432,13 +430,13 @@ TWIG, $twig_params);
                     'item' => $item_disk::getTypeName(1),
                     'partition' => __('Partition'),
                     'mountpoint' => __('Mount point'),
-                    'is_dynamic' => __('Automatic inventory')
+                    'is_dynamic' => __('Automatic inventory'),
                 ],
                 'formatters' => [
                     'chk' => 'raw_html',
                     'item' => 'raw_html',
                 ],
-                'entries' => []
+                'entries' => [],
             ];
 
             foreach ($item_disks as $line) {
@@ -449,7 +447,7 @@ TWIG, $twig_params);
                     'item' => $item_disk->getLink(),
                     'partition' => $item_disk->fields['device'],
                     'mountpoint' => $item_disk->fields['mountpoint'],
-                    'is_dynamic' => Dropdown::getYesNo($item_disk->fields['is_dynamic'])
+                    'is_dynamic' => Dropdown::getYesNo($item_disk->fields['is_dynamic']),
                 ];
             }
             $subtables[] = $subtable;
@@ -462,25 +460,24 @@ TWIG, $twig_params);
                     'is_dynamic'   => 1,
                     'is_deleted'   => 1,
                     'items_id'     => $ID,
-                    'itemtype'     => $itemtype
-                ]
+                    'itemtype'     => $itemtype,
+                ],
             ]);
 
             $subtable = [
-                'nopager' => true,
                 'nosort' => true,
                 'nofilter' => true,
                 'columns' => [
                     'chk' => '',
                     'item' => Item_RemoteManagement::getTypeName(1),
                     'type' => _n('Type', 'Types', 1),
-                    'is_dynamic' => __('Automatic inventory')
+                    'is_dynamic' => __('Automatic inventory'),
                 ],
                 'formatters' => [
                     'chk' => 'raw_html',
                     'item' => 'raw_html',
                 ],
-                'entries' => []
+                'entries' => [],
             ];
 
             foreach ($iterator as $line) {
@@ -491,7 +488,7 @@ TWIG, $twig_params);
                     'chk' => $show_checkbox ? "<input type='checkbox' name='Item_RemoteManagement[{$remote_management->getID()}]'>" : '',
                     'item' => $remote_management->getLink(),
                     'type' => $remote_management->fields['type'],
-                    'is_dynamic' => Dropdown::getYesNo($remote_management->fields['is_dynamic'])
+                    'is_dynamic' => Dropdown::getYesNo($remote_management->fields['is_dynamic']),
                 ];
             }
 
@@ -505,8 +502,8 @@ TWIG, $twig_params);
                 'is_dynamic'   => 1,
                 'is_deleted'   => 1,
                 'itemtype'     => $itemtype,
-                'items_id'     => $ID
-            ]
+                'items_id'     => $ID,
+            ],
         ]);
         $subtable = [
             'columns' => [
@@ -514,13 +511,13 @@ TWIG, $twig_params);
                 'type' => $item_vm::getTypeName(1),
                 'uuid' => __('UUID'),
                 'machine' => __('Machine'),
-                'is_dynamic' => __('Automatic inventory')
+                'is_dynamic' => __('Automatic inventory'),
             ],
             'formatters' => [
                 'chk' => 'raw_html',
                 'machine' => 'raw_html',
             ],
-            'entries' => []
+            'entries' => [],
         ];
 
         foreach ($item_vms as $line) {
@@ -555,7 +552,7 @@ TWIG, $twig_params);
                 'type' => $item_vm::getTypeName(),
                 'uuid' => $item_vm->fields['uuid'],
                 'machine' => $url,
-                'is_dynamic' => Dropdown::getYesNo($item_vm->fields['is_dynamic'])
+                'is_dynamic' => Dropdown::getYesNo($item_vm->fields['is_dynamic']),
             ];
         }
         $subtables[] = $subtable;
@@ -568,29 +565,29 @@ TWIG, $twig_params);
             'SELECT'    => [
                 'isv.id AS id',
                 'sv.name AS version',
-                's.name AS software'
+                's.name AS software',
             ],
             'FROM'      => "{$item_sv_table} AS isv",
             'LEFT JOIN' => [
                 'glpi_softwareversions AS sv' => [
                     'FKEY' => [
                         'isv' => 'softwareversions_id',
-                        'sv'  => 'id'
-                    ]
+                        'sv'  => 'id',
+                    ],
                 ],
                 'glpi_softwares AS s'         => [
                     'FKEY' => [
                         'sv'  => 'softwares_id',
-                        's'   => 'id'
-                    ]
-                ]
+                        's'   => 'id',
+                    ],
+                ],
             ],
             'WHERE'     => [
                 'isv.is_deleted'  => 1,
                 'isv.is_dynamic'  => 1,
                 'isv.items_id'    => $ID,
                 'isv.itemtype'    => $itemtype,
-            ]
+            ],
         ]);
         $subtable = [
             'columns' => [
@@ -598,13 +595,13 @@ TWIG, $twig_params);
                 'software' => Software::getTypeName(1),
                 'version' => SoftwareVersion::getTypeName(1),
                 'date_install' => __('Installation date'),
-                'is_dynamic' => __('Automatic inventory')
+                'is_dynamic' => __('Automatic inventory'),
             ],
             'formatters' => [
                 'chk' => 'raw_html',
                 'date_install' => 'datetime',
             ],
-            'entries' => []
+            'entries' => [],
         ];
 
         foreach ($iterator as $data) {
@@ -615,7 +612,7 @@ TWIG, $twig_params);
                 'software' => $data['software'],
                 'version' => $data['version'],
                 'date_install' => $item_sv->fields['date_install'],
-                'is_dynamic' => Dropdown::getYesNo($item_sv->fields['is_dynamic'])
+                'is_dynamic' => Dropdown::getYesNo($item_sv->fields['is_dynamic']),
             ];
         }
         $subtables[] = $subtable;
@@ -628,29 +625,29 @@ TWIG, $twig_params);
             'SELECT'    => [
                 'isl.id AS id',
                 'sl.name AS license',
-                's.name AS software'
+                's.name AS software',
             ],
             'FROM'      => "{$item_sl_table} AS isl",
             'LEFT JOIN' => [
                 'glpi_softwarelicenses AS sl' => [
                     'FKEY' => [
                         'isl' => 'softwarelicenses_id',
-                        'sl'  => 'id'
-                    ]
+                        'sl'  => 'id',
+                    ],
                 ],
                 'glpi_softwares AS s'         => [
                     'FKEY' => [
                         'sl'  => 'softwares_id',
-                        's'   => 'id'
-                    ]
-                ]
+                        's'   => 'id',
+                    ],
+                ],
             ],
             'WHERE'     => [
                 'isl.is_deleted'  => 1,
                 'isl.is_dynamic'  => 1,
                 'isl.items_id'    => $ID,
                 'isl.itemtype'    => $itemtype,
-            ]
+            ],
         ]);
 
         $subtable = [
@@ -659,12 +656,12 @@ TWIG, $twig_params);
                 'license' => SoftwareLicense::getTypeName(1),
                 'software' => Software::getTypeName(1),
                 'version' => __('Version in use'),
-                'is_dynamic' => __('Automatic inventory')
+                'is_dynamic' => __('Automatic inventory'),
             ],
             'formatters' => [
                 'chk' => 'raw_html',
             ],
-            'entries' => []
+            'entries' => [],
         ];
 
         foreach ($iterator as $data) {
@@ -689,7 +686,7 @@ TWIG, $twig_params);
                 'license' => $slicence->fields['name'],
                 'software' => $software_name,
                 'version' => $version_name,
-                'is_dynamic' => Dropdown::getYesNo($item_sl->fields['is_dynamic'])
+                'is_dynamic' => Dropdown::getYesNo($item_sl->fields['is_dynamic']),
             ];
         }
         $subtables[] = $subtable;
@@ -701,8 +698,8 @@ TWIG, $twig_params);
                 'is_dynamic' => 1,
                 'is_deleted' => 1,
                 'items_id'   => $ID,
-                'itemtype'   => $itemtype
-            ]
+                'itemtype'   => $itemtype,
+            ],
         ]);
         $subtable = [
             'columns' => [
@@ -710,13 +707,13 @@ TWIG, $twig_params);
                 'item' => NetworkPort::getTypeName(1),
                 'port_type' => NetworkPortType::getTypeName(1),
                 'mac' => __('MAC'),
-                'is_dynamic' => __('Automatic inventory')
+                'is_dynamic' => __('Automatic inventory'),
             ],
             'formatters' => [
                 'chk' => 'raw_html',
                 'item' => 'raw_html',
             ],
-            'entries' => []
+            'entries' => [],
         ];
 
         foreach ($networkports as $line) {
@@ -727,7 +724,7 @@ TWIG, $twig_params);
                 'item' => $networkport->getLink(),
                 'port_type' => $networkport->fields['instantiation_type'],
                 'mac' => $networkport->fields['mac'],
-                'is_dynamic' => Dropdown::getYesNo($networkport->fields['is_dynamic'])
+                'is_dynamic' => Dropdown::getYesNo($networkport->fields['is_dynamic']),
             ];
         }
         $subtables[] = $subtable;
@@ -743,17 +740,17 @@ TWIG, $twig_params);
                         'glpi_networkports' => 'id', [
                             'AND' => [
                                 'glpi_networkports.itemtype'  => $itemtype,
-                            ]
-                        ]
-                    ]
-                ]
+                            ],
+                        ],
+                    ],
+                ],
             ],
             'WHERE' => [
                 'glpi_networkports.items_id'   => $ID,
                 'glpi_networknames.is_dynamic' => 1,
                 'glpi_networknames.is_deleted' => 1,
                 'glpi_networknames.itemtype'   => 'NetworkPort',
-            ]
+            ],
         ]);
         $subtable = [
             'columns' => [
@@ -761,13 +758,13 @@ TWIG, $twig_params);
                 'item' => NetworkName::getTypeName(1),
                 'fqdn' => __('FQDN'),
                 'placeholder' => '',
-                'is_dynamic' => __('Automatic inventory')
+                'is_dynamic' => __('Automatic inventory'),
             ],
             'formatters' => [
                 'chk' => 'raw_html',
                 'item' => 'raw_html',
             ],
-            'entries' => []
+            'entries' => [],
         ];
 
         foreach ($networknames as $line) {
@@ -784,7 +781,7 @@ TWIG, $twig_params);
                 'item' => $networkname->getLink(),
                 'fqdn' => $fqdn_name,
                 'placeholder' => '',
-                'is_dynamic' => Dropdown::getYesNo($networkname->fields['is_dynamic'])
+                'is_dynamic' => Dropdown::getYesNo($networkname->fields['is_dynamic']),
             ];
         }
         $subtables[] = $subtable;
@@ -800,9 +797,9 @@ TWIG, $twig_params);
                         'glpi_networknames' => 'id', [
                             'AND' => [
                                 'glpi_networknames.itemtype'  => 'NetworkPort',
-                            ]
-                        ]
-                    ]
+                            ],
+                        ],
+                    ],
                 ],
                 'glpi_networkports' => [
                     'ON' => [
@@ -810,17 +807,17 @@ TWIG, $twig_params);
                         'glpi_networkports' => 'id', [
                             'AND' => [
                                 'glpi_networkports.itemtype'  => $itemtype,
-                            ]
-                        ]
-                    ]
-                ]
+                            ],
+                        ],
+                    ],
+                ],
             ],
             'WHERE' => [
                 'glpi_networkports.items_id'  => $ID,
                 'glpi_ipaddresses.is_dynamic' => 1,
                 'glpi_ipaddresses.is_deleted' => 1,
                 'glpi_ipaddresses.itemtype'   => 'NetworkName',
-            ]
+            ],
         ]);
         $subtable = [
             'columns' => [
@@ -828,12 +825,12 @@ TWIG, $twig_params);
                 'item' => IPAddress::getTypeName(1),
                 'version' => _n('Version', 'Versions', 1),
                 'placeholder' => '',
-                'is_dynamic' => __('Automatic inventory')
+                'is_dynamic' => __('Automatic inventory'),
             ],
             'formatters' => [
                 'chk' => 'raw_html',
             ],
-            'entries' => []
+            'entries' => [],
         ];
 
         foreach ($ipaddresses as $line) {
@@ -844,7 +841,7 @@ TWIG, $twig_params);
                 'item' => $ipaddress->fields['name'],
                 'version' => $ipaddress->fields['version'],
                 'placeholder' => '',
-                'is_dynamic' => Dropdown::getYesNo($ipaddress->fields['is_dynamic'])
+                'is_dynamic' => Dropdown::getYesNo($ipaddress->fields['is_dynamic']),
             ];
         }
         $subtables[] = $subtable;
@@ -858,7 +855,7 @@ TWIG, $twig_params);
                     'items_id'   => $ID,
                     'itemtype'   => $itemtype,
                     'is_dynamic' => 1,
-                    'is_deleted' => 1
+                    'is_deleted' => 1,
                 ]
             );
         }
@@ -869,13 +866,13 @@ TWIG, $twig_params);
                     'item' => _n('Component', 'Components', 1),
                     'placeholder_1' => '',
                     'placeholder_2' => '',
-                    'is_dynamic' => __('Automatic inventory')
+                    'is_dynamic' => __('Automatic inventory'),
                 ],
                 'formatters' => [
                     'chk' => 'raw_html',
                     'item' => 'raw_html',
                 ],
-                'entries' => []
+                'entries' => [],
             ];
 
             foreach ($types as $type) {
@@ -888,23 +885,23 @@ TWIG, $twig_params);
                 $iterator = $DB->request([
                     'SELECT'    => [
                         'i.id',
-                        't.designation AS name'
+                        't.designation AS name',
                     ],
                     'FROM'      => getTableForItemType($type) . ' AS i',
                     'LEFT JOIN' => [
                         "$associated_table AS t"   => [
                             'ON' => [
                                 't'   => 'id',
-                                'i'   => $fk
-                            ]
-                        ]
+                                'i'   => $fk,
+                            ],
+                        ],
                     ],
                     'WHERE'     => [
                         'itemtype'     => $itemtype,
                         'items_id'     => $ID,
                         'is_dynamic'   => 1,
-                        'is_deleted'   => 1
-                    ]
+                        'is_deleted'   => 1,
+                    ],
                 ]);
 
                 foreach ($iterator as $data) {
@@ -919,7 +916,7 @@ TWIG, $twig_params);
                         'item' => $object_link,
                         'placeholder_1' => '',
                         'placeholder_2' => '',
-                        'is_dynamic' => Dropdown::getYesNo($object_item_type->fields['is_dynamic'])
+                        'is_dynamic' => Dropdown::getYesNo($object_item_type->fields['is_dynamic']),
                     ];
                 }
             }
@@ -935,7 +932,7 @@ TWIG, $twig_params);
                 DatabaseInstance::getTableField('is_deleted') => 1,
                 DatabaseInstance::getTableField('items_id')   =>  $ID,
                 DatabaseInstance::getTableField('itemtype')   => $itemtype,
-            ]
+            ],
         ]);
         $subtable = [
             'columns' => [
@@ -943,13 +940,13 @@ TWIG, $twig_params);
                 'item' => DatabaseInstance::getTypeName(1),
                 'name' => __('Name'),
                 'version' => _n('Version', 'Versions', 1),
-                'is_dynamic' => __('Automatic inventory')
+                'is_dynamic' => __('Automatic inventory'),
             ],
             'formatters' => [
                 'chk' => 'raw_html',
                 'item' => 'raw_html',
             ],
-            'entries' => []
+            'entries' => [],
         ];
 
         foreach ($data as $row) {
@@ -964,7 +961,7 @@ TWIG, $twig_params);
                 'item' => $database_instance->getLink(),
                 'name' => $database_instance->getName(),
                 'version' => $database_instance->fields['version'],
-                'is_dynamic' => Dropdown::getYesNo($database_instance->fields['is_dynamic'])
+                'is_dynamic' => Dropdown::getYesNo($database_instance->fields['is_dynamic']),
             ];
         }
         $subtables[] = $subtable;
@@ -978,7 +975,7 @@ TWIG, $twig_params);
                 Domain_Item::getTableField('is_deleted') => 1,
                 Domain_Item::getTableField('items_id')   =>  $ID,
                 Domain_Item::getTableField('itemtype')   => $itemtype,
-            ]
+            ],
         ]);
         $subtable = [
             'columns' => [
@@ -992,7 +989,7 @@ TWIG, $twig_params);
                 'chk' => 'raw_html',
                 'item' => 'raw_html',
             ],
-            'entries' => []
+            'entries' => [],
         ];
 
         foreach ($data as $row) {
@@ -1033,7 +1030,6 @@ TWIG, $twig_params);
             // Common Params
             $datatable_params['is_tab'] = true;
             $datatable_params['nosort'] = true;
-            $datatable_params['nopager'] = true;
             $datatable_params['nofilter'] = true;
             $datatable_params['total_number'] = count($datatable_params['entries']);
             $datatable_params['filtered_number'] = count($datatable_params['entries']);
@@ -1045,16 +1041,15 @@ TWIG, $twig_params);
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'is_tab' => true,
             'table_class_style' => 'table-sm',
-            'nopager' => true,
             'nofilter' => true,
             'nosort' => true,
             'super_header' => __('Locked items'),
             'no_header' => true, // Only affects the regular columns, not the super header. We don't want column headers for the parent table.
             'columns' => [
-                'subtable' => ''
+                'subtable' => '',
             ],
             'formatters' => [
-                'subtable' => 'raw_html'
+                'subtable' => 'raw_html',
             ],
             'entries' => $rendered_subtables,
             'total_number' => count($rendered_subtables),
@@ -1066,13 +1061,13 @@ TWIG, $twig_params);
             'check_all_msg' => __('Check all'),
             'uncheck_all_msg' => __('Uncheck all'),
             'unlock_msg' => _sx('button', 'Unlock'),
-            'purge_msg' => _sx('button', 'Delete permanently')
+            'purge_msg' => _sx('button', 'Delete permanently'),
         ];
         if (count($rendered_subtables) > 0) {
             // language=Twig
             echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
                 <div>
-                    <i class='fas fa-level-up-alt fa-flip-horizontal fs-2 mx-2'></i>
+                    <i class='ti ti-corner-left-up mx-3'></i>
                     <a onclick="if ( markCheckboxes('lock_form') ) return false;" href='#'>{{ check_all_msg }}</a>
                     <span>/</span>
                     <a onclick="if ( unMarkCheckboxes('lock_form') ) return false;" href='#'>{{ uncheck_all_msg }}</a>
@@ -1149,7 +1144,7 @@ TWIG);
                         'itemtype_peripheral' => $itemtype,
                         'is_dynamic'          => 1,
                         'is_deleted'          => 1,
-                    ]
+                    ],
                 ];
                 $field = 'items_id_asset';
                 $type  = Asset_PeripheralAsset::class;
@@ -1162,8 +1157,8 @@ TWIG);
                     'WHERE' => [
                         'itemtype'   => $baseitemtype,
                         'is_dynamic' => 1,
-                        'is_deleted' => 1
-                    ]
+                        'is_deleted' => 1,
+                    ],
                 ];
                 $field     = 'items_id';
                 break;
@@ -1179,16 +1174,16 @@ TWIG);
                                 'glpi_networkports' => 'id', [
                                     'AND' => [
                                         'glpi_networkports.itemtype'  => $baseitemtype,
-                                    ]
-                                ]
-                            ]
-                        ]
+                                    ],
+                                ],
+                            ],
+                        ],
                     ],
                     'WHERE' => [
                         'glpi_networknames.is_dynamic' => 1,
                         'glpi_networknames.is_deleted' => 1,
                         'glpi_networknames.itemtype'   => 'NetworkPort',
-                    ]
+                    ],
                 ];
                 $field     = 'glpi_networkports.items_id';
                 break;
@@ -1204,9 +1199,9 @@ TWIG);
                                 'glpi_networknames' => 'id', [
                                     'AND' => [
                                         'glpi_networknames.itemtype'  => 'NetworkPort',
-                                    ]
-                                ]
-                            ]
+                                    ],
+                                ],
+                            ],
                         ],
                         'glpi_networkports' => [
                             'ON' => [
@@ -1214,16 +1209,16 @@ TWIG);
                                 'glpi_networkports' => 'id', [
                                     'AND' => [
                                         'glpi_networkports.itemtype'  => $baseitemtype,
-                                    ]
-                                ]
-                            ]
-                        ]
+                                    ],
+                                ],
+                            ],
+                        ],
                     ],
                     'WHERE' => [
                         'glpi_ipaddresses.is_dynamic' => 1,
                         'glpi_ipaddresses.is_deleted' => 1,
                         'glpi_ipaddresses.itemtype'   => 'NetworkName',
-                    ]
+                    ],
                 ];
                 $field     = 'glpi_networkports.items_id';
                 break;
@@ -1235,8 +1230,8 @@ TWIG);
                     'WHERE' => [
                         'is_dynamic' => 1,
                         'is_deleted' => 1,
-                        'itemtype'   => $itemtype
-                    ]
+                        'itemtype'   => $itemtype,
+                    ],
                 ];
                 $field     = 'items_id';
                 break;
@@ -1249,8 +1244,8 @@ TWIG);
                     'WHERE' => [
                         'is_dynamic' => 1,
                         'is_deleted' => 1,
-                        'itemtype'   => $itemtype
-                    ]
+                        'itemtype'   => $itemtype,
+                    ],
                 ];
                 $field     = 'items_id';
                 break;
@@ -1262,8 +1257,8 @@ TWIG);
                     'WHERE' => [
                         'is_dynamic' => 1,
                         'is_deleted' => 1,
-                        'itemtype'   => $itemtype
-                    ]
+                        'itemtype'   => $itemtype,
+                    ],
                 ];
                 $field     = 'items_id';
                 $type      = 'Item_SoftwareVersion';
@@ -1279,8 +1274,8 @@ TWIG);
                         'WHERE' => [
                             'itemtype'   => $itemtype,
                             'is_dynamic' => 1,
-                            'is_deleted' => 1
-                        ]
+                            'is_deleted' => 1,
+                        ],
                     ];
                     $field     = 'items_id';
                 }
@@ -1289,7 +1284,7 @@ TWIG);
         return [
             'criteria' => $criteria,
             'field' => $field,
-            'type' => $type
+            'type' => $type,
         ];
     }
 
@@ -1302,11 +1297,15 @@ TWIG);
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
+        if (!is_subclass_of($itemtype, CommonDBTM::class)) {
+            return;
+        }
+
         $action_unlock_component = __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'unlock_component';
         $action_unlock_fields = __CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'unlock_fields';
 
         if (
-            Session::haveRight(strtolower($itemtype), UPDATE)
+            Session::haveRight($itemtype::$rightname, UPDATE)
             && in_array($itemtype, $CFG_GLPI['inventory_types'] + $CFG_GLPI['inventory_lockable_objects'], true)
         ) {
             $actions[$action_unlock_component] = __('Unlock components');
@@ -1328,7 +1327,7 @@ TWIG);
                     'IPAddress'              => IPAddress::getTypeName(Session::getPluralNumber()),
                     'Item_Disk'              => Item_Disk::getTypeName(Session::getPluralNumber()),
                     'Device'                 => _n('Component', 'Components', Session::getPluralNumber()),
-                    'ItemVirtualMachine'     => ItemVirtualMachine::getTypeName(Session::getPluralNumber())
+                    'ItemVirtualMachine'     => ItemVirtualMachine::getTypeName(Session::getPluralNumber()),
                 ];
 
                 echo __s('Select the type of the item that must be unlock');
@@ -1339,7 +1338,7 @@ TWIG);
                     $types,
                     ['multiple' => true,
                         'size'     => 5,
-                        'values'   => array_keys($types)
+                        'values'   => array_keys($types),
                     ]
                 );
 
@@ -1357,7 +1356,7 @@ TWIG);
                     $fields,
                     [
                         'multiple' => true,
-                        'size'     => 5
+                        'size'     => 5,
                     ]
                 );
                 echo "<br><br>" . Html::submit(_x('button', 'Post'), ['name' => 'massiveaction']);
@@ -1390,7 +1389,7 @@ TWIG);
                             "itemtype" => $base_itemtype,
                             "items_id" => $id,
                             "field" => $lock_fields_name,
-                            "is_global" => 0
+                            "is_global" => 0,
                         ]);
                         if ($res) {
                             $ma->itemDone($base_itemtype, $id, MassiveAction::ACTION_OK);
@@ -1412,8 +1411,8 @@ TWIG);
                     foreach ($attached_items as $attached_item) {
                         $infos = self::getLocksQueryInfosByItemType($attached_item, $baseitem->getType());
                         if ($item = getItemForItemtype($infos['type'])) {
-                             $infos['item'] = $item;
-                             $links[$attached_item] = $infos;
+                            $infos['item'] = $item;
+                            $links[$attached_item] = $infos;
                         }
                     }
                     foreach ($ids as $id) {

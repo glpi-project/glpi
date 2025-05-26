@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -38,6 +37,7 @@ namespace tests\units\Glpi\Asset\Capacity;
 use DbTestCase;
 use DisplayPreference;
 use Glpi\Asset\Asset;
+use Glpi\Asset\Capacity;
 use Glpi\Asset\Capacity\HasHistoryCapacity;
 use Glpi\PHPUnit\Tests\Glpi\Asset\CapacityUsageTestTrait;
 use Item_OperatingSystem;
@@ -124,12 +124,12 @@ class HasOperatingSystemCapacityTest extends DbTestCase
         // since tabs are not used from the CLI context
     }
 
-     /**
-     * Test that the "Item_OperatingSystem" search options are registered when
-     * the capacity is enabled and unregistered when disabled.
-     *
-     * @return void
-     */
+    /**
+    * Test that the "Item_OperatingSystem" search options are registered when
+    * the capacity is enabled and unregistered when disabled.
+    *
+    * @return void
+    */
     public function testSearchOptionRegistration(): void
     {
         // Create custom asset definition
@@ -179,7 +179,7 @@ class HasOperatingSystemCapacityTest extends DbTestCase
     {
         // Create custom asset definition with the target capacity enabled
         $definition = $this->initAssetDefinition(
-            capacities: [$this->getTargetCapacity()]
+            capacities: [new Capacity($this->getTargetCapacity())]
         );
         $class = $definition->getAssetClassName();
 
@@ -226,8 +226,8 @@ class HasOperatingSystemCapacityTest extends DbTestCase
         // Create custom asset definition with the target capacity enabled
         $definition = $this->initAssetDefinition(
             capacities: [
-                $this->getTargetCapacity(),
-                HasHistoryCapacity::class
+                new Capacity(name: $this->getTargetCapacity()),
+                new Capacity(name: HasHistoryCapacity::class),
             ]
         );
         $class = $definition->getAssetClassName();
@@ -290,7 +290,7 @@ class HasOperatingSystemCapacityTest extends DbTestCase
     {
         // Create custom asset definition with the target capacity enabled
         $definition = $this->initAssetDefinition(
-            capacities: [$this->getTargetCapacity()]
+            capacities: [new Capacity(name: $this->getTargetCapacity())]
         );
         $class = $definition->getAssetClassName();
 
@@ -311,7 +311,7 @@ class HasOperatingSystemCapacityTest extends DbTestCase
                 'itemtype' => $subject::getType(),
                 'num'      => '46', // Linked OS version
                 'users_id' => 0,
-            ]
+            ],
         ]);
 
         // Count display preferences, should be 9 (2 for OS + 7 for asset)
@@ -343,7 +343,7 @@ class HasOperatingSystemCapacityTest extends DbTestCase
     public function testCloneAsset()
     {
         $definition = $this->initAssetDefinition(
-            capacities: [\Glpi\Asset\Capacity\HasOperatingSystemCapacity::class]
+            capacities: [new Capacity(name: \Glpi\Asset\Capacity\HasOperatingSystemCapacity::class)]
         );
         $class = $definition->getAssetClassName();
         $entity = $this->getTestRootEntity(true);
@@ -382,7 +382,7 @@ class HasOperatingSystemCapacityTest extends DbTestCase
     {
         yield [
             'target_classname' => Item_OperatingSystem::class,
-            'expected' => 'Used by %d of %d assets'
+            'expected' => 'Used by %d of %d assets',
         ];
     }
 }

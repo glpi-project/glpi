@@ -188,9 +188,9 @@ final class TOTPManager
             'SELECT' => ['2fa'],
             'FROM' => 'glpi_users',
             'WHERE' => [
-                'id' => $users_id
+                'id' => $users_id,
             ],
-            'LIMIT' => 1
+            'LIMIT' => 1,
         ]);
 
         if (count($it) === 0) {
@@ -272,9 +272,9 @@ final class TOTPManager
             'SELECT' => ['2fa'],
             'FROM' => 'glpi_users',
             'WHERE' => [
-                'id' => $users_id
+                'id' => $users_id,
             ],
-            'LIMIT' => 1
+            'LIMIT' => 1,
         ])->current()['2fa'] ?? null;
 
         if ($tfa === null) {
@@ -313,9 +313,9 @@ final class TOTPManager
             'SELECT' => ['2fa'],
             'FROM' => 'glpi_users',
             'WHERE' => [
-                'id' => $users_id
+                'id' => $users_id,
             ],
-            'LIMIT' => 1
+            'LIMIT' => 1,
         ])->current()['2fa'] ?? null;
         if ($tfa === null) {
             return [];
@@ -325,7 +325,7 @@ final class TOTPManager
         $DB->update('glpi_users', [
             '2fa' => json_encode($tfa, JSON_THROW_ON_ERROR),
         ], [
-            'id' => $users_id
+            'id' => $users_id,
         ]);
         return $random_codes;
     }
@@ -347,9 +347,9 @@ final class TOTPManager
             'SELECT' => ['2fa'],
             'FROM' => 'glpi_users',
             'WHERE' => [
-                'id' => $users_id
+                'id' => $users_id,
             ],
-            'LIMIT' => 1
+            'LIMIT' => 1,
         ])->current()['2fa'] ?? null;
         if ($tfa === null) {
             return false;
@@ -365,7 +365,7 @@ final class TOTPManager
                     $DB->update('glpi_users', [
                         '2fa' => json_encode($tfa, JSON_THROW_ON_ERROR),
                     ], [
-                        'id' => $users_id
+                        'id' => $users_id,
                     ]);
                 }
                 return true;
@@ -393,9 +393,9 @@ final class TOTPManager
             'SELECT' => ['2fa_unenforced'],
             'FROM' => 'glpi_users',
             'WHERE' => [
-                'id' => $users_id
+                'id' => $users_id,
             ],
-            'LIMIT' => 1
+            'LIMIT' => 1,
         ])->current()['2fa_unenforced'] ?? 0;
 
         if ($user_optional) {
@@ -423,15 +423,15 @@ final class TOTPManager
                         'FROM' => 'glpi_profiles',
                         'WHERE' => [
                             'id' => $profiles,
-                            '2fa_enforced' => 1
-                        ]
+                            '2fa_enforced' => 1,
+                        ],
                     ])->count() > 0;
                 }
             }
             if (!$enforced) {
                 // Check group configuration
                 $groups = \Group_User::getUserGroups($users_id);
-                $enforced = count(array_filter($groups, static fn ($group) => $group['2fa_enforced'])) > 0;
+                $enforced = count(array_filter($groups, static fn($group) => $group['2fa_enforced'])) > 0;
             }
         }
 
@@ -472,7 +472,9 @@ final class TOTPManager
      */
     public function showTOTPPrompt(int $users_id): void
     {
-        TemplateRenderer::getInstance()->display('pages/2fa/2fa_request.html.twig');
+        TemplateRenderer::getInstance()->display('pages/2fa/2fa_request.html.twig', [
+            'redirect' => $_GET['redirect'] ?? '',
+        ]);
     }
 
     /**
@@ -526,7 +528,7 @@ final class TOTPManager
         $name = self::$brand_label;
         if (isset($_SESSION['mfa_pre_auth'])) {
             $name = $_SESSION['mfa_pre_auth']['user']['name'];
-        } else if (isset($_SESSION['glpiname'])) {
+        } elseif (isset($_SESSION['glpiname'])) {
             $name = $_SESSION['glpiname'];
         }
         $qr = $tfa->getQRCodeImageAsDataUri($name, $secret);

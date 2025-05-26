@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -75,8 +74,8 @@ class CameraTest extends AbstractInventoryAsset
   <DEVICEID>glpixps.teclib.infra-2018-10-03-08-42-36</DEVICEID>
   <QUERY>INVENTORY</QUERY>
   </REQUEST>",
-                'expected'  => '{"resolution":["800x600","8000x6000"],"lensfacing":"BACK","flashunit":"1","imageformats":["RAW_SENSOR","JPEG","YUV_420_888","RAW10"],"orientation":"90","focallength":"4.77","sensorsize":"6.4x4.8","resolutionvideo":["176x144","1760x1440"], "is_dynamic": 1}'
-            ]
+                'expected'  => '{"resolution":["800x600","8000x6000"],"lensfacing":"BACK","flashunit":"1","imageformats":["RAW_SENSOR","JPEG","YUV_420_888","RAW10"],"orientation":"90","focallength":"4.77","sensorsize":"6.4x4.8","resolutionvideo":["176x144","1760x1440"], "is_dynamic": 1}',
+            ],
         ];
     }
 
@@ -89,7 +88,7 @@ class CameraTest extends AbstractInventoryAsset
 
         $computer = getItemByTypeName('Computer', '_test_pc01');
         $asset = new \Glpi\Inventory\Asset\Camera($computer, $json->content->cameras);
-        $asset->setExtraData((array)$json->content);
+        $asset->setExtraData((array) $json->content);
         $result = $asset->prepare();
         $this->assertEquals(json_decode($expected), $result[0]);
     }
@@ -98,14 +97,14 @@ class CameraTest extends AbstractInventoryAsset
     {
         $computer = getItemByTypeName('Computer', '_test_pc01');
 
-       //first, check there are no camera linked to this computer
+        //first, check there are no camera linked to this computer
         $idc = new \Item_DeviceCamera();
-                 $this->assertFalse(
-                     $idc->getFromDbByCrit(['items_id' => $computer->fields['id'], 'itemtype' => 'Computer']),
-                     'A camera is already linked to computer!'
-                 );
+        $this->assertFalse(
+            $idc->getFromDbByCrit(['items_id' => $computer->fields['id'], 'itemtype' => 'Computer']),
+            'A camera is already linked to computer!'
+        );
 
-       //convert data
+        //convert data
         $expected = $this->assetProvider()[0];
 
         $converter = new \Glpi\Inventory\Converter();
@@ -114,11 +113,11 @@ class CameraTest extends AbstractInventoryAsset
 
         $computer = getItemByTypeName('Computer', '_test_pc01');
         $asset = new \Glpi\Inventory\Asset\Camera($computer, $json->content->cameras);
-        $asset->setExtraData((array)$json->content);
+        $asset->setExtraData((array) $json->content);
         $result = $asset->prepare();
         $this->assertEquals(json_decode($expected['expected']), $result[0]);
 
-       //handle
+        //handle
         $asset->handleLinks();
         $asset->handle();
         $this->assertTrue(
@@ -128,19 +127,19 @@ class CameraTest extends AbstractInventoryAsset
 
         global $DB;
 
-       //four resolutions has been created
+        //four resolutions has been created
         $iterator = $DB->request(['FROM' => \ImageResolution::getTable()]);
         $this->assertCount(4, $iterator);
 
-       //four images formats has been created
+        //four images formats has been created
         $iterator = $DB->request(['FROM' => \ImageFormat::getTable()]);
         $this->assertCount(4, $iterator);
 
-       //four links between images  formats and camera has been created
+        //four links between images  formats and camera has been created
         $iterator = $DB->request(['FROM' => \Item_DeviceCamera_ImageFormat::getTable()]);
         $this->assertCount(4, $iterator);
 
-       //four links between images resolutions and camera has been created
+        //four links between images resolutions and camera has been created
         $iterator = $DB->request(['FROM' => \Item_DeviceCamera_ImageResolution::getTable()]);
         $this->assertCount(4, $iterator);
     }
@@ -176,23 +175,23 @@ class CameraTest extends AbstractInventoryAsset
   <QUERY>INVENTORY</QUERY>
 </REQUEST>";
 
-       //create manually a computer, with 3 cameras
+        //create manually a computer, with 3 cameras
         $computers_id = $computer->add([
             'name'   => 'pc002',
             'serial' => 'ggheb7ne7',
-            'entities_id' => 0
+            'entities_id' => 0,
         ]);
         $this->assertGreaterThan(0, $computers_id);
 
         $manufacturer = new \Manufacturer();
         $manufacturers_id = $manufacturer->add([
-            'name' => 'Xiaomi'
+            'name' => 'Xiaomi',
         ]);
         $this->assertGreaterThan(0, $manufacturers_id);
 
         $model = new \DeviceCameraModel();
         $models_id = $model->add([
-            'name' => 'test'
+            'name' => 'test',
         ]);
         $this->assertGreaterThan(0, $models_id);
 
@@ -200,42 +199,42 @@ class CameraTest extends AbstractInventoryAsset
             'designation' => 'Front cam',
             'manufacturers_id' => $manufacturers_id,
             'devicecameramodels_id' => $models_id,
-            'entities_id'  => 0
+            'entities_id'  => 0,
         ]);
         $this->assertGreaterThan(0, $cam_1_id);
 
         $item_cam_1_id = $item_cam->add([
             'items_id'     => $computers_id,
             'itemtype'     => 'Computer',
-            'devicecameras_id' => $cam_1_id
+            'devicecameras_id' => $cam_1_id,
         ]);
 
         $cam_2_id = $device_cam->add([
             'designation' => 'Rear cam',
             'manufacturers_id' => $manufacturers_id,
             'devicecameramodels_id' => $models_id,
-            'entities_id'  => 0
+            'entities_id'  => 0,
         ]);
         $this->assertGreaterThan(0, $cam_2_id);
 
         $item_cam_2_id = $item_cam->add([
             'items_id'     => $computers_id,
             'itemtype'     => 'Computer',
-            'devicecameras_id' => $cam_2_id
+            'devicecameras_id' => $cam_2_id,
         ]);
 
         $cam_3_id = $device_cam->add([
             'designation' => 'Other cam',
             'manufacturers_id' => $manufacturers_id,
             'devicecameramodels_id' => $models_id,
-            'entities_id'  => 0
+            'entities_id'  => 0,
         ]);
         $this->assertGreaterThan(0, $cam_3_id);
 
         $item_cam_3_id = $item_cam->add([
             'items_id'     => $computers_id,
             'itemtype'     => 'Computer',
-            'devicecameras_id' => $cam_3_id
+            'devicecameras_id' => $cam_3_id,
         ]);
 
         $cams = $item_cam->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
@@ -244,26 +243,26 @@ class CameraTest extends AbstractInventoryAsset
             $this->assertEquals(0, $cam['is_dynamic']);
         }
 
-       //computer inventory knows only "Front" and "Rear" cameras
+        //computer inventory knows only "Front" and "Rear" cameras
         $this->doInventory($xml_source, true);
 
-       //we still have 3 cameras
+        //we still have 3 cameras
         $cams = $device_cam->find();
         $this->assertCount(3, $cams);
 
-       //we still have 3 cameras items linked to the computer
+        //we still have 3 cameras items linked to the computer
         $cams = $item_cam->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
         $this->assertCount(3, $cams);
 
-       //cameras present in the inventory source are now dynamic
+        //cameras present in the inventory source are now dynamic
         $cams = $item_cam->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
         $this->assertCount(2, $cams);
 
-       //camera not present in the inventory is still not dynamic
+        //camera not present in the inventory is still not dynamic
         $cams = $item_cam->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 0]);
         $this->assertCount(1, $cams);
 
-       //Redo inventory, but with removed "Rear" camera
+        //Redo inventory, but with removed "Rear" camera
         $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
 <REQUEST>
   <CONTENT>
@@ -286,19 +285,19 @@ class CameraTest extends AbstractInventoryAsset
 
         $this->doInventory($xml_source, true);
 
-       //we still have 3 cameras
+        //we still have 3 cameras
         $cams = $device_cam->find();
         $this->assertCount(3, $cams);
 
-       //we now have 2 cameras linked to computer only
+        //we now have 2 cameras linked to computer only
         $cams = $item_cam->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
         $this->assertCount(2, $cams);
 
-       //camera present in the inventory source is still dynamic
+        //camera present in the inventory source is still dynamic
         $cams = $item_cam->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 1]);
         $this->assertCount(1, $cams);
 
-       //camera not present in the inventory is still not dynamic
+        //camera not present in the inventory is still not dynamic
         $cams = $item_cam->find(['itemtype' => 'Computer', 'items_id' => $computers_id, 'is_dynamic' => 0]);
         $this->assertCount(1, $cams);
     }

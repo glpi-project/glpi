@@ -38,17 +38,18 @@ namespace Glpi\Form\QuestionType;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Form\Migration\FormQuestionDataConverterInterface;
 use Glpi\Form\Question;
+use Glpi\ItemTranslation\Context\TranslationHandler;
 use Override;
 
 /**
  * Short answers are single line inputs used to answer simple questions.
  */
-abstract class AbstractQuestionTypeSelectable extends AbstractQuestionType implements FormQuestionDataConverterInterface
+abstract class AbstractQuestionTypeSelectable extends AbstractQuestionType implements FormQuestionDataConverterInterface, TranslationAwareQuestionType
 {
+    public const TRANSLATION_KEY_OPTION = 'option';
+
     #[Override]
-    public function __construct()
-    {
-    }
+    public function __construct() {}
 
     #[Override]
     public function getFormEditorJsOptions(): string
@@ -103,7 +104,7 @@ abstract class AbstractQuestionTypeSelectable extends AbstractQuestionType imple
     {
         // language=Twig
         $js = <<<TWIG
-            import("{{ js_path('js/modules/Forms/QuestionSelectable.js') }}").then((m) => {
+            import("/js/modules/Forms/QuestionSelectable.js").then((m) => {
                 {% if question is not null %}
                     const container = $('div[data-glpi-form-editor-selectable-question-options="{{ rand }}"]');
                     container.data(
@@ -173,10 +174,27 @@ TWIG;
     #[Override]
     public function convertDefaultValue(array $rawData): array
     {
-        $default_values = json_decode($rawData['default_values']) ?? [];
-        $options = json_decode($rawData['values']) ?? [];
+        if (
+            empty($rawData['default_values'])
+            || empty($rawData['values'])
+        ) {
+            return [];
+        }
 
-        if (empty($default_values) && !empty($rawData['default_values'])) {
+        $options = json_decode($rawData['values']);
+        if (empty($options)) {
+            return [];
+        }
+
+        /**
+         * New default values format require an array of values.
+         * The old system did not use an array if there was only one element.
+         */
+        $default_values = json_decode($rawData['default_values']);
+        if (
+            ($default_values === null && json_last_error() !== JSON_ERROR_NONE)
+            || !is_array($default_values)
+        ) {
             $default_values = [$rawData['default_values']];
         }
 
@@ -193,6 +211,27 @@ TWIG;
             options: json_decode($rawData['values']) ?? []
         );
         return $config->jsonSerialize();
+    }
+
+    #[Override]
+    public function listTranslationsHandlers(Question $question): array
+    {
+        $handlers = [];
+        $options = $this->getOptions($question);
+        if (!empty($options)) {
+            $handlers = array_map(
+                fn($uuid, $option) => new TranslationHandler(
+                    item: $question,
+                    key: sprintf('%s-%s', self::TRANSLATION_KEY_OPTION, $uuid),
+                    name: sprintf('%s %s', self::getName(), __('Option')),
+                    value: $option,
+                ),
+                array_keys($options),
+                $options
+            );
+        }
+
+        return $handlers;
     }
 
     public function hideOptionsContainerWhenUnfocused(): bool
@@ -300,7 +339,7 @@ TWIG;
                 <input
                     data-glpi-form-editor-specific-question-extra-data
                     type="text"
-                    class="flex-grow-1"
+                    class="flex-grow-1 w-full"
                     style="border: none transparent; outline: none; box-shadow: none;"
                     name="options[{{ uuid }}]"
                     value="{{ value }}"
@@ -359,7 +398,7 @@ TWIG;
                 'remove_option'     => __('Remove option'),
                 'selectable_option' => __('Selectable option'),
                 'enter_option'      => __('Enter an option'),
-            ]
+            ],
         ]);
     }
 
@@ -373,10 +412,18 @@ TWIG;
                     <input
                         type="{{ input_type }}"
                         name="{{ question.getEndUserInputName() }}[]"
-                        value="{{ value.value }}"
+                        value="{{ value.uuid }}"
                         class="form-check-input" {{ value.checked ? 'checked' : '' }}
                     >
-                    <span class="form-check-label">{{ value.value }}</span>
+                    <span class="form-check-label">
+                        {{ translate_item_key(
+                            question,
+                            '%s-%s'|format(
+                                constant('Glpi\\\\Form\\\\QuestionType\\\\AbstractQuestionTypeSelectable::TRANSLATION_KEY_OPTION'),
+                                value.uuid
+                            )
+                        ) }}
+                    </span>
                 </label>
             {% endfor %}
 TWIG;
@@ -390,11 +437,18 @@ TWIG;
     }
 
     #[Override]
-    public function formatRawAnswer(mixed $answer): string
+    public function formatRawAnswer(mixed $answer, Question $question): string
     {
         if (is_string($answer)) {
-            return $answer;
+            $answer = [$answer];
         }
+
+        // Replace uuids by labels
+        $options = $this->getOptions($question);
+        $answer = array_map(
+            fn($uuid) => $options[$uuid] ?? '',
+            $answer
+        );
 
         return implode(', ', $answer);
     }

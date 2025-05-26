@@ -42,11 +42,11 @@ use Glpi\DBAL\QuerySubQuery;
  **/
 abstract class LevelAgreement extends CommonDBChild
 {
-   // From CommonDBTM
+    // From CommonDBTM
     public $dohistory          = true;
     public static $rightname       = 'slm';
 
-   // From CommonDBChild
+    // From CommonDBChild
     public static $itemtype = 'SLM';
     public static $items_id = 'slms_id';
 
@@ -109,8 +109,8 @@ abstract class LevelAgreement extends CommonDBChild
         $ong = [];
         $this->addDefaultFormTab($ong);
         $this->addStandardTab(static::$levelclass, $ong, $options);
-        $this->addStandardTab('Rule', $ong, $options);
-        $this->addStandardTab('Item_Ticket', $ong, $options);
+        $this->addStandardTab(Rule::class, $ong, $options);
+        $this->addStandardTab(Item_Ticket::class, $ong, $options);
 
         return $ong;
     }
@@ -195,14 +195,14 @@ abstract class LevelAgreement extends CommonDBChild
         echo "<td>";
         Dropdown::showNumber("number_time", ['value' => $this->fields["number_time"],
             'min'   => 0,
-            'max'   => 1000
+            'max'   => 1000,
         ]);
         $possible_values = self::getDefinitionTimeValues();
         $rand = Dropdown::showFromArray(
             'definition_time',
             $possible_values,
             ['value'     => $this->fields["definition_time"],
-                'on_change' => 'appearhideendofworking()'
+                'on_change' => 'appearhideendofworking()',
             ]
         );
         echo "<script type='text/javascript' >";
@@ -250,7 +250,7 @@ abstract class LevelAgreement extends CommonDBChild
             'minute' => _n('Minute', 'Minutes', Session::getPluralNumber()),
             'hour'   => _n('Hour', 'Hours', Session::getPluralNumber()),
             'day'    => _n('Day', 'Days', Session::getPluralNumber()),
-            'month'  => _n('Month', 'Months', Session::getPluralNumber())
+            'month'  => _n('Month', 'Months', Session::getPluralNumber()),
         ];
     }
 
@@ -372,9 +372,9 @@ TWIG, $twig_params);
             $link = '';
             if ($slm->fields['use_ticket_calendar']) {
                 $link = __s('Calendar of the ticket');
-            } else if (!$slm->fields['calendars_id']) {
-                 $link =  __s('24/7');
-            } else if ($calendar->getFromDB($slm->fields['calendars_id'])) {
+            } elseif (!$slm->fields['calendars_id']) {
+                $link =  __s('24/7');
+            } elseif ($calendar->getFromDB($slm->fields['calendars_id'])) {
                 $link = $calendar->getLink();
             }
             $entries[] = [
@@ -385,27 +385,26 @@ TWIG, $twig_params);
                 'type'     => $la::getSpecificValueToDisplay('type', $la->fields['type']),
                 'maximum_time' => $la::getSpecificValueToDisplay('number_time', [
                     'number_time'     => $la->fields['number_time'],
-                    'definition_time' => $la->fields['definition_time']
+                    'definition_time' => $la->fields['definition_time'],
                 ]),
-                'calendar' => $link
+                'calendar' => $link,
             ];
         }
 
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'datatable_id' => 'levelagreement' . $instID,
             'is_tab' => true,
-            'nopager' => true,
             'nofilter' => true,
             'nosort' => true,
             'columns' => [
                 'name' => __('Name'),
                 'type' => _n('Type', 'Types', 1),
                 'maximum_time' => __('Maximum time'),
-                'calendar' => _n('Calendar', 'Calendars', 1)
+                'calendar' => _n('Calendar', 'Calendars', 1),
             ],
             'formatters' => [
                 'name' => 'raw_html',
-                'calendar' => 'raw_html'
+                'calendar' => 'raw_html',
             ],
             'entries' => $entries,
             'total_number' => count($entries),
@@ -414,7 +413,7 @@ TWIG, $twig_params);
             'massiveactionparams' => [
                 'num_displayed' => count($entries),
                 'container'     => 'mass' . static::class . mt_rand(),
-            ]
+            ],
         ]);
     }
 
@@ -437,8 +436,8 @@ TWIG, $twig_params);
             'FROM'            => 'glpi_ruleactions',
             'WHERE'           => [
                 'field' => $fk,
-                'value' => $this->getID()
-            ]
+                'value' => $this->getID(),
+            ],
         ]));
         $nb = count($rules_id_list);
 
@@ -450,19 +449,18 @@ TWIG, $twig_params);
                 'id'       => $rule->getID(),
                 'rule'     => $canedit ? $rule->getLink() : htmlescape($rule->fields["name"]),
                 'active'   => Dropdown::getYesNo($rule->fields["is_active"]),
-                'description' => $rule->fields["description"]
+                'description' => $rule->fields["description"],
             ];
         }
 
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'is_tab' => true,
-            'nopager' => true,
             'nofilter' => true,
             'nosort' => true,
             'columns' => [
                 'rule' => RuleTicket::getTypeName($nb),
                 'active' => __('Active'),
-                'description' => __('Description')
+                'description' => __('Description'),
             ],
             'formatters' => [
                 'rule' => 'raw_html',
@@ -476,9 +474,9 @@ TWIG, $twig_params);
                 'container'     => 'mass' . RuleTicket::class . mt_rand(),
                 'specific_actions' => [
                     'update' => _x('button', 'Update'),
-                    'purge'  => _x('button', 'Delete permanently')
-                ]
-            ]
+                    'purge'  => _x('button', 'Delete permanently'),
+                ],
+            ],
         ]);
     }
 
@@ -533,12 +531,12 @@ TWIG, $twig_params);
                 'glpi_tickets' => [
                     'FKEY'   => [
                         static::getTable()   => 'id',
-                        'glpi_tickets'       => $field
-                    ]
-                ]
+                        'glpi_tickets'       => $field,
+                    ],
+                ],
             ],
             'WHERE'        => ['glpi_tickets.id' => $tickets_id],
-            'LIMIT'        => 1
+            'LIMIT'        => 1,
         ]);
 
         if (count($iterator)) {
@@ -553,7 +551,7 @@ TWIG, $twig_params);
 
         $tab[] = [
             'id'                 => 'common',
-            'name'               => __('Characteristics')
+            'name'               => __('Characteristics'),
         ];
 
         $tab[] = [
@@ -571,7 +569,7 @@ TWIG, $twig_params);
             'field'              => 'id',
             'name'               => __('ID'),
             'massiveaction'      => false,
-            'datatype'           => 'number'
+            'datatype'           => 'number',
         ];
 
         $tab[] = [
@@ -582,7 +580,7 @@ TWIG, $twig_params);
             'datatype'           => 'specific',
             'massiveaction'      => false,
             'nosearch'           => true,
-            'additionalfields'   => ['definition_time']
+            'additionalfields'   => ['definition_time'],
         ];
 
         $tab[] = [
@@ -591,7 +589,7 @@ TWIG, $twig_params);
             'field'              => 'end_of_working_day',
             'name'               => __('End of working day'),
             'datatype'           => 'bool',
-            'massiveaction'      => false
+            'massiveaction'      => false,
         ];
 
         $tab[] = [
@@ -599,7 +597,7 @@ TWIG, $twig_params);
             'table'              => static::getTable(),
             'field'              => 'type',
             'name'               => _n('Type', 'Types', 1),
-            'datatype'           => 'specific'
+            'datatype'           => 'specific',
         ];
 
         $tab[] = [
@@ -607,15 +605,15 @@ TWIG, $twig_params);
             'table'              => 'glpi_slms',
             'field'              => 'name',
             'name'               => __('SLM'),
-            'datatype'           => 'dropdown'
+            'datatype'           => 'dropdown',
         ];
 
         $tab[] = [
             'id'                 => '16',
             'table'              => static::getTable(),
             'field'              => 'comment',
-            'name'               => __('Comments'),
-            'datatype'           => 'text'
+            'name'               => _n('Comment', 'Comments', Session::getPluralNumber()),
+            'datatype'           => 'text',
         ];
 
         return $tab;
@@ -830,7 +828,7 @@ TWIG, $twig_params);
     {
         return [
             SLM::TTO => __('Time to own'),
-            SLM::TTR => __('Time to resolve')
+            SLM::TTR => __('Time to resolve'),
         ];
     }
 
@@ -977,11 +975,11 @@ TWIG, $twig_params);
             $iterator = $DB->request([
                 'SELECT' => 'id',
                 'FROM'   => $levelticket::getTable(),
-                'WHERE'  => ['tickets_id' => $ticket->fields['id']]
+                'WHERE'  => ['tickets_id' => $ticket->fields['id']],
             ]);
 
             foreach ($iterator as $data) {
-                 $levelticket->delete(['id' => $data['id']]);
+                $levelticket->delete(['id' => $data['id']]);
             }
         }
     }
@@ -996,12 +994,12 @@ TWIG, $twig_params);
         $level     = new static::$levelclass();
         $level->deleteByCriteria([$fk => $this->getID()]);
 
-       // Update tickets : clean SLA/OLA
+        // Update tickets : clean SLA/OLA
         [, $laField] = static::getFieldNames($this->fields['type']);
         $iterator =  $DB->request([
             'SELECT' => 'id',
             'FROM'   => 'glpi_tickets',
-            'WHERE'  => [$laField => $this->fields['id']]
+            'WHERE'  => [$laField => $this->fields['id']],
         ]);
 
         if (count($iterator)) {
@@ -1071,10 +1069,10 @@ TWIG, $twig_params);
                             'SELECT' => 'id',
                             'FROM' => static::getTable(),
                             'WHERE' => ['type' => $this->fields['type']],
-                        ])
-                    ]
+                        ]),
+                    ],
                 ]),
-            ]
+            ],
         ]);
 
         // Delete invalid levels

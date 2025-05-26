@@ -33,4 +33,4 @@
 
 // Use dynamic import to load the newer ESM module from this regular JS file
 //TODO Drop this workaround and load the module directly in src/Html.php
-import('./modules/Dashboard/Dashboard.js');
+import('/js/modules/Dashboard/Dashboard.js');

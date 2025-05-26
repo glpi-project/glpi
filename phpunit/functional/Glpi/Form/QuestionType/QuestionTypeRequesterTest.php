@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -111,7 +110,7 @@ final class QuestionTypeRequesterTest extends AbstractQuestionTypeActorsTest
         yield 'valid user and invalid group' => [
             'answer' => [
                 User::getForeignKeyField() . "-" . getItemByTypeName(User::class, "glpi", true),
-                Group::getForeignKeyField() . "-999999"
+                Group::getForeignKeyField() . "-999999",
             ],
             'expected_exception' => \Exception::class,
             'expected_message' => "Invalid actor ID: 999999",
@@ -140,9 +139,9 @@ final class QuestionTypeRequesterTest extends AbstractQuestionTypeActorsTest
                 [
                     'itemtype' => User::class,
                     'items_id' => $glpi_id,
-                ]
+                ],
             ],
-            'allow_multiple_actors' => false
+            'allow_multiple_actors' => false,
         ];
 
         yield 'valid group' => [
@@ -151,9 +150,9 @@ final class QuestionTypeRequesterTest extends AbstractQuestionTypeActorsTest
                 [
                     'itemtype' => Group::class,
                     'items_id' => $test_group_1_id,
-                ]
+                ],
             ],
-            'allow_multiple_actors' => false
+            'allow_multiple_actors' => false,
         ];
 
         yield 'multiple valid users' => [
@@ -169,9 +168,9 @@ final class QuestionTypeRequesterTest extends AbstractQuestionTypeActorsTest
                 [
                     'itemtype' => User::class,
                     'items_id' => $tech_id,
-                ]
+                ],
             ],
-            'allow_multiple_actors' => true
+            'allow_multiple_actors' => true,
         ];
 
         yield 'multiple valid groups' => [
@@ -187,9 +186,9 @@ final class QuestionTypeRequesterTest extends AbstractQuestionTypeActorsTest
                 [
                     'itemtype' => Group::class,
                     'items_id' => $test_group_2_id,
-                ]
+                ],
             ],
-            'allow_multiple_actors' => true
+            'allow_multiple_actors' => true,
         ];
     }
 

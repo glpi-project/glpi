@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -37,16 +36,10 @@ namespace Glpi\Form\Destination\CommonITILField;
 
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\Destination\ConfigFieldWithStrategiesInterface;
-use Glpi\Form\Export\Context\ConfigWithForeignKeysInterface;
-use Glpi\Form\Export\Context\ForeignKey\ForeignKeyHandler;
-use Glpi\Form\Export\Context\ForeignKey\QuestionForeignKeyHandler;
-use Glpi\Form\Export\Specification\ContentSpecificationInterface;
-use ITILCategory;
 use Override;
 
 final class ITILCategoryFieldConfig implements
     JsonFieldInterface,
-    ConfigWithForeignKeysInterface,
     ConfigFieldWithStrategiesInterface
 {
     // Unique reference to hardcoded names used for serialization and forms input names
@@ -58,17 +51,7 @@ final class ITILCategoryFieldConfig implements
         private ITILCategoryFieldStrategy $strategy,
         private ?int $specific_question_id = null,
         private ?int $specific_itilcategory_id = null,
-    ) {
-    }
-
-    #[Override]
-    public static function listForeignKeysHandlers(ContentSpecificationInterface $content_spec): array
-    {
-        return [
-            new ForeignKeyHandler(self::SPECIFIC_ITILCATEGORY_ID, ITILCategory::class),
-            new QuestionForeignKeyHandler(self::SPECIFIC_QUESTION_ID)
-        ];
-    }
+    ) {}
 
     #[Override]
     public static function jsonDeserialize(array $data): self

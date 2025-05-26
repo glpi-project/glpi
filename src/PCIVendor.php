@@ -55,12 +55,12 @@ class PCIVendor extends CommonDropdown implements CacheableListInterface
             [
                 'name'   => 'vendorid',
                 'label'  => __('Vendor ID'),
-                'type'   => 'text'
+                'type'   => 'text',
             ], [
                 'name'  => 'deviceid',
                 'label' => __('Device ID'),
-                'type'  => 'text'
-            ]
+                'type'  => 'text',
+            ],
         ];
     }
 
@@ -73,7 +73,7 @@ class PCIVendor extends CommonDropdown implements CacheableListInterface
             'table'              => static::getTable(),
             'field'              => 'vendorid',
             'name'               => __('Vendor ID'),
-            'datatype'           => 'string'
+            'datatype'           => 'string',
         ];
 
         $tab[] = [
@@ -81,7 +81,7 @@ class PCIVendor extends CommonDropdown implements CacheableListInterface
             'table'              => static::getTable(),
             'field'              => 'deviceid',
             'name'               => __('Device ID'),
-            'datatype'           => 'string'
+            'datatype'           => 'string',
         ];
 
         return $tab;

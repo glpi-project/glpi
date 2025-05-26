@@ -71,7 +71,7 @@ const component_context = import.meta.webpackContext('.', {
 
 /* global __webpack_public_path__ */
 // eslint-disable-next-line no-global-assign
-__webpack_public_path__ = CFG_GLPI.root_doc + __webpack_public_path__;
+__webpack_public_path__ = `${CFG_GLPI.root_doc + __webpack_public_path__}/`;
 
 const components = {};
 component_context.keys().forEach((f) => {

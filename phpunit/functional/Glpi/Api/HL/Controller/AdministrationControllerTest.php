@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -35,7 +34,6 @@
 
 namespace tests\units\Glpi\Api\HL\Controller;
 
-use Glpi\Api\HL\Controller\AbstractController;
 use Glpi\Http\Request;
 use PHPUnit\Framework\Attributes\DataProvider;
 
@@ -112,7 +110,7 @@ class AdministrationControllerTest extends \HLAPITestCase
             [
                 'firstname' => 'Test3',
                 'realname'  => 'User3',
-            ]
+            ],
         ], 'username');
     }
 
@@ -138,7 +136,7 @@ class AdministrationControllerTest extends \HLAPITestCase
         $this->api->autoTestSearch('/Administration/Group', [
             ['name' => __FUNCTION__ . '_1'],
             ['name' => __FUNCTION__ . '_2'],
-            ['name' => __FUNCTION__ . '_3']
+            ['name' => __FUNCTION__ . '_3'],
         ]);
     }
 
@@ -148,16 +146,16 @@ class AdministrationControllerTest extends \HLAPITestCase
         $this->api->autoTestSearch('/Administration/Entity', [
             [
                 'name' => __FUNCTION__ . '_1',
-                'parent' => getItemByTypeName('Entity', '_test_root_entity', true)
+                'parent' => getItemByTypeName('Entity', '_test_root_entity', true),
             ],
             [
                 'name' => __FUNCTION__ . '_2',
-                'parent' => getItemByTypeName('Entity', '_test_root_entity', true)
+                'parent' => getItemByTypeName('Entity', '_test_root_entity', true),
             ],
             [
                 'name' => __FUNCTION__ . '_3',
-                'parent' => getItemByTypeName('Entity', '_test_root_entity', true)
-            ]
+                'parent' => getItemByTypeName('Entity', '_test_root_entity', true),
+            ],
         ]);
     }
 
@@ -265,8 +263,8 @@ class AdministrationControllerTest extends \HLAPITestCase
             'FROM'   => 'glpi_useremails',
             'WHERE'  => [
                 'users_id' => getItemByTypeName('User', TU_USER, true),
-                'email'    => TU_USER . '@glpi.com'
-            ]
+                'email'    => TU_USER . '@glpi.com',
+            ],
         ])->current()['id'];
 
         $this->api->call(new Request('GET', "/Administration/User/me/email/$email_id"), function ($call) {
@@ -300,9 +298,9 @@ class AdministrationControllerTest extends \HLAPITestCase
         $this->assertIsString($picture_path);
         $DB->update('glpi_users', [
             'id' => $user_id,
-            'picture' => $picture_path
+            'picture' => $picture_path,
         ], [
-            'id' => $user_id
+            'id' => $user_id,
         ]);
     }
 
@@ -417,7 +415,7 @@ class AdministrationControllerTest extends \HLAPITestCase
     {
         $this->api
             ->autoTestCRUD('/Administration/Entity', [
-                'parent' => getItemByTypeName('Entity', '_test_root_entity', true)
+                'parent' => getItemByTypeName('Entity', '_test_root_entity', true),
             ]);
     }
 
@@ -478,32 +476,32 @@ class AdministrationControllerTest extends \HLAPITestCase
         $computers_id_1 = $this->createItem('Computer', [
             'name' => __FUNCTION__,
             'entities_id' => $entity_id,
-            'users_id' => \Session::getLoginUserID()
+            'users_id' => \Session::getLoginUserID(),
         ])->getID();
         $computers_id_2 = $this->createItem('Computer', [
             'name' => __FUNCTION__ . '_tech',
             'entities_id' => $entity_id,
-            'users_id_tech' => \Session::getLoginUserID()
+            'users_id_tech' => \Session::getLoginUserID(),
         ])->getID();
         $monitors_id_1 = $this->createItem('Monitor', [
             'name' => __FUNCTION__,
             'entities_id' => $entity_id,
-            'users_id' => \Session::getLoginUserID()
+            'users_id' => \Session::getLoginUserID(),
         ])->getID();
         $monitors_id_2 = $this->createItem('Monitor', [
             'name' => __FUNCTION__ . '_tech',
             'entities_id' => $entity_id,
-            'users_id_tech' => \Session::getLoginUserID()
+            'users_id_tech' => \Session::getLoginUserID(),
         ])->getID();
 
         $expected_used = [
             'Computer' => [$computers_id_1],
-            'Monitor' => [$monitors_id_1]
+            'Monitor' => [$monitors_id_1],
         ];
 
         $expected_managed = [
             'Computer' => [$computers_id_2],
-            'Monitor' => [$monitors_id_2]
+            'Monitor' => [$monitors_id_2],
         ];
 
         $used_endpoints = ['/Administration/User/me/UsedItem', "/Administration/User/username/" . TU_USER . "/UsedItem", "/Administration/User/" . \Session::getLoginUserID() . "/UsedItem"];
@@ -518,7 +516,7 @@ class AdministrationControllerTest extends \HLAPITestCase
                     ->jsonContent(function ($content) use ($expected_used) {
                         $this->assertGreaterThanOrEqual(count($expected_used), count($content));
                         foreach ($expected_used as $type => $ids) {
-                            $this->assertCount(count($ids), array_intersect(array_column(array_filter($content, static fn ($v) => $v['_itemtype'] === $type), 'id'), $ids));
+                            $this->assertCount(count($ids), array_intersect(array_column(array_filter($content, static fn($v) => $v['_itemtype'] === $type), 'id'), $ids));
                         }
                     });
             });
@@ -531,7 +529,7 @@ class AdministrationControllerTest extends \HLAPITestCase
                     ->jsonContent(function ($content) use ($expected_managed) {
                         $this->assertGreaterThanOrEqual(count($expected_managed), count($content));
                         foreach ($expected_managed as $type => $ids) {
-                            $this->assertCount(count($ids), array_intersect(array_column(array_filter($content, static fn ($v) => $v['_itemtype'] === $type), 'id'), $ids));
+                            $this->assertCount(count($ids), array_intersect(array_column(array_filter($content, static fn($v) => $v['_itemtype'] === $type), 'id'), $ids));
                         }
                     });
             });

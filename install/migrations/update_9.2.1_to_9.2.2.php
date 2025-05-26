@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -54,8 +53,6 @@ function update921to922()
     $updateresult     = true;
     $ADDTODISPLAYPREF = [];
 
-   //TRANS: %s is the number of new version
-    $migration->displayTitle(sprintf(__('Update to %s'), '9.2.2'));
     $migration->setVersion('9.2.2');
 
     $migration->addConfig([
@@ -65,7 +62,7 @@ function update921to922()
     $migration->addPostQuery(
         $DB->buildDelete("glpi_configs", [
             'context'   => "core",
-            'name'      => "default_graphtype"
+            'name'      => "default_graphtype",
         ])
     );
 
@@ -76,7 +73,7 @@ function update921to922()
         )
     );
 
-   // ************ Keep it at the end **************
+    // ************ Keep it at the end **************
     $migration->executeMigration();
 
     return $updateresult;

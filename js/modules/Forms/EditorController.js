@@ -31,9 +31,10 @@
  * ---------------------------------------------------------------------
  */
 
-/* global _, tinymce_editor_configs, getUUID, getRealInputWidth, sortable, tinymce, glpi_toast_info, glpi_toast_error, bootstrap, setupAjaxDropdown, setupAdaptDropdown */
+/* global _, tinymce_editor_configs, getUUID, getRealInputWidth, sortable, tinymce, glpi_toast_info, glpi_toast_error, bootstrap, setupAjaxDropdown, setupAdaptDropdown, setHasUnsavedChanges, hasUnsavedChanges */
 
-import { GlpiFormConditionEditorController } from './ConditionEditorController.js';
+import { GlpiFormConditionVisibilityEditorController } from '/js/modules/Forms/ConditionVisibilityEditorController.js';
+import { GlpiFormConditionValidationEditorController } from '/js/modules/Forms/ConditionValidationEditorController.js';
 
 /**
  * Client code to handle users actions on the form_editor template
@@ -65,6 +66,12 @@ export class GlpiFormEditorController
     #templates;
 
     /**
+     * Destination conditions
+     * @type {array}
+     */
+    #destination_conditions;
+
+    /**
      * Options for each question type
      * @type {Object}
      */
@@ -77,9 +84,14 @@ export class GlpiFormEditorController
     #question_subtypes_options;
 
     /**
-     * @type {array<GlpiFormConditionEditorController>}
+     * @type {array<GlpiFormConditionVisibilityEditorController>}
      */
     #conditions_editors_controllers;
+
+    /**
+     * @type {boolean}
+     */
+    #do_preview_after_save = false;
 
     /**
      * Create a new GlpiFormEditorController instance for the given target.
@@ -89,14 +101,16 @@ export class GlpiFormEditorController
      * @param {boolean} is_draft
      * @param {string} defaultQuestionType
      * @param {string} templates
+     * @param {object} destination_conditions
      */
-    constructor(target, is_draft, defaultQuestionType, templates) {
-        this.#target              = target;
-        this.#is_draft            = is_draft;
-        this.#defaultQuestionType = defaultQuestionType;
-        this.#templates           = templates;
-        this.#options             = {};
-        this.#question_subtypes_options    = {};
+    constructor(target, is_draft, defaultQuestionType, templates, destination_conditions) {
+        this.#target                         = target;
+        this.#is_draft                       = is_draft;
+        this.#defaultQuestionType            = defaultQuestionType;
+        this.#templates                      = templates;
+        this.#destination_conditions         = destination_conditions;
+        this.#options                        = {};
+        this.#question_subtypes_options      = {};
         this.#conditions_editors_controllers = [];
 
         // Validate target
@@ -203,6 +217,22 @@ export class GlpiFormEditorController
                 ),
             );
 
+        // Handle validation editor dropdowns
+        // The dropdown content will be re-rendered each time it is opened.
+        // This ensure the selectable data is always up to date (i.e. the
+        // question selector has up to date questions names, contains all newly
+        // added questions and do not include deleted questions).
+        $(document)
+            .on(
+                'show.bs.dropdown',
+                '[data-glpi-form-editor-validation-dropdown]',
+                (e) => this.#renderValidationEditor(
+                    $(e.target)
+                        .parent()
+                        .find('[data-glpi-conditions-editor-container]')
+                ),
+            );
+
         // Compute state before submitting the form
         $(this.#target).on('submit', (event) => {
             try {
@@ -218,30 +248,33 @@ export class GlpiFormEditorController
 
         // Handle form submit success event
         $(this.#target).on('glpi-ajax-controller-submit-success', () => {
+            const save_and_preview_button = $(this.#target).find(
+                '[data-glpi-form-editor-save-and-preview-action]'
+            );
+
             // Reset unsaved changes
             this.#updatePreviewButton();
 
-            const save_and_preview_button = $(this.#target).find('[data-glpi-form-editor-save-and-preview-action]');
-            if (save_and_preview_button.get(0) === $(document.activeElement).get(0)) {
+            // Check if a preview action was queued
+            if (this.#do_preview_after_save) {
                 // Open the preview page in a new tab
-                window.open(save_and_preview_button.data('glpi-form-editor-preview-url'), '_blank');
+                window.open(
+                    save_and_preview_button.data('glpi-form-editor-preview-url'),
+                    '_blank'
+                );
+                this.#do_preview_after_save = false;
             }
         });
 
-        let last_form_changes = window.glpiUnsavedFormChanges;
-        setInterval(() => {
-            if (last_form_changes !== window.glpiUnsavedFormChanges) {
-                this.#updatePreviewButton();
-            }
-            last_form_changes = window.glpiUnsavedFormChanges;
-        }, 500);
-
+        $(document).on('glpiFormChangeEvent', () => {
+            this.#updatePreviewButton();
+        });
 
         // Handle conditions strategy changes
         document.addEventListener('updated_strategy', (e) => {
-            this.#updateVisibilityBadge(
+            this.#updateConditionBadge(
                 $(e.detail.container).closest(
-                    '[data-glpi-form-editor-block],[data-glpi-form-editor-section-details]'
+                    '[data-glpi-form-editor-block],[data-glpi-form-editor-section-details],[data-glpi-form-editor-container]'
                 ),
                 e.detail.strategy
             );
@@ -328,7 +361,7 @@ export class GlpiFormEditorController
                 unsaved_changes = false;
                 break;
 
-            // Add a new question
+            // Add a question
             case "add-question":
                 this.#addQuestion(
                     target.closest(`
@@ -385,7 +418,7 @@ export class GlpiFormEditorController
                 );
                 break;
 
-            // Add a new section at the end of the form
+            // Add a section at the end of the form
             case "add-section":
                 this.#addSection(
                     target.closest(`
@@ -453,11 +486,11 @@ export class GlpiFormEditorController
 
             // No specific instructions for these events.
             // They must still be kept here as they benefits from the common code
-            // like refreshUX() and glpiUnsavedFormChanges.
+            // like refreshUX().
             case "question-sort-update":
                 break;
 
-            // Add a new comment
+            // Add a comment
             case "add-comment":
                 this.#addComment(
                     target.closest(`
@@ -480,6 +513,12 @@ export class GlpiFormEditorController
 
             case "show-visibility-dropdown":
                 this.#showVisibilityDropdown(
+                    target.closest('[data-glpi-form-editor-block],[data-glpi-form-editor-section-details]')
+                );
+                break;
+
+            case "show-validation-dropdown":
+                this.#showValidationDropdown(
                     target.closest('[data-glpi-form-editor-block],[data-glpi-form-editor-section-details]')
                 );
                 break;
@@ -520,13 +559,17 @@ export class GlpiFormEditorController
                 );
                 break;
 
+            case "queue-preview":
+                this.#do_preview_after_save = true;
+                break;
+
             // Unknown action
             default:
                 throw new Error(`Unknown action: ${action}`);
         }
 
         if (unsaved_changes) {
-            window.glpiUnsavedFormChanges = true;
+            setHasUnsavedChanges(true);
         }
 
         // Refresh all dynamic UX components after every action.
@@ -857,9 +900,9 @@ export class GlpiFormEditorController
                         return true;
                     }
 
-                    return item_container !== null
-                        && !$(element).is(item_container)
-                        && $(element).has(item_container).length === 0;
+                    return item_container === null
+                        || (!$(element).is(item_container)
+                        && $(element).has(item_container).length === 0);
                 })
                 .removeAttr(`data-glpi-form-editor-active-${type}`);
         });
@@ -903,7 +946,7 @@ export class GlpiFormEditorController
     }
 
     /**
-     * Add a new block next to the target.
+     * Add a block next to the target.
      * @param {jQuery} target
      * @param {jQuery} template
      * @returns
@@ -960,7 +1003,7 @@ export class GlpiFormEditorController
     }
 
     /**
-     * Add a new question at the end of the form
+     * Add a question at the end of the form
      * @param {jQuery} target   Current position in the form
      */
     #addQuestion(target) {
@@ -970,6 +1013,9 @@ export class GlpiFormEditorController
         ).children();
 
         const new_question = this.#addBlock(target, template);
+
+        // Set UUID
+        this.#setUuid(new_question);
 
         // Mark as active
         this.#setActiveItem(new_question);
@@ -993,6 +1039,10 @@ export class GlpiFormEditorController
      * @param {jQuery} question
      */
     #deleteQuestion(question) {
+        if (!this.#checkItemConditionDependencies('question', question)) {
+            return;
+        }
+
         // Dispose all tooltips and popovers
         question.find('[data-bs-toggle="tooltip"]').tooltip('dispose');
 
@@ -1023,6 +1073,188 @@ export class GlpiFormEditorController
             && question_container.find("[data-glpi-form-editor-block], [data-glpi-form-editor-horizontal-block-placeholder]").length === 0
         ) {
             this.#deleteHorizontalLayout(question_container);
+        }
+    }
+
+    /**
+     * Check if an item is used in conditions and show modal if needed
+     *
+     * @param {string} type Type of item ('question', 'comment', 'section')
+     * @param {jQuery} item The element to check
+     * @returns {boolean} True if the item can be deleted, false otherwise
+     */
+    #checkItemConditionDependencies(type, item) {
+        const uuid = this.#getItemInput(item, "uuid");
+        if (!uuid) {
+            return true; // New item without UUID can always be deleted
+        }
+
+        const itemIdentifier = `${type}-${uuid}`;
+
+        // Find elements using this item in their conditions
+        const conditionsUsingItem = $('[data-glpi-conditions-editor-item]')
+            .filter((_index, element) => element.value === itemIdentifier);
+
+        // Find destinations using this item in their conditions
+        const destinationsUsingItem = Object.values(this.#destination_conditions)
+            .filter(destination =>
+                destination.conditions &&
+                Object.values(destination.conditions).some(condition =>
+                    condition.item === itemIdentifier
+                )
+            );
+
+        // If the item is used in conditions, show modal and prevent deletion
+        if (conditionsUsingItem.length > 0 || destinationsUsingItem.length > 0) {
+            this.#showItemHasConditionsModal(type, conditionsUsingItem, destinationsUsingItem);
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Show the modal displaying all items that use the target item in their conditions
+     *
+     * @param {string} type Type of item ('question', 'comment', 'section')
+     * @param {jQuery} conditionsUsingItem jQuery object containing condition elements
+     * @param {array} destinationsUsingItem Array of destination objects
+     */
+    #showItemHasConditionsModal(type, conditionsUsingItem, destinationsUsingItem) {
+        // Show only the relevant header for this item type
+        $('[data-glpi-form-editor-item-has-conditions-modal-header]')
+            .addClass('d-none')
+            .filter(`[data-glpi-form-editor-item-has-conditions-modal-header=${type}]`)
+            .removeClass('d-none');
+
+        // Collect all elements using this item in their conditions
+        const elementsWithConditions = [];
+
+        // Process form elements (questions and sections)
+        conditionsUsingItem.each((_index, element) => {
+            // Check if condition is in a question
+            const parentItem = $(element).closest('[data-glpi-form-editor-block]');
+            if (parentItem.length > 0) {
+                elementsWithConditions.push({
+                    name: this.#getItemInput(parentItem, "name"),
+                    uuid: this.#getItemInput(parentItem, "uuid"),
+                    type: 'question',
+                    element: parentItem
+                });
+            }
+
+            // Check if condition is in a section
+            const parentSection = $(element).closest('[data-glpi-form-editor-section-details]');
+            if (parentSection.length > 0) {
+                elementsWithConditions.push({
+                    name: this.#getItemInput(parentSection, "name"),
+                    uuid: this.#getItemInput(parentSection, "uuid"),
+                    type: 'section',
+                    element: parentSection
+                });
+            }
+        });
+
+        // Add destinations to the list
+        destinationsUsingItem.forEach(destination => {
+            elementsWithConditions.push({
+                name: destination.name,
+                type: 'destination'
+            });
+        });
+
+        // Render the list of elements in the modal
+        const modalList = $('[data-glpi-form-editor-item-has-conditions-list]');
+        modalList.empty();
+
+        const template = $('[data-glpi-form-editor-item-has-conditions-item-template]').html();
+
+        // Add each element to the list
+        elementsWithConditions.forEach(data => {
+            const item = $(template);
+            const nameElement = item.find('[data-glpi-form-editor-item-has-conditions-item-name]');
+
+            nameElement.text(data.name);
+
+            if (data.uuid) {
+                nameElement.attr('data-glpi-form-editor-item-has-conditions-item-uuid', data.uuid);
+            }
+
+            nameElement.attr('data-glpi-form-editor-item-has-conditions-item-type', data.type);
+
+            // For destinations, link to the destinations tab
+            if (data.type === 'destination') {
+                const tab = $('[data-bs-target^="#tab-Glpi_Form_Destination_FormDestination_"]');
+                nameElement.attr('href', tab.attr('href'));
+            }
+
+            modalList.append(item);
+        });
+
+        // Set up click handlers for the items
+        modalList.find('[data-glpi-form-editor-item-has-conditions-item-selector][href="#"]').on('click', e => {
+            e.preventDefault();
+
+            // Hide modal
+            $('[data-glpi-form-editor-item-has-conditions-modal]').modal('hide');
+
+            // Get the UUID and type
+            const clickedElement = $(e.currentTarget);
+            const uuid = clickedElement.data('glpi-form-editor-item-has-conditions-item-uuid');
+            const type = clickedElement.data('glpi-form-editor-item-has-conditions-item-type');
+
+            // Find and scroll to the element with matching UUID
+            this.#findAndHighlightElement(type, uuid);
+        });
+
+        // Show the modal
+        $('[data-glpi-form-editor-item-has-conditions-modal]').modal('show');
+    }
+
+    /**
+     * Find an element by type and UUID, make it visible and highlight it
+     *
+     * @param {string} type The type of element ('question' or 'section')
+     * @param {string} uuid The UUID of the element
+     */
+    #findAndHighlightElement(type, uuid) {
+        if (!uuid || !type) {
+            return;
+        }
+
+        let targetElement;
+
+        if (type === 'question') {
+            // Find question with matching UUID
+            targetElement = $(this.#target)
+                .find('[data-glpi-form-editor-question]')
+                .filter((_index, item) => this.#getItemInput($(item), "uuid") === uuid)
+                .first();
+        } else if (type === 'section') {
+            // Find section with matching UUID
+            targetElement = $(this.#target)
+                .find('[data-glpi-form-editor-section-details]')
+                .filter((_index, section) => this.#getItemInput($(section), "uuid") === uuid)
+                .first();
+        }
+
+        // Make sure we found the element before proceeding
+        if (targetElement && targetElement.length > 0) {
+            // Make sure parent section is not collapsed
+            const parentSection = targetElement.closest('[data-glpi-form-editor-section]');
+            if (parentSection.hasClass('section-collapsed')) {
+                this.#collaspeSection(parentSection);
+            }
+
+            // Set as active
+            this.#setActiveItem(targetElement);
+
+            // Scroll to the element
+            targetElement.get(0).scrollIntoView({
+                behavior: 'smooth',
+                block: 'center',
+                inline: 'nearest'
+            });
         }
     }
 
@@ -1248,7 +1480,15 @@ export class GlpiFormEditorController
         return copy;
     }
 
-    /** @param {HTMLElement} question  */
+    /**
+     * Extract extra data from a question element by collecting values from specific input elements.
+     *
+     * @param {HTMLElement} question - The question DOM element to extract data from
+     * @returns {Object.<string, string>} An object containing name-value pairs of extra data
+     *    where keys are the original input names (from data-glpi-form-editor-original-name attribute or the input's name)
+     *    and values are the input values. Unchecked checkboxes are excluded.
+     * @private
+     */
     #getQuestionExtraData(question) {
         const extra_data = {};
 
@@ -1268,7 +1508,25 @@ export class GlpiFormEditorController
                 name = input.name;
             }
 
-            extra_data[name] = input.value;
+            const is_map = name.indexOf("[") !== -1
+                && name.indexOf("]") !== -1
+                && name.indexOf("[]") === -1
+            ;
+
+            if (is_map) {
+                // Handle complex arrays with key and values
+                const matches = name.match(/^(.*)\[(.*)\]$/);
+                if (matches === null) {
+                    throw new Error(`Unexpected input name: ${name}`);
+                }
+                if (extra_data[matches[1]] === undefined) {
+                    extra_data[matches[1]] = {};
+                }
+                extra_data[matches[1]][matches[2]] = input.value;
+            } else {
+                // Simple value
+                extra_data[name] = input.value;
+            }
         }
 
         return extra_data;
@@ -1515,7 +1773,7 @@ export class GlpiFormEditorController
     }
 
     /**
-     * Add a new section at the end of the form.
+     * Add a section at the end of the form.
      * @param {jQuery} target Current position in the form
      */
     #addSection(target) {
@@ -1605,6 +1863,10 @@ export class GlpiFormEditorController
      * @param {jQuery} section
      */
     #deleteSection(section) {
+        if (!this.#checkItemConditionDependencies('section', section)) {
+            return;
+        }
+
         if (section.prev().length == 0) {
             // If this is the first section of the form, set the next section as active if it exists
             if (section.next().length > 0 && this.#getSectionCount() > 2) {
@@ -1633,7 +1895,7 @@ export class GlpiFormEditorController
     }
 
     /**
-     * Add a new comment block.
+     * Add a comment block.
      * @param {jQuery} target   Current position in the form
      */
     #addComment(target) {
@@ -1643,6 +1905,9 @@ export class GlpiFormEditorController
             .children();
 
         const new_comment = this.#addBlock(target, template);
+
+        // Set UUID
+        this.#setUuid(new_comment);
 
         // Mark as active
         this.#setActiveItem(new_comment);
@@ -1667,6 +1932,10 @@ export class GlpiFormEditorController
      * @param {jQuery} comment
      */
     #deleteComment(comment) {
+        if (!this.#checkItemConditionDependencies('comment', comment)) {
+            return;
+        }
+
         // Dispose all tooltips and popovers
         comment.find('[data-bs-toggle="tooltip"]').tooltip('dispose');
 
@@ -1804,28 +2073,38 @@ export class GlpiFormEditorController
      */
     #enableSortable(sections) {
         // Sortable instance must be unique for each section
-        sections
-            .each((index, section) => {
-                const blocks_container = $(section)
-                    .find("[data-glpi-form-editor-section-blocks], [data-glpi-form-editor-horizontal-blocks], [data-glpi-form-editor-question-drag-merge], [data-glpi-form-editor-horizontal-block-placeholder]");
+        sections.each((index, section) => {
+            const blocks_container = $(section)
+                .find("[data-glpi-form-editor-section-blocks], [data-glpi-form-editor-horizontal-blocks], [data-glpi-form-editor-question-drag-merge], [data-glpi-form-editor-horizontal-block-placeholder]");
 
-                sortable(blocks_container, {
+            blocks_container.each((index, container) => {
+                const $container = $(container);
+
+                // Common sortable configuration
+                const sortableConfig = {
                     // Drag and drop handle selector
                     handle: '[data-glpi-form-editor-question-handle]',
 
                     // Restrict sortable items
                     items: '[data-glpi-form-editor-block], [data-glpi-form-editor-horizontal-block-placeholder]',
 
-                    // Limit the number of blocks in horizontal blocks
-                    maxItems: blocks_container.attr("data-glpi-form-editor-horizontal-blocks") !== typeof undefined ? 4 : 0,
-
                     // Accept from others sections
                     acceptFrom: '[data-glpi-form-editor-section-blocks], [data-glpi-form-editor-horizontal-blocks]',
 
                     // Placeholder class
                     placeholder: '<section class="glpi-form-editor-drag-question-placeholder"></section>',
-                });
+                };
+
+
+                // Add specific configuration based on container type
+                if ($container.is("[data-glpi-form-editor-horizontal-blocks]")) {
+                    sortableConfig.maxItems = 4; // Limit the number of blocks in horizontal blocks
+                }
+
+                // Initialize sortable with the configuration
+                sortable($container, sortableConfig);
             });
+        });
 
         // Keep track on unsaved changes if the sort order was updated
         sections
@@ -1838,9 +2117,17 @@ export class GlpiFormEditorController
 
         // Add a special class while a drag and drop is happening
         sections
-            .find("[data-glpi-form-editor-section-blocks]")
-            .on('sortstart', () => {
+            .find("[data-glpi-form-editor-section-blocks], [data-glpi-form-editor-horizontal-blocks], [data-glpi-form-editor-question-drag-merge], [data-glpi-form-editor-horizontal-block-placeholder]")
+            .on('sortstart', (e) => {
                 $(this.#target).addClass("disable-focus").attr('data-glpi-form-editor-sorting', '');
+
+                // If dragged item is active, store it to restore it later
+                if ($(e.detail.item).is('[data-glpi-form-editor-active-question],[data-glpi-form-editor-active-comment]')) {
+                    $(e.detail.item).attr('data-glpi-form-editor-restore-active-state', '');
+                }
+
+                // Remove active states
+                this.#setActiveItem(null);
             });
 
         // Run the post move process if any item was dragged, even if it was not
@@ -1890,6 +2177,13 @@ export class GlpiFormEditorController
                 // until our drag operation is over.
                 $(this.#target).removeClass("disable-focus").removeAttr('data-glpi-form-editor-sorting');
                 $('.content-editable-tinymce').removeClass('simulate-focus');
+
+                // Restore active state if needed
+                const restore_active_state = $(e.detail.item).attr('data-glpi-form-editor-restore-active-state');
+                if (restore_active_state !== undefined) {
+                    $(e.detail.item).removeAttr('data-glpi-form-editor-restore-active-state');
+                    this.#setActiveItem($(e.detail.item));
+                }
             });
     }
 
@@ -2164,7 +2458,7 @@ export class GlpiFormEditorController
     }
 
     #updatePreviewButton() {
-        if (window.glpiUnsavedFormChanges) {
+        if (hasUnsavedChanges()) {
             $(this.#target).find('[data-glpi-form-editor-preview-actions]')
                 .find('[data-glpi-form-editor-preview-action]').addClass('d-none');
             $(this.#target).find('[data-glpi-form-editor-preview-actions]')
@@ -2195,16 +2489,61 @@ export class GlpiFormEditorController
         bootstrap.Dropdown.getOrCreateInstance(dropdown[0]).show();
     }
 
-    #updateVisibilityBadge(container, value) {
-        // Show/hide badges in the container
-        container.find('[data-glpi-editor-visibility-badge]')
+    #updateConditionBadge(container, value) {
+        // Determine which type of badge we're updating based on the container
+        let badgeType = null;
+        if (container.find(`[data-glpi-editor-visibility-badge=${value}]`).length > 0) {
+            badgeType = 'visibility';
+        } else if (container.find(`[data-glpi-editor-validation-badge=${value}]`).length > 0) {
+            badgeType = 'validation';
+        }
+
+        // Hide all badges of this type
+        container.find(`[data-glpi-editor-${badgeType}-badge]`)
             .removeClass('d-flex')
-            .addClass('d-none')
-        ;
-        container.find(`[data-glpi-editor-visibility-badge=${value}]`)
+            .addClass('d-none');
+
+        // Show only the specific badge for the current value
+        container.find(`[data-glpi-editor-${badgeType}-badge=${value}]`)
             .removeClass('d-none')
-            .addClass('d-flex')
+            .addClass('d-flex');
+    }
+
+    #showValidationDropdown(container) {
+        container
+            .find('[data-glpi-form-editor-validation-dropdown-container]')
+            .removeClass('d-none')
         ;
+
+        const dropdown = container
+            .find('[data-glpi-form-editor-validation-dropdown-container]')
+            .find('[data-glpi-form-editor-validation-dropdown]')
+        ;
+        bootstrap.Dropdown.getOrCreateInstance(dropdown[0]).show();
+    }
+
+    /**
+     * To render the condition editor, the unsaved state must be computed
+     * and sent to the server.
+     *
+     * This method compute the available sections of the forms
+     */
+    #getSectionStateForConditionEditor() {
+        this.computeState();
+        const sections = [];
+
+        // Extract all sections
+        $(this.#target)
+            .find("[data-glpi-form-editor-section]")
+            .each((_index, section) => {
+                sections.push({
+                    'uuid': this.#getItemInput($(section), "uuid"),
+                    'name': this.#getItemInput($(section), "name"),
+                });
+            })
+        ;
+
+        return sections;
     }
 
     /**
@@ -2213,6 +2552,8 @@ export class GlpiFormEditorController
      *
      * This method compute the available questions of the forms, the defined
      * conditions and the current selected item.
+     *
+     * @returns {array<{uuid: string, name: string, type: string, extra_data: object}>}
      */
     #getQuestionStateForConditionEditor() {
         this.computeState();
@@ -2226,12 +2567,36 @@ export class GlpiFormEditorController
                     'uuid': this.#getItemInput($(question), "uuid"),
                     'name': this.#getItemInput($(question), "name"),
                     'type': this.#getItemInput($(question), "type"),
-                    'extra_data': this.#getQuestionExtraData(question, "extra_data"),
+                    'extra_data': this.#getQuestionExtraData(question),
                 });
             })
         ;
 
         return questions;
+    }
+
+    /**
+     * To render the condition editor, the unsaved state must be computed
+     * and sent to the server.
+     *
+     * This method compute the available comments of the forms
+     */
+    #getCommentStateForConditionEditor() {
+        this.computeState();
+        const comments = [];
+
+        // Extract all comments
+        $(this.#target)
+            .find("[data-glpi-form-editor-comment]")
+            .each((_index, comment) => {
+                comments.push({
+                    'uuid': this.#getItemInput($(comment), "uuid"),
+                    'name': this.#getItemInput($(comment), "name"),
+                });
+            })
+        ;
+
+        return comments;
     }
 
     async #renderVisibilityEditor(container) {
@@ -2242,7 +2607,7 @@ export class GlpiFormEditorController
             // Read selected item uuid and type
             const uuid = this.#getItemInput(
                 container.closest(
-                    '[data-glpi-form-editor-block], [data-glpi-form-editor-section-details]'
+                    '[data-glpi-form-editor-block], [data-glpi-form-editor-section-details], [data-glpi-form-editor-container]'
                 ),
                 'uuid',
             );
@@ -2251,11 +2616,13 @@ export class GlpiFormEditorController
             ).data('glpi-form-editor-condition-type');
 
             // Init and register controller
-            controller = new GlpiFormConditionEditorController(
+            controller = new GlpiFormConditionVisibilityEditorController(
                 container[0],
                 uuid,
                 type,
+                this.#getSectionStateForConditionEditor(),
                 this.#getQuestionStateForConditionEditor(),
+                this.#getCommentStateForConditionEditor(),
             );
             container.attr(
                 'data-glpi-editor-condition-controller-index',
@@ -2263,8 +2630,50 @@ export class GlpiFormEditorController
             );
             this.#conditions_editors_controllers.push(controller);
         } else {
-            // Refresh question data to make sure it is up to date
+            // Refresh form data to make sure it is up to date
+            controller.setFormSections(this.#getSectionStateForConditionEditor());
             controller.setFormQuestions(this.#getQuestionStateForConditionEditor());
+            controller.setFormComments(this.#getCommentStateForConditionEditor());
+        }
+
+        controller.renderEditor();
+    }
+
+    async #renderValidationEditor(container) {
+        let controller = this.#getConditionEditorController(container);
+
+        // Controller lazy loading
+        if (controller === null) {
+            // Read selected item uuid and type
+            const uuid = this.#getItemInput(
+                container.closest(
+                    '[data-glpi-form-editor-block], [data-glpi-form-editor-section-details], [data-glpi-form-editor-container]'
+                ),
+                'uuid',
+            );
+            const type = container.closest(
+                '[data-glpi-form-editor-condition-type]'
+            ).data('glpi-form-editor-condition-type');
+
+            // Init and register controller
+            controller = new GlpiFormConditionValidationEditorController(
+                container[0],
+                uuid,
+                type,
+                this.#getSectionStateForConditionEditor(),
+                this.#getQuestionStateForConditionEditor(),
+                this.#getCommentStateForConditionEditor(),
+            );
+            container.attr(
+                'data-glpi-editor-condition-controller-index',
+                this.#conditions_editors_controllers.length,
+            );
+            this.#conditions_editors_controllers.push(controller);
+        } else {
+            // Refresh form data to make sure it is up to date
+            controller.setFormSections(this.#getSectionStateForConditionEditor());
+            controller.setFormQuestions(this.#getQuestionStateForConditionEditor());
+            controller.setFormComments(this.#getCommentStateForConditionEditor());
         }
 
         controller.renderEditor();
@@ -2319,7 +2728,7 @@ export class GlpiFormEditorController
     }
 
     /**
-     * Add a new placeholder to the horizontal block.
+     * Add a placeholder to the horizontal block.
      * @param {jQuery} target Horizontal block
      */
     #addHorizontalLayoutSlot(target) {

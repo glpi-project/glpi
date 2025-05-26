@@ -33,6 +33,9 @@
  * ---------------------------------------------------------------------
  */
 
+require_once(__DIR__ . '/_check_webserver_config.php');
+
+use Glpi\Application\Environment;
 use Glpi\UI\ThemeManager;
 
 // Main CSS compilation requires about 70MB of memory.
@@ -58,11 +61,9 @@ $css = Html::compileScss($_GET);
 
 header('Content-Type: text/css');
 
-$is_cacheable = !isset($_GET['nocache'])
-    && GLPI_ENVIRONMENT_TYPE !== GLPI::ENV_DEVELOPMENT // do not use browser cache on development env
-;
+$is_cacheable = !isset($_GET['nocache']) && Environment::get()->shouldForceExtraBrowserCache();
 if ($is_cacheable) {
-   // Makes CSS cacheable by browsers and proxies
+    // Makes CSS cacheable by browsers and proxies
     $max_age = WEEK_TIMESTAMP;
     header_remove('Pragma');
     header('Cache-Control: public');

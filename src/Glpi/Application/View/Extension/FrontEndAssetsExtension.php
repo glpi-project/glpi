@@ -35,15 +35,20 @@
 
 namespace Glpi\Application\View\Extension;
 
+use Config;
 use DBmysql;
 use Entity;
+use Glpi\Application\ImportMapGenerator;
 use Glpi\Toolbox\FrontEnd;
+use Glpi\UI\Theme;
 use Glpi\UI\ThemeManager;
 use Html;
 use Plugin;
 use Session;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
+
+use function Safe\json_encode;
 
 /**
  * @since 10.0.0
@@ -68,8 +73,21 @@ class FrontEndAssetsExtension extends AbstractExtension
             new TwigFunction('css_path', [$this, 'cssPath']),
             new TwigFunction('js_path', [$this, 'jsPath']),
             new TwigFunction('custom_css', [$this, 'customCss'], ['is_safe' => ['html']]),
+            new TwigFunction('config_js', [$this, 'configJs'], ['is_safe' => ['html']]),
             new TwigFunction('locales_js', [$this, 'localesJs'], ['is_safe' => ['html']]),
+            new TwigFunction('current_theme', [$this, 'currentTheme']),
+            new TwigFunction('importmap', [$this, 'importmap'], ['is_safe' => ['html']]),
         ];
+    }
+
+    /**
+     * Current theme
+     *
+     * @return Theme
+     */
+    public function currentTheme(): Theme
+    {
+        return ThemeManager::getInstance()->getCurrentTheme();
     }
 
     /**
@@ -187,13 +205,13 @@ class FrontEndAssetsExtension extends AbstractExtension
 
         $css = '';
 
-        if ($DB instanceof DBmysql && $DB->connected) {
+        if ($DB instanceof DBmysql && $DB->connected && $DB->tableExists(Entity::getTable())) {
             $entity = new Entity();
             if (isset($_SESSION['glpiactive_entity'])) {
                 // Apply active entity styles
                 $entity->getFromDB($_SESSION['glpiactive_entity']);
             } else {
-               // Apply root entity styles
+                // Apply root entity styles
                 $entity->getFromDB('0');
             }
             $css = $entity->getCustomCssTag();
@@ -216,7 +234,7 @@ class FrontEndAssetsExtension extends AbstractExtension
             return '';
         }
 
-       // Compute available translation domains
+        // Compute available translation domains
         $locales_domains = ['glpi' => GLPI_VERSION];
         $plugins = Plugin::getPlugins();
         foreach ($plugins as $plugin) {
@@ -254,5 +272,48 @@ JAVASCRIPT;
         }
 
         return Html::scriptBlock($script);
+    }
+
+    /**
+     * Return config (CFG_GLPI) JS code.
+     *
+     * @return string
+     */
+    public function configJs(): string
+    {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        $cfg_glpi = [
+            'url_base' => $CFG_GLPI['url_base'] ?? '', // may not be defined during the install process
+            'root_doc' => $CFG_GLPI['root_doc'],
+        ];
+        if (Session::getLoginUserID(true) !== false) {
+            // expose full config only for connected users
+            $cfg_glpi += Config::getSafeConfig(true);
+        }
+
+        $plugins_path = \array_map(fn(string $plugin_key) => "/plugins/{$plugin_key}", Plugin::getPlugins());
+
+        $script = sprintf('window.CFG_GLPI = %s;', json_encode($cfg_glpi, JSON_PRETTY_PRINT))
+            . "\n"
+            . sprintf('window.GLPI_PLUGINS_PATH = %s;', json_encode($plugins_path, JSON_PRETTY_PRINT));
+
+        return Html::scriptBlock($script);
+    }
+
+    /**
+     * Generate an import map for JavaScript modules
+     *
+     * @return string HTML script tag containing the import map
+     */
+    public function importmap(): string
+    {
+        $import_map = ImportMapGenerator::getInstance()->generate();
+
+        return '<script type="importmap">' . json_encode(
+            $import_map,
+            JSON_PRETTY_PRINT
+        ) . '</script>';
     }
 }

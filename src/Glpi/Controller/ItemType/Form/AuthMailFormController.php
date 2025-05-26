@@ -36,18 +36,16 @@ namespace Glpi\Controller\ItemType\Form;
 
 use AuthMail;
 use Glpi\Controller\GenericFormController;
-use Glpi\Routing\Attribute\ItemtypeFormLegacyRoute;
+use Glpi\Http\RedirectResponse;
 use Glpi\Routing\Attribute\ItemtypeFormRoute;
 use Html;
 use Session;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class AuthMailFormController extends GenericFormController
 {
     #[ItemtypeFormRoute(AuthMail::class)]
-    #[ItemtypeFormLegacyRoute(AuthMail::class)]
     public function __invoke(Request $request): Response
     {
         $request->attributes->set('class', AuthMail::class);

@@ -156,7 +156,7 @@ final class HomePageTabs extends CommonGLPI
                 'field'      => 12,
                 'searchtype' => 'equals',
                 'value'      => 'notold',
-            ]
+            ],
         ]);
     }
 
@@ -168,7 +168,7 @@ final class HomePageTabs extends CommonGLPI
                 'field'      => 12,
                 'searchtype' => 'equals',
                 'value'      => 'old',
-            ]
+            ],
         ]);
     }
 

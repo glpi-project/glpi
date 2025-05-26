@@ -53,13 +53,14 @@ class IPRestrictionRequestMiddleware extends AbstractMiddleware implements Reque
 
         $request_ip = $_SERVER['REMOTE_ADDR'];
 
-        $allowed_ips = $DB->request([
+        $result = $DB->request([
             'SELECT' => ['allowed_ips'],
             'FROM'   => 'glpi_oauthclients',
             'WHERE'  => [
-                'identifier' => $client['client_id']
-            ]
-        ])->current()['allowed_ips'];
+                'identifier' => $client['client_id'],
+            ],
+        ])->current();
+        $allowed_ips = $result['allowed_ips'] ?? [];
 
         if (empty($allowed_ips)) {
             // No IP restriction
@@ -85,7 +86,7 @@ class IPRestrictionRequestMiddleware extends AbstractMiddleware implements Reque
                 if ($this->isCidrMatch($ip, $allowed_ip)) {
                     return true;
                 }
-            } else if ($ip === $allowed_ip) {
+            } elseif ($ip === $allowed_ip) {
                 return true;
             }
         }
@@ -105,7 +106,7 @@ class IPRestrictionRequestMiddleware extends AbstractMiddleware implements Reque
         [$subnet, $mask] = explode('/', $range);
         $subnet = inet_pton($subnet);
         $ip = inet_pton($ip);
-        $mask = $mask === '' ? $max_mask : (int)$mask;
+        $mask = $mask === '' ? $max_mask : (int) $mask;
         $subnet = substr($subnet, 0, $mask / 8);
         $ip = substr($ip, 0, $mask / 8);
         return $subnet === $ip;

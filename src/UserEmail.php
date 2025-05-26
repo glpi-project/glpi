@@ -38,10 +38,10 @@
  **/
 class UserEmail extends CommonDBChild
 {
-   // From CommonDBTM
+    // From CommonDBTM
     public $auto_message_on_action = false;
 
-   // From CommonDBChild
+    // From CommonDBChild
     public static $itemtype        = 'User';
     public static $items_id        = 'users_id';
     public $dohistory              = true;
@@ -99,14 +99,14 @@ class UserEmail extends CommonDBChild
         /** @var \DBmysql $DB */
         global $DB;
 
-       // Get default one
+        // Get default one
         $iterator = $DB->request([
             'FROM'   => self::getTable(),
             'WHERE'  => [
                 'users_id'     => $users_id,
             ],
             'ORDER'  => 'is_default DESC',
-            'LIMIT'  => 1
+            'LIMIT'  => 1,
         ]);
 
         foreach ($iterator as $row) {
@@ -135,7 +135,7 @@ class UserEmail extends CommonDBChild
             'FROM'   => self::getTable(),
             'WHERE'  => [
                 'users_id'     => $users_id,
-            ]
+            ],
         ]);
 
         foreach ($iterator as $row) {
@@ -163,9 +163,9 @@ class UserEmail extends CommonDBChild
             'FROM'   => self::getTable(),
             'WHERE'  => [
                 'users_id'  => $users_id,
-                'email'     => $email
+                'email'     => $email,
             ],
-            'LIMIT'  => 1
+            'LIMIT'  => 1,
         ]);
 
         if (count($iterator)) {
@@ -188,9 +188,9 @@ class UserEmail extends CommonDBChild
     {
 
         return "<div class=\'d-flex\'><input title=\'" . __s('Default email') . "\' type=\'radio\' name=\'_default_email\'" .
-             " value=\'-'+" . htmlescape($child_count_js_var) . "+'\'>&nbsp;" .
+             " value=\'-'+" . htmlescape($child_count_js_var) . "+'\' aria-label=\'" . __s('Set as default email') . "\'>&nbsp;" .
              "<input type=\'text\' size=\'30\' class=\'form-control\' " . "name=\'" . htmlescape($field_name) .
-             "[-'+" . htmlescape($child_count_js_var) . "+']\'></div>";
+             "[-'+" . htmlescape($child_count_js_var) . "+']\'  aria-label=\'" . __s('Email address') . "\'></div>";
     }
 
 
@@ -215,17 +215,17 @@ class UserEmail extends CommonDBChild
         $result .= "<input title='" . __s('Default email') . "' type='radio' name='_default_email'
              value='" . htmlescape($this->getID()) . "'";
         if (!$canedit) {
-            $result .= " disabled";
+            $result .= " disabled aria-disabled='true'";
         }
         if ($this->fields['is_default']) {
             $result .= " checked";
         }
-        $result .= ">&nbsp;";
+        $result .= " aria-label='" . __s('Set as default email') . "'>&nbsp;";
         if (!$canedit || $this->fields['is_dynamic']) {
             $result .= "<input type='hidden' name='$field_name' value='$value'>";
             $result .= sprintf('%s <span class="b">(%s)</span>', $value, __s('D'));
         } else {
-            $result .= "<input type='text' size=30 class='form-control' name='$field_name' value='$value' >";
+            $result .= "<input type='text' size=30 class='form-control' name='$field_name' value='$value' aria-label='" . __s('Email address') . "'>";
         }
         $result .= "</div>";
 
@@ -301,7 +301,7 @@ class UserEmail extends CommonDBChild
             return false;
         }
 
-       // First email is default
+        // First email is default
         if (countElementsInTable($this->getTable(), ['users_id' => $input['users_id']]) == 0) {
             $input['is_default'] = 1;
         }
@@ -349,7 +349,7 @@ class UserEmail extends CommonDBChild
         /** @var \DBmysql $DB */
         global $DB;
 
-       // if default is set : unsed others for the users
+        // if default is set : unsed others for the users
         if (
             in_array('is_default', $this->updates)
             && ($this->input["is_default"] == 1)
@@ -357,11 +357,11 @@ class UserEmail extends CommonDBChild
             $DB->update(
                 $this->getTable(),
                 [
-                    'is_default' => 0
+                    'is_default' => 0,
                 ],
                 [
                     'id'        => ['<>', $this->input['id']],
-                    'users_id'  => $this->fields['users_id']
+                    'users_id'  => $this->fields['users_id'],
                 ]
             );
         }
@@ -375,16 +375,16 @@ class UserEmail extends CommonDBChild
         /** @var \DBmysql $DB */
         global $DB;
 
-       // if default is set : unset others for the users
+        // if default is set : unset others for the users
         if (isset($this->fields['is_default']) && ($this->fields["is_default"] == 1)) {
             $DB->update(
                 $this->getTable(),
                 [
-                    'is_default' => 0
+                    'is_default' => 0,
                 ],
                 [
                     'id'        => ['<>', $this->fields['id']],
-                    'users_id'  => $this->fields['users_id']
+                    'users_id'  => $this->fields['users_id'],
                 ]
             );
         }
@@ -398,19 +398,19 @@ class UserEmail extends CommonDBChild
         /** @var \DBmysql $DB */
         global $DB;
 
-       // if default is set : set default to another one
+        // if default is set : set default to another one
         if ($this->fields["is_default"] == 1) {
             $DB->update(
                 $this->getTable(),
                 [
-                    'is_default'   => 1
+                    'is_default'   => 1,
                 ],
                 [
                     'WHERE'  => [
                         'id'        => ['<>', $this->fields['id']],
-                        'users_id'  => $this->fields['users_id']
+                        'users_id'  => $this->fields['users_id'],
                     ],
-                    'LIMIT'  => 1
+                    'LIMIT'  => 1,
                 ]
             );
         }

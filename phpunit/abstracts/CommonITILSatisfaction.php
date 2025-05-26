@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -180,7 +179,7 @@ abstract class CommonITILSatisfaction extends DbTestCase
 
         $this->assertTrue($satisfaction->update([
             $itilobject_type::getForeignKeyField() => $items_id, // These items don't use `id` as the index field...
-            'satisfaction' => 5
+            'satisfaction' => 5,
         ]));
 
         $this->assertNotNull($satisfaction->fields['date_answered']);

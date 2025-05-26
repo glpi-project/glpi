@@ -45,8 +45,7 @@ class SimpleValueConfig implements JsonFieldInterface
 
     public function __construct(
         protected string $value,
-    ) {
-    }
+    ) {}
 
     #[Override]
     public static function jsonDeserialize(array $data): self

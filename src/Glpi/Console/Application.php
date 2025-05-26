@@ -36,7 +36,7 @@
 namespace Glpi\Console;
 
 use DBmysql;
-use GLPI;
+use Glpi\Application\Environment;
 use Glpi\Console\Command\ConfigurationCommandInterface;
 use Glpi\Console\Command\GlpiCommandInterface;
 use Glpi\Error\ErrorDisplayHandler\ConsoleErrorDisplayHandler;
@@ -66,21 +66,21 @@ class Application extends BaseApplication
      *
      * @var integer
      */
-    const ERROR_MISSING_REQUIREMENTS = 128; // start application codes at 128 be sure to be different from commands codes
+    public const ERROR_MISSING_REQUIREMENTS = 128; // start application codes at 128 be sure to be different from commands codes
 
     /**
      * Error code returned if write access to configuration files is denied.
      *
      * @var integer
      */
-    const ERROR_CONFIG_WRITE_ACCESS_DENIED = 129;
+    public const ERROR_CONFIG_WRITE_ACCESS_DENIED = 129;
 
     /**
      * Error code returned when DB is not up-to-date.
      *
      * @var integer
      */
-    const ERROR_DB_OUTDATED = 129;
+    public const ERROR_DB_OUTDATED = 129;
 
     /**
      * Pointer to $CFG_GLPI.
@@ -122,7 +122,7 @@ class Application extends BaseApplication
 
     protected function getDefaultInputDefinition(): InputDefinition
     {
-        $env_values = [GLPI::ENV_PRODUCTION, GLPI::ENV_STAGING, GLPI::ENV_TESTING, GLPI::ENV_DEVELOPMENT];
+        $env_values = Environment::getValues();
 
         $definition = new InputDefinition(
             [
@@ -192,7 +192,7 @@ class Application extends BaseApplication
                     null,
                     InputOption::VALUE_OPTIONAL,
                     __('Output language (default value is existing GLPI "language" configuration or "en_GB")')
-                )
+                ),
             ]
         );
 
@@ -210,7 +210,7 @@ class Application extends BaseApplication
 
         parent::configureIO($input, $output);
 
-       // Trigger error on invalid lang. This is not done before as error handler would not be set.
+        // Trigger error on invalid lang. This is not done before as error handler would not be set.
         $lang = $input->getParameterOption('--lang', null, true);
         if (null !== $lang && !array_key_exists($lang, $CFG_GLPI['languages'])) {
             throw new \Symfony\Component\Console\Exception\RuntimeException(
@@ -219,7 +219,7 @@ class Application extends BaseApplication
         }
 
         if ($output->getVerbosity() === OutputInterface::VERBOSITY_DEBUG) {
-            Toolbox::setDebugMode(Session::DEBUG_MODE, 0, 0, 1);
+            Toolbox::setDebugMode(Session::DEBUG_MODE);
         }
     }
 
@@ -252,7 +252,7 @@ class Application extends BaseApplication
 
         if (
             $is_db_available
-            && defined('SKIP_UPDATES')
+            && GLPI_SKIP_UPDATES
             && (!($command instanceof GlpiCommandInterface) || $command->requiresUpToDateDb())
             && !Update::isDbUpToDate()
         ) {
@@ -328,16 +328,16 @@ class Application extends BaseApplication
     private function computeAndLoadOutputLang()
     {
 
-       // 1. Check in command line arguments
+        // 1. Check in command line arguments
         $input = new ArgvInput();
         $lang = $input->getParameterOption('--lang', null, true);
 
         if (null !== $lang && !$this->isLanguageValid($lang)) {
-           // Unset requested lang if invalid
+            // Unset requested lang if invalid
             $lang = null;
         }
 
-       // 2. Check in GLPI configuration
+        // 2. Check in GLPI configuration
         if (
             null === $lang && array_key_exists('language', $this->config)
             && $this->isLanguageValid($this->config['language'])
@@ -345,7 +345,7 @@ class Application extends BaseApplication
             $lang = $this->config['language'];
         }
 
-       // 3. Use default value
+        // 3. Use default value
         if (null === $lang) {
             $lang = 'en_GB';
         }

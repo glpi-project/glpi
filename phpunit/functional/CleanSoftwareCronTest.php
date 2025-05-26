@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -50,7 +49,7 @@ class CleanSoftwareCronTest extends DbTestCase
 
         // Delete all existing software and versions
         $always_true = [
-            new \Glpi\DBAL\QueryExpression('1 = 1')
+            new \Glpi\DBAL\QueryExpression('1 = 1'),
         ];
         $this->assertTrue($software->deleteByCriteria($always_true, 1));
         $this->assertTrue($software_version->deleteByCriteria($always_true, 1));
@@ -58,16 +57,16 @@ class CleanSoftwareCronTest extends DbTestCase
         // verify all deleted
         $this->assertSame(
             0,
-            (int)$DB->request([
+            (int) $DB->request([
                 'COUNT' => 'cpt',
-                'FROM' => \Software::getTable()
+                'FROM' => \Software::getTable(),
             ])->current()['cpt']
         );
         $this->assertSame(
             0,
-            (int)$DB->request([
+            (int) $DB->request([
                 'COUNT' => 'cpt',
-                'FROM' => \SoftwareVersion::getTable()
+                'FROM' => \SoftwareVersion::getTable(),
             ])->current()['cpt']
         );
 
@@ -94,16 +93,16 @@ class CleanSoftwareCronTest extends DbTestCase
         // verify all created
         $this->assertSame(
             100,
-            (int)$DB->request([
+            (int) $DB->request([
                 'COUNT' => 'cpt',
-                'FROM' => \Software::getTable()
+                'FROM' => \Software::getTable(),
             ])->current()['cpt']
         );
         $this->assertSame(
             1000,
-            (int)$DB->request([
+            (int) $DB->request([
                 'COUNT' => 'cpt',
-                'FROM' => \SoftwareVersion::getTable()
+                'FROM' => \SoftwareVersion::getTable(),
             ])->current()['cpt']
         );
 
@@ -112,16 +111,16 @@ class CleanSoftwareCronTest extends DbTestCase
         // Verify only 5 versions were deleted and no software
         $this->assertSame(
             100,
-            (int)$DB->request([
+            (int) $DB->request([
                 'COUNT' => 'cpt',
-                'FROM' => \Software::getTable()
+                'FROM' => \Software::getTable(),
             ])->current()['cpt']
         );
         $this->assertSame(
             995,
-            (int)$DB->request([
+            (int) $DB->request([
                 'COUNT' => 'cpt',
-                'FROM' => \SoftwareVersion::getTable()
+                'FROM' => \SoftwareVersion::getTable(),
             ])->current()['cpt']
         );
 
@@ -130,16 +129,16 @@ class CleanSoftwareCronTest extends DbTestCase
         // Verify only 990 versions were deleted and no software
         $this->assertSame(
             100,
-            (int)$DB->request([
+            (int) $DB->request([
                 'COUNT' => 'cpt',
-                'FROM' => \Software::getTable()
+                'FROM' => \Software::getTable(),
             ])->current()['cpt']
         );
         $this->assertSame(
             5,
-            (int)$DB->request([
+            (int) $DB->request([
                 'COUNT' => 'cpt',
-                'FROM' => \SoftwareVersion::getTable()
+                'FROM' => \SoftwareVersion::getTable(),
             ])->current()['cpt']
         );
 
@@ -148,19 +147,19 @@ class CleanSoftwareCronTest extends DbTestCase
         // All versions should be deleted now and 45 software should be deleted as well
         $this->assertSame(
             55,
-            (int)$DB->request([
+            (int) $DB->request([
                 'COUNT' => 'cpt',
                 'FROM' => \Software::getTable(),
                 'WHERE' => [
-                    'is_deleted' => 0 // cleanup only trashes software, not purges them
-                ]
+                    'is_deleted' => 0, // cleanup only trashes software, not purges them
+                ],
             ])->current()['cpt']
         );
         $this->assertSame(
             0,
-            (int)$DB->request([
+            (int) $DB->request([
                 'COUNT' => 'cpt',
-                'FROM' => \SoftwareVersion::getTable()
+                'FROM' => \SoftwareVersion::getTable(),
             ])->current()['cpt']
         );
     }

@@ -45,7 +45,7 @@ class StatCsvExport implements ExportToCsvInterface
 
     public function __construct(array $series, array $options = [])
     {
-       // Since the data for both header and content is in $series, let's parse it directly
+        // Since the data for both header and content is in $series, let's parse it directly
         $this->parseSeries($series, $options);
     }
 
@@ -81,7 +81,7 @@ class StatCsvExport implements ExportToCsvInterface
             $row_num++;
         }
 
-       // Add an empty cell at the start
+        // Add an empty cell at the start
         array_unshift($headers, '');
         ksort($values);
 
@@ -89,7 +89,7 @@ class StatCsvExport implements ExportToCsvInterface
             $headers[] = $options['title'];
         }
 
-       // print values
+        // print values
         foreach ($values as $key => $data) {
             $content_row = [$key];
             foreach ($data as $value) {

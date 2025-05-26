@@ -83,8 +83,8 @@ class NetworkPortConnectionLog extends CommonDBChild
         return [
             'OR' => [
                 'networkports_id_source'      => $netport->fields['id'],
-                'networkports_id_destination' => $netport->fields['id']
-            ]
+                'networkports_id_destination' => $netport->fields['id'],
+            ],
         ];
     }
 
@@ -113,7 +113,7 @@ class NetworkPortConnectionLog extends CommonDBChild
 
         $iterator = $DB->request([
             'FROM'   => static::getTable(),
-            'WHERE'  => $this->getCriteria($netport)
+            'WHERE'  => $this->getCriteria($netport),
         ]);
 
         $entries = [];
@@ -147,20 +147,19 @@ class NetworkPortConnectionLog extends CommonDBChild
                         '%1$s on %2$s',
                         $cport_link,
                         $citem->getLink()
-                    )
+                    ),
                 ];
-            } else if ($row['connected'] === 1) {
+            } elseif ($row['connected'] === 1) {
                 $entries[] = [
                     'status' => __s('No longer exists in database'),
                     'date' => $row['date'],
-                    'connected_item' => __s('Unknown')
+                    'connected_item' => __s('Unknown'),
                 ];
             }
         }
 
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'is_tab' => true,
-            'nopager' => true,
             'nofilter' => true,
             'nosort' => true,
             'columns' => [
@@ -171,7 +170,7 @@ class NetworkPortConnectionLog extends CommonDBChild
             'formatters' => [
                 'status' => 'raw_html',
                 'date' => 'datetime',
-                'connected_item' => 'raw_html'
+                'connected_item' => 'raw_html',
             ],
             'entries' => $entries,
             'total_number' => count($entries),

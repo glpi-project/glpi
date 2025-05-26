@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -42,7 +41,6 @@ use ImpactCompound;
 use ImpactItem;
 use ImpactRelation;
 use Item_Ticket;
-use Plugin;
 use Ticket;
 
 class ImpactTest extends \DbTestCase
@@ -335,25 +333,25 @@ class ImpactTest extends \DbTestCase
                 'OR' => [
                     [
                         'itemtype_source' => get_class($computer2),
-                        'items_id_source' => $computer2->fields['id']
+                        'items_id_source' => $computer2->fields['id'],
                     ],
                     [
                         'itemtype_impacted' => get_class($computer2),
-                        'items_id_impacted' => $computer2->fields['id']
+                        'items_id_impacted' => $computer2->fields['id'],
                     ],
-                ]
-            ]
+                ],
+            ],
         ];
         $impact_item_computer2_query = [
             'FROM'   => \ImpactItem::getTable(),
             'WHERE'  => [
                 'itemtype' => get_class($computer2),
                 'items_id' => $computer2->fields['id'],
-            ]
+            ],
         ];
         $compound01_members_query = [
             'FROM' => \ImpactItem::getTable(),
-            'WHERE' => ["parent_id" => $compound01_id]
+            'WHERE' => ["parent_id" => $compound01_id],
         ];
 
         // Before deletion
@@ -402,7 +400,7 @@ class ImpactTest extends \DbTestCase
 
     private $graph = [
         'nodes' => [],
-        'edges' => []
+        'edges' => [],
     ];
 
     protected function bfsProvider()
@@ -564,8 +562,6 @@ class ImpactTest extends \DbTestCase
          * @var array $PLUGIN_HOOKS
          */
         global $CFG_GLPI, $PLUGIN_HOOKS;
-
-        (new Plugin())->init(true); // The `tester` plugin must be considered as loaded/active.
 
         $PLUGIN_HOOKS[Hooks::SET_ITEM_IMPACT_ICON]['tester'] = function (array $params) {
             if ($params['itemtype'] === 'PluginTesterMyAsset') {

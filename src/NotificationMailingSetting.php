@@ -61,7 +61,7 @@ class NotificationMailingSetting extends NotificationSetting
     public function defineTabs($options = [])
     {
         $ong = parent::defineTabs($options);
-        $this->addStandardTab('Log', $ong, $options);
+        $this->addStandardTab(Log::class, $ong, $options);
 
         return $ong;
     }
@@ -106,7 +106,7 @@ class NotificationMailingSetting extends NotificationSetting
 
         $tab[] = [
             'id'   => 'common',
-            'name' => __('Characteristics')
+            'name' => __('Characteristics'),
         ];
 
         $tab[] = [
@@ -114,7 +114,7 @@ class NotificationMailingSetting extends NotificationSetting
             'table'         => $this->getTable(),
             'field'         => 'value',
             'name'          => __('Value'),
-            'massiveaction' => false
+            'massiveaction' => false,
         ];
 
         return $tab;

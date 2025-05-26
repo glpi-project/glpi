@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -124,5 +123,63 @@ class AssetTypeTest extends DbTestCase
         $this->expectExceptionMessage('Definition cannot be changed.');
         $asset_2 = new $classname_2();
         $asset_2->update(['id' => $asset_type->getID(), 'name' => 'updated']);
+    }
+
+    public function testDelete(): void
+    {
+        $definition      = $this->initAssetDefinition();
+        $asset_classname = $definition->getAssetClassName();
+        $type_classname  = $definition->getAssetModelClassName();
+        $type_fkey       = $type_classname::getForeignKeyField();
+
+        $root_entity_id = $this->getTestRootEntity(true);
+
+        $type_1 = $this->createItem($type_classname, ['name' => 'Test type 1']);
+        $type_2 = $this->createItem($type_classname, ['name' => 'Test type 2']);
+        $type_3 = $this->createItem($type_classname, ['name' => 'Test type 3']);
+
+        $asset_1 = $this->createItem(
+            $asset_classname,
+            [
+                'name'        => 'Test asset 1',
+                'entities_id' => $root_entity_id,
+                $type_fkey    => $type_1->getID(),
+            ]
+        );
+        $asset_2 = $this->createItem(
+            $asset_classname,
+            [
+                'name'        => 'Test asset 2',
+                'entities_id' => $root_entity_id,
+                $type_fkey    => $type_2->getID(),
+            ]
+        );
+        $asset_3 = $this->createItem(
+            $asset_classname,
+            [
+                'name'        => 'Test asset 3',
+                'entities_id' => $root_entity_id,
+                $type_fkey    => $type_3->getID(),
+            ]
+        );
+
+        // Validate init state
+        $this->assertEquals($type_1->getID(), $asset_1->fields[$type_fkey]);
+        $this->assertEquals($type_2->getID(), $asset_2->fields[$type_fkey]);
+        $this->assertEquals($type_3->getID(), $asset_3->fields[$type_fkey]);
+
+        // Delete type 1 and validate that asset 1 is unlinked from the type
+        $this->assertTrue($type_1->delete(['id' => $type_1->getID()], force: true));
+        $this->assertTrue($asset_1->getFromDB($asset_1->getID())); // Reload linked asset
+        $this->assertEquals(0, $asset_1->fields[$type_fkey]);
+        $this->assertEquals($type_2->getID(), $asset_2->fields[$type_fkey]);
+        $this->assertEquals($type_3->getID(), $asset_3->fields[$type_fkey]);
+
+        // Delete type 2, with a replacement value, and validate that the asset 2 is updated
+        $this->assertTrue($type_2->delete(['id' => $type_2->getID(), '_replace_by' => $type_3->getID()], force: true));
+        $this->assertTrue($asset_2->getFromDB($asset_2->getID())); // Reload linked asset
+        $this->assertEquals(0, $asset_1->fields[$type_fkey]);
+        $this->assertEquals($type_3->getID(), $asset_2->fields[$type_fkey]);
+        $this->assertEquals($type_3->getID(), $asset_3->fields[$type_fkey]);
     }
 }

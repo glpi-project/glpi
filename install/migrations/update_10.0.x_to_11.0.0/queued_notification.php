@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -38,14 +37,18 @@
  */
 
 // Register crontask
-CronTask::register('QueuedNotification', 'queuednotificationcleanstaleajax', DAY_TIMESTAMP, [
-    'state'     => CronTask::STATE_DISABLE,
-    'mode'      => CronTask::MODE_INTERNAL,
-]);
+$migration->addCrontask(
+    'QueuedNotification',
+    'queuednotificationcleanstaleajax',
+    DAY_TIMESTAMP,
+    options: [
+        'state' => 0, // CronTask::STATE_DISABLE
+    ]
+);
 
 $current_config = Config::getConfigurationValues('core');
 if (!isset($current_config['notifications_ajax_expiration_delay'])) {
     $migration->addConfig([
-        'notifications_ajax_expiration_delay' => '30'
+        'notifications_ajax_expiration_delay' => '30',
     ]);
 }

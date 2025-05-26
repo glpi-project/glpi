@@ -6,7 +6,6 @@
  # http://glpi-project.org
  #
  # @copyright 2015-2025 Teclib' and contributors.
- # @copyright 2003-2014 by the INDEPNET Development Team.
  # @licence   https://www.gnu.org/licenses/gpl-3.0.html
  #
  # ---------------------------------------------------------------------
@@ -38,8 +37,8 @@
 
 <ul class="navbar-nav" id="menu_{{ rand }}">
 {% for firstlevel in menu %}
-   {% set firstlevel_active = menu[sector]['title'] == firstlevel['title'] %}
-   {% set firstlevel_shown = (menu[sector]['title'] == firstlevel['title'] and is_vertical and is_menu_folded == false) %}
+   {% set firstlevel_active = menu[sector]['title']|default('') == firstlevel['title'] %}
+   {% set firstlevel_shown = firstlevel_active and is_vertical and is_menu_folded == false %}
    {% set has_subitems = false %}
    {% if firstlevel['content'] is defined %}
       {# Are there any items under contents with a page property? #}

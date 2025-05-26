@@ -34,8 +34,6 @@
 
 namespace Glpi\Console\User;
 
-use Glpi\Console\AbstractCommand;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -56,7 +54,7 @@ class DisableCommand extends AbstractUserCommand
         if ($user->getFromDBbyName($username)) {
             $user->update([
                 'id' => $user->getID(),
-                'is_active' => 0
+                'is_active' => 0,
             ]);
             $output->writeln('<info>' . __('User disabled') . '</info>');
             return 0;

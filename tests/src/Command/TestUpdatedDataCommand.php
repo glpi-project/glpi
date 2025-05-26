@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -118,22 +117,22 @@ class TestUpdatedDataCommand extends Command
         $fresh_db = new class ($hostport, $user, $pass, $input->getOption('fresh-db')) extends DBmysql {
             public function __construct($dbhost, $dbuser, $dbpassword, $dbdefault)
             {
-                  $this->dbhost     = $dbhost;
-                  $this->dbuser     = $dbuser;
-                  $this->dbpassword = $dbpassword;
-                  $this->dbdefault  = $dbdefault;
-                  parent::__construct();
+                $this->dbhost     = $dbhost;
+                $this->dbuser     = $dbuser;
+                $this->dbpassword = $dbpassword;
+                $this->dbdefault  = $dbdefault;
+                parent::__construct();
             }
         };
 
         $updated_db = new class ($hostport, $user, $pass, $input->getOption('updated-db')) extends DBmysql {
             public function __construct($dbhost, $dbuser, $dbpassword, $dbdefault)
             {
-                  $this->dbhost     = $dbhost;
-                  $this->dbuser     = $dbuser;
-                  $this->dbpassword = $dbpassword;
-                  $this->dbdefault  = $dbdefault;
-                  parent::__construct();
+                $this->dbhost     = $dbhost;
+                $this->dbuser     = $dbuser;
+                $this->dbpassword = $dbpassword;
+                $this->dbdefault  = $dbdefault;
+                parent::__construct();
             }
         };
 
@@ -172,6 +171,11 @@ class TestUpdatedDataCommand extends Command
                     continue;
                 }
 
+                // Ignore e2e oauth client
+                if ($table_name === 'glpi_oauthclients' && $row_data['name'] === 'Test E2E OAuth Client') {
+                    continue;
+                }
+
                 foreach ($row_data as $key => $value) {
                     if (in_array($key, $excluded_fields)) {
                         continue; // Ignore fields that would be subject to legitimate changes
@@ -183,12 +187,12 @@ class TestUpdatedDataCommand extends Command
                             $empty_value = 0;
                         }
 
-                       // some fields were not nullable in previous GLPI versions
+                        // some fields were not nullable in previous GLPI versions
                         $criteria[] = [
                             'OR' => [
                                 [$key => $empty_value],
                                 [$key => null],
-                            ]
+                            ],
                         ];
                     } elseif ($field_type === 'json') {
                         $criteria[$key] = new QueryExpression(
@@ -209,9 +213,9 @@ class TestUpdatedDataCommand extends Command
                     ]
                 );
                 if ($found_in_updated->count() !== 1) {
-                     $missing = true;
-                     $msg = sprintf('Unable to find the following object in table "%s": %s', $table_name, json_encode($row_data));
-                     $output->writeln('<error>‣</error> ' . $msg, OutputInterface::VERBOSITY_QUIET);
+                    $missing = true;
+                    $msg = sprintf('Unable to find the following object in table "%s": %s', $table_name, json_encode($row_data));
+                    $output->writeln('<error>‣</error> ' . $msg, OutputInterface::VERBOSITY_QUIET);
                 }
             }
         }
@@ -256,7 +260,7 @@ class TestUpdatedDataCommand extends Command
 
             // Dashbords may have placeholders which are only present on new installs
             'glpi_dashboards_dashboards',
-            'glpi_dashboards_items'
+            'glpi_dashboards_items',
         ];
     }
 

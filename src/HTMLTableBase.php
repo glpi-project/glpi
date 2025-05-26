@@ -200,6 +200,6 @@ abstract class HTMLTableBase
         if (isset($this->headers_sub_order[$header_name])) {
             return $this->headers_sub_order[$header_name];
         }
-        throw new  HTMLTableUnknownHeadersOrder($header_name);
+        throw new HTMLTableUnknownHeadersOrder($header_name);
     }
 }

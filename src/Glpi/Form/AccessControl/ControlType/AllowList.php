@@ -41,6 +41,9 @@ use Glpi\Form\AccessControl\AccessVote;
 use Glpi\Form\AccessControl\FormAccessControl;
 use Glpi\Form\AccessControl\FormAccessParameters;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\Form\Export\Context\DatabaseMapper;
+use Glpi\Form\Export\Serializer\DynamicExportDataField;
+use Glpi\Form\Export\Specification\DataRequirementSpecification;
 use Glpi\Form\Form;
 use Group;
 use Override;
@@ -69,9 +72,9 @@ final class AllowList implements ControlTypeInterface
     }
 
     #[Override]
-    public function getWarnings(Form $form, array $warnings): array
+    public function getWarnings(Form $form): array
     {
-        return $warnings;
+        return [];
     }
 
     #[Override]
@@ -185,5 +188,85 @@ final class AllowList implements ControlTypeInterface
     public function allowUnauthenticated(JsonFieldInterface $config): bool
     {
         return false;
+    }
+
+    #[Override]
+    public function exportDynamicConfig(
+        JsonFieldInterface $config
+    ): DynamicExportDataField {
+        $fallback = new DynamicExportDataField($config, []);
+        if (!$config instanceof AllowListConfig) {
+            return $fallback;
+        }
+
+        $to_handle =  [
+            User::class    => AllowListConfig::KEY_USER_IDS,
+            Group::class   => AllowListConfig::KEY_GROUP_IDS,
+            Profile::class => AllowListConfig::KEY_PROFILE_IDS,
+        ];
+
+        // Handler users, groups and profiles ids.
+        $data = $config->jsonSerialize();
+        $requirements = [];
+        foreach ($to_handle as $itemtype => $data_key) {
+            /** @var class-string<\CommonDBTM> $itemtype */
+
+            // Iterate on ids
+            $ids = $data[$data_key] ?? [];
+            foreach ($ids as $i => $item_id) {
+                // Only operate on valid ids
+                if (intval($item_id) === 0) {
+                    continue;
+                }
+
+                // Try to load item
+                $item = $itemtype::getById($item_id);
+                if (!$item) {
+                    continue;
+                }
+
+                // Replace id with name and add a requirement
+                $name = $item->getName();
+                $data[$data_key][$i] = $name;
+                $requirements[] = new DataRequirementSpecification(
+                    $itemtype,
+                    $name
+                );
+            }
+        }
+
+        return new DynamicExportDataField($data, $requirements);
+    }
+
+    #[Override]
+    public static function prepareDynamicConfigDataForImport(
+        array $config,
+        DatabaseMapper $mapper,
+    ): array {
+        $to_handle =  [
+            User::class    => AllowListConfig::KEY_USER_IDS,
+            Group::class   => AllowListConfig::KEY_GROUP_IDS,
+            Profile::class => AllowListConfig::KEY_PROFILE_IDS,
+        ];
+
+        // Handler users, groups and profiles ids.
+        foreach ($to_handle as $itemtype => $data_key) {
+            /** @var class-string<\CommonDBTM> $itemtype */
+
+            // Iterate on names
+            $names = $config[$data_key] ?? [];
+            foreach ($names as $i => $name) {
+                // Exclude special values
+                if ($name == "all") {
+                    continue;
+                }
+
+                // Restore correct id
+                $id = $mapper->getItemId($itemtype, $name);
+                $config[$data_key][$i] = $id;
+            }
+        }
+
+        return $config;
     }
 }

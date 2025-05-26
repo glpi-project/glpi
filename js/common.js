@@ -922,46 +922,46 @@ var templateItilStatus = function(option) {
     var classes = "";
     switch (parseInt(status)) {
         case 1 :
-            classes = 'new fas fa-circle';
+            classes = 'new ti ti-circle-filled';
             break;
         case 2 :
-            classes = 'assigned far fa-circle';
+            classes = 'assigned ti ti-circle';
             break;
         case 3 :
-            classes = 'planned far fa-calendar';
+            classes = 'planned ti ti-calendar';
             break;
         case 4 :
-            classes = 'waiting fas fa-circle';
+            classes = 'waiting ti ti-circle-filled';
             break;
         case 5 :
-            classes = 'solved far fa-circle';
+            classes = 'solved ti ti-circle';
             break;
         case 6 :
-            classes = 'closed fas fa-circle';
+            classes = 'closed ti ti-circle-filled';
             break;
         case 7:
-            classes = 'accepted fas fa-check-circle';
+            classes = 'accepted ti ti-circle-check-filled';
             break;
         case 8 :
-            classes = 'observe fas fa-eye';
+            classes = 'observe ti ti-eye';
             break;
         case 9 :
-            classes = 'eval far fa-circle';
+            classes = 'eval ti ti-circle';
             break;
         case 10 :
-            classes = 'approval fas fa-question-circle';
+            classes = 'approval ti ti-help-circle';
             break;
         case 11 :
-            classes = 'test fas fa-question-circle';
+            classes = 'test ti ti-help-circle';
             break;
         case 12 :
-            classes = 'qualif far fa-circle';
+            classes = 'qualif ti ti-circle';
             break;
         case 13 :
-            classes = 'refused far fa-times-circle';
+            classes = 'refused ti ti-circle-x';
             break;
         case 14 :
-            classes = 'canceled fas fa-ban';
+            classes = 'canceled ti ti-ban';
             break;
     }
 
@@ -979,13 +979,13 @@ var templateValidation = function(option) {
     var classes = "";
     switch (parseInt(status)) {
         case 2 : // WAITING
-            classes = 'waiting far fa-clock';
+            classes = 'waiting ti ti-clock';
             break;
         case 3 : // ACCEPTED
-            classes = 'accepted fas fa-check';
+            classes = 'accepted ti ti-circle-check-filled';
             break;
         case 4 : // REFUSED
-            classes = 'refused fas fa-times';
+            classes = 'refused ti ti-circle-x';
             break;
     }
 
@@ -1003,7 +1003,7 @@ var templateItilPriority = function(option) {
     var color_badge = "";
 
     if (priority_color.length > 0) {
-        color_badge += `<i class='fas fa-circle' style='color: ${priority_color}'></i>`;
+        color_badge += `<i class='ti ti-circle-filled' style='color: ${priority_color}'></i>`;
     }
 
     return $(`<span>${color_badge}&nbsp;${option.text}</span>`);
@@ -1097,20 +1097,31 @@ function getUuidV4() {
     });
 }
 
+function setHasUnsavedChanges(has_unsaved_changes) {
+    window.glpiUnsavedFormChanges = has_unsaved_changes;
+    document.dispatchEvent(new CustomEvent("glpiFormChangeEvent", {
+        has_unsaved_changes: has_unsaved_changes
+    }));
+}
+
+function hasUnsavedChanges() {
+    return window.glpiUnsavedFormChanges;
+}
+
 /** Track input changes and warn the user of unsaved changes if they try to navigate away */
-window.glpiUnsavedFormChanges = false;
+setHasUnsavedChanges(false);
 $(document).ready(function() {
     // Forms must have the data-track-changes attribute set to true.
     // Form fields may have their data-track-changes attribute set to empty (false) to override the tracking on that input.
     $(document).on('input', 'form[data-track-changes="true"] input:not([data-track-changes=""]),' +
       'form[data-track-changes="true"] textarea:not([data-track-changes="false"])', function() {
-        window.glpiUnsavedFormChanges = true;
+        setHasUnsavedChanges(true);
     });
     $(document).on('change', 'form[data-track-changes="true"] select:not([data-track-changes=""])', function() {
-        window.glpiUnsavedFormChanges = true;
+        setHasUnsavedChanges(true);
     });
     $(window).on('beforeunload', function(e) {
-        if (window.glpiUnsavedFormChanges) {
+        if (hasUnsavedChanges()) {
             e.preventDefault();
             // All supported browsers will show a localized message
             return '';
@@ -1122,7 +1133,7 @@ $(document).ready(function() {
         if (e.originalEvent && $(e.originalEvent.submitter).attr('data-block-on-unsaved') === 'true') {
             return;
         }
-        window.glpiUnsavedFormChanges = false;
+        setHasUnsavedChanges(false);
     });
 });
 
@@ -1130,7 +1141,7 @@ function onTinyMCEChange(e) {
     var editor = $(e.target)[0];
     if ($(editor.targetElm).data('trackChanges') !== false) {
         if ($(editor.formElement).data('trackChanges') === true) {
-            window.glpiUnsavedFormChanges = true;
+            setHasUnsavedChanges(true);
         }
     }
 }
@@ -1456,7 +1467,7 @@ $(() => {
             if ((submitter === null || submitter.attr('formnovalidate') === undefined) && !window.validateFormWithBootstrap(e)) {
                 return false;
             }
-            if (submitter !== null && submitter.is('button') && submitter.attr('data-block-on-unsaved') === 'true' && window.glpiUnsavedFormChanges) {
+            if (submitter !== null && submitter.is('button') && submitter.attr('data-block-on-unsaved') === 'true' && hasUnsavedChanges()) {
                 // This submit may be cancelled by the unsaved changes warning so we cannot permanently block it
                 // We fall back to a timed block
                 const block = function(e) {
@@ -1492,8 +1503,18 @@ $(() => {
     // TODO: refactorate existing code to use this unique handler.
     $(document).on('click', '[data-glpi-clipboard-text]', function() {
         const text = $(this).data('glpi-clipboard-text');
-        navigator.clipboard.writeText(text);
-        glpi_toast_info(__("Copied to clipboard"));
+        if (navigator.clipboard === undefined) {
+            // The clipboard is not available in non secure environements.
+            // See: https://developer.mozilla.org/en-US/docs/Web/API/Clipboard
+            // See: https://developer.mozilla.org/en-US/docs/Web/Security/Secure_Contexts
+            // This rarely happens in production but we can still add a specific
+            // error message to identify this issue in our support and/or help
+            // system administrator fix it themselves.
+            glpi_toast_error(__("Unable to copy to clipboard (insecure context)."));
+        } else {
+            navigator.clipboard.writeText(text);
+            glpi_toast_info(__("Copied to clipboard"));
+        }
     });
 });
 
@@ -1575,19 +1596,19 @@ function initSortableTable(element_id) {
         const current_sort = element.data('sort');
         element.data('sort', column_index);
         const current_order = element.data('order');
-        const new_order = current_sort === column_index && current_order === 'asc' ? 'desc' : 'asc';
+        const new_order = current_sort === column_index && current_order === 'up' ? 'down' : 'up';
         element.data('order', new_order);
         const sortable_header = element.find('thead').first();
         const col = sortable_header.find('th').eq(column_index);
         // Remove all sort icon classes
-        sortable_header.find('th i[class*="fa-sort"]').removeClass('fa-sort fa-sort-asc fa-sort-desc');
+        sortable_header.find('th i[class*="ti ti-caret"]').removeClass('ti-caret-down-filled ti-caret-up-filled');
 
         const sort_icon = col.find('i');
         if (sort_icon.length === 0) {
             // Add sort icon
-            col.eq(0).append(`<i class="fas fa-sort-${new_order}"></i>`);
+            col.eq(0).append(`<i class="ti ti-caret-${new_order}-filled"></i>`);
         } else {
-            sort_icon.addClass(new_order === 'asc' ? 'fa-sort-asc' : 'fa-sort-desc');
+            sort_icon.addClass(new_order === 'up' ? 'ti-caret-up-filled' : 'ti-caret-down-filled');
         }
 
         const rows = element.find('tbody tr');
@@ -1612,7 +1633,7 @@ function initSortableTable(element_id) {
             if (a_value === b_value) {
                 return 0;
             }
-            if (new_order === 'asc') {
+            if (new_order === 'up') {
                 return a_value < b_value ? -1 : 1;
             }
             return a_value > b_value ? -1 : 1;
@@ -1847,8 +1868,7 @@ function setupAdaptDropdown(config)
     // to avoid issues with jQuery.
     const field_id = $.escapeSelector(config.field_id);
 
-    const select2_el = $('#' + field_id).select2({
-        placeholder: config.placeholder,
+    const options = {
         width: config.width,
         dropdownAutoWidth: true,
         dropdownCssClass: config.dropdown_css_class,
@@ -1935,10 +1955,15 @@ function setupAdaptDropdown(config)
         },
         templateResult: config.templateresult,
         templateSelection: config.templateselection,
-    })
-        .bind('setValue', function (e, value) {
-            $('#' + field_id).val(value).trigger('change');
-        });
+    };
+    if (config.placeholder !== undefined && config.placeholder !== '') {
+        options.placeholder = config.placeholder;
+    }
+    const select2_el = $('#' + field_id).select2(options);
+
+    select2_el.bind('setValue', (e, value) => {
+        $('#' + field_id).val(value).trigger('change');
+    });
     $('label[for=' + field_id + ']').on('click', function () {
         $('#' + field_id).select2('open');
     });
