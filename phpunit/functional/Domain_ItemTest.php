@@ -34,10 +34,13 @@
 
 namespace tests\units;
 
+use Computer;
 use DbTestCase;
+use Domain;
 use Domain_Item;
 use Glpi\Asset\Capacity\HasDomainsCapacity;
 use Glpi\Features\Clonable;
+use Group;
 use Toolbox;
 
 class Domain_ItemTest extends DbTestCase
@@ -77,5 +80,36 @@ class Domain_ItemTest extends DbTestCase
             $item = \getItemForItemtype($itemtype);
             $this->assertContains(Domain_Item::class, $item->getCloneRelations(), $itemtype);
         }
+    }
+
+    public function testGetForItem()
+    {
+        $this->login();
+        $computer = $this->createItem(Computer::class, $this->getMinimalCreationInput(Computer::class));
+        $domain = $this->createItem(Domain::class, $this->getMinimalCreationInput(Domain::class) + [
+            'groups_id_tech' => [getItemByTypeName(Group::class, '_test_group_1', true), getItemByTypeName(Group::class, '_test_group_2', true)],
+        ], ['groups_id_tech']);
+        $this->assertCount(0, Domain_Item::getForItem($computer));
+
+        $this->createItem(
+            Domain_Item::class,
+            [
+                'domains_id' => $domain->getID(),
+                'items_id'   => $computer->getID(),
+                'itemtype'   => Computer::class,
+            ]
+        );
+
+        $result = Domain_Item::getForItem($computer);
+        $this->assertCount(1, $result);
+        $result = $result->current();
+        // Check the group IDs were fetched from the Group_Item table
+        $this->assertEquals(
+            implode(',', [
+                getItemByTypeName(Group::class, '_test_group_1', true),
+                getItemByTypeName(Group::class, '_test_group_2', true),
+            ]),
+            $result['groups_id_tech']
+        );
     }
 }
