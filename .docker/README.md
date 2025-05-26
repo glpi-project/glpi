@@ -73,11 +73,10 @@ services:
 
 ### Removing services
 
-By default, the compose file will create 4 services:
-* app
-* db
-* mailpit
-* dbgate
+By default, the compose file will create the following additional services:
+ - `db`, for the MariaDB server,
+ - `mailpit`, for the Mailpit web server,
+ - `dbgate`, for the DBGate web server.
 
 There are included to provide a complete environment but you can disable them
 as needed in your `docker-compose.override.yaml` file.
@@ -99,7 +98,7 @@ services:
 
 ## Makefile
 
-A makefile is provided to interact more easily with the containers.  
+A `Makefile` is provided to interact more easily with the containers.  
 It is inspired by https://github.com/dunglas/symfony-docker/blob/main/docs/makefile.md and try to reuse the same syntax.  
 
 ### Initial setup
