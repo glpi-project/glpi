@@ -88,6 +88,15 @@ services:
   dbgate: !reset null
 ```
 
+To remove the db service, you'll also need to remove the `depends_on` directive.
+
+```yaml
+services:
+  app:
+    depends_on: !reset null
+  db: !reset null
+```
+
 ## Makefile
 
 A makefile is provided to interact more easily with the containers.  
