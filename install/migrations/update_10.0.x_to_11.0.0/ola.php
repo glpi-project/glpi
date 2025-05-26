@@ -114,7 +114,7 @@ function create_items_olas_table(Migration $migration): void
 function migrate_items_olas_data(Migration $migration): void
 {
     $_ticket = new Ticket();
-    if(!$_ticket->isField('olas_id_tto')) {
+    if (!$_ticket->isField('olas_id_tto')) {
         // olas_id_tto field is removed : considere migration as done
         return;
     }
