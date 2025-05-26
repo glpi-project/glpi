@@ -4,6 +4,11 @@ FROM ghcr.io/glpi-project/glpi-development-env:$PHP_VERSION
 
 USER root
 
+# Allow extra PHP configuration to be placed in a dedicated folder than can serve
+# as a volume
+ENV PHP_INI_SCAN_DIR "/usr/local/etc/php/conf.d/:/usr/local/etc/php/custom_conf.d/"
+RUN mkdir /usr/local/etc/php/custom_conf.d/
+
 # Workaround to make apache use same UID/GID as host user.
 ARG HOST_GROUP_ID=1000
 RUN groupmod --gid ${HOST_GROUP_ID} www-data
