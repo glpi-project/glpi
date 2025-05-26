@@ -587,7 +587,7 @@ class CommonITILValidationTest extends DbTestCase
                 'is_active'    => 1,
                 'sub_type'     => 'RuleTicket',
                 'condition'    => \RuleAsset::ONUPDATE,
-                'uuid'         => '12345678901234567890123456789012'
+                'uuid'         => '12345678901234567890123456789012',
             ]
         );
 
@@ -598,7 +598,7 @@ class CommonITILValidationTest extends DbTestCase
                 'rules_id'  => $rule->getID(),
                 'criteria'  => 'name',
                 'condition' => \Rule::PATTERN_CONTAIN,
-                'pattern'   => 'validation test'
+                'pattern'   => 'validation test',
             ]
         );
 
@@ -609,7 +609,7 @@ class CommonITILValidationTest extends DbTestCase
                 'rules_id'  => $rule->getID(),
                 'criteria'  => 'global_validation',
                 'condition' => \Rule::PATTERN_IS,
-                'pattern'   => \TicketValidation::ACCEPTED
+                'pattern'   => \TicketValidation::ACCEPTED,
             ]
         );
 
@@ -620,7 +620,7 @@ class CommonITILValidationTest extends DbTestCase
                 'rules_id'    => $rule->getID(),
                 'action_type' => 'add_validation',
                 'field'       => 'users_id_validate',
-                'value'       => $validator_user->getID()
+                'value'       => $validator_user->getID(),
             ]
         );
 
@@ -631,7 +631,7 @@ class CommonITILValidationTest extends DbTestCase
                 'rules_id'    => $rule->getID(),
                 'action_type' => 'assign',
                 'field'       => 'global_validation',
-                'value'       => \TicketValidation::WAITING
+                'value'       => \TicketValidation::WAITING,
             ]
         );
 
@@ -641,7 +641,7 @@ class CommonITILValidationTest extends DbTestCase
             [
                 'tickets_id'        => $ticket->getID(),
                 'users_id_validate' => $validator_user->getID(),
-                'comment_submission'=> 'Please validate this ticket',
+                'comment_submission' => 'Please validate this ticket',
             ]
         );
 
@@ -651,7 +651,7 @@ class CommonITILValidationTest extends DbTestCase
             $ticket_validation->getID(),
             [
                 'status' => \TicketValidation::ACCEPTED,
-                'comment_validation' => 'Validation approved'
+                'comment_validation' => 'Validation approved',
             ]
         );
 
@@ -663,7 +663,7 @@ class CommonITILValidationTest extends DbTestCase
         $validations = (new \TicketValidation())->find([
             'tickets_id'        => $ticket->getID(),
             'users_id_validate' => $validator_user->getID(),
-            'status'            => \TicketValidation::WAITING
+            'status'            => \TicketValidation::WAITING,
         ]);
 
         // We should have a new validation (now 2 in total with the one previously created)
