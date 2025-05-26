@@ -8,6 +8,7 @@ services:
     restart: "unless-stopped"
     volumes:
       - ".:/var/www/glpi:rw"
+      - "custom_php_ini:/usr/local/etc/php/custom_conf.d/:rw"
     ports:
       - "8080:80"
       - "9637:9637"
@@ -58,3 +59,4 @@ services:
 
 volumes:
   db:
+  custom_php_ini:
