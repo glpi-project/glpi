@@ -139,8 +139,8 @@ class Item_SoftwareLicense extends CommonDBRelation
                 $total = __('Total') . ': ' . $softlicense->fields["number"];
                 $assigned = __('Assigned') . ': ' . $assign_item;
                 $remaining = __('Remaining') . ': ' . $remaining_item;
-                $span_class = $remaining_item >= 0 ? '#74b72e' : '#cf9b9b';
-                $class = htmlescape($span_class);
+                $color = $remaining_item >= 0 ? '#74b72e' : '#cf9b9b';
+                $class = htmlescape($color);
                 return sprintf(
                     '<div>
                         <span class="badge" style="background-color: %s;">%s</span>
