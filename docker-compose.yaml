@@ -51,7 +51,7 @@ services:
 
       LABEL_con_glpi: GLPI Mysql Server
       SERVER_con_glpi: db
-      USER_con_glpi: root
+      USER_con_glpi: glpi
       PASSWORD_con_glpi: glpi
       PORT_con_glpi: 3306
       ENGINE_con_glpi: mysql@dbgate-plugin-mysql
