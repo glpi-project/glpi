@@ -96,7 +96,7 @@ class GenericFormController extends AbstractController
      */
     private function handleFormAction(Request $request, string $form_action, string $class): Response
     {
-        $id = $request->query->get('id', -1);
+        $id = $request->isMethod('GET') ? $request->query->get('id', -1) : $request->request->get('id', -1);
         $post_data = $request->request->all();
 
         /* @var CommonDBTM $object */
