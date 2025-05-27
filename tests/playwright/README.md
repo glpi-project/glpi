@@ -9,11 +9,53 @@ Execute the following commands to install playwright:
 `npx playwright install`  
 `npx playwright install-deps`  
 
+Then, make sure the e2e database is installed using `make e2e-db-install`.  
+If the base is already installed, make sure it is up to date with `make e2e-db-update`.  
+
+Note: if you don't use docker, you can run the normal glpi install/update commands with the `--env=e2e_testing` argument.
+
 ## Configuring the tests
 
-By default, the tests will target `http://localhost:80` and use the `php` binary to run commands.  
+The tests configuration is found in the `/tests/playwright/.env` file.
 
-If you need to modify the URL or the php binary (e.g. if your GLPI is running inside docker), you must copy the `/tests/playwright/.env` file as `/tests/playwright/.env.local` and override values as needed.  
+If you need to override values, copy it as `/tests/playwright/.env.local` and edit values as needed.
+
+### Target URL
+
+The default target URL is `http://localhost:8090`.  
+
+This URL should target a web server running GLPI with the `e2e_testing` environment.  
+If you are running the official docker image, you have nothing to do as this should already be configured for you.  
+
+If you are running multiple GLPIs instances at the same time through docker you might need to change this port in your `docker-compose.override.yaml` to make sure it is unique:
+
+```yaml
+services:
+  app:
+    ports: !override
+      - "8081:80"
+      - "8091:8090" # Use 8091 instead of 8090
+```
+
+Don't forget to set the correct port in your env config too:
+
+```env
+GLPI_BASE_URL="http://localhost:8091"
+```
+
+### PHP binary
+
+The php binary is used to run glpi console commands to setup some tests as needed.
+
+The default configuration will run PHP commands in the main docker container:
+```env
+PHP="docker compose exec app php"
+```
+
+If you prefer using a local php binary, set the following value:
+```env
+PHP="php"
+```
 
 ## Running the tests
 
@@ -217,7 +259,6 @@ It does so by calling the `php bin/console tools:playwright:bootstrap` command.
 ### Main  
 
 The `main` project will contains all tests that do not modify GLPI's global configuration and are thus safe to run in parallel.
-
 
 ## Link to complete documentation
 
