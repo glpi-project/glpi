@@ -227,8 +227,12 @@
                         {% set row_massiveactions = entry['showmassiveactions']|default(showmassiveactions) %}
                         <tr
                             class="{{ loop.last ? "border-transparent" : "" }} {{ row_class|default('') }} {{ entry['row_class']|default('') }}"
-                            data-itemtype="{{ entry['itemtype'] }}"
-                            data-id="{{ entry['id'] }}"
+                            {% if entry['itemtype'] is defined %}
+                                data-itemtype="{{ entry['itemtype'] }}"
+                            {% endif %}
+                            {% if entry['id'] is defined %}
+                                data-id="{{ entry['id'] ?? "" }}"
+                            {% endif %}
                         >
                             {% if row_massiveactions %}
                                 <td style="width: 10px">
