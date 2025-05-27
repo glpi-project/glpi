@@ -290,7 +290,7 @@ jobs:
     runs-on: "ubuntu-latest"
     timeout-minutes: 60
     env:
-      COMPOSE_FILE: ".github/actions/docker-compose-app.yml:.github/actions/docker-compose-services.yml"
+      COMPOSE_FILE: ".github/actions/docker-compose-app-e2e.yml:.github/actions/docker-compose-services.yml"
       APPLICATION_ROOT: "${{ github.workspace }}"
       DB_IMAGE: "githubactions-mariadb:10.11"
       PHP_IMAGE: "githubactions-php-apache:8.3"

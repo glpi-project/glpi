@@ -57,3 +57,5 @@ ctrf/
 /playwright/.cache/
 /tests/playwright/.env.local
 !/tests/playwright/.env
+/tests/playwright/glpi_config/*
+/tests/playwright/glpi_files/*
