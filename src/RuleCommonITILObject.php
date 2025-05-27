@@ -859,7 +859,7 @@ TWIG, ['message' => __('Urgency or impact used in actions, think to add Priority
         $actions['_groups_id_observer']['appendto']                 = '_additional_groups_observers';
 
         $actions['_groups_id_observer_by_completename']['table']              = 'glpi_groups';
-        $actions['_groups_id_observer_by_completename']['name']               = sprintf(__('%1$s (%2$s)'), _n('Watcher group', 'Watcher groups', 1), __('by completename'));
+        $actions['_groups_id_observer_by_completename']['name']               = sprintf(__('%1$s (%2$s)'), _n('Observer group', 'Observer groups', 1), __('by completename'));
         $actions['_groups_id_observer_by_completename']['type']               = 'dropdown';
         $actions['_groups_id_observer_by_completename']['condition']          = ['is_watcher' => 1];
         $actions['_groups_id_observer_by_completename']['force_actions']      = ['regex_result'];

@@ -172,7 +172,7 @@ final class DefaultDataManagerTest extends DbTestCase
                 'items_id' => $location->getID(),
             ],
             'Urgency' => 5, // Very high
-            'Watchers' => [
+            'Observers' => [
                 User::getForeignKeyField() . '-' . $tech_user_id,
                 User::getForeignKeyField() . '-' . $normal_user_id,
             ],
@@ -266,7 +266,7 @@ final class DefaultDataManagerTest extends DbTestCase
                 'items_id' => $location->getID(),
             ],
             'Urgency' => 5, // Very high
-            'Watchers' => [
+            'Observers' => [
                 User::getForeignKeyField() . '-' . $tech_user_id,
                 User::getForeignKeyField() . '-' . $normal_user_id,
             ],
