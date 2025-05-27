@@ -485,7 +485,7 @@ class GLPITestCase extends TestCase
         $day ??= date('Y-m-d');
 
         // set session time
-        $_SESSION['glpi_currenttime'] = date($day . '-' . $time);
+        $_SESSION['glpi_currenttime'] = date($day . ' ' . $time);
 
         // create and return DateTime
         $dt = new \DateTime();
