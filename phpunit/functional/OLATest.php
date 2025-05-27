@@ -374,26 +374,13 @@ class OLATest extends DbTestCase
         $this->assertEquals($due_time_datetime->format('Y-m-d H:i:s'), $ola['due_time']);
     }
 
-    public function testOlaDueTimeIsDelayedWhileTicketStatusIsWaiting()
+    public function testOlaTTRDueTimeIsDelayedWhileTicketStatusIsWaiting()
     {
         $this->login();
-        // @todoseb quelle est la logique technique actuelle ?
-        // - chercher les occurences de
-        //            x la variable qui contient le prefix internal_
-        //                  x 2 occurences de internal_
-        //                      - LevelAgreement::$prefixticket        -> getFieldNames() : exception dans la méthode dans OLA
-        //                  x occurence des 2 variables qui le contiennent :
-        //            - internal_time_to_resolve
-        //                  - dans les tests
-        //                  - dans le code
-        //            - noter dans ma liste de suppression que fait
-        // - mise à jour dans preUpdateInDb() en fonction du changement de statut
-        // - autre chose
 
-        // @todoseb implémenter/reprendre
         // arrange create ticket with OLA at 09:00:00, status WAITING
         $this->setCurrentTime('09:00:00');
-        ['ola' => $ola ] = $this->createOLA();
+        ['ola' => $ola ] = $this->createOLA(ola_type: SLM::TTR);
         $ticket = $this->createItem(Ticket::class, ['_la_update' => true, '_olas_id' => [$ola->getID()]] + $this->getValidTicketData());
         assert(\CommonITILObject::WAITING === (int) $ticket->fields['status']);
         $initial_due_time = $ticket->getOlasData()[0]['due_time'];
@@ -405,6 +392,29 @@ class OLATest extends DbTestCase
 
         $this->assertEquals(
             (new \DateTime($initial_due_time))->modify('+1 hour')->format('Y-m-d H:i:s'),
+            $new_due_time,
+            'Le temps d\'échéance (due time) devrait être retardé d\'une heure après passage du ticket de WAITING à un autre statut'
+        );
+    }
+
+    public function testOlaTTODueTimeIsNotDelayedWhileTicketStatusIsWaiting()
+    {
+        $this->login();
+
+        // arrange create ticket with OLA at 09:00:00, status WAITING
+        $this->setCurrentTime('09:00:00');
+        ['ola' => $ola ] = $this->createOLA(ola_type: SLM::TTO);
+        $ticket = $this->createItem(Ticket::class, ['_la_update' => true, '_olas_id' => [$ola->getID()]] + $this->getValidTicketData());
+        assert(\CommonITILObject::WAITING === (int) $ticket->fields['status']);
+        $initial_due_time = $ticket->getOlasData()[0]['due_time'];
+
+        // act : wait one hour and change status to trigger due_time recomputing
+        $this->setCurrentTime('10:00:00');
+        $this->updateItem($ticket::class, $ticket->getID(), ['status' => \CommonITILObject::ASSIGNED]);
+        $new_due_time = $ticket->getOlasData()[0]['due_time'];
+
+        $this->assertEquals(
+            (new \DateTime($initial_due_time))->format('Y-m-d H:i:s'),
             $new_due_time,
             'Le temps d\'échéance (due time) devrait être retardé d\'une heure après passage du ticket de WAITING à un autre statut'
         );

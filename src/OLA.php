@@ -39,7 +39,7 @@
  **/
 class OLA extends LevelAgreement
 {
-    protected static $prefix            = 'ola';
+    protected static $prefix = 'ola';
 
     /**
      * Remove OLA associations
@@ -55,8 +55,8 @@ class OLA extends LevelAgreement
         global $DB;
 
         // Clean levels
-        $ola_fk        = getForeignKeyFieldForItemType(static::class);
-        $level     = new static::$levelclass();
+        $ola_fk = getForeignKeyFieldForItemType(static::class);
+        $level = new static::$levelclass();
         $level->deleteByCriteria([$ola_fk => $this->getID()]);
 
         // Clean levels todo
@@ -66,9 +66,9 @@ class OLA extends LevelAgreement
         Rule::cleanForItemAction($this);
     }
 
-    protected static $prefixticket      = 'internal_'; // @todoseb pas utilisé selon phpstorm : voir si on peut vraiment le supprimer
-    protected static $levelclass        = 'OlaLevel';
-    protected static $levelticketclass  = 'OlaLevel_Ticket';
+    protected static $prefixticket = 'internal_'; // @todoseb pas utilisé selon phpstorm : voir si on peut vraiment le supprimer
+    protected static $levelclass = 'OlaLevel';
+    protected static $levelticketclass = 'OlaLevel_Ticket';
     protected static $forward_entity_to = ['OlaLevel'];
 
     /**
@@ -89,7 +89,7 @@ class OLA extends LevelAgreement
      * Add an entry in slalevels_tickets | olalevels_tickets table
      * The level is set by $levels_id parameter or the current level set in slalevels_id_ttr | olalevels_id_ttr (if set)
      *
-     * @param Ticket  $ticket
+     * @param Ticket $ticket
      * @param integer $levels_id
      * @param integer $olas_id
      *
@@ -117,12 +117,17 @@ class OLA extends LevelAgreement
             $waiting_duration
         );
 
-        if ($date !== null) {
+        $_ticket = new Ticket();
+        if (
+            $_ticket->getFromDB($ticket->getID()) &&
+            $this->levelCanBeAddedInLevelsTodo($ticket, $ola->fields['type']) &&
+            $date !== null
+        ) {
             $toadd = [];
-            $toadd['date']           = $date;
+            $toadd['date'] = $date;
             $toadd[$pre . 'levels_id'] = $levels_id;
-            $toadd['tickets_id']     = $ticket->fields["id"];
-            $levelticket             = new static::$levelticketclass();
+            $toadd['tickets_id'] = $ticket->fields["id"];
+            $levelticket = new static::$levelticketclass();
             $levelticket->add($toadd);
         }
     }
@@ -148,8 +153,8 @@ class OLA extends LevelAgreement
         $levelticket = new static::$levelticketclass();
         $iterator = $DB->request([
             'SELECT' => 'id',
-            'FROM'   => $levelticket::getTable(),
-            'WHERE'  => ['tickets_id' => $ticket->fields['id']],
+            'FROM' => $levelticket::getTable(),
+            'WHERE' => ['tickets_id' => $ticket->fields['id']],
         ]);
 
         foreach ($iterator as $data) {
@@ -193,5 +198,19 @@ class OLA extends LevelAgreement
             __("The assignment of an OLA to a ticket causes the recalculation of the date."),
             __("Escalations defined in the OLA will be triggered under this new date."),
         ];
+    }
+
+    private function levelCanBeAddedInLevelsTodo(Ticket $ticket, int $olaType): bool
+    {
+        if (
+            $ticket->isDeleted() ||
+            $ticket->fields['status'] == CommonITILObject::CLOSED ||
+            $ticket->fields['status'] == CommonITILObject::SOLVED ||
+            ($olaType == SLM::TTO && $ticket->fields['takeintoaccount_delay_stat'] > 0)
+        ) {
+            return false;
+        }
+        return true;
+
     }
 }
