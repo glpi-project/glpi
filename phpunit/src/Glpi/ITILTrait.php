@@ -37,7 +37,7 @@ namespace Glpi\PHPUnit\Tests\Glpi;
 trait ITILTrait
 {
     /**
-     * @param $data array additionnal data (override default data (@see getValidTicketData())
+     * @param $data array additionnal data (override default data (@see getMinimalCreationInput())
      */
     private function createTicket(array $data = [], array $skip_fields = []): \Ticket
     {
@@ -47,14 +47,4 @@ trait ITILTrait
             $skip_fields
         );
     }
-
-    private function getValidTicketData(): array
-    {
-        return [
-            'name' => 'ticket name ' . time(),
-            'status' => \CommonITILObject::WAITING,
-            'content' => 'Ticket Example content',
-        ];
-    }
-
 }
