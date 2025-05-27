@@ -662,10 +662,6 @@ TWIG, $twig_params);
             echo Html::scriptBlock(<<<JS
                 $(() => {
                     $('#datatable_costs{$ID}{$rand}').on('click', 'tbody tr', (e) => {
-                        //ignore click in first column (the massive action checkbox)
-                        if ($(e.target).closest('td').is('td:first-child')) {
-                            return;
-                        }
                         const cost_id = $(e.currentTarget).data('id');
                         if (cost_id) {
                             $('#viewcost{$ID}_{$rand}').load('/ajax/viewsubitem.php',{
