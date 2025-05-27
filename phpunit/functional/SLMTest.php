@@ -1429,7 +1429,7 @@ class SLMTest extends DbTestCase
         );
 
         // Create escalation level
-        $this->createItem($la->getLevelClass(), [
+        $level = $this->createItem($la->getLevelClass(), [
             'name'                          => 'Test escalation level',
             'execution_time'                => $escalation_time,
             'is_active'                     => 1,
@@ -1465,17 +1465,23 @@ class SLMTest extends DbTestCase
 
         $ola_data = $ticket->getOlasData()[0];
         $this->assertEquals($waiting_duration, $ola_data['waiting_time']);
-        $this->assertEquals($target_date, $ola_data['due_time'])
-        ;
+        $this->assertEquals($target_date, $ola_data['due_time']);
 
         // Check escalation date
         $la_level_class = $la->getLevelTicketClass();
         $la_level_ticket = (new $la_level_class())->find([
             'tickets_id' => $ticket->getID(),
         ]);
-        $this->assertCount(1, $la_level_ticket);
-        $escalation_data = array_pop($la_level_ticket)["date"];
-        $this->assertEquals($target_escalation_date, $escalation_data);
+
+        // no level to execute in case of TTO if there were pauses
+        // because pauses makes takeintoaccount_delay_stat be > 0 so levels are not executed
+        // @see \OlaLevel_Ticket::doLevelForTicket
+        $expected_count = (count($pauses) > 0 && $la_params['type'] === \SLM::TTO) ? 0 : 1;
+        $this->assertCount($expected_count, $la_level_ticket);
+        if ($expected_count > 0) {
+            $escalation_data = array_pop($la_level_ticket)["date"];
+            $this->assertEquals($target_escalation_date, $escalation_data);
+        }
     }
 
     /**
@@ -1773,7 +1779,7 @@ class SLMTest extends DbTestCase
                 ->addAction('assign', 'olas_id', $la1->getID());
             $this->createRule($builder);
 
-            // First OLA is added on update
+            // Second OLA is added on update
             $builder = new RuleBuilder('Add second LA on update', RuleTicket::class);
             $builder->setEntity($entity)
                 ->setCondtion(RuleTicket::ONUPDATE)
@@ -1789,6 +1795,9 @@ class SLMTest extends DbTestCase
             'name'        => $test_ticket_name,
             'content'     => '',
         ]);
+
+        // ticket just created, two ola should be associated, one for TTO and one for TTR
+        $this->assertEquals(2, countElementsInTable(\Item_Ola::getTable(), ['items_id' => $ticket->getID()]), 'ajout de ola sur update ne fonctionne pas, fonctionne sur le add - tester sur le commit 8cb37d09567ba071dc74445cebbc84618072bf57 wip');
 
         // Create another ticket as a control subject that shouldn't be impacted
         // by changes on the other ticket
@@ -2220,7 +2229,7 @@ class SLMTest extends DbTestCase
         $this->assertEquals(5, $ticket->fields['priority']); // level_1 action is applied
     }
 
-    // @todo write tests to ensure/document that there is No execution of levels
+    // @todo write tests to ensure that there is No execution of levels
     // - when ticket status is CLOSED or CLOSED
     // - when levelAgreement is an TTO and takeintoaccount_delay_stat is > 0
 
