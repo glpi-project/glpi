@@ -273,7 +273,7 @@ class RuleTest extends DbTestCase
         $this->assertSame(1, $rule->maxActionsCount());
 
         $rule = new \RuleTicket();
-        $this->assertSame(45, $rule->maxActionsCount());
+        $this->assertSame(44, $rule->maxActionsCount());
 
         $rule = new \RuleDictionnarySoftware();
         $this->assertSame(7, $rule->maxActionsCount());

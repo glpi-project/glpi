@@ -1470,7 +1470,7 @@ class RuleTicketTest extends RuleCommonITILObject
         $olas_data = $ticket->getOlasData();
         $this->assertCount(1, $olas_data);
         $ola_data = $olas_data[0];
-        $this->assertEquals($ola->getID(), $ola_data['id']);
+        $this->assertEquals($ola->getID(), $ola_data['olas_id']);
     }
 
     public function testAssignMultipleOlas()
@@ -1495,17 +1495,17 @@ class RuleTicketTest extends RuleCommonITILObject
         // assert - ola is associated to ticket - getOlasData()
         $olas_data = $ticket->getOlasData();
         $this->assertCount(3, $olas_data);
-        $olas_ids = array_column($olas_data, 'id');
+        $olas_ids = array_column($olas_data, 'olas_id');
         $this->assertEqualsCanonicalizing($olas_ids, [$ola_tto->getID(), $ola_ttr1->getID(), $ola_ttr2->getID()]);        // assert - ola is associated to ticket - getOlasData()
 
         $olas_ttr_data = $ticket->getOlasTTRData();
         $this->assertCount(2, $olas_ttr_data);
-        $olas_ids = array_column($olas_ttr_data, 'id');
+        $olas_ids = array_column($olas_ttr_data, 'olas_id');
         $this->assertEqualsCanonicalizing($olas_ids, [$ola_ttr1->getID(), $ola_ttr2->getID()]);        // assert - ola is associated to ticket - getOlasData()
 
         $olas_tto_data = $ticket->getOlasTTOData();
         $this->assertCount(1, $olas_tto_data);
-        $olas_ids = array_column($olas_tto_data, 'id');
+        $olas_ids = array_column($olas_tto_data, 'olas_id');
         $this->assertEqualsCanonicalizing($olas_ids, [$ola_tto->getID()]);
     }
 
