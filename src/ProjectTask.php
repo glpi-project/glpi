@@ -1366,6 +1366,9 @@ TWIG, $twig_params);
                 $parent = new self();
                 $parent->getFromDB($data['projecttasks_id']);
                 $entry['fname'] = $parent->getLink();
+            } else {
+                // Entry must exist even if empty to make sure the <td> is rendered
+                $entry['fname'] = "";
             }
             $projecttask = new ProjectTask();
             $projecttask->getFromDB($data['id']);
