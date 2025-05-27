@@ -2656,38 +2656,37 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface
                 $item_olas = $_item_ola->getByIds(array_column($item_olas_array, 'id'));
                 $calendars_id = $this->getCalendar();
 
+                OLA::deleteLevelsToDo($this); // @todoseb peut-être pas utile
                 foreach ($item_olas as $item_ola) {
                     $ola = $item_ola->getOla();
 
                     // OLA TTO is not impacted by waiting time, update only for TTR
-                    if ($ola->fields['type'] == SLM::TTO) {
-                        continue;
-                    }
+                    if ($ola->fields['type'] === SLM::TTR) {
 
-                    $ola->setTicketCalendar($calendars_id);
-                    $item_ola_data['id'] = $item_ola->getID();
+                        $ola->setTicketCalendar($calendars_id);
+                        $item_ola_data['id'] = $item_ola->getID();
 
-                    // update waiting_time
-                    if ($ola->fields['type'] == SLM::TTR) {
-                        $item_ola_data['waiting_time'] = $item_ola->fields['waiting_time'] + $ola->getActiveTimeBetween(
-                            $this->fields['begin_waiting_date'],
-                            $_SESSION["glpi_currenttime"]
+                        // update waiting_time
+                        if ($ola->fields['type'] == SLM::TTR) {
+                            $item_ola_data['waiting_time'] = $item_ola->fields['waiting_time'] + $ola->getActiveTimeBetween(
+                                $this->fields['begin_waiting_date'],
+                                $_SESSION["glpi_currenttime"]
+                            );
+                        } else {
+                            $item_ola_data['waiting_time'] = 0;
+                        }
+
+                        // update due_time (former internal_time_to_own, internal_time_to_resolve)
+                        $item_ola_data['due_time'] = $ola->computeDate(
+                            $item_ola->fields['start_time'],
+                            $item_ola_data['waiting_time']
                         );
-                    } else {
-                        $item_ola_data['waiting_time'] = 0;
+
+                        if (!(new Item_Ola())->update($item_ola_data)) {
+                            throw new \Exception('Failed to update item_ola');
+                        }
                     }
 
-                    // update due_time (former internal_time_to_own, internal_time_to_resolve)
-                    $item_ola_data['due_time'] = $ola->computeDate(
-                        $item_ola->fields['start_time'],
-                        $item_ola_data['waiting_time']
-                    );
-
-                    if (!(new Item_Ola())->update($item_ola_data)) {
-                        throw new \Exception('Failed to update item_ola');
-                    }
-
-                    OLA::deleteLevelsToDo($this);
                     $this->manageOlaLevel($item_ola->fields['olas_id']);
                 }
 
@@ -2715,10 +2714,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface
                 SLA::deleteLevelsToDo($this);
             }
 
-            if (isset($this->fields['olas_id_ttr']) && ($this->fields['olas_id_ttr'] > 0)) {
-                OLA::deleteLevelsToDo($this); // // @todoseb probably useless -> exception below
-                //                throw new \Exception('These lines must be removed, see above in code');
-            }
+            OLA::deleteLevelsToDo($this);
         }
 
         // solve_delay_stat: use delay between opendate and solvedate
