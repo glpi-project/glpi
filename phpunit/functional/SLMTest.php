@@ -1636,6 +1636,7 @@ class SLMTest extends DbTestCase
             'priority' => 3,  // to match level_1 criteria
         ]);
         $ticket_id = $ticket->getID();
+        $this->runSlaCron();
 
         $this->assertEquals($sla->getID(), $ticket->fields['slas_id_ttr']);
         // slalevels_id_ttr takes the first level, no matter what state or elapsed time is.
@@ -1659,6 +1660,7 @@ class SLMTest extends DbTestCase
         $this->setCurrentTime('11:31:00');
         $this->runSlaCron();
         // $this->assertEquals($level_2->getID(), $ticket->fields['slalevels_id_ttr']) // as noted above, this field does not change
+
         // no next level to be processed
         $this->assertFalse((new \SlaLevel_Ticket())->getFromDBByCrit(['tickets_id' => $ticket->getID()]));
         // priority changed to 5
@@ -2531,26 +2533,6 @@ class SLMTest extends DbTestCase
             ),
             $ola_compare
         );
-    }
-
-    /**
-     * Set $_SESSION['glpi_currenttime'] with current day + $time param and return the related DateTime
-     *
-     * @param string $time expected format is H:i:s
-     */
-    private function setCurrentTime(string $time): \DateTime
-    {
-        // assert format is H:i:s
-        assert(1 === preg_match('/^([01]?[0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])$/', $time));
-
-        // set session time
-        $_SESSION['glpi_currenttime'] = date('Y-m-d ' . $time);
-
-        // create and return DateTime
-        $dt = new \DateTime();
-        $dt->setTime(...explode(':', $time));
-
-        return $dt;
     }
 
     private function runSlaCron(): void
