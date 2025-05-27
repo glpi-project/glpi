@@ -232,7 +232,7 @@
     }
 }
 
-button:has([data-glpi-editor-condition-badge=always_created].d-flex) {
+button:has([data-glpi-editor-condition-badge="always_created"].d-flex), button[aria-expanded="true"] {
     [data-glpi-editor-conditions-count-badge] {
         display: none !important;
     }
