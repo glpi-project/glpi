@@ -1282,6 +1282,9 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
     /**
      * Manage OLA level escalation
      *
+     * - add level in todo table XLaLevel_Ticket
+     * - replayForTicket
+     *
      * @param int $olas_id
      *
      * @return void
@@ -1307,7 +1310,6 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
         }
         OlaLevel_Ticket::replayForTicket($this->getID(), $ola->getField('type'));
     }
-
 
     public function pre_updateInDB()
     {
@@ -6535,8 +6537,8 @@ JAVASCRIPT;
             }
         }
 
+        OLA::deleteLevelsToDo($this);
         foreach ($added_olas_ids as $olas_id) {
-            OLA::deleteLevelsToDo($this);
             $this->manageOlaLevel($olas_id);
         }
     }

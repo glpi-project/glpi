@@ -101,16 +101,17 @@ class TicketTemplate extends ITILTemplate
                 'slas_id_ttr',
                 'glpi_slas'
             )      => 'slas_id_ttr',
-            $itil_object->getSearchOptionIDByField(
-                'field',
-                'olas_id_tto',
-                'glpi_olas'
-            )      => 'olas_id_tto',
-            $itil_object->getSearchOptionIDByField(
-                'field',
-                'olas_id_ttr',
-                'glpi_olas'
-            )      => 'olas_id_ttr',
+            // fields removed in ticket, should be replaced ?
+            //            $itil_object->getSearchOptionIDByField(
+            //                'field',
+            //                'olas_id_tto',
+            //                'glpi_olas'
+            //            )      => 'olas_id_tto',
+            //            $itil_object->getSearchOptionIDByField(
+            //                'field',
+            //                'olas_id_ttr',
+            //                'glpi_olas'
+            //            )      => 'olas_id_ttr',
             $itil_object->getSearchOptionIDByField(
                 'field',
                 'time_to_own',
