@@ -72,12 +72,6 @@ class RuleTicket extends RuleCommonITILObject
                             $output['_' . $action->fields["field"]] = $action->fields["value"];
                         }
 
-                        // olas_id - assign an ola
-                        if ($action->fields["field"] === 'olas_id') {
-                            $output['_la_update'] = true;
-                            $output['_olas_id'][] = $action->fields["value"];
-                        }
-
                         // special case of project
                         if ($action->fields["field"] == "assign_project") {
                             if (!array_key_exists("_projects_id", $output)) {
@@ -104,6 +98,12 @@ class RuleTicket extends RuleCommonITILObject
                                 $output["_projects_id"] = [];
                             }
                             $output["_projects_id"][] = $value;
+                        }
+
+                        // olas_id - assign an ola
+                        if ($action->fields["field"] === 'olas_id') {
+                            $output['_la_update'] = true;
+                            $output['_olas_id'][] = $action->fields["value"];
                         }
 
                         break;
@@ -347,12 +347,9 @@ class RuleTicket extends RuleCommonITILObject
         $actions['olas_id']['type']                       = 'dropdown';
         $actions['olas_id']['table']                      = 'glpi_olas';
         $actions['olas_id']['field']                      = 'name';
-        $actions['olas_id']['name']                       = sprintf(
-            __('%1$s %2$s'),
-            __('OLA'),
-            __('Time to own')
-        );
-        $actions['olas_id']['force_actions']     = ['assign'];
+        $actions['olas_id']['name']                       = 'OLA TTR/TTO';
+        $actions['olas_id']['force_actions']              = ['append'];
+        $actions['olas_id']['permitseveral']              = ['append'];
 
         // @todoseb à remimplementer - voir commentaire au dessus.
         $actions['internal_time_to_own']['name']              = __('Internal Time to own');
