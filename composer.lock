@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "8c8e903f70346430103f50343ed35ebf",
+    "content-hash": "71ffcf2b6fc8392d21d06f4b081820fa",
     "packages": [
         {
             "name": "apereo/phpcas",
@@ -9262,16 +9262,16 @@
         },
         {
             "name": "atoum/atoum",
-            "version": "dev-main",
+            "version": "4.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/atoum/atoum.git",
-                "reference": "e43a6a84809635cf5dcdf80bf3c773e7cf1d5a04"
+                "reference": "d0abc122b702b053082baa3913b0f88459457e1d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/atoum/atoum/zipball/e43a6a84809635cf5dcdf80bf3c773e7cf1d5a04",
-                "reference": "e43a6a84809635cf5dcdf80bf3c773e7cf1d5a04",
+                "url": "https://api.github.com/repos/atoum/atoum/zipball/d0abc122b702b053082baa3913b0f88459457e1d",
+                "reference": "d0abc122b702b053082baa3913b0f88459457e1d",
                 "shasum": ""
             },
             "require": {
@@ -9292,7 +9292,6 @@
                 "ext-mbstring": "Provides support for UTF-8 strings",
                 "ext-xdebug": "Provides code coverage report (>= 2.3)"
             },
-            "default-branch": true,
             "bin": [
                 "bin/atoum"
             ],
@@ -9344,61 +9343,9 @@
             ],
             "support": {
                 "issues": "https://github.com/atoum/atoum/issues",
-                "source": "https://github.com/atoum/atoum/tree/main"
+                "source": "https://github.com/atoum/atoum/tree/4.3.0"
             },
-            "time": "2024-07-31T12:02:10+00:00"
-        },
-        {
-            "name": "atoum/stubs",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/atoum/stubs.git",
-                "reference": "fb8890f347a7ecf1e3cf2b5a139a8b038359a6ab"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/atoum/stubs/zipball/fb8890f347a7ecf1e3cf2b5a139a8b038359a6ab",
-                "reference": "fb8890f347a7ecf1e3cf2b5a139a8b038359a6ab",
-                "shasum": ""
-            },
-            "suggest": {
-                "atoum/atoum": "Include atoum in your projet dependencies"
-            },
-            "default-branch": true,
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "2.x-dev"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "BSD-3-Clause"
-            ],
-            "authors": [
-                {
-                    "name": "Julien Bianchi",
-                    "email": "julien.bianchi@atoum.org"
-                },
-                {
-                    "name": "Ludovic Fleury",
-                    "email": "ludovic.fleury@atoum.org"
-                }
-            ],
-            "description": "Stubs for atoum, the simple modern and intuitive unit testing framework for PHP 5.3+",
-            "homepage": "http://www.atoum.org",
-            "keywords": [
-                "TDD",
-                "atoum",
-                "test",
-                "unit testing"
-            ],
-            "support": {
-                "issues": "https://github.com/atoum/stubs/issues",
-                "source": "https://github.com/atoum/stubs/tree/master"
-            },
-            "time": "2024-07-30T18:02:37+00:00"
+            "time": "2025-05-16T17:33:34+00:00"
         },
         {
             "name": "clue/ndjson-react",
@@ -13122,11 +13069,8 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "atoum/atoum": 20,
-        "atoum/stubs": 20
-    },
-    "prefer-stable": false,
+    "stability-flags": {},
+    "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
         "php": ">=8.2",
