@@ -272,8 +272,8 @@ class Log extends CommonDBTM
         }
 
         // Security to be sure that values do not pass over the max length
-        $old_value = Toolbox::substr($old_value, 0, 255);
-        $new_value = Toolbox::substr($new_value, 0, 255);
+        $old_value = mb_substr($old_value, 0, 255);
+        $new_value = mb_substr($new_value, 0, 255);
 
         $params = [
             'items_id'          => $items_id,
