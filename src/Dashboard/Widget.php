@@ -2028,7 +2028,7 @@ JAVASCRIPT;
         $colors = [];
 
         for ($i = 1; $i <= $nb_series; $i++) {
-            $names[$i - 1] = $i - 1;
+            $names[$i - 1] = chr(97 + ($i - 1) % 26);
 
             // adjust luminosity
             $i_l_step = $i * $step_l + $min_l / 100;
