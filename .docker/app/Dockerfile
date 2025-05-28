@@ -26,3 +26,6 @@ RUN mkdir --parents /home/www-data \
 VOLUME /home/www-data
 
 USER www-data
+
+# Install playwright
+RUN npx playwright install chromium --with-deps

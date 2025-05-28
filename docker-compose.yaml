@@ -13,6 +13,7 @@ services:
       - "8080:80"
       - "8090:8090"
       - "9637:9637"
+      - "9323:9323" # Playwright reports
     depends_on:
       - db
     extra_hosts:

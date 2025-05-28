@@ -166,6 +166,15 @@ phpstan: ## Run phpstan
 	@$(PHP) php vendor/bin/phpstan --memory-limit=1G
 .PHONY: phpstan
 
+playwright: ## Run playwright tests, example: make playwright c='tests/playwright/specs/main/my_test.spec.ts'
+	@$(eval c ?=)
+	@$(PHP) npx playwright test $(c)
+.PHONY: playwright
+
+playwright-report: ## Show playwright report
+	@$(PHP) npx playwright show-report --host=0.0.0.0
+.PHONY: playwright-report
+
 ## —— Linters ——————————————————————————————————————————————————————————————————
 lint: lint-php lint-scss lint-twig lint-js ## Run all linters
 .PHONY: lint
