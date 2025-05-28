@@ -98,7 +98,7 @@ final class TilesManagerTest extends DbTestCase
         $this->assertEquals("FAQ", $second_tile->getTitle());
         $this->assertEquals("Link to the FAQ", $second_tile->getDescription());
         $this->assertEquals("browse-kb", $second_tile->getIllustration());
-        $this->assertEquals("/glpi/front/helpdesk.faq.php", $second_tile->getTileUrl());
+        $this->assertEquals("/front/helpdesk.faq.php", $second_tile->getTileUrl());
     }
 
     public function testTilesCantBeAddedToCentralProfiles(): void
@@ -313,7 +313,7 @@ final class TilesManagerTest extends DbTestCase
         $this->assertEquals("FAQ", $third_tile->getTitle());
         $this->assertEquals("Link to the FAQ", $third_tile->getDescription());
         $this->assertEquals("browse-kb", $third_tile->getIllustration());
-        $this->assertEquals("/glpi/front/helpdesk.faq.php", $third_tile->getTileUrl());
+        $this->assertEquals("/front/helpdesk.faq.php", $third_tile->getTileUrl());
     }
 
     public function testTilesOrderCanBeSet(): void
@@ -372,7 +372,7 @@ final class TilesManagerTest extends DbTestCase
         $this->assertEquals("FAQ", $third_tile->getTitle());
         $this->assertEquals("Link to the FAQ", $third_tile->getDescription());
         $this->assertEquals("browse-kb", $third_tile->getIllustration());
-        $this->assertEquals("/glpi/front/helpdesk.faq.php", $third_tile->getTileUrl());
+        $this->assertEquals("/front/helpdesk.faq.php", $third_tile->getTileUrl());
     }
 
     public function testDeleteTile(): void

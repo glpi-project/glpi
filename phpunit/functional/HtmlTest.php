@@ -712,18 +712,16 @@ class HtmlTest extends \GLPITestCase
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
-        $CFG_GLPI['url_base'] = 'http://localhost/glpi';
-
         ob_start();
         \Html::displayBackLink();
         $output = ob_get_clean();
-        $this->assertSame('<a href="http://localhost/glpi">Back</a>', $output);
+        $this->assertSame('<a href="http://localhost">Back</a>', $output);
 
-        $_SERVER['HTTP_REFERER'] = 'http://localhost/glpi/originalpage.html';
+        $_SERVER['HTTP_REFERER'] = 'http://localhost/originalpage.html';
         ob_start();
         \Html::displayBackLink();
         $output = ob_get_clean();
-        $this->assertSame('<a href="http://localhost/glpi/originalpage.html">Back</a>', $output);
+        $this->assertSame('<a href="http://localhost/originalpage.html">Back</a>', $output);
         $_SERVER['HTTP_REFERER'] = ''; // reset referer to prevent having this var in test loop mode
     }
 

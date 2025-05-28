@@ -150,8 +150,6 @@ class NotificationEventAjaxTest extends DbTestCase
         //no ajax notification configured per default
         $this->assertCount(1, $queue);
 
-        $GLPI_URI = GLPI_URI;
-
         $data = array_pop($queue);
         unset($data['id']);
         unset($data['create_time']);
@@ -181,7 +179,7 @@ class NotificationEventAjaxTest extends DbTestCase
             'body_html' => null,
             'body_text' => <<<TEXT
  
-  URL : {$GLPI_URI}/index.php?redirect=ticket_{$ticket->getID()} 
+  URL : {$CFG_GLPI['url_base']}/index.php?redirect=ticket_{$ticket->getID()} 
 
  Ticket: Description
 

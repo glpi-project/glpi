@@ -403,7 +403,7 @@ HTML,
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
-        $bkp_root_doc = $CFG_GLPI['root_doc'];
+
         // Images path should be corrected when root doc changed
         // see #15113
 
@@ -435,11 +435,13 @@ HTML;
                 );
             }
         }
-        $CFG_GLPI['root_doc'] = $bkp_root_doc;
     }
 
     public static function getTextFromHtmlProvider(): iterable
     {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
         // Handling of basic content
         yield [
             'content'                => '<p>Some HTML text</p>',
@@ -493,7 +495,7 @@ PLAINTEXT;
   <li>el 2</li>
 </ul>
 <div>
-  <a href="/glpi/front/computer.form.php?id=150"><img src="/path/to/img" alt="an image" /></a>
+  <a href="/front/computer.form.php?id=150"><img src="/path/to/img" alt="an image" /></a>
   Should I yell <strong>for the important words</strong>?
 </div>
 HTML;
@@ -525,7 +527,6 @@ PLAINTEXT,
         ];
 
         // Text with presentation from complex HTML
-        $base_url = GLPI_URI;
         yield [
             'content'                => $content,
             'keep_presentation'      => true,
@@ -541,12 +542,11 @@ Text in a paragraph
  	* el 1
  	* el 2
 
- [an image] [{$base_url}/glpi/front/computer.form.php?id=150] Should I yell FOR THE IMPORTANT WORDS? 
+ [an image] [{$CFG_GLPI['url_base']}/front/computer.form.php?id=150] Should I yell FOR THE IMPORTANT WORDS? 
 PLAINTEXT,
         ];
 
         // Text with presentation from complex HTML (compact mode)
-        $base_url = GLPI_URI;
         yield [
             'content'                => $content,
             'keep_presentation'      => true,
@@ -567,7 +567,6 @@ PLAINTEXT,
         ];
 
         // Text with presentation from complex HTML (with no case transformation)
-        $base_url = GLPI_URI;
         yield [
             'content'                => $content,
             'keep_presentation'      => true,
@@ -625,7 +624,7 @@ PLAINTEXT,
 
         yield [
             'content'                => <<<HTML
-<a href="/glpi/">GLPI</a>
+<a href="/">GLPI</a>
 HTML,
             'expected_result'        => true,
         ];

@@ -63,7 +63,7 @@
                             <a target="_blank" href="#" onclick="GLPIPlanning.deletePlanning(this)" value="{{ filter_key }}">{{ __('Delete') }}</a>
                         </li>
                     {% endif %}
-                    {% if caldav_url != null and filter_data.type != 'group_users' and filter_data.type != 'external' %}
+                    {% if show_export_buttons %}
                         <li class="dropdown-item">
                             {% set export_url = path(
                                 'front/planning.php?genical=1&uID=' ~ uID ~ '&gID=' ~ gID ~ '&entities_id=' ~ session('glpiactive_entity') ~ '&is_recursive=' ~ session('glpiactive_entity_recursive') ~ '&token=' ~ login_user.getAuthToken()
@@ -73,7 +73,7 @@
                             </a>
                         </li>
                         <li class="dropdown-item">
-                            <a target="_blank" href="webcal://{{ url.host }}:{{ url.port }}{{ url.path ?? '' }}{{ export_url }}">
+                            <a target="_blank" href="{{ webcal_base_url }}{{ export_url }}">
                                 {{ _x('button', 'Export') }} - {{ __('Webcal') }}
                             </a>
                         </li>
@@ -82,11 +82,13 @@
                                 {{ _x('button', 'Export') }} - {{ __('CSV') }}
                             </a>
                         </li>
+                        {% if caldav_url is not null %}
                         <li class="dropdown-item">
                             <a target="_blank" href="#" onclick="copyTextToClipboard('{{ caldav_url|e('js') }}'); alert('{{ __('CalDAV URL has been copied to clipboard')|e('js') }}'); return false;">
                                 {{ __('Copy CalDAV URL to clipboard') }}
                             </a>
                         </li>
+                        {% endif %}
                     {% endif %}
                 </ul>
             </div>

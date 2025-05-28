@@ -38,7 +38,7 @@ use Glpi\Cache\SimpleCache;
 use Glpi\Kernel\Kernel;
 use Symfony\Component\Cache\Adapter\ArrayAdapter;
 
-define('GLPI_URI', getenv('GLPI_URI') ?: 'http://localhost:80');
+define('GLPI_URI', getenv('GLPI_URI') ?: 'http://localhost');
 
 define('TU_USER', '_test_user');
 define('TU_PASS', 'PhpUnit_4');

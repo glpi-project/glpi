@@ -613,6 +613,7 @@ class ToolboxTest extends DbTestCase
     #[DataProvider('convertTagToImageBaseUrlProvider')]
     public function testBaseUrlInConvertTagToImage($url_base, $item, $expected_url)
     {
+        global $CFG_GLPI;
 
         $img_tag = uniqid('', true);
 
@@ -630,16 +631,9 @@ class ToolboxTest extends DbTestCase
         $expected_url   = str_replace('{docid}', $doc_id, $expected_url);
         $expected_result = '<a href="' . $expected_url . '" target="_blank" ><img alt="' . $img_tag . '" width="10" src="' . $expected_url . '" /></a>';
 
-        // Save old config
-        global $CFG_GLPI;
-        $old_url_base = $CFG_GLPI['url_base'];
-
         // Get result
         $CFG_GLPI['url_base'] = $url_base;
         $result = \Toolbox::convertTagToImage($content_text, $item, [$doc_id => ['tag' => $img_tag]]);
-
-        // Restore config
-        $CFG_GLPI['url_base'] = $old_url_base;
 
         // Validate result
         $this->assertEquals($expected_result, $result);
@@ -1852,83 +1846,101 @@ HTML;
             'http://www.whitelisteddomain.tld.google.com',
         ];
 
-        foreach (['helpdesk', 'central'] as $interface) {
-            foreach ($open_redirect_payloads as $where) {
+        foreach (['', '/glpi', '/path/to/glpi'] as $root_doc) {
+            foreach (['helpdesk', 'central'] as $interface) {
+                foreach ($open_redirect_payloads as $where) {
+                    yield [
+                        'root_doc'  => $root_doc,
+                        'interface' => $interface,
+                        'where'     => $where,
+                        'result'    => null,
+                    ];
+                }
+
+                // Redirect to absolute URLs.
                 yield [
+                    'root_doc'  => $root_doc,
                     'interface' => $interface,
-                    'where'     => $where,
+                    'where'     => 'http://notglpi/',
                     'result'    => null,
                 ];
+                yield [
+                    'root_doc'  => $root_doc,
+                    'interface' => $interface,
+                    'where'     => 'http://localhost' . $root_doc . '/',
+                    'result'    => 'http://localhost' . $root_doc . '/',
+                ];
+                yield [
+                    'root_doc'  => $root_doc,
+                    'interface' => $interface,
+                    'where'     => 'http://localhost' . $root_doc . '/front/computer.php?id=15',
+                    'result'    => 'http://localhost' . $root_doc . '/front/computer.php?id=15',
+                ];
+
+                // Redirect to relative URLs.
+                yield [
+                    'root_doc'  => $root_doc,
+                    'interface' => $interface,
+                    'where'     => '/.hiddenfile',
+                    'result'    => null,
+                ];
+                yield [
+                    'root_doc'  => $root_doc,
+                    'interface' => $interface,
+                    'where'     => $root_doc . '/front/.hiddenfile',
+                    'result'    => null,
+                ];
+                yield [
+                    'root_doc'  => $root_doc,
+                    'interface' => $interface,
+                    'where'     => '/../outside-glpi',
+                    'result'    => null,
+                ];
+                yield [
+                    'root_doc'  => $root_doc,
+                    'interface' => $interface,
+                    'where'     => $root_doc . '/front/../outside-glpi',
+                    'result'    => null,
+                ];
+                yield [
+                    'root_doc'  => $root_doc,
+                    'interface' => $interface,
+                    'where'     => '/',
+                    'result'    => $root_doc . '/',
+                ];
+                yield [
+                    'root_doc'  => $root_doc,
+                    'interface' => $interface,
+                    'where'     => '/front/computer.php?id=15',
+                    'result'    => $root_doc . '/front/computer.php?id=15',
+                ];
+
+                // Redirect to a ticket.
+                yield [
+                    'root_doc'  => $root_doc,
+                    'interface' => $interface,
+                    'where'     => 'ticket_35341',
+                    'result'    => $root_doc . '/front/ticket.form.php?id=35341&',
+                ];
+
+                // Redirect to a ticket tab.
+                yield [
+                    'root_doc'  => $root_doc,
+                    'interface' => $interface,
+                    'where'     => 'ticket_12345_Ticket$main#TicketValidation_1',
+                    'result'    => $root_doc . '/front/ticket.form.php?id=12345&forcetab=Ticket$main#TicketValidation_1',
+                ];
             }
-
-            // Redirect to absolute URLs.
-            yield [
-                'interface' => $interface,
-                'where'     => 'http://notglpi/',
-                'result'    => null,
-            ];
-            yield [
-                'interface' => $interface,
-                'where'     => 'http://localhost:80/',
-                'result'    => 'http://localhost:80/',
-            ];
-            yield [
-                'interface' => $interface,
-                'where'     => 'http://localhost:80/front/computer.php?id=15',
-                'result'    => 'http://localhost:80/front/computer.php?id=15',
-            ];
-
-            // Redirect to relative URLs.
-            yield [
-                'interface' => $interface,
-                'where'     => '/.hiddenfile',
-                'result'    => null,
-            ];
-            yield [
-                'interface' => $interface,
-                'where'     => '/front/.hiddenfile',
-                'result'    => null,
-            ];
-            yield [
-                'interface' => $interface,
-                'where'     => '/../outside-glpi',
-                'result'    => null,
-            ];
-            yield [
-                'interface' => $interface,
-                'where'     => '/front/../outside-glpi',
-                'result'    => null,
-            ];
-            yield [
-                'interface' => $interface,
-                'where'     => '/',
-                'result'    => '/glpi/',
-            ];
-            yield [
-                'interface' => $interface,
-                'where'     => '/front/computer.php?id=15',
-                'result'    => '/glpi/front/computer.php?id=15',
-            ];
-
-            // Redirect to a ticket.
-            yield [
-                'interface' => $interface,
-                'where'     => 'ticket_35341',
-                'result'    => '/glpi/front/ticket.form.php?id=35341&',
-            ];
-
-            // Redirect to a ticket tab.
-            yield [
-                'interface' => $interface,
-                'where'     => 'ticket_12345_Ticket$main#TicketValidation_1',
-                'result'    => '/glpi/front/ticket.form.php?id=12345&forcetab=Ticket$main#TicketValidation_1',
-            ];
         }
     }
 
     #[DataProvider('redirectProvider')]
-    public function testComputeRedirect(string $interface, string $where, ?string $result): void
+    public function testComputeRedirect(string $root_doc, string $interface, string $where, ?string $result): void
     {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
+        $CFG_GLPI['root_doc'] = $root_doc;
         $_SESSION['glpiactiveprofile']['interface'] = $interface;
 
         $instance = new \Toolbox();
