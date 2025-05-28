@@ -260,4 +260,16 @@ JSON;
             }
         }
     }
+
+    public function testGetAPIPath()
+    {
+        $this->login();
+
+        $webhook = new \Webhook();
+        $computer = getItemByTypeName('Computer', '_test_pc01');
+        $this->assertEquals('/Assets/Computer/' . $computer->getID(), $webhook->getAPIPath($computer));
+
+        $custom_asset = getItemByTypeName('Glpi\\CustomAsset\\Test01', 'TestA');
+        $this->assertEquals('/Assets/Custom/Test01/' . $custom_asset->getID(), $webhook->getAPIPath($custom_asset));
+    }
 }
