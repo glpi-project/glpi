@@ -345,15 +345,12 @@ function step4($databasename, $newdatabasename)
         echo '</div>';
         echo '</div>';
 
-        echo \sprintf(
-            <<<HTML
-                <script defer type="module">
-                    import { init_database } from '/js/modules/GlpiInstall.js';
-                    init_database("%s");
-                </script>
-HTML,
-            \Glpi\Controller\InstallController::PROGRESS_KEY_INIT_DATABASE,
-        );
+        echo <<<HTML
+            <script defer type="module">
+                import { init_database } from '/js/modules/GlpiInstall.js';
+                init_database();
+            </script>
+        HTML;
     } else { // can't create config_db file
         echo "<p>" . __s('Impossible to write the database setup file') . "</p>";
         $prev_form($host, $user, $password);
