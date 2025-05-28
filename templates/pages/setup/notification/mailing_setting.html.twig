@@ -164,7 +164,7 @@
                         $('#dropdown_smtp_oauth_provider{{ rand }}').closest('.form-field').toggle(is_oauth);
                         $('#smtp-oauth-client-id_{{ rand }}').closest('.form-field').toggle(is_oauth);
                         $('#smtp-oauth-client-secret_{{ rand }}').closest('.form-field').toggle(is_oauth);
-                        $('#_force_redirect_to_smtp_oauth_{{ rand }}').closest('.form-field').toggle(is_oauth);
+                        $('#force-redirect-to-smtp-oauth_{{ rand }}').closest('.form-field').toggle(is_oauth);
                         $('[name=smtp_oauth_provider]').trigger('change'); // refresh additional params using dedicated method
                     });
                     $('[name=smtp_mode]').trigger('change');
