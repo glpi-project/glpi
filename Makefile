@@ -23,7 +23,7 @@ help: ## Show this help message
 	@grep -E '(^[a-zA-Z_-]+:.*?##.*$$)|(^##)' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[32m%-25s\033[0m %s\n", $$1, $$2}' | sed -e 's/\[32m##/[33m/'
 .PHONY: help
 
-install: init-override build up vendor db-install test-db-install ## Install the project
+install: init-override build up vendor db-install test-db-install e2e-db-install ## Install the project
 .PHONY: install
 
 ## —— Docker ———————————————————————————————————————————————————————————————————
@@ -119,8 +119,31 @@ test-db-update: ## Update testing's database
 		-n \
 		--allow-unstable \
 		--force \
-		--skip-db-checks
-.PHONY: db-update
+		--skip-db-checks \
+		--env=testing
+.PHONY: test-db-update
+
+e2e-db-install: ## Install e2e testing's database
+	@$(CONSOLE) database:install \
+		-r -f \
+		--db-host=db \
+		--db-port=3306 \
+		--db-name=glpi_e2e \
+		--db-user=root \
+		--db-password=glpi \
+		--no-interaction \
+		--no-telemetry \
+		--env=e2e_testing
+.PHONY: e2e-db-install
+
+e2e-db-update: ## Update e2e testing's database
+	@$(CONSOLE) database:update \
+		-n \
+		--allow-unstable \
+		--force \
+		--skip-db-checks  \
+		--env=e2e_testing
+.PHONY: e2e-db-update
 
 ## —— Dependencies —————————————————————————————————————————————————————————————
 composer: ## Run a composer command, example: make composer c='require mypackage/package'
@@ -142,6 +165,15 @@ phpunit: ## Run phpunits tests, example: make phpunit c='phpunit/functional/Glpi
 phpstan: ## Run phpstan
 	@$(PHP) php vendor/bin/phpstan --memory-limit=1G
 .PHONY: phpstan
+
+playwright: ## Run playwright tests, example: make playwright c='tests/playwright/specs/main/my_test.spec.ts'
+	@$(eval c ?=)
+	@$(PHP) npx playwright test $(c)
+.PHONY: playwright
+
+playwright-report: ## Show playwright report
+	@$(PHP) npx playwright show-report --host=0.0.0.0
+.PHONY: playwright-report
 
 ## —— Linters ——————————————————————————————————————————————————————————————————
 lint: lint-php lint-scss lint-twig lint-js ## Run all linters

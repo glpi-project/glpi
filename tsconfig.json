@@ -1,0 +1,6 @@
+{
+    "compilerOptions": {
+        "skipLibCheck": true
+    },
+    "include": ["tests/playwright/**/*.ts"],
+}
