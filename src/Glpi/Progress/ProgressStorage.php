@@ -34,28 +34,71 @@
 
 namespace Glpi\Progress;
 
-use Session;
+use function Safe\fclose;
+use function Safe\fflush;
+use function Safe\flock;
+use function Safe\fopen;
+use function Safe\fread;
+use function Safe\ftruncate;
+use function Safe\fwrite;
+use function Safe\session_id;
 
 /**
  * @final
  */
 class ProgressStorage
 {
+    public function getUniqueStorageKey(): string
+    {
+        $session_id = session_id();
+
+        do {
+            $key = $session_id . \substr(
+                \str_shuffle(
+                    str_repeat('0123456789abcdef', 10)
+                ),
+                0,
+                16
+            );
+        } while (\file_exists($this->getStorageFilePath($key)));
+
+        return $key;
+    }
+
     public function hasProgress(string $key): bool
     {
-        return isset($_SESSION['progress'][$key]) && $_SESSION['progress'][$key] instanceof StoredProgressIndicator;
+        if (!$this->canAccessProgress($key)) {
+            return false;
+        }
+
+        return \file_exists($this->getStorageFilePath($key));
     }
 
     public function getCurrentProgress(string $key): StoredProgressIndicator
     {
-        if (!$this->hasProgress($key)) {
+        if (!$this->canAccessProgress($key) || !$this->hasProgress($key)) {
             throw new \RuntimeException(\sprintf(
                 "Cannot find a progress bar for key \"%s\".",
                 $key,
             ));
         }
 
-        $progress = $_SESSION['progress'][$key];
+        $path = $this->getStorageFilePath($key);
+
+        $handle = fopen($path, 'rb');
+
+        flock($handle, LOCK_EX); // lock the file
+
+        $file_contents = '';
+        while (!\feof($handle)) {
+            $file_contents .= fread($handle, 8192);
+        }
+
+        flock($handle, LOCK_UN); // unlock the file
+
+        fclose($handle);
+
+        $progress = \unserialize($file_contents);
 
         if (!$progress instanceof StoredProgressIndicator) {
             throw new \RuntimeException(\sprintf(
@@ -69,19 +112,38 @@ class ProgressStorage
 
     public function save(StoredProgressIndicator $progress): void
     {
-        // Mandatory here:
-        // If you execute "save($progress)" several times, PHP will send a "Cookie: ..." HTTP header.
-        // Use it thousands of times and you will have thousands of "Cookie: ..." HTTP header lines,
-        // resulting in a "Header too big" or "File too big" HTTP error response.
-        @ini_set('session.use_cookies', 0);
+        $key = $progress->getStorageKey();
 
-        // Restart the session that may have been closed by a previous call to the current method.
-        Session::start();
+        if (!$this->canAccessProgress($key)) {
+            throw new \LogicException();
+        }
 
-        $_SESSION['progress'][$progress->getStorageKey()] = $progress;
+        $path = $this->getStorageFilePath($key);
 
-        // Close the session to release the lock on its storage file.
-        // This is required to not block the execution of concurrent requests.
-        session_write_close();
+        $handle = fopen($path, 'c');
+
+        flock($handle, LOCK_EX); // lock the file
+
+        ftruncate($handle, 0);
+        fwrite($handle, \serialize($progress));
+        fflush($handle);
+
+        flock($handle, LOCK_UN); // unlock the file
+
+        fclose($handle);
+    }
+
+    private function canAccessProgress(string $key): bool
+    {
+        return \str_starts_with($key, session_id());
+    }
+
+    private function getStorageFilePath(string $key): string
+    {
+        return \sprintf(
+            '%s/%s.progress',
+            GLPI_TMP_DIR,
+            $key
+        );
     }
 }

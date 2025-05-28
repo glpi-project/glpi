@@ -58,12 +58,12 @@ class StoredProgressIndicator extends AbstractProgressIndicator
      */
     private array $messages = [];
 
-    public function __construct(ProgressStorage $progress_storage, string $storage_key)
+    public function __construct(ProgressStorage $progress_storage)
     {
         parent::__construct();
 
         $this->progress_storage = $progress_storage;
-        $this->storage_key      = $storage_key;
+        $this->storage_key      = $progress_storage->getUniqueStorageKey();
 
         $this->store();
     }
