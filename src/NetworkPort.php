@@ -1202,7 +1202,7 @@ class NetworkPort extends CommonDBChild
                                                 NetworkPort::getTable() . ' AS netp' => [
                                                     'ON' => [
                                                         'netp'   => 'items_id',
-                                                        'unm'    => 'id',
+                                                        'asset'    => 'id',
                                                         [
                                                             'AND' => [
                                                                 'netp.itemtype' => $related_class,
