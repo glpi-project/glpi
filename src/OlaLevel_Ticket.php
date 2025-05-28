@@ -166,7 +166,7 @@ class OlaLevel_Ticket extends CommonDBTM
         global $DB;
 
         $tot = 0;
-        $now = $_SESSION['glpi_currenttime'];
+        $now = \Session::getCurrentTime();
 
         $iterator = $DB->request([
             'SELECT'    => [
