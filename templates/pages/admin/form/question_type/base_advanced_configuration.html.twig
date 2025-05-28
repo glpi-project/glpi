@@ -1,0 +1,62 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2025 Teclib' and contributors.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% set rand = random() %}
+
+<div class="dropdown" data-glpi-form-editor-question-extra-details>
+    <button
+        id="dropdownMenuButton{{ rand }}"
+        class="btn btn-icon h-full rounded-start-0"
+        type="button"
+        data-bs-toggle="dropdown" data-bs-auto-close="outside"
+        aria-expanded="false"
+        title="{{ __('Advanced configuration') }}"
+        aria-label="{{ __('Advanced configuration') }}"
+    >
+        <i class="ti ti-settings"></i>
+    </button>
+    <div
+        style="width: 32rem"
+        class="dropdown-menu dropdown-menu-card animate__animated animate__zoomIn"
+        role="menu"
+        aria-labelledby="dropdownMenuButton{{ rand }}"
+        data-glpi-form-editor-advanced-question-configuration
+    >
+        <div class="card">
+            <div class="card-body">
+                {% block dropdown_content %}
+                {# Child templates will override this block with specific dropdown content #}
+                {% endblock %}
+            </div>
+        </div>
+    </div>
+</div>

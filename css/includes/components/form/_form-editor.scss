@@ -542,6 +542,17 @@ html {
     }
 }
 
+[data-glpi-form-editor-active-question]:has([data-glpi-form-editor-advanced-question-configuration]) {
+    .input-group > * {
+        &:first-child:has(.select2-selection) {
+            .select2-selection {
+                border-top-right-radius: 0 !important;
+                border-bottom-right-radius: 0 !important;
+            }
+        }
+    }
+}
+
 // Remove margins when form is empty
 [data-glpi-form-editor-blocks]:not(:has([data-glpi-form-editor-block])) {
     [data-glpi-form-editor-section], [data-glpi-form-editor-section-blocks] {

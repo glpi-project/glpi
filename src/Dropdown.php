@@ -2402,7 +2402,7 @@ HTML;
 
             if (!empty($param['add_data_attributes'])) {
                 if (is_array($param['add_data_attributes'])) {
-                    $output .= implode(' ', array_map(
+                    $output .= ' ' . implode(' ', array_map(
                         function ($key, $value) {
                             return htmlescape('data-' . $key) . '="' . htmlescape($value) . '"';
                         },

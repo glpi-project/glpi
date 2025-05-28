@@ -61,7 +61,7 @@ export class GlpiFormQuestionTypeItem {
                 return;
             }
 
-            const select = question.find('[data-glpi-form-editor-question-type-specific] select');
+            const select = question.find('[data-glpi-form-editor-question-type-specific] select[name="default_value"], [data-glpi-form-editor-question-type-specific] select[data-glpi-form-editor-original-name="default_value"]');
             const container = select.parent();
 
             // Add a flag to all children to mark them as to be removed

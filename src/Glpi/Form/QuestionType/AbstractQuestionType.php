@@ -91,6 +91,12 @@ abstract class AbstractQuestionType implements QuestionTypeInterface
     }
 
     #[Override]
+    public function renderAdvancedConfigurationTemplate(?Question $question): ?string
+    {
+        return null; // No advanced configuration by default
+    }
+
+    #[Override]
     public function formatRawAnswer(mixed $answer, Question $question): string
     {
         // By default only return the string answer

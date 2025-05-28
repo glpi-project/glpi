@@ -35,9 +35,15 @@
 
 namespace Glpi\Form\QuestionType;
 
+use DbUtils;
 use Dropdown;
+use Glpi\Application\View\TemplateRenderer;
+use Glpi\Form\Question;
+use ITILCategory;
 use Override;
 use Session;
+
+use function Safe\json_decode;
 
 final class QuestionTypeItemDropdown extends QuestionTypeItem
 {
@@ -47,6 +53,20 @@ final class QuestionTypeItemDropdown extends QuestionTypeItem
 
         $this->itemtype_aria_label = __('Select a dropdown type');
         $this->items_id_aria_label = __('Select a dropdown item');
+    }
+
+    public function renderAdvancedConfigurationTemplate(?Question $question): string
+    {
+        $twig = TemplateRenderer::getInstance();
+        return $twig->render(
+            'pages/admin/form/question_type/item_dropdown/advanced_configuration.html.twig',
+            [
+                'question'          => $question,
+                'categories_filter' => $this->getCategoriesFilter($question),
+                'root_items_id'     => $this->getRootItemsId($question),
+                'subtree_depth'     => $this->getSubtreeDepth($question),
+            ]
+        );
     }
 
     public function getAllowedItemtypes(): array
@@ -82,5 +102,200 @@ final class QuestionTypeItemDropdown extends QuestionTypeItem
     public function getWeight(): int
     {
         return 30;
+    }
+
+    #[Override]
+    public function getExtraDataConfigClass(): string
+    {
+        return QuestionTypeItemDropdownExtraDataConfig::class;
+
+    }
+
+    #[Override]
+    public function convertExtraData(array $rawData): mixed
+    {
+        $values = json_decode($rawData['values'] ?? '', true) ?? [];
+        $categories_filter = [];
+        if (isset($values['show_ticket_categories'])) {
+            $categories_filter = match ($values['show_ticket_categories']) {
+                'request' => ['request'],
+                'incident' => ['incident'],
+                'both' => ['request', 'incident'],
+                'change' => ['change'],
+                'all' => ['request', 'incident', 'change'],
+                default => []
+            };
+        }
+
+        return (new QuestionTypeItemDropdownExtraDataConfig(
+            itemtype: $rawData['itemtype'] ?? null,
+            categories_filter: $categories_filter,
+            root_items_id: $values['show_tree_root'] ?? 0,
+            subtree_depth: $values['show_tree_depth'] ?? 0
+        ))->jsonSerialize();
+    }
+
+    #[Override]
+    public function prepareExtraData(array $input): array
+    {
+        $input = parent::prepareExtraData($input);
+
+        // Categories filter may be empty, so we ensure it's an array
+        if (isset($input['categories_filter']) && empty($input['categories_filter'])) {
+            $input['categories_filter'] = [];
+        }
+
+        return $input;
+    }
+
+    #[Override]
+    public function validateExtraDataInput(array $input): bool
+    {
+        // Check if the categories_filter is set and is an array
+        if (
+            !isset($input['categories_filter'])
+            || (!is_array($input['categories_filter']) && !empty($input['categories_filter']))
+        ) {
+            return false;
+        }
+
+        // Check if root_items_id is set and is numeric
+        if (
+            !isset($input['root_items_id'])
+            || !is_numeric($input['root_items_id'])
+        ) {
+            return false;
+        }
+
+        // Check if subtree_depth is set and is numeric
+        if (
+            !isset($input['subtree_depth'])
+            || !is_numeric($input['subtree_depth'])
+        ) {
+            return false;
+        }
+
+        if (!parent::validateExtraDataInput($input)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Retrieve filter ticket categories for the item question type
+     *
+     * @param Question|null $question The question to retrieve the filter for
+     * @return ?array
+     */
+    public function getCategoriesFilter(?Question $question): ?array
+    {
+        if ($question === null) {
+            return ['request', 'incident', 'problem', 'change'];
+        }
+
+        /** @var ?QuestionTypeItemDropdownExtraDataConfig $config */
+        $config = $this->getExtraDataConfig(json_decode($question->fields['extra_data'], true) ?? []);
+        if ($config === null) {
+            return null;
+        }
+
+        return $config->getCategoriesFilter();
+    }
+
+    /**
+     * Retrieve root items ID for the item question type
+     *
+     * @param Question|null $question The question to retrieve the root items ID for
+     * @return int
+     */
+    public function getRootItemsId(?Question $question): int
+    {
+        if ($question === null) {
+            return 0;
+        }
+
+        /** @var ?QuestionTypeItemDropdownExtraDataConfig $config */
+        $config = $this->getExtraDataConfig(json_decode($question->fields['extra_data'], true) ?? []);
+        if ($config === null) {
+            return 0;
+        }
+
+        return $config->getRootItemsId();
+    }
+
+    /**
+     * Retrieve subtree depth for the item question type
+     *
+     * @param Question|null $question The question to retrieve the subtree depth for
+     * @return int
+     */
+    public function getSubtreeDepth(?Question $question): int
+    {
+        if ($question === null) {
+            return 0;
+        }
+
+        /** @var ?QuestionTypeItemDropdownExtraDataConfig $config */
+        $config = $this->getExtraDataConfig(json_decode($question->fields['extra_data'], true) ?? []);
+        if ($config === null) {
+            return 0;
+        }
+
+        return $config->getSubtreeDepth();
+    }
+
+    public function getDropdownRestrictionParams(?Question $question): array
+    {
+        $params   = [];
+        $itemtype = $this->getDefaultValueItemtype($question);
+        if ($question === null || $itemtype === null) {
+            return $params;
+        }
+
+        // Apply categories filter if itemtype is an ITILCategory
+        if (is_a($itemtype, ITILCategory::class, true)) {
+            $categories_filter = $this->getCategoriesFilter($question);
+            if (is_array($categories_filter) && count($categories_filter) > 0) {
+                foreach ($categories_filter as $category) {
+                    $key = match ($category) {
+                        'request'  => 'is_request',
+                        'incident' => 'is_incident',
+                        'problem'  => 'is_problem',
+                        'change'   => 'is_change',
+                        default    => throw new \InvalidArgumentException(
+                            sprintf('Unknown category filter: %s', $category)
+                        ),
+                    };
+
+                    $params[$itemtype::getTableField($key)] = 1;
+                }
+            }
+        }
+
+        // Apply specific root
+        $root_items_id = $this->getRootItemsId($question);
+        if ($root_items_id > 0) {
+            $sons = (new DbUtils())->getSonsOf(
+                $itemtype::getTable(),
+                $root_items_id
+            );
+
+            if (count($sons) > 0) {
+                $params[$itemtype::getTableField('id')] = $sons;
+            }
+            $root_item = new $itemtype();
+            if ($root_item->getFromDB($root_items_id)) {
+                $root_item_level = $root_item->fields['level'];
+            }
+        }
+
+        // Apply max level restriction if subtree depth is set
+        $subtree_depth = $this->getSubtreeDepth($question);
+        if ($subtree_depth > 0) {
+            $params[$itemtype::getTableField('level')] = ['<=', $subtree_depth + ($root_item_level ?? 0)];
+        }
+
+        return ['WHERE' => $params];
     }
 }

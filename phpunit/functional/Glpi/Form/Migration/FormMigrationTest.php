@@ -69,6 +69,7 @@ use Glpi\Form\QuestionType\QuestionTypeEmail;
 use Glpi\Form\QuestionType\QuestionTypeItem;
 use Glpi\Form\QuestionType\QuestionTypeItemDefaultValueConfig;
 use Glpi\Form\QuestionType\QuestionTypeItemDropdown;
+use Glpi\Form\QuestionType\QuestionTypeItemDropdownExtraDataConfig;
 use Glpi\Form\QuestionType\QuestionTypeItemExtraDataConfig;
 use Glpi\Form\QuestionType\QuestionTypeLongText;
 use Glpi\Form\QuestionType\QuestionTypeNumber;
@@ -348,7 +349,7 @@ final class FormMigrationTest extends DbTestCase
         ];
 
         $default_value = new QuestionTypeItemDefaultValueConfig(1);
-        $extra_data = new QuestionTypeItemExtraDataConfig(Location::getType());
+        $extra_data = new QuestionTypeItemDropdownExtraDataConfig(Location::getType());
         yield 'Item Dropdown question type' => [
             [
                 Section::getForeignKeyField() => $section_id,
@@ -1934,5 +1935,80 @@ final class FormMigrationTest extends DbTestCase
                 $destination->getConfiguredConditionsData()
             )
         );
+    }
+
+    public function testFormMigrationQuestionDropdownItemWithAdvancedOptions(): void
+    {
+        /**
+         * @var \DBmysql $DB
+         */
+        global $DB;
+
+        $itilcategory = $this->createItem(
+            \ITILCategory::class,
+            [
+                'name' => 'Root Category',
+            ]
+        );
+        $this->createItem(
+            \ITILCategory::class,
+            [
+                'name'              => 'Sub Category',
+                'itilcategories_id' => $itilcategory->getId(),
+            ]
+        );
+
+        // Create a form
+        $this->assertTrue($DB->insert(
+            'glpi_plugin_formcreator_forms',
+            [
+                'name' => 'Test form migration question for dropdown item question with advanced options',
+            ]
+        ));
+        $form_id = $DB->insertId();
+
+        // Insert a section for the form
+        $this->assertTrue($DB->insert(
+            'glpi_plugin_formcreator_sections',
+            [
+                'plugin_formcreator_forms_id' => $form_id,
+            ]
+        ));
+
+        $section_id = $DB->insertId();
+
+        // Insert a question for the form
+        $this->assertTrue($DB->insert(
+            'glpi_plugin_formcreator_questions',
+            [
+                'name'                           => 'Test form migration question for dropdown item question with advanced options',
+                'plugin_formcreator_sections_id' => $section_id,
+                'fieldtype'                      => 'dropdown',
+                'itemtype'                       => 'ITILCategory',
+                'values'                         => json_encode([
+                    'show_ticket_categories' => 'request',
+                    'show_tree_depth'        => '0',
+                    'show_tree_root'         => $itilcategory->getId(),
+                    'selectable_tree_root'   => '0',
+                    'entity_restrict'        => '3', // Entity restriction
+                ]),
+            ]
+        ));
+        $target_question_id = $DB->insertId();
+
+        // Process migration
+        $migration = new FormMigration($DB, FormAccessControlManager::getInstance());
+        $this->setPrivateProperty($migration, 'result', new PluginMigrationResult());
+        $this->assertTrue($this->callPrivateMethod($migration, 'processMigration'));
+
+        // Verify that the question has been migrated correctly
+        /** @var Question $question */
+        $question = getItemByTypeName(Question::class, 'Test form migration question for dropdown item question with advanced options');
+        /** @var QuestionTypeItemDropdown $question_type */
+        $question_type = $question->getQuestionType();
+        $this->assertEquals($question_type->getDefaultValueItemtype($question), \ITILCategory::getType());
+        $this->assertEquals($question_type->getCategoriesFilter($question), ['request']);
+        $this->assertEquals($question_type->getRootItemsId($question), $itilcategory->getId());
+        $this->assertEquals($question_type->getSubtreeDepth($question), 0);
     }
 }

@@ -65,8 +65,8 @@ use Glpi\Form\QuestionType\QuestionTypeCheckbox;
 use Glpi\Form\QuestionType\QuestionTypeDropdown;
 use Glpi\Form\QuestionType\QuestionTypeDropdownExtraDataConfig;
 use Glpi\Form\QuestionType\QuestionTypeItemDefaultValueConfig;
-use Glpi\Form\QuestionType\QuestionTypeItemExtraDataConfig;
 use Glpi\Form\QuestionType\QuestionTypeItemDropdown;
+use Glpi\Form\QuestionType\QuestionTypeItemDropdownExtraDataConfig;
 use Glpi\Form\QuestionType\QuestionTypeRequester;
 use Glpi\Form\QuestionType\QuestionTypeSelectableExtraDataConfig;
 use Glpi\Form\QuestionType\QuestionTypeShortText;
@@ -384,7 +384,7 @@ final class FormSerializerTest extends \DbTestCase
             '987654321' => 'Option 2',
         ], true);
         $item_default_value_config = new QuestionTypeItemDefaultValueConfig($location->getID());
-        $item_extra_data_config = new QuestionTypeItemExtraDataConfig(Location::class);
+        $item_dropdown_extra_data_config = new QuestionTypeItemDropdownExtraDataConfig(Location::class);
         $actors_default_value_config = new QuestionTypeActorsDefaultValueConfig(
             users_ids: [$user->getID()],
         );
@@ -413,7 +413,7 @@ final class FormSerializerTest extends \DbTestCase
                 "My item dropdown question",
                 QuestionTypeItemDropdown::class,
                 $location->getID(),
-                json_encode($item_extra_data_config),
+                json_encode($item_dropdown_extra_data_config),
                 'My item dropdown question description',
                 true
             )
@@ -475,7 +475,7 @@ final class FormSerializerTest extends \DbTestCase
                 'horizontal_rank'   => null,
                 'description'       => 'My item dropdown question description',
                 'default_value'     => json_encode($item_default_value_config->jsonSerialize()),
-                'extra_data'        => json_encode($item_extra_data_config),
+                'extra_data'        => json_encode($item_dropdown_extra_data_config),
                 'forms_sections_id' => array_values($form_copy->getSections())[1]->fields['id'],
             ],
             [
@@ -813,8 +813,8 @@ final class FormSerializerTest extends \DbTestCase
         $form = $this->createForm((new FormBuilder())->addQuestion(
             "My ITIL Category question",
             QuestionTypeItemDropdown::class,
-            json_encode((new QuestionTypeItemDefaultValueConfig($itil_category->getID()))->jsonSerialize()),
-            json_encode((new QuestionTypeItemExtraDataConfig(ITILCategory::class))->jsonSerialize()),
+            json_encode((new QuestionTypeItemDefaultValueConfig($itil_category->getID()))),
+            json_encode((new QuestionTypeItemDropdownExtraDataConfig(ITILCategory::class))),
         )->addDestination(FormDestinationTicket::class, 'My ticket destination'));
 
         $title_field_config = new SimpleValueConfig("My ticket title");
@@ -1253,7 +1253,7 @@ final class FormSerializerTest extends \DbTestCase
 
         $field_keys_to_ignore_for_specific_tables = [
             '_glpi_forms_sections'                      => ['uuid', 'conditions'],
-            '_glpi_forms_questions'                     => ['uuid', 'forms_sections_uuid', 'conditions'],
+            '_glpi_forms_questions'                     => ['uuid', 'forms_sections_uuid', 'conditions', 'extra_data'],
             '_glpi_forms_comments'                      => ['uuid', 'forms_sections_uuid', 'conditions'],
             '_glpi_forms_destinations_formdestinations' => ['config', 'conditions'],
         ];
@@ -1298,6 +1298,19 @@ final class FormSerializerTest extends \DbTestCase
                         ),
                         "Failed to compare $table_name"
                     );
+
+                    if ($table_name === '_glpi_forms_questions') {
+                        $default_extra_data = json_decode($default_value['extra_data'] ?? '[]', true);
+                        $imported_extra_data = json_decode($imported_value['extra_data'] ?? '[]', true);
+
+                        $this->removeEmptyValues($default_extra_data);
+                        $this->removeEmptyValues($imported_extra_data);
+
+                        $this->assertEquals(
+                            $default_extra_data,
+                            $imported_extra_data
+                        );
+                    }
 
                     if ($table_name === '_glpi_forms_destinations_formdestinations') {
                         $default_config = json_decode($default_value['config'], true);

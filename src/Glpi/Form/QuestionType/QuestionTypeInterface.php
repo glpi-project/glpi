@@ -118,6 +118,16 @@ interface QuestionTypeInterface extends UsedAsCriteriaInterface
     public function renderAdministrationOptionsTemplate(?Question $question): string;
 
     /**
+     * Render the advanced configuration template for the given question.
+     * This template is used on the form editor page.
+     *
+     * @param Question|null $question Given question's data. May be null for a new question.
+     *
+     * @return null|string May return null if no advanced configuration is needed.
+     */
+    public function renderAdvancedConfigurationTemplate(?Question $question): ?string;
+
+    /**
      * Render the end up user template for a given question.
      * This template is used when rendered forms are displayed to users.
      *

@@ -1258,7 +1258,7 @@ describe ('Conditions', () => {
             {
                 name: 'My dropdown item question',
                 type: 'Glpi\\Form\\QuestionType\\QuestionTypeItemDropdown',
-                extra_data: '{"itemtype":"Location"}',
+                extra_data: '{"itemtype":"Location","categories_filter":[],"root_items_id":0,"subtree_depth":0}',
                 conditions: [
                     {
                         logic: null,

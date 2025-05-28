@@ -35,23 +35,32 @@
 
 namespace Glpi\Form\QuestionType;
 
-use Glpi\DBAL\JsonFieldInterface;
 use Override;
 
-class QuestionTypeItemExtraDataConfig implements JsonFieldInterface
+final class QuestionTypeItemDropdownExtraDataConfig extends QuestionTypeItemExtraDataConfig
 {
     // Unique reference to hardcoded name used for serialization
-    public const ITEMTYPE = "itemtype";
+    public const CATEGORIES_FILTER = "categories_filter";
+    public const ROOT_ITEMS_ID     = "root_items_id";
+    public const SUBTREE_DEPTH     = "subtree_depth";
 
     public function __construct(
-        private ?string $itemtype = null,
-    ) {}
+        private ?string $itemtype        = null,
+        private array $categories_filter = [],
+        private int $root_items_id       = 0,
+        private int $subtree_depth       = 0,
+    ) {
+        parent::__construct(itemtype: $itemtype);
+    }
 
     #[Override]
     public static function jsonDeserialize(array $data): self
     {
         return new self(
-            itemtype: $data[self::ITEMTYPE] ?? null,
+            itemtype         : $data[self::ITEMTYPE] ?? null,
+            categories_filter: $data[self::CATEGORIES_FILTER] ?? [],
+            root_items_id    : $data[self::ROOT_ITEMS_ID] ?? 0,
+            subtree_depth    : $data[self::SUBTREE_DEPTH] ?? 0,
         );
     }
 
@@ -59,12 +68,25 @@ class QuestionTypeItemExtraDataConfig implements JsonFieldInterface
     public function jsonSerialize(): array
     {
         return [
-            self::ITEMTYPE => $this->itemtype,
+            self::ITEMTYPE          => $this->itemtype,
+            self::CATEGORIES_FILTER => $this->categories_filter,
+            self::ROOT_ITEMS_ID     => $this->root_items_id,
+            self::SUBTREE_DEPTH     => $this->subtree_depth,
         ];
     }
 
-    public function getItemtype(): ?string
+    public function getCategoriesFilter(): array
     {
-        return $this->itemtype;
+        return $this->categories_filter;
+    }
+
+    public function getRootItemsId(): int
+    {
+        return $this->root_items_id;
+    }
+
+    public function getSubtreeDepth(): int
+    {
+        return $this->subtree_depth;
     }
 }

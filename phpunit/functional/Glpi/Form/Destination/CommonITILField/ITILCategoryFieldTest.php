@@ -40,6 +40,7 @@ use Glpi\Form\Destination\CommonITILField\ITILCategoryFieldConfig;
 use Glpi\Form\Destination\CommonITILField\ITILCategoryFieldStrategy;
 use Glpi\Form\Form;
 use Glpi\Form\QuestionType\QuestionTypeItemDropdown;
+use Glpi\Form\QuestionType\QuestionTypeItemDropdownExtraDataConfig;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
 use ITILCategory;
@@ -353,13 +354,13 @@ final class ITILCategoryFieldTest extends AbstractDestinationFieldTest
     {
         $this->login();
 
+        $extra_data_config = (new QuestionTypeItemDropdownExtraDataConfig(
+            itemtype: ITILCategory::getType(),
+        ));
+
         $builder = new FormBuilder();
-        $builder->addQuestion("ITILCategory 1", QuestionTypeItemDropdown::class, 0, json_encode([
-            'itemtype' => ITILCategory::class,
-        ]));
-        $builder->addQuestion("ITILCategory 2", QuestionTypeItemDropdown::class, 0, json_encode([
-            'itemtype' => ITILCategory::class,
-        ]));
+        $builder->addQuestion("ITILCategory 1", QuestionTypeItemDropdown::class, 0, json_encode($extra_data_config));
+        $builder->addQuestion("ITILCategory 2", QuestionTypeItemDropdown::class, 0, json_encode($extra_data_config));
         return $this->createForm($builder);
     }
 }

@@ -221,90 +221,37 @@ class QuestionTypeItem extends AbstractQuestionType implements FormQuestionDataC
     #[Override]
     public function renderAdministrationTemplate(?Question $question): string
     {
-        $template = <<<TWIG
-            {% import 'components/form/fields_macros.html.twig' as fields %}
-
-            {% set rand = random() %}
-
-            {{ fields.dropdownField(
-                default_itemtype|default(itemtypes|first|first),
-                'default_value',
-                default_items_id,
-                '',
-                {
-                    'init'               : init,
-                    'no_label'           : true,
-                    'display_emptychoice': true,
-                    'width'              : '100%',
-                    'container_css_class': 'mt-2',
-                    'mb'                 : '',
-                    'comments'           : false,
-                    'addicon'            : false,
-                    'aria_label'         : aria_label,
-                }
-            ) }}
-
-            {% if question == null %}
-                <script>
-                    import("/js/modules/Forms/QuestionItem.js").then((m) => {
-                        new m.GlpiFormQuestionTypeItem({{ question_type|json_encode|raw }});
-                    });
-                </script>
-            {% endif %}
-TWIG;
-
         $twig = TemplateRenderer::getInstance();
-        return $twig->renderFromStringTemplate($template, [
-            'init'             => $question != null,
-            'question'         => $question,
-            'question_type'    => $this::class,
-            'default_itemtype' => $this->getDefaultValueItemtype($question),
-            'default_items_id' => $this->getDefaultValueItemId($question),
-            'itemtypes'        => $this->getAllowedItemtypes(),
-            'aria_label'       => $this->items_id_aria_label,
-        ]);
+        return $twig->render(
+            'pages/admin/form/question_type/item_dropdown/administration_template.html.twig',
+            [
+                'init'             => $question != null,
+                'question'         => $question,
+                'question_type'    => $this::class,
+                'default_itemtype' => $this->getDefaultValueItemtype($question),
+                'default_items_id' => $this->getDefaultValueItemId($question),
+                'itemtypes'        => $this->getAllowedItemtypes(),
+                'aria_label'       => $this->items_id_aria_label,
+                'advanced_config'  => $this->renderAdvancedConfigurationTemplate($question) ?? '',
+            ]
+        );
     }
 
     #[Override]
     public function renderEndUserTemplate(Question $question): string
     {
-        $template = <<<TWIG
-            {% import 'components/form/fields_macros.html.twig' as fields %}
-
-            {{ fields.hiddenField(
-                question.getEndUserInputName() ~ '[itemtype]',
-                itemtype,
-                '',
-                {
-                    'no_label': true,
-                    'mb': ''
-                }
-            ) }}
-            {{ fields.dropdownField(
-                itemtype,
-                question.getEndUserInputName() ~ '[items_id]',
-                default_items_id,
-                '',
-                {
-                    'no_label'           : true,
-                    'display_emptychoice': true,
-                    'right'              : 'all',
-                    'aria_label'         : aria_label,
-                    'mb'                 : '',
-                    'addicon'            : false,
-                    'comments'           : false,
-                }
-            ) }}
-TWIG;
-
         $twig = TemplateRenderer::getInstance();
-        return $twig->renderFromStringTemplate($template, [
-            'question'         => $question,
-            'itemtype'         => $this->getDefaultValueItemtype($question) ?? '0',
-            'default_items_id' => $this->getDefaultValueItemId($question),
-            'aria_label'       => $question->fields['name'],
-            'sub_types'        => $this->getSubTypes(),
-        ]);
+        return $twig->render(
+            'pages/admin/form/question_type/item_dropdown/end_user_template.html.twig',
+            [
+                'question'                    => $question,
+                'itemtype'                    => $this->getDefaultValueItemtype($question) ?? '0',
+                'default_items_id'            => $this->getDefaultValueItemId($question),
+                'aria_label'                  => $question->fields['name'],
+                'sub_types'                   => $this->getSubTypes(),
+                'dropdown_restriction_params' => $this->getDropdownRestrictionParams($question),
+            ]
+        );
     }
 
     #[Override]
@@ -450,5 +397,16 @@ TWIG;
         $default_value_data[QuestionTypeItemDefaultValueConfig::KEY_ITEMS_ID] = $id;
 
         return $default_value_data;
+    }
+
+    /**
+     * Get parameters for dropdown restrictions based on the question
+     *
+     * @param Question|null $question The question to retrieve the parameters for
+     * @return array
+     */
+    public function getDropdownRestrictionParams(?Question $question): array
+    {
+        return [];
     }
 }
