@@ -63,8 +63,16 @@ final class GenerateHookDocsCommand extends AbstractCommand
                 $comment = preg_replace('/^\/\*\*|\*\/$/m', '', $comment);
                 // Remove the leading asterisks and whitespace from each line
                 $comment = preg_replace('/^\s*\*\s?/m', '', $comment);
+
                 // Convert lists to RST format
+                // Add blank line between lines ending with ':' and the next line
+                $comment = preg_replace('/(\w+:\s*)\n/', "$1\n\n", $comment);
+                // Convert bullet points to RST format
                 $comment = preg_replace('/^(\s*)-\s/m', '$1* ', $comment);
+                // Add blank line between last asterisk list item and the next line if the next line isn't also a list item
+                $comment = preg_replace('/(^\*\s.*(?:\n\*\s.*)*)(?=\n(?!\*\s)|\z)/m', "$1\n", $comment);
+
+
                 // Replace PHPDoc links with the content and replace "self" with "Hooks" ({@link self::AUTO_GET_RULE_CRITERIA} => "Hooks::AUTO_GET_RULE_CRITERIA")
                 $comment = preg_replace_callback(
                     '/\{@link\s+([^\s]+)\s*\}/',
