@@ -8,7 +8,6 @@
  * http://glpi-project.org
  *
  * @copyright 2015-2025 Teclib' and contributors.
- * @copyright 2003-2014 by the INDEPNET Development Team.
  * @licence   https://www.gnu.org/licenses/gpl-3.0.html
  *
  * ---------------------------------------------------------------------
@@ -33,23 +32,39 @@
  * ---------------------------------------------------------------------
  */
 
-/**
- * Change_Item Class
- *
- * Relation between Changes and Items
- **/
-class Change_Item extends CommonItilObject_Item
+namespace tests\units;
+
+use Computer;
+use Ticket;
+use TicketCost;
+
+class Item_TicketTest extends AbstractCommonItilObject_ItemTest
 {
-    // From CommonDBRelation
-    public static $itemtype_1          = 'Change';
-    public static $items_id_1          = 'changes_id';
-
-    public static $itemtype_2          = 'itemtype';
-    public static $items_id_2          = 'items_id';
-    public static $checkItem_2_Rights  = self::DONT_CHECK_ITEM_RIGHTS;
-
-    public static function getTypeName($nb = 0)
+    public function testUpdateItemTCO(): void
     {
-        return _n('Change item', 'Change items', $nb);
+        $this->login();
+
+        $computer = $this->createItem(Computer::class, [
+            'name' => __FUNCTION__,
+            'entities_id' => $this->getTestRootEntity(true),
+        ]);
+
+        // Link new computer with a new ticket
+        $ticket = $this->createItem(Ticket::class, [
+            'name' => __FUNCTION__,
+            'content' => 'test',
+            'entities_id' => $this->getTestRootEntity(true),
+            'items_id' => ['Computer' => [$computer->getID()]],
+        ], ['content', 'items_id']);
+
+        // Add a cost to the ITIL
+        $this->createItem(TicketCost::class, [
+            'tickets_id' => $ticket->getID(),
+            'cost_fixed' => 100,
+        ]);
+
+        // Check that the cost is considered in the TCO
+        $computer->getFromDB($computer->getID());
+        $this->assertEquals(100, $computer->fields['ticket_tco']);
     }
 }

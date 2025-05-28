@@ -59,10 +59,6 @@ class Change extends CommonITILObject
     public const IMPACT_MASK_FIELD             = 'impact_mask';
     public const STATUS_MATRIX_FIELD           = 'change_status';
 
-
-    public const READMY                        = 1;
-    public const READALL                       = 1024;
-
     // Specific status for changes
     public const EVALUATION             = 9;
     public const TEST                   = 11;
@@ -839,16 +835,8 @@ class Change extends CommonITILObject
             return false;
         }
 
-        $restrict = self::getListForItemRestrict($item);
-        $criteria['WHERE'] = $restrict + getEntitiesRestrictCriteria(self::getTable());
-        $criteria['WHERE']['glpi_changes.is_deleted'] = 0;
-        $criteria['LIMIT'] = (int) $_SESSION['glpilist_limit'];
-
         $options = [
             'metacriteria' => [],
-            'restrict' => $restrict,
-            'criteria' => $criteria,
-            'reset'    => 'reset',
         ];
 
         switch (get_class($item)) {
