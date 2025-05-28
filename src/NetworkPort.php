@@ -1192,7 +1192,7 @@ class NetworkPort extends CommonDBChild
                                         $table = getTableForItemType($related_class);
                                         $union->addQuery([
                                             'SELECT' => [
-                                                'unm.id',
+                                                'asset.id',
                                                 'netp.mac',
                                                 'netp.itemtype',
                                                 'netp.items_id',
