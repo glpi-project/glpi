@@ -184,15 +184,12 @@ if (($_SESSION['can_process_update'] ?? false) === false) {
             echo '</div>';
             echo '</div>';
 
-            echo \sprintf(
-                <<<HTML
-                    <script defer type="module">
-                        import { update_database } from '/js/modules/GlpiInstall.js';
-                        update_database("%s");
-                    </script>
-HTML,
-                \Glpi\Controller\InstallController::PROGRESS_KEY_UPDATE_DATABASE,
-            );
+            echo <<<HTML
+                <script defer type="module">
+                    import { update_database } from '/js/modules/GlpiInstall.js';
+                    update_database();
+                </script>
+            HTML;
         }
     } else {
         echo "<h3>";

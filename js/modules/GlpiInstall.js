@@ -34,7 +34,7 @@
 
 import { ProgressIndicator } from '/js/modules/ProgressIndicator.js';
 
-export function init_database(progress_key)
+export function init_database()
 {
     const messages_container = document.getElementById('glpi_install_messages_container');
     const success_container = document.getElementById('glpi_install_success');
@@ -54,7 +54,6 @@ export function init_database(progress_key)
     );
 
     const progress_indicator = new ProgressIndicator({
-        key: progress_key,
         container: messages_container,
         request: request,
         success_callback: () => {
@@ -70,7 +69,7 @@ export function init_database(progress_key)
     progress_indicator.start();
 }
 
-export async function update_database(progress_key)
+export async function update_database()
 {
     const messages_container = document.getElementById('glpi_update_messages_container');
     const success_container = document.getElementById('glpi_update_success');
@@ -89,7 +88,6 @@ export async function update_database(progress_key)
     );
 
     const progress_indicator = new ProgressIndicator({
-        key: progress_key,
         container: messages_container,
         request: request,
         success_callback: () => {
