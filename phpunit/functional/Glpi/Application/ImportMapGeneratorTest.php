@@ -312,11 +312,6 @@ class ImportMapGeneratorTest extends GLPITestCase
         // Reset singleton instance
         $instance_property->setValue(null, null);
 
-        // Define globals needed for getInstance
-        global $CFG_GLPI;
-        $original_cfg = $CFG_GLPI ?? [];
-        $CFG_GLPI['root_doc'] = '/glpi';
-
         // Test that getInstance returns an instance
         $instance = ImportMapGenerator::getInstance();
         $this->assertInstanceOf(ImportMapGenerator::class, $instance);
@@ -324,8 +319,5 @@ class ImportMapGeneratorTest extends GLPITestCase
         // Test that getInstance returns the same instance on subsequent calls
         $another_instance = ImportMapGenerator::getInstance();
         $this->assertSame($instance, $another_instance);
-
-        // Restore original globals
-        $CFG_GLPI = $original_cfg;
     }
 }
