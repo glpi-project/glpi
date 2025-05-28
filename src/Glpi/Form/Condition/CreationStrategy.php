@@ -47,8 +47,8 @@ enum CreationStrategy: string implements StrategyInterface
     {
         return match ($this) {
             self::ALWAYS_CREATED => __("Always created"),
-            self::CREATED_IF     => __("Created if"),
-            self::CREATED_UNLESS => __("Created unless"),
+            self::CREATED_IF     => __("Created if..."),
+            self::CREATED_UNLESS => __("Created unless..."),
         };
     }
 

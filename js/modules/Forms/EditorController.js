@@ -280,6 +280,14 @@ export class GlpiFormEditorController
             );
         });
 
+        // Handle conditions count changes
+        document.addEventListener('conditions_count_changed', (e) => {
+            this.#updateConditionsCount(
+                $(e.detail.container).closest('[data-glpi-form-editor-question-extra-details]'),
+                e.detail.conditions_count
+            );
+        });
+
         // Register handlers for each possible editor actions using custom
         // data attributes
         const events = ["click", "change", "input"];
@@ -2507,6 +2515,11 @@ export class GlpiFormEditorController
         container.find(`[data-glpi-editor-${badgeType}-badge=${value}]`)
             .removeClass('d-none')
             .addClass('d-flex');
+    }
+
+    #updateConditionsCount(container, value) {
+        container.find('[data-glpi-editor-validation-conditions-count-badge], [data-glpi-editor-visibility-conditions-count-badge]')
+            .html(value);
     }
 
     #showValidationDropdown(container) {

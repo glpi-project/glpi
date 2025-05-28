@@ -60,7 +60,7 @@
             title="{{ __('Configure creation conditions') }}"
             data-bs-toggle="dropdown"
             data-bs-auto-close="outside"
-            class="dropdown-toggle btn btn-outline-secondary btn-sm px-2"
+            class="relative btn btn-outline-secondary btn-sm px-2"
             data-bs-placement="top"
             type="button"
         >
@@ -76,6 +76,16 @@
                     <span>{{ strategy.getLabel() }}</span>
                 </div>
             {% endfor %}
+
+            {% set conditions = destination.getConfiguredConditionsData() %}
+            <span
+                class="badge text-bg-secondary ms-1"
+                data-glpi-editor-conditions-count-badge
+                role="status"
+                aria-label="{{ __('Conditions count') }}"
+            >
+                {{ conditions|length }}
+            </span>
         </button>
         <div
             class="dropdown-menu dropdown-menu-end dropdown-menu-card animate__animated animate__zoomIn"

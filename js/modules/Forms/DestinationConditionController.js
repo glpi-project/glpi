@@ -56,6 +56,14 @@ export class GlpiFormDestinationConditionController {
             }
         });
 
+        // Handle conditions count changes
+        document.addEventListener('conditions_count_changed', (e) => {
+            this.#updateConditionsCount(
+                $(e.detail.container).closest('.accordion-item'),
+                e.detail.conditions_count
+            );
+        });
+
         // [data-glpi-destination-click-on-space] should be a button but we can't
         // because it contains an input.
         // It is thus a div instead but we want to keep the behavior of pressing
@@ -87,5 +95,16 @@ export class GlpiFormDestinationConditionController {
             .removeClass('d-none')
             .addClass('d-flex')
         ;
+    }
+
+    /**
+     * Update the conditions count badge in the container
+     *
+     * @param {jQuery} container
+     * @param {int} value
+     */
+    #updateConditionsCount(container, value) {
+        container.find('[data-glpi-editor-conditions-count-badge]')
+            .html(value);
     }
 }

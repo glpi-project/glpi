@@ -47,11 +47,17 @@
         {% set hide = question_strategy == enum('Glpi\\Form\\Condition\\ValidationStrategy').NO_VALIDATION %}
         class="btn-group ms-1 {{ hide ? 'd-none' : '' }}"
     >
+        {# Parent properties #}
+        {% set strategies = 'Glpi\\Form\\Condition\\ValidationStrategy' %}
+        {% set selected_strategy = question_strategy %}
+        {% set strategy_input_name = "validation_strategy" %}
+        {% set conditions = item is not null ? item.getConfiguredValidationConditionsData() : [] %}
+
         <button
             title="{{ __('Configure validation') }}"
             data-bs-toggle="dropdown"
             data-bs-auto-close="outside"
-            class="dropdown-toggle btn btn-outline-secondary btn-sm px-2"
+            class="btn btn-outline-secondary btn-sm px-2"
             data-bs-placement="top"
             type="button"
             data-glpi-form-editor-validation-dropdown
@@ -67,6 +73,15 @@
                     <span>{{ strategy.getLabel() }}</span>
                 </div>
             {% endfor %}
+
+            <span
+                class="badge text-bg-secondary ms-1"
+                data-glpi-editor-validation-conditions-count-badge
+                role="status"
+                aria-label="{{ __('Conditions count') }}"
+            >
+                {{ conditions|length }}
+            </span>
         </button>
         <div
             class="dropdown-menu dropdown-menu-end dropdown-menu-card animate__animated animate__zoomIn"
@@ -78,11 +93,6 @@
                         {{ __('Conditional validation') }}
                     </h3>
 
-                    {# Parent properties #}
-                    {% set strategies = 'Glpi\\Form\\Condition\\ValidationStrategy' %}
-                    {% set selected_strategy = question_strategy %}
-                    {% set strategy_input_name = "validation_strategy" %}
-                    {% set conditions = item is not null ? item.getConfiguredValidationConditionsData() : [] %}
                     {{ parent() }}
                 </div>
             </div>

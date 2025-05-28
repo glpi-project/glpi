@@ -483,4 +483,48 @@ describe ('Validations', () => {
         getAriaErrorMessageElement(cy.findByRole('textbox', { name: 'My question that is invalid if some criteria are met' }))
             .should('contain.text', 'The value must not match the requested format');
     });
+
+    it('conditions count badge is updated when conditions are added or removed', () => {
+        createForm();
+        // Add two questions to the form
+        addQuestion('My first question');
+        addQuestion('My second question');
+
+        // Focus on the second question to set up visibility conditions
+        getAndFocusQuestion('My second question').within(() => {
+            // Open the visibility configuration panel
+            initValidationConfiguration();
+            // Set the condition strategy to "Valid if..."
+            setConditionStrategy('Valid if...');
+
+            // Verify the initial count badge shows 0 conditions
+            cy.findByRole('status', {'name': 'Conditions count'}).invoke('text').invoke('trim').should('eq', '0');
+
+            // Add the first condition and verify the count increases to 1
+            fillCondition(0, null, 'Do not match regular expression', '/^Expected answer 1$/');
+            cy.findByRole('status', {'name': 'Conditions count'}).invoke('text').invoke('trim').should('eq', '1');
+
+            // Add a second condition and verify the count increases to 2
+            addNewEmptyCondition();
+            fillCondition(1, null, 'Match regular expression', '/^Expected answer 2$/');
+            cy.findByRole('status', {'name': 'Conditions count'}).invoke('text').invoke('trim').should('eq', '2');
+
+            // Delete the first condition and verify the count decreases to 1
+            deleteConditon(0);
+            cy.findByRole('status', {'name': 'Conditions count'}).invoke('text').invoke('trim').should('eq', '1');
+        });
+
+        // Save the form and reload the page to ensure persistence
+        saveAndReload();
+
+        // Focus on the second question again and verify that the condition count is still 1
+        getAndFocusQuestion('My second question').within(() => {
+            openValidationConditionEditor();
+            cy.findByRole('status', {'name': 'Conditions count'}).invoke('text').invoke('trim').should('eq', '1');
+
+            // Delete the remaining condition and verify the count returns to 0
+            deleteConditon(0);
+            cy.findByRole('status', {'name': 'Conditions count'}).invoke('text').invoke('trim').should('eq', '0');
+        });
+    });
 });
