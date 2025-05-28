@@ -8215,5 +8215,32 @@ HTML,
             'mode' => 'mailing',
             'recipientname' => 'tech',
         ])));
+
+        $this->updateItem(
+            \Ticket::class,
+            $ticket->getID(),
+            [
+                'status'      => \CommonITILObject::ASSIGNED,
+            ],
+            ['status']
+        );
+        $solution = new \ITILSolution();
+        $this->createItem(
+            \ITILSolution::class,
+            [
+                'items_id' => $ticket->getID(),
+                'itemtype' => Ticket::class,
+                'content' => 'ITILsolution Content',
+                'status' => 2,
+            ]
+        );
+
+        $this->assertTrue($queue->getFromDBByCrit([
+            'itemtype' => Ticket::class,
+            'items_id' => $ticket->getID(),
+            'event' => 'solved',
+            'mode' => 'mailing',
+            'recipientname' => 'tech',
+        ]));
     }
 }
