@@ -51,11 +51,11 @@ class ProgressController extends AbstractController
     #[SecurityStrategy(Firewall::STRATEGY_NO_CHECK)]
     public function check(string $key): Response
     {
-        if (!$this->progress_storage->hasProgress($key)) {
+        $progress = $this->progress_storage->getProgressIndicator($key);
+
+        if ($progress === null) {
             return new JsonResponse([], 404);
         }
-
-        $progress = $this->progress_storage->getCurrentProgress($key);
 
         return new JsonResponse([
             'started_at'            => $progress->getStartedAt()->format('c'),

@@ -84,22 +84,17 @@ export class ProgressIndicator
 
     /**
      * @param parameters
-     * @param {string} parameters.key Mandatory. The progress indicator unique key.
      * @param {HTMLElement} parameters.container Mandatory. The HTML container that will contain the progress indicator.
      * @param {Request} parameters.request Mandatory. The request corresponding to the operation to execute.
      * @param {Function} parameters.success_callback The function that will be called if the operation succeed.
      * @param {Function} parameters.error_callback The function that will be called if the operation fails.
      */
     constructor({
-        key,
         container,
         request,
         success_callback = () => {},
         error_callback = () => {},
     }) {
-        if (!key) {
-            throw new Error('`key` key is mandatory.');
-        }
         if (!(container instanceof HTMLElement)) {
             throw new Error(`\`container\` must be an \`HTMLElement\`, "${container?.constructor?.name || typeof container}" found.`);
         }
@@ -107,7 +102,6 @@ export class ProgressIndicator
             throw new Error(`\`request\` must be a \`Request\`, "${request?.constructor?.name || typeof request}" found.`);
         }
 
-        this.#key = key;
         this.#container = container;
         this.#request = request;
         this.#success_callback = success_callback;
@@ -135,21 +129,23 @@ export class ProgressIndicator
         `;
         this.#container.appendChild(self_dom_el);
 
+        const response = await fetch(this.#request);
+
+        // Read the first chunk only (the one that contains the progress indicator key).
+        // Reading the full response will make the fetch API to wait for the initial request to be fully processed,
+        // because even if the browser consider the reponse as fully received, the TCP connection is still alive
+        // until the end of the operation, and the fetch API waits for the TCP connection to be closed
+        // to consider the response as fully received.
+        const encoded_key = (await response.body.getReader().read()).value;
+
+        this.#key = (new TextDecoder()).decode(encoded_key);
+
         setTimeout(
             () => {
                 this.#check_progress();
             },
             this.#refresh_timeout
         );
-
-        try {
-            await fetch(this.#request);
-        } catch {
-            // DB installation is really long and can result in a `Proxy timeout` error.
-            // It does not mean that the process is killed, it just mean that the proxy did not wait for the response
-            // and send an error to the client.
-            // Here we catch any error to make it silent, but we will handle it with the progress indicator error_callback.
-        }
     }
 
     /**
@@ -186,13 +182,13 @@ export class ProgressIndicator
      */
     async #check_progress() {
         try {
-            const res = await fetch(`${CFG_GLPI.root_doc}/progress/check/${this.#key}`);
+            const response = await fetch(`${CFG_GLPI.root_doc}/progress/check/${this.#key}`);
 
-            if (res.status >= 400) {
-                throw new Error(`Error response from server with code "${res.status.toString()}".`);
+            if (response.status >= 400) {
+                throw new Error(`Error response from server with code "${response.status.toString()}".`);
             }
 
-            const json =  await res.json();
+            const json = await response.json();
 
             this.#update_progress_bar(json['current_step'], json['max_steps'], json['progress_bar_message']);
 

@@ -42,7 +42,7 @@ use Glpi\Message\MessageType;
 class StoredProgressIndicator extends AbstractProgressIndicator
 {
     /**
-     * Storage service used to store the currnet indicator.
+     * Storage service used to store the current indicator.
      */
     private readonly ProgressStorage $progress_storage;
 
@@ -64,8 +64,6 @@ class StoredProgressIndicator extends AbstractProgressIndicator
 
         $this->progress_storage = $progress_storage;
         $this->storage_key      = $storage_key;
-
-        $this->store();
     }
 
     public function addMessage(MessageType $type, string $message): void
@@ -94,7 +92,7 @@ class StoredProgressIndicator extends AbstractProgressIndicator
     }
 
     /**
-     * Get the sorage key.
+     * Get the storage key.
      */
     public function getStorageKey(): string
     {

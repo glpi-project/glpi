@@ -34,13 +34,11 @@
 
 namespace Glpi\Controller;
 
-use Config;
 use DB;
 use Glpi\Cache\CacheManager;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Http\Firewall;
 use Glpi\Progress\ProgressStorage;
-use Glpi\Progress\StoredProgressIndicator;
 use Glpi\Security\Attribute\SecurityStrategy;
 use Glpi\System\Requirement\DatabaseTablesEngine;
 use Glpi\System\RequirementsManager;
@@ -52,12 +50,14 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Toolbox;
 use Update;
+use Glpi\Progress\StoredProgressIndicator;
+
+use function Safe\ini_set;
+use function Safe\ob_end_clean;
+use function Safe\session_write_close;
 
 class InstallController extends AbstractController
 {
-    public const PROGRESS_KEY_INIT_DATABASE = 'init_database';
-    public const PROGRESS_KEY_UPDATE_DATABASE = 'update_database';
-
     public function __construct(
         private readonly ProgressStorage $progress_storage,
         private readonly LoggerInterface $logger
@@ -71,19 +71,21 @@ class InstallController extends AbstractController
             throw new AccessDeniedHttpException();
         }
 
-        ini_set('max_execution_time', '300'); // Allow up to 5 minutes to prevent unexpected timeout
+        $progress_indicator = $this->progress_storage->spawnProgressIndicator();
 
-        $progress_indicator = new StoredProgressIndicator($this->progress_storage, self::PROGRESS_KEY_INIT_DATABASE);
+        return $this->getProgressIndicatorResponse(
+            $progress_indicator,
+            function () use ($progress_indicator) {
+                try {
+                    Toolbox::createSchema($_SESSION["glpilanguage"], null, $progress_indicator);
+                } catch (\Throwable $exception) {
+                    // Try to remove the config file, to be able to restart the process.
+                    @unlink(GLPI_CONFIG_DIR . '/config_db.php');
 
-        return new StreamedResponse(function () use ($progress_indicator) {
-            try {
-                Toolbox::createSchema($_SESSION["glpilanguage"], null, $progress_indicator);
-            } catch (\Throwable $e) {
-                $progress_indicator->fail();
-                // Try to remove the config file, to be able to restart the process.
-                @unlink(GLPI_CONFIG_DIR . '/config_db.php');
+                    throw $exception; // Forward the exception
+                }
             }
-        });
+        );
     }
 
     #[Route("/Install/UpdateDatabase", methods: 'POST')]
@@ -94,8 +96,6 @@ class InstallController extends AbstractController
             throw new AccessDeniedHttpException();
         }
 
-        ini_set('max_execution_time', '300'); // Allow up to 5 minutes to prevent unexpected timeout
-
         if (!file_exists(GLPI_CONFIG_DIR . '/config_db.php')) {
             throw new \RuntimeException('Missing database configuration file.');
         } else {
@@ -105,23 +105,21 @@ class InstallController extends AbstractController
             }
         }
 
-        /** @var \DBmysql $DB */
-        global $DB;
-        $DB = new DB();
-        $DB->disableTableCaching(); // Prevents issues on fieldExists upgrading from old versions
+        $progress_indicator = $this->progress_storage->spawnProgressIndicator();
+        $logger             = $this->logger;
 
-        // Required, at least, by usage of `Plugin::unactivateAll()`
-        // FIXME: We should not have to load the configuration before running the update process.
-        Config::loadLegacyConfiguration();
+        return $this->getProgressIndicatorResponse(
+            $progress_indicator,
+            function () use ($logger, $progress_indicator) {
+                /** @var \DBmysql $DB */
+                global $DB;
+                $DB = new DB();
+                $DB->disableTableCaching(); // Prevents issues on fieldExists upgrading from old versions
 
-        $progress_indicator = new StoredProgressIndicator($this->progress_storage, self::PROGRESS_KEY_UPDATE_DATABASE);
+                $update = new Update($DB);
+                $update->setMigration(new Migration(GLPI_VERSION, $progress_indicator));
+                $update->setLogger($logger);
 
-        $update = new Update($DB);
-        $update->setMigration(new Migration(GLPI_VERSION, $progress_indicator));
-        $update->setLogger($this->logger);
-
-        return new StreamedResponse(function () use ($update, $progress_indicator) {
-            try {
                 $success = $update->doUpdates(
                     current_version: $update->getCurrents()['version'],
                     progress_indicator: $progress_indicator
@@ -133,10 +131,46 @@ class InstallController extends AbstractController
 
                 // Force cache cleaning to ensure it will not contain stale data
                 (new CacheManager())->resetAllCaches();
-            } catch (\Throwable $e) {
-                $progress_indicator->fail();
             }
-        });
+        );
+    }
+
+    private function getProgressIndicatorResponse(
+        StoredProgressIndicator $progress_indicator,
+        callable $inner_callable
+    ): Response {
+        ini_set('max_execution_time', '300'); // Allow up to 5 minutes to prevent unexpected timeout
+        session_write_close(); // Prevent the session file lock to block the progress check requests
+
+        // Be sure to disable the output buffering.
+        // It is necessary to make the `flush()` works as expected.
+        while (ob_get_level() > 0) {
+            ob_end_clean();
+        }
+
+        return new StreamedResponse(
+            function () use ($progress_indicator, $inner_callable) {
+                echo $progress_indicator->getStorageKey();
+
+                // Send headers and content.
+                // The browser will consider that the response is complete due to the `Connection: close` header
+                // and will not have to wait for operation to finish to consider the request as ended.
+                flush();
+
+                try {
+                    $inner_callable();
+                } catch (\Throwable $e) {
+                    $progress_indicator->fail();
+                }
+            },
+            headers: [
+                'Content-Type'   => 'text/html',
+                'Content-Length' => \strlen($progress_indicator->getStorageKey()),
+                'Cache-Control'  => 'no-cache,no-store',
+                'Pragma'         => 'no-cache',
+                'Connection'     => 'close',
+            ]
+        );
     }
 
     /**

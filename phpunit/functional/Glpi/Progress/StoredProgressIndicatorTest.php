@@ -48,7 +48,6 @@ class StoredProgressIndicatorTest extends GLPITestCase
         $storage_key = $this->getUniqueString();
 
         $storage = $this->createMock(ProgressStorage::class);
-        $storage->expects($this->once())->method('save'); // Instance constructor must trigger its own saving into the storage
 
         $date = new DateTimeImmutable();
 
