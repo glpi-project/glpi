@@ -8170,7 +8170,7 @@ HTML,
         );
 
         $this->createItem(
-            ITILSolution::class,
+            \ITILSolution::class,
             [
                 'items_id' => $ticket->getID(),
                 'itemtype' => Ticket::class,
