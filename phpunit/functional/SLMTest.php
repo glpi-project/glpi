@@ -1649,7 +1649,7 @@ class SLMTest extends DbTestCase
         // --- 11:01 ticket : level 1 is reached
         $this->setCurrentTime('11:01:00');
         $this->runSlaCron();
-        $this->assertEquals($level_1->getID(), $ticket->fields['slalevels_id_ttr']); // not a relevant change, this won't change for the rest, kind of a bug ?
+        $this->assertEquals($level_1->getID(), $ticket->fields['slalevels_id_ttr']);
         // next level to be processed is level_2
         $this->assertTrue((new \SlaLevel_Ticket())->getFromDBByCrit(['tickets_id' => $ticket->getID(), 'slalevels_id' => $level_2->getID()]));
         $ticket = new \Ticket();
@@ -1659,7 +1659,10 @@ class SLMTest extends DbTestCase
         // --- 11:31 ticket : level 2 is reached
         $this->setCurrentTime('11:31:00');
         $this->runSlaCron();
-        // $this->assertEquals($level_2->getID(), $ticket->fields['slalevels_id_ttr']) // as noted above, this field does not change
+        // next assertion is commented out because I have no explanation why it does not change to the current level_2
+        // maybe this is field value is useless and should be removed
+        // @todo try to remove slalevels_id_ttr field from the ticket table.
+        // $this->assertEquals($level_2->getID(), $ticket->fields['slalevels_id_ttr']);
 
         // no next level to be processed
         $this->assertFalse((new \SlaLevel_Ticket())->getFromDBByCrit(['tickets_id' => $ticket->getID()]));
