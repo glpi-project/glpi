@@ -759,32 +759,211 @@ class Hooks
     public const SECURED_CONFIGS = 'secured_configs';
 
     // Inventory hooks
+    /**
+     * Register a function to insert extra data into the PROLOG response from the server to an agent.
+     * This includes netdiscovery and netinventory tasks to run (ip ranges, jobs configuration, credentials).
+     * It excludes data from ESX, Deploy and Collect which are handled differently.
+     * Wakeonlan related is outdated and not supported in glpi-agent.
+     * Agent has to run netdiscovery and netinventory tasks if it receives data in PROLOG response for them.
+     *
+     * The function is called with the following parameters:
+     * - 'params' => An array containing the following properties:
+     *   - 'mode' => The response mode. See the `Glpi\Agent\CommunicationAgent::*_MODE` constants.
+     *   - 'deviceid' => The device ID string assigned to the agent.
+     *   - 'response' => An array containing the PROLOG response data which may differ based on the type of agent (GLPI Agent or an older type of agent).
+     *
+     * If the agent is a GLPI Agent, the response array will contain the following properties:
+     * - 'expiration' => The inventory frequency in seconds.
+     * - 'status' => Always 'ok'.
+     * If the agent is not a GLPI Agent, the response array will contain the following properties (backwards compatibility with older types of agents):
+     * - 'PROLOG_FREQ' => The inventory frequency in seconds.
+     * - 'RESPONSE' => Always 'SEND'.
+     *
+     * The function is expected to modify the given array as needed and return it.
+     */
     public const PROLOG_RESPONSE = 'prolog_response';
+
+    /**
+     * Register a function to modify the network discovery data sent from an agent.
+     * The function is called with the following parameters:
+     * - 'mode' => The response mode. See the `Glpi\Agent\CommunicationAgent::*_MODE` constants.
+     * - 'inventory' => An `Glpi\Inventory\Inventory` object containing the discovery data.
+     * - 'deviceid' => The device ID string assigned to the agent.
+     * - 'response' => An array that can be filled with data to be sent back to the agent. This will be empty unless modified by another plugin.
+     * - 'errors' => An array that can be filled with errors to be sent back to the agent. This may not exist unless added by another plugin.
+     * - 'query' => Should be 'netdiscovery'.
+     *
+     * The function is expected to modify the given array as needed and return it.
+     * Only the 'response' and 'errors' keys will be taken into account in the returned data.
+     * If no response or error data is provided, the agent will be told that the server does not support network discovery.
+     */
     public const NETWORK_DISCOVERY = 'network_discovery';
+
+    /**
+     * Register a function to modify the network inventory data sent from an agent.
+     * The function is called with the following parameters:
+     * - 'mode' => The response mode. See the `Glpi\Agent\CommunicationAgent::*_MODE` constants.
+     * - 'inventory' => An `Glpi\Inventory\Inventory` object containing the inventory data.
+     * - 'deviceid' => The device ID string assigned to the agent.
+     * - 'response' => An array that can be filled with data to be sent back to the agent. This will be empty unless modified by another plugin.
+     * - 'errors' => An array that can be filled with errors to be sent back to the agent. This may not exist unless added by another plugin.
+     * - 'query' => Should be 'netinventory'.
+     *
+     * The function is expected to modify the given array as needed and return it.
+     * Only the 'response' and 'errors' keys will be taken into account in the returned data.
+     * If no response or error data is provided, the agent will be told that the server does not support network inventory.
+     */
     public const NETWORK_INVENTORY = 'network_inventory';
+
+    /**
+     * Register a function to provide an agent with additional requested parameters for inventory.
+     * An example of this usage can be found in the `databaseinventory` plugin which responds to the GLPI Agent's request for database credentials to allow it to collect database information.
+     * The GLPI Agent will only ask for these parameters if the server indicates that it has them available in the inventory task response.
+     *
+     * The function is called with the following parameters:
+     * - 'options' => An array containing the following properties:
+     *   - 'content' => The request from the agent.
+     *   - 'response' => An array that can be filled with data to be sent back to the agent. By default, it is an array with the following properties:
+     *     - 'expiration' => The inventory frequency in seconds.
+     *     - 'status' => Always 'ok'.
+     *  - 'item' => The Agent item
+     *
+     * The function is expected to modify the given array as needed and return it.
+     */
     public const INVENTORY_GET_PARAMS = 'inventory_get_params';
-    /** @var string Hook called before the inventory submission is handled.
-     *              You may modify the inventory data which is passed as a parameter (stdClass) and return the modified data.
-     *              Returning null will cancel the inventory submission with no specific reason.
-     *              Throwing an Exception will cancel the inventory submission with the exception message as the reason.
-     *              To avoid unrelated exception messages from being sent to the agent, you must handle all exceptions (except the one you would throw to cancel the inventory) within the hook function.
+
+    /**
+     * Register a function to be called before the inventory submission is handled.
+     * The function is called with the following parameters:
+     * - 'data' => An object containing the inventory data submitted by the agent.
+     *
+     * The function is expected to return the modified data object or null to cancel the inventory submission with no specific reason.
+     * Throwing an Exception will cancel the inventory submission with the exception message as the reason.
+     * To avoid unrelated exception messages from being sent to the agent, you must handle all exceptions (except the one you would throw to cancel the inventory) within the hook function.
      */
     public const PRE_INVENTORY = 'pre_inventory';
-    /** @var string Hook called after the inventory submission is handled.
-     *              You may view the inventory data which is passed as a parameter (stdClass).
-     *              Nothing is expected to be returned.
-     *              This hook is only called if the inventory submission was successful.
+
+    /**
+     * Register a function to be called after the inventory submission is handled.
+     * The function is called with the following parameters:
+     *  - 'data' => An object containing the inventory data submitted by the agent.
+     * The function is expected to return nothing.
+     * This hook is only called if the inventory submission was successful.
      */
     public const POST_INVENTORY = 'post_inventory';
 
     // Agent contact request related hooks
+
+    /**
+     * Register a function to be called when an agent asks if the server supports the inventory task.
+     * The function is called with an array containing the following properties:
+     * - 'options' => An array containing the following properties:
+     *   - 'response' => An array that can be filled with data to be sent back to the agent. By default, it is an array with the following properties:
+     *     - 'inventory' => An array containing the following properties:
+     *       - 'server' => 'glpi' to indicate that GLPI natively supports the inventory task.
+     *       - 'version' => The GLPI server version.
+     * - 'item' => The Agent item
+     * The function is expected to modify the given array as needed and return it.
+     * Only the 'response' key will be taken into account in the returned data.
+     */
     public const HANDLE_INVENTORY_TASK    = 'handle_inventory_task';
+
+    /**
+     * Register a function to be called when an agent asks if the server supports the network discovery task.
+     * The function is called with an array containing the following properties:
+     * - 'options' => An array containing the following properties:
+     *   - 'response' => An array that can be filled with data to be sent back to the agent. It is an array that may contain the following properties:
+     *     - 'inventory' => An array containing the following properties:
+     *       - 'server' => The server/plugin that can handle the task.
+     *       - 'version' => The server/plugin version.
+     * - 'item' => The Agent item
+     * The function is expected to modify the given array as needed and return it.
+     * Only the 'response' key will be taken into account in the returned data.
+     */
     public const HANDLE_NETDISCOVERY_TASK = 'handle_netdiscovery_task';
+
+    /**
+     * Register a function to be called when an agent asks if the server supports the network inventory task.
+     * The function is called with an array containing the following properties:
+     * - 'options' => An array containing the following properties:
+     *   - 'response' => An array that can be filled with data to be sent back to the agent. It is an array that may contain the following properties:
+     *     - 'inventory' => An array containing the following properties:
+     *       - 'server' => The server/plugin that can handle the task.
+     *       - 'version' => The server/plugin version.
+     * - 'item' => The Agent item
+     * The function is expected to modify the given array as needed and return it.
+     * Only the 'response' key will be taken into account in the returned data.
+     */
     public const HANDLE_NETINVENTORY_TASK = 'handle_netinventory_task';
+
+    /**
+     * Register a function to be called when an agent asks if the server supports the ESX inventory task.
+     * The function is called with an array containing the following properties:
+     * - 'options' => An array containing the following properties:
+     *   - 'response' => An array that can be filled with data to be sent back to the agent. It is an array that may contain the following properties:
+     *     - 'inventory' => An array containing the following properties:
+     *       - 'server' => The server/plugin that can handle the task.
+     *       - 'version' => The server/plugin version.
+     * - 'item' => The Agent item
+     * The function is expected to modify the given array as needed and return it.
+     * Only the 'response' key will be taken into account in the returned data.
+     */
     public const HANDLE_ESX_TASK          = 'handle_esx_task';
+
+    /**
+     * Register a function to be called when an agent asks if the server supports the collect task.
+     * The function is called with an array containing the following properties:
+     * - 'options' => An array containing the following properties:
+     *   - 'response' => An array that can be filled with data to be sent back to the agent. It is an array that may contain the following properties:
+     *     - 'inventory' => An array containing the following properties:
+     *       - 'server' => The server/plugin that can handle the task.
+     *       - 'version' => The server/plugin version.
+     * - 'item' => The Agent item
+     * The function is expected to modify the given array as needed and return it.
+     * Only the 'response' key will be taken into account in the returned data.
+     */
     public const HANDLE_COLLECT_TASK      = 'handle_collect_task';
+
+    /**
+     * Register a function to be called when an agent asks if the server supports the deploy task.
+     * The function is called with an array containing the following properties:
+     * - 'options' => An array containing the following properties:
+     *   - 'response' => An array that can be filled with data to be sent back to the agent. It is an array that may contain the following properties:
+     *     - 'inventory' => An array containing the following properties:
+     *       - 'server' => The server/plugin that can handle the task.
+     *       - 'version' => The server/plugin version.
+     * - 'item' => The Agent item
+     * The function is expected to modify the given array as needed and return it.
+     * Only the 'response' key will be taken into account in the returned data.
+     */
     public const HANDLE_DEPLOY_TASK       = 'handle_deploy_task';
+
+    /**
+     * Register a function to be called when an agent asks if the server supports the wake-on-lan task.
+     * The function is called with an array containing the following properties:
+     * - 'options' => An array containing the following properties:
+     *   - 'response' => An array that can be filled with data to be sent back to the agent. It is an array that may contain the following properties:
+     *     - 'inventory' => An array containing the following properties:
+     *       - 'server' => The server/plugin that can handle the task.
+     *       - 'version' => The server/plugin version.
+     * - 'item' => The Agent item
+     * The function is expected to modify the given array as needed and return it.
+     * Only the 'response' key will be taken into account in the returned data.
+     */
     public const HANDLE_WAKEONLAN_TASK    = 'handle_wakeonlan_task';
+
+    /**
+     * Register a function to be called when an agent asks if the server supports the remote inventory task.
+     * The function is called with an array containing the following properties:
+     * - 'options' => An array containing the following properties:
+     *   - 'response' => An array that can be filled with data to be sent back to the agent. It is an array that may contain the following properties:
+     *     - 'inventory' => An array containing the following properties:
+     *       - 'server' => The server/plugin that can handle the task.
+     *       - 'version' => The server/plugin version.
+     * - 'item' => The Agent item
+     * The function is expected to modify the given array as needed and return it.
+     * Only the 'response' key will be taken into account in the returned data.
+     */
     public const HANDLE_REMOTEINV_TASK    = 'handle_remoteinventory_task';
 
     /**
