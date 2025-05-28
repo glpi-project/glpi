@@ -320,8 +320,6 @@ jobs:
       - name: "Build GLPI's dependencies and translations"
         run: |
           docker compose exec -T app .github/actions/init_build.sh
-      - name: Install Playwright dependencies
-        run: docker compose exec -T app npm ci
       - name: Install Playwright Browsers
         run: docker compose exec -T --user=root app sudo -E npx playwright install chromium --with-deps
       - name: "Install DB tests"
