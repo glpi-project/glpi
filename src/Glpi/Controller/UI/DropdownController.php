@@ -1,0 +1,69 @@
+<?php
+
+/**
+ * ---------------------------------------------------------------------
+ *
+ * GLPI - Gestionnaire Libre de Parc Informatique
+ *
+ * http://glpi-project.org
+ *
+ * @copyright 2015-2025 Teclib' and contributors.
+ * @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ *
+ * ---------------------------------------------------------------------
+ *
+ * LICENSE
+ *
+ * This file is part of GLPI.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ * ---------------------------------------------------------------------
+ */
+
+namespace Glpi\Controller\UI;
+
+use Glpi\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Attribute\Route;
+
+class DropdownController extends AbstractController
+{
+    #[Route(
+        path: "/dropdown",
+        name: "glpi_ui_dropdown",
+    )]
+    public function __invoke(Request $request): Response
+    {
+        $itemtype = $request->query->getString('itemtype');
+        $fieldName = $request->query->getString('fieldname');
+        $selectedValue = $request->query->getInt('value', 0);
+        //        $label = $request->query->getString('label');
+        //        $options = json_decode($request->query->getString('options')); // @todoseb safecheck
+
+        return $this->render('components/dropdown/dropdown.html.twig', [
+            'itemtype'  => $itemtype,
+            'fieldname' => $fieldName,
+            'selected_value' => $selectedValue,
+            //            'label' => $label,
+            // @todo il faut passer une option pour ne pas avoir un field horizontal (
+            'options' => [
+                'full_width' => true,
+                'no_label' => true,
+                'include_field' => false,
+            ],
+        ]);
+    }
+}

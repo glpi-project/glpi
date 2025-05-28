@@ -37,6 +37,8 @@ namespace tests\units;
 use CommonITILObject;
 use Contract;
 use ContractType;
+use Glpi\PHPUnit\Tests\Glpi\ITILTrait;
+use Glpi\PHPUnit\Tests\Glpi\SLMTrait;
 use ITILFollowup;
 use ITILFollowupTemplate;
 use Location;
@@ -52,6 +54,9 @@ require_once __DIR__ . '/../abstracts/RuleCommonITILObject.php';
 
 class RuleTicketTest extends RuleCommonITILObject
 {
+    use SLMTrait;
+    use ITILTrait;
+
     public function testGetCriteria()
     {
         $rule = $this->getRuleInstance();
@@ -1445,4 +1450,115 @@ class RuleTicketTest extends RuleCommonITILObject
             )
         );
     }
+
+    public function testAssignSingleOla()
+    {
+        $this->login();
+        // arrange
+        $entity = getItemByTypeName(\Entity::class, '_test_child_1');
+        ['ola' => $ola, 'slm' => $slm, 'group' => $group] = $this->createOLA();
+
+        $rule_builder = new \RuleBuilder(__FUNCTION__, \RuleTicket::class);
+        $rule_builder->addCriteria('entities_id', Rule::PATTERN_IS, $entity->getID());
+        $rule_builder->addAction('assign', 'olas_id', $ola->getID());
+        $this->createRule($rule_builder);
+
+        // act - create ticket matching criteria
+        $ticket = $this->createTicket(['entities_id' => $entity->getID()]);
+
+        // assert - ola is associated to ticket
+        $olas_data = $ticket->getOlasData();
+        $this->assertCount(1, $olas_data);
+        $ola_data = $olas_data[0];
+        $this->assertEquals($ola->getID(), $ola_data['olas_id']);
+    }
+
+    public function testAssignMultipleOlas()
+    {
+        $this->login();
+        // arrange
+        $entity = getItemByTypeName(\Entity::class, '_test_child_1');
+        ['ola' => $ola_tto, 'slm' => $slm, 'group' => $group] = $this->createOLA();
+        ['ola' => $ola_ttr1] = $this->createOLA(ola_type: \SLM::TTR, group: $group, slm: $slm);
+        ['ola' => $ola_ttr2] = $this->createOLA(ola_type: \SLM::TTR, group: $group);
+
+        $rule_builder = new \RuleBuilder(__FUNCTION__, \RuleTicket::class);
+        $rule_builder->addCriteria('entities_id', Rule::PATTERN_IS, $entity->getID());
+        $rule_builder->addAction('assign', 'olas_id', $ola_tto->getID());
+        $rule_builder->addAction('assign', 'olas_id', $ola_ttr1->getID());
+        $rule_builder->addAction('assign', 'olas_id', $ola_ttr2->getID());
+        $this->createRule($rule_builder);
+
+        // act - create ticket matching criteria
+        $ticket = $this->createTicket(['entities_id' => $entity->getID()]);
+
+        // assert - ola is associated to ticket - getOlasData()
+        $olas_data = $ticket->getOlasData();
+        $this->assertCount(3, $olas_data);
+        $olas_ids = array_column($olas_data, 'olas_id');
+        $this->assertEqualsCanonicalizing($olas_ids, [$ola_tto->getID(), $ola_ttr1->getID(), $ola_ttr2->getID()]);        // assert - ola is associated to ticket - getOlasData()
+
+        $olas_ttr_data = $ticket->getOlasTTRData();
+        $this->assertCount(2, $olas_ttr_data);
+        $olas_ids = array_column($olas_ttr_data, 'olas_id');
+        $this->assertEqualsCanonicalizing($olas_ids, [$ola_ttr1->getID(), $ola_ttr2->getID()]);        // assert - ola is associated to ticket - getOlasData()
+
+        $olas_tto_data = $ticket->getOlasTTOData();
+        $this->assertCount(1, $olas_tto_data);
+        $olas_ids = array_column($olas_tto_data, 'olas_id');
+        $this->assertEqualsCanonicalizing($olas_ids, [$ola_tto->getID()]);
+    }
+
+    public function testCriteriaOlaOnCreate()
+    {
+        $this->login();
+        // arrange
+        $entity = getItemByTypeName(\Entity::class, '_test_child_1');
+        ['ola' => $ola] = $this->createOLA();
+
+        $rule_builder = new \RuleBuilder(__FUNCTION__, \RuleTicket::class);
+        $rule_builder->addCriteria('_olas_id_rule_criteria', Rule::PATTERN_IS, $ola->getID());
+        $rule_builder->addAction('assign', 'impact', 4);
+        $this->createRule($rule_builder);
+
+        // act create ticket with priority 1
+        $ticket = $this->createTicket(
+            ['impact' => 1, 'entities_id' => $entity->getID(), '_la_update' => true, '_olas_id' => [$ola->getID()]] + $this->getValidTicketData(),
+            ['impact'], // do not check impact, it is modified by the rule
+        );
+
+        // assert priority changed to 4
+        $this->assertEquals(4, $ticket->fields['impact']);
+    }
+
+    /**
+     * To test criterion : on update, update priority if an ola is set
+     */
+    public function testCriteriaOlaOnUpdate()
+    {
+        $this->login();
+        // arrange
+        $entity = getItemByTypeName(\Entity::class, '_test_child_1');
+        ['ola' => $ola] = $this->createOLA();
+
+        $rule_builder = new \RuleBuilder(__FUNCTION__, \RuleTicket::class);
+        $rule_builder->addCriteria('_olas_id_rule_criteria', Rule::PATTERN_IS, $ola->getID());
+
+        $rule_builder->addAction('assign', 'priority', 4);
+        $this->createRule($rule_builder);
+
+        // act create ticket with priority 1
+        $ticket = $this->createTicket(['priority' => 1, 'entities_id' => $entity->getID()]);
+
+        // add the ola matching the rule
+        $ticket = $this->updateItem($ticket::class, $ticket->getID(), ['_la_update' => true, '_olas_id' => [$ola->getID()]]);
+
+        // assert priority changed to 4
+        $this->assertEquals(4, $ticket->fields['priority']);
+    }
+
+    // @todoseb tests sur les critères d'ola - supprimer si existe test sur dates saisies directement
+    // @todoseb tests d'assignation d'un SLA manquants
+
+
 }
