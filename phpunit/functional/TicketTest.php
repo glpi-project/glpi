@@ -8095,7 +8095,7 @@ HTML,
                 'sub_type' => 'RuleTicket',
                 'match' => 'AND',
                 'is_active' => 1,
-                'condition' => 1,
+                'condition' => 3,
             ]
         );
 
@@ -8119,10 +8119,11 @@ HTML,
             'email' => 'tech@tech.tech',
         ]);
 
+        //Test Notification for solved ticket with solution template rule at creation
         $ticket = $this->createItem(
             \Ticket::class,
             [
-                'name'        => 'ITILsolution',
+                'name'        => 'ITILsolution Title',
                 'content'     => '',
                 'entities_id' => 0,
                 '_actors'     => [
@@ -8134,7 +8135,24 @@ HTML,
         );
 
         $queue = new \QueuedNotification();
-        $this->assertEquals(1, count($queue->find([
+        $this->assertTrue($queue->getFromDBByCrit([
+            'itemtype' => Ticket::class,
+            'items_id' => $ticket->getID(),
+            'event' => 'solved',
+            'mode' => 'mailing',
+            'recipientname' => 'tech',
+        ]));
+
+        $queue->delete([
+            'id' => $queue->getID(),
+            'itemtype' => Ticket::class,
+            'items_id' => $ticket->getID(),
+            'event' => 'solved',
+            'mode' => 'mailing',
+            'recipientname' => 'tech',
+        ], true);
+
+        $this->assertEquals(0, count($queue->find([
             'itemtype' => Ticket::class,
             'items_id' => $ticket->getID(),
             'event' => 'solved',
@@ -8153,6 +8171,8 @@ HTML,
             'itemtype' => Ticket::class,
             'status'   => 2,
         ]);
+
+        // Test Notification for solved ticket with solution template rule at update
         $this->updateItem(
             \ITILSolution::class,
             $solution->getID(),
@@ -8165,20 +8185,30 @@ HTML,
             \Ticket::class,
             $ticket->getID(),
             [
-                'status'     => CommonITILObject::ASSIGNED,
+                'name'        => 'ITILsolution',
+                'status'      => \CommonITILObject::ASSIGNED,
             ],
+            ['status']
         );
 
-        $this->createItem(
-            \ITILSolution::class,
-            [
-                'items_id' => $ticket->getID(),
-                'itemtype' => Ticket::class,
-                'status'   => 2,
-            ],
-        );
+        $this->assertTrue($queue->getFromDBByCrit([
+            'itemtype' => Ticket::class,
+            'items_id' => $ticket->getID(),
+            'event' => 'solved',
+            'mode' => 'mailing',
+            'recipientname' => 'tech',
+        ]));
 
-        $this->assertEquals(2, count($queue->find([
+        $queue->delete([
+            'id' => $queue->getID(),
+            'itemtype' => Ticket::class,
+            'items_id' => $ticket->getID(),
+            'event' => 'solved',
+            'mode' => 'mailing',
+            'recipientname' => 'tech',
+        ], true);
+
+        $this->assertEquals(0, count($queue->find([
             'itemtype' => Ticket::class,
             'items_id' => $ticket->getID(),
             'event' => 'solved',
