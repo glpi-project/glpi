@@ -348,7 +348,7 @@ class SlaLevel_Ticket extends CommonDBTM
                 ],
             ],
             'WHERE'     => [
-                'glpi_slalevels_tickets.date'       => ['<',  $now],
+                'glpi_slalevels_tickets.date'       => ['<', $now],
                 'glpi_slalevels_tickets.tickets_id' => $tickets_id,
                 'glpi_slas.type'                    => $slaType,
             ],
