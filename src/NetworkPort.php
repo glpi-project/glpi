@@ -1216,6 +1216,10 @@ class NetworkPort extends CommonDBChild
                                             'WHERE'  => [
                                                 'netp.itemtype'  => $related_class,
                                                 'netp.id'        => $list_ports,
+                                                'NOT'                => [
+                                                    'netp.itemtype'  => $device1->getType(),
+                                                    'netp.items_id'  => $device1->getID(),
+                                                ],
                                             ],
                                         ]);
                                     }
@@ -1229,13 +1233,6 @@ class NetworkPort extends CommonDBChild
                                         ) . '</div>';
                                     } else {
                                         foreach ($hub_equipments as $hrow) {
-                                            if (
-                                                $hrow['itemtype'] === $device1->getType() &&
-                                                $hrow['items_id'] === $device1->getID()
-                                            ) {
-                                                continue; // Skip  asset is the same as the current device
-                                            }
-
                                             $asset = new $hrow['itemtype']();
                                             $asset->getFromDB($hrow['items_id']);
                                             $asset->fields['mac'] = $hrow['mac'];
