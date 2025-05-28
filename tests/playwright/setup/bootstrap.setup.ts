@@ -36,7 +36,7 @@ import { Config } from '../utils/Config';
 
 setup('Bootstrap', async ({}, testInfo) => {
     const workers = testInfo.config.workers;
-    const php = Config.getPhpCommand();
+    const php = Config.getPhpBinary();
     const console = `${php} bin/console --env=e2e_testing`;
     execSync(`${console} config:set url_base ${Config.getBaseUrl()}`);
     execSync(`${console} tools:playwright:bootstrap ${workers}`);

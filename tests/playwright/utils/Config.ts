@@ -41,12 +41,12 @@ export class Config
         return process.env.GLPI_BASE_URL;
     }
 
-    public static getPhpCommand(): string
+    public static getPhpBinary(): string
     {
-        if (process.env.PHP === undefined) {
+        if (process.env.PHP_BINARY === undefined) {
             throw new Error("Invalid configuration, 'PHP' is not defined");
         }
 
-        return process.env.PHP;
+        return process.env.PHP_BINARY;
     }
 }

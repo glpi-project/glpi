@@ -1,18 +1,50 @@
 # Playwright tests for GLPI
 
-Here is everything you need to know to execute, understand and write playwright tests for GLPI.
+Here is everything you need to know to write, execute and understand playwright tests for GLPI.  
 
 ## Installing the tests
 
-Execute the following commands to install playwright:
+### Docker
 
-`npx playwright install`  
-`npx playwright install-deps`  
+If you use the official GLPI image, playwright should already be installed and ready to use.
 
-Then, make sure the e2e database is installed using `make e2e-db-install`.  
-If the base is already installed, make sure it is up to date with `make e2e-db-update`.  
+You'll just need to install the e2e database with `make e2e-db-install`.  
+If the base already exist, you can update it with `make e2e-db-update`.  
 
-Note: if you don't use docker, you can run the normal glpi install/update commands with the `--env=e2e_testing` argument.
+#### Multiple containers
+
+If you have multiple GLPI containers running at the same time, you might need to override the port used for playwright reports to make sure it is unique, like so:
+
+```yaml
+# docker-compose.override.yaml
+services:
+  app:
+    ports: !override
+      - "{my-port}:9323" # Playwright reports
+```
+
+Note that the `make playwright-report` command will still show you the original port in this case as it is used in the internal container:  
+
+```
+$ make playwright-report
+Serving HTML report at http://0.0.0.0:9323. Press Ctrl+C to quit.
+```
+
+So you'll need to correct the link after clicking it (or keep a dedicated bookmark).
+
+#### Running the UI
+
+If you want to use the UI and not just run headless tests then you'll need to install playwright outside docker (see: `Without docker` section) as the container doesn't support GUI applications.  
+
+Note that I personally think that the UI is not really needed for developers as running headless tests is more convenient 99% the time.  
+The remaining 1% is for debugging purpose but the trace/report feature works just as well for that.  
+
+### Without docker
+
+Install playwright with the following command: `npx playwright install chromium --with-deps`
+
+Then, install the e2e database with the `database:install` console command, using the `--env=e2e_testing` argument.  
+If the base already exist, you can update it with the `database:update` console command, using the `--env=e2e_testing` argument.  
 
 ## Configuring the tests
 
@@ -20,44 +52,81 @@ The tests configuration is found in the `/tests/playwright/.env` file.
 
 If you need to override values, copy it as `/tests/playwright/.env.local` and edit values as needed.
 
-### Target URL
+### Docker
 
-The default target URL is `http://localhost:8090`.  
+The default configuration should be good to go, it will accept request to the e2e server at the `localhost:8090` url.  
 
-This URL should target a web server running GLPI with the `e2e_testing` environment.  
-If you are running the official docker image, you have nothing to do as this should already be configured for you.  
-
-If you are running multiple GLPIs instances at the same time through docker you might need to change this port in your `docker-compose.override.yaml` to make sure it is unique:
+If you run multiple containers at the same time, you'll need to change this port to avoid conflicts:  
 
 ```yaml
+# docker-compose.override.yaml
+
 services:
   app:
     ports: !override
-      - "8081:80"
-      - "8091:8090" # Use 8091 instead of 8090
+      - "{my-port}:8090" 
 ```
 
-Don't forget to set the correct port in your env config too:
+```sh
+# tests/playwright/.env.local
 
-```env
-GLPI_BASE_URL="http://localhost:8091"
+GLPI_BASE_URL="http://localhost:{my-port}"
 ```
 
-### PHP binary
+If you run playwright without docker while using the docker image for your GLPI server (for example if you need the UI mode), you'll need to set the `PHP_BINARY` option to `docker compose exe app php` to make sure the glpi bin/console commands run inside the container.  
 
-The php binary is used to run glpi console commands to setup some tests as needed.
+### Without docker
 
-The default configuration will run PHP commands in the main docker container:
-```env
-PHP="docker compose exec app php"
+You'll need an e2e server running at the `http://localhost:8090` url.  
+
+If you want to use another url/port for this, don't forget to change the configuration:  
+```sh
+# tests/playwright/.env.local
+
+GLPI_BASE_URL="http://localhost:{my-port}"
 ```
 
-If you prefer using a local php binary, set the following value:
-```env
-PHP="php"
+An "e2e server" just mean a GLPI running in the `e2e_testing` environment.  
+One way to achieve this is to make apache2 listen on two different ports:
+```sh
+# /etc/apache2/ports.conf
+
+Listen 80   # dev
+Listen 8090 # e2e
+```
+
+Then set the correct env variable for the `8090` port:
+```sh
+# /etc/apache2/sites-available/glpi.conf
+
+<VirtualHost *:80> # dev
+    Include vhosts/glpi-common.conf # Your existing configuration
+</VirtualHost>
+
+<VirtualHost *:8090> # e2e
+    SetEnv GLPI_ENVIRONMENT_TYPE e2e_testing
+    Include vhosts/glpi-common.conf # Your existing configuration
+</VirtualHost>
 ```
 
 ## Running the tests
+
+General documentation: https://playwright.dev/docs/running-tests.
+
+### Docker
+
+Run all tests:  
+`make playwright`
+
+Running a single test:  
+`make playwright c=tests/playwright/specs/{path_to_file}/my_test.spec.ts`
+
+To debug a test, run it with the `--trace=on` option, like this:  
+`make playwright c="tests/playwright/specs/{path_to_file}/my_test.spec.ts --trace=on"`  
+Then display the report, go to your browser and click on the "View Trace" button.  
+`make playwright-report`
+
+### Without docker
 
 Run all tests:  
 `npx playwright test`
@@ -65,13 +134,10 @@ Run all tests:
 Running a single test:  
 `npx playwright test tests/playwright/specs/{path_to_file}/my_test.spec.ts`
 
-Add `--ui` if you need to display the UI, or `--headed` to just display the browser(s).  
-More options are available here: https://playwright.dev/docs/running-tests.
-
-Lastly, trace reports generated on CI failures can be viewed using `npx playwright show-report path-to-my-report-folder`.  
-You can also generate a trace for a local test by adding the `--trace on` when running tests.
-
-More informations: https://playwright.dev/docs/trace-viewer.
+To debug a test, run it with the `--trace=on` option, like this:  
+`npx playwright test tests/playwright/specs/{path_to_file}/my_test.spec.ts --trace=on`  
+Then display the report, go to your browser and click on the "View Trace" button.  
+`npx playwright show-report`
 
 ## Writting tests
 
