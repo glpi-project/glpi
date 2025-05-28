@@ -1186,7 +1186,7 @@ class NetworkPort extends CommonDBChild
                                         $list_ports[] = $npo;
                                     }
 
-                                    $itemtypes = [Computer::class, Printer::class, NetworkEquipment::class, Phone::class, Unmanaged::class];
+                                    $itemtypes = $CFG_GLPI["networkport_types"];
                                     $union = new \QueryUnion();
                                     foreach ($itemtypes as $related_class) {
                                         $table = getTableForItemType($related_class);
