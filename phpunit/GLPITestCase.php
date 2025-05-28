@@ -470,6 +470,32 @@ class GLPITestCase extends TestCase
     }
 
     /**
+     * Set $_SESSION['glpi_currenttime'] with current day + $time param and return the related DateTime
+     *
+     * @param string $time expected format is H:i:s
+     * @param string|null $day expected format is Y-m-d, current day by default
+     */
+    protected function setCurrentTime(string $time, ?string $day = null): \DateTime
+    {
+        // assert time format is H:i:s
+        assert(1 === preg_match('/^([01]?[0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])$/', $time));
+
+        // assert day format is Y-m-d
+        assert(is_null($day) || 1 === preg_match('/^\d{4}-\d{2}-\d{2}$/', $day));
+        $day ??= \Session::getCurrentDate();
+
+        // set session time
+        $_SESSION['glpi_currenttime'] = date($day . ' ' . $time);
+
+        // create and return DateTime
+        $dt = new \DateTime();
+        $dt->setTime(...explode(':', $time));
+        $dt->setDate(...explode('-', $day));
+
+        return $dt;
+    }
+
+    /**
      * Return the minimal fields required for the creation of an item of the given class.
      *
      * @param string $class

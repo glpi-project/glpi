@@ -33,9 +33,10 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\DBAL\QueryFunction;
-
-/// Class SLALevel
+/**
+ * Table to store slalevels to be processed.
+ * `date` field contains the date when the level has to processed
+ */
 class SlaLevel_Ticket extends CommonDBTM
 {
     public static function getTypeName($nb = 0)
@@ -163,6 +164,7 @@ class SlaLevel_Ticket extends CommonDBTM
         global $DB;
 
         $tot = 0;
+        $now = \Session::getCurrentTime();
 
         $iterator = $DB->request([
             'SELECT'    => [
@@ -185,7 +187,7 @@ class SlaLevel_Ticket extends CommonDBTM
                 ],
             ],
             'WHERE'     => [
-                'glpi_slalevels_tickets.date' => ['<', QueryFunction::now()],
+                'glpi_slalevels_tickets.date' => ['<', $now],
             ],
         ]);
 
@@ -258,10 +260,12 @@ class SlaLevel_Ticket extends CommonDBTM
                     // Drop line when status is closed
                     $slalevelticket->delete(['id' => $data['id']]);
                 } elseif ($ticket->fields['status'] != CommonITILObject::SOLVED) {
-                    // No execution if ticket has been taken into account
+                    // No execution of TTO if ticket has been taken into account
                     if (
-                        !(($slaType == SLM::TTO)
-                        && ($ticket->fields['takeintoaccount_delay_stat'] > 0))
+                        !(
+                            ($slaType == SLM::TTO)
+                            && ($ticket->fields['takeintoaccount_delay_stat'] > 0)
+                        )
                     ) {
                         // If status = solved : keep the line in case of solution not validated
                         $input['id']           = $ticket->getID();
@@ -312,8 +316,10 @@ class SlaLevel_Ticket extends CommonDBTM
     /**
      * Replay all task needed for a specific ticket
      *
-     * @param integer $tickets_id Ticket ID
-     * @param SLM::TTR|SLM::TTO $slaType Type of SLA
+     * Replay level stored in slalevels_tickets | olalevels_tickets
+     *
+     * @param integer $tickets_id
+     * @param integer $slaType SLM::TTR|SLM::TTO
      *
      * @since 9.1    2 parameters mandatory
      */
@@ -321,6 +327,8 @@ class SlaLevel_Ticket extends CommonDBTM
     {
         /** @var \DBmysql $DB */
         global $DB;
+
+        $now = \Session::getCurrentTime();
 
         $criteria = [
             'SELECT'    => 'glpi_slalevels_tickets.*',
@@ -340,7 +348,7 @@ class SlaLevel_Ticket extends CommonDBTM
                 ],
             ],
             'WHERE'     => [
-                'glpi_slalevels_tickets.date'       => ['<', QueryFunction::now()],
+                'glpi_slalevels_tickets.date'       => ['<', $now],
                 'glpi_slalevels_tickets.tickets_id' => $tickets_id,
                 'glpi_slas.type'                    => $slaType,
             ],
