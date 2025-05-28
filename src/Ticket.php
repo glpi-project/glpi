@@ -6444,6 +6444,10 @@ JAVASCRIPT;
         if (!$this->isNewItem() && !isset($input['priority'])) {
             $input['priority'] = $this->fields['priority'];
         }
+
+        if (!$this->isNewItem() && !isset($input['name'])) {
+            $input['name'] = $this->fields['name'];
+        }
     }
 
     /**
