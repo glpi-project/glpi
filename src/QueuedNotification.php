@@ -463,7 +463,11 @@ class QueuedNotification extends CommonDBTM
                 }
                 return $out;
             case 'mode':
-                return Notification_NotificationTemplate::getMode($values[$field])['label'];
+                $mode = Notification_NotificationTemplate::getMode($values[$field]);
+                if (is_array($mode) && !empty($mode['label'])) {
+                    return $mode['label'];
+                }
+                return sprintf('%s (%s)', NOT_AVAILABLE, $values[$field]);
         }
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }
