@@ -985,8 +985,10 @@ class NetworkPort extends CommonDBChild
      */
     protected function showPort(array $port, $dprefs, $so, $canedit, $agg, $rand, $with_ma = true)
     {
-        /** @var \DBmysql $DB */
-        global $DB;
+        /**  @var \DBmysql $DB
+         * @var array $CFG_GLPI
+         */
+        global $DB, $CFG_GLPI;
 
         $css_class = 'netport';
         if ($port['ifstatus'] == 1) {
@@ -1166,7 +1168,7 @@ class NetworkPort extends CommonDBChild
 
                             $device2 = $oppositePort->getItem();
                             if ($device2 !== false) {
-                                $output .= $this->getUnmanagedLink($device2, $oppositePort);
+                                $output .= $this->getAssetLink($oppositePort);
 
                                 //equipments connected to hubs
                                 if ($device2->getType() == Unmanaged::getType() && $device2->fields['hub'] == 1) {
@@ -1186,26 +1188,39 @@ class NetworkPort extends CommonDBChild
                                         $list_ports[] = $npo;
                                     }
 
-                                    $hub_equipments = $DB->request([
-                                        'SELECT' => ['unm.*', 'netp.mac'],
-                                        'FROM'   => Unmanaged::getTable() . ' AS unm',
-                                        'INNER JOIN'   => [
-                                            NetworkPort::getTable() . ' AS netp' => [
-                                                'ON' => [
-                                                    'netp'   => 'items_id',
-                                                    'unm'    => 'id', [
-                                                        'AND' => [
-                                                            'netp.itemtype' => $device2->getType(),
+                                    $itemtypes = $CFG_GLPI["networkport_types"];
+                                    $union = new \QueryUnion();
+                                    foreach ($itemtypes as $related_class) {
+                                        $table = getTableForItemType($related_class);
+                                        $union->addQuery([
+                                            'SELECT' => [
+                                                'asset.id',
+                                                'netp.mac',
+                                                'netp.itemtype',
+                                                'netp.items_id',
+                                            ],
+                                            'FROM'   => $table . ' AS asset',
+                                            'INNER JOIN'   => [
+                                                NetworkPort::getTable() . ' AS netp' => [
+                                                    'ON' => [
+                                                        'netp'   => 'items_id',
+                                                        'asset'    => 'id',
+                                                        [
+                                                            'AND' => [
+                                                                'netp.itemtype' => $related_class,
+                                                            ],
                                                         ],
                                                     ],
                                                 ],
                                             ],
-                                        ],
-                                        'WHERE'  => [
-                                            'netp.itemtype'  => $device2->getType(),
-                                            'netp.id'  => $list_ports,
-                                        ],
-                                    ]);
+                                            'WHERE'  => [
+                                                'netp.itemtype'  => $related_class,
+                                                'netp.id'        => $list_ports,
+                                            ],
+                                        ]);
+                                    }
+
+                                    $hub_equipments = $DB->request(['FROM' => $union]);
 
                                     if (count($hub_equipments) > 10) {
                                         $houtput .= '<div>' . sprintf(
@@ -1214,10 +1229,10 @@ class NetworkPort extends CommonDBChild
                                         ) . '</div>';
                                     } else {
                                         foreach ($hub_equipments as $hrow) {
-                                            $hub = new Unmanaged();
-                                            $hub->getFromDB($hrow['id']);
-                                            $hub->fields['mac'] = $hrow['mac'];
-                                            $houtput .= '<div>' . $this->getUnmanagedLink($hub, $hub) . '</div>';
+                                            $asset = new $hrow['itemtype']();
+                                            $asset->getFromDB($hrow['items_id']);
+                                            $asset->fields['mac'] = $hrow['mac'];
+                                            $houtput .= '<div>' . $this->getAssetLink($asset) . '</div>';
                                         }
                                     }
 
@@ -1356,13 +1371,29 @@ class NetworkPort extends CommonDBChild
 
     protected function getUnmanagedLink($device, $port)
     {
-        $link = $port->getLink();
+        Toolbox::deprecated('Use NetworkPort::getAssetLink() instead.', true, '11.0.0');
+        return $this->getAssetLink($port);
+    }
 
-        if (!empty($port->fields['mac'])) {
-            $link .= '<br/>' . $port->fields['mac'];
+    private function getAssetLink(CommonDBTM $asset): string
+    {
+
+        if (is_a($asset, NetworkPort::class)) {
+            $link = $asset->getLink();
+        } else {
+            $link = sprintf(
+                '<i class="%1$s"></i> %2$s </i>',
+                $asset->getIcon(),
+                $asset->getLink(),
+            );
         }
 
-        $ips_iterator = $this->getIpsForPort($port->getType(), $port->getID());
+
+        if (!empty($asset->fields['mac'])) {
+            $link .= '<br/>' . $asset->fields['mac'];
+        }
+
+        $ips_iterator = $this->getIpsForPort($asset->getType(), $asset->getID());
         $ips = '';
         foreach ($ips_iterator as $ipa) {
             $ips .= ' ' . $ipa['name'];
