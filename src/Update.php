@@ -167,13 +167,13 @@ class Update
      * @param string $current_version  Current version
      * @param bool   $force_latest     Force replay of latest migration
      *
-     * @return void
+     * @return bool
      */
     public function doUpdates(
         $current_version = null,
         bool $force_latest = false,
         ?AbstractProgressIndicator $progress_indicator = null
-    ) {
+    ): bool {
         if ($current_version === null) {
             if ($this->version === null) {
                 throw new \RuntimeException('Cannot process updates without any version specified!');
@@ -187,7 +187,7 @@ class Update
                 sprintf(__('Upgrade from version lower than %s is not supported.'), '0.85.5')
             );
             $progress_indicator?->fail();
-            return;
+            return false;
         }
         if (version_compare($current_version, GLPI_VERSION, '>')) {
             $progress_indicator?->addMessage(
@@ -195,7 +195,7 @@ class Update
                 sprintf(__('Downgrading to version %s is not supported.'), GLPI_VERSION)
             );
             $progress_indicator?->fail();
-            return;
+            return false;
         }
 
         $DB = $this->DB;
@@ -265,7 +265,7 @@ class Update
                 );
                 $progress_indicator?->fail();
                 $this->logger?->error($e->getMessage(), context: ['exception' => $e]);
-                return;
+                return false;
             }
 
             if ($key !== array_key_last($migrations)) {
@@ -410,6 +410,8 @@ class Update
         $progress_indicator?->setProgressBarMessage('');
         $progress_indicator?->addMessage(MessageType::Success, __('Update done.'));
         $progress_indicator?->finish();
+
+        return true;
     }
 
     /**
