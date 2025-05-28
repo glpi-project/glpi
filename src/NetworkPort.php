@@ -1217,7 +1217,7 @@ class NetworkPort extends CommonDBChild
                                                 'netp.itemtype'  => $related_class,
                                                 'netp.id'        => $list_ports,
                                                 'NOT'                => [
-                                                    'netp.itemtype'  => $device1->getType(),
+                                                    'netp.itemtype'  => $device1->getType(), // Do not include the current asset
                                                     'netp.items_id'  => $device1->getID(),
                                                 ],
                                             ],
