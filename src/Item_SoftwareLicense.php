@@ -113,6 +113,52 @@ class Item_SoftwareLicense extends CommonDBRelation
         return $tab;
     }
 
+    /**
+     * display a value according to a field
+     *
+     * @since 11.0
+     *
+     * @param $field     String         name of the field
+     * @param $values    String / Array with the value to display
+     * @param $options   Array          of option
+     *
+     * @return string
+     **/
+    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    {
+        if (!is_array($values)) {
+            $values = [$field => $values];
+        }
+
+        switch ($options['searchopt']['id']) {
+            case '164':
+                $softlicense = new SoftwareLicense();
+                $softlicense->getFromDB($options['raw_data']['id']);
+                $assign_item = self::countForLicense($options['raw_data']['id']);
+                $remaining_item = $softlicense->fields['number'] - $assign_item;
+                $total = __('Total') . ': ' . $softlicense->fields["number"];
+                $assigned = __('Assigned') . ': ' . $assign_item;
+                $remaining = __('Remaining') . ': ' . $remaining_item;
+                $color = $remaining_item >= 0 ? '#74b72e' : '#cf9b9b';
+                $class = htmlescape($color);
+                return sprintf(
+                    '<div>
+                        <span class="badge" style="background-color: %s;">%s</span>
+                        <span class="badge" style="background-color: %s;">%s</span>
+                        <span class="badge" style="background-color: %s;">%s</span>
+                    </div>',
+                    $class,
+                    htmlescape($assigned),
+                    $class,
+                    htmlescape($remaining),
+                    $class,
+                    htmlescape($total)
+                );
+        }
+
+        return parent::getSpecificValueToDisplay($field, $values, $options);
+    }
+
     public static function showMassiveActionsSubForm(MassiveAction $ma)
     {
         $input = $ma->getInput();
@@ -1139,7 +1185,8 @@ JAVASCRIPT;
                             _n('Affected item', 'Affected items', Session::getPluralNumber()),
                             $nb,
                             $item::class,
-                            'ti ti-package'
+                            'ti ti-package',
+                            $item->fields['number'],
                         ),
                     ];
                 }
