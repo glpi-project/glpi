@@ -1189,6 +1189,11 @@ class NetworkPort extends CommonDBChild
                                     }
 
                                     $itemtypes = $CFG_GLPI["networkport_types"];
+                                    //Remove the current itemtype from the list to avoid displaying it as a linked asset in the hub
+                                    $itemtypes = array_filter($itemtypes, function($type) use ($device1) {
+                                        return $type !== $device1->getType();
+                                    });
+
                                     $union = new \QueryUnion();
                                     foreach ($itemtypes as $related_class) {
                                         $table = getTableForItemType($related_class);
