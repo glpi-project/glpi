@@ -92,7 +92,7 @@
                 <div
                     class="accordion-item"
                 >
-                    <h3 class="accordion-header">
+                    <div class="accordion-header">
                         <div
                             class="accordion-button {{ is_expanded ? '' : 'collapsed' }}"
                             role="button"
@@ -102,7 +102,7 @@
                             aria-expanded="{{ is_expanded ? 'true' : 'false' }}"
                             data-glpi-destination-click-on-space {# Simulate how space would behave in a button instead of a div #}
                         >
-                            <i class="{{ concrete_destination.getIcon() }} me-2"></i>
+                            <i class="{{ concrete_destination.getIcon() }}"></i>
                             <span
                                 class="m-0 lh-base fw-normal glpi-form-destination-name"
                             >
@@ -135,7 +135,7 @@
                                 data-bs-target=""
                             />
                         </div>
-                    </h3>
+                    </div>
                     <div
                         id="glpi-destinations-accordion-collapse-{{ rand }}-{{ loop.index }}"
                         class="accordion-collapse collapse {{ is_expanded ? 'show' : '' }}"
