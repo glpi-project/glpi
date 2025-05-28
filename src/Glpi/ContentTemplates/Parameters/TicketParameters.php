@@ -115,9 +115,9 @@ class TicketParameters extends CommonITILObjectParameters
 
         // Add ticket's OLA
         $ola_parameters = new OLAParameters();
-        $_getOlas = fn(array $ola_datas) => OLA::getByIds(array_column($ola_datas, 'id'));
-        $values['olas_tto'] = array_map([$ola_parameters, 'getValues'], $_getOlas($ticket->getOlasTTOData())); // @todoseb implementer tests
-        $values['olas_ttr'] = array_map([$ola_parameters, 'getValues'], $_getOlas($ticket->getOlasTTRData())); // @todoseb implementer tests
+        $_getOlas = fn(array $ola_datas) => OLA::getByIds(array_column($ola_datas, 'olas_id'));
+        $values['olas_tto'] = array_map([$ola_parameters, 'getValues'], $_getOlas($ticket->getOlasTTOData()));
+        $values['olas_ttr'] = array_map([$ola_parameters, 'getValues'], $_getOlas($ticket->getOlasTTRData()));
 
         // Add ticket's request type
         if ($requesttype = RequestType::getById($fields['requesttypes_id'])) {
