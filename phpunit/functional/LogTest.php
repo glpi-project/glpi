@@ -34,6 +34,7 @@
 
 namespace tests\units;
 
+use Computer;
 use DbTestCase;
 use Glpi\Form\AccessControl\ControlType\DirectAccess;
 use Glpi\Form\AccessControl\ControlType\DirectAccessConfig;
@@ -978,5 +979,48 @@ class LogTest extends DbTestCase
         // Verify old_id is new manufacturer_id and new_id is 0
         $this->assertEquals($new_manufacturer_id, $log['old_id']);
         $this->assertEquals(0, $log['new_id']);
+    }
+
+    public function testLogLongValues(): void
+    {
+        global $DB;
+
+        Log::history(
+            getItemByTypeName(Computer::class, '_test_pc01', true),
+            Computer::class,
+            [0, str_repeat('a', 160), str_repeat('b', 180)]
+        );
+        // Logged entry values less than 255 max so they should remain unchanged
+        $log_entry = $DB->request([
+            'FROM'   => Log::getTable(),
+            'WHERE'  => [
+                'itemtype'  => Computer::class,
+                'items_id'  => getItemByTypeName(Computer::class, '_test_pc01', true),
+            ],
+            'ORDER'  => 'id DESC',
+            'LIMIT'  => 1,
+        ])->current();
+        $this->assertNotNull($log_entry);
+        $this->assertEquals(160, mb_strlen($log_entry['old_value']));
+        $this->assertEquals(180, mb_strlen($log_entry['new_value']));
+
+        Log::history(
+            getItemByTypeName(Computer::class, '_test_pc01', true),
+            Computer::class,
+            [0, str_repeat('a', 1000), str_repeat('b', 1000)]
+        );
+        // Logged entry should be truncated to 255 characters for old_value and new_value
+        $log_entry = $DB->request([
+            'FROM'   => Log::getTable(),
+            'WHERE'  => [
+                'itemtype'  => Computer::class,
+                'items_id'  => getItemByTypeName(Computer::class, '_test_pc01', true),
+            ],
+            'ORDER'  => 'id DESC',
+            'LIMIT'  => 1,
+        ])->current();
+        $this->assertNotNull($log_entry);
+        $this->assertEquals(255, mb_strlen($log_entry['old_value']));
+        $this->assertEquals(255, mb_strlen($log_entry['new_value']));
     }
 }
