@@ -37,6 +37,7 @@ require_once(__DIR__ . '/_check_webserver_config.php');
 
 use Glpi\Error\ErrorHandler;
 use Glpi\Event;
+use Glpi\Http\RedirectResponse;
 use Glpi\Mail\SMTP\OauthConfig;
 
 Session::checkRight("config", UPDATE);
@@ -58,7 +59,7 @@ if (isset($_POST["update"])) {
             try {
                 $auth_url = $provider->getAuthorizationUrl();
                 $_SESSION['smtp_oauth2_state'] = $provider->getState();
-                Html::redirect($auth_url);
+                return new RedirectResponse($auth_url);
             } catch (\Throwable $e) {
                 ErrorHandler::logCaughtException($e);
                 Session::addMessageAfterRedirect(
