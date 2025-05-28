@@ -328,7 +328,7 @@ class SlaLevel_Ticket extends CommonDBTM
         /** @var \DBmysql $DB */
         global $DB;
 
-        $now = $_SESSION['glpi_currenttime'];
+        $now = \Session::getCurrentTime();
 
         $criteria = [
             'SELECT'    => 'glpi_slalevels_tickets.*',
