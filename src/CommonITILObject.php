@@ -8454,10 +8454,7 @@ abstract class CommonITILObject extends CommonDBTM
                     $add_done = false;
                     foreach ($validations_to_send as $user) {
                         // Do not auto add twice same validation
-                        if (
-                            !$validation->alreadyExists($values[$self_fk], $user)
-                            || isset($input['_rule_process'])
-                        ) {
+                        if (!$validation->alreadyExists($values[$self_fk], $user)) {
                             $values["users_id_validate"] = $user;
                             if ($validation->add($values)) {
                                 $add_done = true;
