@@ -1369,7 +1369,13 @@ class NetworkPort extends CommonDBChild
         return $iterator;
     }
 
-    protected function getAssetLink(CommonDBTM $asset)
+    protected function getUnmanagedLink($device, $port)
+    {
+        Toolbox::deprecated('Use NetworkPort::getAssetLink() instead.', true, '11.0.0');
+        return $this->getAssetLink($port);
+    }
+
+    private function getAssetLink(CommonDBTM $asset): string
     {
 
         if (is_a($asset, NetworkPort::class)) {
