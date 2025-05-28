@@ -985,8 +985,10 @@ class NetworkPort extends CommonDBChild
      */
     protected function showPort(array $port, $dprefs, $so, $canedit, $agg, $rand, $with_ma = true)
     {
-        /** @var \DBmysql $DB */
-        global $DB;
+        /**  @var \DBmysql $DB
+         * @var array $CFG_GLPI
+         */
+        global $DB, $CFG_GLPI;
 
         $css_class = 'netport';
         if ($port['ifstatus'] == 1) {
