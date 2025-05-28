@@ -665,7 +665,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
                 $api_name = $categories['subtypes'][$itemtype]['name'];
                 $controller = $controller_class;
                 // Use the specified parent itemtype or the first main one if none is specified (all work)
-                $parent_itemtype = $categories['subtypes'][$itemtype]['parent'] ?: array_key_first($categories['main']);
+                $parent_itemtype = $categories['subtypes'][$itemtype]['parent'] ?? array_key_first($categories['main']);
                 break;
             }
         }
