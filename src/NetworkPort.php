@@ -1189,11 +1189,6 @@ class NetworkPort extends CommonDBChild
                                     }
 
                                     $itemtypes = $CFG_GLPI["networkport_types"];
-                                    //Remove the current itemtype from the list to avoid displaying it as a linked asset in the hub
-                                    $itemtypes = array_filter($itemtypes, function($type) use ($device1) {
-                                        return $type !== $device1->getType();
-                                    });
-
                                     $union = new \QueryUnion();
                                     foreach ($itemtypes as $related_class) {
                                         $table = getTableForItemType($related_class);
@@ -1234,6 +1229,13 @@ class NetworkPort extends CommonDBChild
                                         ) . '</div>';
                                     } else {
                                         foreach ($hub_equipments as $hrow) {
+                                            if (
+                                                $hrow['itemtype'] === $device1->getType() &&
+                                                $hrow['items_id'] === $device1->getID()
+                                            ) {
+                                                continue; // Skip  asset is the same as the current device
+                                            }
+
                                             $asset = new $hrow['itemtype']();
                                             $asset->getFromDB($hrow['items_id']);
                                             $asset->fields['mac'] = $hrow['mac'];
