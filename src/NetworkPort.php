@@ -1197,7 +1197,7 @@ class NetworkPort extends CommonDBChild
                                                 'netp.itemtype',
                                                 'netp.items_id',
                                             ],
-                                            'FROM'   => $table . ' AS unm',
+                                            'FROM'   => $table . ' AS asset',
                                             'INNER JOIN'   => [
                                                 NetworkPort::getTable() . ' AS netp' => [
                                                     'ON' => [
