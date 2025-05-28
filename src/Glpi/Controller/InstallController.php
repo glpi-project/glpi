@@ -122,10 +122,14 @@ class InstallController extends AbstractController
 
         return new StreamedResponse(function () use ($update, $progress_indicator) {
             try {
-                $update->doUpdates(
+                $success = $update->doUpdates(
                     current_version: $update->getCurrents()['version'],
                     progress_indicator: $progress_indicator
                 );
+
+                if ($success === false) {
+                    $progress_indicator->fail();
+                }
 
                 // Force cache cleaning to ensure it will not contain stale data
                 (new CacheManager())->resetAllCaches();
