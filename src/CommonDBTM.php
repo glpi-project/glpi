@@ -4421,21 +4421,6 @@ class CommonDBTM extends CommonGLPI
                             }
                             break;
 
-                        case 'email':
-                        case 'string':
-                        case 'itemlink':
-                            // Some 'completename' fields may be typed as 'itemlink' (e.g., in CommonTreeDropdown::class).
-                            // These should be excluded from the length check, as they are stored as TEXT or MEDIUMTEXT,
-                            // not VARCHAR. These fields are used solely as item links, not as standard string fields.
-                            if ($key !== 'completename' && is_string($value) && ($length = mb_strlen($value, 'UTF-8')) > 255) {
-                                trigger_error(
-                                    "{$value} exceed 255 characters long ({$length}), it will be truncated.",
-                                    E_USER_WARNING
-                                );
-                                $this->input[$key] = mb_substr($value, 0, 255, 'UTF-8');
-                            }
-                            break;
-
                         default:
                             //Plugins can implement their own checks
                             if (!$this->checkSpecificValues($searchOption['datatype'], $value)) {
