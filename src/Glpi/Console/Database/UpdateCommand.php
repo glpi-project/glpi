@@ -224,11 +224,15 @@ class UpdateCommand extends AbstractCommand implements ConfigurationCommandInter
 
         $update->setMigration(new Migration(GLPI_VERSION, $progress_indicator));
         try {
-            $update->doUpdates(
+            $success = $update->doUpdates(
                 current_version: $current_version,
                 force_latest: $force,
                 progress_indicator: $progress_indicator
             );
+            if ($success === false) {
+                $output->writeln('<error>' . __('Upddate failed.') . '</error>', OutputInterface::VERBOSITY_QUIET);
+                return self::ERROR_UPDATE_FAILED;
+            }
         } catch (\Throwable $e) {
             $progress_indicator->fail();
 
