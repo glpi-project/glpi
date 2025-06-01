@@ -8325,16 +8325,16 @@
         },
         {
             "name": "tecnickcom/tc-lib-barcode",
-            "version": "2.4.5",
+            "version": "2.4.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tecnickcom/tc-lib-barcode.git",
-                "reference": "892518d94091156244fe3f4f1e1fbe30106de303"
+                "reference": "8c7536995461124e7daa1833f18a0d7b7d176e7c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tecnickcom/tc-lib-barcode/zipball/892518d94091156244fe3f4f1e1fbe30106de303",
-                "reference": "892518d94091156244fe3f4f1e1fbe30106de303",
+                "url": "https://api.github.com/repos/tecnickcom/tc-lib-barcode/zipball/8c7536995461124e7daa1833f18a0d7b7d176e7c",
+                "reference": "8c7536995461124e7daa1833f18a0d7b7d176e7c",
                 "shasum": ""
             },
             "require": {
@@ -8413,28 +8413,28 @@
             ],
             "support": {
                 "issues": "https://github.com/tecnickcom/tc-lib-barcode/issues",
-                "source": "https://github.com/tecnickcom/tc-lib-barcode/tree/2.4.5"
+                "source": "https://github.com/tecnickcom/tc-lib-barcode/tree/2.4.7"
             },
             "funding": [
                 {
-                    "url": "https://www.paypal.com/cgi-bin/webscr?cmd=_donations&currency_code=GBP&business=paypal@tecnick.com&item_name=donation%20for%20tc-lib-barcode%20project",
+                    "url": "https://www.paypal.com/donate/?hosted_button_id=NZUEC5XS8MFBJ",
                     "type": "custom"
                 }
             ],
-            "time": "2025-04-25T17:50:28+00:00"
+            "time": "2025-05-27T15:47:44+00:00"
         },
         {
             "name": "tecnickcom/tc-lib-color",
-            "version": "2.2.10",
+            "version": "2.2.12",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tecnickcom/tc-lib-color.git",
-                "reference": "8fa134e609c13631cb171fd4a8dbc2beeb22c8c7"
+                "reference": "4eb1a80f2e5603207aee0282e8dc3a1b22019ac5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tecnickcom/tc-lib-color/zipball/8fa134e609c13631cb171fd4a8dbc2beeb22c8c7",
-                "reference": "8fa134e609c13631cb171fd4a8dbc2beeb22c8c7",
+                "url": "https://api.github.com/repos/tecnickcom/tc-lib-color/zipball/4eb1a80f2e5603207aee0282e8dc3a1b22019ac5",
+                "reference": "4eb1a80f2e5603207aee0282e8dc3a1b22019ac5",
                 "shasum": ""
             },
             "require": {
@@ -8482,15 +8482,15 @@
             ],
             "support": {
                 "issues": "https://github.com/tecnickcom/tc-lib-color/issues",
-                "source": "https://github.com/tecnickcom/tc-lib-color/tree/2.2.10"
+                "source": "https://github.com/tecnickcom/tc-lib-color/tree/2.2.12"
             },
             "funding": [
                 {
-                    "url": "https://www.paypal.com/cgi-bin/webscr?cmd=_donations&currency_code=GBP&business=paypal@tecnick.com&item_name=donation%20for%20tc-lib-color%20project",
+                    "url": "https://www.paypal.com/donate/?hosted_button_id=NZUEC5XS8MFBJ",
                     "type": "custom"
                 }
             ],
-            "time": "2025-04-25T17:48:50+00:00"
+            "time": "2025-05-27T15:44:55+00:00"
         },
         {
             "name": "tecnickcom/tcpdf",
