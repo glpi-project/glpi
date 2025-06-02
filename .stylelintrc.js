@@ -15,6 +15,7 @@ module.exports = {
 
         // DISABLED pure coding style rules, no functional impact
         "color-function-notation": null, // DISABLE: Expected modern color-function notation
+        "color-function-alias-notation": null, // DISABLE: Expected "rgba" to be "rgb"
         "declaration-block-no-redundant-longhand-properties": null, // DISABLE Expected shorthand property "flex-flow"
         "media-feature-range-notation": "prefix",
         "selector-not-notation": "simple", //DISABLE Expected complex :not() pseudo-class notation

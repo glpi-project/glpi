@@ -101,7 +101,7 @@
         border-top-left-radius: 0;
         max-width: 820px;
         min-width: 100%;
-        word-break: break-word;
+        overflow-wrap: anywhere;
 
         @include media-breakpoint-up(sm) {
             &::before {
