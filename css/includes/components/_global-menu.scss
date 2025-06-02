@@ -138,7 +138,6 @@
 
                         .dropdown-item {
                             border-left: 3px solid rgba($color: #000, $alpha: 50%);
-                            padding-left: 3.25rem; // FIXME: tabler 1.0.0-beta13 missing var $container-padding-x
 
                             &.active {
                                 border-left-color: color-mix(in srgb, var(--tblr-primary), transparent 30%);
@@ -151,13 +150,18 @@
                                 color: var(--tblr-primary);
                                 background-color: rgba($color: #000, $alpha: 20%);
                             }
+
+
+                            i {
+                                margin-right: 0;
+                            }
                         }
                     }
                 }
             }
 
             i {
-                margin-right: 0.7em;
+                margin-right: 0.4rem;
             }
 
             &:hover {

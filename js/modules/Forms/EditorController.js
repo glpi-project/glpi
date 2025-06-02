@@ -236,6 +236,11 @@ export class GlpiFormEditorController
         // Compute state before submitting the form
         $(this.#target).on('submit', (event) => {
             try {
+                // If a dropdown was closed due to clicking the save button,
+                // the focus is not placed on the save button but on the dropdown trigger.
+                // We need to simulate the focus on the save button.
+                event.originalEvent.submitter.focus();
+
                 this.computeState();
             } catch (e) {
                 // Do not submit the form if the state isn't computed
