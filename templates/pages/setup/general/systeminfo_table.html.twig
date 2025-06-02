@@ -47,9 +47,9 @@
    {% set rand = random() %}
    {% set cleaned_content = content|trim|u.wordwrap(128) %}
    <div class="accordion-item">
-      <h2 class="accordion-header section-header" id="sysinfo_header_{{ rand }}">
+      <div class="accordion-header section-header" id="sysinfo_header_{{ rand }}">
          <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#sysinfo_section_{{ rand }}">{{ label }}</button>
-      </h2>
+      </div>
       <div id="sysinfo_section_{{ rand }}" class="accordion-collapse collapse" aria-labelledby="sysinfo_header_{{ rand }}" data-bs-parent="#sysinfo_accordion">
          <pre class="section-content">{{ raw ? cleaned_content|raw : cleaned_content|e }}</pre>
       </div>

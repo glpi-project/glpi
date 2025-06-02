@@ -54,6 +54,7 @@
     --tblr-bg-surface-tertiary: var(--tblr-gray-50);
     --tblr-bg-surface-dark: color-mix(in srgb, var(--tblr-bg-surface), var(--tblr-dark) 1.5%);
     --tblr-box-shadow-input: none;
+    --tblr-spacer: var(--tblr-spacer-3);
     --glpi-tabs-bg: color-mix(in srgb, var(--tblr-bg-surface), black 1.5%);
     --glpi-tabs-fg: var(--tblr-muted);
     --glpi-tabs-border-color: var(--tblr-border-color);
@@ -175,18 +176,6 @@ body.in_modal {
         &:hover {
             text-decoration: var(--tblr-link-hover-decoration);
         }
-    }
-}
-
-.dropdown-item {
-    & > .fas:first-child,
-    & > .fa-solid:first-child,
-    & > .far:first-child,
-    & > .fa-regular:first-child,
-    & > .fab:first-child,
-    & > .fa-brands:first-child,
-    & > .ti:first-child {
-        margin-right: 0.5em;
     }
 }
 
