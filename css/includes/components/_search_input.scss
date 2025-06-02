@@ -90,8 +90,8 @@ div.search-input {
                 padding: 0.3rem 0.5rem;
 
                 button.btn.active { // Fix for not being able to apply :hover pseudo class programmatically
-                    background-color: rgba(var(--tblr-btn-color), 1);
-                    color: rgba(var(--tblr-btn-color-text), 1);
+                    background-color: rgb(var(--tblr-btn-color), 1);
+                    color: rgb(var(--tblr-btn-color-text), 1);
                 }
             }
         }

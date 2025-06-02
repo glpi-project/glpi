@@ -71,18 +71,18 @@ $break_s_screen: 1400px;
 
             .tag {
                 border-radius: 3px;
-                border: 1px solid rgba(100, 100, 100, 20%);
+                border: 1px solid rgb(100, 100, 100, 20%);
                 padding: 5px;
                 margin: 0 3px 3px 0;
                 text-align: center;
                 cursor: pointer;
 
                 &:hover {
-                    background: rgba(100, 100, 100, 50%);
+                    background: rgb(100, 100, 100, 50%);
                 }
 
                 &.active {
-                    background: rgba(100, 100, 100, 50%);
+                    background: rgb(100, 100, 100, 50%);
                     color: #fff;
                     border-color: transparent;
                 }
@@ -157,7 +157,7 @@ $break_s_screen: 1400px;
                 left: 0;
                 right: 0;
                 backdrop-filter: blur(2px);
-                background-color: rgba(0, 0, 0, 50%);
+                background-color: rgb(0, 0, 0, 50%);
 
                 .spinner-border {
                     position: absolute;
@@ -179,8 +179,8 @@ $break_s_screen: 1400px;
                 margin: calc(#{$margin_width} / 2);
                 margin-bottom: 10px;
                 border-radius: 2px;
-                background-color: rgba(100, 100, 100, 3%);
-                border: 1px solid rgba(100, 100, 100, 30%);
+                background-color: rgb(100, 100, 100, 3%);
+                border: 1px solid rgb(100, 100, 100, 30%);
                 display: flex;
                 flex-direction: column;
                 align-items: stretch;
@@ -260,8 +260,8 @@ $break_s_screen: 1400px;
                         margin-left: auto;
 
                         button {
-                            background-color: rgba(100, 100, 100, 10%);
-                            border: 1px solid rgba(100, 100, 100, 40%);
+                            background-color: rgb(100, 100, 100, 10%);
+                            border: 1px solid rgb(100, 100, 100, 40%);
                             border-radius: 2px;
                             cursor: pointer;
                             width: 28px;
@@ -269,7 +269,7 @@ $break_s_screen: 1400px;
                             margin: 1px;
 
                             &:hover {
-                                background-color: rgba(100, 100, 100, 20%);
+                                background-color: rgb(100, 100, 100, 20%);
                             }
 
                             i {
@@ -348,7 +348,7 @@ $break_s_screen: 1400px;
                 }
 
                 .footer {
-                    background-color: rgba(0, 0, 0, 3%);
+                    background-color: rgb(0, 0, 0, 3%);
                     display: flex;
                     align-items: stretch;
                     justify-content: space-between;
@@ -427,11 +427,11 @@ $break_s_screen: 1400px;
             li {
                 padding: 8px 16px;
                 transition: background-color 0.1s;
-                border: 1px solid rgba(100, 100, 100, 20%);
+                border: 1px solid rgb(100, 100, 100, 20%);
 
                 &.current {
-                    background-color: rgba(100, 100, 100, 50%);
-                    border: 1px solid rgba(100, 100, 100, 40%);
+                    background-color: rgb(100, 100, 100, 50%);
+                    border: 1px solid rgb(100, 100, 100, 40%);
                     color: white;
                     font-weight: bold;
 
@@ -494,7 +494,7 @@ $break_s_screen: 1400px;
 
                     .details {
                         flex: 1;
-                        border-right: 1px solid rgba(100, 100, 100, 30%);
+                        border-right: 1px solid rgb(100, 100, 100, 30%);
                         padding: 5px 0 0 10px;
                         height: 100%;
                         display: flex;

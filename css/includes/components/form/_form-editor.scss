@@ -254,7 +254,7 @@
 
 .glpi-form-editor-drag-question-placeholder {
     border: 2px dashed var(--tblr-primary);
-    background: rgba(var(--tblr-primary), 0.1);
+    background: rgb(var(--tblr-primary), 0.1);
     opacity: 0.5;
 }
 
@@ -274,14 +274,14 @@
 
 .glpi-form-editor-drag-question-option-placeholder {
     border: 2px dashed var(--tblr-primary);
-    background: rgba(var(--tblr-primary), 0.1);
+    background: rgb(var(--tblr-primary), 0.1);
     opacity: 0.5;
     height: 40px !important;
 }
 
 .glpi-form-editor-drag-section-placeholder {
     border: 2px dashed var(--tblr-primary);
-    background: rgba(var(--tblr-primary), 0.1);
+    background: rgb(var(--tblr-primary), 0.1);
     opacity: 0.5;
     height: 60px !important;
 }

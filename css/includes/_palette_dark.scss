@@ -64,12 +64,12 @@
     --glpi-timeline-solution-bg: #3a4d55;
     --glpi-timeline-solution-fg: #89bfd3;
     --glpi-timeline-solution-border-color: #435963;
-    --glpi-timeline-badge-bg: rgba(104, 104, 104, 15%);
-    --glpi-timeline-badge-fg: rgba(236, 236, 236, 80%);
+    --glpi-timeline-badge-bg: rgb(104, 104, 104, 15%);
+    --glpi-timeline-badge-fg: rgb(236, 236, 236, 80%);
     --glpi-badge-bg: color-mix(in srgb, var(--tblr-link-color), var(--tblr-dark) 85%);
 
     .navbar-nav.user-menu .bg-red-lt {
-        background-color: rgba(214, 57, 57, 20%) !important
+        background-color: rgb(214, 57, 57, 20%) !important
     }
 
     // missing border (TODO open a pr upstream ?)
