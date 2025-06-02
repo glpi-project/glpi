@@ -37,7 +37,6 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 use Glpi\Exception\Http\NotFoundHttpException;
-use Glpi\Plugin\Hooks;
 
 /**
  * Infocom class

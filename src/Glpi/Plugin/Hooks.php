@@ -35,9 +35,6 @@
 
 namespace Glpi\Plugin;
 
-use Glpi\Api\HL as HL_API;
-use Glpi\Features\Kanban;
-
 /**
  * @link https://glpi-developer-documentation.readthedocs.io/en/master/plugins/hooks.html
  * @note Documentation added on the constants here will be used to generate the plugin hook documentation.
@@ -1059,8 +1056,8 @@ class Hooks
 
     /**
      * This hook should provide an array of arrays containing a 'middlware' value that is the class name.
-     * The middleware classes should extend {@link HL_API\Middleware\AbstractMiddleware} and
-     * implement either {@link HL_API\Middleware\RequestMiddlewareInterface{ or {@link HL_API\Middleware\ResponseMiddlewareInterface}.
+     * The middleware classes should extend {@link \Glpi\Api\HL\Middleware\AbstractMiddleware} and
+     * implement either {@link \Glpi\Api\HL\Middleware\RequestMiddlewareInterface{ or {@link \Glpi\Api\HL\Middleware\ResponseMiddlewareInterface}.
      * The arrays may also contain values for 'priority' and 'condition' where priority is an integer (higher is more important) and condition is a callable.
      * If a condition is provided, that callable will be called with the current controller as a parameter, and it must return true for the middleware to be used, or false to not be.
      */
