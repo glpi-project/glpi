@@ -4322,12 +4322,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Rule.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Call to function is_subclass_of\\(\\) with \'Rule\' and mixed will always evaluate to true\\.$#',
-	'identifier' => 'function.alreadyNarrowedType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/RuleAction.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
 	'identifier' => 'function.alreadyNarrowedType',
 	'count' => 1,
@@ -4398,6 +4392,12 @@ $ignoreErrors[] = [
 	'identifier' => 'deadCode.unreachable',
 	'count' => 1,
 	'path' => __DIR__ . '/src/SNMPCredential.php',
+];
+$ignoreErrors[] = [
+	'message' => '#^Call to function is_a\\(\\) with arguments class\\-string\\<CommonDBTM\\>, \'CommonDBTM\' and true will always evaluate to true\\.$#',
+	'identifier' => 'function.alreadyNarrowedType',
+	'count' => 1,
+	'path' => __DIR__ . '/src/Search.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Call to function is_array\\(\\) with array will always evaluate to true\\.$#',
