@@ -55,6 +55,7 @@ final class CaldavController extends AbstractController
     #[SecurityStrategy(Firewall::STRATEGY_NO_CHECK)]
     public function __invoke(Request $request): Response
     {
+        // @phpstan-ignore-next-line method.deprecatedClass (refactoring is planned later)
         return new HeaderlessStreamedResponse(function () {
             /** @var array $CFG_GLPI */
             global $CFG_GLPI;
