@@ -65,7 +65,6 @@ parameters:
         - TU_USER
     ignoreErrors:
         - '~Instantiated class XHProfRuns_Default not found~'
-        - '~Instantiation of deprecated class Glpi\\Http\\HeaderlessStreamedResponse~'
         -
             message: '~LDAP\\Connection~'
             reportUnmatched: false

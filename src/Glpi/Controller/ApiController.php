@@ -69,6 +69,7 @@ final class ApiController extends AbstractController
 
         // If the relative URI starts with /v1/ or is /v1 then we are dealing with a legacy API request
         if (preg_match('/^\/v1(\/|$)/', $relative_uri)) {
+            // @phpstan-ignore-next-line method.deprecatedClass (refactoring is planned later)
             return new HeaderlessStreamedResponse(function () {
                 $api = new \Glpi\Api\APIRest();
                 $api->call();
