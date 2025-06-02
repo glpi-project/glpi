@@ -474,7 +474,18 @@ abstract class InventoryAsset
                     // If $item is new and the input key is locked, we do not want to set it using the raw value.
                     // This is because locked fields are no longer processed or sanitized during the addition process.
                     // For more details, see: https://github.com/glpi-project/glpi/pull/19426
-                    if (!$item->isNewItem()) {
+                    // Bypass for :
+                    // - states_id if default value is define from inventory conf
+                    // - entities_id default inventory conf is 0 'root entity'
+                    $config = \Config::getConfigurationValues('inventory');
+
+                    if (
+                        !$item->isNewItem()
+                        || (
+                            ($key === 'states_id' && !empty($config['states_id_default']))
+                            || $key === 'entities_id'
+                        )
+                    ) {
                         $input[$key] = $this->raw_links[$known_key];
                     }
                 }
