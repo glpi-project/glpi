@@ -44,9 +44,9 @@
             <tr class="tab_bg_1">
                <td class="text-start">
                   {% if not requirement.isOptional() %}
-                     <span class="badge bg-warning text-warning-fg">{{ __('Required') }}</span>
+                     <span class="badge bg-warning-lt">{{ __('Required') }}</span>
                   {% elseif requirement.isRecommendedForSecurity() %}
-                     <span class="badge bg-danger text-danger-fg">{{ __('Security') }}</span>
+                     <span class="badge bg-danger-lt">{{ __('Security') }}</span>
                   {% else %}
                      <span class="badge bg-secondary text-secondary-fg">{{ __('Suggested') }}</span>
                   {% endif %}
