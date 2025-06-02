@@ -1001,7 +1001,7 @@ $break_tablet: 1400px;
 
             .ct-labels {
                 .ct-label:not(.ct-vertical) {
-                    word-break: break-word;
+                    overflow-wrap: anywhere;
                 }
             }
         }
