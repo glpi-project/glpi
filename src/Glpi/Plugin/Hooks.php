@@ -44,6 +44,11 @@ use Glpi\Features\Kanban;
  */
 class Hooks
 {
+    /**
+     * @deprecated 11.0.0
+     */
+    public const CSRF_COMPLIANT = 'csrf_compliant';
+
     // File hooks
     /**
      * Add CSS file in the head of all non-anonymous pages.
