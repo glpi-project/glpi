@@ -32,22 +32,19 @@
  * ---------------------------------------------------------------------
  */
 
-namespace Glpi\Console\Documentation;
-
 use Glpi\Console\AbstractCommand;
 use Glpi\Plugin\Hooks;
-use ReflectionClass;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-final class GenerateHookDocsCommand extends AbstractCommand
+final class GenerateHooksDocumentationCommand extends AbstractCommand
 {
     protected function configure()
     {
         parent::configure();
 
-        $this->setName('generate:docs_hooks');
-        $this->setDescription('Generate plugin hook documentation');
+        $this->setName('tools:generate_hooks_documentation');
+        $this->setDescription('Generate plugin hooks documentation');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)

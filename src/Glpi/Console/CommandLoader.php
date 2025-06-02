@@ -173,11 +173,6 @@ class CommandLoader implements CommandLoaderInterface
                 continue;
             }
 
-            // If the command file is in the "Console/Documentation" directory, the command should only be registered in development env
-            if (GLPI_ENVIRONMENT_TYPE !== 'development' && preg_match('/src\/Glpi\/Console\/Documentation/', $file->getPathname()) === 1) {
-                continue;
-            }
-
             $command = $this->getCommandFromFile(
                 $file,
                 $basedir,
