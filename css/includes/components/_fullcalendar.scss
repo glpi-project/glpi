@@ -50,7 +50,7 @@
     }
 
     td.fc-today {
-        background: rgba(var(--tblr-emphasis-color-rgb), 0.1);
+        background: rgb(var(--tblr-emphasis-color-rgb), 0.1);
     }
 
     .fc-divider,
@@ -61,7 +61,7 @@
     }
 
     .fc-list-item:hover td {
-        background: rgba(var(--tblr-emphasis-color-rgb), 0.075);
+        background: rgb(var(--tblr-emphasis-color-rgb), 0.075);
         color: inherit;
     }
 }

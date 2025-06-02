@@ -105,7 +105,7 @@ $inline-input-padding: 2px 4px;
 // help to trigger and remove the class as needed
 form:not(.disable-focus) {
     .simulate-focus {
-        box-shadow: 0 0 0 0.25rem rgba(var(--tblr-primary-rgb), 0.20);
+        box-shadow: 0 0 0 0.25rem rgb(var(--tblr-primary-rgb), 0.20);
 
         // Show richtext toolbar only when focused
         .tox-editor-header {

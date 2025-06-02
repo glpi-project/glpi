@@ -107,9 +107,9 @@
     --glpi-timeline-document-fg: #21352c;
     --glpi-timeline-document-border-color: #68b997;
     --glpi-timeline-log-bg: #cacaca21;
-    --glpi-timeline-badge-bg: rgba(97, 97, 97, 15%);
-    --glpi-timeline-badge-fg: rgba(43, 43, 43, 80%);
-    --glpi-hover-bg: rgba(var(--tblr-secondary-rgb), .08);
+    --glpi-timeline-badge-bg: rgb(97, 97, 97, 15%);
+    --glpi-timeline-badge-fg: rgb(43, 43, 43, 80%);
+    --glpi-hover-bg: rgb(var(--tblr-secondary-rgb), .08);
     --animate-duration: 0.3s !important; // No prefix because it is overrides animate.js default
     --glpi-zindex-dropdown: #{$zindex-dropdown};
     --glpi-zindex-sticky: #{$zindex-sticky};

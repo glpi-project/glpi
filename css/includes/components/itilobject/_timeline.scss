@@ -92,7 +92,7 @@
         border-top-left-radius: 0;
         max-width: 820px;
         min-width: 100%;
-        word-break: break-word;
+        overflow-wrap: anywhere;
 
         @include media-breakpoint-up(sm) {
             &::before {
@@ -250,7 +250,7 @@
 
             .solimg {
                 position: absolute;
-                color: rgba(66, 91, 100, 10%);
+                color: rgb(66, 91, 100, 10%);
                 pointer-events: none;
             }
 

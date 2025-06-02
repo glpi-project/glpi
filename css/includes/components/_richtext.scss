@@ -96,7 +96,7 @@ body.mce-content-body {
         overflow: hidden;
 
         .read_more {
-            background: linear-gradient(to bottom, rgba(255, 255, 255, 0%) 0%, var(--glpi-timeline-itil-content-bg) 100%);
+            background: linear-gradient(to bottom, rgb(255, 255, 255, 0%) 0%, var(--glpi-timeline-itil-content-bg) 100%);
         }
     }
 
@@ -107,13 +107,13 @@ body.mce-content-body {
 
 .user-mention,
 [data-user-mention="true"] {
-    background: rgba(0, 0, 0, 20%);
+    background: rgb(0, 0, 0, 20%);
     border-radius: 3px;
     padding: 5px;
 }
 
 [data-form-tag="true"] {
-    background: rgba(0, 0, 0, 20%);
+    background: rgb(0, 0, 0, 20%);
     border-radius: 3px;
     padding: 5px;
 }
