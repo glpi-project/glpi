@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "16b6af2eb6b60d8220c9e9a923520c8f",
+    "content-hash": "05ac0b75db7930e67769617683fe335d",
     "packages": [
         {
             "name": "apereo/phpcas",
@@ -4686,16 +4686,16 @@
         },
         {
             "name": "rlanvin/php-rrule",
-            "version": "v2.5.2",
+            "version": "v2.6.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/rlanvin/php-rrule.git",
-                "reference": "343c015118f869dbd7f85fb6459136dc21df981c"
+                "reference": "2a389a9fa67dda58bc5a569a3264555152db3c49"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/rlanvin/php-rrule/zipball/343c015118f869dbd7f85fb6459136dc21df981c",
-                "reference": "343c015118f869dbd7f85fb6459136dc21df981c",
+                "url": "https://api.github.com/repos/rlanvin/php-rrule/zipball/2a389a9fa67dda58bc5a569a3264555152db3c49",
+                "reference": "2a389a9fa67dda58bc5a569a3264555152db3c49",
                 "shasum": ""
             },
             "require": {
@@ -4729,9 +4729,9 @@
             ],
             "support": {
                 "issues": "https://github.com/rlanvin/php-rrule/issues",
-                "source": "https://github.com/rlanvin/php-rrule/tree/v2.5.2"
+                "source": "https://github.com/rlanvin/php-rrule/tree/v2.6.0"
             },
-            "time": "2025-02-21T08:21:51+00:00"
+            "time": "2025-04-25T07:40:09+00:00"
         },
         {
             "name": "robthree/twofactorauth",
