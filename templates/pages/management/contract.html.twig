@@ -102,30 +102,22 @@
 
    {{ fields.dropdownNumberField('periodicity', item.fields['periodicity'], __('Contract renewal period'), {
       'rand': rand,
-      'min': 12,
+      'min': 1,
       'max': 60,
-      'step': 12,
+      'step': 1,
       'toadd': {
          0: constant('Dropdown::EMPTY_VALUE'),
-         1: _n('%d month', '%d months', 1)|format(1),
-         2: _n('%d month', '%d months', 2)|format(2),
-         3: _n('%d month', '%d months', 3)|format(3),
-         6: _n('%d month', '%d months', 6)|format(6),
       },
       'unit': 'month',
    }) }}
 
    {{ fields.dropdownNumberField('billing', item.fields['billing'], __('Invoice period'), {
       'rand': rand,
-      'min': 12,
+      'min': 1,
       'max': 60,
-      'step': 12,
+      'step': 1,
       'toadd': {
          0: constant('Dropdown::EMPTY_VALUE'),
-         1: _n('%d month', '%d months', 1)|format(1),
-         2: _n('%d month', '%d months', 2)|format(2),
-         3: _n('%d month', '%d months', 3)|format(3),
-         6: _n('%d month', '%d months', 6)|format(6),
       },
       'unit': 'month',
    }) }}
