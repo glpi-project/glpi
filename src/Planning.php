@@ -799,34 +799,38 @@ JAVASCRIPT;
             $color = self::getPaletteColor('bg', $params['filter_color_index']);
         }
 
-        if ($filter_data['type'] !== 'event_filter') {
-            if ($caldav_item_url !== '' && $filter_data['type'] !== 'group_users' && $filter_data['type'] !== 'external') {
-                $url = parse_url($CFG_GLPI["url_base"]);
-                $url_port = 80;
-                if (isset($url['port'])) {
-                    $url_port = $url['port'];
-                } elseif (isset($url['scheme']) && ($url["scheme"] === 'https')) {
-                    $url_port = 443;
-                }
+        $login_user = null;
+        $webcal_base_url = null;
+        $show_export_buttons = in_array($filter_data['type'], ['user', 'group'], true);
+        if ($show_export_buttons) {
+            $parsed_url = parse_url($CFG_GLPI["url_base"]);
 
-                $loginUser = new User();
-                $loginUser->getFromDB(Session::getLoginUserID(true));
-            }
+            $url_port = array_key_exists('port', $parsed_url)
+                ? $parsed_url['port']
+                : ($parsed_url['scheme'] === 'https' ? 443 : null);
+
+            $webcal_base_url = 'webcal://'
+                . $parsed_url['host']
+                . ($url_port !== null ? ':' . $url_port : '')
+                . ($parsed_url['path'] ?? '');
+
+            $login_user = new User();
+            $login_user->getFromDB(Session::getLoginUserID(true));
         }
 
         TemplateRenderer::getInstance()->display('pages/assistance/planning/single_filter.html.twig', [
-            'filter_key'    => $filter_key,
-            'filter_data'   => $filter_data,
-            'expanded'      => $expanded,
-            'title'         => $title,
-            'params'        => $params,
-            'color'         => $color,
-            'uID'           => $uID,
-            'gID'           => $gID,
-            'login_user'    => $loginUser ?? null,
-            'url'           => $url ?? null,
-            'url_port'      => $url_port ?? null,
-            'caldav_url'    => $caldav_item_url !== null ? $CFG_GLPI['url_base'] . '/caldav.php/' . $caldav_item_url : null,
+            'filter_key'            => $filter_key,
+            'filter_data'           => $filter_data,
+            'expanded'              => $expanded,
+            'title'                 => $title,
+            'params'                => $params,
+            'color'                 => $color,
+            'show_export_buttons'   => $show_export_buttons,
+            'uID'                   => $uID,
+            'gID'                   => $gID,
+            'login_user'            => $login_user,
+            'webcal_base_url'       => $webcal_base_url,
+            'caldav_url'            => $caldav_item_url !== null ? $CFG_GLPI['url_base'] . '/caldav.php/' . $caldav_item_url : null,
         ]);
     }
 

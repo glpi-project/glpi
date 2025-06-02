@@ -265,11 +265,11 @@ class TicketTaskTest extends DbTestCase
         \TicketTask::showCentralList(0, 'todo', false);
         $output = ob_get_clean();
         $this->assertStringContainsString("Ticket tasks to do <span class='primary-bg primary-fg count'>4</span>", $output);
-        $this->assertMatchesRegularExpression("/a href='\/glpi\/front\/ticket.form.php\?id=\d+[^']+'>/", $output);
+        $this->assertMatchesRegularExpression("/a href='\/front\/ticket.form.php\?id=\d+[^']+'>/", $output);
         $this->assertSame(
             4,
             preg_match_all(
-                "/a href='\/glpi\/front\/ticket.form.php\?id=\d*[^']+'>/",
+                "/a href='\/front\/ticket.form.php\?id=\d*[^']+'>/",
                 $output,
             )
         );
@@ -287,7 +287,7 @@ class TicketTaskTest extends DbTestCase
         $this->assertSame(
             2,
             preg_match_all(
-                "/a href='\/glpi\/front\/ticket.form.php\?id=\d*[^']+'>/",
+                "/a href='\/front\/ticket.form.php\?id=\d*[^']+'>/",
                 $output
             )
         );

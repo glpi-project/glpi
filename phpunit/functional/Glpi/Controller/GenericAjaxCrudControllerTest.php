@@ -312,7 +312,7 @@ class GenericAjaxCrudControllerTest extends DbTestCase
             ],
             'expected_status' => 200,
             'expected_body'   => [
-                'redirect' => "/glpi/front/form/form.php",
+                'redirect' => "/front/form/form.php",
             ],
         ];
         // We can't test the "Failed to purge item" response because it doesn't

@@ -44,14 +44,14 @@ class RoutingExtensionTest extends TestCase
 {
     public static function provideNoRouterPaths(): \Generator
     {
-        yield ['path', 'test', [], '/glpi/test'];
-        yield ['path', 'foobar', [], '/glpi/foobar'];
-        yield ['path', 'test', ['foo' => 'bar'], '/glpi/test?foo=bar'];
-        yield ['path', 'foobar', ['foo' => 'bar'], '/glpi/foobar?foo=bar'];
-        yield ['url', 'test', [], 'http://localhost:80/test'];
-        yield ['url', 'foobar', [], 'http://localhost:80/foobar'];
-        yield ['url', 'test', ['foo' => 'bar'], 'http://localhost:80/test?foo=bar'];
-        yield ['url', 'foobar', ['foo' => 'bar'], 'http://localhost:80/foobar?foo=bar'];
+        yield ['path', 'test', [], '/test'];
+        yield ['path', 'foobar', [], '/foobar'];
+        yield ['path', 'test', ['foo' => 'bar'], '/test?foo=bar'];
+        yield ['path', 'foobar', ['foo' => 'bar'], '/foobar?foo=bar'];
+        yield ['url', 'test', [], 'http://localhost/test'];
+        yield ['url', 'foobar', [], 'http://localhost/foobar'];
+        yield ['url', 'test', ['foo' => 'bar'], 'http://localhost/test?foo=bar'];
+        yield ['url', 'foobar', ['foo' => 'bar'], 'http://localhost/foobar?foo=bar'];
     }
 
     #[DataProvider('provideNoRouterPaths')]

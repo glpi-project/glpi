@@ -131,7 +131,7 @@ class TicketParametersTest extends AbstractParameters
             [
                 'id'        => $tickets_id,
                 'ref'       => "#$tickets_id",
-                'link'      => "<a href=\"/glpi/front/ticket.form.php?id=$tickets_id\" title=\"ticket_testGetValues\">ticket_testGetValues</a>",
+                'link'      => "<a href=\"/front/ticket.form.php?id=$tickets_id\" title=\"ticket_testGetValues\">ticket_testGetValues</a>",
                 'name'      => 'ticket_testGetValues',
                 'content'   => '<p>ticket_testGetValues content</p>',
                 'date'      => $now,
@@ -261,7 +261,7 @@ class TicketParametersTest extends AbstractParameters
                         'id' => getItemByTypeName(\KnowbaseItem::class, '_knowbaseitem01', true),
                         'name' => '_knowbaseitem01',
                         'answer' => "Answer for Knowledge base entry _knowbaseitem01 apple juice turnover",
-                        'link' => "<a href=\"/glpi/front/knowbaseitem.form.php?id=1\" title=\"_knowbaseitem01\">_knowbaseitem01</a>",
+                        'link' => "<a href=\"/front/knowbaseitem.form.php?id=1\" title=\"_knowbaseitem01\">_knowbaseitem01</a>",
                     ],
                 ],
                 'assets'        => [],
