@@ -226,7 +226,7 @@
         }
     }
 
-    .btn-group & {
+    .btn-group > & {
         flex-grow: 1;
         flex-basis: content;
 
