@@ -36,6 +36,7 @@
 require_once(__DIR__ . '/_check_webserver_config.php');
 
 use Glpi\Exception\Http\AccessDeniedHttpException;
+use Glpi\Plugin\Hooks;
 
 if (!isset($_GET['item_type']) || !is_string($_GET['item_type']) || !is_a($_GET['item_type'], CommonGLPI::class, true)) {
     return;
@@ -112,7 +113,7 @@ if (isset($_GET["display_type"])) {
         default:
             // Plugin case
             if ($plug = isPluginItemType($itemtype)) {
-                if (Plugin::doOneHook($plug['plugin'], 'dynamicReport', $_GET)) {
+                if (Plugin::doOneHook($plug['plugin'], Hooks::AUTO_DYNAMIC_REPORT, $_GET)) {
                     return;
                 }
             }

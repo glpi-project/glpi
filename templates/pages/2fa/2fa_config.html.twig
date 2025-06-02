@@ -37,7 +37,7 @@
     <form method="post" name="form" action="{{ action }}" data-track-changes="true">
         {% endif %}
         <table class="tab_cadre_fixe">
-            {{ call_plugin_hook('pre_item_form', {
+            {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::PRE_ITEM_FORM'), {
                 'item': item,
                 'options': {}
             }) }}
@@ -70,7 +70,7 @@
                     {% endif %}
                 </td>
             </tr>
-            {{ call_plugin_hook('post_item_form', {
+            {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::POST_ITEM_FORM'), {
                 'item': item,
                 'options': {}
             }) }}

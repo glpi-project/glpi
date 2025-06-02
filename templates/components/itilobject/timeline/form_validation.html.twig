@@ -76,7 +76,7 @@
                <input type="hidden" name="id" value="{{ entry_i['id'] }}" />
                <input type="hidden" name="users_id_validate" value="{{ entry_i['users_id_validate'] }}" />
                <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
-               {{ call_plugin_hook('pre_item_form', {"item": subitem, 'options': params}) }}
+               {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::PRE_ITEM_FORM'), {"item": subitem, 'options': params}) }}
 
                <div class="mb-3 comment-part">
                   {{ fields.textareaField(
@@ -128,7 +128,7 @@
          <input type="hidden" name="users_id_validate" value="{{ subitem.fields['users_id_validate'] }}" />
          <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
 
-         {{ call_plugin_hook('pre_item_form', {"item": subitem, 'options': params}) }}
+         {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::PRE_ITEM_FORM'), {"item": subitem, 'options': params}) }}
 
          <div class="mb-3 comment-part">
             {{ fields.textareaField(
@@ -294,7 +294,7 @@
                 ) }}
             </div>
 
-            {{ call_plugin_hook('post_item_form', {"item": subitem, 'options': params}) }}
+            {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::POST_ITEM_FORM'), {"item": subitem, 'options': params}) }}
 
             <div class="d-flex justify-content-center card-footer">
                 {% if subitem.fields['id'] <= 0 %}

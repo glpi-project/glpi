@@ -114,7 +114,7 @@
                 <input type="hidden" name="itemtype" value="{{ item.getType() }}" />
                 <input type="hidden" name="items_id" value="{{ item.fields['id'] }}" />
                 <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
-                {{ call_plugin_hook('pre_item_form', {"item": subitem, 'options': params}) }}
+                {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::PRE_ITEM_FORM'), {"item": subitem, 'options': params}) }}
 
                 {% set can_screenshot = call('Document::isValidDoc', ['.png']) is not empty %}
                 {% set can_screenrecord = call('Document::isValidDoc', ['.webm']) is not empty %}
@@ -174,7 +174,7 @@
                     }
                 ) }}
 
-                {{ call_plugin_hook('post_item_form', {"item": subitem, 'options': params}) }}
+                {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::POST_ITEM_FORM'), {"item": subitem, 'options': params}) }}
 
                 <div class="d-flex card-footer mx-n3 mb-n3">
                     {% if (subitem.fields['id'] ?? 0) <= 0 %}

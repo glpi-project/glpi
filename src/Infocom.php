@@ -1423,11 +1423,6 @@ JS;
         }
     }
 
-    public static function addPluginInfos(CommonDBTM $item)
-    {
-        Plugin::doHookFunction("infocom", $item);
-    }
-
     /**
      * @param $itemtype
      **/

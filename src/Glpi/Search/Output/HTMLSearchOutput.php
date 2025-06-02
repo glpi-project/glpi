@@ -37,6 +37,7 @@ namespace Glpi\Search\Output;
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Dashboard\Grid;
+use Glpi\Plugin\Hooks;
 use Glpi\Search\CriteriaFilter;
 use Glpi\Search\SearchOption;
 use Glpi\Toolbox\URL;
@@ -113,7 +114,7 @@ abstract class HTMLSearchOutput extends AbstractSearchOutput
 
         // For plugin add new parameter if available
         if ($plug = isPluginItemType($data['itemtype'])) {
-            $out = \Plugin::doOneHook($plug['plugin'], 'addParamFordynamicReport', $data['itemtype']);
+            $out = \Plugin::doOneHook($plug['plugin'], Hooks::AUTO_ADD_PARAM_FOR_DYNAMIC_REPORT, $data['itemtype']);
             if (is_array($out) && count($out)) {
                 $parameters .= \Toolbox::append_params($out, '&');
             }

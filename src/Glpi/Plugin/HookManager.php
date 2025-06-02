@@ -48,6 +48,8 @@ class HookManager
 
     /**
      * Enable CSRF
+     *
+     * @deprecated 11.0.0
      */
     public function enableCSRF(): void
     {
