@@ -969,4 +969,72 @@ class LockedfieldTest extends DbTestCase
             }
         }
     }
+
+    public function testGlobalLockedFieldDropdownOnAdd(): void
+    {
+        // XML source representing a network device
+        $xmlSource = '<?xml version="1.0" encoding="UTF-8" ?>
+    <REQUEST>
+        <CONTENT>
+            <DEVICE>
+                <INFO>
+                    <TYPE>NETWORKING</TYPE>
+                    <MANUFACTURER>Hewlett-Packard</MANUFACTURER>
+                    <MODEL>YE25168</MODEL>
+                    <DESCRIPTION>ProCurve YE25168</DESCRIPTION>
+                    <NAME>FR-SW11</NAME>
+                    <LOCATION>BAT A - Niv 3</LOCATION>
+                    <CONTACT>Admin</CONTACT>
+                    <SERIAL>ZG654T8I</SERIAL>
+                    <FIRMWARE>R.10.06 R.11.60</FIRMWARE>
+                    <UPTIME>8 days, 01:48:57.95</UPTIME>
+                    <MAC>b4:39:d6:3a:7f:00</MAC>
+                </INFO>
+            </DEVICE>
+            <MODULEVERSION>3.0</MODULEVERSION>
+            <PROCESSNUMBER>1</PROCESSNUMBER>
+        </CONTENT>
+        <DEVICEID>foo</DEVICEID>
+        <QUERY>SNMPQUERY</QUERY>
+    </REQUEST>';
+
+        // Create a global locked field for the network equipment type dropdown
+        $lockedField = new \Lockedfield();
+
+        $globalLockedFieldId = (int) $lockedField->add([
+            'item' => 'NetworkEquipment - networkequipmenttypes_id',
+        ]);
+
+        // Ensure the global locked field was successfully created
+        $this->assertGreaterThan(0, $globalLockedFieldId, 'Failed to create the global locked field.');
+
+        // Convert the inventory XML to JSON using the converter
+        $converter = new \Glpi\Inventory\Converter();
+        $jsonData = $converter->convert($xmlSource);
+        $decodedJson = json_decode($jsonData);
+
+        // Create the Inventory object based on the JSON data
+        $inventory = new \Glpi\Inventory\Inventory($decodedJson);
+
+        // Output inventory errors if any are present (for debugging purposes)
+        if ($inventory->inError()) {
+            $this->dump($inventory->getErrors());
+        }
+
+        // Assert no error occurred during inventory conversion or import
+        $this->assertFalse($inventory->inError(), 'Errors occurred while processing the inventory.');
+        $this->assertEmpty($inventory->getErrors(), 'Inventory contains error messages.');
+
+        // Ensure the network equipment was properly created with a valid ID
+        $networkEquipmentId = $inventory->getItem()->fields['id'] ?? 0;
+        $this->assertGreaterThan(0, $networkEquipmentId, 'The network equipment was not created correctly.');
+
+        // Load NetworkEquipment to check the created item
+        $networkEquipment = new \NetworkEquipment();
+        $this->assertTrue($networkEquipment->getFromDB($networkEquipmentId), 'Network equipment item could not be retrieved from the database.');
+
+        // Assert that the network equipment type is set to 0 (because of locked field)
+        $this->assertEquals(0, $networkEquipment->fields['networkequipmenttypes_id'], 'Network equipment type should be 0 before applying the global locked field.');
+    }
+
 }
