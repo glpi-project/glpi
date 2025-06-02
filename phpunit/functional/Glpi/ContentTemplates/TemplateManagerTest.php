@@ -87,7 +87,7 @@ class TemplateManagerTest extends DbTestCase
                 'content'   => "Test syntax error {{",
                 'params'    => [],
                 'expected'  => "",
-                'error'     => 'Unexpected end of template in "template" at line 1.',
+                'error'     => 'Unexpected token "end of template" of value "" in "template" at line 1.',
                 'validation_error' => 'Invalid twig template syntax',
             ],
             [
