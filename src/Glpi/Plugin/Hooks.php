@@ -368,7 +368,7 @@ class Hooks
 
     /**
      * Register a function to declare what the default display preferences are for an itemtype.
-     * This is not used when no display preferences are set for the itemtype, but rather when hte preferences are being reset.
+     * This is not used when no display preferences are set for the itemtype, but rather when the preferences are being reset.
      * Therefore, defaults should be set during the plugin installation and the result of the function should be the same as the default values set in the plugin installation.
      * Core GLPI itemtypes with display preferences set in `install/empty_data.php` will never use this hook.
      * The function is called with an array containing several properties including:
