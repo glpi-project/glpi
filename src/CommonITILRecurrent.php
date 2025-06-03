@@ -144,19 +144,27 @@ abstract class CommonITILRecurrent extends CommonDropdown
 
     public function prepareInputForUpdate($input)
     {
-        if (
-            isset($input['begin_date'])
-            && isset($input['periodicity'])
-            && isset($input['create_before'])
-        ) {
-            $input['next_creation_date'] = $this->computeNextCreationDate(
-                $input['begin_date'],
-                $input['end_date'],
-                $input['periodicity'],
-                $input['create_before'],
-                $input['calendars_id']
-            );
+        $fields_to_check = [
+            'begin_date',
+            'end_date',
+            'periodicity',
+            'create_before',
+            'calendars_id'
+        ];
+
+        foreach ($fields_to_check as $field) {
+            if (!isset($input[$field])) {
+                $input[$field] = $this->fields[$field];
+            }
         }
+
+        $input['next_creation_date'] = $this->computeNextCreationDate(
+            $input['begin_date'],
+            $input['end_date'],
+            $input['periodicity'],
+            $input['create_before'],
+            $input['calendars_id']
+        );
 
         return $input;
     }
