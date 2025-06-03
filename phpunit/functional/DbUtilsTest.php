@@ -591,7 +591,7 @@ class DbUtilsTest extends DbTestCase
         //keep testing old method from db.function
         $this->assertEmpty(getEntitiesRestrictRequest('AND', 'glpi_computers'));
         $it->execute(['FROM' => 'glpi_computers', 'WHERE' => getEntitiesRestrictCriteria('glpi_computers')]);
-        $this->assertSame('SELECT * FROM `glpi_computers`', $it->getSql());
+        $this->assertSame('SELECT * FROM `glpi_computers` WHERE true', $it->getSql());
 
         // See all
         $this->setEntity('_test_root_entity', true);
