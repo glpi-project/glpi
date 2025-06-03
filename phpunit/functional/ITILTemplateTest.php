@@ -227,7 +227,7 @@ class ITILTemplateTest extends DbTestCase
                     9 => 'Request source',
                     37 => 'SLA Time to own',
                     30 => 'SLA Time to resolve',
-                    // fields removed in ticket, should be replaced ?
+                    // fields removed in ticket, should be replaced ? @todoseb
                     //                    190 => 'OLA Internal time to own',
                     //                    191 => 'OLA Internal time to resolve',
                     155 => 'Time to own',
