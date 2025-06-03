@@ -145,31 +145,33 @@
     {% for itemtype, inquest_itemtype in inquest_types %}
         {% set c_rand = random() %}
         {% set config_suffix = itemtype == 'Ticket' ? '' : ('_' ~ itemtype|lower) %}
-        {{ fields.smallTitle(__('Configuring the satisfaction survey: %s')|format(itemtype|itemtype_name(get_plural_number()))) }}
-        {{ fields.dropdownArrayField('inquest_config' ~ config_suffix, item.fields['inquest_config' ~ config_suffix], inheritable_params.toadd + {
-            (constant('CommonITILSatisfaction::TYPE_INTERNAL')): __('Internal survey'),
-            (constant('CommonITILSatisfaction::TYPE_EXTERNAL')): __('External survey')
-        }, __('Configuring the satisfaction survey'), {
-            add_field_html: inheritance_labels['inquest_config' ~ config_suffix]|default(null),
-            rand: c_rand
-        } + inheritable_params) }}
-        <div id="inquest_config{{ config_suffix }}_extra"></div>
-        <script>
-            $(() => {
-                const refresh = (val) => {
-                    $('#inquest_config{{ config_suffix }}_extra').load('{{ path('ajax/commonitilsatisfaction.php') }}', {
-                        itemtype: '{{ itemtype }}',
-                        entities_id: '{{ item.getID() }}',
-                        inquest_config{{ config_suffix }}: val,
+        <div role="group" aria-labelledby="formsection{{ inquest_itemtype }}">
+            {{ fields.smallTitle(__('Configuring the satisfaction survey: %s')|format(itemtype|itemtype_name(get_plural_number())), '', '', 'formsection' ~ inquest_itemtype) }}
+            {{ fields.dropdownArrayField('inquest_config' ~ config_suffix, item.fields['inquest_config' ~ config_suffix], inheritable_params.toadd + {
+                (constant('CommonITILSatisfaction::TYPE_INTERNAL')): __('Internal survey'),
+                (constant('CommonITILSatisfaction::TYPE_EXTERNAL')): __('External survey')
+            }, __('Configuring the satisfaction survey'), {
+                add_field_html: inheritance_labels['inquest_config' ~ config_suffix]|default(null),
+                rand: c_rand
+            } + inheritable_params) }}
+            <div id="inquest_config{{ config_suffix }}_extra"></div>
+            <script>
+                $(() => {
+                    const refresh = (val) => {
+                        $('#inquest_config{{ config_suffix }}_extra').load('{{ path('ajax/commonitilsatisfaction.php') }}', {
+                            itemtype: '{{ itemtype }}',
+                            entities_id: '{{ item.getID() }}',
+                            inquest_config{{ config_suffix }}: val,
+                        });
+                    }
+                    $('#dropdown_inquest_config{{ config_suffix }}{{ c_rand }}').on('change', (e) => {
+                        const selected = $(e.target).val();
+                        refresh(selected);
                     });
-                }
-                $('#dropdown_inquest_config{{ config_suffix }}{{ c_rand }}').on('change', (e) => {
-                    const selected = $(e.target).val();
-                    refresh(selected);
+                    refresh({{ item.fields['inquest_config' ~ config_suffix] }});
                 });
-                refresh({{ item.fields['inquest_config' ~ config_suffix] }});
-            });
-        </script>
+            </script>
+        </div>
     {% endfor %}
 
     {{ fields.smallTitle(__('Helpdesk')) }}
