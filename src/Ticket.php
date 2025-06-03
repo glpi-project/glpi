@@ -5457,6 +5457,7 @@ JAVASCRIPT;
         // ola - currently associated ola
         // if $input_['_olas_id'] + _la_update is set, we are updating/adding ola, we use this fields, this is the data that will be associated with ticket (if the update does not fail)
         // otherwise, use the current associated ola data
+        // @todoseb revoir pourquoi j'ajoute ces données, maintenant que je sais que les champs ne sont passés en critère que si ils changent
         $input['_olas_id_rule_criteria'] = (isset($input['_la_update']) && isset($input['_olas_id']))
             ? $input['_olas_id']
             : array_column($this->getOlasData(), 'olas_id');
