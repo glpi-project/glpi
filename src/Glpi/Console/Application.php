@@ -124,79 +124,85 @@ class Application extends BaseApplication
     {
         $env_values = Environment::getValues();
 
-        $definition = new InputDefinition(
-            [
-                new InputArgument(
-                    'command',
-                    InputArgument::REQUIRED,
-                    __('The command to execute')
-                ),
+        $definition = [
+            new InputArgument(
+                'command',
+                InputArgument::REQUIRED,
+                __('The command to execute')
+            ),
 
-                new InputOption(
-                    '--help',
-                    '-h',
-                    InputOption::VALUE_NONE,
-                    __('Display this help message')
-                ),
-                new InputOption(
-                    '--quiet',
-                    '-q',
-                    InputOption::VALUE_NONE,
-                    __('Do not output any message')
-                ),
-                new InputOption(
-                    '--verbose',
-                    '-v|vv|vvv',
-                    InputOption::VALUE_NONE,
-                    __('Increase the verbosity of messages: 1 for normal output, 2 for more verbose output and 3 for debug')
-                ),
-                new InputOption(
-                    '--version',
-                    '-V',
-                    InputOption::VALUE_NONE,
-                    __('Display this application version')
-                ),
-                new InputOption(
-                    '--ansi',
-                    null,
-                    InputOption::VALUE_NONE,
-                    __('Force ANSI output')
-                ),
-                new InputOption(
-                    '--no-ansi',
-                    null,
-                    InputOption::VALUE_NONE,
-                    __('Disable ANSI output')
-                ),
-                new InputOption(
-                    '--no-interaction',
-                    '-n',
-                    InputOption::VALUE_NONE,
-                    __('Do not ask any interactive question')
-                ),
-                new InputOption(
-                    '--env',
-                    null,
-                    InputOption::VALUE_REQUIRED,
-                    sprintf(__('Environment to use, possible values are: %s'), '`' . implode('`, `', $env_values) . '`'),
-                    suggestedValues: $env_values
-                ),
-                new InputOption(
-                    '--config-dir',
-                    null,
-                    InputOption::VALUE_OPTIONAL,
-                    __('Configuration directory to use. Deprecated option')
-                ),
-                new InputOption(
-                    '--lang',
-                    null,
-                    InputOption::VALUE_OPTIONAL,
-                    __('Output language (default value is existing GLPI "language" configuration or "en_GB")')
-                ),
-            ]
-        );
+            new InputOption(
+                '--help',
+                '-h',
+                InputOption::VALUE_NONE,
+                __('Display this help message')
+            ),
+            new InputOption(
+                '--quiet',
+                '-q',
+                InputOption::VALUE_NONE,
+                __('Do not output any message')
+            ),
+            new InputOption(
+                '--verbose',
+                '-v|vv|vvv',
+                InputOption::VALUE_NONE,
+                __('Increase the verbosity of messages: 1 for normal output, 2 for more verbose output and 3 for debug')
+            ),
+            new InputOption(
+                '--version',
+                '-V',
+                InputOption::VALUE_NONE,
+                __('Display this application version')
+            ),
+            new InputOption(
+                '--ansi',
+                null,
+                InputOption::VALUE_NONE,
+                __('Force ANSI output')
+            ),
+            new InputOption(
+                '--no-ansi',
+                null,
+                InputOption::VALUE_NONE,
+                __('Disable ANSI output')
+            ),
+            new InputOption(
+                '--no-interaction',
+                '-n',
+                InputOption::VALUE_NONE,
+                __('Do not ask any interactive question')
+            ),
+            new InputOption(
+                '--env',
+                null,
+                InputOption::VALUE_REQUIRED,
+                sprintf(__('Environment to use, possible values are: %s'), '`' . implode('`, `', $env_values) . '`'),
+                suggestedValues: $env_values
+            ),
+            new InputOption(
+                '--config-dir',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                __('Configuration directory to use. Deprecated option')
+            ),
+            new InputOption(
+                '--lang',
+                null,
+                InputOption::VALUE_OPTIONAL,
+                __('Output language (default value is existing GLPI "language" configuration or "en_GB")')
+            ),
+        ];
 
-        return $definition;
+        if (\function_exists('posix_geteuid') && \posix_geteuid() === 0) {
+            // Prevent the `The "--allow-superuser" option does not exist.` error when executing the console as a superuser.
+            $definition[] = new InputOption(
+                name: '--allow-superuser',
+                description: __('Allow the console to be executed by the root user'),
+            );
+        }
+
+        return new InputDefinition($definition);
     }
 
     protected function configureIO(InputInterface $input, OutputInterface $output)
@@ -247,6 +253,18 @@ class Application extends BaseApplication
     protected function doRunCommand(Command $command, InputInterface $input, OutputInterface $output)
     {
         $begin_time = microtime(true);
+
+        if (\function_exists('posix_geteuid') && \posix_geteuid() === 0) {
+            // This message cannot be mutualized with the message displayed in the top of the `bin/console` script:
+            // - when the execution as root IS NOT allowed, we must exit before the kernel instantiation, to prevent any cache file creation;
+            // - when the execution as root IS allowed, we must display this message after the kernel instantiation,
+            //   to prevent a `Session cannot be started after headers have already been sent` warning.
+            $output->writeln([
+                '<bg=yellow;fg=black;options=bold> WARNING: running as root is discouraged. </>',
+                '<bg=yellow;fg=black;options=bold> You should run the script as the same user that your web server runs as to avoid file permissions being ruined. </>',
+                '',
+            ]);
+        }
 
         $is_db_available = $this->db instanceof DBmysql && $this->db->connected;
 

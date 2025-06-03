@@ -55,7 +55,7 @@ return $config
         'src/UploadHandler.php',
     ], [ErrorType::SHADOW_DEPENDENCY])
     ->ignoreErrorsOnExtensionAndPaths('ext-pcntl', ['src/CronTask.php'], [ErrorType::SHADOW_DEPENDENCY])
-    ->ignoreErrorsOnExtensionAndPaths('ext-posix', ['front/cron.php'], [ErrorType::SHADOW_DEPENDENCY])
+    ->ignoreErrorsOnExtensionAndPaths('ext-posix', ['front/cron.php', 'src/Glpi/Console/Application.php'], [ErrorType::SHADOW_DEPENDENCY])
     ->ignoreErrorsOnExtension('ext-ldap', [ErrorType::SHADOW_DEPENDENCY])
     ->ignoreErrorsOnExtension('ext-sodium', [ErrorType::SHADOW_DEPENDENCY])
     ->ignoreErrorsOnExtension('ext-zend-opcache', [ErrorType::SHADOW_DEPENDENCY])
