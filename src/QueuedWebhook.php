@@ -253,7 +253,7 @@ class QueuedWebhook extends CommonDBChild
             if ($webhook->fields['log_in_item_history']) {
                 /** @var class-string<CommonDBTM> $itemtype */
                 $itemtype = $queued_webhook->fields['itemtype'];
-                $item = new $itemtype();
+                $item = getItemForItemtype($itemtype);
                 $item->getFromDB($queued_webhook->fields['items_id']);
 
                 if ($item->dohistory) {

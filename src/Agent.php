@@ -258,7 +258,7 @@ class Agent extends CommonDBTM
         switch ($field) {
             case 'items_id':
                 $itemtype = $values[str_replace('items_id', 'itemtype', $field)] ?? null;
-                if ($itemtype !== null && class_exists($itemtype)) {
+                if ($itemtype !== null && class_exists($itemtype) && is_a($itemtype, CommonDBTM::class, true)) {
                     if ($values[$field] > 0) {
                         $item = new $itemtype();
                         $item->getFromDB($values[$field]);
@@ -549,7 +549,7 @@ class Agent extends CommonDBTM
     public function getLinkedItem(): CommonDBTM
     {
         $itemtype = $this->fields['itemtype'];
-        $item = new $itemtype();
+        $item = getItemForItemtype($itemtype);
         $item->getFromDB($this->fields['items_id']);
         return $item;
     }

@@ -746,9 +746,11 @@ class Document extends CommonDBTM
             return false;
         }
 
-        /* @var CommonITILObject $itil */
-        $itil = new $itemtype();
+        if (!is_a($itemtype, CommonITILObject::class, true)) {
+            return false;
+        }
 
+        $itil = new $itemtype();
         if (!$itil->can($items_id, READ)) {
             return false;
         }

@@ -4529,9 +4529,9 @@ class CommonDBTM extends CommonGLPI
         foreach ($doubles as $double) {
             if ($this instanceof CommonDBChild) {
                 if ($this->getField($this::$itemtype)) {
-                    $item = new $double['itemtype']();
+                    $item = getItemForItemtype($double['itemtype']);
                 } else {
-                    $item = new $this::$itemtype();
+                    $item = getItemForItemtype($this::$itemtype);
                 }
 
                 $item->getFromDB($double['items_id']);
@@ -6096,7 +6096,7 @@ TWIG, $twig_params);
         // fallback to the parent template entity
         if (!Session::haveAccessToEntity($data['entities_id'])) {
             // Load parent
-            $parent = new $parent_itemtype();
+            $parent = getItemForItemtype($parent_itemtype);
 
             if (!$parent->getFromDB($parent_id)) {
                 // Can't load parent -> no modification

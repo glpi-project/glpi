@@ -327,7 +327,7 @@ class KnowbaseItem_Item extends CommonDBRelation
 
         switch ($field) {
             case 'items_id':
-                if (isset($values['itemtype'])) {
+                if (isset($values['itemtype']) && is_a($values['itemtype'], CommonDBTM::class, true)) {
                     if ($values[$field] > 0) {
                         $item = new $values['itemtype']();
                         $item->getFromDB($values[$field]);

@@ -139,21 +139,20 @@ class ItemVirtualMachine extends CommonDBChild
             return false;
         }
 
-
         if ($ID > 0) {
-            $asset = new $this->fields['itemtype']();
+            $asset = getItemForItemtype($this->fields['itemtype']);
             $this->check($ID, READ);
             $asset->getFromDB($this->fields['items_id']);
         } else {
             // Create item
-            $asset = new $options['itemtype']();
+            $asset = getItemForItemtype($options['itemtype']);
             $this->check(-1, CREATE, $options);
             $asset->getFromDB($options['items_id']);
         }
 
         $linked_asset = "";
         if ($link_asset = self::findVirtualMachine($this->fields)) {
-            $asset = new $this->fields['itemtype']();
+            $asset = getItemForItemtype($this->fields['itemtype']);
             if ($asset->getFromDB($link_asset)) {
                 $linked_asset = $asset->getLink(['comments' => true]);
             }
@@ -400,7 +399,7 @@ class ItemVirtualMachine extends CommonDBChild
         }
 
         $itemtype = $fields['itemtype'];
-        $item = new $itemtype();
+        $item = getItemForItemtype($itemtype);
         if (!$item->isField('uuid')) {
             return false;
         }

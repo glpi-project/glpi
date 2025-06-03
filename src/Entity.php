@@ -2955,7 +2955,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
         if ($this->getID() <= 0) {
             return null;
         }
-        $item  = new $itemtype();
+        $item  = getItemForItemtype($itemtype);
         $field ??= $item::getForeignKeyField();
         if ($this->fields[$field] == self::CONFIG_PARENT) {
             $tid = self::getUsedConfig(str_replace('_id', '_strategy', $field), $this->getID(), $field, $default_value);

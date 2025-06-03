@@ -3639,7 +3639,7 @@ JAVASCRIPT;
 
                     // Set entity from parent
                     $parent_itemtype = $fup->getField('itemtype');
-                    $parent = new $parent_itemtype();
+                    $parent = getItemForItemtype($parent_itemtype);
                     if ($parent->getFromDB($fup->getField('items_id'))) {
                         $options['entities_id'] = $parent->getField('entities_id');
                     }

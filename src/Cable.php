@@ -441,7 +441,7 @@ class Cable extends CommonDBTM
             case 'items_id_endpoint_a':
             case 'items_id_endpoint_b':
                 $itemtype = $values[str_replace('items_id', 'itemtype', $field)] ?? null;
-                if ($itemtype !== null && class_exists($itemtype)) {
+                if ($itemtype !== null && class_exists($itemtype) && is_a($itemtype, CommonDBTM::class, true)) {
                     if ($values[$field] > 0) {
                         $item = new $itemtype();
                         $item->getFromDB($values[$field]);

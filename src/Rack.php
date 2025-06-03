@@ -881,7 +881,7 @@ JAVASCRIPT;
 
         $filled = [];
         foreach ($iterator as $row) {
-            $item = new $row['itemtype']();
+            $item = getItemForItemtype($row['itemtype']);
             if (!$item->getFromDB($row['items_id'])) {
                 continue;
             }

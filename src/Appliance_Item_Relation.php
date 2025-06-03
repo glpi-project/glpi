@@ -192,7 +192,7 @@ class Appliance_Item_Relation extends CommonDBRelation
         $relations = [];
         foreach ($iterator as $row) {
             $itemtype = $row['itemtype'];
-            $item = new $itemtype();
+            $item = getItemForItemtype($itemtype);
             $item->getFromDB($row['items_id']);
             $relations[$row['id']] = "<i class='" . $item->getIcon() . "' title='" . htmlescape($item::getTypeName(1)) . "'></i>" .
                         "&nbsp;" . htmlescape($item::getTypeName(1)) .

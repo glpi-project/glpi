@@ -247,7 +247,7 @@ class Item_Line extends CommonDBRelation
             if (!is_a($row['itemtype'], CommonDBTM::class, true)) {
                 continue;
             }
-            $item = new $row['itemtype']();
+            $item = getItemForItemtype($row['itemtype']);
             $item->getFromDB($row['items_id']);
             $item_entries[] = [
                 'itemtype' => static::class,

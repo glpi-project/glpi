@@ -112,7 +112,8 @@ class Item_SoftwareVersion extends CommonDBRelation
             return $is_add ? false : $input;
         }
         $itemtype = $input['itemtype'];
-        $item = new $itemtype();
+        /** @var CommonDBTM $item */
+        $item = getItemForItemtype($itemtype);
         if (
             (!isset($input['is_template_item']) && $item->maybeTemplate())
             || (!isset($input['is_deleted_item']) && $item->maybeDeleted())
@@ -248,7 +249,7 @@ class Item_SoftwareVersion extends CommonDBRelation
         /** @var \DBmysql $DB */
         global $DB;
 
-        $item = new $itemtype();
+        $item = getItemForItemtype($itemtype);
         if ($item->getFromDB($items_id)) {
             $result = $DB->update(
                 static::getTable(),

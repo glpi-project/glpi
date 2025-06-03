@@ -188,8 +188,8 @@ class Provider
                 $fk_itemtype = $tmp[1];
 
                 return static::nbItemByFk(
-                    new $itemtype(),
-                    new $fk_itemtype(),
+                    getItemForItemtype($itemtype),
+                    getItemForItemtype($fk_itemtype),
                     $arguments[0] ?? []
                 );
             }

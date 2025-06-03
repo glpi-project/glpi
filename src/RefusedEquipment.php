@@ -276,7 +276,7 @@ class RefusedEquipment extends CommonDBTM
             __s('Inventory is successful, refused entry log has been removed.')
         );
 
-        $item = new $status['itemtype']();
+        $item = getItemForItemtype($status['itemtype']);
         if (isset($status['items_id'])) {
             $item->getFromDB($status['items_id']);
             $redirect_url = $item->getLinkURL();

@@ -1761,7 +1761,7 @@ class NetworkPort extends CommonDBChild
 
         $itemtype = $this->fields['itemtype'];
         /** @var CommonDBTM $itemtype */
-        $equipment = new $itemtype();
+        $equipment = getItemForItemtype($itemtype);
 
         if ($equipment->getFromDB($this->fields['items_id'])) {
             return sprintf(

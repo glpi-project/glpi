@@ -1371,7 +1371,7 @@ TWIG, $twig_params);
      */
     public static function cloneEvent(array $event = [])
     {
-        $item = new $event['old_itemtype']();
+        $item = getItemForItemtype($event['old_itemtype']);
         $item->getFromDB((int) $event['old_items_id']);
 
         $input = array_merge($item->fields, [
@@ -1430,7 +1430,7 @@ TWIG, $twig_params);
      */
     public static function deleteEvent(array $event = []): bool
     {
-        $item = new $event['itemtype']();
+        $item = getItemForItemtype($event['itemtype']);
 
         if (
             isset($event['day'], $event['instance'])
@@ -2048,7 +2048,7 @@ TWIG, $twig_params);
                         // which have a link tables for their relation with groups/users
                         if ($item instanceof ProjectTask) {
                             // get actor for finding relation with item
-                            $actor = new $params['old_actor_itemtype']();
+                            $actor = getItemForItemtype($params['old_actor_itemtype']);
                             $actor->getFromDB((int) $params['old_actor_items_id']);
 
                             // get current relation
@@ -2056,7 +2056,7 @@ TWIG, $twig_params);
                             $team_old->getFromDBForItems($item, $actor);
 
                             // if new relation already exists, delete old relation
-                            $actor_new = new $params['new_actor_itemtype']();
+                            $actor_new = getItemForItemtype($params['new_actor_itemtype']);
                             $actor_new->getFromDB((int) $params['new_actor_items_id']);
                             $team_new  = new ProjectTaskTeam();
                             if ($team_new->getFromDBForItems($item, $actor_new)) {

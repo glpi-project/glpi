@@ -194,8 +194,8 @@ abstract class CommonITILSatisfaction extends CommonDBTM
         }
 
         if (array_key_exists('satisfaction', $input) && $input['satisfaction'] >= 0) {
-            $item = static::getItemtype();
-            $item = new $item();
+            $itemtype = static::getItemtype();
+            $item = new $itemtype();
             $fkey = static::getIndexName();
             if ($item->getFromDB($input[$fkey] ?? $this->fields[$fkey])) {
                 $max_rate = Entity::getUsedConfig(

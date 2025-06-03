@@ -539,7 +539,7 @@ abstract class Spreadsheet extends ExportSearchOutput
         }
 
         if ($title === '') {
-            $itemtype = new $data['itemtype']();
+            $itemtype = $data['itemtype'];
             $title = sprintf(
                 __('All %1$s'),
                 $itemtype::getTypeName(Session::getPluralNumber())

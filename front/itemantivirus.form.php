@@ -81,7 +81,7 @@ if (isset($_POST["add"])) {
         );
     }
     $itemtype = $antivirus->fields['itemtype'];
-    $item = new $itemtype();
+    $item = getItemForItemtype($itemtype);
     $item->getFromDB($antivirus->fields['items_id']);
     Html::redirect(Toolbox::getItemTypeFormURL($antivirus->fields['itemtype']) . '?id=' . $antivirus->fields['items_id'] .
                   ($item->fields['is_template'] ? "&withtemplate=1" : ""));

@@ -1635,7 +1635,7 @@ TWIG, $twig_params);
             }
 
             // Look for a matching asset in the DB
-            $asset = new $itemtype();
+            $asset = getItemForItemtype($itemtype);
             return $asset->getFromDB($items_id) !== false;
         } catch (\ReflectionException $e) {
             // Class does not exist

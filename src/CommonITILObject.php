@@ -460,7 +460,7 @@ abstract class CommonITILObject extends CommonDBTM
                         continue;
                     }
                     foreach ($existing_actors as &$existing_actor) {
-                        $actor_obj = new $existing_actor['itemtype']();
+                        $actor_obj = getItemForItemtype($existing_actor['itemtype']);
                         if ($actor_obj->getFromDB($existing_actor['items_id'])) {
                             if ($actor_obj instanceof User) {
                                 $name = formatUserName(
@@ -7045,7 +7045,7 @@ abstract class CommonITILObject extends CommonDBTM
         foreach ($data as &$entry) {
             $itemtype = $entry['itemtype'];
             /** @var CommonITILObject $item */
-            $item = new $itemtype();
+            $item = getItemForItemtype($itemtype);
             if (!$item->getFromDB($entry['item_id'])) {
                 unset($entry);
                 continue;

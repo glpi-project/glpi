@@ -278,7 +278,7 @@ class IPAddress extends CommonDBChild
         $networkname = new NetworkName();
         foreach ($it as $data) {
             if (!array_key_exists($data['item_type'], $item_objs)) {
-                $item_objs[$data['item_type']] = new $data['item_type']();
+                $item_objs[$data['item_type']] = getItemForItemtype($data['item_type']);
             }
             $linked_item = $item_objs[$data['item_type']];
             $linked_item->getFromDB($data['item_id']);
@@ -1345,7 +1345,7 @@ class IPAddress extends CommonDBChild
 
                         if ((!empty($line['item_id'])) && (!empty($line['item_type']))) {
                             $itemtype = $line['item_type'];
-                            $item     = new $itemtype();
+                            $item     = getItemForItemtype($itemtype);
                             $item->getFromDB($line['item_id']);
                             $row->addCell($item_header, $item->getLink(), $father);
                         }
@@ -1353,7 +1353,7 @@ class IPAddress extends CommonDBChild
                     $row->addCell($entity_header, $line['entity'], $father);
                 } elseif ((!empty($line['addr_item_id'])) && (!empty($line['addr_item_type']))) {
                     $itemtype = $line['addr_item_type'];
-                    $item     = new $itemtype();
+                    $item     = getItemForItemtype($itemtype);
                     $item->getFromDB($line['addr_item_id']);
                     if ($item instanceof CommonDBChild) {
                         $items    = $item->recursivelyGetItems();
