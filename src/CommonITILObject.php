@@ -2579,7 +2579,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
             // Compute ticket waiting time use calendar if exists
             $calendar     = new Calendar();
             $calendars_id = $this->getCalendar();
-            $delay_time   = 0; // working time since begin_waiting_date
+            $delay_time   = 0; // working time since begin_waiting_date // @todoseb cleanup
 
             // Compute ticket waiting time use calendar if exists
             // Using calendar

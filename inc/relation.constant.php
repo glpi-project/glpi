@@ -1038,7 +1038,7 @@ $RELATION = [
 
     'glpi_olas' => [
         'glpi_olalevels' => 'olas_id',
-        '_glpi_items_olas' => 'olas_id',
+        '_glpi_items_olas' => 'olas_id', // @todo champs avec _ ?
     ],
 
     'glpi_operatingsystemarchitectures' => [
