@@ -486,45 +486,57 @@ describe ('Validations', () => {
 
     it('conditions count badge is updated when conditions are added or removed', () => {
         createForm();
-        // Add two questions to the form
         addQuestion('My first question');
         addQuestion('My second question');
 
-        // Focus on the second question to set up visibility conditions
+        // Helper function to check conditions count badge
+        const checkConditionsCount = (count) => {
+            cy.findByRole('status', {'name': 'Conditions count'})
+                .invoke('text').invoke('trim')
+                .should('eq', String(count));
+        };
+
+        // Focus on the second question
         getAndFocusQuestion('My second question').within(() => {
-            // Open the visibility configuration panel
+            // Initialize validation with "Valid if..." strategy
             initValidationConfiguration();
-            // Set the condition strategy to "Valid if..."
             setConditionStrategy('Valid if...');
+            closeValidationConditionEditor();
 
-            // Verify the initial count badge shows 0 conditions
-            cy.findByRole('status', {'name': 'Conditions count'}).invoke('text').invoke('trim').should('eq', '0');
+            // Verify initial count is 0
+            checkConditionsCount('0');
 
-            // Add the first condition and verify the count increases to 1
+            // Add first condition
+            openValidationConditionEditor();
             fillCondition(0, null, 'Do not match regular expression', '/^Expected answer 1$/');
-            cy.findByRole('status', {'name': 'Conditions count'}).invoke('text').invoke('trim').should('eq', '1');
+            closeValidationConditionEditor();
+            checkConditionsCount('1');
 
-            // Add a second condition and verify the count increases to 2
+            // Add second condition
+            openValidationConditionEditor();
             addNewEmptyCondition();
             fillCondition(1, null, 'Match regular expression', '/^Expected answer 2$/');
-            cy.findByRole('status', {'name': 'Conditions count'}).invoke('text').invoke('trim').should('eq', '2');
+            closeValidationConditionEditor();
+            checkConditionsCount('2');
 
-            // Delete the first condition and verify the count decreases to 1
+            // Delete first condition
+            openValidationConditionEditor();
             deleteConditon(0);
-            cy.findByRole('status', {'name': 'Conditions count'}).invoke('text').invoke('trim').should('eq', '1');
+            closeValidationConditionEditor();
+            checkConditionsCount('1');
         });
 
-        // Save the form and reload the page to ensure persistence
+        // Test persistence after reload
         saveAndReload();
 
-        // Focus on the second question again and verify that the condition count is still 1
+        // Verify that condition count persists and can be reset to 0
         getAndFocusQuestion('My second question').within(() => {
-            openValidationConditionEditor();
-            cy.findByRole('status', {'name': 'Conditions count'}).invoke('text').invoke('trim').should('eq', '1');
+            checkConditionsCount('1');
 
-            // Delete the remaining condition and verify the count returns to 0
+            openValidationConditionEditor();
             deleteConditon(0);
-            cy.findByRole('status', {'name': 'Conditions count'}).invoke('text').invoke('trim').should('eq', '0');
+            closeValidationConditionEditor();
+            checkConditionsCount('0');
         });
     });
 });
