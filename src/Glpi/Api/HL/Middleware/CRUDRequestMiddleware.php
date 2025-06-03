@@ -51,7 +51,7 @@ class CRUDRequestMiddleware extends AbstractMiddleware implements RequestMiddlew
         /** @var class-string<CommonDBTM> $itemtype */
         $itemtype = $input->request->getAttribute('itemtype');
         /** @var CommonDBTM $item */
-        $item = new $itemtype();
+        $item = getItemForItemtype($itemtype);
         if ($specific_item) {
             $items_id = $input->request->getAttribute('id');
 

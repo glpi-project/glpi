@@ -3465,8 +3465,8 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
      **/
     public static function getRightsFor($itemtype, $interface = 'central')
     {
-        if (class_exists($itemtype)) {
-            return (new $itemtype())->getRights($interface);
+        if (class_exists($itemtype) && $item = getItemForItemtype($itemtype)) {
+            return $item->getRights($interface);
         }
 
         return [];

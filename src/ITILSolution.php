@@ -185,12 +185,17 @@ class ITILSolution extends CommonDBChild
             $input['users_id'] = Session::getLoginUserID();
         }
 
+        if (isset($input['itemtype']) && !is_a($input['itemtype'], CommonDBTM::class, true)) {
+            return false;
+        }
+
         if (
             $this->item == null
             || (isset($input['itemtype']) && isset($input['items_id']))
         ) {
-            $this->item = new $input['itemtype']();
-            $this->item->getFromDB($input['items_id']);
+            if ($this->item = getItemForItemtype($input['itemtype'])) {
+                $this->item->getFromDB($input['items_id']);
+            }
         }
 
         // Handle template
@@ -347,7 +352,7 @@ class ITILSolution extends CommonDBChild
     public function prepareInputForUpdate($input)
     {
 
-        if (!isset($this->fields['itemtype'])) {
+        if (!isset($this->fields['itemtype']) || !is_a($this->fields['itemtype'], CommonDBTM::class, true)) {
             return false;
         }
         $input["_job"] = new $this->fields['itemtype']();

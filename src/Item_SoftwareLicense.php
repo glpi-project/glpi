@@ -368,6 +368,9 @@ class Item_SoftwareLicense extends CommonDBRelation
 
         $count = 0;
         foreach ($target_types as $taget_itemtype) {
+            if (!is_a($taget_itemtype, CommonDBTM::class, true)) {
+                continue;
+            }
             $itemtable = $taget_itemtype::getTable();
             $request = [
                 'FROM'         => 'glpi_items_softwarelicenses',

@@ -51,7 +51,7 @@ if (empty($itemtype) || empty($items_id)) {
 Session::checkRight($itemtype::$rightname, READ);
 
 // Load item
-$item = new $itemtype();
+$item = getItemForItemtype($itemtype);
 $item->getFromDB($items_id);
 
 CsvResponse::output(new ImpactCsvExport($item));

@@ -124,7 +124,9 @@ class Lockedfield extends CommonDBTM
      */
     private function canAccessItemEntity(string $itemtype, int $items_id): bool
     {
-        $item = new $itemtype();
+        if (!($item = getItemForItemtype($itemtype))) {
+            return false;
+        }
         if (
             $item->getFromDB($items_id) //not a global lock
             && $item->isEntityAssign()

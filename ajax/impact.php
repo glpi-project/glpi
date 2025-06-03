@@ -142,7 +142,7 @@ switch ($_SERVER['REQUEST_METHOD']) {
         $start_node_details = explode(Impact::NODE_ID_DELIMITER, $context_data['node_id']);
 
         // Get impact_item for this node
-        $item = new $start_node_details[0]();
+        $item = getItemForItemtype($start_node_details[0]);
         $item->getFromDB($start_node_details[1]);
         $impact_item = \ImpactItem::findForItem($item);
         $start_node_impact_item_id = $impact_item->fields['id'];

@@ -47,7 +47,7 @@ if (!isset($_POST['itemtype']) || !isset($_POST['items_id']) || (int) $_POST['it
     $items_id = $_POST['items_id'];
 
     if ($itemtype != Location::getType()) {
-        $item = new $itemtype();
+        $item = getItemForItemtype($itemtype);
         $found = $item->getFromDB($items_id);
         if ($found && isset($item->fields['locations_id']) && (int) $item->fields['locations_id'] > 0) {
             $itemtype = Location::getType();
@@ -62,7 +62,7 @@ if (!isset($_POST['itemtype']) || !isset($_POST['items_id']) || (int) $_POST['it
 
     if (!count($result)) {
         /** @var CommonDBTM $item */
-        $item = new $itemtype();
+        $item = getItemForItemtype($itemtype);
         $item->getFromDB($items_id);
         if (!empty($item->fields['latitude']) && !empty($item->fields['longitude'])) {
             $result = [

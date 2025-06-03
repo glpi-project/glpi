@@ -402,9 +402,9 @@ final class Search
         // Handle entity and other visibility restrictions
         $entity_restrict = [];
         if (!$this->union_search_mode) {
-            $itemtype = $this->schema['x-itemtype'];
+            $itemtype = $this->schema['x-itemtype']; //should not that use self::getItemtypeFromSchema()?
             /** @var CommonDBTM $item */
-            $item = new $itemtype();
+            $item = getItemForItemtype($itemtype);
             if ($item instanceof ExtraVisibilityCriteria) {
                 $main_table = $item::getTable();
                 $visibility_restrict = $item::getVisibilityCriteria();

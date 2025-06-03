@@ -1864,7 +1864,7 @@ HTML;
         if (!empty($params['default_itemtype']) && $params['default_items_id'] > 0) {
             $p_ajax["value"] = $params['default_items_id'];
             // If default itemtype is a CommonDBTM
-            if (is_subclass_of($params['default_itemtype'], 'CommonDBTM', true)) {
+            if (is_subclass_of($params['default_itemtype'], CommonDBTM::class, true)) {
                 $item = new $params['default_itemtype']();
                 $item->getFromDB($params['default_items_id']);
                 $p_ajax["valuename"] = $item->getName();
@@ -3646,7 +3646,7 @@ HTML;
 
                     if (isset($data['transname']) && !empty($data['transname'])) {
                         $outputval = $data['transname'];
-                    } elseif ($field == 'itemtype' && class_exists($data['itemtype'])) {
+                    } elseif ($field == 'itemtype' && class_exists($data['itemtype']) && is_a($data[$field], CommonDBTM::class, true)) {
                         $tmpitem = new $data[$field]();
                         if ($tmpitem->getFromDB($data['items_id'])) {
                             $outputval = sprintf(__('%1$s - %2$s'), $tmpitem->getTypeName(), $tmpitem->getName());
@@ -4391,7 +4391,7 @@ HTML;
         }
 
         // prevent instanciation of bad classes
-        if (!is_subclass_of($post['itiltemplate_class'], 'ITILTemplate')) {
+        if (!is_subclass_of($post['itiltemplate_class'], ITILTemplate::class)) {
             return false;
         }
         $template = new $post['itiltemplate_class']();

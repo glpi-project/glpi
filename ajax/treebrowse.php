@@ -55,7 +55,7 @@ switch ($_REQUEST['action']) {
         $itemtype = $_REQUEST['itemtype'];
         $category_itemtype = $itemtype::getCategoryItemType($itemtype);
         $category_table = $category_itemtype::getTable();
-        $item = new $itemtype();
+        $item = getItemForItemtype($itemtype);
         $so = $item->rawSearchOptions();
 
         $field = 0;

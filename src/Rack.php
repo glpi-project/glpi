@@ -888,7 +888,7 @@ JAVASCRIPT;
             $units = 1;
             $width = 1;
             $depth = 1;
-            $model_class = $item->getType() . 'Model';
+            $model_class = $item->getModelClass();
             $modelsfield = $model_class::getForeignKeyField();
             if ($item->fields[$modelsfield] != 0) {
                 $model = new $model_class();

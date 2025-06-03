@@ -139,6 +139,13 @@ class Item_Disk extends CommonDBChild
             throw new \RuntimeException('Unable to retrieve itemtype');
         }
 
+        if (!is_a($itemtype, CommonDBTM::class, true)) {
+            throw new \RuntimeException(sprintf(
+                'Item type %s is not a valid item type',
+                $itemtype
+            ));
+        }
+
         if (!Session::haveRight($itemtype::$rightname, READ)) {
             return false;
         }
