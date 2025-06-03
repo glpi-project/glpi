@@ -11051,6 +11051,9 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
         if ($condition === RuleCommonITILObject::ONUPDATE) {
             $rules_params['entities_id'] = $entid;
             $changes = [];
+            if (isset($input['entities_id'])) {
+                $changes[] = 'entities_id';
+            }
             foreach ($rule->getCriterias() as $key => $val) {
                 if (array_key_exists($key, $input)) {
                     if (

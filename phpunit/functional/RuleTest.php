@@ -35,6 +35,7 @@
 namespace tests\units;
 
 use DbTestCase;
+use Glpi\PHPUnit\Tests\Glpi\ITILTrait;
 use PHPUnit\Framework\Attributes\DataProvider;
 use ReflectionClass;
 use Rule;
@@ -47,6 +48,8 @@ use Symfony\Component\DomCrawler\Crawler;
 
 class RuleTest extends DbTestCase
 {
+    use ITILTrait;
+
     public function testGetTable()
     {
         $table = Rule::getTable('RuleDictionnarySoftware');
@@ -1048,6 +1051,35 @@ class RuleTest extends DbTestCase
         // Assert: make sure some options are defined
         $crawler = new Crawler($output);
         $this->assertCount(5, $crawler->filter('option'));
+    }
+
+    /**
+     * - create a ticket
+     * - create an update ticket rule with a criteria on the entity
+     * - check it's applied on the ticket
+     */
+    public function testEntityIsInChangedFieldsOnUpdate(): void
+    {
+        $this->login();
+        $user_entity = \Session::getActiveEntity();
+        $new_priority = 4;
+
+        // arrange
+        $ticket = $this->createTicket();
+        assert($ticket->fields['priority'] !== $new_priority);
+
+        $builder = new \RuleBuilder('Change priority on update', \RuleTicket::class);
+        $builder->addCriteria('entities_id', \Rule::PATTERN_IS, $user_entity);
+        $builder->addAction('assign', 'priority', $new_priority);
+        $this->createRule($builder);
+
+        // act
+        $ticket = $this->updateItem($ticket::class, $ticket->getID(), ['name' => 'Updated ticket']);
+
+        // assert
+        $this->assertEquals($new_priority, $ticket->fields['priority']);
+
+        // @todo maybe write another test with non matching criteria
     }
 }
 
