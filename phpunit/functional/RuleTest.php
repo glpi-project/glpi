@@ -35,6 +35,7 @@
 namespace tests\units;
 
 use DbTestCase;
+use Glpi\PHPUnit\Tests\Glpi\ITILTrait;
 use PHPUnit\Framework\Attributes\DataProvider;
 use ReflectionClass;
 
@@ -42,6 +43,8 @@ use ReflectionClass;
 
 class RuleTest extends DbTestCase
 {
+    use ITILTrait;
+
     public function testGetTable()
     {
         $table = \Rule::getTable('RuleDictionnarySoftware');
@@ -1013,6 +1016,35 @@ class RuleTest extends DbTestCase
 
         $this->assertTrue($rules->getFromDBByCrit(['uuid' => 'glpi_rule_import_asset_no_creation_on_partial_import']));
         $this->assertNotSame($rules->fields['name'], 'Changed for tests');
+    }
+
+    /**
+     * - create a ticket
+     * - create an update ticket rule with a criteria on the entity
+     * - check it's applied on the ticket
+     */
+    public function testEntityIsInChangedFieldsOnUpdate(): void
+    {
+        $this->login();
+        $user_entity = \Session::getActiveEntity();
+        $new_priority = 4;
+
+        // arrange
+        $ticket = $this->createTicket();
+        assert($ticket->fields['priority'] !== $new_priority);
+
+        $builder = new \RuleBuilder('Change priority on update', \RuleTicket::class);
+        $builder->addCriteria('entities_id', \Rule::PATTERN_IS, $user_entity);
+        $builder->addAction('assign', 'priority', $new_priority);
+        $this->createRule($builder);
+
+        // act
+        $ticket = $this->updateItem($ticket::class, $ticket->getID(), ['name' => 'Updated ticket']);
+
+        // assert
+        $this->assertEquals($new_priority, $ticket->fields['priority']);
+
+        // @todo maybe write another test with non matching criteria
     }
 }
 

@@ -10645,6 +10645,10 @@ abstract class CommonITILObject extends CommonDBTM
         if (!$this->isNewItem() && !isset($input['priority'])) {
             $input['priority'] = $this->fields['priority'];
         }
+
+        if (!$this->isNewItem() && !isset($input['entities_id'])) {
+            $input['entities_id'] = $this->fields['entities_id'];
+        }
     }
 
     public static function cronInfo($name)
@@ -11192,6 +11196,9 @@ abstract class CommonITILObject extends CommonDBTM
         if ($condition === RuleCommonITILObject::ONUPDATE) {
             $rules_params['entities_id'] = $entid;
             $changes = [];
+            if (isset($input['entities_id'])) {
+                $changes[] = 'entities_id';
+            }
             foreach ($rule->getCriterias() as $key => $val) {
                 if (array_key_exists($key, $input)) {
                     if (
