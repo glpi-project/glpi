@@ -191,6 +191,16 @@ abstract class LevelAgreement extends CommonDBChild
         echo "</td>";
         echo "</tr>";
 
+        // group
+        if ($this->isField('groups_id')) {
+            echo "<tr class='tab_bg_1'><td>" . __s('Group', ) . "</td>";
+            echo "<td>";
+            Group::dropdown(['value' => $this->fields["groups_id"], 'display_emptychoice' => false]);
+            echo "</td>";
+            echo "</tr>";
+        }
+
+        // maximum time
         echo "<tr class='tab_bg_1'><td>" . __s('Maximum time') . "</td>";
         echo "<td>";
         Dropdown::showNumber("number_time", ['value' => $this->fields["number_time"],
@@ -377,7 +387,8 @@ TWIG, $twig_params);
             } elseif ($calendar->getFromDB($slm->fields['calendars_id'])) {
                 $link = $calendar->getLink();
             }
-            $entries[] = [
+
+            $entry = [
                 'itemtype' => static::class,
                 'id'       => $val['id'],
                 'row_class' => 'cursor-pointer',
@@ -389,9 +400,19 @@ TWIG, $twig_params);
                 ]),
                 'calendar' => $link,
             ];
+
+            // ola have a groups_id field, not sla
+            if ($la->isField('groups_id')) {
+                $group = new Group();
+                $group->getFromDB($la->fields['groups_id']);
+                $group_name = $group->getName();
+                $entry['group'] = $group_name;
+            }
+
+            $entries[] = $entry;
         }
 
-        TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
+        $twig_params = [
             'datatable_id' => 'levelagreement' . $instID,
             'is_tab' => true,
             'nofilter' => true,
@@ -414,7 +435,16 @@ TWIG, $twig_params);
                 'num_displayed' => count($entries),
                 'container'     => 'mass' . static::class . mt_rand(),
             ],
-        ]);
+        ];
+
+        // ola have a groups_id field, not sla
+        if ($la->isField('groups_id')) {
+            $twig_params['columns']['group'] = __('Group');
+        }
+
+        TemplateRenderer::getInstance()->display('components/datatable.html.twig', $twig_params);
+
+        return true;
     }
 
     /**
@@ -524,6 +554,7 @@ TWIG, $twig_params);
 
         [, $field] = static::getFieldNames($type);
 
+        // ola.id attachés au ticket $tickets_id
         $iterator = $DB->request([
             'SELECT'       => [static::getTable() . '.id'],
             'FROM'         => static::getTable(),
@@ -531,7 +562,7 @@ TWIG, $twig_params);
                 'glpi_tickets' => [
                     'FKEY'   => [
                         static::getTable()   => 'id',
-                        'glpi_tickets'       => $field,
+                        'glpi_tickets'       => $field // sla_id_ttr | sla_id_tto
                     ],
                 ],
             ],
@@ -540,6 +571,8 @@ TWIG, $twig_params);
         ]);
 
         if (count($iterator)) {
+            //            return true; // @todo dois suffire ou (ligne suivante)
+            //            return [];
             return self::getFromIter($iterator);
         }
         return false;
