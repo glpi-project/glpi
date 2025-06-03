@@ -42,7 +42,9 @@ use OlaLevel_Ticket;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rule;
 use RuleBuilder;
+use RuleCommonITILObject;
 use RuleTicket;
+use SLA;
 use SlaLevel_Ticket;
 use SLM;
 use Ticket;
@@ -214,14 +216,14 @@ class SLMTest extends DbTestCase
         // @todoseb reécrire avec RuleBuilder
         $act_id = $ruleaction->add($act_input = [
             'rules_id'    => $ruletid,
-            'action_type' => 'assign',
+            'action_type' => 'append',
             'field'       => 'olas_id',
             'value'       => $ola_tto_id,
         ]);
         $this->checkInput($ruleaction, $act_id, $act_input);
         $act_id = $ruleaction->add($act_input = [
             'rules_id'    => $ruletid,
-            'action_type' => 'assign',
+            'action_type' => 'append',
             'field'       => 'olas_id',
             'value'       => $ola_ttr_id,
         ]);
@@ -322,7 +324,7 @@ class SLMTest extends DbTestCase
             'type'            => SLM::TTO,
             'number_time'     => 4,
             'definition_time' => 'month',
-            'is_recursive'    => true, // @todoseb j'ai du ajouté ce param - on doit tenir maintenant tenir compte de l'entité alors que le code n'en tenait pas compte avant - usage de getConnexityItem()
+            'is_recursive'    => true, // @todo reviewer : j'ai dû ajouté ce param - on doit tenir maintenant tenir compte de l'entité alors que le code n'en tenait pas compte avant - usage de getConnexityItem()
         ];
         $sla2_in['type'] = SLM::TTR;
         $sla2_in['name'] = "SLA TTR";
@@ -440,14 +442,14 @@ class SLMTest extends DbTestCase
         $this->checkInput($ruleaction, $act_id, $act_input);
         $act_id = $ruleaction->add($act_input = [
             'rules_id'    => $ruletid,
-            'action_type' => 'assign',
+            'action_type' => 'append',
             'field'       => 'olas_id',
             'value'       => $ola1_id,
         ]);
         $this->checkInput($ruleaction, $act_id, $act_input);
         $act_id = $ruleaction->add($act_input = [
             'rules_id'    => $ruletid,
-            'action_type' => 'assign',
+            'action_type' => 'append',
             'field'       => 'olas_id',
             'value'       => $ola2_id,
         ]);
@@ -520,6 +522,119 @@ class SLMTest extends DbTestCase
         //action
         $this->assertFalse($saction->getFromDB($saction_id));
         $this->assertFalse($oaction->getFromDB($oaction_id));
+    }
+
+
+    public function testAssignOlaOnTicketCreation()
+    {
+        $this->login();
+        // create Ola + Rule to assign it on ticket update
+        ['ola' => $ola] = $this->createOLA();
+
+        $builder = new RuleBuilder('Assign OLA rule', RuleTicket::class);
+        $builder->setCondtion(RuleCommonITILObject::ONADD);
+        $builder->addCriteria('priority', \Rule::PATTERN_IS, 4);
+        $builder->addAction('append', 'olas_id', $ola->getID());
+        $builder->setEntity(0);
+        $this->createRule($builder);
+
+        // create ticket : no ola assigned
+        $ticket = $this->createTicket(
+            [
+                'priority' => 4,
+                'name' => __METHOD__ . ' ticket']
+        );
+        $this->assertNotEmpty($ticket->getOlasData());
+    }
+
+    public function testAssignSlaOnTicketCreation()
+    {
+        $this->login();
+        $_sla = new SLA();
+        // create Ola + Rule to assign it on ticket update
+        foreach ([\SLM::TTR, \SLM::TTO] as $sla_type) {
+            [, $field_name] = $_sla->getFieldNames($sla_type);
+
+            ['sla' => $sla] = $this->createSLA(sla_type: $sla_type);
+
+            $builder = new RuleBuilder('Assign SLA rule', RuleTicket::class);
+            $builder->setCondtion(RuleCommonITILObject::ONADD);
+            $builder->addCriteria('priority', \Rule::PATTERN_IS, 4);
+            $builder->addAction('assign', $field_name, $sla->getID());
+            $builder->setEntity(0);
+            $this->createRule($builder);
+
+            // create ticket : no sla assigned
+            $ticket = $this->createTicket(
+                [
+                    'priority' => 4,
+                    'name' => __METHOD__ . ' ticket']
+            );
+            $this->assertEquals($ticket->fields[$field_name], $sla->getID());
+        }
+    }
+
+    public function testAssignOlaOnTicketUpdate()
+    {
+        $this->login();
+        // create Ola + Rule to assign it on ticket update
+        ['ola' => $ola] = $this->createOLA();
+
+        $builder = new RuleBuilder('Assign OLA rule', RuleTicket::class);
+        $builder->setCondtion(RuleCommonITILObject::ONUPDATE);
+        $builder->addCriteria('priority', \Rule::PATTERN_IS, 4);
+        $builder->addAction('append', 'olas_id', $ola->getID());
+        $builder->setEntity(0);
+        $this->createRule($builder);
+
+        // create ticket : no ola assigned
+        $ticket = $this->createTicket(
+            [
+                'priority' => 3,
+                'name' => __METHOD__ . ' ticket']
+        );
+        $this->assertEmpty($ticket->getOlasData());
+
+        // update ticket : ola should be assigned
+        $ticket = $this->updateItem(Ticket::class, $ticket->getID(), [
+            'content' => 'content updated',
+            'priority' => 4,
+        ]);
+        $this->assertNotEmpty($ticket->getOlasData());
+    }
+
+    public function testAssignSlaOnTicketUpdate()
+    {
+        $this->login();
+        // create Ola + Rule to assign it on ticket update
+        ['sla' => $sla] = $this->createSLA();
+
+        $builder = new RuleBuilder('Assign SLA rule', RuleTicket::class);
+        $builder->setCondtion(RuleCommonITILObject::ONUPDATE);
+        $builder->addCriteria('priority', \Rule::PATTERN_IS, 4);
+        $builder->addAction('assign', 'slas_id_ttr', $sla->getID());
+        $builder->setEntity(0);
+        $this->createRule($builder);
+
+        // create ticket : no sla assigned
+        $ticket = $this->createTicket(
+            [
+                'priority' => 3,
+                'name' => __METHOD__ . ' ticket',
+            ]
+        );
+        $this->assertEquals(0, $ticket->fields['slas_id_ttr']);
+
+        // update ticket : sla should be assigned
+        $ticket = $this->updateItem(
+            Ticket::class,
+            $ticket->getID(),
+            [
+                'content' => 'content updated',
+                'priority' => 4,
+            ]
+        );
+        $this->assertEquals($sla->getID(), $ticket->fields['slas_id_ttr']);
     }
 
     /**
@@ -1776,7 +1891,7 @@ class SLMTest extends DbTestCase
                 ->setCondtion(RuleTicket::ONADD)
                 ->addCriteria('name', Rule::PATTERN_IS, $test_ticket_name)
                 ->addCriteria('entities_id', Rule::PATTERN_IS, $entity)
-                ->addAction('assign', 'olas_id', $la1->getID());
+                ->addAction('append', 'olas_id', $la1->getID());
             $this->createRule($builder);
 
             // Second OLA is added on update
@@ -1785,7 +1900,7 @@ class SLMTest extends DbTestCase
                 ->setCondtion(RuleTicket::ONUPDATE)
                 ->addCriteria('name', Rule::PATTERN_IS, $test_ticket_name)
                 ->addCriteria('urgency', Rule::PATTERN_IS, 5)
-                ->addAction('assign', 'olas_id', $la2->getID());
+                ->addAction('append', 'olas_id', $la2->getID());
             $this->createRule($builder);
         }
 
