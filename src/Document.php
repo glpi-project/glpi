@@ -783,6 +783,10 @@ class Document extends CommonDBTM
         /** @var \DBmysql $DB */
         global $DB;
 
+        if (!is_a($itemtype, CommonDBTM::class, true)) {
+            return false;
+        }
+
         $item = new $itemtype();
 
         if (!$item->can($items_id, READ)) {

@@ -38,6 +38,7 @@ namespace Glpi\Search\Provider;
 use Change;
 use CommonDBTM;
 use CommonITILObject;
+use DBmysql;
 use DBmysqlIterator;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\Asset_PeripheralAsset;
@@ -52,10 +53,12 @@ use Glpi\Search\SearchOption;
 use Group;
 use Group_Item;
 use ITILFollowup;
+use OLA;
 use Problem;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 use Session;
+use SLA;
 use Software;
 use Ticket;
 use Toolbox;
@@ -76,7 +79,7 @@ final class SQLProvider implements SearchProviderInterface
 
     private static function buildSelect(array $data, string $itemtable): string
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         // request currentuser for SQL supervision, not displayed
@@ -103,7 +106,7 @@ final class SQLProvider implements SearchProviderInterface
      */
     public static function getDefaultSelectCriteria(string $itemtype): array
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $itemtable = SearchEngine::getOrigTableName($itemtype);
@@ -149,13 +152,13 @@ final class SQLProvider implements SearchProviderInterface
      * @param int $ID Search option ID
      * @param bool $meta If true, this is for a meta relation
      * @param class-string<CommonDBTM> $meta_type Meta item type
-     * @return array
+     * @return array|QueryExpression
      */
-    public static function getSelectCriteria(string $itemtype, int $ID, bool $meta = false, string $meta_type = ''): array
+    public static function getSelectCriteria(string $itemtype, int $ID, bool $meta = false, string $meta_type = '')
     {
         /**
          * @var array $CFG_GLPI
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          */
         global $CFG_GLPI, $DB;
 
@@ -249,7 +252,7 @@ final class SQLProvider implements SearchProviderInterface
             }
         }
 
-        // Virtual display no select : only get additional fields
+        // Virtual display no select: only get additional fields
         if ($is_virtual) {
             return $ADDITONALFIELDS;
         }
@@ -1063,7 +1066,7 @@ final class SQLProvider implements SearchProviderInterface
      */
     private static function getMainItemtypeSystemSQLCriteria(string $itemtype): string
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         if (!is_a($itemtype, \CommonDBTM::class, true)) {
@@ -1082,7 +1085,7 @@ final class SQLProvider implements SearchProviderInterface
 
     public static function getWhereCriteria($nott, $itemtype, $ID, $searchtype, $val, $meta = 0): ?array
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         $searchopt = SearchOption::getOptionsForItemtype($itemtype);
@@ -2385,7 +2388,7 @@ final class SQLProvider implements SearchProviderInterface
         array $joinparams = [],
         string $field = ''
     ): array {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
         // Rename table for meta left join
         $AS = "";
@@ -3367,7 +3370,7 @@ final class SQLProvider implements SearchProviderInterface
             if (!is_array($joinparams['condition'])) {
                 $complexjoin .= $joinparams['condition'];
             } else {
-                /** @var \DBmysql $DB */
+                /** @var DBmysql $DB */
                 global $DB;
                 $dbi = new \DBmysqlIterator($DB);
                 $sql_clause = $dbi->analyseCrit($joinparams['condition']);
@@ -3395,7 +3398,7 @@ final class SQLProvider implements SearchProviderInterface
                     if (!is_array($tab['joinparams']['condition'])) {
                         $complexjoin .= $tab['joinparams']['condition'];
                     } else {
-                        /** @var \DBmysql $DB */
+                        /** @var DBmysql $DB */
                         global $DB;
                         $dbi = new \DBmysqlIterator($DB);
                         $sql_clause = $dbi->analyseCrit($tab['joinparams']['condition']);
@@ -3423,7 +3426,7 @@ final class SQLProvider implements SearchProviderInterface
      */
     public static function getDropdownTranslationJoinCriteria($alias, $table, $itemtype, $field): array
     {
-        /** @var \DBmysql $DB */
+        /** @var DBmysql $DB */
         global $DB;
 
         return [
@@ -3628,7 +3631,7 @@ final class SQLProvider implements SearchProviderInterface
     {
         /**
          * @var array $CFG_GLPI
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          */
         global $CFG_GLPI, $DB;
 
@@ -3806,7 +3809,7 @@ final class SQLProvider implements SearchProviderInterface
     {
         /**
          * @var array $CFG_GLPI
-         * @var \DBmysql $DB
+         * @var DBmysql $DB
          */
         global $CFG_GLPI, $DB;
 
@@ -5041,7 +5044,7 @@ final class SQLProvider implements SearchProviderInterface
         if ($search_val == null) {
             $SEARCH = " IS $NOT NULL ";
         } else {
-            $SEARCH = " $NOT LIKE " . \DBmysql::quoteValue($search_val) . " ";
+            $SEARCH = " $NOT LIKE " . DBmysql::quoteValue($search_val) . " ";
         }
         return $SEARCH;
     }
@@ -5557,25 +5560,23 @@ final class SQLProvider implements SearchProviderInterface
                         $totaltime   = 0;
                         $currenttime = 0;
                         $slaField    = 'slas_id';
-                        $sla_class   = 'SLA';
+                        $sla_class   = SLA::class;
 
                         // define correct sla field
                         switch ($table . '.' . $field) {
                             case "glpi_tickets.time_to_resolve":
                                 $slaField = 'slas_id_ttr';
-                                $sla_class = 'SLA';
                                 break;
                             case "glpi_tickets.time_to_own":
                                 $slaField = 'slas_id_tto';
-                                $sla_class = 'SLA';
                                 break;
                             case "glpi_tickets.internal_time_to_own":
                                 $slaField = 'olas_id_tto';
-                                $sla_class = 'OLA';
+                                $sla_class = OLA::class;
                                 break;
                             case "glpi_tickets.internal_time_to_resolve":
                                 $slaField = 'olas_id_ttr';
-                                $sla_class = 'OLA';
+                                $sla_class = OLA::class;
                                 break;
                         }
 
@@ -5972,7 +5973,7 @@ final class SQLProvider implements SearchProviderInterface
                        </div>";
 
                 case "glpi_knowbaseitems.name":
-                    /** @var \DBmysql $DB */
+                    /** @var DBmysql $DB */
                     global $DB;
                     $result = $DB->request([
                         'SELECT' => [

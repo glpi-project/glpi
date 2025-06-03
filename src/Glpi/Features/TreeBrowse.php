@@ -277,14 +277,13 @@ JAVASCRIPT;
             'ORDER' => $order,
         ]);
 
-        $inst = new $cat_itemtype();
         $categories = [];
         $parents = [];
         foreach ($cat_iterator as $category) {
             if ($category instanceof CommonDropdown && $category->maybeTranslated()) {
                 $tname = DropdownTranslation::getTranslatedValue(
                     $category['id'],
-                    $inst->getType()
+                    $cat_itemtype
                 );
                 if (!empty($tname)) {
                     $category['name'] = $tname;

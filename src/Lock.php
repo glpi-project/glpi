@@ -275,7 +275,7 @@ TWIG;
                 // specific link for CommonDBRelation itemtype (like Item_OperatingSystem)
                 // get 'real' object name inside URL name
                 // ex: get 'Ubuntu 22.04.1 LTS' instead of 'Computer asus-desktop'
-                if ($default_items_id !== null && is_a($row['itemtype'], CommonDBRelation::class, true)) {
+                if ($default_items_id !== null && is_a($row['itemtype'], CommonDBRelation::class, true) && is_a($default_itemtype, CommonDBTM::class, true)) {
                     $related_object = new $default_itemtype();
                     $related_object->getFromDB($object->fields[$default_items_id]);
                     $name = htmlescape($related_object->getName());

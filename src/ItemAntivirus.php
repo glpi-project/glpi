@@ -253,10 +253,13 @@ class ItemAntivirus extends CommonDBChild
      **/
     public function showForm($ID, array $options = [])
     {
-        /** @var CommonDBTM $itemtype */
         $itemtype = $this->fields['itemtype'];
 
         if (!Session::haveRight($itemtype::$rightname, READ)) {
+            return false;
+        }
+
+        if (!is_a($itemtype, CommonDBTM::class, true)) {
             return false;
         }
 

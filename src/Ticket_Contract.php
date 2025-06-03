@@ -162,7 +162,9 @@ TWIG, $twig_params);
             $entity_cache = [];
             $type_cache = [];
             foreach ($linked_items as $data) {
-                $item = new $linked_itemtype();
+                if (!($item = getItemForItemtype($linked_itemtype))) {
+                    continue;
+                }
                 if (!$item->getFromDB($data['id'])) {
                     continue;
                 }

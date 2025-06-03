@@ -467,6 +467,7 @@ class RuleImportAsset extends Rule
         } elseif (
             isset($input['itemtype'])
             && (!empty($input['itemtype']))
+            && is_a($input['itemtype'], CommonDBTM::class, true)
         ) {
             $itemtypeselected[] = $input['itemtype'];
         } else {
@@ -479,8 +480,8 @@ class RuleImportAsset extends Rule
                     $itemtypeselected[] = $itemtype;
                 }
             }
-            $itemtypeselected[] = "Unmanaged";
-            $itemtypeselected[] = "Peripheral";//used for networkinventory
+            $itemtypeselected[] = Unmanaged::class;
+            $itemtypeselected[] = Peripheral::class;//used for networkinventory
         }
 
         $found = false;

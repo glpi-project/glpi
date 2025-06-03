@@ -394,7 +394,7 @@ TWIG, $twig_params);
                     }
                     $itemtype = $main_itemtype;
                     $linkname_extra = "";
-                    if ($item instanceof ITILFollowup || $item instanceof ITILSolution) {
+                    if (($item instanceof ITILFollowup || $item instanceof ITILSolution) && is_a($data['itemtype'], CommonDBTM::class, true)) {
                         $linkname_extra = "(" . $item::getTypeName(1) . ")";
                         $itemtype = $data['itemtype'];
                         $item = new $itemtype();
@@ -876,7 +876,7 @@ TWIG, $twig_params);
     public function isFromSupportAgent()
     {
         // If not a CommonITILObject
-        if (!is_a($this->fields['itemtype'], 'CommonITILObject', true)) {
+        if (!is_a($this->fields['itemtype'], CommonITILObject::class, true)) {
             return true;
         }
 

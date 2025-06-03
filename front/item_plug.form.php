@@ -43,7 +43,7 @@ $item_plug = new \Item_Plug();
 
 if (isset($_POST['update'], $_POST['itemtype'])) {
     $item_plug->check($_POST['id'], UPDATE);
-    $item = new $_POST['itemtype']();
+    $item = getItemForItemtype($_POST['itemtype']);
     // update existing relation
     if ($item_plug->update($_POST)) {
         $url = $item::getFormURLWithID($_POST['items_id']);
@@ -54,13 +54,13 @@ if (isset($_POST['update'], $_POST['itemtype'])) {
 } elseif (isset($_POST['add'], $_POST['itemtype'])) {
     $item_plug->check(-1, CREATE, $_POST);
     $item_plug->add($_POST);
-    $item = new $_POST['itemtype']();
+    $item = getItemForItemtype($_POST['itemtype']);
     $url = $item::getFormURLWithID($_POST['items_id']);
     Html::redirect($url);
 } elseif (isset($_POST['purge'], $_POST['itemtype'])) {
     $item_plug->check($_POST['id'], PURGE);
     $item_plug->delete($_POST, 1);
-    $item = new $_POST['itemtype']();
+    $item = getItemForItemtype($_POST['itemtype']);
     $url = $item::getFormURLWithID($_POST['items_id']);
     Html::redirect($url);
 }

@@ -106,7 +106,7 @@ class GenericFormController extends AbstractController
         $post_data = $request->request->all();
 
         /* @var CommonDBTM $object */
-        $object = new $class();
+        $object = getItemForItemtype($class);
 
         if (!$object::isNewID($id) && !$object->getFromDB($id)) {
             throw new NotFoundHttpException();

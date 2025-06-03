@@ -107,13 +107,13 @@ final class TilesManager
         foreach ($item_tiles as $row) {
             // Validate tile itemtype
             $itemtype = $row['itemtype_tile'];
+            /** @var CommonDBTM $tile */
             $tile = getItemForItemtype($itemtype);
             if (!($tile instanceof TileInterface)) {
                 continue;
             }
 
             // Try to load tile from database
-            $tile = new $itemtype();
             if (!$tile->getFromDb($row['items_id_tile'])) {
                 continue;
             }
