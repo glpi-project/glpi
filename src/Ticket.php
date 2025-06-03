@@ -444,52 +444,6 @@ class Ticket extends CommonITILObject
     }
 
     /**
-     * Get Datas to be added for OLA add
-     *
-     * @param int    $olas_id      OLA id
-     * @param int    $entities_id  entity ID of the ticket
-     * @param string $date         begin date of the ticket
-     * @param int    $type         type of OLA
-     *
-     * @since 9.2 (before getDatasToAddOla without type parameter)
-     *
-     * @return array of datas to add in ticket
-     **/
-    public function getDatasToAddOLA($olas_id, $entities_id, $date, $type)
-    {
-        // @todoseb a supprimer
-        [$dateField, $olaField] = OLA::getFieldNames($type);
-
-        $data         = [];
-
-        $ola = new OLA();
-        if ($ola->getFromDB($olas_id)) {
-            $calendars_id = Entity::getUsedConfig(
-                'calendars_strategy',
-                $entities_id,
-                'calendars_id',
-                0
-            );
-            $ola->setTicketCalendar($calendars_id);
-            if ($ola->fields['type'] == SLM::TTR) {
-                $data["olalevels_id_ttr"] = OlaLevel::getFirstOlaLevel($olas_id);  // @todoseb to remove - probably no need to set it in items_ola, SLMTest is ok, try all tests...
-                $data['ola_ttr_begin_date'] = $date;
-            } elseif ($ola->fields['type'] == SLM::TTO) {
-                $data['ola_tto_begin_date'] = $date;
-            }
-            // Compute time_to_own
-            $data['ola_waiting_duration'] = (int) ($this->fields['ola_waiting_duration'] ?? 0);
-            $data[$dateField]             = $ola->computeDate($date, $data['ola_waiting_duration']);
-        } else {
-            $data["olalevels_id_ttr"]     = 0; // @todoseb to remove - probably no need to set it in items_ola
-            $data[$olaField]              = 0;
-            $data['ola_waiting_duration'] = 0;
-        }
-        return $data;
-    }
-
-
-    /**
      * Delete Level Agreement for the ticket
      *
      * - update relataed fields in ticket ($laType = SLA only)
@@ -1166,97 +1120,6 @@ class Ticket extends CommonITILObject
             }
         }
     }
-
-    /**
-     *  OLA affect by rules : reset internal_time_to_resolve and internal_time_to_own
-     *  Manual OLA defined : reset internal_time_to_resolve and internal_time_to_own
-     *  No manual OLA and due date defined : reset auto OLA
-     *
-     *  @since 9.1
-     *
-     * @param $type
-     * @param $input
-     * @param $manual_olas_id
-     */
-    public function olaAffect($type, &$input, $manual_olas_id)
-    {
-        // @todoseb a supprimer
-        [$dateField, $olaField] = OLA::getFieldNames($type);
-
-        // Restore olas
-        if (
-            isset($manual_olas_id[$type])
-            && !isset($input['_' . $olaField])
-        ) {
-            $input[$olaField] = $manual_olas_id[$type];
-        }
-
-        // Ticket update
-        if (isset($this->fields['id']) && $this->fields['id'] > 0) {
-            if (
-                !isset($manual_olas_id[$type])
-                && isset($input[$olaField]) && ($input[$olaField] > 0)
-                && ($input[$olaField] != $this->fields[$olaField])
-            ) {
-                if (isset($input[$dateField])) {
-                    // Unset due date
-                    unset($input[$dateField]);
-                }
-            }
-
-            if (
-                isset($input[$olaField]) && ($input[$olaField] > 0)
-                && ($input[$olaField] != $this->fields[$olaField]
-                 || isset($input['_' . $olaField]))
-            ) {
-                $date = $_SESSION['glpi_currenttime'];
-
-                // Get datas to initialize OLA and set it
-                $ola_data = $this->getDatasToAddOLA(
-                    $input[$olaField],
-                    $this->fields['entities_id'],
-                    $date,
-                    $type
-                );
-                if (count($ola_data)) {
-                    foreach ($ola_data as $key => $val) {
-                        $input[$key] = $val;
-                    }
-                }
-            }
-        } else { // Ticket add
-            if (
-                !isset($manual_olas_id[$type])
-                && isset($input[$dateField]) && ($input[$dateField] != 'NULL')
-            ) {
-                // Valid due date
-                if ($input[$dateField] >= $input['date']) {
-                    if (isset($input[$olaField])) {
-                        unset($input[$olaField]);
-                    }
-                } else {
-                    // Unset due date
-                    unset($input[$dateField]);
-                }
-            }
-
-            if (isset($input[$olaField]) && ($input[$olaField] > 0)) {
-                // Get datas to initialize OLA and set it
-                $ola_data = $this->getDatasToAddOLA(
-                    $input[$olaField],
-                    $input['entities_id'],
-                    $input['date'],
-                    $type
-                );
-                if (count($ola_data)) {
-                    foreach ($ola_data as $key => $val) {
-                        $input[$key] = $val;
-                    }
-                }
-            }
-        }
-    }
-
 
     /**
      * Manage SLA level escalation
@@ -5619,7 +5482,9 @@ JAVASCRIPT;
         // ola - currently associated ola
         // if $input_['_olas_id'] + _la_update is set, we are updating/adding ola, we use this fields, this is the data that will be associated with ticket (if the update does not fail)
         // otherwise, use the current associated ola data
-        $input['_olas_id_rule_criteria'] = isset($input['_la_update']) ? $input['_olas_id'] : array_column($this->getOlasData(), 'olas_id');
+        $input['_olas_id_rule_criteria'] = (isset($input['_la_update']) && isset($input['_olas_id']))
+            ? $input['_olas_id']
+            : array_column($this->getOlasData(), 'olas_id');
     }
 
     /**
@@ -6237,18 +6102,11 @@ JAVASCRIPT;
 
         // Business Rules do not override manual SLA and OLA
         $manual_slas_id = [];
-        $manual_olas_id = [];
         foreach ([SLM::TTR, SLM::TTO] as $slmType) {
             [$dateField, $slaField] = SLA::getFieldNames($slmType);
             if (isset($input[$slaField]) && ($input[$slaField] > 0)) {
                 $manual_slas_id[$slmType] = $input[$slaField];
             }
-
-            // ola creation is done with updateOLAs(), which is triggered on post_Update / post_Add (this is needed because ITIL Object need to exist)
-            //            [$dateField, $olaField] = OLA::getFieldNames($slmType);
-            //            if (isset($input[$olaField]) && ($input[$olaField] > 0)) {
-            //                $manual_olas_id[$slmType] = $input[$olaField];
-            //            }
         }
 
         parent::processRules($condition, $input, $entid);
@@ -6264,13 +6122,11 @@ JAVASCRIPT;
             }
         }
 
-        // Manage SLA / OLA asignment
-        // Manual SLA / OLA defined : reset due date
-        // No manual SLA / OLA and due date defined : reset auto SLA / OLA
+        // Manage SLA asignment
+        // Manual SLA defined : reset due date
+        // No manual SLA and due date defined : reset auto SLA
         foreach ([SLM::TTR, SLM::TTO] as $slmType) {
             $this->slaAffect($slmType, $input, $manual_slas_id);
-            // ola creation is done with updateOLAs(), which is triggered on post_Update / post_Add (this is needed because ITIL Object need to exist)
-            //            $this->olaAffect($slmType, $input, $manual_olas_id); // @todoseb cleanup : remplacé par updateOLAs()
         }
     }
 
@@ -6515,6 +6371,7 @@ JAVASCRIPT;
      * Fields of Sla table + fields added below ('due_time', 'class', 'item', 'nextaction', 'level')
      *
      * // @todoseb faire une test
+     * used in template templates/components/itilobject/service_levels.html.twig
      *
      * @return array<array{id: int, name: string, entities_id: int, is_recursive: bool, type: int, comment: string, number_time: int, use_ticket_calendar: bool, calendars_id: int, date_mod: string, definition_time: string, end_of_working_day: string, date_creation: string, slms_id: int, due_time: string, class: string, item: Ticket, nextaction: false|OlaLevel_Ticket|SlaLevel_Ticket, level: false|\LevelAgreementLevel}>
      */
@@ -6525,9 +6382,6 @@ JAVASCRIPT;
         $ttr = new SLA();
         if ($ttr->getFromDB($this->fields['slas_id_ttr'])) {
             $sla = $ttr->fields;
-            // @todoseb remove, for dev
-            // sla db fields : 'id', 'name', 'entities_id', 'is_recursive' , 'type' => int 1,  'comment',  'number_time',  'use_ticket_calendar'
-            // 'calendars_id' , 'date_mod',  'definition_time' ,  'end_of_working_day', 'date_creation',   'slms_id',
 
             $sla['due_time'] = $this->fields['time_to_resolve'];
             $sla['class'] = $ttr->getType(); // SLA::class
@@ -6594,7 +6448,7 @@ JAVASCRIPT;
                     'items_id' => $this->getID(),
                     'itemtype' => $this->getType(),
                     'olas_id' => $olas_id,
-                    //                'start_time' => null, // @todoseb à calculer
+                    //                'start_time' => null, // @todoseb à calculer, fait ailleurs ? noter les fonctions essentielles de recompute du temps
                     //            'waiting_time' ,
                 ])
             ) {
