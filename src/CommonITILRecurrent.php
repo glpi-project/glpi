@@ -149,7 +149,7 @@ abstract class CommonITILRecurrent extends CommonDropdown
             'end_date',
             'periodicity',
             'create_before',
-            'calendars_id'
+            'calendars_id',
         ];
 
         foreach ($fields_to_check as $field) {
