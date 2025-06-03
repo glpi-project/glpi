@@ -77,11 +77,9 @@ use Ticket;
  * // @todoseb plan à completer
  */
 
-// @todoseb tests sur olalevels_id_ttr (et olalevels_id_tto?)
 // @todoseb test à la suppression d'un OLA ? comportement à adopter ? est déjà protégé ?
-// @todoseb test à la modification d'un OLA ?
-// @todoseb tests global, ajoute, suppression, reajout
-// @todoseb tests sur getAssociatedSlas() - ailleurs
+// @todoseb test à la modification d'un OLA ? : recalcul sur les dates d'échéance ?
+// @todoseb tests sur getSlasData() - ailleurs
 
 class OLATest extends DbTestCase
 {
@@ -215,6 +213,32 @@ class OLATest extends DbTestCase
         // assert
         $fetched_olas = array_column($ticket->getOlasData(), 'olas_id');
         $this->assertEqualsCanonicalizing($updated_olas_ids, $fetched_olas);
+    }
+
+    public function testOlaCanBeAssociatedByRulesAndByForm(): void
+    {
+        // arrange - create a rule to assign OLA when priority is 4
+        $this->login();
+        [   'ola' => $ola_by_rule,
+            'slm' => $slm,
+            'group' => $group,
+        ] = $this->createOLA(ola_type: SLM::TTO);
+        $ola_by_form = $this->createOLA(ola_type: SLM::TTO, group: $group, slm: $slm)['ola'];
+
+        $builder = new \RuleBuilder('Assign OLA rule', \RuleTicket::class);
+        $builder->setCondtion(\RuleCommonITILObject::ONADD);
+        $builder->addCriteria('priority', \Rule::PATTERN_IS, 4);
+        $builder->addAction('append', 'olas_id', $ola_by_rule->getID());
+        $builder->setEntity(0);
+        $this->createRule($builder);
+
+        // act - create ticket with priority 4 and associate OLA
+        $ticket = $this->createTicket(['priority' => 4, '_la_update' => true, '_olas_id' => [$ola_by_form->getID()]]);
+
+        // assert - check if the ticket has the 2 OLA associated
+        $fetched_ola_ids = array_map(fn($ola_data) => $ola_data['olas_id'], $ticket->getOlasData());
+        $this->assertEqualsCanonicalizing([$ola_by_form->getID(), $ola_by_rule->getID()], $fetched_ola_ids);
+
     }
 
     /**

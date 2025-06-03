@@ -69,14 +69,14 @@ function add_groups_id_field_in_olas(Migration $migration): void
 function remove_olas_fields_in_tickets(Migration $migration): void
 {
     $fields_to_remove = [
-        'ola_waiting_duration', // waiting_time -> moved // @todoseb cleanup
-        'olas_id_tto', // -> moved
-        'olas_id_ttr', // -> moved
+        'ola_waiting_duration',
+        'olas_id_tto',
+        'olas_id_ttr',
         'olalevels_id_ttr',
-        'ola_tto_begin_date', // -> start_time (a confirmer)
-        'ola_ttr_begin_date', // -> start time dans un second ola
-        'internal_time_to_resolve', // -> due_time (à confirmer)
-        'internal_time_to_own', // -> start_time
+        'ola_tto_begin_date',
+        'ola_ttr_begin_date',
+        'internal_time_to_resolve',
+        'internal_time_to_own',
     ];
 
     foreach ($fields_to_remove as $field) {
