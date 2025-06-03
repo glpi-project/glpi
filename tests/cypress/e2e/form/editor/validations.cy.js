@@ -483,4 +483,60 @@ describe ('Validations', () => {
         getAriaErrorMessageElement(cy.findByRole('textbox', { name: 'My question that is invalid if some criteria are met' }))
             .should('contain.text', 'The value must not match the requested format');
     });
+
+    it('conditions count badge is updated when conditions are added or removed', () => {
+        createForm();
+        addQuestion('My first question');
+        addQuestion('My second question');
+
+        // Helper function to check conditions count badge
+        const checkConditionsCount = (count) => {
+            cy.findByRole('status', {'name': 'Conditions count'})
+                .invoke('text').invoke('trim')
+                .should('eq', String(count));
+        };
+
+        // Focus on the second question
+        getAndFocusQuestion('My second question').within(() => {
+            // Initialize validation with "Valid if..." strategy
+            initValidationConfiguration();
+            setConditionStrategy('Valid if...');
+            closeValidationConditionEditor();
+
+            // Verify initial count is 0
+            checkConditionsCount('0');
+
+            // Add first condition
+            openValidationConditionEditor();
+            fillCondition(0, null, 'Do not match regular expression', '/^Expected answer 1$/');
+            closeValidationConditionEditor();
+            checkConditionsCount('1');
+
+            // Add second condition
+            openValidationConditionEditor();
+            addNewEmptyCondition();
+            fillCondition(1, null, 'Match regular expression', '/^Expected answer 2$/');
+            closeValidationConditionEditor();
+            checkConditionsCount('2');
+
+            // Delete first condition
+            openValidationConditionEditor();
+            deleteConditon(0);
+            closeValidationConditionEditor();
+            checkConditionsCount('1');
+        });
+
+        // Test persistence after reload
+        saveAndReload();
+
+        // Verify that condition count persists and can be reset to 0
+        getAndFocusQuestion('My second question').within(() => {
+            checkConditionsCount('1');
+
+            openValidationConditionEditor();
+            deleteConditon(0);
+            closeValidationConditionEditor();
+            checkConditionsCount('0');
+        });
+    });
 });

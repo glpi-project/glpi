@@ -645,7 +645,7 @@ describe ('Conditions', () => {
         // Add a few conditions to the default destination
         goToDestinationTab();
         openConditionEditor();
-        setConditionStrategy('Created if');
+        setConditionStrategy('Created if...');
         fillCondition(0, null, 'My second question', 'Is not equal to', 'I love GLPI');
         addNewEmptyCondition();
         fillCondition(1, 'Or', 'My first question', 'Contains', 'GLPI is great');
@@ -1809,7 +1809,7 @@ describe ('Conditions', () => {
         // Define destination conditions
         checkThatConditionEditorIsNotDisplayed();
         openConditionEditor();
-        setConditionStrategy('Created if');
+        setConditionStrategy('Created if...');
         checkThatConditionEditorIsDisplayed();
         fillCondition(0, null, 'My first question', 'Is equal to', 'Expected answer 1');
         addNewEmptyCondition();
@@ -1881,5 +1881,121 @@ describe ('Conditions', () => {
                 cy.findByRole('link', {'name': 'Ticket'}).should('be.visible');
                 cy.findByRole('button', {'name': 'Close'}).click();
             });
+    });
+
+    it('conditions count badge is updated when conditions are added or removed', () => {
+        createForm();
+        // Add two questions to the form
+        addQuestion('My first question');
+        addQuestion('My second question');
+
+        // Helper function to check conditions count badge
+        const checkConditionsCount = (count) => {
+            cy.findByRole('status', {'name': 'Conditions count'})
+                .invoke('text').invoke('trim')
+                .should('eq', String(count));
+        };
+
+        // Focus on the second question
+        getAndFocusQuestion('My second question').within(() => {
+            // Initialize validation with "Visible if..." strategy
+            initVisibilityConfiguration();
+            setConditionStrategy('Visible if...');
+            closeVisibilityConfiguration();
+
+            // Verify initial count is 0
+            checkConditionsCount('0');
+
+            // Add first condition
+            openConditionEditor();
+            fillCondition(0, null, 'My first question', 'Is equal to', 'Expected answer 1');
+            closeVisibilityConfiguration();
+            checkConditionsCount('1');
+
+            // Add second condition
+            openConditionEditor();
+            addNewEmptyCondition();
+            fillCondition(1, null, 'My first question', 'Is equal to', 'Expected answer 2');
+            closeVisibilityConfiguration();
+            checkConditionsCount('2');
+
+            // Delete first condition
+            openConditionEditor();
+            deleteConditon(0);
+            closeVisibilityConfiguration();
+            checkConditionsCount('1');
+        });
+
+        // Test persistence after reload
+        saveAndReload();
+
+        // Verify that condition count persists and can be reset to 0
+        getAndFocusQuestion('My second question').within(() => {
+            checkConditionsCount('1');
+
+            openConditionEditor();
+            deleteConditon(0);
+            closeVisibilityConfiguration();
+            checkConditionsCount('0');
+        });
+    });
+
+    it('conditions count badge is updated when conditions are added or removed in form destination', () => {
+        createForm();
+        // Add a question to the form
+        addQuestion('My first question');
+
+        // Helper function to check conditions count badge
+        const checkConditionsCount = (count) => {
+            cy.findByRole('status', {'name': 'Conditions count'})
+                .invoke('text').invoke('trim')
+                .should('eq', String(count));
+        };
+
+        // Save the form to ensure we can access the destination tab
+        saveAndReload();
+        goToDestinationTab();
+
+        // Initialize validation with "Created if..." strategy
+        openConditionEditor();
+        setConditionStrategy('Created if...');
+        closeConditionEditor();
+
+        // Verify initial count is 0
+        checkConditionsCount('0');
+
+        // Add first condition
+        openConditionEditor();
+        fillCondition(0, null, 'My first question', 'Is equal to', 'Expected answer 1');
+        closeConditionEditor();
+        checkConditionsCount('1');
+
+        // Add second condition
+        openConditionEditor();
+        addNewEmptyCondition();
+        fillCondition(1, null, 'My first question', 'Is equal to', 'Expected answer 2');
+        closeConditionEditor();
+        checkConditionsCount('2');
+
+        // Delete first condition
+        openConditionEditor();
+        deleteConditon(0);
+        closeConditionEditor();
+        checkConditionsCount('1');
+
+        // Save the destination conditions and reload the page to ensure persistence
+        saveDestination();
+        cy.reload();
+
+        // Verify that condition count persists and can be reset to 0
+        openConditionEditor();
+        closeConditionEditor();
+        checkConditionsCount('1');
+
+        // Delete the remaining condition
+        openConditionEditor();
+        deleteConditon(0);
+        closeConditionEditor();
+        checkConditionsCount('0');
     });
 });

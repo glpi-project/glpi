@@ -134,6 +134,11 @@ export class BaseConditionEditorController {
 
         // Note: must use `$().html` to make sure we trigger scripts
         $(this.#container.querySelector('[data-glpi-conditions-editor]')).html(content);
+
+        // The number of conditions may have changed, notify
+        this.#notifyConditionsCountChanged(
+            data.conditions.length
+        );
     }
 
     #initEventHandlers() {
@@ -269,5 +274,20 @@ export class BaseConditionEditorController {
         }
 
         return conditions_data;
+    }
+
+    /**
+     * Notify that conditions count has changed
+     * @param {number} count - Current number of conditions
+     * @private
+     */
+    #notifyConditionsCountChanged(count) {
+        const event = new CustomEvent("conditions_count_changed", {
+            detail: {
+                container: this.#container,
+                conditions_count: count,
+            }
+        });
+        document.dispatchEvent(event);
     }
 }
