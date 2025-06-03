@@ -90,7 +90,7 @@ class OLATest extends DbTestCase
     {
         $this->login();
         // arrange
-        $ticket = $this->createItem(Ticket::class, $this->getValidTicketData());
+        $ticket = $this->createTicket();
         ['ola' => $ola_tto1, 'slm' => $slm, 'group' => $group] = $this->createOLA(ola_type: SLM::TTO);
         ['ola' => $ola_tto2] = $this->createOLA(ola_type: SLM::TTO, group: $group, slm: $slm);
         ['ola' => $ola_ttr] = $this->createOLA(ola_type: SLM::TTR, group: $group, slm: $slm);
@@ -119,7 +119,7 @@ class OLATest extends DbTestCase
         $ola = $this->createOLA()['ola'];
 
         // act - create ticket with OLA
-        $ticket = $this->createItem(Ticket::class, ['_la_update' => true, '_olas_id' => [$ola->getID()],] + $this->getValidTicketData());
+        $ticket = $this->createTicket(['_la_update' => true, '_olas_id' => [$ola->getID()],]);
 
         // assert
         $fetched_olas = array_column($ticket->getOlasData(), 'olas_id');
@@ -130,7 +130,7 @@ class OLATest extends DbTestCase
     {
         // arrange
         $this->login();
-        $ticket = $this->createItem(Ticket::class, $this->getValidTicketData());
+        $ticket = $this->createTicket();
         $ola = $this->createOLA()['ola'];
 
         // act - update ticket with OLA
@@ -152,7 +152,7 @@ class OLATest extends DbTestCase
         $olas_ids = [$ola1->getID(), $ola2->getID(), $ola3->getID()];
 
         // act - create ticket with OLA
-        $ticket = $this->createItem(Ticket::class, ['_la_update' => true, '_olas_id' => $olas_ids,] + $this->getValidTicketData());
+        $ticket = $this->createTicket( ['_la_update' => true, '_olas_id' => $olas_ids,]);
 
         // assert
         $fetched_olas = array_column($ticket->getOlasData(), 'olas_id');
@@ -163,7 +163,7 @@ class OLATest extends DbTestCase
     {
         // arrange
         $this->login();
-        $ticket = $this->createItem(Ticket::class, $this->getValidTicketData());
+        $ticket = $this->createTicket();
         ['ola' => $ola1, 'slm' => $slm, 'group' => $group] = $this->createOLA();
         $ola2 = $this->createOLA(group: $group, slm: $slm)['ola'];
         $ola3 = $this->createOLA(group: $group, slm: $slm)['ola'];
@@ -182,7 +182,7 @@ class OLATest extends DbTestCase
     {
         // arrange
         $this->login();
-        $ticket = $this->createItem(Ticket::class, $this->getValidTicketData());
+        $ticket = $this->createTicket();
         $ola = $this->createOLA()['ola'];
         $this->updateItem(Ticket::class, $ticket->getID(), ['_la_update' => true, '_olas_id' => [$ola->getID()]]);
 
@@ -198,7 +198,7 @@ class OLATest extends DbTestCase
     {
         // arrange - add 3 olas to a ticket
         $this->login();
-        $ticket = $this->createItem(Ticket::class, $this->getValidTicketData());
+        $ticket = $this->createTicket();
         ['ola' => $ola1, 'slm' => $slm, 'group' => $group] = $this->createOLA();
         $ola2 = $this->createOLA(group: $group, slm: $slm)['ola'];
         $ola3 = $this->createOLA(group: $group, slm: $slm)['ola'];
@@ -249,7 +249,7 @@ class OLATest extends DbTestCase
     {
         // arrange
         $this->login();
-        $ticket = $this->createItem(Ticket::class, $this->getValidTicketData());
+        $ticket = $this->createTicket();
         $ola = $this->createOLA()['ola'];
 
         // act - update ticket
@@ -260,6 +260,9 @@ class OLATest extends DbTestCase
         $this->assertEqualsCanonicalizing([$ola->getID()], $fetched_olas, 'Expected exactly 1 OLA associated with ticket, but found different results');
     }
 
+    /**
+     * Backward compatibility test
+     */
     public function testCreateTicketWithOldFormParams(): void
     {
         // arrange
@@ -268,9 +271,8 @@ class OLATest extends DbTestCase
         $ola_ttr = $this->createOLA(ola_type: \SLM::TTR, group: $group, slm: $slm)['ola'];
 
         // act - update ticket
-        $ticket = $this->createItem(
-            Ticket::class,
-            ['olas_id_tto' => $ola_tto->getID(), 'olas_id_ttr' => $ola_ttr->getID()] + $this->getValidTicketData(),
+        $ticket = $this->createTicket(
+            ['olas_id_tto' => $ola_tto->getID(), 'olas_id_ttr' => $ola_ttr->getID()],
             ['olas_id_tto', 'olas_id_ttr'] // do not exist anymore but here we check backward compatibility.
         );
 
@@ -283,7 +285,7 @@ class OLATest extends DbTestCase
     {
         // arrange
         $this->login();
-        $ticket = $this->createItem(Ticket::class, $this->getValidTicketData());
+        $ticket = $this->createTicket();
         ['ola' => $ola_tto, 'slm' => $slm, 'group' => $group] = $this->createOLA(ola_type: \SLM::TTO);
         $ola_ttr = $this->createOLA(ola_type: \SLM::TTR, group: $group, slm: $slm)['ola'];
 
@@ -312,9 +314,8 @@ class OLATest extends DbTestCase
             $this->expectException(\RuntimeException::class);
             $value = $removed_field === 'olalevels_id_ttr' ? 1 : date('Y-m-d 00:00:00');
 
-            $this->createItem(
-                Ticket::class,
-                [$removed_field => $value] + $this->getValidTicketData(),
+            $this->createTicket(
+                [$removed_field => $value],
                 [$removed_field] // do not exist anymore but here we check backward compatibility, so createItem must no fail.
             );
         }
@@ -324,16 +325,16 @@ class OLATest extends DbTestCase
     {
         $this->login();
         $removed_fields = ['ola_tto_begin_date', 'ola_ttr_begin_date', 'internal_time_to_resolve', 'internal_time_to_own', 'olalevels_id_ttr'];
-        $ticket = $this->createItem(Ticket::class, $this->getValidTicketData());
+        $ticket = $this->createTicket();
 
         foreach ($removed_fields as $removed_field) {
             $this->expectException(\RuntimeException::class);
             $value = $removed_field === 'olalevels_id_ttr' ? 1 : date('Y-m-d 00:00:00');
 
             $this->updateItem(
-                $ticket::class,
+                Ticket::class,
                 $ticket->getID(),
-                [$removed_field => $value] + $this->getValidTicketData(),
+                [$removed_field => $value],
                 [$removed_field] // do not exist anymore but here we check backward compatibility, so updateItem must no fail.
             );
         }
@@ -353,7 +354,7 @@ class OLATest extends DbTestCase
         $due_time_datetime->add($this->getDefaultTtoDelayInterval());
 
         // act associate ticket with ola
-        $ticket = $this->createItem(Ticket::class, ['_la_update' => true, '_olas_id' => [$ola_tto->getID()]] + $this->getValidTicketData());
+        $ticket = $this->createTicket( ['_la_update' => true, '_olas_id' => [$ola_tto->getID()]]);
 
         // assert
         // test using database object
@@ -378,7 +379,7 @@ class OLATest extends DbTestCase
         $start_time_datetime = $this->setCurrentTime('09:00:00');
         $due_time_datetime = clone $start_time_datetime;
         $due_time_datetime->add($this->getDefaultTtoDelayInterval());
-        $ticket = $this->createItem(Ticket::class, $this->getValidTicketData());
+        $ticket = $this->createTicket();
 
         // act associate ticket with ola
         $ticket = $this->updateItem($ticket::class, $ticket->getID(), ['_la_update' => true, '_olas_id' => [$ola_tto->getID()]]);
@@ -405,7 +406,7 @@ class OLATest extends DbTestCase
         // arrange create ticket with OLA at 09:00:00, status WAITING
         $this->setCurrentTime('09:00:00');
         ['ola' => $ola ] = $this->createOLA(ola_type: SLM::TTR);
-        $ticket = $this->createItem(Ticket::class, ['_la_update' => true, '_olas_id' => [$ola->getID()]] + $this->getValidTicketData());
+        $ticket = $this->createTicket( ['_la_update' => true, '_olas_id' => [$ola->getID()], 'status' => \CommonITILObject::WAITING]);
         assert(\CommonITILObject::WAITING === (int) $ticket->fields['status']);
         $initial_due_time = $ticket->getOlasData()[0]['due_time'];
 
@@ -428,7 +429,7 @@ class OLATest extends DbTestCase
         // arrange create ticket with OLA at 09:00:00, status WAITING
         $this->setCurrentTime('09:00:00');
         ['ola' => $ola ] = $this->createOLA(ola_type: SLM::TTO);
-        $ticket = $this->createItem(Ticket::class, ['_la_update' => true, '_olas_id' => [$ola->getID()]] + $this->getValidTicketData());
+        $ticket = $this->createTicket( ['_la_update' => true, '_olas_id' => [$ola->getID()], 'status' => \CommonITILObject::WAITING]);
         assert(\CommonITILObject::WAITING === (int) $ticket->fields['status']);
         $initial_due_time = $ticket->getOlasData()[0]['due_time'];
 
@@ -449,7 +450,7 @@ class OLATest extends DbTestCase
         $this->login();
         $this->setCurrentTime('10:04:00');
         ['ola' => $ola ] = $this->createOLA(ola_type: SLM::TTR);
-        $ticket = $this->createItem(Ticket::class, ['_la_update' => true, '_olas_id' => [$ola->getID()]] + $this->getValidTicketData());
+        $ticket = $this->createTicket( ['_la_update' => true, '_olas_id' => [$ola->getID()], 'status' => \CommonITILObject::WAITING]);
         assert($ticket->fields['status'] === CommonITILObject::WAITING);
         $this->setCurrentTime('10:24:00');
         $this->updateItem(\Ticket::class, $ticket->getID(), ['status' => CommonITILObject::ASSIGNED]);
@@ -463,7 +464,7 @@ class OLATest extends DbTestCase
         $this->login();
         $this->setCurrentTime('10:04:00');
         ['ola' => $ola ] = $this->createOLA(ola_type: SLM::TTO);
-        $ticket = $this->createItem(Ticket::class, ['_la_update' => true, '_olas_id' => [$ola->getID()]] + $this->getValidTicketData());
+        $ticket = $this->createTicket( ['_la_update' => true, '_olas_id' => [$ola->getID()], 'status' => \CommonITILObject::WAITING]);
         assert($ticket->fields['status'] === CommonITILObject::WAITING);
         $this->setCurrentTime('10:24:00');
         $this->updateItem(\Ticket::class, $ticket->getID(), ['status' => CommonITILObject::ASSIGNED]);
@@ -487,7 +488,7 @@ class OLATest extends DbTestCase
         $due_time_datetime->add($this->getDefaultTtoDelayInterval());
 
         // act - associate ticket with ola
-        $ticket = $this->createItem(Ticket::class, ['_la_update' => true, '_olas_id' => [$ola_tto->getID()]] + $this->getValidTicketData());
+        $ticket = $this->createTicket( ['_la_update' => true, '_olas_id' => [$ola_tto->getID()]]);
         // - one hour later, assign the ticket to a non dedicated group
         throw new \Exception('implement me');
         // @todoseb test assignation à un user qui n'est pas du group
@@ -521,27 +522,6 @@ class OLATest extends DbTestCase
     public function testOlaTtrDoesNotStartWhenTicketIsAssignedToAUserNotInDedicatedGroup(): void
     {
         $this->markTestIncomplete('implement me');
-    }
-
-
-    /**
-     * Set $_SESSION['glpi_currenttime'] with current day + $time param and return the related DateTime
-     *
-     * @param string $time expected format is H:i:s
-     */
-    private function setCurrentTime(string $time): \DateTime
-    {
-        // assert format is H:i:s
-        assert(1 === preg_match('/^([01]?[0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])$/', $time));
-
-        // set session time
-        $_SESSION['glpi_currenttime'] = date('Y-m-d ' . $time);
-
-        // create and return DateTime
-        $dt = new \DateTime();
-        $dt->setTime(...explode(':', $time));
-
-        return $dt;
     }
 
     private function getDefaultTtoDelayInterval(): \DateInterval
