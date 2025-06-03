@@ -64,7 +64,7 @@ trait SLMTrait
     {
         assert(in_array($ola_type, array_keys(OLA::getTypes())));
         $slm ??= $this->createSLM();
-        $group ??= getItemByTypeName(Group::class, '_test_group_1');
+        $group ??= getItemByTypeName(\Group::class, '_test_group_1');
 
         [$amount, $unit] = match ($ola_type) {
             SLM::TTO => self::OLA_TTO_DELAY,
@@ -92,47 +92,6 @@ trait SLMTrait
      * @param array $data
      * @param int $sla_type
      * @param SLM|null $slm
-     *
-     * @return array{sla: SLA, slm: SLM}
-     */
-    private function createSLA(array $data = [], int $sla_type = SLM::TTO, ?SLM $slm = null): array
-    {
-        assert(in_array($sla_type, array_keys(SLA::getTypes())));
-        $slm ??= $this->createSLM();
-
-        [$amount, $unit] = match ($sla_type) {
-            SLM::TTO => self::SLA_TTO_DELAY,
-            SLM::TTR => self::SLA_TTR_DELAY,
-        };
-
-        $sla = $this->createItem(
-            SLA::class,
-            $data + [
-                //                'id' => 0,
-                'name' => 'SLA ' . time(),
-                //                'entities_id' => 0,
-                'is_recursive' => 1,
-                'type' => $sla_type,
-                'comment' => 'SLA comment ' . time(),
-                'number_time' => $amount,
-                'definition_time' => $unit,
-                //                'use_ticket_calendar' => 0,
-                //                'calendars_id' => 0,
-                //                'date_mod' => null,
-                //                'end_of_working_day' => 0,
-                //                'date_creation' => null,
-                'slms_id' => $slm->getID(),
-                //                'groups_id' => $group->getID(),
-            ]
-        );
-
-        return ['sla' => $sla, 'slm' => $slm];
-    }
-
-    /**
-     * @param array $data
-     * @param int $sla_type
-     * @param \SLM|null $slm
      *
      * @return array{sla: SLA, slm: SLM}
      */
