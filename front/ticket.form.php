@@ -177,7 +177,6 @@ elseif (isset($_POST['update'])) {
 } elseif (isset($_POST['sla_delete'])) {
     $ticket->check($_POST["id"], UPDATE);
 
-    // @todoseb requete probablement mauvaise, on doit utiliser $_POST["la_id"] en second param
     $ticket->deleteLevelAgreement("SLA", $_POST["id"], $_POST['type'], $_POST['delete_date']);
     Event::log(
         $_POST["id"],
