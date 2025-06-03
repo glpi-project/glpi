@@ -586,7 +586,7 @@ class DbUtilsTest extends DbTestCase
         $it = new \DBmysqlIterator(null);
 
         $it->execute(['FROM' => 'glpi_computers', 'WHERE' => $instance->getEntitiesRestrictCriteria('glpi_computers')]);
-        $this->assertSame('SELECT * FROM `glpi_computers`', $it->getSql());
+        $this->assertSame('SELECT * FROM `glpi_computers` WHERE true', $it->getSql());
 
         //keep testing old method from db.function
         $this->assertEmpty(getEntitiesRestrictRequest('AND', 'glpi_computers'));
