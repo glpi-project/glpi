@@ -101,7 +101,7 @@ Handle only linked ola, not ola ttr and tto defined using datetime fields
 
                 {# datetime field #}
                 {% if display_datetime_field %}
-                    {{ fields.DatetimeLaField('time_to_own',
+                    {{ _self.DatetimeLaField('time_to_own',
                         item.fields['time_to_own'],
                         __('TTO'),
                         {
@@ -112,7 +112,7 @@ Handle only linked ola, not ola ttr and tto defined using datetime fields
 
                 {# no linked tto : display add button + hidden dropdown #}
                 {% if display_associatedsla_field and can_assign_sla_ola %}
-                    {{ fields.LinkedLaFieldEmpty(
+                    {{ _self.LinkedLaFieldEmpty(
                         tto_sla,
                         item,
                         'slas_id_tto',
@@ -123,7 +123,6 @@ Handle only linked ola, not ola ttr and tto defined using datetime fields
                             'rand': _rand,
                         }
                     ) }}
-                    {# @todo gestion du required - 'mandatory': field_options.fields_template.isMandatoryField(la_field.lafieldname), #}
                 {% endif %}
             </td>
         </tr>
@@ -159,7 +158,7 @@ Handle only linked ola, not ola ttr and tto defined using datetime fields
                 </div>
 
                 {# datetime field + badge/dropdown field #}
-                {{ fields.linkedLaField(
+                {{ _self.linkedSlaField(
                     sla,
                     field_options|merge({
                         'can_assign': can_assign_sla_ola,
@@ -169,7 +168,6 @@ Handle only linked ola, not ola ttr and tto defined using datetime fields
                         'display_associatedsla_field': display_associatedsla_field
                     })
                 ) }}
-                {# @todo gestion du required - 'mandatory': field_options.fields_template.isMandatoryField(la_field.lafieldname), #}
             </td>
         </tr>
     {% endfor %}
@@ -195,7 +193,7 @@ Handle only linked ola, not ola ttr and tto defined using datetime fields
 
                 {# datetime field #}
                 {% if display_datetime_field %}
-                    {{ fields.DatetimeLaField('time_to_resolve',
+                    {{ _self.DatetimeLaField('time_to_resolve',
                         item.fields['time_to_resolve'],
                         __('TTR'),
                         {
@@ -206,7 +204,7 @@ Handle only linked ola, not ola ttr and tto defined using datetime fields
 
                 {# no linked ttr : display add button + hidden dropdown #}
                 {% if display_associatedsla_field and can_assign_sla_ola %}
-                    {{ fields.LinkedLaFieldEmpty(ttr_sla,
+                    {{ _self.LinkedLaFieldEmpty(ttr_sla,
                         item,
                         'slas_id_ttr',
                         ttr_sla.getAddConfirmation(),
@@ -215,7 +213,6 @@ Handle only linked ola, not ola ttr and tto defined using datetime fields
                             'can_assign': can_assign_sla_ola,
                             'rand': _rand,
                         }) }}
-                    {# @todo gestion du required - 'mandatory': field_options.fields_template.isMandatoryField(la_field.lafieldname), #}
                 {% endif %}
             </td>
         </tr>
@@ -229,7 +226,7 @@ Handle only linked ola, not ola ttr and tto defined using datetime fields
         <th class="border-0 fs-4">
             <div class="d-flex justify-content-between">
                 <div class="">{{ __('OLA') }}</div>
-                <div>{{ fields.OlaAddButton('ola_dropdown_placeholder', field_options) }}</div>
+                <div>{{ _self.OlaAddButton('ola_dropdown_placeholder', field_options) }}</div>
             </div>
         </th>
     </tr>
@@ -260,7 +257,7 @@ Handle only linked ola, not ola ttr and tto defined using datetime fields
 
         <td class="right pe-2 align-middle border-0">{{ _label }}</td>
         <td class="d-flex ms-n2 border-0 py-0">
-            {{ fields.linkedLaField(
+            {{ _self.linkedOlaField(
                 ola,
                 field_options|merge({
                     'can_assign': can_assign_sla_ola,
@@ -270,9 +267,6 @@ Handle only linked ola, not ola ttr and tto defined using datetime fields
                     'display_associatedsla_field': display_associatedsla_field
                 })
             ) }}
-            {# @todo fieldname - 'ola_' ~ ola.id, 'ola[' ~ ola.id ~ ']' #}
-            {# @todo gestion du required - 'mandatory': field_options.fields_template.isMandatoryField(la_field.lafieldname), #}
-
         </td>
     </tr>
 {% endfor %}
@@ -285,3 +279,359 @@ Handle only linked ola, not ola ttr and tto defined using datetime fields
     </tbody>
 
 </table>
+
+{# --- Macros --- #}
+
+
+{# la param should match format provided by \Ticket::getAssociatedSlas() #}
+{% macro linkedOlaField(la, options = {}) %}
+    {% set options = {
+        'can_assign': false,
+        'is_expanded': false,
+        'new_item': false,
+        'display_datetime_field': false,
+        'display_associatedsla_field': false,
+        'rand': 'please_pass_a_rand'
+    }|merge(options) %}
+
+    {% set assign_la_id = 'assign_la_' ~ options.rand %}
+
+    <div class="{{ options.new_item ? '' : 'collapsed' }} w-100 mt-1" id="dropdown_{{ assign_la_id }}">
+        {% if options.display_datetime_field %}
+            <span class="text-muted">
+                      {{ la.due_time|formatted_datetime }}
+             </span>
+        {% endif %}
+
+        {% if options.display_associatedsla_field %}
+            <span class="level_name badge itil-badge bg-body border-info ms-1 flex-column flex-sm-row">
+                <span class="d-flex align-items-center">
+                     <i class="ti ti-stopwatch slt me-1"></i>
+                     <span class="text-truncate"
+                           title="{{ get_item_comment(la.class, la.olas_id) }}"
+                           data-bs-toggle="tooltip" data-bs-placement="top">
+                            {{ la.name }}
+                     </span>
+                </span>
+
+                {% if la.level != false %}
+                    <span class="badge bg-info-lt ms-0 ms-sm-1">
+                        <i class="ti ti-clock me-1"
+                           title="{{ __('Next escalation: %s')|format(la.nextaction.fields['date']|formatted_datetime) }}"
+                           data-bs-toggle="tooltip" data-bs-placement="top"></i>
+                        <span title="{{ __('%1$s: %2$s')|format(_n('Escalation level', 'Escalation levels', 1), get_item_name(la.level)) }}"
+                              data-bs-toggle="tooltip" data-bs-placement="top">
+                           {{ get_item_name(la.level) }}
+                        </span>
+                    </span>
+                {% endif %}
+
+                {# inserer le groupe assigné ici #}
+            </span>
+
+            {# remove button - la association #}
+        {% if options.can_assign %}
+            <i class="ti ti-trash ms-1" role="button"
+               onclick="delete_date_{{ options.rand }}(event)"
+               title="{{ _x('button', 'Delete permanently') }}"
+               data-bs-toggle="tooltip" data-bs-placement="top"></i>
+        {% endif %}
+
+            {# javascript for remove button #}
+            <script type="text/javascript">
+                function delete_date_{{ options.rand }}(e) {
+                    e.preventDefault();
+
+                    var delete_date = 0;
+                    if (confirm('{{ __('Also delete date?') }}')) {
+                        delete_date = 1;
+                    }
+
+                    submitGetLink('{{ la.item.getFormURL() }}', {
+                        'ola_delete': 1,
+                        'id': {{ la.item.fields['id'] }},
+                        'type': {{ la.type }},
+                        'la_id': {{ la.olas_id }},
+                        '_glpi_csrf_token': '{{ csrf_token() }}',
+                        '_glpi_simple_form': 1,
+                        'delete_date': delete_date
+                    });
+                }
+            </script>
+        {% endif %}
+
+        {# hidden input field to preserve olas on update #}
+        <input type="hidden"   name="_olas_id[]" value="{{ la.olas_id }}" />
+    </div>
+
+    {# <span>Nouveau design à implémenter Ola field à implementer</span> #}
+    {# tto/ttr type #}
+    {#    {{ la.type }} #}
+
+    {# icon #}
+    {# static #}
+
+    {# flag #}
+    {# static #}
+
+    {# due_datetime #}
+    {#        {{ la.due_time|formatted_datetime }} #}
+
+    {# info bloc #}
+
+    {# slm/slt #}
+    {# @todo ajout du slt  #}
+    {# icon #}
+    {# name #}
+    {#            {{ la.slm.name }} #}
+
+    {# escalation #}
+
+    {# icon #}
+    {# name #}
+    {#            {{ la.escalation.name }} #}
+
+    {# group #}
+    {# icon #}
+    {# name #}
+    {#            {{ la.group.name }} #}
+
+    {# trash icon #}
+{% endmacro %}
+
+{# la param should match format provided by \Ticket::getAssociatedSlas() #}
+{% macro linkedSlaField(la, options = {}) %}
+    {% set options = {
+        'can_assign': false,
+        'is_expanded': false,
+        'new_item': false,
+        'display_datetime_field': false,
+        'display_associatedsla_field': false,
+        'rand': 'please_pass_a_rand'
+    }|merge(options) %}
+
+    {% set assign_la_id = 'assign_la_' ~ options.rand %}
+
+    <div class="{{ options.new_item ? '' : 'collapsed' }} w-100 mt-1" id="dropdown_{{ assign_la_id }}">
+        {% if options.display_datetime_field %}
+            <span class="text-muted">
+                      {{ la.due_time|formatted_datetime }}
+             </span>
+        {% endif %}
+
+        {% if options.display_associatedsla_field %}
+            <span class="level_name badge itil-badge bg-body border-info ms-1 flex-column flex-sm-row">
+                <span class="d-flex align-items-center">
+                     <i class="ti ti-stopwatch slt me-1"></i>
+                     <span class="text-truncate"
+                           title="{{ get_item_comment(la.class, la.id) }}"
+                           data-bs-toggle="tooltip" data-bs-placement="top">
+                            {{ la.name }}
+                     </span>
+                </span>
+
+                {% if la.level != false %}
+                    <span class="badge bg-info-lt ms-0 ms-sm-1">
+                        <i class="ti ti-clock me-1"
+                           title="{{ __('Next escalation: %s')|format(la.nextaction.fields['date']|formatted_datetime) }}"
+                           data-bs-toggle="tooltip" data-bs-placement="top"></i>
+                        <span title="{{ __('%1$s: %2$s')|format(_n('Escalation level', 'Escalation levels', 1), get_item_name(la.level)) }}"
+                              data-bs-toggle="tooltip" data-bs-placement="top">
+                           {{ get_item_name(la.level) }}
+                        </span>
+                    </span>
+                {% endif %}
+
+                {# inserer le groupe assigné ici #}
+            </span>
+
+            {# remove button - la association #}
+        {% if options.can_assign %}
+            <i class="ti ti-trash ms-1" role="button"
+               onclick="delete_date_{{ options.rand }}(event)"
+               title="{{ _x('button', 'Delete permanently') }}"
+               data-bs-toggle="tooltip" data-bs-placement="top"></i>
+        {% endif %}
+
+            {# javascript for remove button #}
+            <script type="text/javascript">
+                function delete_date_{{ options.rand }}(e) {
+                    e.preventDefault();
+
+                    var delete_date = 0;
+                    if (confirm('{{ __('Also delete date?') }}')) {
+                        delete_date = 1;
+                    }
+
+                    submitGetLink('{{ la.item.getFormURL() }}', {
+                        'sla_delete': 1,
+                        'id': {{ la.item.fields['id'] }},
+                        'type': {{ la.type }},
+                        'la_id': {{ la.id }},
+                        '_glpi_csrf_token': '{{ csrf_token() }}',
+                        '_glpi_simple_form': 1,
+                        'delete_date': delete_date
+                    });
+                }
+            </script>
+        {% endif %}
+    </div>
+
+    {# <span>Nouveau design à implémenter Ola field à implementer</span> #}
+    {# tto/ttr type #}
+    {#    {{ la.type }} #}
+
+    {# icon #}
+    {# static #}
+
+    {# flag #}
+    {# static #}
+
+    {# due_datetime #}
+    {#        {{ la.due_time|formatted_datetime }} #}
+
+    {# info bloc #}
+
+    {# slm/slt #}
+    {# @todo ajout du slt  #}
+    {# icon #}
+    {# name #}
+    {#            {{ la.slm.name }} #}
+
+    {# escalation #}
+
+    {# icon #}
+    {# name #}
+    {#            {{ la.escalation.name }} #}
+
+    {# group #}
+    {# icon #}
+    {# name #}
+    {#            {{ la.group.name }} #}
+
+    {# trash icon #}
+{% endmacro %}
+
+{% macro LinkedLaFieldEmpty(la, item, name, add_confirmation_message, type, options = {}) %}
+    {% set options = {
+        'can_assign': false,
+        'is_expanded': false,
+        'rand': 'please_provided_a_rand_in_LinkedLaFieldEmpty',
+    }|merge(options) %}
+
+    {% set assign_la_id = 'assign_la_' ~ options.rand %}
+
+    <div class="w-100 mt-1 d-none" id="dropdown_assign_la_{{ assign_la_id }}">
+        {{ fields.dropdownField(
+            la.getType(),
+            name,
+            0,
+            '',
+            {
+                'include_field': false,
+                'entity': item.fields['entities_id']|default(0),
+                'condition': {'type': type},
+                'disabled': (not options.can_assign),
+                'add_field_class': (options.is_expanded ? 'col-sm-6' : ''),
+            }
+        ) }}
+    </div>
+
+    <button class="btn btn-sm btn-ghost-secondary ms-1" type="button"
+            id="button_{{ assign_la_id }}"
+            data-bs-toggle="modal"
+            data-bs-target="#{{ assign_la_id }}"
+            aria-expanded="false"
+            aria-controls="{{ assign_la_id }}">
+        <i class="ti ti-stopwatch slt pointer"
+           title="{{ __('Assign a SLA') }}"
+           data-bs-toggle="tooltip" data-bs-placement="top"></i>
+    </button>
+
+    {% import 'components/form/modals_macros.html.twig' as modals %}
+    {{ modals.confirm(
+        __('Warning'),
+        add_confirmation_message|join('<br />'),
+        {
+            'id': assign_la_id,
+            'confirm_label': '<i class="ti ti-stopwatch me-1"></i>' ~ __('Assign'),
+            'confirm_event': 'toggleAssignLA_' ~ assign_la_id ~ '()',
+        }|merge(options)
+    ) }}
+
+    <script type="text/javascript">
+        function toggleAssignLA_{{ assign_la_id }}() {
+            // hide button clicked
+            $("#button_{{ assign_la_id }}").hide();
+
+            // hide date field
+            $("#date_{{ assign_la_id }}").closest('.la_datefield').hide();
+
+            // show dropdown field
+            $('#dropdown_assign_la_{{ assign_la_id }}').removeClass('d-none');
+        }
+    </script>
+{% endmacro %}
+
+{# @todo pas forcément utile, peut-être inliné #}
+{% macro DatetimeLaField(name, value, label, options = {}) %}
+    {% set assign_la_id = 'assign_la_' ~ options.rand %}
+    <div class="la_datefield">
+        {{ fields.datetimeField(
+            name,
+            value,
+            label,
+            {
+                'include_field': false,
+                'id': 'date_' ~ assign_la_id,
+            }|merge(options)
+        ) }}
+    </div>
+{% endmacro %}
+
+{# @todo document le param dropdown_dom_id est le id du template de dropdown#}
+{% macro OlaAddButton(dropdown_placeholder_dom_id, options = {}) %}
+    {% set options = {
+        'rand': random(),
+        'is_expanded': false,
+    }|merge(options) %}
+    {% set rand = 'ola_add_' ~ options.rand ~ '_' %}
+    {% set button_id = 'add_button_' ~ rand %}
+
+    {# display button #}
+    <button class="btn btn-sm btn-ghost-secondary ms-1" type="button"
+            id="{{ button_id }}"
+            {#            data-bs-toggle="modal"#}
+            {#            data-bs-target="#{{ assign_la_id }}"#}
+            aria-expanded="false"
+            {#            aria-controls="{{ assign_la_id }}"#}
+    >
+        <i class="ti ti-plus slt pointer"
+           title="{{ __('Add') }}"
+           data-bs-toggle="tooltip" data-bs-placement="top"></i>
+        {{ __('Add') }}
+    </button>
+
+
+    {# show new ola dropdown - ajax request #}
+    <script>
+        // make dropdown visible
+        $(() => {
+                $("#{{ button_id }}").on('click', () => {
+                    $.get(
+                        "{{ path('/dropdown') }}",
+                        {
+                            'itemtype': 'OLA',
+                            'fieldname': '_olas_id[]',
+                            'label': '{{ __('OLA') }}',
+                        },
+                        (html) => {
+                            $('#{{ dropdown_placeholder_dom_id }}').append(html);
+                        }
+                    );
+                });
+            }
+        );
+    </script>
+
+{% endmacro %}

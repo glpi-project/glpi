@@ -45,9 +45,6 @@ class Item_Ola extends CommonDBRelation
     //      public static $checkItem_1_Rights = self::DONT_CHECK_ITEM_RIGHTS;  // @todoseb voir implications
     //      public static $checkItem_2_Rights = self::DONT_CHECK_ITEM_RIGHTS;  // @todoseb voir implications
 
-    //    public static $mustBeAttached_1 = true; // @todoseb voir implications
-    //    public static $mustBeAttached_2 = true; // @todoseb voir implications
-
     /**
      * Prepare the input for add
      *
@@ -57,7 +54,7 @@ class Item_Ola extends CommonDBRelation
      */
     public function prepareInputForAdd($input)
     {
-        // @todoseb attention filter si TTO ou TTR ?
+        // @todoseb attention filter si TTO ou TTR ? -> test
         if (in_array(['due_time', 'start_time'], array_keys($input))) {
             throw new \RuntimeException('due_time and start_time are not allowed in the input. Values are computed.');
         }
