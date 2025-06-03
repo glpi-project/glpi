@@ -155,21 +155,56 @@
                 rand: c_rand
             } + inheritable_params) }}
             <div id="inquest_config{{ config_suffix }}_extra"></div>
-            <script>
-                $(() => {
-                    const refresh = (val) => {
-                        $('#inquest_config{{ config_suffix }}_extra').load('{{ path('ajax/commonitilsatisfaction.php') }}', {
-                            itemtype: '{{ itemtype }}',
-                            entities_id: '{{ item.getID() }}',
-                            inquest_config{{ config_suffix }}: val,
+            <script type="module">
+                const refresh_param_rows = () => {
+                    const rate_dropdown = $('select[name="inquest_rate{{ config_suffix }}"]');
+                    const config_dropdown = $('select[name="inquest_config{{ config_suffix }}"]');
+                    const val = parseInt('' + rate_dropdown.val()) || 0;
+                    const config_val = parseInt('' + config_dropdown.val());
+
+                    const param_rows = [
+                        'inquest_duration{{ config_suffix }}',
+                        'inquest_max_rate{{ config_suffix }}',
+                        'inquest_default_rate{{ config_suffix }}',
+                        'inquest_mandatory_comment{{ config_suffix }}',
+                        'max_closedate{{ config_suffix }}',
+                        'inquest_URL{{ config_suffix }}'
+                    ];
+                    if (val === 0) {
+                        param_rows.forEach(row => {
+                            $(`[name="${row}"]`).closest('.form-field').hide();
+                        });
+                    } else {
+                        param_rows.forEach(row => {
+                            $(`[name="${row}"]`).closest('.form-field').show();
                         });
                     }
-                    $('#dropdown_inquest_config{{ config_suffix }}{{ c_rand }}').on('change', (e) => {
-                        const selected = $(e.target).val();
-                        refresh(selected);
-                    });
-                    refresh({{ item.fields['inquest_config' ~ config_suffix] }});
+                    if (val === 0 || config_val !== {{ constant('CommonITILSatisfaction::TYPE_EXTERNAL') }}) {
+                        $(`#inquest_config{{ config_suffix }}_extra [name="inquest_URL{{ config_suffix }}"]`).closest('.form-field').hide();
+                        $('#inquest_config{{ config_suffix }}_extra .form-field.valid_tags').hide();
+                    } else {
+                        $(`#inquest_config{{ config_suffix }}_extra [name="inquest_URL{{ config_suffix }}"]`).closest('.form-field').show();
+                        $('#inquest_config{{ config_suffix }}_extra .form-field.valid_tags').show();
+                    }
+                }
+
+                const refresh = (val) => {
+                    $('#inquest_config{{ config_suffix }}_extra').load('{{ path('ajax/commonitilsatisfaction.php') }}', {
+                        itemtype: '{{ itemtype }}',
+                        entities_id: '{{ item.getID() }}',
+                        inquest_config{{ config_suffix }}: val,
+                    }, refresh_param_rows);
+                }
+                $('#dropdown_inquest_config{{ config_suffix }}{{ c_rand }}').on('change', (e) => {
+                    const selected = $(e.target).val();
+                    refresh(selected);
                 });
+                refresh({{ item.fields['inquest_config' ~ config_suffix] }});
+
+
+                $('select[name="inquest_config{{ config_suffix }}"]').on('change', refresh_param_rows);
+                $('#inquest_config{{ config_suffix }}_extra')
+                    .on('change', 'select[name="inquest_rate{{ config_suffix }}"]', refresh_param_rows);
             </script>
         </div>
     {% endfor %}
