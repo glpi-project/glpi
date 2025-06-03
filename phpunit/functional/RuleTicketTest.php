@@ -1460,7 +1460,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
 
         $rule_builder = new \RuleBuilder(__FUNCTION__, \RuleTicket::class);
         $rule_builder->addCriteria('entities_id', Rule::PATTERN_IS, $entity->getID());
-        $rule_builder->addAction('assign', 'olas_id', $ola->getID());
+        $rule_builder->addAction('append', 'olas_id', $ola->getID());
         $this->createRule($rule_builder);
 
         // act - create ticket matching criteria
@@ -1484,9 +1484,9 @@ class RuleTicketTest extends RuleCommonITILObjectTest
 
         $rule_builder = new \RuleBuilder(__FUNCTION__, \RuleTicket::class);
         $rule_builder->addCriteria('entities_id', Rule::PATTERN_IS, $entity->getID());
-        $rule_builder->addAction('assign', 'olas_id', $ola_tto->getID());
-        $rule_builder->addAction('assign', 'olas_id', $ola_ttr1->getID());
-        $rule_builder->addAction('assign', 'olas_id', $ola_ttr2->getID());
+        $rule_builder->addAction('append', 'olas_id', $ola_tto->getID());
+        $rule_builder->addAction('append', 'olas_id', $ola_ttr1->getID());
+        $rule_builder->addAction('append', 'olas_id', $ola_ttr2->getID());
         $this->createRule($rule_builder);
 
         // act - create ticket matching criteria

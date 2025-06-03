@@ -2471,7 +2471,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
 
         // check internal_time_to_resolve (OLA)
         // remove internat_time_to_resolve from updates if it's lower than ticket 'date'
-        // @todoseb logique a reprendre
+        // @todoseb logique a reprendre ou faire un recalcul de tto/ttr
         //        if (
         //            (in_array("date", $this->updates) || in_array("internal_time_to_resolve", $this->updates))
         //            && !is_null($this->fields["internal_time_to_resolve"])
@@ -2657,7 +2657,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                 $item_olas = $_item_ola->getByIds(array_column($item_olas_array, 'id'));
                 $calendars_id = $this->getCalendar();
 
-                OLA::deleteLevelsToDo($this); // @todoseb peut-être pas utile
+                // OLA::deleteLevelsToDo($this); // @todoseb cleanup
                 foreach ($item_olas as $item_ola) {
                     $ola = $item_ola->getOla();
 
@@ -2668,14 +2668,10 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                         $item_ola_data['id'] = $item_ola->getID();
 
                         // update waiting_time
-                        if ($ola->fields['type'] == SLM::TTR) {
-                            $item_ola_data['waiting_time'] = $item_ola->fields['waiting_time'] + $ola->getActiveTimeBetween(
-                                $this->fields['begin_waiting_date'],
-                                $_SESSION["glpi_currenttime"]
-                            );
-                        } else {
-                            $item_ola_data['waiting_time'] = 0;
-                        }
+                        $item_ola_data['waiting_time'] = $item_ola->fields['waiting_time'] + $ola->getActiveTimeBetween(
+                            $this->fields['begin_waiting_date'],
+                            $_SESSION["glpi_currenttime"]
+                        );
 
                         // update due_time (former internal_time_to_own, internal_time_to_resolve)
                         $item_ola_data['due_time'] = $ola->computeDate(
