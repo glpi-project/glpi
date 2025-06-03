@@ -60,13 +60,13 @@ class OLA extends LevelAgreement
         $level->deleteByCriteria([$ola_fk => $this->getID()]);
 
         // Clean levels todo
-        $ticket = new Ticket(); // no need to instantiate it, static usage. // @todoseb commentaire à dégager surement
+        $ticket = new Ticket();
         $ticket->deleteLevelAgreement(static::class, $this->getID(), $this->fields['type']);
 
         Rule::cleanForItemAction($this);
     }
 
-    protected static $prefixticket = 'internal_'; // @todoseb pas utilisé selon phpstorm : voir si on peut vraiment le supprimer
+    //    protected static $prefixticket = 'internal_'; // @todoseb plus utilisé, doit pouvoir dégager, à maintenir pour compatibilité ascendante ?
     protected static $levelclass = 'OlaLevel';
     protected static $levelticketclass = 'OlaLevel_Ticket';
     protected static $forward_entity_to = ['OlaLevel'];
