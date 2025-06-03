@@ -1933,7 +1933,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
         /** @var \DBmysql $DB */
         global $DB;
 
-        $job  = new $itemtype();
+        $job  = getItemForItemtype($itemtype);
         $rand = mt_rand();
         if ($job->getFromDB($ID)) {
             if ($DB->fieldExists($job->getTable(), 'tickets_id')) {

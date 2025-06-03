@@ -94,7 +94,7 @@ if (isset($_POST["add"])) {
         );
     }
     $itemtype = $disk->fields['itemtype'];
-    $item = new $itemtype();
+    $item = getItemForItemtype($itemtype);
     $item->getFromDB($disk->fields['items_id']);
     Html::redirect($itemtype::getFormURLWithID($disk->fields['items_id']) .
                   ($item->fields['is_template'] ? "&withtemplate=1" : ""));

@@ -216,7 +216,7 @@ TWIG, $twig_params);
                 ] + getEntitiesRestrictCriteria($table_item) + $itemtype::getSystemSQLCriteria(),
             ];
 
-            $itemtype_object = new $itemtype();
+            $itemtype_object = getItemForItemtype($itemtype);
             if ($itemtype_object->maybeTemplate()) {
                 $criteria["WHERE"]["$table_item.is_template"] = 0;
             }
@@ -337,7 +337,7 @@ TWIG, $twig_params);
                 'GROUPBY'   => "$type_table.name",
             ];
 
-            $itemtype_object = new $itemtype();
+            $itemtype_object = getItemForItemtype($itemtype);
             if ($itemtype_object->maybeTemplate()) {
                 $criteria["WHERE"]["$table_item.is_template"] = 0;
             }

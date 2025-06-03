@@ -380,7 +380,7 @@ class Unmanaged extends CommonDBTM
             $itemtype = $this->fields['itemtype'];
         }
 
-        $asset = new $itemtype();
+        $asset = getItemForItemtype($itemtype);
         $asset_data = [
             'name'          => $this->fields['name'],
             'entities_id'   => $this->fields['entities_id'],

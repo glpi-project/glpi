@@ -131,7 +131,7 @@ class NetworkPortConnectionLog extends CommonDBChild
 
             $cport = new NetworkPort();
             if ($cport->getFromDB($netports_id)) {
-                $citem = new $cport->fields["itemtype"]();
+                $citem = getItemForItemtype($cport->fields["itemtype"]);
                 $citem->getFromDB($cport->fields["items_id"]);
 
                 $cport_link = sprintf(

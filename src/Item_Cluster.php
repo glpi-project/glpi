@@ -117,7 +117,7 @@ class Item_Cluster extends CommonDBRelation
 
         $entries = [];
         foreach ($items as $row) {
-            $item = new $row['itemtype']();
+            $item = getItemForItemtype($row['itemtype']);
             $item->getFromDB($row['items_id']);
             $entries[] = [
                 'itemtype' => static::class,

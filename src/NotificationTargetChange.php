@@ -252,7 +252,7 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject
                 $itemtype_target = $validation['itemtype_target'];
                 $items_id_target = $validation['items_id_target'];
                 /** @var CommonDBTM $validation_target */
-                $validation_target = new $itemtype_target();
+                $validation_target = getItemForItemtype($itemtype_target);
                 $validation_target->getFromDB($items_id_target);
                 $validation_target_name = ($itemtype_target === 'User') ? getUserName($items_id_target) : $validation_target->getName();
                 $tmp['##validation.validator_target_type##'] = $itemtype_target::getTypeName(1);

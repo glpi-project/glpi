@@ -475,14 +475,13 @@ class Budget extends CommonDropdown
             ];
 
             if (!array_key_exists($itemtype, $items)) {
-                $items[$itemtype] = new $itemtype();
+                $items[$itemtype] = getItemForItemtype($itemtype);
             }
 
             $name = NOT_AVAILABLE;
             if ($items[$itemtype]->getFromDB($data["id"])) {
                 if ($items[$itemtype] instanceof Item_Devices) {
-                    $tmpitemtype = $items[$itemtype]::$itemtype_2;
-                    $tmpitem = new $itemtype();
+                    $tmpitem = getItemForItemtype($itemtype);
                     if ($tmpitem->getFromDB($data[$items[$itemtype]::$items_id_2])) {
                         $name = $tmpitem->getLink(['additional' => true]);
                     }

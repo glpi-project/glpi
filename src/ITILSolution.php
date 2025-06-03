@@ -110,7 +110,7 @@ class ITILSolution extends CommonDBChild
 
     public function canCreateItem(): bool
     {
-        $item = new $this->fields['itemtype']();
+        $item = getItemForItemtype($this->fields['itemtype']);
         $item->getFromDB($this->fields['items_id']);
         return $item->canSolve();
     }
@@ -129,8 +129,9 @@ class ITILSolution extends CommonDBChild
             || $this->item->getType() !== $this->fields['itemtype'] // Another item is loaded
             || $this->item->getID() !== $this->fields['items_id']   // Another item is loaded
         ) {
-            $this->item = new $this->fields['itemtype']();
-            $this->item->getFromDB($this->fields['items_id']);
+            if ($this->item = getItemForItemtype($this->fields['itemtype'])) {
+                $this->item->getFromDB($this->fields['items_id']);
+            }
         }
     }
 
@@ -297,7 +298,7 @@ class ITILSolution extends CommonDBChild
         //adding a solution mean the ITIL object is now solved
         //and maybe closed (according to entitiy configuration)
         if ($this->item == null) {
-            $this->item = new $this->fields['itemtype']();
+            $this->item = getItemForItemtype($this->fields['itemtype']);
             $this->item->getFromDB($this->fields['items_id']);
         }
 

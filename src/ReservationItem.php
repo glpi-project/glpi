@@ -985,7 +985,7 @@ TWIG, $twig_params);
     {
         $reservation_table = self::getTable();
         /** @var CommonDBTM $item */
-        $item = new $itemtype();
+        $item = getItemForItemtype($itemtype);
         $item_table = $itemtype::getTable();
 
         $criteria = [

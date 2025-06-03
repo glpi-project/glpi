@@ -217,7 +217,7 @@ class Reservation extends CommonDBChild
 
                     $rri = new ReservationItem();
                     $rri->getFromDB($reservationitems_id);
-                    $item = new $rri->fields["itemtype"]();
+                    $item = getItemForItemtype($rri->fields["itemtype"]);
                     $item->getFromDB($rri->fields["items_id"]);
 
                     Session::addMessageAfterRedirect(
@@ -556,7 +556,7 @@ JAVASCRIPT;
             return [];
         }
         foreach ($iterator as $data) {
-            $item = new $data['itemtype']();
+            $item = getItemForItemtype($data['itemtype']);
             if (!$item->getFromDB($data['items_id'])) {
                 continue;
             }
@@ -621,7 +621,7 @@ JAVASCRIPT;
             return [];
         }
         foreach ($iterator as $data) {
-            $item = new $data['itemtype']();
+            $item = getItemForItemtype($data['itemtype']);
             if (!$item->getFromDB($data['items_id'])) {
                 continue;
             }

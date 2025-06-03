@@ -128,7 +128,7 @@ class Item_Rack extends CommonDBRelation
 
         $entries = [];
         foreach ($items as $row) {
-            $item = new $row['itemtype']();
+            $item = getItemForItemtype($row['itemtype']);
             $item->getFromDB($row['items_id']);
             $entries[] = [
                 'itemtype' => self::class,
@@ -182,7 +182,7 @@ class Item_Rack extends CommonDBRelation
         foreach ($items as $row) {
             $rel  = new self();
             $rel->getFromDB($row['id']);
-            $item = new $row['itemtype']();
+            $item = getItemForItemtype($row['itemtype']);
             if (!$item->getFromDB($row['items_id'])) {
                 continue;
             }
@@ -465,7 +465,7 @@ JAVASCRIPT;
         foreach ($items as $row) {
             $rel->getFromDB($row['id']);
 
-            $item = new $row['itemtype']();
+            $item = getItemForItemtype($row['itemtype']);
             $item->getFromDB($row['items_id']);
 
             $model_class = $item->getType() . 'Model';
@@ -620,7 +620,7 @@ JAVASCRIPT;
         echo "<td id='items_id'>";
         if (isset($this->fields['itemtype']) && !empty($this->fields['itemtype'])) {
             $itemtype = $this->fields['itemtype'];
-            $itemtype = new $itemtype();
+            $itemtype = getItemForItemtype($itemtype);
             $itemtype::dropdown([
                 'name'   => "items_id",
                 'value'  => $this->fields['items_id'],
@@ -1002,7 +1002,7 @@ JAVASCRIPT;
                 $filled = $rack->getFilled($this->fields['itemtype'], $this->fields['items_id']);
             }
 
-            $item = new $itemtype();
+            $item = getItemForItemtype($itemtype);
             $item->getFromDB($items_id);
             $model_class = $item->getType() . 'Model';
             $modelsfield = $model_class::getForeignKeyField();

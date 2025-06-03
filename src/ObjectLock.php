@@ -456,7 +456,7 @@ TWIG;
             $ol = new self();
             if ($ol->delete($row)) {
                 $actionCode++;
-                $item = new $row['itemtype']();
+                $item = getItemForItemtype($row['itemtype']);
                 $item->getFromDB($row['items_id']);
                 $task->log($row['itemtype'] . " #" . $row['items_id'] . ": " . $item->getLink());
                 $task->addVolume(1);

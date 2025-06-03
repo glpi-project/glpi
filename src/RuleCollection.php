@@ -1341,7 +1341,7 @@ TWIG, $twig_params);
             $add_criteria_and_actions = false;
             $params                   = [];
             $itemtype                 = $current_rule['sub_type'];
-            $item                     = new $itemtype();
+            $item                     = getItemForItemtype($itemtype);
 
             // Find a rule by it's uuid
             $found    = $item->find(['uuid' => $current_rule['uuid']]);

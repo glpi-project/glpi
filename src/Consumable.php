@@ -775,7 +775,7 @@ class Consumable extends CommonDBChild
 
         foreach ($used as $itemtype_items_id => $val) {
             [$itemtype, $items_id] = explode('####', $itemtype_items_id);
-            $item = new $itemtype();
+            $item = getItemForItemtype($itemtype);
             $item_name = '';
             if ($item->getFromDB($items_id)) {
                 //TRANS: %1$s is a type name - %2$s is a name

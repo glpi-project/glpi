@@ -111,7 +111,7 @@ class PlanningCsv implements ExportToCsvInterface
                 $dateEnd = new DateTime($val["end"]);
                 $dateEnd->setTimeZone(new DateTimeZone('UTC'));
 
-                $itemtype = new $val['itemtype']();
+                $itemtype = getItemForItemtype($val['itemtype']);
 
                 $user = new User();
                 $user->getFromDB($val['users_id']);

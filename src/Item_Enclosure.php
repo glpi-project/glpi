@@ -111,7 +111,7 @@ class Item_Enclosure extends CommonDBRelation
 
         $entries = [];
         foreach ($items as $row) {
-            $item = new $row['itemtype']();
+            $item = getItemForItemtype($row['itemtype']);
             $item->getFromDB($row['items_id']);
             $entries[] = [
                 'itemtype' => static::class,
@@ -225,7 +225,7 @@ class Item_Enclosure extends CommonDBRelation
         echo "<td id='items_id'>";
         if (isset($this->fields['itemtype']) && !empty($this->fields['itemtype'])) {
             $itemtype = $this->fields['itemtype'];
-            $itemtype = new $itemtype();
+            $itemtype = getItemForItemtype($itemtype);
             $itemtype::dropdown([
                 'name'   => "items_id",
                 'value'  => $this->fields['items_id'],

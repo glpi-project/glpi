@@ -58,7 +58,7 @@ class Item_Kanban extends CommonDBRelation
         global $DB;
 
         /** @var CommonDBTM $item */
-        $item = new $itemtype();
+        $item = getItemForItemtype($itemtype);
         $item->getFromDB($items_id);
         $force_global = false;
         if (method_exists($item, 'forceGlobalState')) {
@@ -112,7 +112,7 @@ class Item_Kanban extends CommonDBRelation
         global $DB;
 
         /** @var Kanban|CommonDBTM $item */
-        $item = new $itemtype();
+        $item = getItemForItemtype($itemtype);
         $item->getFromDB($items_id);
         $force_global = $item->forceGlobalState();
 
@@ -143,7 +143,7 @@ class Item_Kanban extends CommonDBRelation
         global $DB;
 
         /** @var CommonDBTM $item */
-        $item = new $itemtype();
+        $item = getItemForItemtype($itemtype);
         $item->getFromDB($items_id);
         $force_global = false;
         if (method_exists($item, 'forceGlobalState')) {
@@ -191,7 +191,7 @@ class Item_Kanban extends CommonDBRelation
 
         try {
             /** @var Kanban|CommonDBTM $item */
-            $item = new $itemtype();
+            $item = getItemForItemtype($itemtype);
             $item->getFromDB($items_id);
             $force_global = $item->forceGlobalState();
 
@@ -227,7 +227,7 @@ class Item_Kanban extends CommonDBRelation
         }
 
         /** @var CommonDBTM $item */
-        $item = new $itemtype();
+        $item = getItemForItemtype($itemtype);
         $item->getFromDB($items_id);
         $all_columns = [];
         if (method_exists($item, 'getAllKanbanColumns')) {

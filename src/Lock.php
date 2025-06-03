@@ -231,7 +231,7 @@ TWIG;
                 }
 
                 //load object
-                $object = new $row['itemtype']();
+                $object = getItemForItemtype($row['itemtype']);
                 $object->getFromDB($row['items_id']);
 
                 $default_itemtype_label = $row['itemtype']::getTypeName();
