@@ -158,13 +158,19 @@ abstract class CommonITILRecurrent extends CommonDropdown
             }
         }
 
-        $input['next_creation_date'] = $this->computeNextCreationDate(
-            $input['begin_date'],
-            $input['end_date'],
-            $input['periodicity'],
-            $input['create_before'],
-            $input['calendars_id']
-        );
+        if (
+            isset($input['begin_date'])
+            && isset($input['periodicity'])
+            && isset($input['create_before'])
+        ) {
+            $input['next_creation_date'] = $this->computeNextCreationDate(
+                $input['begin_date'],
+                $input['end_date'],
+                $input['periodicity'],
+                $input['create_before'],
+                $input['calendars_id']
+            );
+        }
 
         return $input;
     }
