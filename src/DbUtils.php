@@ -897,7 +897,7 @@ final class DbUtils
             && isset($_SESSION['glpishowallentities'])
             && $_SESSION['glpishowallentities']
         ) {
-            return [];
+            return [new QueryExpression('true')];
         } elseif ($value === []) {
             return [new QueryExpression('false')];
         }
