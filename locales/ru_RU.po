@@ -66,7 +66,7 @@ msgstr ""
 
 #: templates/pages/admin/form/service_catalog_tab.html.twig
 msgid " Active"
-msgstr ""
+msgstr "Активен"
 
 #: templates/pages/setup/general/performance.html.twig
 #, php-format
@@ -92,7 +92,7 @@ msgstr "\"session.auto_start\" должен быть выключен."
 #: src/Glpi/Asset/Capacity/HasDevicesCapacity.php:83
 #, php-format
 msgid "%1$d components attached to %2$d assets"
-msgstr ""
+msgstr "%1$d компоненты прикреплены %2$d активам"
 
 #: src/DatabaseInstance.php:467
 #, php-format
@@ -464,12 +464,12 @@ msgstr "%1$sантивирусы, подключенные к %2$sресурса
 #: src/Glpi/Asset/Capacity/HasAppliancesCapacity.php:78
 #, php-format
 msgid "%1$s appliances attached to %2$s assets"
-msgstr "%1$sприборы, связанные с %2$sактивами"
+msgstr "%1$s комплексов связано с %2$sактивами"
 
 #: src/Glpi/Asset/Capacity/IsProjectAssetCapacity.php:77
 #, php-format
 msgid "%1$s assets used in %2$s projects"
-msgstr ""
+msgstr "%1$s активов используется в %2$s проектах"
 
 #: src/Log.php:478
 #, php-format
@@ -547,7 +547,7 @@ msgstr "%1$s частота попаданий низкая"
 #: src/Glpi/Asset/Capacity/HasImpactCapacity.php:105
 #, php-format
 msgid "%1$s impact relations involving %2$s assets"
-msgstr ""
+msgstr "%1$s влияет на связи с %2$s активами"
 
 #: src/Log.php:268
 #, php-format
@@ -612,7 +612,7 @@ msgstr "%1$s должно быть уникальным!"
 #: src/Glpi/Asset/Capacity/HasNetworkPortCapacity.php:77
 #, php-format
 msgid "%1$s network ports attached to %2$s assets"
-msgstr ""
+msgstr "%1$s сетевых портов, привязанных к  %2$s активам"
 
 #: src/Glpi/Asset/Capacity/HasNotepadCapacity.php:89
 #, php-format
@@ -642,7 +642,7 @@ msgstr "%1$s периферийные активы, подключенные к 
 #: src/Glpi/Asset/Capacity/HasPlugCapacity.php:78
 #, php-format
 msgid "%1$s plugs attached to %2$s assets"
-msgstr ""
+msgstr "%1$s штекеров, привязанных к %2$s активам"
 
 #: src/Rack.php:851
 #, php-format
@@ -712,12 +712,12 @@ msgstr "%1$s веб-сайт сервисов недоступен в вашей
 #: src/Glpi/Asset/Capacity/HasSocketCapacity.php:78
 #, php-format
 msgid "%1$s sockets attached to %2$s assets"
-msgstr ""
+msgstr "%1$s розеток, привязанных к %2$s активам"
 
 #: src/Glpi/Asset/Capacity/HasSoftwaresCapacity.php:178
 #, php-format
 msgid "%1$s software attached to %2$s assets"
-msgstr ""
+msgstr "%1$s программного обеспечения, привязанного к  %2$s активам"
 
 #: src/Session.php:2010
 #, php-format
@@ -1039,17 +1039,17 @@ msgstr "%1$s: с %2$s по %3$s:"
 #: src/Glpi/Migration/GenericobjectPluginMigration.php:694
 #, php-format
 msgid "%d \"%s\" dropdown entries successfully imported."
-msgstr ""
+msgstr "%dзаписей выпадающего списка \"%s\" успешно импортированы."
 
 #: src/Glpi/Migration/GenericobjectPluginMigration.php:861
 #, php-format
 msgid "%d \"%s\" objects successfully imported."
-msgstr ""
+msgstr "%d \"%s\" объектов успешно импортировано."
 
 #: src/Glpi/Migration/GenericobjectPluginMigration.php:566
 #, php-format
 msgid "%d assets definitions successfully imported."
-msgstr ""
+msgstr "%d определений активов успешно импортировано."
 
 #: src/PlanningRecall.php:312 src/Dropdown.php:2211 src/Dropdown.php:2576
 #: src/Entity.php:2555 src/Entity.php:2575 src/Entity.php:2645
@@ -1065,7 +1065,7 @@ msgstr[3] "%d дней"
 #: src/Glpi/Migration/GenericobjectPluginMigration.php:327
 #, php-format
 msgid "%d dropdowns definitions successfully imported."
-msgstr ""
+msgstr "%d определений выпадающих списком успешно импортировано."
 
 #: templates/pages/admin/form/form_section.html.twig
 #, php-format
@@ -1204,7 +1204,7 @@ msgstr "%s \"%s\" (%d) обновлено."
 #: src/Glpi/Migration/AbstractPluginMigration.php:284
 #, php-format
 msgid "%s \"%s\" (%d) is already up-to-date, its update has been skipped."
-msgstr ""
+msgstr "%s \"%s\" (%d) уже обновлен, поэтому его обновление было пропущено."
 
 #: src/Glpi/Migration/GenericobjectPluginMigration.php:358
 #: src/Glpi/Migration/GenericobjectPluginMigration.php:632
@@ -1212,6 +1212,8 @@ msgstr ""
 #, php-format
 msgid "%s \"%s\" (%d) is most recent on GLPI side, its update has been skipped."
 msgstr ""
+"%s \"%s\" (%d) является самым последним на стороне GLPI, его обновление было"
+" пропущено."
 
 #: src/CommonITILRecurrent.php:612
 #, php-format
@@ -2329,7 +2331,7 @@ msgstr "Настройка 2ФА"
 #: templates/pages/2fa/macros.html.twig
 #, php-format
 msgid "2FA code digit %s of %s"
-msgstr ""
+msgstr "Цифры кода 2ФА %s из %s"
 
 #: src/Glpi/Console/Security/DisableTFACommand.php:76
 #, php-format
@@ -2368,7 +2370,7 @@ msgstr "Для вашего аккаунта требуется 2ФА"
 
 #: templates/pages/2fa/macros.html.twig
 msgid "2FA secret"
-msgstr ""
+msgstr "Секрет 2ФА"
 
 #: src/User.php:3602
 msgid "2FA status"
@@ -2421,7 +2423,7 @@ msgstr "ID оборудования является обязательным"
 
 #: src/DomainRecord.php:291
 msgid "A domain is required"
-msgstr ""
+msgstr "Требуется домен"
 
 #: src/SavedSearch.php:734
 msgid ""
@@ -2580,7 +2582,7 @@ msgstr[3] "API клиенты"
 
 #: templates/pages/setup/general/api_apiclients_section.html.twig
 msgid "API clients (Legacy API)"
-msgstr ""
+msgstr "API клиентов (Унаследованное API)"
 
 #: src/Glpi/Api/API.php:170
 msgid "API disabled"
@@ -2787,7 +2789,7 @@ msgstr "Active Directory"
 
 #: src/Glpi/Form/Destination/CommonITILField/EntityFieldStrategy.php:54
 msgid "Active entity of the form filler"
-msgstr ""
+msgstr "Активная организация для заполнения формы"
 
 #: templates/components/itilobject/actors/main.html.twig
 #: src/Glpi/Csv/PlanningCsv.php:71 src/Planning.php:851
@@ -2904,7 +2906,7 @@ msgstr "Добавить PDU"
 
 #: templates/pages/setup/mailcollector/setup_form.html.twig
 msgid "Add TO users as observer"
-msgstr ""
+msgstr "Добавить пользователей Кому как наблюдателей"
 
 #: templates/pages/setup/oauthclient.html.twig
 msgid "Add URI"
@@ -2964,7 +2966,7 @@ msgstr "Добавить пользовательский заголовок"
 
 #: js/modules/Dashboard/Dashboard.js:1011
 msgid "Add a dashboard"
-msgstr ""
+msgstr "Добавить панель"
 
 #: src/Database.php:395
 msgid "Add a database"
@@ -2978,11 +2980,11 @@ msgstr "Добавление делегирования"
 #: templates/pages/admin/form/form_comment.html.twig
 #: templates/pages/admin/form/form_question.html.twig
 msgid "Add a description"
-msgstr ""
+msgstr "Добавить описание"
 
 #: templates/pages/admin/form/form_section.html.twig
 msgid "Add a description to this section"
-msgstr ""
+msgstr "Добавить описание к этому разделу"
 
 #: templates/pages/admin/form/form_editor.html.twig
 msgid "Add a description to your form..."
@@ -3004,7 +3006,7 @@ msgstr "Добавить фильтр"
 
 #: templates/pages/admin/form/form_toolbar.html.twig
 msgid "Add a horizontal layout"
-msgstr ""
+msgstr "Добавить горизонтальную раскладку"
 
 #: src/SoftwareLicense.php:1019 src/Phone.php:237 src/Printer.php:365
 #: src/Peripheral.php:200 src/NetworkEquipment.php:279 src/Computer.php:405
@@ -3042,7 +3044,7 @@ msgstr "Добавить псевдоним сети"
 #: src/CommonDBChild.php:868
 #, php-format
 msgid "Add a new %s"
-msgstr ""
+msgstr "Добавить новый %s"
 
 #: src/Rule.php:1072
 msgid "Add a new action"
@@ -3098,7 +3100,7 @@ msgstr "Добавить примечание"
 
 #: templates/pages/admin/form/form_toolbar.html.twig
 msgid "Add a question"
-msgstr ""
+msgstr "Добавить вопрос"
 
 #: templates/components/form/item_remotemanagement_list.html.twig
 msgid "Add a remote management"
@@ -3106,11 +3108,11 @@ msgstr "Добавить удалённое управление"
 
 #: templates/pages/admin/form/form_toolbar.html.twig
 msgid "Add a section"
-msgstr ""
+msgstr "Добавить раздел"
 
 #: templates/pages/admin/form/form_horizontal_block_toolbar.html.twig
 msgid "Add a slot"
-msgstr ""
+msgstr "Добавить слот"
 
 #: src/CommonITILObject.php:7431
 msgctxt "button"
@@ -3199,7 +3201,7 @@ msgstr "Добавить объект типа"
 #: templates/pages/admin/form/conditional_visibility_editor.html.twig
 #: templates/pages/admin/form/conditional_validation_editor.html.twig
 msgid "Add another criteria"
-msgstr ""
+msgstr "Добавить еще один критерий"
 
 #: templates/components/search/query_builder/sort/main.html.twig
 msgid "Add another sort"
@@ -3265,7 +3267,7 @@ msgstr "Добавить глобальную блокировку"
 
 #: templates/pages/admin/form/form_translations.html.twig
 msgid "Add language"
-msgstr ""
+msgstr "Добавить язык"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Add me as a technician when adding a ticket follow-up"
@@ -3328,7 +3330,7 @@ msgstr "Добавить результат регулярного выраже�
 #: templates/pages/admin/helpdesk_home_config_add_tile_form.html.twig
 #: js/modules/Helpdesk/HelpdeskConfigController.js:367
 msgid "Add tile"
-msgstr ""
+msgstr "Добавить плитку"
 
 #: src/ITILSubItemRights.php:58
 msgid "Add to all items"
@@ -3342,7 +3344,7 @@ msgstr "Добавить в комплекс"
 #: templates/components/itilobject/timeline/form_document_item.html.twig
 msgctxt "button"
 msgid "Add to import exclusion list"
-msgstr ""
+msgstr "Добавить в список исключений при импорте"
 
 #: src/ITILSubItemRights.php:74
 msgid "Add to items (observer)"
@@ -3442,7 +3444,7 @@ msgstr "Адрес"
 
 #: templates/components/helpdesk_forms/delegation_alert.html.twig
 msgid "Address to send the notification"
-msgstr ""
+msgstr "Адрес для отправки уведомления"
 
 #: templates/pages/setup/notification/mailing_setting.html.twig
 msgid "Address to use in from for sent emails."
@@ -3561,7 +3563,7 @@ msgstr "Недоступна информация агента."
 
 #: templates/pages/admin/rules/index.html.twig
 msgid "Agent sends an inventory file"
-msgstr ""
+msgstr "Агент отправляет файл инвентаризации"
 
 #: templates/components/form/inventory_info.html.twig
 #: src/Glpi/Features/Inventoriable.php:203
@@ -3724,7 +3726,7 @@ msgstr "Все элементы"
 
 #: src/Glpi/Form/Condition/ValueOperator.php:71
 msgid "All items of itemtype"
-msgstr ""
+msgstr "Все элементы этого типа"
 
 #: templates/pages/admin/customobjects/main.html.twig
 msgid "All items that are using this definition will be deleted."
@@ -3834,7 +3836,7 @@ msgstr "Разрешить загрузку релиза GLPI при необх�
 
 #: src/Glpi/Asset/CustomFieldType/TextType.php:51
 msgid "Allow images"
-msgstr ""
+msgstr "Разрешить изображения"
 
 #: src/Glpi/Form/QuestionType/AbstractQuestionTypeActors.php:374
 msgid "Allow multiple actors"
@@ -3901,7 +3903,7 @@ msgstr "По-убыванию"
 
 #: src/Glpi/Form/ServiceCatalog/SortStrategy/AlphabeticalSort.php:51
 msgid "Alphabetical"
-msgstr ""
+msgstr "По алфавиту"
 
 #: templates/components/itilobject/service_levels.html.twig
 msgid "Also delete date?"
@@ -3909,7 +3911,7 @@ msgstr "Также удалить дату?"
 
 #: templates/pages/admin/rules/index.html.twig
 msgid "Alter asset fields based on their data"
-msgstr ""
+msgstr "Изменение полей активов на основе их данных"
 
 #: templates/pages/admin/entity/assets.html.twig
 #: templates/generic_show_form.html.twig src/Appliance.php:210
@@ -3958,7 +3960,7 @@ msgstr "Всегда"
 
 #: src/Glpi/Form/Condition/CreationStrategy.php:49
 msgid "Always created"
-msgstr ""
+msgstr "Всегда создано"
 
 #: templates/pages/setup/ldap/adv_info.html.twig
 msgid "Always dereferenced"
@@ -3966,7 +3968,7 @@ msgstr "Всегда разыменовываются"
 
 #: src/Glpi/Form/Condition/VisibilityStrategy.php:49
 msgid "Always visible"
-msgstr ""
+msgstr "Всегда видимо"
 
 #: src/MassiveAction.php:771
 msgid "Amend comment"
@@ -4037,7 +4039,7 @@ msgstr "Организация с таким именем уже существ�
 
 #: templates/pages/2fa/2fa_status.html.twig
 msgid "An error occurred"
-msgstr ""
+msgstr "Произошла ошибка"
 
 #: src/Glpi/Console/Cache/ConfigureCommand.php:182
 #, php-format
@@ -4062,7 +4064,7 @@ msgstr "Во время обновления базы данных произо�
 #: templates/components/search/table.html.twig
 #: templates/components/search/display_data.html.twig
 msgid "An error occurred during the search"
-msgstr ""
+msgstr "Во время поиска произошла ошибка"
 
 #: src/Update.php:262
 #, php-format
@@ -4076,7 +4078,7 @@ msgstr "Произошла ошибка при подключении к сбо�
 
 #: templates/pages/tools/search_knowbaseitem.html.twig
 msgid "An error occurred while loading the knowledge base entry"
-msgstr ""
+msgstr "Произошла ошибка при загрузке записи базы знаний"
 
 #: src/Glpi/Api/HL/APIException.php:54
 msgid "An error occurred while processing your request."
@@ -4084,7 +4086,7 @@ msgstr "Произошла ошибка при обработке вашего �
 
 #: templates/pages/tools/search_knowbaseitem.html.twig
 msgid "An error occurred while searching in the knowledge base"
-msgstr ""
+msgstr "Произошла ошибка при поиске в базе знаний"
 
 #: js/modules/ObjectLock.js:104
 msgid "An error occurred while sending the unlock request"
@@ -4106,7 +4108,7 @@ msgstr "Требуется событие"
 
 #: src/Glpi/Api/HL/Search.php:112
 msgid "An internal error occurred while trying to fetch the data."
-msgstr ""
+msgstr "При попытке получить данные произошла внутренняя ошибка."
 
 #: src/ProjectTaskTeam.php:184
 msgid "An item ID is mandatory"
@@ -4153,7 +4155,7 @@ msgstr "Анализ влияния"
 
 #: src/Glpi/Form/Condition/LogicOperator.php:45
 msgid "And"
-msgstr ""
+msgstr "И"
 
 #: templates/pages/setup/general/glpinetwork_setup.html.twig
 msgid "And retrieve your key to paste it below"
@@ -4233,7 +4235,7 @@ msgstr[3] "Отвечено"
 
 #: src/Glpi/Form/AnswersSet.php:60
 msgid "Answers"
-msgstr ""
+msgstr "Ответы"
 
 #: src/ItemAntivirus.php:52 src/ItemAntivirus.php:147
 msgid "Antivirus"
@@ -4302,7 +4304,7 @@ msgstr "Таблица плагина Appliances  \"%s\" отсутствует.
 #: resources/.illustrations_translations.php:4
 msgctxt "Icon"
 msgid "Application"
-msgstr ""
+msgstr "Приложение"
 
 #: templates/pages/setup/apiclient.html.twig src/APIClient.php:168
 msgid "Application token"
@@ -4318,7 +4320,7 @@ msgstr "Подтвердить"
 
 #: templates/pages/admin/rules/index.html.twig
 msgid "Apply a location by checking common criteria"
-msgstr ""
+msgstr "Примените местоположение, проверив общие критерии"
 
 #: src/Glpi/ContentTemplates/Parameters/TicketParameters.php:79
 #: src/Glpi/Helpdesk/Tile/GlpiPageTile.php:77 src/Ticket.php:3341
@@ -4415,7 +4417,7 @@ msgstr "Одобрить"
 #: resources/.illustrations_translations.php:7
 msgctxt "Icon"
 msgid "Approve Requests"
-msgstr ""
+msgstr "Утвердить запросы"
 
 #: src/Ticket.php:5342
 msgid "Approve solution and reply to survey for ticket created by me"
@@ -4481,7 +4483,7 @@ msgstr "Вы уверены, что хотите очистить этот фа�
 #: js/modules/Dashboard/Dashboard.js:987
 #, javascript-format
 msgid "Are you sure you want to delete the dashboard %s?"
-msgstr ""
+msgstr "Вы уверены, что хотите удалить панель %s?"
 
 #: templates/pages/admin/log_viewer.html.twig
 #: templates/pages/admin/logs_list.html.twig
@@ -4519,7 +4521,7 @@ msgstr "Область"
 #: resources/.illustrations_translations.php:30
 msgctxt "Icon"
 msgid "Area chart"
-msgstr ""
+msgstr "Область диаграммы"
 
 #: js/modules/Form/WebIconSelector.js:129
 msgctxt "icons"
@@ -4606,16 +4608,16 @@ msgstr "Жизненный цикл актива"
 #: resources/.illustrations_translations.php:12
 msgctxt "Icon"
 msgid "Asset lost"
-msgstr ""
+msgstr "Актив потерян"
 
 #: src/Glpi/CustomObject/AbstractDefinition.php:319
 #: src/Glpi/CustomObject/AbstractDefinition.php:352
 msgid "Asset name"
-msgstr ""
+msgstr "Название актива"
 
 #: templates/pages/admin/customobjects/translations.html.twig
 msgid "Asset name / Field"
-msgstr ""
+msgstr "Название актива / поля"
 
 #: src/Webhook.php:437 src/Glpi/Form/QuestionType/QuestionTypeItem.php:113
 #: install/migrations/update_9.4.x_to_9.5.0/dashboards.php:177
@@ -4646,7 +4648,7 @@ msgstr "Назначить оборудование"
 
 #: src/RuleDefineItemtype.php:76
 msgid "Assign itemtype"
-msgstr ""
+msgstr "Назначить тип элемента"
 
 #: src/RuleAction.php:393
 msgid "Assign the value from regular expression"
@@ -4940,7 +4942,7 @@ msgstr "Как минимум одно поле заполнено неправ�
 
 #: src/Glpi/Form/Condition/ValueOperator.php:70
 msgid "At least one item of itemtype"
-msgstr ""
+msgstr "По крайней мере, один элемент этого типа"
 
 #: src/CommonITILObject.php:3682
 msgctxt "impact"
@@ -5355,7 +5357,7 @@ msgstr "Назад"
 
 #: templates/pages/tools/search_knowbaseitem.html.twig
 msgid "Back to results"
-msgstr ""
+msgstr "Обратно к результатам"
 
 #: src/Consumable.php:208 src/Consumable.php:674
 msgid "Back to stock"
@@ -5384,12 +5386,12 @@ msgstr "Фоновое изображение (чертеж)"
 #: resources/.illustrations_translations.php:19
 msgctxt "Icon"
 msgid "Backup and restoration 1"
-msgstr ""
+msgstr "Резервное копирование и восстановление 1"
 
 #: resources/.illustrations_translations.php:20
 msgctxt "Icon"
 msgid "Backup and restoration 2"
-msgstr ""
+msgstr "Резервное копирование и восстановление 2"
 
 #: templates/pages/2fa/2fa_request.html.twig
 msgid "Backup code"
@@ -5416,7 +5418,7 @@ msgstr "Эмблемы"
 #: resources/.illustrations_translations.php:21
 msgctxt "Icon"
 msgid "Bank"
-msgstr ""
+msgstr "Банк"
 
 #: src/Glpi/Dashboard/Widget.php:120
 msgid "Bars"
@@ -5425,7 +5427,7 @@ msgstr "Гистограмма"
 #: resources/.illustrations_translations.php:31
 msgctxt "Icon"
 msgid "Bars chart"
-msgstr ""
+msgstr "Гистограмма"
 
 #: templates/pages/admin/ldap.user_criteria.html.twig
 #: templates/pages/setup/ldap/form.html.twig
@@ -5475,7 +5477,7 @@ msgstr "Предупреждение: нет значения по умолча�
 #. TRANS: short for : To be in charge of a ticket
 #: src/Ticket.php:5337
 msgid "Be in charge"
-msgstr ""
+msgstr "Быть ответственным за заявку"
 
 #: src/Rule.php:634
 msgid "Before"
@@ -5590,7 +5592,7 @@ msgstr "архитектурный план"
 #: resources/.illustrations_translations.php:25
 msgctxt "Icon"
 msgid "Bookmark"
-msgstr ""
+msgstr "Закладка"
 
 #: src/PDU_Rack.php:654
 msgid "Bottom"
@@ -5630,7 +5632,7 @@ msgstr "Просмотр справочных статей"
 
 #: src/NotificationAjaxSetting.php:45
 msgid "Browser notifications configuration"
-msgstr ""
+msgstr "Настройка уведомлений в браузере"
 
 #: src/Budget.php:67
 msgid "Budget"
@@ -5651,7 +5653,7 @@ msgstr[3] "Типы бюджетов"
 #: resources/.illustrations_translations.php:27
 msgctxt "Icon"
 msgid "Building"
-msgstr ""
+msgstr "Здание"
 
 #: src/Location.php:100 src/Location.php:219 src/Location.php:271
 #: src/NotificationTargetTicket.php:609 src/NotificationTargetTicket.php:664
@@ -6002,11 +6004,12 @@ msgstr[3] "Камеры"
 
 #: src/Glpi/Asset/Capacity/IsProjectAssetCapacity.php:58
 msgid "Can be associated to a project"
-msgstr ""
+msgstr "Может быть связан с проектом"
 
 #: src/Glpi/Asset/Capacity/HasPeripheralAssetsCapacity.php:58
 msgid "Can be connected to external peripherals or monitors"
 msgstr ""
+"Возможность подключения к внешним периферийным устройствам или мониторам"
 
 #: src/Group.php:474
 msgid "Can be in charge of a task"
@@ -6014,7 +6017,7 @@ msgstr "Может быть ответственным за задачу"
 
 #: src/Glpi/Asset/Capacity/IsRackableCapacity.php:58
 msgid "Can be inserted in a datacenter rack"
-msgstr ""
+msgstr "Может устанавливаться в стойку ЦОД"
 
 #: templates/pages/admin/group.html.twig src/Group.php:402
 msgid "Can be manager"
@@ -6029,6 +6032,8 @@ msgid ""
 "Can be part of an appliance. An appliance is a virtual object that groups "
 "several assets"
 msgstr ""
+"Может быть частью комплекса. Комплекс - это виртуальный объект, в котором "
+"объединены несколько активов"
 
 #: templates/pages/admin/group.html.twig src/Group.php:418 src/Group.php:426
 msgid "Can contain"
@@ -6108,7 +6113,7 @@ msgstr "Отмена запроса на согласование %s"
 
 #: templates/components/itilobject/footer.html.twig
 msgid "Cancel ticket"
-msgstr ""
+msgstr "Отменить заявку"
 
 #: src/Change.php:723
 msgctxt "status"
@@ -6159,7 +6164,7 @@ msgstr "Ёмкость по умолчанию"
 
 #: templates/pages/admin/assetdefinition/capacities.html.twig
 msgid "Capacity options"
-msgstr ""
+msgstr "Настройки ёмкости"
 
 #: templates/pages/admin/profile/legend.html.twig
 #: templates/pages/assistance/planning/availability.html.twig
@@ -6437,7 +6442,7 @@ msgstr "Изменение структуры БД - %s"
 
 #: templates/pages/admin/user/user.html.twig
 msgid "Change password"
-msgstr ""
+msgstr "Изменить пароль"
 
 #: src/Glpi/Console/Security/ChangekeyCommand.php:58
 msgid "Change password storage key and update values in database."
@@ -6446,7 +6451,7 @@ msgstr ""
 
 #: templates/pages/admin/user/user_picture_field.html.twig
 msgid "Change picture"
-msgstr ""
+msgstr "Изменить картинку"
 
 #: templates/layout/parts/profile_selector.html.twig
 msgid "Change profile"
@@ -6546,7 +6551,7 @@ msgstr "Характеристики"
 #: resources/.illustrations_translations.php:34
 msgctxt "Icon"
 msgid "Chart multiple"
-msgstr ""
+msgstr "Множество диаграмм"
 
 #: js/modules/Form/WebIconSelector.js:133
 msgctxt "icons"
@@ -6556,12 +6561,12 @@ msgstr "Диаграмма"
 #: resources/.illustrations_translations.php:37
 msgctxt "Icon"
 msgid "Chat 1"
-msgstr ""
+msgstr "Чат 1"
 
 #: resources/.illustrations_translations.php:38
 msgctxt "Icon"
 msgid "Chat 2"
-msgstr ""
+msgstr "Чат 2"
 
 #: src/Glpi/Console/Diagnostic/CheckSourceCodeIntegrityCommand.php:72
 msgid "Check GLPI source code file integrity."
@@ -6677,7 +6682,7 @@ msgstr "Проверка версии плагина..."
 
 #: src/Update.php:306
 msgid "Checking the database structure…"
-msgstr ""
+msgstr "Проверка структуры базы данных..."
 
 #: src/Glpi/System/Requirement/SessionsSecurityConfiguration.php:64
 msgid ""
@@ -6799,7 +6804,7 @@ msgstr "Очистите временные файлы, созданные из 
 
 #: src/Glpi/Form/Migration/FormMigration.php:641
 msgid "Cleaning imported data..."
-msgstr ""
+msgstr "Очистка импортированных данных..."
 
 #: src/Glpi/Inventory/Asset/Cartridge.php:62
 msgid "Cleaning kit"
@@ -6996,22 +7001,22 @@ msgstr "Закрытие проблемы"
 #: resources/.illustrations_translations.php:39
 msgctxt "Icon"
 msgid "Cloud"
-msgstr ""
+msgstr "Облако"
 
 #: resources/.illustrations_translations.php:41
 msgctxt "Icon"
 msgid "Cloud Network 1"
-msgstr ""
+msgstr "Облачная сеть 1"
 
 #: resources/.illustrations_translations.php:42
 msgctxt "Icon"
 msgid "Cloud Network 2"
-msgstr ""
+msgstr "Облачная сеть 2"
 
 #: resources/.illustrations_translations.php:40
 msgctxt "Icon"
 msgid "Cloud instance"
-msgstr ""
+msgstr "Экземпляр облака"
 
 #: templates/generic_show_form.html.twig src/Cluster.php:63
 msgid "Cluster"
@@ -7071,7 +7076,7 @@ msgstr "Собирать только непрочитанные письма"
 
 #: templates/pages/setup/mailcollector/setup_form.html.twig
 msgid "Collection options"
-msgstr ""
+msgstr "Настройки коллекции"
 
 #: templates/impact/edit_compound_modal.html.twig
 #: templates/pages/assets/cable.html.twig src/Cable.php:273
@@ -7103,7 +7108,7 @@ msgstr "Столбец \"%s.%s\" содержит отрицательные з�
 
 #: templates/pages/admin/form/form_destination_commonitil_config.html.twig
 msgid "Combine with another option"
-msgstr ""
+msgstr "Объединить с другой опцией"
 
 #: templates/pages/setup/oauthclient.html.twig
 msgid ""
@@ -7381,20 +7386,20 @@ msgstr "Условие"
 
 #: templates/pages/admin/form/conditional_validation_dropdown.html.twig
 msgid "Conditional validation"
-msgstr ""
+msgstr "Проверка условий"
 
 #: templates/pages/admin/form/conditional_validation_editor.html.twig
 msgid "Conditional validation is not available for this question type."
-msgstr ""
+msgstr "Проверка условий недоступна для этого типа вопроса."
 
 #: templates/pages/admin/form/conditional_visibility_dropdown.html.twig
 #: templates/pages/admin/form/submit_button_conditional_visibility_dropdown.html.twig
 msgid "Conditional visibility"
-msgstr ""
+msgstr "Видимость по условиям"
 
 #: templates/pages/admin/form/form_destination_actions.html.twig
 msgid "Conditions"
-msgstr ""
+msgstr "Условия"
 
 #: src/Glpi/Inventory/Conf.php:308
 msgid "Configuration"
@@ -7402,7 +7407,7 @@ msgstr "Конфигурация"
 
 #: src/Toolbox.php:2192
 msgid "Configuration defaults defined."
-msgstr ""
+msgstr "Определены параметры конфигурации по умолчанию."
 
 #: src/Glpi/Console/Application.php:188
 msgid "Configuration directory to use. Deprecated option"
@@ -7417,7 +7422,7 @@ msgstr "Конфигурация обновлена"
 #: js/modules/Helpdesk/HelpdeskConfigController.js:339
 #: js/modules/Helpdesk/HelpdeskConfigController.js:418
 msgid "Configuration updated successfully."
-msgstr ""
+msgstr "Конфигурация успешно обновлена."
 
 #: src/Glpi/Console/Config/SetCommand.php:71
 msgid "Configuration value:"
@@ -7440,12 +7445,12 @@ msgstr "Настройка %s ссылок"
 
 #: templates/pages/admin/form/form_destination_actions.html.twig
 msgid "Configure creation conditions"
-msgstr ""
+msgstr "Настройка условий создания"
 
 #: templates/pages/admin/form/conditional_validation_dropdown.html.twig
 #: templates/pages/admin/form/form_question.html.twig
 msgid "Configure validation"
-msgstr ""
+msgstr "Настройка проверки"
 
 #: templates/pages/admin/form/form_comment.html.twig
 #: templates/pages/admin/form/conditional_visibility_dropdown.html.twig
@@ -7453,7 +7458,7 @@ msgstr ""
 #: templates/pages/admin/form/form_section.html.twig
 #: templates/pages/admin/form/submit_button_conditional_visibility_dropdown.html.twig
 msgid "Configure visibility"
-msgstr ""
+msgstr "Настройка видимости"
 
 #: templates/pages/admin/entity/assistance.html.twig
 msgid "Configuring the satisfaction survey"
@@ -7580,7 +7585,7 @@ msgstr "Обозначение подключений"
 #: resources/.illustrations_translations.php:43
 msgctxt "Icon"
 msgid "Connectivity issue"
-msgstr ""
+msgstr "Проблема с подключением"
 
 #: templates/components/search/table.html.twig
 #: templates/components/search/display_data.html.twig
@@ -7632,7 +7637,7 @@ msgstr[3] "Контакты"
 
 #: templates/pages/admin/user/user.html.twig
 msgid "Contact information"
-msgstr ""
+msgstr "Контактная информация"
 
 #: src/NotificationTargetProject.php:75
 #: src/NotificationTargetProjectTask.php:70
@@ -7655,17 +7660,17 @@ msgstr "Свяжитесь с вашим администратором GLPI!"
 #: resources/.illustrations_translations.php:44
 msgctxt "Icon"
 msgid "Container"
-msgstr ""
+msgstr "Контейнер"
 
 #: resources/.illustrations_translations.php:45
 msgctxt "Icon"
 msgid "Containers"
-msgstr ""
+msgstr "Контейнеры"
 
 #: src/Glpi/Form/Condition/ValueOperator.php:62
 #: phpunit/functional/Glpi/Form/Condition/EditorManagerTest.php:344
 msgid "Contains"
-msgstr ""
+msgstr "Содержит"
 
 #: templates/components/notepad/form.html.twig
 #: templates/pages/tools/kb/knowbaseitem.html.twig
@@ -7720,7 +7725,7 @@ msgstr "Договор закончил действие в указанное �
 
 #: src/NotificationTargetContract.php:195
 msgid "Contract expiration date"
-msgstr ""
+msgstr "Дата окончания срока действия контракта"
 
 #: src/NotificationTargetContract.php:155
 #: src/NotificationTargetContract.php:199
@@ -7734,7 +7739,7 @@ msgstr "Договор в организации заявки"
 
 #: src/NotificationTargetContract.php:196
 msgid "Contract notice date"
-msgstr ""
+msgstr "Дата уведомления о заключении договора"
 
 #: src/Contract.php:1320
 msgid "Contract period ended"
@@ -7751,12 +7756,12 @@ msgstr "Срок договора"
 #: resources/.illustrations_translations.php:46
 msgctxt "Icon"
 msgid "Contract signing 1"
-msgstr ""
+msgstr "Подписание контракта 1"
 
 #: resources/.illustrations_translations.php:47
 msgctxt "Icon"
 msgid "Contract signing 2"
-msgstr ""
+msgstr "Подписание контракта 2"
 
 #: src/ContractType.php:41
 msgid "Contract type"
@@ -7890,7 +7895,7 @@ msgstr "Копия %s"
 
 #: templates/pages/admin/helpdesk_home_config_for_empty_entity.html.twig
 msgid "Copy parent entity configuration into this entity"
-msgstr ""
+msgstr "Скопировать конфигурацию родительской организации в эту организацию"
 
 #: templates/pages/setup/general/systeminfo_table.html.twig
 msgid "Copy system information"
@@ -7920,7 +7925,7 @@ msgstr "Копировать дату начала гарантии"
 
 #: templates/pages/admin/form/form_question.html.twig
 msgid "Copy uuid"
-msgstr ""
+msgstr "Копировать uuid"
 
 #: src/Item_DeviceProcessor.php:64
 msgid "Cores"
@@ -8102,7 +8107,7 @@ msgstr "Создано по шаблону %s"
 
 #: src/Glpi/Form/Condition/CreationStrategy.php:50
 msgid "Created if"
-msgstr ""
+msgstr "Создано, если"
 
 #: templates/components/form/dates.html.twig
 #, php-format
@@ -8154,7 +8159,7 @@ msgstr "Создание комплексов..."
 
 #: src/Toolbox.php:2099
 msgid "Creating database structure…"
-msgstr ""
+msgstr "Создание структуры базы данных..."
 
 #: src/Glpi/Console/Migration/RacksPluginToCoreCommand.php:463
 msgid "Creating datacenter..."
@@ -8162,7 +8167,7 @@ msgstr "Создание датацентра..."
 
 #: src/Update.php:294 src/Toolbox.php:2141
 msgid "Creating default forms…"
-msgstr ""
+msgstr "Создание форм по умолчанию..."
 
 #: src/Glpi/Console/Database/InstallCommand.php:278
 msgid "Creating the database..."
@@ -8215,7 +8220,7 @@ msgstr "Критерий отменён"
 #: templates/components/search/query_builder/search_option_value.html.twig
 #: src/Glpi/Search/Input/QueryBuilder.php:366
 msgid "Criteria value"
-msgstr ""
+msgstr "Значение критерия"
 
 #: templates/pages/admin/rules/engine_preview_criteria.html.twig
 #: templates/pages/admin/rules/preview_criteria.html.twig
@@ -8290,7 +8295,7 @@ msgstr "Текущий файл"
 #: src/TaskTemplate.php:195 src/TaskTemplate.php:226 src/TaskTemplate.php:254
 #: src/User.php:4263 phpunit/functional/TaskTemplateTest.php:120
 msgid "Current logged-in user"
-msgstr ""
+msgstr "Текущий вошедший пользователь"
 
 #: templates/components/search/controls.html.twig
 msgid "Current page"
@@ -8362,15 +8367,15 @@ msgstr[3] "Пользовательские заголовки"
 
 #: templates/pages/admin/helpdesk_home_custom_scene_config.html.twig
 msgid "Custom illustration"
-msgstr ""
+msgstr "Пользовательская иллюстрация"
 
 #: templates/pages/admin/helpdesk_home_custom_scene_config.html.twig
 msgid "Custom illustration preview and selection"
-msgstr ""
+msgstr "Предварительный просмотр и выбор пользовательских иллюстрации"
 
 #: templates/pages/admin/helpdesk_home_custom_scene_config.html.twig
 msgid "Custom illustrations"
-msgstr ""
+msgstr "Пользовательские иллюстрации"
 
 #: templates/components/printer_graph_buttons.html.twig
 msgid "Custom range"
@@ -8471,7 +8476,7 @@ msgstr "Расположение датацентра"
 #: resources/.illustrations_translations.php:48
 msgctxt "Icon"
 msgid "Data export"
-msgstr ""
+msgstr "Экспорт данных"
 
 #. TRANS: %s is the table or item to migrate
 #: src/Migration.php:948 install/migrations/update_0.90.x_to_9.1.0.php:853
@@ -8633,7 +8638,7 @@ msgstr "Схема базы данных OK."
 
 #: src/Toolbox.php:2105
 msgid "Database structure created."
-msgstr ""
+msgstr "Создана структура базы данных."
 
 #: src/Glpi/System/Requirement/DatabaseTablesEngine.php:50
 msgid "Database tables engine"
@@ -8783,7 +8788,7 @@ msgstr "По умолчанию"
 #: templates/pages/admin/form/form_translation.html.twig
 #, php-format
 msgid "Default (%s)"
-msgstr ""
+msgstr "По умолчанию (%s)"
 
 #: src/Glpi/Controller/IndexController.php:166
 msgid "Default (from user profile)"
@@ -8807,7 +8812,7 @@ msgstr "Контракт по умолчанию"
 
 #: src/Toolbox.php:2139
 msgid "Default data imported."
-msgstr ""
+msgstr "Импорт данных по умолчанию."
 
 #: templates/pages/setup/general/general_setup.html.twig
 msgid "Default decimals limit"
@@ -8875,7 +8880,7 @@ msgstr "По умолчанию для заявок (мини панель)"
 
 #: src/Update.php:298 src/Toolbox.php:2145
 msgid "Default forms created."
-msgstr ""
+msgstr "Созданы формы по умолчанию."
 
 #: templates/components/user/info_card.html.twig
 #: templates/pages/admin/user/user.html.twig src/RuleRight.php:313
@@ -8888,11 +8893,11 @@ msgstr "Заголовок по умолчанию при добавлении �
 
 #: templates/pages/admin/helpdesk_home_custom_scene_config.html.twig
 msgid "Default illustration"
-msgstr ""
+msgstr "Иллюстрация по умолчанию"
 
 #: templates/pages/admin/helpdesk_home_custom_scene_config.html.twig
 msgid "Default illustration preview"
-msgstr ""
+msgstr "Предпросмотр иллюстрации по умолчанию"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Default language"
@@ -8916,7 +8921,7 @@ msgstr "Опция по-умолчанию"
 
 #: src/Glpi/Form/QuestionType/QuestionTypeDropdown.php:207
 msgid "Default options"
-msgstr ""
+msgstr "Настройки по умолчанию"
 
 #: src/PendingReason.php:62
 msgid "Default pending reason"
@@ -8942,7 +8947,7 @@ msgstr "Отчет по умолчанию"
 
 #: src/Update.php:304 src/Toolbox.php:2150
 msgid "Default rules initialized."
-msgstr ""
+msgstr "Инициализация правил по умолчанию."
 
 #: templates/layout/parts/saved_searches_list.html.twig
 msgid "Default search"
@@ -9025,23 +9030,23 @@ msgstr "Значения по умолчанию"
 
 #: src/Glpi/Asset/Capacity/HasLinksCapacity.php:60
 msgid "Define associated external links for the assets"
-msgstr ""
+msgstr "Определите связанные внешние ссылки для активов"
 
 #: src/NetworkEquipmentModelStencil.php:55
 msgid "Define port data in image"
-msgstr ""
+msgstr "Определение данных порта на изображении"
 
 #: templates/pages/admin/helpdesk_home_config_for_empty_entity.html.twig
 msgid "Define tiles for this entity from scratch"
-msgstr ""
+msgstr "Определите плитки для этой организации с нуля"
 
 #: templates/stencil/editor.html.twig
 msgid "Define zone in image"
-msgstr ""
+msgstr "Определение зоны на изображении"
 
 #: src/Toolbox.php:2158
 msgid "Defining configuration defaults…"
-msgstr ""
+msgstr "Определение настроек по умолчанию..."
 
 #: templates/pages/setup/general/security_setup.html.twig
 msgid "Delay before account deactivation (in days)"
@@ -9061,6 +9066,8 @@ msgid ""
 "Delegators are users who gave you the right to approve or refuse tickets on "
 "their behalf."
 msgstr ""
+"Делегаты - это пользователи, которые предоставили вам право утверждать или "
+"отклонять заявки от их имени."
 
 #: templates/components/notepad/form.html.twig
 #: templates/components/search/criteria_filter_actions.html.twig
@@ -9127,7 +9134,7 @@ msgstr "Удалить компонент"
 #: templates/pages/admin/form/conditional_visibility_editor.html.twig
 #: templates/pages/admin/form/conditional_validation_editor.html.twig
 msgid "Delete criteria"
-msgstr ""
+msgstr "Удалить критерии"
 
 #: js/impact.js:1413
 msgid "Delete element"
@@ -9242,7 +9249,7 @@ msgstr "Удалить эту панель"
 
 #: templates/pages/admin/helpdesk_home_config_edit_tile_form.html.twig
 msgid "Delete tile"
-msgstr ""
+msgstr "Удалить плитку"
 
 #: templates/pages/admin/customobjects/translations.html.twig
 #: templates/pages/admin/form/form_translation.html.twig
@@ -9308,7 +9315,7 @@ msgstr "Удаление отклонено"
 #: resources/.illustrations_translations.php:50
 msgctxt "Icon"
 msgid "Delivery"
-msgstr ""
+msgstr "Доставка"
 
 #: templates/components/infocom.html.twig
 #: templates/pages/admin/entity/assets.html.twig src/Entity.php:1422
@@ -9332,7 +9339,7 @@ msgstr "Имя пользователя запрещено"
 #: resources/.illustrations_translations.php:103
 msgctxt "Icon"
 msgid "Deploy a software"
-msgstr ""
+msgstr "Распространить программу"
 
 #: templates/components/itilobject/fields_panel.html.twig
 #: src/NotificationTargetChange.php:281 src/Change.php:557
@@ -9410,16 +9417,16 @@ msgstr "Дизайн"
 #: resources/.illustrations_translations.php:9
 msgctxt "Icon"
 msgid "Desktop 1"
-msgstr ""
+msgstr "Рабочий стол 1"
 
 #: resources/.illustrations_translations.php:10
 msgctxt "Icon"
 msgid "Desktop 2"
-msgstr ""
+msgstr "Рабочий стол 2"
 
 #: templates/pages/admin/form/form_destination_commonitil_config.html.twig
 msgid "Destination fields accordion"
-msgstr ""
+msgstr "Аккордеон полей назначения"
 
 #: src/NotificationTargetDBConnection.php:55
 msgid "Desynchronization SQL replica"
@@ -9876,7 +9883,7 @@ msgstr "Отображение на карте"
 
 #: src/Glpi/Asset/Capacity/HasOperatingSystemCapacity.php:59
 msgid "Display operating system information"
-msgstr ""
+msgstr "Отображение информации об операционной системе"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Display order of surnames firstnames"
@@ -9923,6 +9930,8 @@ msgid ""
 "Displays all users. Mentioned users will be added as observers if they are "
 "not already actors."
 msgstr ""
+"Отображает всех пользователей. Упомянутые пользователи будут добавлены в "
+"качестве наблюдателей, если они еще ими не являются."
 
 #: templates/components/form/networkname.html.twig
 #: templates/pages/assets/networkport/networkname_short.html.twig
@@ -9980,7 +9989,7 @@ msgstr ""
 #: src/Glpi/Form/Condition/ValueOperator.php:63
 #: phpunit/functional/Glpi/Form/Condition/EditorManagerTest.php:345
 msgid "Do not contains"
-msgstr ""
+msgstr "Не содержит"
 
 #: templates/pages/admin/entity/assets.html.twig src/Entity.php:2713
 msgid "Do not copy"
@@ -9997,7 +10006,7 @@ msgstr "Не удалять"
 #: src/Glpi/Form/Condition/ValueOperator.php:73
 #: phpunit/functional/Glpi/Form/Condition/EditorManagerTest.php:349
 msgid "Do not match regular expression"
-msgstr ""
+msgstr "Не соответствует регулярному выражению"
 
 #: src/Glpi/Console/Application.php:145
 msgid "Do not output any message"
@@ -10007,7 +10016,7 @@ msgstr "Не выводить никаких сообщений"
 #: src/Glpi/Console/Migration/AppliancesPluginToCoreCommand.php:148
 #: src/Glpi/Console/Migration/RacksPluginToCoreCommand.php:172
 msgid "Do not stop on import errors"
-msgstr ""
+msgstr "Не останавливаться при ошибках импорта"
 
 #: src/CommonITILValidation.php:1949
 msgid "Do you really want to resolve or close it?"
@@ -10026,6 +10035,8 @@ msgstr "Вы желаете %activate_link его?"
 #: templates/components/helpdesk_forms/delegation_alert.html.twig
 msgid "Do you want to be notified of future events of this ticket"
 msgstr ""
+"Хотите ли вы получать уведомления о будущих событиях, связанных с этой "
+"заявкой"
 
 #: templates/install/step1.html.twig src/Glpi/Console/AbstractCommand.php:253
 msgid "Do you want to continue?"
@@ -10242,7 +10253,7 @@ msgstr "Выполнено"
 
 #: src/Planning.php:783
 msgid "Done elements"
-msgstr ""
+msgstr "Выполненные элементы"
 
 #: src/Glpi/Dashboard/Widget.php:84
 msgid "Donut"
@@ -10251,7 +10262,7 @@ msgstr "Кольцо"
 #: resources/.illustrations_translations.php:32
 msgctxt "Icon"
 msgid "Donut chart"
-msgstr ""
+msgstr "Кольцевая диаграмма"
 
 #: templates/pages/assets/rack.html.twig
 msgid "Door orientation in room"
@@ -10273,7 +10284,7 @@ msgstr "Вниз"
 #: src/Update.php:195
 #, php-format
 msgid "Downgrading to version %s is not supported."
-msgstr ""
+msgstr "Понижение до версии %s не поддерживается."
 
 #: src/Glpi/Marketplace/View.php:812 src/Glpi/RichText/RichText.php:469
 msgid "Download"
@@ -10501,7 +10512,7 @@ msgstr "Восток"
 
 #: js/impact.js:1388
 msgid "Edge properties..."
-msgstr ""
+msgstr "Настройки краёв..."
 
 #: templates/components/notepad/form.html.twig
 #: templates/components/itilobject/timeline/main_description.html.twig
@@ -10530,7 +10541,7 @@ msgstr "Изменить событие"
 
 #: templates/impact/edit_edge_modal.html.twig
 msgid "Edit edge"
-msgstr ""
+msgstr "Изменить край"
 
 #: templates/impact/edit_compound_modal.html.twig
 msgid "Edit group"
@@ -10554,7 +10565,7 @@ msgstr "Изменить карточку"
 
 #: js/modules/Helpdesk/HelpdeskConfigController.js:287
 msgid "Edit tile"
-msgstr ""
+msgstr "Изменить плитку"
 
 #: templates/pages/admin/customobjects/translations.html.twig
 #: templates/pages/admin/form/form_translation.html.twig
@@ -10663,7 +10674,7 @@ msgstr "Содержание письма"
 
 #: templates/pages/setup/authentication/mail.html.twig
 msgid "Email domain name"
-msgstr ""
+msgstr "Домен электронной почты"
 
 #: templates/components/itilobject/actors/main.html.twig
 #: templates/components/itilobject/actors/field.html.twig
@@ -10689,11 +10700,11 @@ msgstr "Уведомления по почте отключены"
 
 #: src/NotificationMailingSetting.php:46
 msgid "Email notifications configuration"
-msgstr ""
+msgstr "Настройка уведомлений по электронной почте"
 
 #: templates/pages/setup/authentication/mail.html.twig
 msgid "Email options"
-msgstr ""
+msgstr "Параметры электронной почты"
 
 #: templates/pages/setup/notification/mailing_setting.html.twig
 msgid "Email sender"
@@ -10797,7 +10808,7 @@ msgstr "Включить пользователя GLPI"
 
 #: src/Glpi/Asset/Capacity/HasNotepadCapacity.php:60
 msgid "Enable a simple notepad"
-msgstr ""
+msgstr "Включите простой блокнот"
 
 #: templates/pages/admin/log_viewer.html.twig
 msgid "Enable auto-refresh"
@@ -10805,11 +10816,11 @@ msgstr "Включить автообновление"
 
 #: src/NotificationAjaxSetting.php:50
 msgid "Enable browser notifications"
-msgstr ""
+msgstr "Включите уведомления в браузере"
 
 #: src/NotificationMailingSetting.php:52
 msgid "Enable email notifications"
-msgstr ""
+msgstr "Включить уведомления по электронной почте"
 
 #: src/Glpi/System/RequirementsManager.php:181
 msgid "Enable email sending using SSL/TLS."
@@ -10909,6 +10920,7 @@ msgstr "Включен"
 msgid ""
 "Enables or disables the ability to mention users within the application."
 msgstr ""
+"Включает или отключает возможность упоминания пользователей в приложении."
 
 #: src/Enclosure.php:69
 msgid "Enclosure"
@@ -11065,7 +11077,7 @@ msgstr "Enter"
 
 #: templates/pages/admin/form/condition_handler_templates/input.html.twig
 msgid "Enter a value..."
-msgstr ""
+msgstr "Введите значение..."
 
 #: src/Glpi/Console/User/AbstractUserCommand.php:60
 msgid "Enter password"
@@ -11079,7 +11091,7 @@ msgstr ""
 
 #: templates/pages/admin/form/form_translation.html.twig
 msgid "Enter translation"
-msgstr ""
+msgstr "Введите перевод"
 
 #: templates/components/itilobject/fields_panel.html.twig
 #: src/Glpi/Form/Destination/CommonITILField/EntityField.php:59
@@ -11200,7 +11212,7 @@ msgstr "Ошибка / очистить"
 #: resources/.illustrations_translations.php:52
 msgctxt "Icon"
 msgid "Error 404"
-msgstr ""
+msgstr "Ошибка 404"
 
 #: src/CronTask.php:892
 #, php-format
@@ -11248,7 +11260,7 @@ msgstr "Ошибка при выполнении действия"
 
 #: src/Dropdown.php:1030
 msgid "Error reading icon directory"
-msgstr ""
+msgstr "Ошибка при чтении каталога значков"
 
 #: src/RuleDictionnaryDropdownCollection.php:128
 msgid "Error replaying rules"
@@ -11271,7 +11283,7 @@ msgstr "Ошибка при соединении с LDAP сервером \"%s\"
 #: src/Glpi/Form/Migration/FormMigration.php:568
 #, php-format
 msgid "Error while importing question \"%s\" in section \"%s\" and form \"%s\": %s"
-msgstr ""
+msgstr "Ошибка при импорте вопроса \"%s\" в разделе \"%s\" и форме \"%s\": %s"
 
 #: src/User.php:898 src/User.php:1134
 msgid "Error: the two passwords do not match"
@@ -11395,13 +11407,13 @@ msgstr "Каждые %1$s часов"
 #: src/PendingReason.php:209
 #, php-format
 msgid "Every %s days"
-msgstr ""
+msgstr "Каждые %s дней"
 
 #: src/PendingReason.php:211 src/PendingReason.php:212
 #: src/PendingReason.php:213
 #, php-format
 msgid "Every %s weeks"
-msgstr ""
+msgstr "Каждые %s недель"
 
 #: src/PendingReason.php:204
 msgid "Every day"
@@ -11510,7 +11522,7 @@ msgstr "Истечение срока + Уведомление"
 
 #: templates/pages/setup/webhook/webhook_security.html.twig
 msgid "Expiration delay"
-msgstr ""
+msgstr "Задержка истечения срока действия"
 
 #: src/NotificationTargetDomain.php:41 src/NotificationTargetDomain.php:78
 msgid "Expired domains"
@@ -11613,7 +11625,7 @@ msgstr[3] "Внешние ссылки"
 
 #: src/Glpi/Helpdesk/Tile/ExternalPageTile.php:49
 msgid "External page"
-msgstr ""
+msgstr "Внешняя страница"
 
 #: templates/components/itilobject/itilsatisfaction.html.twig
 #: templates/pages/admin/entity/assistance.html.twig
@@ -11636,7 +11648,7 @@ msgstr "ЧаВо (FAQ)"
 
 #: templates/pages/helpdesk/search.html.twig
 msgid "FAQ articles"
-msgstr ""
+msgstr "Статьи ЧаВо (FAQ)"
 
 #: src/FQDN.php:57 src/FQDN.php:216
 msgid "FQDN"
@@ -11653,7 +11665,7 @@ msgstr "FQDN не должен быть пустым"
 #: resources/.illustrations_translations.php:53
 msgctxt "Icon"
 msgid "Factory"
-msgstr ""
+msgstr "Завод"
 
 #: src/Auth.php:1158
 #, php-format
@@ -11735,7 +11747,7 @@ msgstr "Не удалось сгенерировать манифест. Оши�
 
 #: src/Glpi/Console/User/GrantCommand.php:91
 msgid "Failed to grant profile"
-msgstr ""
+msgstr "Не удалось предоставить профиль"
 
 #: src/Ticket.php:5864
 #, php-format
@@ -11761,11 +11773,11 @@ msgstr "Ошибка восстановления элемента"
 
 #: js/modules/Forms/RendererController.js:249
 msgid "Failed to submit form, please contact your administrator."
-msgstr ""
+msgstr "Не удалось отправить форму, обратитесь к администратору."
 
 #: src/Glpi/Controller/GenericAjaxCrudController.php:214
 msgid "Failed to update item"
-msgstr ""
+msgstr "Не удалось обновить элемент"
 
 #: src/Glpi/Console/Diagnostic/CheckSourceCodeIntegrityCommand.php:96
 #, php-format
@@ -12038,7 +12050,7 @@ msgstr "Фильтры"
 
 #: src/Update.php:341
 msgid "Finalizing the update…"
-msgstr ""
+msgstr "Завершение работы над обновлением..."
 
 #. TRANS: Always plural
 #: templates/components/infocom.html.twig src/Infocom.php:119
@@ -12106,7 +12118,7 @@ msgstr "Имя, Фамилия"
 
 #: templates/components/helpdesk_forms/service_catalog_items.html.twig
 msgid "First page"
-msgstr ""
+msgstr "Первая страница"
 
 #: src/Glpi/Form/Form.php:716
 msgid "First section"
@@ -12156,11 +12168,11 @@ msgstr "Исправление %s..."
 #: resources/.illustrations_translations.php:56
 msgctxt "Icon"
 msgid "Fixing bug"
-msgstr ""
+msgstr "Исправление ошибки"
 
 #: src/Glpi/Form/Migration/FormMigration.php:699
 msgid "Fixing forms layouts..."
-msgstr ""
+msgstr "Исправление макетов форм..."
 
 #: templates/components/form/header_content.html.twig
 msgid "Flag change forbidden. Linked items found."
@@ -12182,11 +12194,11 @@ msgstr "Фокусное расстояние"
 #: resources/.illustrations_translations.php:57
 msgctxt "Icon"
 msgid "Folder"
-msgstr ""
+msgstr "Папка"
 
 #: templates/pages/setup/mailcollector/setup_form.html.twig
 msgid "Folders setup"
-msgstr ""
+msgstr "Настройка папок"
 
 #: src/PendingReason.php:133
 msgid "Follow-up template"
@@ -12376,11 +12388,11 @@ msgstr[3] "Форм"
 
 #: templates/pages/admin/form/form_translation.html.twig
 msgid "Form actions"
-msgstr ""
+msgstr "Действия формы"
 
 #: templates/layout/parts/context_links.html.twig
 msgid "Form categories"
-msgstr ""
+msgstr "Категории форм"
 
 #: templates/pages/admin/form/form_editor.html.twig
 #: templates/pages/form_renderer.html.twig src/Glpi/Form/Form.php:436
@@ -12389,7 +12401,7 @@ msgstr "Описание формы"
 
 #: templates/pages/admin/form/form_destination.html.twig
 msgid "Form destination name"
-msgstr ""
+msgstr "Место назначения формы"
 
 #: templates/pages/admin/form/form_editor.html.twig
 msgid "Form details"
@@ -12397,11 +12409,11 @@ msgstr "Детали формы"
 
 #: src/Glpi/Form/Form.php:493
 msgid "Form drafts retention period (in days)"
-msgstr ""
+msgstr "Период хранения черновиков форм (в днях)"
 
 #: templates/pages/admin/form/form_horizontal_block_placeholder.html.twig
 msgid "Form horizontal block placeholder"
-msgstr ""
+msgstr "Заполнитель горизонтального блока формы"
 
 #: templates/pages/admin/form/import/step2_preview.html.twig
 #: templates/pages/admin/form/form_editor.html.twig
@@ -12415,7 +12427,7 @@ msgstr "Форма имени: %s"
 
 #: src/Glpi/Form/Form.php:421
 msgid "Form properties"
-msgstr ""
+msgstr "Свойства формы"
 
 #: templates/pages/admin/form/form_section.html.twig
 msgid "Form section"
@@ -12423,11 +12435,11 @@ msgstr "Раздел формы"
 
 #: templates/pages/form_renderer.html.twig
 msgid "Form submitted"
-msgstr ""
+msgstr "Форма утверждена"
 
 #: templates/pages/form_renderer.html.twig src/Glpi/Form/Form.php:427
 msgid "Form title"
-msgstr ""
+msgstr "Название формы"
 
 #: templates/pages/admin/form/form_translation.html.twig
 #: templates/pages/admin/form/form_translations.html.twig
@@ -12442,7 +12454,7 @@ msgstr[3] ""
 #: templates/pages/admin/form/form_translation.html.twig
 #, php-format
 msgid "Form translations: %s"
-msgstr ""
+msgstr "Перевод формы: %s"
 
 #: src/Item_DeviceCamera_ImageFormat.php:48
 msgctxt "camera"
@@ -12506,7 +12518,7 @@ msgstr "Обнаружено %s таблиц(ы) использующих MyISAM
 
 #: src/ObjectLock.php:384
 msgid "Free"
-msgstr ""
+msgstr "Свободно"
 
 #: templates/components/form/item_disk.html.twig
 msgid "Free size"
@@ -12550,7 +12562,7 @@ msgstr "Начиная \\ Заканчивая"
 
 #: src/RuleMailCollector.php:74
 msgid "From email address"
-msgstr ""
+msgstr "С адреса электронной почты"
 
 #: src/NotImportedEmail.php:135 src/RuleTicket.php:202
 msgid "From email header"
@@ -12619,12 +12631,12 @@ msgstr "GLPI"
 #: resources/.illustrations_translations.php:60
 msgctxt "Icon"
 msgid "GLPI Cloud Support 1"
-msgstr ""
+msgstr "GLPI Cloud техподдержка 1"
 
 #: resources/.illustrations_translations.php:61
 msgctxt "Icon"
 msgid "GLPI Cloud Support 2"
-msgstr ""
+msgstr "GLPI Cloud техподдержка 2"
 
 #: src/AutoUpdateSystem.php:49
 msgid "GLPI Native Inventory"
@@ -12660,7 +12672,7 @@ msgstr "Встроенная GLPI"
 
 #: src/Glpi/Helpdesk/Tile/GlpiPageTile.php:56
 msgid "GLPI page"
-msgstr ""
+msgstr "GLPI страница"
 
 #: src/Glpi/Marketplace/View.php:1151
 msgid "GLPI provides a new marketplace to download and install plugins."
@@ -12718,12 +12730,12 @@ msgstr "Гбит/с"
 #: resources/.illustrations_translations.php:58
 msgctxt "Icon"
 msgid "Gear"
-msgstr ""
+msgstr "Передача"
 
 #: resources/.illustrations_translations.php:59
 msgctxt "Icon"
 msgid "Gear hand"
-msgstr ""
+msgstr "Ручная передача"
 
 #: js/modules/Form/WebIconSelector.js:147
 msgctxt "icons"
@@ -12758,11 +12770,11 @@ msgstr ""
 
 #: src/Glpi/Asset/Capacity/HasRemoteManagementCapacity.php:58
 msgid "Generate links for common remote access and control services"
-msgstr ""
+msgstr "Создание ссылок для общих служб удаленного доступа и управления"
 
 #: src/Update.php:388 src/Toolbox.php:2152
 msgid "Generating security keys…"
-msgstr ""
+msgstr "Генерация ключей безопасности..."
 
 #: src/Glpi/Console/Diagnostic/CheckSourceCodeIntegrityCommand.php:164
 msgid ""
@@ -12778,7 +12790,7 @@ msgstr "Создание опросов удовлетворенности"
 
 #: src/Glpi/Asset/Capacity/IsInventoriableCapacity.php:73
 msgid "Generic"
-msgstr ""
+msgstr "Обычный"
 
 #: src/DeviceGeneric.php:43
 msgid "Generic device"
@@ -12889,7 +12901,7 @@ msgstr "Вернуться в GLPI"
 
 #: templates/pages/form_renderer.html.twig
 msgid "Go back to service catalog"
-msgstr ""
+msgstr "Вернуться к каталогу услуг"
 
 #: js/impact.js:1374
 msgid "Go to"
@@ -12901,12 +12913,12 @@ msgstr "Перейти к созданному объекту после соз�
 
 #: templates/install/install.install_required.html.twig
 msgid "Go to install page"
-msgstr ""
+msgstr "Перейдите на страницу установки"
 
 #: templates/components/illustration/icon_picker_search_results.html.twig
 #, php-format
 msgid "Go to page %s"
-msgstr ""
+msgstr "Перейти на страницу %s"
 
 #: src/Glpi/Console/User/GrantCommand.php:49
 msgid "Grant a profile assignment to a user"
@@ -12926,7 +12938,7 @@ msgstr "Предоставлять"
 
 #: src/NetworkEquipmentModelStencil.php:42
 msgid "Graphical slot definition"
-msgstr ""
+msgstr "Определение графического слота"
 
 #: src/DeviceGraphicCard.php:43
 msgid "Graphics card"
@@ -12960,7 +12972,7 @@ msgstr "Группа"
 
 #: src/Glpi/Dashboard/Filters/GroupRequesterFilter.php:46
 msgid "Group / Requester group"
-msgstr ""
+msgstr "Группа / Группа заказчика"
 
 #: templates/pages/admin/group_ldap.html.twig src/Group.php:369
 msgid "Group DN"
@@ -12973,12 +12985,12 @@ msgstr "Заявки группы"
 #: resources/.illustrations_translations.php:63
 msgctxt "Icon"
 msgid "Group alternative 1"
-msgstr ""
+msgstr "Группа альтернативная 1"
 
 #: resources/.illustrations_translations.php:64
 msgctxt "Icon"
 msgid "Group alternative 2"
-msgstr ""
+msgstr "Группа альтернативная 2"
 
 #: src/NotificationTargetCommonITILObject.php:2081
 msgid "Group assigned to task"
@@ -12992,7 +13004,7 @@ msgstr ""
 
 #: src/Group.php:490
 msgid "Group code"
-msgstr ""
+msgstr "Код группы"
 
 #: src/NotificationTarget.php:1070
 msgid "Group except manager users"
@@ -13000,7 +13012,7 @@ msgstr "Группа, кроме менеджера группы"
 
 #: src/Glpi/Form/Destination/CommonITILField/ITILActorFieldStrategy.php:68
 msgid "Group from GLPI object answer"
-msgstr ""
+msgstr "Группа из ответа объекта GLPI"
 
 #: templates/pages/management/domainrecord.html.twig
 #: templates/generic_show_form.html.twig src/Appliance.php:245
@@ -13152,11 +13164,11 @@ msgstr "Имеет резервную копию"
 
 #: src/Glpi/Asset/Capacity/HasNetworkPortCapacity.php:65
 msgid "Has network ports (like ethernet and wlan)"
-msgstr ""
+msgstr "Имеет сетевые порты (например, ethernet и wlan)"
 
 #: src/Glpi/Asset/Capacity/HasPlugCapacity.php:59
 msgid "Has power plugs. Usually related to PDU or UPS"
-msgstr ""
+msgstr "Имеет штекеры для подключения питания. Обычно связаны с PDU или ИБП"
 
 #: src/Glpi/Console/Build/GenerateCodeManifestCommand.php:58
 msgid "Hash algorithm to use"
@@ -13177,11 +13189,11 @@ msgstr ""
 
 #: templates/components/helpdesk_forms/delegation_alert.html.twig
 msgid "He doesn't want"
-msgstr ""
+msgstr "Он не хочет"
 
 #: templates/components/helpdesk_forms/delegation_alert.html.twig
 msgid "He wants"
-msgstr ""
+msgstr "Он хочет"
 
 #: templates/pages/admin/form/form_section.html.twig
 #: templates/pages/admin/form/form_editor.html.twig
@@ -13242,7 +13254,7 @@ msgstr "Группа поддержки"
 
 #: src/Entity.php:615 src/Profile.php:165
 msgid "Helpdesk home"
-msgstr ""
+msgstr "Поддержка домашняя страница"
 
 #: src/Glpi/Dashboard/FakeProvider.php:273
 msgctxt "fake_data"
@@ -13263,16 +13275,16 @@ msgstr[3] "Скрытые поля"
 
 #: src/Glpi/Asset/CustomFieldType/AbstractType.php:75
 msgid "Hidden for these profiles"
-msgstr ""
+msgstr "Скрыто для этих профилей"
 
 #: src/Glpi/Form/Condition/VisibilityStrategy.php:51
 msgid "Hidden if..."
-msgstr ""
+msgstr "Скрыто, если..."
 
 #: resources/.illustrations_translations.php:67
 msgctxt "Icon"
 msgid "Hierarchy"
-msgstr ""
+msgstr "Иерархия"
 
 #: src/Glpi/Urgency.php:52
 msgid "High"
@@ -13330,7 +13342,7 @@ msgstr "Домой"
 
 #: templates/pages/admin/helpdesk_home_config.html.twig
 msgid "Home tiles configuration"
-msgstr ""
+msgstr "Конфигурация домашних плиток"
 
 #: src/Glpi/Marketplace/View.php:562
 msgid "Homepage"
@@ -13346,11 +13358,11 @@ msgstr "Горизонтальная гистограмма"
 
 #: templates/pages/admin/form/form_horizontal_block.html.twig
 msgid "Horizontal blocks"
-msgstr ""
+msgstr "Горизонтальные блоки"
 
 #: templates/pages/admin/form/form_horizontal_block.html.twig
 msgid "Horizontal blocks layout"
-msgstr ""
+msgstr "Горизонтальное расположение блоков"
 
 #: src/Item_Rack.php:692
 msgid "Horizontal position (from rack point of view)"
@@ -13954,7 +13966,7 @@ msgstr "Импорт монитора при частичном совпаден
 
 #: templates/pages/admin/ldap.group_criteria.html.twig
 msgid "Import new groups"
-msgstr ""
+msgstr "Импорт новых групп"
 
 #: templates/pages/admin/ldap.user_criteria.html.twig
 #: templates/pages/admin/ldap.users.html.twig
@@ -14003,7 +14015,7 @@ msgstr "Импортировано"
 #: src/Glpi/Migration/GenericobjectPluginMigration.php:714
 #, php-format
 msgid "Importing \"%s\" objects..."
-msgstr ""
+msgstr "Импорт \"%s\" объектов ..."
 
 #: src/Glpi/Console/Migration/DatabasesPluginToCoreCommand.php:244
 #: src/Glpi/Console/Migration/DatabasesPluginToCoreCommand.php:304
@@ -14037,7 +14049,7 @@ msgstr "Импорт элемента Комплекс \"%d\"..."
 
 #: src/Glpi/Form/Migration/FormMigration.php:748
 msgid "Importing access controls..."
-msgstr ""
+msgstr "Импорт элементов управления доступом..."
 
 #: src/Glpi/Console/Migration/AppliancesPluginToCoreCommand.php:502
 #, php-format
@@ -14046,27 +14058,27 @@ msgstr "Импорт комплекса \"%s\"..."
 
 #: src/Glpi/Migration/GenericobjectPluginMigration.php:336
 msgid "Importing assets definitions..."
-msgstr ""
+msgstr "Импорт определений активов..."
 
 #: src/Glpi/Form/Migration/FormMigration.php:895
 msgid "Importing change targets..."
-msgstr ""
+msgstr "Импорт целей изменения..."
 
 #: src/Glpi/Form/Migration/FormMigration.php:583
 msgid "Importing comments..."
-msgstr ""
+msgstr "Импорт комментариев..."
 
 #: src/Glpi/Form/Migration/FormMigration.php:1166
 msgid "Importing conditions..."
-msgstr ""
+msgstr "Импорт условий..."
 
 #: src/Toolbox.php:2107
 msgid "Importing default data…"
-msgstr ""
+msgstr "Импорт данных по умолчанию..."
 
 #: src/Glpi/Migration/GenericobjectPluginMigration.php:266
 msgid "Importing dropdowns definitions..."
-msgstr ""
+msgstr "Импорт определений выпадающих списков..."
 
 #: src/Glpi/Console/Migration/AppliancesPluginToCoreCommand.php:444
 #, php-format
@@ -14075,11 +14087,11 @@ msgstr "Импорт окружения \"%s\"..."
 
 #: src/Glpi/Form/Migration/FormMigration.php:343
 msgid "Importing form categories..."
-msgstr ""
+msgstr "Импорт категорий форм..."
 
 #: src/Glpi/Form/Migration/FormMigration.php:379
 msgid "Importing forms..."
-msgstr ""
+msgstr "Импорт форм..."
 
 #: src/Glpi/Console/Migration/RacksPluginToCoreCommand.php:617
 #, php-format
@@ -14092,7 +14104,7 @@ msgstr "Импорт спецификаций элементов..."
 
 #: src/Glpi/Migration/GenericobjectPluginMigration.php:867
 msgid "Importing objects relations..."
-msgstr ""
+msgstr "Импорт отношений между объектами..."
 
 #: src/Glpi/Console/Migration/RacksPluginToCoreCommand.php:501
 msgid "Importing other models..."
@@ -14100,11 +14112,11 @@ msgstr "Импорт других моделей..."
 
 #: src/Glpi/Form/Migration/FormMigration.php:875
 msgid "Importing problem targets..."
-msgstr ""
+msgstr "Импорт проблем..."
 
 #: src/Glpi/Form/Migration/FormMigration.php:486
 msgid "Importing questions..."
-msgstr ""
+msgstr "Импорт вопросов..."
 
 #: src/Glpi/Console/Migration/RacksPluginToCoreCommand.php:1138
 #, php-format
@@ -14171,7 +14183,7 @@ msgstr "Импорт помещений..."
 
 #: src/Glpi/Form/Migration/FormMigration.php:440
 msgid "Importing sections..."
-msgstr ""
+msgstr "Импорт секций..."
 
 #: src/Glpi/Console/Migration/RacksPluginToCoreCommand.php:718
 #, php-format
@@ -14180,11 +14192,11 @@ msgstr "Импорт спецификаций для модели %s (%s)..."
 
 #: src/Glpi/Form/Migration/FormMigration.php:839
 msgid "Importing ticket targets..."
-msgstr ""
+msgstr "Импорт заявок..."
 
 #: src/Glpi/Form/Migration/FormMigration.php:1097
 msgid "Importing translations..."
-msgstr ""
+msgstr "Импорт переводов..."
 
 #: src/Glpi/Console/Migration/AppliancesPluginToCoreCommand.php:578
 #, php-format
@@ -14221,6 +14233,8 @@ msgid ""
 "In the legacy API, the field name is prefixed by \"custom_\" to avoid "
 "conflicts with standard fields."
 msgstr ""
+"В унаследованном API имя поля имеет префикс \"custom_\", чтобы избежать "
+"конфликтов со стандартными полями."
 
 #: templates/pages/admin/group_ldap.html.twig
 msgid "In users"
@@ -14233,7 +14247,7 @@ msgstr "Email заголовок In-Reply-To"
 #: resources/.illustrations_translations.php:68
 msgctxt "Icon"
 msgid "Inbox"
-msgstr ""
+msgstr "Входящие"
 
 #: templates/pages/admin/entity/assistance.html.twig src/Ticket.php:3308
 #: src/Ticket.php:3326 src/ITILCategory.php:485
@@ -14246,11 +14260,11 @@ msgstr "Инциденты"
 
 #: src/Glpi/Asset/Capacity/AllowedInGlobalSearchCapacity.php:55
 msgid "Include in global search (from the header bar) results"
-msgstr ""
+msgstr "Включение в результаты глобального поиска (из строки заголовка)"
 
 #: src/Glpi/Asset/Capacity/HasDevicesCapacity.php:59
 msgid "Includes sub-components like CPUs, drives or memory"
-msgstr ""
+msgstr "Включая такие субкомпоненты, как процессоры, диски или память."
 
 #: templates/pages/setup/mailcollector/setup_form.html.twig
 msgid "Incoming mail folder (optional, often INBOX)"
@@ -14352,11 +14366,11 @@ msgstr "Наследовать от родительской организац�
 
 #: templates/pages/admin/helpdesk_home_custom_scene_config.html.twig
 msgid "Inherited from parent entity"
-msgstr ""
+msgstr "Унаследовано от родительской организации"
 
 #: templates/pages/admin/helpdesk_home_custom_scene_config.html.twig
 msgid "Inherited illustration preview"
-msgstr ""
+msgstr "Унаследованный предварительный просмотр иллюстрации"
 
 #: src/Entity.php:1907
 msgid "Inherits configuration from the parent entity"
@@ -14380,7 +14394,7 @@ msgstr "Инициализация таблиц базы данных и дан�
 
 #: src/Update.php:301 src/Toolbox.php:2147
 msgid "Initializing default rules…"
-msgstr ""
+msgstr "Инициализация правил по умолчанию..."
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Inline (no toolbars)"
@@ -14741,7 +14755,7 @@ msgstr "Недопустимый id"
 
 #: src/Glpi/Form/Condition/ValidationStrategy.php:51
 msgid "Invalid if..."
-msgstr ""
+msgstr "Неверно, если..."
 
 #: src/IPNetwork.php:346
 msgid "Invalid input format for the network"
@@ -14877,7 +14891,7 @@ msgstr "Инвентарный номер"
 
 #: templates/pages/admin/rules/index.html.twig
 msgid "Inventory rules"
-msgstr ""
+msgstr "Правила инвентаризации"
 
 #: templates/components/form/inventory_info.html.twig
 #: src/Glpi/Features/Inventoriable.php:196 src/RuleLocation.php:92
@@ -14917,15 +14931,15 @@ msgstr "Динамический"
 #: src/Glpi/Form/Condition/ValueOperator.php:60
 #: phpunit/functional/Glpi/Form/Condition/EditorManagerTest.php:342
 msgid "Is equal to"
-msgstr ""
+msgstr "Равно"
 
 #: src/Glpi/Form/Condition/ValueOperator.php:64
 msgid "Is greater than"
-msgstr ""
+msgstr "Больше, чем"
 
 #: src/Glpi/Form/Condition/ValueOperator.php:65
 msgid "Is greater than or equals to"
-msgstr ""
+msgstr "Больше или равно"
 
 #: src/CommonDCModelDropdown.php:125 src/CommonDCModelDropdown.php:193
 #: src/Glpi/Asset/AssetModel.php:235 src/Glpi/Asset/AssetModel.php:309
@@ -14934,20 +14948,20 @@ msgstr "Половина стойки"
 
 #: src/Glpi/Form/Condition/ValueOperator.php:66
 msgid "Is less than"
-msgstr ""
+msgstr "Меньше, чем"
 
 #: src/Glpi/Form/Condition/ValueOperator.php:67
 msgid "Is less than or equals to"
-msgstr ""
+msgstr "Меньше или равно"
 
 #: src/Glpi/Form/Condition/ValueOperator.php:61
 #: phpunit/functional/Glpi/Form/Condition/EditorManagerTest.php:343
 msgid "Is not equal to"
-msgstr ""
+msgstr "Не равно"
 
 #: src/Glpi/Form/Condition/ValueOperator.php:69
 msgid "Is not of itemtype"
-msgstr ""
+msgstr "Не относится к типу элемента"
 
 #: src/Glpi/Form/Condition/ValueOperator.php:76
 #: phpunit/functional/Glpi/Form/Condition/EditorManagerTest.php:347
@@ -14955,11 +14969,11 @@ msgstr ""
 #: phpunit/functional/Glpi/Form/Condition/EditorManagerTest.php:365
 #: phpunit/functional/Glpi/Form/Condition/EditorManagerTest.php:426
 msgid "Is not visible"
-msgstr ""
+msgstr "Не видно"
 
 #: src/Glpi/Form/Condition/ValueOperator.php:68
 msgid "Is of itemtype"
-msgstr ""
+msgstr "Имеет тип элемента"
 
 #: src/Database.php:197 src/Database.php:306
 msgid "Is on backup"
@@ -14983,7 +14997,7 @@ msgstr "Актуальный"
 #: phpunit/functional/Glpi/Form/Condition/EditorManagerTest.php:364
 #: phpunit/functional/Glpi/Form/Condition/EditorManagerTest.php:425
 msgid "Is visible"
-msgstr ""
+msgstr "Видно"
 
 #: templates/pages/admin/customobjects/main.html.twig
 msgid ""
@@ -15121,7 +15135,7 @@ msgstr "Элемент был удален на %s"
 
 #: templates/pages/admin/form/item_has_conditions_modal.html.twig
 msgid "Item has conditions and cannot be deleted"
-msgstr ""
+msgstr "Элемент имеет условия и не может быть удален"
 
 #: src/Glpi/Csv/PlanningCsv.php:74
 msgid "Item id"
@@ -15250,7 +15264,7 @@ msgstr "Объекты"
 #: templates/pages/admin/customobjects/main.html.twig
 #, php-format
 msgid "Items linked to the system name \"%s\" will have the class \"%s\"."
-msgstr ""
+msgstr "Элементы, связанные с системным именем \"%s\", будут иметь класс \"%s\"."
 
 #: templates/pages/setup/general/general_setup.html.twig
 #: src/Glpi/Search/Output/Spreadsheet.php:275
@@ -15391,11 +15405,11 @@ msgstr "База знаний"
 #: resources/.illustrations_translations.php:69
 msgctxt "Icon"
 msgid "Knowledge base and FAQ"
-msgstr ""
+msgstr "База знаний и часто задаваемые вопросы FAQ"
 
 #: src/Glpi/Asset/Capacity/HasKnowbaseCapacity.php:60
 msgid "Knowledge base articles can be associated to these assets"
-msgstr ""
+msgstr "Статьи базы знаний могут быть ассоциированы с этими активами"
 
 #: src/KnowbaseItemCategory.php:49
 msgid "Knowledge base category"
@@ -15545,7 +15559,7 @@ msgstr "Язык"
 #: resources/.illustrations_translations.php:11
 msgctxt "Icon"
 msgid "Laptop"
-msgstr ""
+msgstr "Ноутбук"
 
 #: src/CommonGLPI.php:1165
 msgid "Last"
@@ -15559,12 +15573,12 @@ msgstr "Последние %d событий"
 #: templates/components/printer_graph_buttons.html.twig
 #, php-format
 msgid "Last %s days"
-msgstr ""
+msgstr "Последние %s дней"
 
 #: templates/pages/setup/general/security_setup.html.twig
 #, php-format
 msgid "Last %s passwords"
-msgstr ""
+msgstr "Последние %s паролей"
 
 #: templates/pages/management/database.html.twig
 #: templates/pages/management/databaseinstance.html.twig src/Database.php:205
@@ -15648,7 +15662,7 @@ msgstr "Фамилия"
 
 #: templates/components/helpdesk_forms/service_catalog_items.html.twig
 msgid "Last page"
-msgstr ""
+msgstr "Последняя страница"
 
 #: templates/pages/setup/general/security_setup.html.twig
 msgid "Last password"
@@ -15821,11 +15835,11 @@ msgstr "Слева"
 
 #: templates/pages/admin/helpdesk_home_custom_scene_config.html.twig
 msgid "Left side"
-msgstr ""
+msgstr "Левая сторона"
 
 #: templates/pages/admin/helpdesk_home_custom_scene_config.html.twig
 msgid "Left side configuration"
-msgstr ""
+msgstr "Конфигурация левой стороны"
 
 #: templates/pages/setup/general/api_setup.html.twig
 msgid "Legacy API"
@@ -15834,7 +15848,7 @@ msgstr "Устаревший API"
 #: resources/.illustrations_translations.php:70
 msgctxt "Icon"
 msgid "Legal"
-msgstr ""
+msgstr "Юридическая"
 
 #: src/DeviceCamera.php:76 src/DeviceCamera.php:127
 msgid "Lensfacing"
@@ -15924,6 +15938,7 @@ msgstr "Ограничения графика для планирования"
 #: templates/pages/admin/profile/assistance.html.twig
 msgid "Limits the display to actors directly involved in the ticket."
 msgstr ""
+"Ограничивает показ сотрудникам, непосредственно задействованным в заявке."
 
 #: src/Line.php:58
 msgid "Line"
@@ -15936,15 +15951,15 @@ msgstr[3] "Телефонные линии"
 #: resources/.illustrations_translations.php:33
 msgctxt "Icon"
 msgid "Line chart"
-msgstr ""
+msgstr "Линейная диаграмма"
 
 #: src/Item_Line.php:47
 msgid "Line item"
 msgid_plural "Line items"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Элемент линия"
+msgstr[1] "Элементы линии"
+msgstr[2] "Элементов линий"
+msgstr[3] "Элементы линии"
 
 #: src/LineOperator.php:49
 msgid "Line operator"
@@ -16065,6 +16080,8 @@ msgstr "Ссылка на запись"
 #: src/Glpi/Asset/Capacity/HasContractsCapacity.php:59
 msgid "Link contracts to the assets for costs, renewal and supplier tracking"
 msgstr ""
+"Свяжите контракты с активами, чтобы отслеживать по ним расходы, продление и "
+"поставщиков"
 
 #: src/RuleImportAsset.php:239
 msgid "Link if possible"
@@ -16194,15 +16211,17 @@ msgstr "Список"
 
 #: src/Glpi/Asset/Capacity/HasAntivirusCapacity.php:58
 msgid "List antivirus software"
-msgstr ""
+msgstr "Список антивирусных программ"
 
 #: src/Glpi/Asset/Capacity/HasDatabaseInstanceCapacity.php:59
 msgid "List database instances found by automatic inventory"
 msgstr ""
+"Список экземпляров баз данных, найденных в результате автоматической "
+"инвентаризации"
 
 #: src/Glpi/Asset/Capacity/HasSoftwaresCapacity.php:62
 msgid "List installed software"
-msgstr ""
+msgstr "Список установленного программного обеспечения"
 
 #: src/Glpi/Dashboard/FakeProvider.php:330
 #, php-format
@@ -16239,7 +16258,7 @@ msgstr "Список виртуальных сред"
 
 #: src/Glpi/Asset/Capacity/HasVolumesCapacity.php:58
 msgid "List storage volumes"
-msgstr ""
+msgstr "Список томов хранения"
 
 #: src/Glpi/Console/System/ListServicesCommand.php:50
 msgid "List system services"
@@ -16247,7 +16266,7 @@ msgstr "Список системных сервисов"
 
 #: src/Glpi/Asset/Capacity/HasVirtualMachineCapacity.php:58
 msgid "List virtual machines attached to these assets"
-msgstr ""
+msgstr "Список виртуальных машин, подключенных к этим активам"
 
 #: src/NotificationTargetSavedSearch_Alert.php:109
 msgid "Load saved search"
@@ -16280,12 +16299,12 @@ msgstr[3] "Местоположения"
 #: resources/.illustrations_translations.php:72
 msgctxt "Icon"
 msgid "Location 1"
-msgstr ""
+msgstr "Местоположение 1"
 
 #: resources/.illustrations_translations.php:73
 msgctxt "Icon"
 msgid "Location 2"
-msgstr ""
+msgstr "Местоположение 2"
 
 #: src/Location.php:210 src/Location.php:389
 msgid "Location alias"
@@ -16382,7 +16401,7 @@ msgstr "Заблокирован объектом"
 #: src/ObjectLock.php:385
 #, php-format
 msgid "Locked by %s at %s"
-msgstr ""
+msgstr "Заблокировано %s в %s"
 
 #: templates/layout/parts/objectlock_message.html.twig
 msgid "Locked by you!"
@@ -16462,7 +16481,7 @@ msgstr "Логика"
 #: templates/pages/admin/form/conditional_visibility_editor.html.twig
 #: templates/pages/admin/form/conditional_validation_editor.html.twig
 msgid "Logic operator"
-msgstr ""
+msgstr "Логический оператор"
 
 #: templates/pages/admin/rules/form.html.twig
 #: templates/pages/setup/levelagreement_level.html.twig
@@ -16586,7 +16605,7 @@ msgstr "MAC-адрес по умолчанию"
 
 #: templates/maintenance.html.twig
 msgid "MAINTENANCE MODE"
-msgstr ""
+msgstr "РЕЖИМ ОБСЛУЖИВАНИЯ / MAINTENANCE MODE"
 
 #: src/Item_DeviceProcessor.php:52 src/Item_DeviceProcessor.php:53
 #: src/DeviceMemory.php:62 src/DeviceMemory.php:65 src/DeviceMemory.php:97
@@ -16653,6 +16672,8 @@ msgid ""
 "Main process seems to have timed out. It may be still running in the "
 "background though."
 msgstr ""
+"Основной процесс, похоже, завершился. Возможно, он все еще работает в "
+"фоновом режиме."
 
 #: src/Glpi/Inventory/Asset/Cartridge.php:59
 msgid "Maintenance kit"
@@ -16727,6 +16748,8 @@ msgid ""
 "Manage and track assets lifecycle, financial, administrative and warranty "
 "information"
 msgstr ""
+"Управление и отслеживание жизненного цикла активов, финансовой, "
+"административной и гарантийной информации"
 
 #: src/Document.php:1245
 msgid "Manage document types"
@@ -16738,7 +16761,7 @@ msgstr "Управлять личными"
 
 #: src/Glpi/Asset/Capacity/HasSocketCapacity.php:59
 msgid "Manage sockets and cable links"
-msgstr ""
+msgstr "Управление розетками и кабельными линиями"
 
 #: templates/layout/parts/context_links.html.twig front/setup.templates.php:47
 msgid "Manage templates..."
@@ -16917,11 +16940,13 @@ msgstr "Мастер"
 msgid ""
 "Match data with an existing asset, create a new asset, or deny the import"
 msgstr ""
+"Сопоставьте данные с существующим активом, создайте новый актив или "
+"запретите импорт"
 
 #: src/Glpi/Form/Condition/ValueOperator.php:72
 #: phpunit/functional/Glpi/Form/Condition/EditorManagerTest.php:348
 msgid "Match regular expression"
-msgstr ""
+msgstr "Соответствие регулярному выражению"
 
 #: src/RuleMatchedLog.php:62
 msgid "Matched rules"
@@ -17012,7 +17037,7 @@ msgstr "Максимальное число файлов достигнуто"
 #: src/Item_SoftwareLicense.php:302
 #, php-format
 msgid "Maximum number of items reached for license \"%s\"."
-msgstr ""
+msgstr "Достигнуто максимальное количество элементов для лицензии \"%s\"."
 
 #: templates/pages/setup/ldap/adv_info.html.twig
 msgid "Maximum number of results"
@@ -17126,7 +17151,7 @@ msgstr "Отмеченый пользователь"
 
 #: templates/pages/admin/profile/assistance.html.twig
 msgid "Mentions configuration"
-msgstr ""
+msgstr "Конфигурация упоминаний"
 
 #: src/Software.php:998
 msgid "Merge"
@@ -17223,7 +17248,7 @@ msgstr "Микрофон"
 #: src/Glpi/Console/Migration/RacksPluginToCoreCommand.php:159
 #, php-format
 msgid "Migrate %s plugin data into GLPI core tables"
-msgstr ""
+msgstr "Мигрировать данные плагина %s в таблицы ядра GLPI"
 
 #: src/Glpi/Console/Migration/MyIsamToInnoDbCommand.php:66
 msgid "Migrate MyISAM tables to InnoDB"
@@ -17231,7 +17256,7 @@ msgstr "Перенос таблиц MyISAM в InnoDB"
 
 #: src/Glpi/Console/Migration/GenericobjectPluginToCoreCommand.php:53
 msgid "Migrate plugin data into GLPI core tables"
-msgstr ""
+msgstr "Мигрировать данные плагинов в таблицы ядра GLPI"
 
 #: src/Glpi/Console/Migration/UnsignedKeysCommand.php:66
 msgid "Migrate primary/foreign keys to unsigned integers"
@@ -17339,7 +17364,7 @@ msgstr "Минимум"
 #: templates/components/user/password_security_checks.html.twig
 #, php-format
 msgid "Minimum length: %s"
-msgstr ""
+msgstr "Минимальная длина: %s"
 
 #: templates/components/itilobject/validation.html.twig
 #: src/CommonITILValidation.php:1274 phpunit/functional/RuleTest.php:365
@@ -17419,7 +17444,7 @@ msgstr "Мобильный телефон"
 #: resources/.illustrations_translations.php:75
 msgctxt "Icon"
 msgid "Mobility"
-msgstr ""
+msgstr "Мобильность"
 
 #: templates/pages/setup/notification/notification_notificationtemplate.html.twig
 #: src/QueuedNotification.php:380
@@ -17523,7 +17548,7 @@ msgstr[3] "Типы мониторов"
 #: resources/.illustrations_translations.php:76
 msgctxt "Icon"
 msgid "Monitoring"
-msgstr ""
+msgstr "Мониторинг"
 
 #: src/NotificationTargetCronTask.php:43 src/NotificationTargetCronTask.php:83
 msgid "Monitoring of automatic actions"
@@ -17559,7 +17584,7 @@ msgstr "Настроение"
 #: templates/pages/admin/form/form_question.html.twig
 #: templates/pages/admin/form/form_section.html.twig
 msgid "More actions"
-msgstr ""
+msgstr "Дополнительные действия"
 
 #: src/Glpi/Console/Migration/DatabasesPluginToCoreCommand.php:526
 #, php-format
@@ -17879,7 +17904,7 @@ msgstr "Сетевые диски"
 #: resources/.illustrations_translations.php:13
 msgctxt "Icon"
 msgid "Network equipment"
-msgstr ""
+msgstr "Сетевое оборудование"
 
 #: templates/pages/assets/unmanaged.html.twig src/Unmanaged.php:148
 msgid "Network hub"
@@ -18051,7 +18076,7 @@ msgstr "Новый документ"
 
 #: templates/pages/admin/assetdefinition/fields_display.html.twig
 msgid "New field"
-msgstr ""
+msgstr "Новое поле"
 
 #: src/NotificationTargetCommonITILObject.php:141
 msgid "New followup"
@@ -18147,22 +18172,22 @@ msgstr "Новый перевод"
 #: resources/.illustrations_translations.php:77
 msgctxt "Icon"
 msgid "New user 1"
-msgstr ""
+msgstr "Новый пользователь 1"
 
 #: resources/.illustrations_translations.php:78
 msgctxt "Icon"
 msgid "New user 2"
-msgstr ""
+msgstr "Новый пользователь 2"
 
 #: resources/.illustrations_translations.php:79
 msgctxt "Icon"
 msgid "New user 3"
-msgstr ""
+msgstr "Новый пользователь 3"
 
 #: resources/.illustrations_translations.php:80
 msgctxt "Icon"
 msgid "New user 4"
-msgstr ""
+msgstr "Новый пользователь 4"
 
 #: src/NotificationTargetCommonITILObject.php:135
 msgid "New user in assignees"
@@ -18184,7 +18209,7 @@ msgstr "Новая версия плагина %s: %s"
 #: resources/.illustrations_translations.php:81
 msgctxt "Icon"
 msgid "Newspaper"
-msgstr ""
+msgstr "Газета"
 
 #: templates/components/pager.html.twig
 #: templates/pages/assistance/stats/single_item_pager.html.twig
@@ -18217,7 +18242,7 @@ msgstr "Следующая эскалация: %s"
 
 #: templates/components/helpdesk_forms/service_catalog_items.html.twig
 msgid "Next page"
-msgstr ""
+msgstr "Следующая страница"
 
 #: templates/pages/management/contract.html.twig
 msgid "Next renewal date"
@@ -18264,7 +18289,7 @@ msgstr "Нет событий"
 
 #: src/Glpi/Form/Destination/CommonITILField/ITILFollowupFieldStrategy.php:46
 msgid "No Followup"
-msgstr ""
+msgstr "Нет последующих действий"
 
 #: src/User.php:5411
 msgid "No LDAP information to display"
@@ -18395,11 +18420,11 @@ msgstr "Фильтры не найдены"
 
 #: src/PendingReason.php:296
 msgid "No follow-up"
-msgstr ""
+msgstr "Нет последующих действий"
 
 #: templates/components/helpdesk_forms/service_catalog_items.html.twig
 msgid "No forms found"
-msgstr ""
+msgstr "Формы не найдены"
 
 #: src/Cartridge.php:308
 msgid "No free cartridge"
@@ -18419,7 +18444,7 @@ msgstr "Нет истории, соответствующей вашим фил�
 
 #: templates/components/form/rulematchedlogs.html.twig
 msgid "No input"
-msgstr ""
+msgstr "Нет ввода"
 
 #: src/CommonITILObject.php:6907
 msgid "No item in progress."
@@ -18444,7 +18469,7 @@ msgstr "Элементы спецификации не были найдены."
 
 #: templates/pages/admin/form/form_destination.html.twig
 msgid "No items will be created for this form."
-msgstr ""
+msgstr "Для этой формы не будет создано никаких элементов."
 
 #: src/NetworkPortConnectionLog.php:154
 msgid "No longer exists in database"
@@ -18521,7 +18546,7 @@ msgstr "Без ограничений"
 #: src/Item_SoftwareLicense.php:691 src/Item_SoftwareLicense.php:1043
 #: src/CableStrand.php:214 js/modules/Form/GeolocationField.js:87
 msgid "No results found"
-msgstr ""
+msgstr "Результаты не найдены"
 
 #: src/KnowbaseItem_Revision.php:134
 msgid "No revisions"
@@ -18545,7 +18570,7 @@ msgstr "Нет выбранных объектов"
 
 #: src/Item_SoftwareLicense.php:936
 msgid "No software linked"
-msgstr ""
+msgstr "Нет связанного программного обеспечения"
 
 #: src/Glpi/Console/Rules/ProcessSoftwareCategoryRulesCommand.php:80
 msgid "No software to process."
@@ -18645,6 +18670,7 @@ msgstr "Нормальный"
 #: templates/pages/admin/rules/index.html.twig
 msgid "Normalize sub-data (like softwares, OS and models)"
 msgstr ""
+"Нормализуйте суб-данные (например, программное обеспечение, ОС и модели)."
 
 #: templates/pages/assets/rack.html.twig
 msgid "North"
@@ -18697,7 +18723,7 @@ msgstr "Не установленный"
 
 #: templates/pages/management/softwarelicense.html.twig
 msgid "Not linked to any software"
-msgstr ""
+msgstr "Не связан ни с каким программным обеспечением"
 
 #: templates/pages/tools/reminder.html.twig
 msgid "Not planned"
@@ -18846,7 +18872,7 @@ msgstr "Уведомления для моих изменений"
 
 #: templates/pages/admin/profile/assistance.html.twig
 msgid "Notifications must be enabled to activate mentions."
-msgstr ""
+msgstr "Чтобы активировать упоминания, уведомления должны быть включены."
 
 #: templates/pages/setup/notification/ajax_setting.html.twig
 #, php-format
@@ -18950,7 +18976,7 @@ msgstr "Число столбцов"
 
 #: src/DCRoom.php:102 src/DCRoom.php:125
 msgid "Number of columns must be >= 1"
-msgstr ""
+msgstr "Количество столбцов должно быть >= 1"
 
 #: src/Contract.php:206
 msgctxt "quantity"
@@ -19117,7 +19143,7 @@ msgstr "Количество рядов"
 
 #: src/DCRoom.php:93 src/DCRoom.php:116
 msgid "Number of rows must be >= 1"
-msgstr ""
+msgstr "Количество строк должно быть >= 1"
 
 #: src/NotificationTargetCommonITILObject.php:2145
 msgid "Number of sent reminders since status is pending"
@@ -19305,7 +19331,7 @@ msgstr[3] "Блокировки объекта"
 
 #: src/Glpi/Migration/GenericobjectPluginMigration.php:894
 msgid "Objects relations successfully imported."
-msgstr ""
+msgstr "Связи Объектов успешно импортированы."
 
 #: templates/components/itilobject/actors/main.html.twig
 #: templates/pages/admin/group.html.twig
@@ -19353,7 +19379,7 @@ msgstr "Менеджер группы наблюдателей"
 
 #: templates/pages/admin/form/form_translations.html.twig
 msgid "Obsolete translations"
-msgstr ""
+msgstr "Устаревшие переводы"
 
 #: src/Glpi/Features/PlanningEvent.php:858 src/Toolbox.php:1969
 msgid "October"
@@ -19644,7 +19670,7 @@ msgstr ""
 
 #: src/Glpi/Form/Condition/LogicOperator.php:46
 msgid "Or"
-msgstr ""
+msgstr "Или"
 
 #: src/CommonItilObject_Item.php:1602
 msgid "Or complete search"
@@ -19668,7 +19694,7 @@ msgstr "Номер заказа"
 #: resources/.illustrations_translations.php:84
 msgctxt "Icon"
 msgid "Order supplies"
-msgstr ""
+msgstr "Заказ расходных материалов"
 
 #: src/DeviceCamera.php:81 src/Item_Rack.php:149
 msgid "Orientation"
@@ -19753,7 +19779,7 @@ msgstr "Другие изображения"
 
 #: src/RuleCollection.php:446
 msgid "Other rules"
-msgstr ""
+msgstr "Другие правила"
 
 #: src/Dropdown.php:2484
 msgid "Other..."
@@ -19799,7 +19825,7 @@ msgstr "Исходящие мегабайты"
 
 #: templates/pages/admin/rules/index.html.twig
 msgid "Override the asset to another custom definition (like Servers)"
-msgstr ""
+msgstr "Переопределите актив другим своим определением (например, Серверы)"
 
 #: templates/pages/assets/operatingsystem.html.twig
 msgid "Owner"
@@ -19959,7 +19985,7 @@ msgstr "Установка пакета"
 #: templates/components/illustration/icon_picker_search_results.html.twig
 #, php-format
 msgid "Page %s of %s"
-msgstr ""
+msgstr "Страница %s из %s"
 
 #: src/PrinterLog.php:58
 msgid "Page counters"
@@ -20004,7 +20030,7 @@ msgstr "Раздел"
 #: resources/.illustrations_translations.php:85
 msgctxt "Icon"
 msgid "Partner"
-msgstr ""
+msgstr "Партнер"
 
 #: src/PassiveDCEquipment.php:54
 msgid "Passive device"
@@ -20053,7 +20079,7 @@ msgstr "Инициализация пароля"
 
 #: templates/pages/admin/user/user.html.twig
 msgid "Password change pending"
-msgstr ""
+msgstr "Ожидается смена пароля"
 
 #: src/NotificationTargetUser.php:216
 msgid "Password expiration date"
@@ -20089,7 +20115,7 @@ msgstr "Минимальная длина пароля"
 
 #: templates/components/user/password_security_checks.html.twig
 msgid "Password must contain"
-msgstr ""
+msgstr "Пароль должен содержать"
 
 #: src/User.php:6661
 msgid "Password must include at least a digit!"
@@ -20143,7 +20169,7 @@ msgstr "Пароль был использован недавно."
 
 #: templates/pages/admin/user/user.html.twig
 msgid "Passwords and access keys"
-msgstr ""
+msgstr "Пароли и ключи доступа"
 
 #: src/Glpi/Console/User/AbstractUserCommand.php:69
 msgid "Passwords do not match"
@@ -20169,18 +20195,18 @@ msgstr ""
 #: src/QueuedWebhook.php:342
 msgid "Payload"
 msgid_plural "Payloads"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Полезная нагрузка"
+msgstr[1] "Полезных нагрузки"
+msgstr[2] "Полезных нагрузок"
+msgstr[3] "Полезных нагрузок"
 
 #: src/Webhook.php:759
 msgid "Payload editor"
-msgstr ""
+msgstr "Редактор полезной нагрузки"
 
 #: templates/pages/setup/webhook/webhooktest.html.twig
 msgid "Payload output"
-msgstr ""
+msgstr "Вывод полезной нагрузки"
 
 #: templates/components/itilobject/timeline/pending_reasons_messages.html.twig
 #: src/Problem.php:696 src/Glpi/Dashboard/Provider.php:1320
@@ -20205,11 +20231,11 @@ msgstr[3] "Причины ожидания"
 
 #: src/NotificationTargetCommonITILObject.php:147
 msgid "Pending reason added"
-msgstr ""
+msgstr "Добавлена причина отсрочки"
 
 #: src/NotificationTargetCommonITILObject.php:149
 msgid "Pending reason auto close"
-msgstr ""
+msgstr "Причина автоматического закрытия"
 
 #: src/NotificationTargetCommonITILObject.php:2150
 msgid "Pending reason name"
@@ -20217,7 +20243,7 @@ msgstr "Имя причины, ожидающей рассмотрения"
 
 #: src/NotificationTargetCommonITILObject.php:148
 msgid "Pending reason removed"
-msgstr ""
+msgstr "Причина отмены удаления"
 
 #: src/Glpi/Dashboard/Provider.php:381 src/Glpi/Dashboard/FakeProvider.php:197
 msgid "Pending tickets"
@@ -20463,7 +20489,7 @@ msgstr "Выберите доступный актив и зарезервиру
 
 #: templates/components/illustration/icon_picker_modal.html.twig
 msgid "Pick an illustration"
-msgstr ""
+msgstr "Выберите иллюстрацию"
 
 #: templates/components/form/pictures.html.twig
 #: templates/pages/admin/customobjects/main.html.twig
@@ -20486,7 +20512,7 @@ msgstr "Круг"
 #: resources/.illustrations_translations.php:35
 msgctxt "Icon"
 msgid "Pie chart"
-msgstr ""
+msgstr "Секторная диаграмма"
 
 #: templates/layout/parts/saved_searches.html.twig
 msgid "Pin this panel for the current page"
@@ -20494,7 +20520,7 @@ msgstr "Закрепить эту панель на текущей страни�
 
 #: templates/pages/admin/form/service_catalog_tab.html.twig
 msgid "Pin to top of the service catalog"
-msgstr ""
+msgstr "Закрепить в верхней части каталога услуг"
 
 #: templates/components/form/flags.html.twig src/Monitor.php:415
 msgid "Pivot"
@@ -20545,7 +20571,7 @@ msgstr "Запланированная дата начала"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Planned tasks state by default"
-msgstr ""
+msgstr "Состояние запланированных задач по умолчанию"
 
 #: src/Glpi/Dashboard/Provider.php:397 src/Glpi/Dashboard/FakeProvider.php:199
 msgid "Planned tickets"
@@ -20662,10 +20688,11 @@ msgstr "Пожалуйста выберите тип элемента"
 #: templates/pages/admin/assetdefinition/capacity/is_inventoriable_capacity_configuration_form.html.twig
 msgid "Please select the type that represents the best the asset."
 msgstr ""
+"Пожалуйста, выберите тип, который наиболее полно отражает суть актива."
 
 #: templates/components/helpdesk_forms/service_catalog_items.html.twig
 msgid "Please try again later."
-msgstr ""
+msgstr "Пожалуйста, повторите попытку позже."
 
 #: src/Glpi/System/Requirement/InstallationNotOverriden.php:93
 msgid ""
@@ -21186,7 +21213,7 @@ msgstr "Обнаружение файлов предыдущей версии GL
 
 #: templates/components/helpdesk_forms/service_catalog_items.html.twig
 msgid "Previous page"
-msgstr ""
+msgstr "Предыдущая страница"
 
 #: src/Glpi/Console/Migration/AbstractPluginToCoreCommand.php:133
 #, php-format
@@ -21212,7 +21239,7 @@ msgstr "Позиция первичного двоичного журнала:"
 #: resources/.illustrations_translations.php:87
 msgctxt "Icon"
 msgid "Print a job"
-msgstr ""
+msgstr "Печать задания"
 
 #: src/Printer.php:95 src/Rule.php:499 src/Profile.php:1574
 msgid "Printer"
@@ -21463,7 +21490,7 @@ msgstr[3] "Профили"
 
 #: src/Glpi/Console/User/GrantCommand.php:88
 msgid "Profile granted"
-msgstr ""
+msgstr "Профиль предоставлен"
 
 #: src/Glpi/Console/User/GrantCommand.php:66
 msgid "Profile not found"
@@ -21578,7 +21605,7 @@ msgstr "Назначено на заявку %1$s"
 
 #: src/Glpi/Form/Destination/CommonITILField/Category.php:48
 msgid "Properties"
-msgstr ""
+msgstr "Свойства"
 
 #: src/Printer_CartridgeInfo.php:136
 msgid "Property"
@@ -21670,7 +21697,7 @@ msgstr "Удалите старые черновики формы"
 
 #: src/Software.php:1157
 msgid "Purge software with no version that are deleted."
-msgstr ""
+msgstr "Очистить программы без версии, которые удалены."
 
 #: templates/pages/admin/entity/assistance.html.twig
 msgid "Purge ticket action is disabled."
@@ -21931,7 +21958,7 @@ msgstr "Прочти меня"
 
 #: src/Glpi/Asset/CustomFieldType/AbstractType.php:74
 msgid "Readonly for these profiles"
-msgstr ""
+msgstr "Доступно для чтения для этих профилей"
 
 #: templates/pages/admin/form/import/step2_preview.html.twig
 msgid "Ready to be imported"
@@ -21976,7 +22003,7 @@ msgstr "Реальная дата начала"
 
 #: src/User.php:3017
 msgid "Reapply authorization assignment rules"
-msgstr ""
+msgstr "Повторное применение правил назначения авторизации"
 
 #: src/Glpi/Socket.php:298 src/Item_Rack.php:138 src/Item_Rack.php:328
 #: src/Item_Rack.php:671
@@ -22077,7 +22104,7 @@ msgstr[3] "Типы записей"
 
 #: src/Glpi/Asset/Capacity/HasHistoryCapacity.php:58
 msgid "Records the modifications made to the asset"
-msgstr ""
+msgstr "Записи модификаций, сделанных в активе"
 
 #: src/PrinterLog.php:402
 msgid "Recto/Verso pages"
@@ -22146,7 +22173,7 @@ msgstr "Ссылки"
 
 #: src/RuleMailCollector.php:90
 msgid "References email header"
-msgstr ""
+msgstr "Заголовки сообщений электронной почты"
 
 #: src/Glpi/Marketplace/View.php:462
 msgid "Refresh plugin list"
@@ -22402,11 +22429,11 @@ msgstr "Удалить из группы"
 #: templates/components/itilobject/timeline/form_document_item.html.twig
 msgctxt "button"
 msgid "Remove from import exclusion list"
-msgstr ""
+msgstr "Удалить из списка исключений при импорте"
 
 #: templates/pages/admin/form/form_horizontal_block_toolbar.html.twig
 msgid "Remove horizontal layout"
-msgstr ""
+msgstr "Убрать горизонтальную раскладку"
 
 #: templates/pages/admin/form/itil_config_fields/associated_items.html.twig
 msgid "Remove item"
@@ -22418,7 +22445,7 @@ msgstr "Удалить последний порт"
 
 #: templates/pages/admin/form/form_toolbar.html.twig
 msgid "Remove slot"
-msgstr ""
+msgstr "Убрать слот"
 
 #: src/CleanSoftwareCron.php:56
 msgid ""
@@ -22427,7 +22454,7 @@ msgstr "Удалить версии программ без установки �
 
 #: templates/pages/admin/form/form_destination_commonitil_config.html.twig
 msgid "Remove strategy"
-msgstr ""
+msgstr "Удалить стратегию"
 
 #: templates/pages/setup/authentication/other_ext_setup.html.twig
 msgid "Remove the domain of logins like login@domain"
@@ -22526,7 +22553,7 @@ msgstr "Заменён"
 
 #: templates/pages/admin/form/import/step3_resolve_issues.html.twig
 msgid "Replacement value"
-msgstr ""
+msgstr "Восстановительная стоимость"
 
 #: templates/pages/admin/form/import/step3_resolve_issues.html.twig
 #, php-format
@@ -22535,7 +22562,7 @@ msgstr "Восстановительная стоимость для '%s'"
 
 #: src/RuleDictionnarySoftwareCollection.php:73
 msgid "Replay dictionary rules for manufacturers"
-msgstr ""
+msgstr "Повторно применить правила по каталогу производителей"
 
 #: src/Glpi/Console/Rules/ReplayDictionnaryRulesCommand.php:51
 msgid "Replay dictionary rules on existing items"
@@ -22695,20 +22722,20 @@ msgstr "Источник запроса по умолчанию"
 #: resources/.illustrations_translations.php:91
 msgctxt "Icon"
 msgid "Request support"
-msgstr ""
+msgstr "Запросить поддержку"
 
 #: src/Glpi/Form/Destination/CommonITILField/RequestTypeField.php:57
 #: src/Glpi/Form/QuestionType/QuestionTypeCategory.php:109
 msgid "Request type"
-msgstr ""
+msgstr "Тип запроса"
 
 #: src/CommonITILValidation.php:1122
 msgid "Requested approver"
-msgstr ""
+msgstr "Запрошенный утверждающий"
 
 #: src/CommonITILValidation.php:1121 src/CommonITILValidation.php:1253
 msgid "Requested approver type"
-msgstr ""
+msgstr "Тип запрошенного утверждающего"
 
 #: src/Agent.php:800
 #, php-format
@@ -22793,7 +22820,7 @@ msgstr "Местонахождение инициатора запроса"
 
 #: src/DbUtils.php:1772 src/RuleAction.php:541
 msgid "Requester's manager"
-msgstr ""
+msgstr "Руководитель заказчика"
 
 #: js/impact.js:2563
 msgid "Requests"
@@ -22921,17 +22948,17 @@ msgstr "Сброс 2FA"
 #: resources/.illustrations_translations.php:93
 msgctxt "Icon"
 msgid "Reset password 1"
-msgstr ""
+msgstr "Сброс пароля 1"
 
 #: resources/.illustrations_translations.php:94
 msgctxt "Icon"
 msgid "Reset password 2"
-msgstr ""
+msgstr "Сброс пароля 2"
 
 #: resources/.illustrations_translations.php:95
 msgctxt "Icon"
 msgid "Reset password 3"
-msgstr ""
+msgstr "Сброс пароля 3"
 
 #: src/User.php:5173 src/Glpi/Api/API.php:2221
 #: src/Glpi/Console/User/ResetPasswordCommand.php:79
@@ -23067,7 +23094,7 @@ msgstr "Ограничить поиск в заданной организаци
 
 #: templates/pages/admin/profile/assistance.html.twig
 msgid "Restricted"
-msgstr ""
+msgstr "Ограничено"
 
 #: templates/pages/admin/inventory/upload_result.html.twig
 msgid "Result"
@@ -23108,7 +23135,7 @@ msgstr "Возврат к предыдущей странице"
 
 #: src/Glpi/Form/ServiceCatalog/SortStrategy/ReverseAlphabeticalSort.php:51
 msgid "Reverse alphabetical"
-msgstr ""
+msgstr "Обратный алфавит"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Reverse order (old items on bottom, recent on top)"
@@ -23128,7 +23155,7 @@ msgstr[3] "Доработки"
 
 #: src/Glpi/Asset/CustomFieldType/TextType.php:50
 msgid "Rich text"
-msgstr ""
+msgstr "Форматированный текст"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Rich text field layout"
@@ -23140,11 +23167,11 @@ msgstr "Справа"
 
 #: templates/pages/admin/helpdesk_home_custom_scene_config.html.twig
 msgid "Right side"
-msgstr ""
+msgstr "Правая сторона"
 
 #: templates/pages/admin/helpdesk_home_custom_scene_config.html.twig
 msgid "Right side configuration"
-msgstr ""
+msgstr "Конфигурация правой стороны"
 
 #: src/Location.php:105 src/Location.php:228 src/Location.php:279
 #: src/NotificationTargetTicket.php:604 src/NotificationTargetTicket.php:663
@@ -23171,7 +23198,7 @@ msgstr "rootDN (пользователь для подключения)"
 
 #: templates/components/pager.html.twig
 msgid "Rows per page"
-msgstr ""
+msgstr "Строк на странице"
 
 #: src/DeviceHardDrive.php:62 src/DeviceHardDrive.php:106
 #: src/DeviceHardDrive.php:187
@@ -23244,7 +23271,7 @@ msgstr "Правила отменены"
 
 #: src/RuleDefineItemtypeCollection.php:46
 msgid "Rules to define inventoried itemtype"
-msgstr ""
+msgstr "Правила для определения типа инвентаризируемого элемента"
 
 #: src/RuleCollection.php:504
 msgid "Rules used for"
@@ -23583,7 +23610,7 @@ msgstr "Сохранить текущий поиск"
 
 #: templates/pages/admin/helpdesk_home_custom_scene_config.html.twig
 msgid "Save custom illustrations settings"
-msgstr ""
+msgstr "Сохранение настроек пользовательских иллюстраций"
 
 #: templates/password_form.html.twig
 msgid "Save new password"
@@ -23599,11 +23626,11 @@ msgstr "Сохранить тело запроса"
 
 #: templates/pages/admin/helpdesk_home_config.html.twig
 msgid "Save tiles order"
-msgstr ""
+msgstr "Сохранить порядок плиток"
 
 #: templates/pages/admin/form/form_translation.html.twig
 msgid "Save translation"
-msgstr ""
+msgstr "Сохранить перевод"
 
 #: templates/stencil/editor.html.twig
 msgid "Save zone data"
@@ -23706,11 +23733,11 @@ msgstr "Поиск в маркетплейсе GLPI "
 #: resources/.illustrations_translations.php:36
 msgctxt "Icon"
 msgid "Search chart"
-msgstr ""
+msgstr "Диаграмма поиска"
 
 #: templates/pages/admin/ldap.group_criteria.html.twig
 msgid "Search criteria for groups"
-msgstr ""
+msgstr "Критерии поиска для групп"
 
 #: templates/pages/admin/ldap.user_criteria.html.twig
 msgid "Search criteria for users"
@@ -23751,11 +23778,11 @@ msgstr "Поиск не сохранен"
 
 #: templates/components/itilobject/timeline/knowledge_item.html.twig
 msgid "Search in the knowledge base"
-msgstr ""
+msgstr "Поиск в базе знаний"
 
 #: src/DisplayPreference.php:864
 msgid "Search option ID"
-msgstr ""
+msgstr "Идентификатор варианта поиска"
 
 #: src/Glpi/Dashboard/Widget.php:261
 msgid "Search result"
@@ -23775,7 +23802,7 @@ msgstr "Отображать результаты пользовательско
 
 #: templates/pages/helpdesk/index.html.twig
 msgid "Search results"
-msgstr ""
+msgstr "Результаты поиска"
 
 #: src/Glpi/Search/Output/Spreadsheet.php:550
 #, php-format
@@ -23789,7 +23816,7 @@ msgstr "Результаты поиска только для локальных
 #: resources/.illustrations_translations.php:99
 msgctxt "Icon"
 msgid "Search settings"
-msgstr ""
+msgstr "Настройки поиска"
 
 #: templates/pages/setup/ldap/group_config.html.twig
 msgid "Search type"
@@ -23833,7 +23860,7 @@ msgstr "Название раздела"
 
 #: src/Glpi/Form/Section.php:154
 msgid "Section title"
-msgstr ""
+msgstr "Название раздела"
 
 #: src/Glpi/Form/Tag/SectionTagProvider.php:79
 #, php-format
@@ -23862,7 +23889,7 @@ msgstr "Секретный ключ нельзя сгенерировать!"
 
 #: src/Update.php:408 src/Toolbox.php:2156
 msgid "Security keys generated."
-msgstr ""
+msgstr "Сгенерированные ключи безопасности."
 
 #: templates/pages/setup/general/security_setup.html.twig
 msgid "Security policy configuration"
@@ -23932,7 +23959,7 @@ msgstr "Просмотр моих заявок"
 
 #: templates/pages/form_renderer.html.twig
 msgid "See my tickets"
-msgstr ""
+msgstr "Просмотр моих заявок"
 
 #: src/Reservation.php:1067 src/Reservation.php:1069 src/Reservation.php:1073
 #: src/Reservation.php:1075 src/Glpi/Search/Provider/SQLProvider.php:5955
@@ -23942,7 +23969,7 @@ msgstr "Посмотреть планирование"
 
 #: src/ITILSubItemRights.php:60
 msgid "See private of my groups"
-msgstr ""
+msgstr "Просмотр личных сообщений моих групп"
 
 #: src/ITILSubItemRights.php:59
 msgid "See private ones"
@@ -24044,7 +24071,7 @@ msgstr "Выберите значок"
 
 #: templates/components/form/fields_macros.html.twig
 msgid "Select an illustration"
-msgstr ""
+msgstr "Выберите иллюстрацию"
 
 #: src/Glpi/Form/QuestionType/QuestionTypeItem.php:71
 msgid "Select an item"
@@ -24053,7 +24080,7 @@ msgstr "Выбор элемента"
 #: templates/pages/admin/form/conditional_visibility_editor.html.twig
 #: templates/pages/admin/form/conditional_validation_editor.html.twig
 msgid "Select an item..."
-msgstr ""
+msgstr "Выберите элемент..."
 
 #: src/Glpi/Form/QuestionType/QuestionTypeItem.php:70
 msgid "Select an itemtype"
@@ -24061,7 +24088,7 @@ msgstr "Выберите тип элемента"
 
 #: src/Glpi/Form/Destination/CommonITILField/AssociatedItemsField.php:94
 msgid "Select an itemtype..."
-msgstr ""
+msgstr "Выберите тип элемента..."
 
 #: src/Unmanaged.php:303
 msgid "Select an itemtype: "
@@ -24101,7 +24128,7 @@ msgstr "Выбрать элемент"
 
 #: templates/pages/admin/form/form_translations.html.twig
 msgid "Select language to translate"
-msgstr ""
+msgstr "Выберите язык для перевода"
 
 #: templates/components/printer_graph_buttons.html.twig
 msgid "Select printers to compare"
@@ -24120,7 +24147,7 @@ msgstr "Выберите статистические данные, которы
 
 #: templates/pages/admin/form/form_destination_commonitil_config.html.twig
 msgid "Select strategy..."
-msgstr ""
+msgstr "Выберите стратегию..."
 
 #: src/Glpi/Form/Destination/CommonITILField/ITILTaskField.php:86
 msgid "Select task templates..."
@@ -24157,7 +24184,7 @@ msgstr "Выберите типа объекта на который приме�
 
 #: templates/components/helpdesk_forms/delegation_alert.html.twig
 msgid "Select the user to delegate"
-msgstr ""
+msgstr "Выберите пользователя для делегирования полномочий"
 
 #: templates/pages/admin/form/import/step1_index.html.twig
 msgid "Select your file"
@@ -24292,7 +24319,7 @@ msgstr "Отправлять сообщения в очереди"
 
 #: src/User.php:3015
 msgid "Send password reset email"
-msgstr ""
+msgstr "Отправить письмо для сброса пароля"
 
 #: src/Telemetry.php:282
 msgid "Send telemetry information"
@@ -24414,7 +24441,7 @@ msgstr "ID сервера:"
 #: templates/pages/setup/authentication/mail.html.twig
 #: templates/pages/setup/mailcollector/setup_form.html.twig
 msgid "Server configuration"
-msgstr ""
+msgstr "Конфигурация сервера"
 
 #: src/DCRoom.php:52
 msgid "Server room"
@@ -24443,10 +24470,10 @@ msgstr "Каталог услуг"
 #: src/Glpi/Form/Category.php:56
 msgid "Service catalog category"
 msgid_plural "Service catalog categories"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Категория каталога услуг"
+msgstr[1] "Категории каталога услуг"
+msgstr[2] "Категории каталога услуг"
+msgstr[3] "Категории каталога услуг"
 
 #: templates/pages/admin/form/service_catalog_tab.html.twig
 msgid "Service catalog configuration"
@@ -24454,11 +24481,11 @@ msgstr "Конфигурация каталога услуг"
 
 #: src/Glpi/Form/Form.php:446
 msgid "Service catalog description"
-msgstr ""
+msgstr "Описание каталога услуг"
 
 #: templates/components/helpdesk_forms/service_catalog_items.html.twig
 msgid "Service catalog pages"
-msgstr ""
+msgstr "Страницы каталога услуг"
 
 #: templates/components/itilobject/fields_panel.html.twig src/SLM.php:58
 msgid "Service level"
@@ -24495,10 +24522,11 @@ msgstr "Конфигурация сессий защищена."
 #: templates/pages/admin/rules/index.html.twig
 msgid "Set an entity with some criteria (by its tag for example)"
 msgstr ""
+"Установите организацию с несколькими критериями (например, по ее тегу)"
 
 #: src/UserEmail.php:191 src/UserEmail.php:223
 msgid "Set as default email"
-msgstr ""
+msgstr "Установить в качестве электронной почты по умолчанию"
 
 #: src/Glpi/Console/Config/SetCommand.php:60
 msgid "Set configuration value"
@@ -24519,7 +24547,7 @@ msgstr "Установить имя и/или цвет для группы"
 
 #: js/impact.js:1389
 msgid "Set name for this edge"
-msgstr ""
+msgstr "Установите имя для этого края"
 
 #: src/Problem.php:427 src/Ticket.php:2190 src/Change.php:226
 msgid "Set notifications for all actors"
@@ -24571,7 +24599,7 @@ msgstr "Настройки"
 #: resources/.illustrations_translations.php:100
 msgctxt "Icon"
 msgid "Shaking hands"
-msgstr ""
+msgstr "Пожатие рук"
 
 #: js/modules/Form/WebIconSelector.js:161
 msgctxt "icons"
@@ -24585,17 +24613,17 @@ msgstr "Сделать эту панель общей или встроенно�
 #: resources/.illustrations_translations.php:101
 msgctxt "Icon"
 msgid "Shared folder"
-msgstr ""
+msgstr "Общая папка"
 
 #: resources/.illustrations_translations.php:102
 msgctxt "Icon"
 msgid "Shared inbox"
-msgstr ""
+msgstr "Общий почтовый ящик"
 
 #: resources/.illustrations_translations.php:54
 msgctxt "Icon"
 msgid "Sheet file"
-msgstr ""
+msgstr "Табличный файл"
 
 #: src/Glpi/Form/QuestionType/QuestionTypeCategory.php:104
 msgid "Short answer"
@@ -24635,11 +24663,11 @@ msgstr "Показать как таблицу"
 
 #: templates/components/form/item_itilobject_group.html.twig
 msgid "Show child groups objects"
-msgstr ""
+msgstr "Показать объекты дочерних групп"
 
 #: templates/components/form/basic_inputs_macros.html.twig
 msgid "Show date picker"
-msgstr ""
+msgstr "Показать выбор даты"
 
 #: src/Glpi/Console/Diagnostic/CheckSourceCodeIntegrityCommand.php:77
 msgid "Show diff of altered files"
@@ -24701,7 +24729,7 @@ msgstr "Показать поисковую форму выше результа
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Show search pagination above results"
-msgstr ""
+msgstr "Показывать страничную навигацию над результатами поиска"
 
 #: templates/components/search/controls.html.twig
 msgid "Show the trashbin"
@@ -24709,7 +24737,7 @@ msgstr "Показать корзину"
 
 #: templates/pages/admin/entity/assistance.html.twig
 msgid "Show tickets properties on helpdesk"
-msgstr ""
+msgstr "Показать свойства заявок в службе поддержки"
 
 #: templates/components/search/controls.html.twig
 msgid "Show unpublished"
@@ -24777,7 +24805,7 @@ msgstr "URL справки для упрощенного вида"
 
 #: src/Glpi/Console/Migration/AbstractPluginMigrationCommand.php:72
 msgid "Simulate the migration"
-msgstr ""
+msgstr "Симуляция миграции"
 
 #: src/Glpi/Console/Traits/TelemetryActivationTrait.php:101
 #: src/Telemetry.php:456
@@ -24827,7 +24855,7 @@ msgstr "Немного улучшит производительность."
 #: resources/.illustrations_translations.php:18
 msgctxt "Icon"
 msgid "Smartphone"
-msgstr ""
+msgstr "Смартфон"
 
 #: src/Glpi/Socket.php:331
 msgid "Socket"
@@ -24889,7 +24917,7 @@ msgstr "Программное обеспечение элементов"
 #: src/Glpi/Dashboard/FakeProvider.php:271
 msgctxt "fake_data"
 msgid "Software team"
-msgstr ""
+msgstr "Команда разработчиков программ"
 
 #: templates/components/itilobject/timeline/filter_timeline.html.twig
 #: templates/components/itilobject/timeline/form_solution.html.twig
@@ -24988,7 +25016,7 @@ msgstr "Решенные заявки"
 
 #: templates/components/itilobject/footer.html.twig
 msgid "Some actions are unavailable due to missing required fields."
-msgstr ""
+msgstr "Некоторые действия недоступны из-за отсутствия необходимых полей."
 
 #: src/Glpi/Console/Migration/UnsignedKeysCommand.php:256
 #, php-format
@@ -25011,6 +25039,7 @@ msgstr "Некоторые свойства неизвестны: %1$s"
 #: src/Glpi/Search/Input/QueryBuilder.php:906
 msgid "Some search criteria were removed because they are invalid"
 msgstr ""
+"Некоторые критерии поиска были удалены, потому что они недействительны"
 
 #: src/Glpi/Marketplace/NotificationTargetController.php:99
 msgid "Some updates are available for your installed plugins!"
@@ -25042,7 +25071,7 @@ msgstr "Сортировка"
 
 #: templates/pages/self-service/service_catalog.html.twig
 msgid "Sort by"
-msgstr ""
+msgstr "Сортировать по"
 
 #: templates/pages/admin/logs_list.html.twig
 msgid "Sort by date"
@@ -25058,7 +25087,7 @@ msgstr "Сортировка по размеру"
 
 #: templates/pages/self-service/service_catalog.html.twig
 msgid "Sort by: "
-msgstr ""
+msgstr "Сортировать по:"
 
 #: src/Glpi/Search/Output/HTMLSearchOutput.php:187
 #, php-format
@@ -25110,11 +25139,11 @@ msgstr "Специальный"
 #: src/Glpi/Form/Destination/CommonITILField/SLMFieldStrategy.php:47
 #, php-format
 msgid "Specific %s"
-msgstr ""
+msgstr "Конкретно %s"
 
 #: src/Glpi/Form/Destination/CommonITILField/ITILFollowupFieldStrategy.php:47
 msgid "Specific Followup templates"
-msgstr ""
+msgstr "Укажите шаблоны для активностей"
 
 #: src/Glpi/Form/Destination/CommonITILField/ITILCategoryFieldStrategy.php:52
 msgid "Specific ITIL category"
@@ -25184,7 +25213,7 @@ msgstr "Спорт"
 #: templates/components/search/controls.html.twig
 #, php-format
 msgid "Spreadsheet (%s)"
-msgstr ""
+msgstr "Электронная таблица (%s)"
 
 #: src/Glpi/Dashboard/Widget.php:203
 msgid "Stacked bars"
@@ -25354,7 +25383,7 @@ msgstr[3] "Статусы элементов"
 
 #: templates/pages/setup/general/general_setup.html.twig
 msgid "Status of tasks done"
-msgstr ""
+msgstr "Статус выполненных задач"
 
 #: templates/pages/setup/general/general_setup.html.twig
 msgid "Status of tasks in progress"
@@ -25370,7 +25399,7 @@ msgstr "Состояние незавершенных задач"
 
 #: src/Glpi/Inventory/Conf.php:1035
 msgid "Status to apply"
-msgstr ""
+msgstr "Статус для применения"
 
 #: src/Glpi/Asset/Asset_PeripheralAsset.php:169 src/Computer.php:321
 msgid ""
@@ -25475,11 +25504,11 @@ msgstr "Email заголовок Subject"
 
 #: templates/pages/form_renderer.html.twig
 msgid "Submit"
-msgstr ""
+msgstr "Подтвердить"
 
 #: templates/pages/admin/form/submit_button_conditional_visibility_dropdown.html.twig
 msgid "Submit button visibility"
-msgstr ""
+msgstr "Видимость кнопки Подтвердить"
 
 #: js/modules/Search/Table.js:71
 msgid "Submit current search before saving it"
@@ -25503,7 +25532,7 @@ msgstr "Подписка"
 
 #: src/CommonITILValidation.php:1488
 msgid "Substitute of a member of approver group"
-msgstr ""
+msgstr "Замена члена группы утверждения"
 
 #: templates/pages/admin/user.substitute.html.twig
 msgid ""
@@ -25514,11 +25543,11 @@ msgstr ""
 
 #: templates/pages/admin/user.substitute.html.twig src/User.php:3594
 msgid "Substitution end date"
-msgstr ""
+msgstr "Дата окончания замены"
 
 #: templates/pages/admin/user.substitute.html.twig src/User.php:3586
 msgid "Substitution start date"
-msgstr ""
+msgstr "Дата начала замены"
 
 #: src/Rule.php:773
 msgid "Subtype"
@@ -25576,7 +25605,7 @@ msgstr "Контролёр"
 
 #: src/Glpi/Form/Destination/CommonITILField/ITILActorFieldStrategy.php:61
 msgid "Supervisor of the user who filled the form"
-msgstr ""
+msgstr "Руководитель пользователя, заполнившего форму"
 
 #: src/NotificationTargetCommonITILObject.php:1939
 #: src/NotificationTargetCommonITILObject.php:2167 src/Supplier.php:61
@@ -25830,15 +25859,15 @@ msgstr "Целевая организация для актива"
 
 #: templates/pages/admin/form_tile_config_fields.html.twig
 msgid "Target form"
-msgstr ""
+msgstr "Целевая форма"
 
 #: templates/pages/admin/glpi_page_tile_config_fields.html.twig
 msgid "Target page"
-msgstr ""
+msgstr "Целевая страница"
 
 #: templates/pages/admin/external_page_tile_config_fields.html.twig
 msgid "Target url"
-msgstr ""
+msgstr "Целевой URL"
 
 #: src/NotificationTargetKnowbaseItem.php:216
 msgid "Targets"
@@ -25955,12 +25984,12 @@ msgstr ""
 #: resources/.illustrations_translations.php:104
 msgctxt "Icon"
 msgid "Technical assistance 1"
-msgstr ""
+msgstr "Техническая помощь 1"
 
 #: resources/.illustrations_translations.php:105
 msgctxt "Icon"
 msgid "Technical assistance 2"
-msgstr ""
+msgstr "Техническая помощь 2"
 
 #: front/stat.graph.php:96 src/CommonITILTask.php:976
 #: src/Glpi/Dashboard/Filters/UserTechFilter.php:48
@@ -26240,7 +26269,7 @@ msgstr "Отсутствует или недействительный ключ 
 
 #: src/Glpi/Asset/Capacity/IsInventoriableCapacity.php:61
 msgid "The GLPI agent can report inventory data for these assets."
-msgstr ""
+msgstr "Агент GLPI может предоставлять данные об инвентаризации этих активов."
 
 #: templates/install/update.need_update.html.twig
 #: src/Glpi/Console/Application.php:272
@@ -26252,7 +26281,7 @@ msgstr ""
 
 #: templates/install/install.install_required.html.twig
 msgid "The GLPI database must be configured and installed."
-msgstr ""
+msgstr "База данных GLPI должна быть настроена и установлена."
 
 #: templates/pages/setup/authentication.html.twig
 msgid "The LDAP extension of your PHP parser isn’t installed"
@@ -26278,7 +26307,7 @@ msgstr "Действие недоступно"
 
 #: templates/pages/admin/rules/index.html.twig
 msgid "The asset is created or updated in GLPI"
-msgstr ""
+msgstr "Актив создан или обновлен в GLPI"
 
 #: src/SLA.php:78
 msgid ""
@@ -26320,7 +26349,7 @@ msgstr "Категория элемента"
 #: templates/pages/admin/customobjects/main.html.twig
 #, php-format
 msgid "The class of items related to current definition is \"%s\"."
-msgstr ""
+msgstr "Класс элементов относящихся к текущему определению - \"%s\"."
 
 #: src/Glpi/Console/Application.php:132
 msgid "The command to execute"
@@ -26331,6 +26360,8 @@ msgid ""
 "The connection to the SQL server could not be established. Please check your"
 " configuration."
 msgstr ""
+"Не удалось установить соединение с SQL-сервером. Пожалуйста, проверьте "
+"конфигурацию."
 
 #: src/Glpi/System/Requirement/ExtensionConstant.php:80
 #, php-format
@@ -26399,10 +26430,11 @@ msgstr "Схема базы данных не соответствует уст�
 msgid ""
 "The database structure does not contain all the data required for migration."
 msgstr ""
+"Структура базы данных не содержит всех данных, необходимых для миграции."
 
 #: templates/pages/admin/form/form_translation.html.twig
 msgid "The default value has changed since the last translation"
-msgstr ""
+msgstr "Значение по умолчанию изменилось с момента последнего перевода"
 
 #: src/Glpi/System/Requirement/DirectoryWriteAccess.php:132
 #, php-format
@@ -26419,12 +26451,16 @@ msgid ""
 "The display preferences and saved searches related to a `genericobject` "
 "object type must be recreated manually."
 msgstr ""
+"Параметры отображения и сохраненные поиски, связанные с типом объекта "
+"`genericobject`, должны быть воссозданы вручную."
 
 #: js/planning.js:511
 msgid ""
 "The dragged event is a recurring event. Do you want to move the serie or "
 "instance?"
 msgstr ""
+"Перетаскиваемое событие - это повторяющееся событие. Вы хотите переместить "
+"серию или экземпляр?"
 
 #: templates/pages/admin/rules/engine_summary.html.twig
 msgid "The engine passes the result of each rule to the next matching rule."
@@ -26442,7 +26478,7 @@ msgstr "Обработка остановится после первого по
 
 #: src/Glpi/Asset/CustomFieldDefinition.php:271
 msgid "The field type cannot be changed."
-msgstr ""
+msgstr "Тип поля изменить нельзя."
 
 #: src/Glpi/System/Requirement/DirectoryWriteAccess.php:126
 #, php-format
@@ -26476,12 +26512,12 @@ msgstr ""
 #: src/Glpi/Migration/AbstractPluginMigration.php:173
 #, php-format
 msgid "The following database fields are missing: %s."
-msgstr ""
+msgstr "Отсутствуют следующие поля базы данных: %s."
 
 #: src/Glpi/Migration/AbstractPluginMigration.php:164
 #, php-format
 msgid "The following database tables are missing: %s."
-msgstr ""
+msgstr "Отсутствуют следующие таблицы базы данных: %s."
 
 #: src/User.php:6764 src/Config.php:325
 #: src/Glpi/Asset/CustomFieldDefinition.php:168
@@ -26495,11 +26531,11 @@ msgstr "Следующие поля содержат некорректные з
 
 #: templates/pages/admin/helpdesk_home_custom_scene_config.html.twig
 msgid "The following illustration from the parent entity will be used:"
-msgstr ""
+msgstr "Ниже приводится иллюстрация из родительской организации:"
 
 #: templates/pages/admin/helpdesk_home_config_for_empty_entity.html.twig
 msgid "The following tiles from the parent entity will be used:"
-msgstr ""
+msgstr "Будут использованы следующие плитки из родительской сущности:"
 
 #: src/User.php:5227
 msgid ""
@@ -26570,15 +26606,15 @@ msgstr ""
 
 #: src/Glpi/Console/Traits/PluginMigrationTrait.php:53
 msgid "The migration failed."
-msgstr ""
+msgstr "Миграция не удалась."
 
 #: src/Glpi/Console/Traits/PluginMigrationTrait.php:55
 msgid "The migration is complete, but errors have occurred."
-msgstr ""
+msgstr "Миграция завершена, но возникли ошибки."
 
 #: src/Glpi/Console/Traits/PluginMigrationTrait.php:57
 msgid "The migration is complete."
-msgstr ""
+msgstr "Миграция завершена."
 
 #: front/updatepassword.php:77
 msgid "The new password must be different from current password"
@@ -26589,6 +26625,8 @@ msgid ""
 "The object types families have not been imported as they are not handled by "
 "GLPI."
 msgstr ""
+"Семейства типов объектов не были импортированы, поскольку они не "
+"обрабатываются GLPI."
 
 #: src/PDU_Rack.php:473
 msgid "The pdu will be"
@@ -26702,10 +26740,12 @@ msgid ""
 "The system name field corresponds to what will be used when development is "
 "involved. Examples: API calls, webhooks, etc."
 msgstr ""
+"Поле \"Имя системы\" соответствует тому, что будет использоваться при "
+"разработке. Примеры: вызовы API, webhooks и т. д."
 
 #: src/Glpi/CustomObject/AbstractDefinition.php:396
 msgid "The system name is a reserved name."
-msgstr ""
+msgstr "Имя системы - это зарезервированное имя."
 
 #: src/Glpi/CustomObject/AbstractDefinition.php:373
 msgid "The system name is mandatory."
@@ -26719,7 +26759,7 @@ msgstr ""
 
 #: src/Glpi/CustomObject/AbstractDefinition.php:408
 msgid "The system name must be unique."
-msgstr ""
+msgstr "Имя системы должно быть уникальным."
 
 #: src/CommonITILObject.php:10130
 msgctxt "filters"
@@ -26753,7 +26793,7 @@ msgstr "Загружаемый файл превысил переменную up
 
 #: src/Entity.php:487
 msgid "The uploaded file must be a valid image."
-msgstr ""
+msgstr "Загружаемый файл должен быть правильным изображением."
 
 #: src/UploadHandler.php:373
 msgid "The uploaded file was only partially uploaded"
@@ -26780,57 +26820,57 @@ msgstr "Пользователь неактивен."
 #: src/Glpi/Form/Condition/ValueOperator.php:118
 #: src/Glpi/Form/Condition/ValueOperator.php:122
 msgid "The value is not valid"
-msgstr ""
+msgstr "Значение недействительно"
 
 #: src/Glpi/Form/Condition/ValueOperator.php:100
 #, php-format
 msgid "The value must be greater than %s"
-msgstr ""
+msgstr "Значение должно быть больше, чем %s"
 
 #: src/Glpi/Form/Condition/ValueOperator.php:101
 #, php-format
 msgid "The value must be greater than or equal to %s"
-msgstr ""
+msgstr "Значение должно быть больше или равно %s"
 
 #: src/Glpi/Form/Condition/ValueOperator.php:102
 #, php-format
 msgid "The value must be less than %s"
-msgstr ""
+msgstr "Значение должно быть меньше, чем %s"
 
 #: src/Glpi/Form/Condition/ValueOperator.php:103
 #, php-format
 msgid "The value must be less than or equal to %s"
-msgstr ""
+msgstr "Значение должно быть меньше или равно %s"
 
 #: src/Glpi/Form/Condition/ValueOperator.php:104
 #: src/Glpi/Form/Condition/ValueOperator.php:116
 msgid "The value must match the requested format"
-msgstr ""
+msgstr "Значение должно соответствовать запрашиваемому формату"
 
 #: src/Glpi/Form/Condition/ValueOperator.php:111
 #, php-format
 msgid "The value must not be greater than %s"
-msgstr ""
+msgstr "Значение не должно быть больше, чем %s"
 
 #: src/Glpi/Form/Condition/ValueOperator.php:112
 #, php-format
 msgid "The value must not be greater than or equal to %s"
-msgstr ""
+msgstr "Значение не должно быть больше или равно %s"
 
 #: src/Glpi/Form/Condition/ValueOperator.php:113
 #, php-format
 msgid "The value must not be less than %s"
-msgstr ""
+msgstr "Значение не должно быть меньше %s"
 
 #: src/Glpi/Form/Condition/ValueOperator.php:114
 #, php-format
 msgid "The value must not be less than or equal to %s"
-msgstr ""
+msgstr "Значение не должно быть меньше или равно %s"
 
 #: src/Glpi/Form/Condition/ValueOperator.php:105
 #: src/Glpi/Form/Condition/ValueOperator.php:115
 msgid "The value must not match the requested format"
-msgstr ""
+msgstr "Значение не должно соответствовать запрашиваемому формату"
 
 #: src/Glpi/Kernel/Listener/RequestListener/SessionCheckCookieListener.php:72
 msgid ""
@@ -26859,15 +26899,15 @@ msgstr "Есть пользователь(и) %d, соответствующие
 
 #: templates/components/helpdesk_forms/service_catalog_items.html.twig
 msgid "There are no forms available"
-msgstr ""
+msgstr "Нет доступных форм"
 
 #: templates/pages/admin/helpdesk_home_config_for_empty_entity.html.twig
 msgid "There are no tiles defined for this entity."
-msgstr ""
+msgstr "Для этой организации не определено ни одной плитки."
 
 #: templates/pages/admin/helpdesk_home_config_tiles.html.twig
 msgid "There are no tiles defined for this item."
-msgstr ""
+msgstr "Для этого элемента не определено ни одной плитки."
 
 #: templates/pages/admin/customobjects/main.html.twig
 msgid ""
@@ -26877,7 +26917,7 @@ msgstr ""
 
 #: templates/components/search/criteria_filter.html.twig
 msgid "There is no filter defined yet for this item."
-msgstr ""
+msgstr "Для этого элемента еще не определен фильтр."
 
 #: src/Glpi/Api/API.php:201
 msgid ""
@@ -26899,7 +26939,7 @@ msgstr ""
 
 #: src/Glpi/Asset/Capacity/IsReservableCapacity.php:59
 msgid "These assets can be made reservable"
-msgstr ""
+msgstr "Эти активы можно сделать доступными для резервирования"
 
 #: templates/pages/admin/entity/advanced.html.twig
 msgid ""
@@ -26958,7 +26998,7 @@ msgstr "Эта категория содержит"
 
 #: templates/pages/admin/form/item_has_conditions_modal.html.twig
 msgid "This comment is used in conditions of other form elements"
-msgstr ""
+msgstr "Этот комментарий используется в условиях других элементов формы"
 
 #: templates/components/itilobject/timeline/timeline_item_header.html.twig
 msgid "This entry is \"internal\" (visible only to technicians)"
@@ -26975,7 +27015,7 @@ msgstr ""
 
 #: src/Glpi/Form/AnswersHandler/AnswersHandler.php:111
 msgid "This field is mandatory"
-msgstr ""
+msgstr "Это поле обязательно для заполнения"
 
 #: src/Glpi/Form/AccessControl/ControlType/DirectAccess.php:87
 msgid ""
@@ -26987,7 +27027,7 @@ msgstr ""
 
 #: src/Glpi/Form/Destination/FormDestinationManager.php:133
 msgid "This form is invalid, it must create at least one item."
-msgstr ""
+msgstr "Эта форма недействительна, она должна создать хотя бы один элемент."
 
 #: src/Glpi/Form/AccessControl/FormAccessControlManager.php:195
 msgid "This form is not visible to anyone because it is not active."
@@ -27028,12 +27068,12 @@ msgstr ""
 
 #: templates/pages/admin/customobjects/main.html.twig
 msgid "This item definition is not used by any items."
-msgstr ""
+msgstr "Это определение элемента не используется никакими элементами."
 
 #: templates/pages/admin/customobjects/main.html.twig
 #, php-format
 msgid "This item definition is used by %d items."
-msgstr ""
+msgstr "Это определение элемента используется %d элементами."
 
 #: templates/pages/tools/kb/knowbaseitem.html.twig
 #: templates/pages/tools/kb/article.html.twig
@@ -27130,11 +27170,11 @@ msgstr "Этот профиль является последним с прав�
 
 #: templates/pages/admin/form/item_has_conditions_modal.html.twig
 msgid "This question is used in conditions of other form elements"
-msgstr ""
+msgstr "Этот вопрос используется в условиях других элементов формы"
 
 #: templates/pages/admin/form/item_has_conditions_modal.html.twig
 msgid "This section is used in conditions of other form elements"
-msgstr ""
+msgstr "Этот раздел используется в условиях других элементов формы"
 
 #: templates/components/itilobject/itiltemplate.html.twig
 msgid ""
@@ -27147,7 +27187,7 @@ msgstr ""
 #: templates/components/helpdesk_forms/delegation_alert.html.twig
 #, php-format
 msgid "This ticket is for %1$s"
-msgstr ""
+msgstr "Эта заявка делегирована на %1$s"
 
 #: templates/components/helpdesk_forms/delegation_alert.html.twig
 #, php-format
@@ -27155,6 +27195,8 @@ msgid ""
 "This ticket is for %1$s and %2$s to be notified of future events of this "
 "ticket."
 msgstr ""
+"Эта заявка делегирована %1$s и %2$s для уведомлений о будущих событиях, "
+"связанных с этой заявкой."
 
 #: src/Plugin.php:2850
 msgid "This will only affect plugins already enabled"
@@ -27345,7 +27387,7 @@ msgstr "Заявки ожидающие вашего согласования"
 
 #: src/Entity.php:3294
 msgid "Tiles may be overriden by profile."
-msgstr ""
+msgstr "Плитка может быть переопределена профилем."
 
 #: src/Glpi/Form/QuestionType/QuestionTypeDateTime.php:131
 #: src/Glpi/Form/QuestionType/QuestionTypeDateTime.php:302
@@ -27444,7 +27486,7 @@ msgstr "Время на решение истекло"
 
 #: src/Glpi/Form/Destination/CommonITILField/Category.php:50
 msgid "Timeline"
-msgstr ""
+msgstr "Временная шкала"
 
 #: js/reservations.js:128
 msgid "Timeline Week"
@@ -27595,7 +27637,7 @@ msgstr "К исполнению"
 
 #: src/RuleMailCollector.php:78
 msgid "To email address"
-msgstr ""
+msgstr "На адрес электронной почты"
 
 #: src/NotImportedEmail.php:144 src/RuleTicket.php:218
 msgid "To email header"
@@ -27633,7 +27675,7 @@ msgstr "Сегодня"
 
 #: templates/components/search/query_builder/main.html.twig
 msgid "Toggle additional default filters"
-msgstr ""
+msgstr "Переключение дополнительных фильтров по умолчанию"
 
 #: templates/pages/admin/log_viewer.html.twig
 msgid "Toggle auto refresh"
@@ -27785,16 +27827,16 @@ msgstr "Город"
 
 #: src/Glpi/Asset/Capacity/HasCertificatesCapacity.php:59
 msgid "Track certificates used by the assets"
-msgstr ""
+msgstr "Отслеживать сертификаты, используемые активами"
 
 #: src/Glpi/Asset/Capacity/HasDomainsCapacity.php:59
 msgid "Track domains, records and their expiration dates"
-msgstr ""
+msgstr "Отслеживать домены, записи и сроки их действия"
 
 #: resources/.illustrations_translations.php:107
 msgctxt "Icon"
 msgid "Training"
-msgstr ""
+msgstr "Обучение"
 
 #: templates/pages/admin/entity/assets.html.twig front/transfer.action.php:40
 #: src/Transfer.php:86 src/Rule.php:249 src/Profile.php:1016
@@ -27816,15 +27858,15 @@ msgstr "Режим переноса"
 
 #: templates/pages/admin/rules/index.html.twig
 msgid "Transform itemtypes"
-msgstr ""
+msgstr "Преобразование типов элементов"
 
 #: templates/pages/admin/form/form_translations.html.twig
 msgid "Translated"
-msgstr ""
+msgstr "Переведено"
 
 #: templates/pages/admin/form/form_translation.html.twig
 msgid "Translated value"
-msgstr ""
+msgstr "Переведенное значение"
 
 #: src/ReminderTranslation.php:55 src/DropdownTranslation.php:54
 #: src/Glpi/Asset/AssetDefinition.php:130
@@ -27849,11 +27891,11 @@ msgstr "Кэш локализации успешно сброшен"
 
 #: templates/pages/admin/form/form_translation.html.twig
 msgid "Translation may be obsolete"
-msgstr ""
+msgstr "Перевод может быть устаревшим"
 
 #: templates/pages/admin/form/form_translation.html.twig
 msgid "Translation name"
-msgstr ""
+msgstr "Название перевода"
 
 #: templates/pages/admin/customobjects/translations.html.twig
 #: src/Glpi/CustomObject/AbstractDefinition.php:772
@@ -27862,7 +27904,7 @@ msgstr "Переводы"
 
 #: templates/pages/admin/form/form_translations.html.twig
 msgid "Translations to do"
-msgstr ""
+msgstr "Необходимые переводы"
 
 #: src/Glpi/Features/Inventoriable.php:139
 msgid "Try a reimport from stored inventory file"
@@ -27879,7 +27921,7 @@ msgstr "Повторить"
 #: templates/components/helpdesk_forms/service_catalog_items.html.twig
 #: templates/components/illustration/icon_picker_search_results.html.twig
 msgid "Try different keywords or filters."
-msgstr ""
+msgstr "Попробуйте разные ключевые слова или фильтры."
 
 #: templates/pages/admin/log_viewer.html.twig
 msgid "Try enabling auto-refresh to see new content of the file"
@@ -27998,7 +28040,7 @@ msgstr "Тип компонента"
 
 #: templates/pages/setup/mailcollector/server_config_fields.html.twig
 msgid "Typical ports: IMAP (143), IMAPS (993), POP (110), POPS (995)"
-msgstr ""
+msgstr "Типичные порты: IMAP (143), IMAPS (993), POP (110), POPS (995)"
 
 #: src/Entity.php:612
 msgid "UI customization"
@@ -28158,11 +28200,11 @@ msgstr "Не удается подключиться к основной баз�
 #: src/Glpi/Migration/AbstractPluginMigration.php:397
 #, php-format
 msgid "Unable to copy %s \"%s\"."
-msgstr ""
+msgstr "Невозможно скопировать %s \"%s\"."
 
 #: js/common.js:1513
 msgid "Unable to copy to clipboard (insecure context)."
-msgstr ""
+msgstr "Невозможно скопировать в буфер обмена (небезопасный контекст)."
 
 #: src/Glpi/Console/Migration/DatabasesPluginToCoreCommand.php:265
 #: src/Glpi/Console/Migration/AbstractPluginToCoreCommand.php:352
@@ -28174,7 +28216,7 @@ msgstr "Невозможно создать %s \"%s\" (%d)."
 #: src/Glpi/Migration/AbstractPluginMigration.php:327
 #, php-format
 msgid "Unable to create %s \"%s\"."
-msgstr ""
+msgstr "Невозможно создать %s \"%s\"."
 
 #: src/Glpi/Console/Migration/AppliancesPluginToCoreCommand.php:539
 #, php-format
@@ -28326,7 +28368,7 @@ msgstr "Невозможно импортировать комнату \"%s\"."
 #: src/Glpi/Migration/GenericobjectPluginMigration.php:1244
 #, php-format
 msgid "Unable to import the \"%s\" field."
-msgstr ""
+msgstr "Невозможно импортировать поле \"%s\"."
 
 #: src/Glpi/Console/Ldap/SynchronizeUsersCommand.php:295
 msgid "Unable to load LDAP server information."
@@ -28359,7 +28401,7 @@ msgstr "Невозможно загрузить программное обес�
 
 #: src/Glpi/Kernel/Listener/RequestListener/CheckDatabaseStatusListener.php:113
 msgid "Unable to load the GLPI configuration from the database."
-msgstr ""
+msgstr "Невозможно загрузить конфигурацию GLPI из базы данных."
 
 #: src/Glpi/Console/Ldap/SynchronizeUsersCommand.php:512
 #, php-format
@@ -28521,7 +28563,7 @@ msgstr "Непредвиденная ошибка."
 #: src/Glpi/Migration/GenericobjectPluginMigration.php:1440
 #, php-format
 msgid "Unexpected input type \"%s\" for the \"%s\" field."
-msgstr ""
+msgstr "Неожидаемый тип ввода \"%s\" для поля \"%s\"."
 
 #: src/Glpi/Marketplace/View.php:899 src/Plugin.php:2603 src/Plugin.php:2804
 msgid "Uninstall"
@@ -28596,7 +28638,7 @@ msgstr "Неограниченно"
 #: templates/components/itilobject/linked_itilobjects.html.twig
 msgctxt "button"
 msgid "Unlink"
-msgstr ""
+msgstr "Отвязать"
 
 #: src/CommonITILObject.php:4148
 msgctxt "button"
@@ -28694,7 +28736,7 @@ msgstr "По истечении"
 
 #: src/Glpi/Form/Comment.php:192
 msgid "Untitled comment"
-msgstr ""
+msgstr "Комментарий без названия"
 
 #: front/form/form.form.php:51
 msgid "Untitled form"
@@ -28702,11 +28744,11 @@ msgstr "Безымянная форма"
 
 #: src/Glpi/Form/Question.php:165
 msgid "Untitled question"
-msgstr ""
+msgstr "Вопрос без названия"
 
 #: templates/pages/form_renderer.html.twig
 msgid "Untitled section"
-msgstr ""
+msgstr "Раздел без названия"
 
 #: src/NetworkPort.php:956
 msgid "Up"
@@ -28830,7 +28872,7 @@ msgstr "Обновить дату"
 
 #: src/Update.php:411
 msgid "Update done."
-msgstr ""
+msgstr "Обновление выполнено."
 
 #: src/Glpi/Console/Ldap/SynchronizeUsersCommand.php:362
 #, php-format
@@ -28913,7 +28955,7 @@ msgstr "Обновить свой пароль"
 
 #: src/Glpi/Features/AssignableItem.php:167
 msgid "Update owned"
-msgstr ""
+msgstr "Обновление принадлежит"
 
 #: src/Entity.php:2871
 msgid "Update parameters"
@@ -28939,17 +28981,17 @@ msgstr "Обновить элемент"
 #: src/Migration.php:869
 #, php-format
 msgid "Update to %s version completed."
-msgstr ""
+msgstr "Обновление до версии %s завершено."
 
 #: templates/components/plugin_update_modal.html.twig
 #, php-format
 msgid "Update to version %s?"
-msgstr ""
+msgstr "Обновить до версии %s?"
 
 #: templates/components/plugin_update_modal.html.twig
 msgctxt "button"
 msgid "Update?"
-msgstr ""
+msgstr "Обновить?"
 
 #: src/Glpi/Console/Migration/AppliancesPluginToCoreCommand.php:319
 msgid "Updating GLPI itemtypes..."
@@ -28977,7 +29019,7 @@ msgstr "Обновление профилей..."
 
 #: install/update.php:171
 msgid "Updating the database..."
-msgstr ""
+msgstr "Обновление базы данных..."
 
 #: templates/pages/assets/software.html.twig install/update.php:127
 msgid "Upgrade"
@@ -28992,12 +29034,12 @@ msgstr "Обновление"
 #: src/Update.php:187
 #, php-format
 msgid "Upgrade from version lower than %s is not supported."
-msgstr ""
+msgstr "Обновление с версии ниже %s не поддерживается."
 
 #: src/Update.php:252
 #, php-format
 msgid "Upgrading to %s…"
-msgstr ""
+msgstr "Обновление до %s…"
 
 #: templates/pages/admin/inventory/upload_form.html.twig
 msgctxt "button"
@@ -29006,7 +29048,7 @@ msgstr "Загрузка"
 
 #: src/Glpi/Asset/Capacity/HasDocumentsCapacity.php:59
 msgid "Upload and attach files"
-msgstr ""
+msgstr "Загрузка и прикрепление файлов"
 
 #: src/Document.php:1030
 msgid "Upload directory doesn't exist"
@@ -29022,7 +29064,7 @@ msgstr "Успешная загрузка"
 
 #: templates/components/illustration/icon_picker_modal.html.twig
 msgid "Upload your own illustration"
-msgstr ""
+msgstr "Загрузите свою собственную иллюстрацию"
 
 #: templates/components/user/password_security_checks.html.twig
 msgid "Uppercase"
@@ -29053,7 +29095,7 @@ msgstr ""
 
 #: templates/pages/setup/webhook/webhook_security.html.twig
 msgid "Use CRA Challenge?"
-msgstr ""
+msgstr "Использовать CRA Challenge?"
 
 #: templates/pages/setup/ldap/group_config.html.twig
 msgid "Use DN in the search"
@@ -29111,7 +29153,7 @@ msgstr "Дата использования"
 
 #: templates/pages/setup/webhook/payload_editor.html.twig
 msgid "Use default payload"
-msgstr ""
+msgstr "Использовать полезную нагрузку по умолчанию"
 
 #: templates/pages/setup/notification/notification.html.twig
 msgid "Use global config"
@@ -29143,7 +29185,7 @@ msgstr "Использовать правила для"
 
 #: templates/components/illustration/icon_picker_modal.html.twig
 msgid "Use selected file"
-msgstr ""
+msgstr "Использовать выбранный файл"
 
 #: templates/pages/admin/user/user.html.twig
 #: templates/pages/setup/general/preferences_setup.html.twig
@@ -29164,7 +29206,7 @@ msgstr "Использовать реплику в поисковом движк
 
 #: templates/pages/tools/search_knowbaseitem.html.twig
 msgid "Use this entry"
-msgstr ""
+msgstr "Использовать эту запись"
 
 #: src/Dropdown.php:2627
 msgid "Use unitary management"
@@ -29284,7 +29326,7 @@ msgstr "Пользователь удалён"
 
 #: src/Glpi/Helpdesk/DefaultDataManager.php:327
 msgid "User devices"
-msgstr ""
+msgstr "Пользовательские устройства"
 
 #: src/Glpi/Console/User/DisableCommand.php:59
 msgid "User disabled"
@@ -29343,7 +29385,7 @@ msgstr "Пользователь отмечен"
 
 #: templates/pages/admin/profile/assistance.html.twig
 msgid "User mentions are disabled for this profile."
-msgstr ""
+msgstr "Упоминания пользователей в этом профиле отключены."
 
 #: templates/layout/parts/user_header.html.twig
 msgid "User menu"
@@ -29384,7 +29426,7 @@ msgstr "Пользователь команды проекта"
 #: resources/.illustrations_translations.php:111
 msgctxt "Icon"
 msgid "User offboarding"
-msgstr ""
+msgstr "Вывод пользователей за штат"
 
 #: src/Glpi/Asset/Asset_PeripheralAsset.php:143 src/Computer.php:315
 msgid ""
@@ -29422,13 +29464,15 @@ msgstr "Имя пользователя"
 
 #: templates/pages/setup/authentication/mail.html.twig
 msgid "Users email will be login@domainname"
-msgstr ""
+msgstr "Электронная почта пользователя будет логин@домен"
 
 #: src/Profile.php:3793
 msgid ""
 "Users with this profile will see the tiles below if defined, overriding the "
 "one found in the entities configuration."
 msgstr ""
+"Пользователи с этим профилем будут видеть плитки ниже, если они определены, "
+"а не те, которые находятся в конфигурации организации."
 
 #: templates/pages/admin/form/access_control/direct_access.html.twig
 msgid ""
@@ -29487,7 +29531,7 @@ msgstr ""
 
 #: src/Glpi/Form/Condition/ValidationStrategy.php:50
 msgid "Valid if..."
-msgstr ""
+msgstr "Действительно, если..."
 
 #: src/Item_SoftwareVersion.php:1102
 msgid "Valid license"
@@ -29559,7 +29603,7 @@ msgstr "Проверка"
 
 #: src/NotificationTargetTicket.php:143
 msgid "Validation reminder"
-msgstr ""
+msgstr "Напоминание о проверке"
 
 #: templates/components/itilobject/timeline/form_validation.html.twig
 #: src/NotificationTargetChange.php:63 src/NotificationTargetChange.php:351
@@ -29575,27 +29619,27 @@ msgstr "Ответ на запрос согласования"
 
 #: templates/pages/admin/user.substitute.html.twig
 msgid "Validation substitutes"
-msgstr ""
+msgstr "Заместители проверки"
 
 #: src/ITILValidationTemplate.php:54
 msgid "Validation template"
 msgid_plural "Validation templates"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Шаблон проверки"
+msgstr[1] "Шаблонов проверки"
+msgstr[2] "Шаблонов проверки"
+msgstr[3] "Шаблонов проверки"
 
 #: src/ITILValidationTemplate_Target.php:50
 msgid "Validation template target"
 msgid_plural "Validation template targets"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Шаблон проверки цели"
+msgstr[1] "Шаблоны проверки цели"
+msgstr[2] "Шаблонов проверки цели"
+msgstr[3] "Шаблонов проверки цели"
 
 #: templates/pages/setup/notification/ajax_setting.html.twig
 msgid "Validity period of notifications (in days)"
-msgstr ""
+msgstr "Срок действия уведомлений (в днях)"
 
 #: templates/pages/setup/general/security_setup.html.twig
 msgid "Validity period of the password initialization token"
@@ -29627,7 +29671,7 @@ msgstr "Значение унаследованное от родительск�
 #: templates/pages/admin/form/conditional_visibility_editor.html.twig
 #: templates/pages/admin/form/conditional_validation_editor.html.twig
 msgid "Value operator"
-msgstr ""
+msgstr "Оператор значения"
 
 #: templates/pages/admin/entity/advanced.html.twig
 msgid "Values for the generic rules for assignment to entities"
@@ -29781,7 +29825,7 @@ msgstr "Просмотрите все заявки, ожидающие ваше�
 
 #: src/Glpi/Helpdesk/DefaultDataManager.php:118
 msgid "View approval requests"
-msgstr ""
+msgstr "Просмотр запросов на утверждение"
 
 #: src/Item_Rack.php:410 src/Rack.php:443
 msgid "View as list"
@@ -29813,7 +29857,7 @@ msgstr "Просмотр других действий"
 
 #: src/Glpi/Features/AssignableItem.php:164
 msgid "View owned"
-msgstr ""
+msgstr "Просмотр принадлежащих"
 
 #: templates/pages/admin/ldap.user_criteria.html.twig
 msgid "View updated users"
@@ -29910,7 +29954,7 @@ msgstr "Видим для инцидентов"
 
 #: src/Glpi/Form/Condition/VisibilityStrategy.php:50
 msgid "Visible if..."
-msgstr ""
+msgstr "Видно, если..."
 
 #: templates/pages/admin/group.html.twig
 msgid "Visible in a project"
@@ -29926,7 +29970,7 @@ msgstr "Видимый в упрощенном виде"
 
 #: templates/components/notepad/form.html.twig
 msgid "Visible on tickets"
-msgstr ""
+msgstr "Видно в заявках"
 
 #: templates/pages/tools/kb/knowbaseitem.html.twig
 #: src/NotificationTargetKnowbaseItem.php:65
@@ -30156,7 +30200,7 @@ msgstr ""
 #: resources/.illustrations_translations.php:115
 msgctxt "Icon"
 msgid "Webinar"
-msgstr ""
+msgstr "Вебинар"
 
 #: templates/pages/admin/entity/address.html.twig
 #: templates/generic_show_form.html.twig src/Contact_Supplier.php:180
@@ -30196,7 +30240,7 @@ msgstr "Запад"
 #: resources/.illustrations_translations.php:116
 msgctxt "Icon"
 msgid "Wharehouse"
-msgstr ""
+msgstr "Склад"
 
 #: templates/pages/tools/project.html.twig
 msgid ""
@@ -30233,6 +30277,7 @@ msgstr "При отсоединении"
 #: templates/pages/admin/inventory/agent.html.twig
 msgid "When reported by GLPI agent via native inventory"
 msgstr ""
+"При получении сообщения от агента GLPI с помощью собственной инвентаризации"
 
 #: src/Glpi/Console/Migration/RacksPluginToCoreCommand.php:535
 #, php-format
@@ -30351,7 +30396,7 @@ msgstr "Работа в процессе..."
 #: resources/.illustrations_translations.php:117
 msgctxt "Icon"
 msgid "World"
-msgstr ""
+msgstr "Мир"
 
 #: src/NetworkPortFiberchannel.php:107
 msgid "World Wide Name"
@@ -30729,7 +30774,7 @@ msgstr "У Вас нет прав входа в систему"
 #: templates/components/form/item_itilobject_item_list.html.twig
 #, php-format
 msgid "You don't have right to see all %s"
-msgstr ""
+msgstr "Вы не имеете права видеть всё %s"
 
 #: src/NotificationTargetUser.php:233
 msgid "You have been made a request to reset your account password."
@@ -30801,6 +30846,8 @@ msgid ""
 "You may use the same placeholder tags as in the payload content and header "
 "values."
 msgstr ""
+"Вы можете использовать те же теги плейсхолдеров, что и в содержимом полезной"
+" нагрузки и значениях заголовков."
 
 #: src/Glpi/Controller/IndexController.php:90
 msgid "You must accept cookies to reach this application"
@@ -30827,14 +30874,16 @@ msgstr "Вы должны определить ориентацию этого"
 #: templates/pages/admin/form/item_has_conditions_modal.html.twig
 msgid "You must delete related conditions before deleting this comment"
 msgstr ""
+"Перед удалением этого комментария вы должны удалить связанные с ним условия"
 
 #: templates/pages/admin/form/item_has_conditions_modal.html.twig
 msgid "You must delete related conditions before deleting this question"
-msgstr ""
+msgstr "Перед удалением этого вопроса необходимо удалить связанные условия"
 
 #: templates/pages/admin/form/item_has_conditions_modal.html.twig
 msgid "You must delete related conditions before deleting this section"
 msgstr ""
+"Перед удалением этого раздела необходимо удалить связанные с ним условия"
 
 #: templates/pages/setup/setup_notifications.html.twig
 msgid "You must enable at least one notification mode."
@@ -30937,7 +30986,7 @@ msgstr "Ваши изменения в процессе"
 
 #: src/Change.php:1295
 msgid "Your changes to validate"
-msgstr ""
+msgstr "Ваши изменения для проверки"
 
 #: front/knowbaseitem_comment.form.php:68
 msgid "Your comment has been added"
@@ -30994,7 +31043,7 @@ msgstr "Ваш пароль истечет через %s."
 
 #: src/Glpi/Marketplace/View.php:460
 msgid "Your plugin here? Contact us."
-msgstr ""
+msgstr "Ваш плагин здесь? Свяжитесь с нами."
 
 #: src/Problem.php:932 src/Problem.php:981
 msgid "Your problems in progress"
@@ -31082,12 +31131,12 @@ msgstr "и/или"
 #: resources/.illustrations_translations.php:5
 msgctxt "Icon"
 msgid "application-altenative"
-msgstr ""
+msgstr "приложение-альтернатива"
 
 #: resources/.illustrations_translations.php:6
 msgctxt "Icon"
 msgid "application-edit"
-msgstr ""
+msgstr "приложение-изменить"
 
 #: src/Item_Rack.php:830
 msgid "asset front side"
@@ -31142,7 +31191,7 @@ msgstr "текущий"
 #: resources/.illustrations_translations.php:49
 msgctxt "Icon"
 msgid "database"
-msgstr ""
+msgstr "база данных"
 
 #: templates/pages/admin/log_viewer.html.twig
 #: templates/pages/admin/logs_list.html.twig
@@ -31168,7 +31217,7 @@ msgstr "не существует"
 #: resources/.illustrations_translations.php:51
 msgctxt "Icon"
 msgid "download"
-msgstr ""
+msgstr "загрузить"
 
 #: src/Glpi/Api/API.php:2189
 msgid "email parameter missing"
@@ -31184,7 +31233,7 @@ msgstr "существует"
 
 #: js/modules/ProgressIndicator.js:179
 msgid "failed"
-msgstr ""
+msgstr "ошибка"
 
 #: templates/pages/admin/log_viewer.html.twig
 #: templates/pages/admin/logs_list.html.twig
@@ -31403,7 +31452,7 @@ msgstr "не под"
 #: resources/.illustrations_translations.php:82
 msgctxt "Icon"
 msgid "notes"
-msgstr ""
+msgstr "заметки"
 
 #: src/Central.php:589
 msgid "notification"
@@ -31466,7 +31515,7 @@ msgstr "предустановленное"
 #: resources/.illustrations_translations.php:86
 msgctxt "Icon"
 msgid "presentation"
-msgstr ""
+msgstr "презентация"
 
 #: templates/layout/parts/saved_searches_list.html.twig
 msgid "private"
@@ -31600,7 +31649,7 @@ msgstr "Использование ресурса initSession с учетным�
 #: resources/.illustrations_translations.php:110
 msgctxt "Icon"
 msgid "user-laptop"
-msgstr ""
+msgstr "пользователь-ноутбук"
 
 #: src/CommonItilObject_Item.php:814
 msgid "version"

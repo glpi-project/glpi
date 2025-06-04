@@ -2263,7 +2263,7 @@ msgstr "Configuración 2FA"
 #: templates/pages/2fa/macros.html.twig
 #, php-format
 msgid "2FA code digit %s of %s"
-msgstr ""
+msgstr "Dígito del código 2FA %s de %s"
 
 #: src/Glpi/Console/Security/DisableTFACommand.php:76
 #, php-format
@@ -2302,7 +2302,7 @@ msgstr "Se requiere 2FA para su cuenta"
 
 #: templates/pages/2fa/macros.html.twig
 msgid "2FA secret"
-msgstr ""
+msgstr "secreto de 2FA"
 
 #: src/User.php:3602
 msgid "2FA status"
@@ -2355,7 +2355,7 @@ msgstr "Un ID para el dispositivo es obligatorio"
 
 #: src/DomainRecord.php:291
 msgid "A domain is required"
-msgstr ""
+msgstr "Se requiere un dominio"
 
 #: src/SavedSearch.php:734
 msgid ""
@@ -3379,7 +3379,7 @@ msgstr "Dirección"
 
 #: templates/components/helpdesk_forms/delegation_alert.html.twig
 msgid "Address to send the notification"
-msgstr ""
+msgstr "Dirección para enviar la notificación"
 
 #: templates/pages/setup/notification/mailing_setting.html.twig
 msgid "Address to use in from for sent emails."
@@ -3974,7 +3974,7 @@ msgstr "Ya existe una entidad con ese nombre en el mismo nivel."
 
 #: templates/pages/2fa/2fa_status.html.twig
 msgid "An error occurred"
-msgstr ""
+msgstr "Se produjo un error"
 
 #: src/Glpi/Console/Cache/ConfigureCommand.php:182
 #, php-format
@@ -4003,7 +4003,7 @@ msgstr ""
 #: templates/components/search/table.html.twig
 #: templates/components/search/display_data.html.twig
 msgid "An error occurred during the search"
-msgstr ""
+msgstr "Se produjo un error durante la búsqueda"
 
 #: src/Update.php:262
 #, php-format
@@ -4047,7 +4047,7 @@ msgstr "Se requiere un evento"
 
 #: src/Glpi/Api/HL/Search.php:112
 msgid "An internal error occurred while trying to fetch the data."
-msgstr ""
+msgstr "Se produjo un error interno al intentar obtener los datos."
 
 #: src/ProjectTaskTeam.php:184
 msgid "An item ID is mandatory"
@@ -4415,7 +4415,7 @@ msgstr "¿Estás seguro de que quieres borrar este archivo?"
 #: js/modules/Dashboard/Dashboard.js:987
 #, javascript-format
 msgid "Are you sure you want to delete the dashboard %s?"
-msgstr ""
+msgstr "¿Estás seguro de que deseas eliminar el panel %s?"
 
 #: templates/pages/admin/log_viewer.html.twig
 #: templates/pages/admin/logs_list.html.twig
@@ -5908,9 +5908,9 @@ msgstr "Número"
 #: src/DeviceCamera.php:42
 msgid "Camera"
 msgid_plural "Cameras"
-msgstr[0] "Camera"
-msgstr[1] "Cameras"
-msgstr[2] "Cameras"
+msgstr[0] "Cámara"
+msgstr[1] "Cámaras"
+msgstr[2] "Cámaras"
 
 #: src/Glpi/Asset/Capacity/IsProjectAssetCapacity.php:58
 msgid "Can be associated to a project"
@@ -6445,7 +6445,7 @@ msgstr "Características"
 #: resources/.illustrations_translations.php:34
 msgctxt "Icon"
 msgid "Chart multiple"
-msgstr ""
+msgstr "Gráfico múltiple"
 
 #: js/modules/Form/WebIconSelector.js:133
 msgctxt "icons"
@@ -6455,12 +6455,12 @@ msgstr "Gráficos"
 #: resources/.illustrations_translations.php:37
 msgctxt "Icon"
 msgid "Chat 1"
-msgstr ""
+msgstr "Charla 1"
 
 #: resources/.illustrations_translations.php:38
 msgctxt "Icon"
 msgid "Chat 2"
-msgstr ""
+msgstr "Charla 2"
 
 #: src/Glpi/Console/Diagnostic/CheckSourceCodeIntegrityCommand.php:72
 msgid "Check GLPI source code file integrity."
@@ -6913,12 +6913,12 @@ msgstr "Nube"
 #: resources/.illustrations_translations.php:41
 msgctxt "Icon"
 msgid "Cloud Network 1"
-msgstr ""
+msgstr "Red en la nube 1"
 
 #: resources/.illustrations_translations.php:42
 msgctxt "Icon"
 msgid "Cloud Network 2"
-msgstr ""
+msgstr "Red en la nube 2"
 
 #: resources/.illustrations_translations.php:40
 msgctxt "Icon"
@@ -7285,11 +7285,12 @@ msgstr "Condición"
 
 #: templates/pages/admin/form/conditional_validation_dropdown.html.twig
 msgid "Conditional validation"
-msgstr ""
+msgstr "Validación condicional"
 
 #: templates/pages/admin/form/conditional_validation_editor.html.twig
 msgid "Conditional validation is not available for this question type."
 msgstr ""
+"La validación condicional no está disponible para este tipo de pregunta."
 
 #: templates/pages/admin/form/conditional_visibility_dropdown.html.twig
 #: templates/pages/admin/form/submit_button_conditional_visibility_dropdown.html.twig
@@ -7349,7 +7350,7 @@ msgstr "Configurar las condiciones de creación"
 #: templates/pages/admin/form/conditional_validation_dropdown.html.twig
 #: templates/pages/admin/form/form_question.html.twig
 msgid "Configure validation"
-msgstr ""
+msgstr "Configurar la validación"
 
 #: templates/pages/admin/form/form_comment.html.twig
 #: templates/pages/admin/form/conditional_visibility_dropdown.html.twig
@@ -9899,7 +9900,7 @@ msgstr "¿Quiere %activate_link ?"
 
 #: templates/components/helpdesk_forms/delegation_alert.html.twig
 msgid "Do you want to be notified of future events of this ticket"
-msgstr ""
+msgstr "Quieres ser notificado de futuros eventos de este caso"
 
 #: templates/install/step1.html.twig src/Glpi/Console/AbstractCommand.php:253
 msgid "Do you want to continue?"
@@ -11111,7 +11112,7 @@ msgstr "Error al ejecutar la acción"
 
 #: src/Dropdown.php:1030
 msgid "Error reading icon directory"
-msgstr ""
+msgstr "Error al leer el directorio de iconos"
 
 #: src/RuleDictionnaryDropdownCollection.php:128
 msgid "Error replaying rules"
@@ -11135,6 +11136,8 @@ msgstr "Error al contactar con el servidor LDAP \"%s\"."
 #, php-format
 msgid "Error while importing question \"%s\" in section \"%s\" and form \"%s\": %s"
 msgstr ""
+"Error al importar la pregunta \"%s\" en la sección \"%s\" y el formulario "
+"\"%s\": %s"
 
 #: src/User.php:898 src/User.php:1134
 msgid "Error: the two passwords do not match"
@@ -11254,13 +11257,13 @@ msgstr "Cada %1$s horas"
 #: src/PendingReason.php:209
 #, php-format
 msgid "Every %s days"
-msgstr ""
+msgstr "Cada %s días"
 
 #: src/PendingReason.php:211 src/PendingReason.php:212
 #: src/PendingReason.php:213
 #, php-format
 msgid "Every %s weeks"
-msgstr ""
+msgstr "Cada %s semanas"
 
 #: src/PendingReason.php:204
 msgid "Every day"
@@ -12575,7 +12578,7 @@ msgstr "Engranaje"
 #: resources/.illustrations_translations.php:59
 msgctxt "Icon"
 msgid "Gear hand"
-msgstr ""
+msgstr "Engranaje"
 
 #: js/modules/Form/WebIconSelector.js:147
 msgctxt "icons"
@@ -12820,12 +12823,12 @@ msgstr "Vista grupal"
 #: resources/.illustrations_translations.php:63
 msgctxt "Icon"
 msgid "Group alternative 1"
-msgstr ""
+msgstr "Grupal alternativa 1"
 
 #: resources/.illustrations_translations.php:64
 msgctxt "Icon"
 msgid "Group alternative 2"
-msgstr ""
+msgstr "Grupal alternativa 2"
 
 #: src/NotificationTargetCommonITILObject.php:2081
 msgid "Group assigned to task"
@@ -12928,7 +12931,7 @@ msgstr "Grupo de usuarios"
 #: resources/.illustrations_translations.php:65
 msgctxt "Icon"
 msgid "Group web"
-msgstr ""
+msgstr "Grupo web"
 
 #: templates/pages/assistance/planning/external_event.html.twig
 #: src/Glpi/Features/PlanningEvent.php:1075
@@ -13020,11 +13023,11 @@ msgstr ""
 
 #: templates/components/helpdesk_forms/delegation_alert.html.twig
 msgid "He doesn't want"
-msgstr ""
+msgstr "Él no quiere"
 
 #: templates/components/helpdesk_forms/delegation_alert.html.twig
 msgid "He wants"
-msgstr ""
+msgstr "Él quiere"
 
 #: templates/pages/admin/form/form_section.html.twig
 #: templates/pages/admin/form/form_editor.html.twig
@@ -13114,7 +13117,7 @@ msgstr "Oculto si..."
 #: resources/.illustrations_translations.php:67
 msgctxt "Icon"
 msgid "Hierarchy"
-msgstr ""
+msgstr "Jerarquía"
 
 #: src/Glpi/Urgency.php:52
 msgid "High"
@@ -13896,7 +13899,7 @@ msgstr "Importando comentarios..."
 
 #: src/Glpi/Form/Migration/FormMigration.php:1166
 msgid "Importing conditions..."
-msgstr ""
+msgstr "Condiciones de importación..."
 
 #: src/Toolbox.php:2107
 msgid "Importing default data…"
@@ -14073,7 +14076,7 @@ msgstr "Cabecera de correo \"En-Respuesta-A\""
 #: resources/.illustrations_translations.php:68
 msgctxt "Icon"
 msgid "Inbox"
-msgstr ""
+msgstr "Bandeja de entrada"
 
 #: templates/pages/admin/entity/assistance.html.twig src/Ticket.php:3308
 #: src/Ticket.php:3326 src/ITILCategory.php:485
@@ -14220,7 +14223,7 @@ msgstr "Inicializando tablas de base de datos y datos predeterminados..."
 
 #: src/Update.php:301 src/Toolbox.php:2147
 msgid "Initializing default rules…"
-msgstr ""
+msgstr "Inicializando reglas predeterminadas…"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Inline (no toolbars)"
@@ -14575,7 +14578,7 @@ msgstr "Identificación inválida"
 
 #: src/Glpi/Form/Condition/ValidationStrategy.php:51
 msgid "Invalid if..."
-msgstr ""
+msgstr "Inválida si..."
 
 #: src/IPNetwork.php:346
 msgid "Invalid input format for the network"
@@ -14957,7 +14960,7 @@ msgstr "El elemento se eliminó en %s"
 
 #: templates/pages/admin/form/item_has_conditions_modal.html.twig
 msgid "Item has conditions and cannot be deleted"
-msgstr ""
+msgstr "El elemento tiene condiciones y no se puede eliminar"
 
 #: src/Glpi/Csv/PlanningCsv.php:74
 msgid "Item id"
@@ -15399,12 +15402,12 @@ msgstr "Últimos %d eventos"
 #: templates/components/printer_graph_buttons.html.twig
 #, php-format
 msgid "Last %s days"
-msgstr ""
+msgstr "Últimos %s días"
 
 #: templates/pages/setup/general/security_setup.html.twig
 #, php-format
 msgid "Last %s passwords"
-msgstr ""
+msgstr "Últimas %s contraseñas"
 
 #: templates/pages/management/database.html.twig
 #: templates/pages/management/databaseinstance.html.twig src/Database.php:205
@@ -16831,7 +16834,7 @@ msgstr "Se excedió el número máximo de archivos"
 #: src/Item_SoftwareLicense.php:302
 #, php-format
 msgid "Maximum number of items reached for license \"%s\"."
-msgstr ""
+msgstr "Se alcanzó el número máximo de artículos para la licencia \"%s\"."
 
 #: templates/pages/setup/ldap/adv_info.html.twig
 msgid "Maximum number of results"
@@ -17039,7 +17042,7 @@ msgstr "Micrófono"
 #: src/Glpi/Console/Migration/RacksPluginToCoreCommand.php:159
 #, php-format
 msgid "Migrate %s plugin data into GLPI core tables"
-msgstr ""
+msgstr "Migrar los datos del complemento %s a las tablas principales de GLPI"
 
 #: src/Glpi/Console/Migration/MyIsamToInnoDbCommand.php:66
 msgid "Migrate MyISAM tables to InnoDB"
@@ -17047,7 +17050,7 @@ msgstr "Migrar tablas MyISAM a InnoDB"
 
 #: src/Glpi/Console/Migration/GenericobjectPluginToCoreCommand.php:53
 msgid "Migrate plugin data into GLPI core tables"
-msgstr ""
+msgstr "Migrar datos del complemento a las tablas principales de GLPI"
 
 #: src/Glpi/Console/Migration/UnsignedKeysCommand.php:66
 msgid "Migrate primary/foreign keys to unsigned integers"
@@ -21896,7 +21899,7 @@ msgstr "Referencias"
 
 #: src/RuleMailCollector.php:90
 msgid "References email header"
-msgstr ""
+msgstr "Referencias del encabezado del correo electrónico"
 
 #: src/Glpi/Marketplace/View.php:462
 msgid "Refresh plugin list"
@@ -23444,7 +23447,7 @@ msgstr "Buscar en tienda GLPI"
 #: resources/.illustrations_translations.php:36
 msgctxt "Icon"
 msgid "Search chart"
-msgstr ""
+msgstr "Gráfico de búsqueda"
 
 #: templates/pages/admin/ldap.group_criteria.html.twig
 msgid "Search criteria for groups"
@@ -23493,7 +23496,7 @@ msgstr "Buscar en la base de conocimientos"
 
 #: src/DisplayPreference.php:864
 msgid "Search option ID"
-msgstr ""
+msgstr "ID de la opción de búsqueda"
 
 #: src/Glpi/Dashboard/Widget.php:261
 msgid "Search result"
@@ -23527,7 +23530,7 @@ msgstr "Resultados de búsqueda solo para elementos localizados"
 #: resources/.illustrations_translations.php:99
 msgctxt "Icon"
 msgid "Search settings"
-msgstr ""
+msgstr "Configuración de búsqueda"
 
 #: templates/pages/setup/ldap/group_config.html.twig
 msgid "Search type"
@@ -23895,7 +23898,7 @@ msgstr "Seleccione el tipo de elemento al cual aplicar esta acción"
 
 #: templates/components/helpdesk_forms/delegation_alert.html.twig
 msgid "Select the user to delegate"
-msgstr ""
+msgstr "Seleccione el usuario a delegar"
 
 #: templates/pages/admin/form/import/step1_index.html.twig
 msgid "Select your file"
@@ -24309,7 +24312,7 @@ msgstr "Configuración"
 #: resources/.illustrations_translations.php:100
 msgctxt "Icon"
 msgid "Shaking hands"
-msgstr ""
+msgstr "Estrechar manos"
 
 #: js/modules/Form/WebIconSelector.js:161
 msgctxt "icons"
@@ -24915,7 +24918,7 @@ msgstr "Deporte"
 #: templates/components/search/controls.html.twig
 #, php-format
 msgid "Spreadsheet (%s)"
-msgstr ""
+msgstr "Hoja de cálculo (%s)"
 
 #: src/Glpi/Dashboard/Widget.php:203
 msgid "Stacked bars"
@@ -25208,7 +25211,7 @@ msgstr "Enviar"
 
 #: templates/pages/admin/form/submit_button_conditional_visibility_dropdown.html.twig
 msgid "Submit button visibility"
-msgstr ""
+msgstr "Visibilidad del botón Enviar"
 
 #: js/modules/Search/Table.js:71
 msgid "Submit current search before saving it"
@@ -25926,6 +25929,8 @@ msgid ""
 "The \"%s\" destination field configuration of the form \"%s\" cannot be "
 "imported : %s"
 msgstr ""
+"La configuración del campo de destino \"%s\" del formulario \"%s\" no se "
+"puede importar: %s"
 
 #: src/Glpi/Form/Migration/FormMigration.php:1076
 #, php-format
@@ -26157,6 +26162,7 @@ msgid ""
 "The dragged event is a recurring event. Do you want to move the serie or "
 "instance?"
 msgstr ""
+"El evento arrastrado es recurrente. ¿Quieres mover la serie o la instancia?"
 
 #: templates/pages/admin/rules/engine_summary.html.twig
 msgid "The engine passes the result of each rule to the next matching rule."
@@ -26442,7 +26448,7 @@ msgstr ""
 
 #: src/Glpi/CustomObject/AbstractDefinition.php:396
 msgid "The system name is a reserved name."
-msgstr ""
+msgstr "El nombre del sistema es un nombre reservado."
 
 #: src/Glpi/CustomObject/AbstractDefinition.php:373
 msgid "The system name is mandatory."
@@ -26521,57 +26527,57 @@ msgstr "El usuario no está activo."
 #: src/Glpi/Form/Condition/ValueOperator.php:118
 #: src/Glpi/Form/Condition/ValueOperator.php:122
 msgid "The value is not valid"
-msgstr ""
+msgstr "El valor no es válido"
 
 #: src/Glpi/Form/Condition/ValueOperator.php:100
 #, php-format
 msgid "The value must be greater than %s"
-msgstr ""
+msgstr "El valor debe ser mayor que %s"
 
 #: src/Glpi/Form/Condition/ValueOperator.php:101
 #, php-format
 msgid "The value must be greater than or equal to %s"
-msgstr ""
+msgstr "El valor debe ser mayor o igual a %s"
 
 #: src/Glpi/Form/Condition/ValueOperator.php:102
 #, php-format
 msgid "The value must be less than %s"
-msgstr ""
+msgstr "El valor debe ser menor que %s"
 
 #: src/Glpi/Form/Condition/ValueOperator.php:103
 #, php-format
 msgid "The value must be less than or equal to %s"
-msgstr ""
+msgstr "El valor debe ser menor o igual a %s"
 
 #: src/Glpi/Form/Condition/ValueOperator.php:104
 #: src/Glpi/Form/Condition/ValueOperator.php:116
 msgid "The value must match the requested format"
-msgstr ""
+msgstr "El valor debe coincidir con el formato solicitado"
 
 #: src/Glpi/Form/Condition/ValueOperator.php:111
 #, php-format
 msgid "The value must not be greater than %s"
-msgstr ""
+msgstr "El valor no debe ser mayor que %s"
 
 #: src/Glpi/Form/Condition/ValueOperator.php:112
 #, php-format
 msgid "The value must not be greater than or equal to %s"
-msgstr ""
+msgstr "El valor no debe ser mayor o igual a %s"
 
 #: src/Glpi/Form/Condition/ValueOperator.php:113
 #, php-format
 msgid "The value must not be less than %s"
-msgstr ""
+msgstr "El valor no debe ser menor a %s"
 
 #: src/Glpi/Form/Condition/ValueOperator.php:114
 #, php-format
 msgid "The value must not be less than or equal to %s"
-msgstr ""
+msgstr "El valor no debe ser menor o igual a %s"
 
 #: src/Glpi/Form/Condition/ValueOperator.php:105
 #: src/Glpi/Form/Condition/ValueOperator.php:115
 msgid "The value must not match the requested format"
-msgstr ""
+msgstr "El valor no debe coincidir con el formato solicitado"
 
 #: src/Glpi/Kernel/Listener/RequestListener/SessionCheckCookieListener.php:72
 msgid ""
@@ -26702,6 +26708,7 @@ msgstr "Esta categoría contiene "
 #: templates/pages/admin/form/item_has_conditions_modal.html.twig
 msgid "This comment is used in conditions of other form elements"
 msgstr ""
+"Este comentario se utiliza en condiciones de otros elementos de formulario"
 
 #: templates/components/itilobject/timeline/timeline_item_header.html.twig
 msgid "This entry is \"internal\" (visible only to technicians)"
@@ -26717,7 +26724,7 @@ msgstr ""
 
 #: src/Glpi/Form/AnswersHandler/AnswersHandler.php:111
 msgid "This field is mandatory"
-msgstr ""
+msgstr "Este campo es obligatorio"
 
 #: src/Glpi/Form/AccessControl/ControlType/DirectAccess.php:87
 msgid ""
@@ -26874,10 +26881,12 @@ msgstr "Este perfil es el último con derechos de escritura en perfiles"
 #: templates/pages/admin/form/item_has_conditions_modal.html.twig
 msgid "This question is used in conditions of other form elements"
 msgstr ""
+"Esta pregunta se utiliza en condiciones de otros elementos de formulario"
 
 #: templates/pages/admin/form/item_has_conditions_modal.html.twig
 msgid "This section is used in conditions of other form elements"
 msgstr ""
+"Esta sección se utiliza en condiciones de otros elementos de formulario"
 
 #: templates/components/itilobject/itiltemplate.html.twig
 msgid ""
@@ -26890,7 +26899,7 @@ msgstr ""
 #: templates/components/helpdesk_forms/delegation_alert.html.twig
 #, php-format
 msgid "This ticket is for %1$s"
-msgstr ""
+msgstr "Este caso es para %1$s"
 
 #: templates/components/helpdesk_forms/delegation_alert.html.twig
 #, php-format
@@ -26898,6 +26907,8 @@ msgid ""
 "This ticket is for %1$s and %2$s to be notified of future events of this "
 "ticket."
 msgstr ""
+"Este caso es para que %1$s y %2$s sean notificados de futuros eventos de "
+"este caso."
 
 #: src/Plugin.php:2850
 msgid "This will only affect plugins already enabled"
@@ -28339,7 +28350,7 @@ msgstr "Ilimitado"
 #: templates/components/itilobject/linked_itilobjects.html.twig
 msgctxt "button"
 msgid "Unlink"
-msgstr ""
+msgstr "Desconectar"
 
 #: src/CommonITILObject.php:4148
 msgctxt "button"
@@ -28436,7 +28447,7 @@ msgstr "Hasta"
 
 #: src/Glpi/Form/Comment.php:192
 msgid "Untitled comment"
-msgstr ""
+msgstr "Comentario sin título"
 
 #: front/form/form.form.php:51
 msgid "Untitled form"
@@ -28687,12 +28698,12 @@ msgstr "Actualización a la versión %s completada."
 #: templates/components/plugin_update_modal.html.twig
 #, php-format
 msgid "Update to version %s?"
-msgstr ""
+msgstr "¿Actualizar a la versión %s?"
 
 #: templates/components/plugin_update_modal.html.twig
 msgctxt "button"
 msgid "Update?"
-msgstr ""
+msgstr "¿Actualizar?"
 
 #: src/Glpi/Console/Migration/AppliancesPluginToCoreCommand.php:319
 msgid "Updating GLPI itemtypes..."
@@ -28796,7 +28807,7 @@ msgstr "Utilice \"común\" si varios inquilinos comparten su aplicación."
 
 #: templates/pages/setup/webhook/webhook_security.html.twig
 msgid "Use CRA Challenge?"
-msgstr ""
+msgstr "¿Utilizar desafío CRA?"
 
 #: templates/pages/setup/ldap/group_config.html.twig
 msgid "Use DN in the search"
@@ -29220,7 +29231,7 @@ msgstr ""
 
 #: src/Glpi/Form/Condition/ValidationStrategy.php:50
 msgid "Valid if..."
-msgstr ""
+msgstr "Válido si..."
 
 #: src/Item_SoftwareVersion.php:1102
 msgid "Valid license"
@@ -29879,7 +29890,7 @@ msgstr ""
 #: resources/.illustrations_translations.php:115
 msgctxt "Icon"
 msgid "Webinar"
-msgstr ""
+msgstr "Seminario web"
 
 #: templates/pages/admin/entity/address.html.twig
 #: templates/generic_show_form.html.twig src/Contact_Supplier.php:180
@@ -30074,7 +30085,7 @@ msgstr "Trabajo en progreso..."
 #: resources/.illustrations_translations.php:117
 msgctxt "Icon"
 msgid "World"
-msgstr ""
+msgstr "Mundo"
 
 #: src/NetworkPortFiberchannel.php:107
 msgid "World Wide Name"
@@ -30554,14 +30565,18 @@ msgstr "Debes definir una orientación para este artículo"
 #: templates/pages/admin/form/item_has_conditions_modal.html.twig
 msgid "You must delete related conditions before deleting this comment"
 msgstr ""
+"Debes eliminar las condiciones relacionadas antes de eliminar este "
+"comentario"
 
 #: templates/pages/admin/form/item_has_conditions_modal.html.twig
 msgid "You must delete related conditions before deleting this question"
 msgstr ""
+"Debes eliminar las condiciones relacionadas antes de eliminar esta pregunta"
 
 #: templates/pages/admin/form/item_has_conditions_modal.html.twig
 msgid "You must delete related conditions before deleting this section"
 msgstr ""
+"Debe eliminar las condiciones relacionadas antes de eliminar esta sección"
 
 #: templates/pages/setup/setup_notifications.html.twig
 msgid "You must enable at least one notification mode."
@@ -30662,7 +30677,7 @@ msgstr "Sus cambios en curso"
 
 #: src/Change.php:1295
 msgid "Your changes to validate"
-msgstr ""
+msgstr "Sus cambios para validar"
 
 #: front/knowbaseitem_comment.form.php:68
 msgid "Your comment has been added"
@@ -30719,7 +30734,7 @@ msgstr "Su contraseña caducará el %s."
 
 #: src/Glpi/Marketplace/View.php:460
 msgid "Your plugin here? Contact us."
-msgstr ""
+msgstr "¿Tu complemento está aquí? Contáctanos."
 
 #: src/Problem.php:932 src/Problem.php:981
 msgid "Your problems in progress"

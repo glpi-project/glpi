@@ -8,10 +8,10 @@
 # Z K, 2022
 # Emil Yakimov <yakimov@engineer.bg>, 2024
 # DOMBRE Julien <moyo@indepnet.net>, 2024
-# Zornitsa Koleva <zkoleva_@abv.bg>, 2025
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2025
 # Yoan Bojilov <admin@videnov.bg>, 2025
 # Nikolay Zaynelov <mravunko@yahoo.com>, 2025
+# Zornitsa Koleva <zkoleva_@abv.bg>, 2025
 # 
 #, fuzzy
 msgid ""
@@ -20,7 +20,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-05-22 13:32+0200\n"
 "PO-Revision-Date: 2022-09-16 06:53+0000\n"
-"Last-Translator: Nikolay Zaynelov <mravunko@yahoo.com>, 2025\n"
+"Last-Translator: Zornitsa Koleva <zkoleva_@abv.bg>, 2025\n"
 "Language-Team: Bulgarian (Bulgaria) (https://app.transifex.com/glpi/teams/1637/bg_BG/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -56,7 +56,7 @@ msgstr "\"session.auto_start\" трябва да бъде изключен."
 #: src/Glpi/Asset/Capacity/HasDevicesCapacity.php:83
 #, php-format
 msgid "%1$d components attached to %2$d assets"
-msgstr ""
+msgstr "%1$d компонента прикачени към %2$d актива"
 
 #: src/DatabaseInstance.php:467
 #, php-format
@@ -1020,8 +1020,8 @@ msgstr ""
 #, php-format
 msgid "%d element"
 msgid_plural "%d elements"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d елемент"
+msgstr[1] "%d елемента"
 
 #: src/PlanningRecall.php:308 src/Dropdown.php:2570 src/Entity.php:2535
 #: src/CommonITILRecurrent.php:256
@@ -1394,7 +1394,7 @@ msgstr "%s свързва елемент с лиценз"
 #: templates/pages/assistance/planning/single_filter.html.twig
 #, php-format
 msgid "%s color"
-msgstr ""
+msgstr "%s цвят"
 
 #. TRANS: %s is the user login
 #: front/asset/asset_peripheralasset.form.php:59
@@ -1405,7 +1405,7 @@ msgstr "%s свързва елемент"
 #: src/CommonITILRecurrent.php:636
 #, php-format
 msgid "%s creation failed (check mandatory fields)"
-msgstr "Създаването на %s е неуспешно (проверете задължителните полета)"
+msgstr "Създаването на %s е неуспешно( проверете задължителните полета)"
 
 #: src/CommonITILRecurrent.php:642
 #, php-format
@@ -1854,8 +1854,8 @@ msgstr "%s опитва да използва нестандартен път."
 #, php-format
 msgid "%s type"
 msgid_plural "%s types"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%s тип"
+msgstr[1] "%s типа"
 
 #. TRANS: %s is the user login
 #: front/commonitiltask.form.php:119
@@ -2013,7 +2013,7 @@ msgstr[0] "%s години"
 #: js/common.js:1177
 #, javascript-format
 msgid "%s years ago"
-msgstr ""
+msgstr "преди %s "
 
 #: src/Dropdown.php:2074
 #, php-format
@@ -2023,7 +2023,7 @@ msgstr "%s%%"
 #: templates/components/pager.html.twig
 #, php-format
 msgid "%s-%s of %s"
-msgstr ""
+msgstr "%s-%s от %s"
 
 #: templates/components/pager.html.twig
 #, php-format
@@ -2237,7 +2237,7 @@ msgstr ""
 
 #: src/User.php:3602
 msgid "2FA status"
-msgstr ""
+msgstr "2FA статус"
 
 #: src/Glpi/Console/Ldap/SynchronizeUsersCommand.php:146
 msgid "3) Actions on the user's authorizations:"
@@ -2449,7 +2449,7 @@ msgstr "API токън"
 
 #: templates/components/search/query_builder/sort/criteria.html.twig
 msgid "ASC"
-msgstr ""
+msgstr "ASC"
 
 #: src/DevicePowerSupply.php:52 src/DevicePowerSupply.php:75
 msgid "ATX"
@@ -2761,7 +2761,7 @@ msgstr ""
 #: templates/components/form/link_existing_or_new.html.twig
 #, php-format
 msgid "Add a %s"
-msgstr ""
+msgstr "Добави %s"
 
 #: templates/pages/assistance/planning/filters.html.twig js/planning.js:721
 msgid "Add a calendar"
@@ -2863,12 +2863,12 @@ msgstr "Добавяне на лиценз"
 
 #: templates/pages/management/item_line.html.twig
 msgid "Add a line"
-msgstr ""
+msgstr "Добави линия"
 
 #: src/Line.php:259
 msgctxt "button"
 msgid "Add a line"
-msgstr ""
+msgstr "Добави линия"
 
 #: src/Log.php:1275 phpunit/functional/LogTest.php:478
 msgid "Add a link with an item"
@@ -2928,7 +2928,7 @@ msgstr "Добавете нов щепсел"
 
 #: src/NetworkEquipmentModelStencil.php:59
 msgid "Add a new port"
-msgstr ""
+msgstr "Добави нов порт"
 
 #: src/Problem.php:422 src/Ticket.php:2173 src/Problem_Ticket.php:256
 #: src/Change_Ticket.php:297
@@ -4406,7 +4406,7 @@ msgstr[1] "Активи"
 
 #: templates/components/form/pictures.html.twig
 msgid "Asset URL"
-msgstr ""
+msgstr "Актив URL"
 
 #: src/Glpi/Asset/AssetDefinition.php:89
 msgid "Asset definition"
@@ -4426,11 +4426,11 @@ msgstr ""
 #: src/Glpi/CustomObject/AbstractDefinition.php:319
 #: src/Glpi/CustomObject/AbstractDefinition.php:352
 msgid "Asset name"
-msgstr ""
+msgstr "Име на актива"
 
 #: templates/pages/admin/customobjects/translations.html.twig
 msgid "Asset name / Field"
-msgstr ""
+msgstr "Име на актива / Поле"
 
 #: src/Webhook.php:437 src/Glpi/Form/QuestionType/QuestionTypeItem.php:113
 #: install/migrations/update_9.4.x_to_9.5.0/dashboards.php:177
@@ -7988,8 +7988,8 @@ msgstr ""
 #: src/Glpi/Asset/CustomFieldDefinition.php:54 src/Glpi/Asset/Asset.php:313
 msgid "Custom field"
 msgid_plural "Custom fields"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Персонализирано поле"
+msgstr[1] "Персонализирани полета"
 
 #: src/Webhook.php:760
 msgid "Custom header"
@@ -8105,7 +8105,7 @@ msgstr "Позиция на центъра за данни"
 #: resources/.illustrations_translations.php:48
 msgctxt "Icon"
 msgid "Data export"
-msgstr ""
+msgstr "Експорт на данни"
 
 #. TRANS: %s is the table or item to migrate
 #: src/Migration.php:948 install/migrations/update_0.90.x_to_9.1.0.php:853
@@ -10843,6 +10843,8 @@ msgid ""
 "Even if GLPI still supports this PHP version, an upgrade to a more recent "
 "PHP version is recommended."
 msgstr ""
+"Дори ако GLPI все още поддържа тази версия на PHP, се препоръчва надграждане"
+" до по-нова PHP версия."
 
 #: templates/pages/setup/webhook/webhook.html.twig
 #: templates/pages/setup/webhook/webhooktest.html.twig
@@ -11340,7 +11342,7 @@ msgstr "Полето тип елемент е задължително"
 
 #: src/Lockedfield.php:146
 msgid "Field name"
-msgstr ""
+msgstr "Име на полето"
 
 #: src/SsoVariable.php:50
 msgid "Field storage of the login in the HTTP request"
@@ -14001,7 +14003,7 @@ msgstr ""
 
 #: src/DomainRecordType.php:295 src/DomainRecordType.php:301
 msgid "Invalid JSON used to define fields."
-msgstr ""
+msgstr "Използваният JSON за дефиниране на полетата е невалиден."
 
 #: src/Glpi/Api/HL/RSQL/Parser.php:69
 #, php-format
@@ -17254,7 +17256,7 @@ msgstr ""
 
 #: templates/pages/admin/assetdefinition/fields_display.html.twig
 msgid "New field"
-msgstr ""
+msgstr "Ново поле"
 
 #: src/NotificationTargetCommonITILObject.php:141
 msgid "New followup"
@@ -27057,7 +27059,7 @@ msgstr "Невъзможно импортиране на помещение \"%s
 #: src/Glpi/Migration/GenericobjectPluginMigration.php:1244
 #, php-format
 msgid "Unable to import the \"%s\" field."
-msgstr ""
+msgstr "Импортването на поле \"%s\" е невъзможно."
 
 #: src/Glpi/Console/Ldap/SynchronizeUsersCommand.php:295
 msgid "Unable to load LDAP server information."

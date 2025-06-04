@@ -10,9 +10,9 @@
 # Trans City, 2025
 # Koshikawa Yasunori <y-koshikawa@skyhobbit.co.jp>, 2025
 # Cédric Anne, 2025
-# INOUE Daisuke, 2025
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2025
 # 青海K, 2025
+# INOUE Daisuke, 2025
 # 
 #, fuzzy
 msgid ""
@@ -21,7 +21,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-05-22 13:32+0200\n"
 "PO-Revision-Date: 2022-09-16 06:53+0000\n"
-"Last-Translator: 青海K, 2025\n"
+"Last-Translator: INOUE Daisuke, 2025\n"
 "Language-Team: Japanese (Japan) (https://app.transifex.com/glpi/teams/1637/ja_JP/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -2173,7 +2173,7 @@ msgstr "2 要素認証設定"
 #: templates/pages/2fa/macros.html.twig
 #, php-format
 msgid "2FA code digit %s of %s"
-msgstr ""
+msgstr "2 要素認証コードの数字 %s / %s"
 
 #: src/Glpi/Console/Security/DisableTFACommand.php:76
 #, php-format
@@ -2210,7 +2210,7 @@ msgstr "あなたのアカウントでは 2 要素認証が必要です。"
 
 #: templates/pages/2fa/macros.html.twig
 msgid "2FA secret"
-msgstr ""
+msgstr "2 要素認証シークレット"
 
 #: src/User.php:3602
 msgid "2FA status"
@@ -2259,7 +2259,7 @@ msgstr "デバイス IDは必須です"
 
 #: src/DomainRecord.php:291
 msgid "A domain is required"
-msgstr ""
+msgstr "ドメインが必要です"
 
 #: src/SavedSearch.php:734
 msgid ""
@@ -3263,7 +3263,7 @@ msgstr "住所"
 
 #: templates/components/helpdesk_forms/delegation_alert.html.twig
 msgid "Address to send the notification"
-msgstr ""
+msgstr "通知の送信先アドレス"
 
 #: templates/pages/setup/notification/mailing_setting.html.twig
 msgid "Address to use in from for sent emails."
@@ -3843,7 +3843,7 @@ msgstr "その名前のエンティティーが、同じレベルに既に存在
 
 #: templates/pages/2fa/2fa_status.html.twig
 msgid "An error occurred"
-msgstr ""
+msgstr "エラー発生"
 
 #: src/Glpi/Console/Cache/ConfigureCommand.php:182
 #, php-format
@@ -3868,7 +3868,7 @@ msgstr "データベースの更新でエラーが発生しました。エラー
 #: templates/components/search/table.html.twig
 #: templates/components/search/display_data.html.twig
 msgid "An error occurred during the search"
-msgstr ""
+msgstr "検索でエラーが発生"
 
 #: src/Update.php:262
 #, php-format
@@ -3912,7 +3912,7 @@ msgstr "イベントが必要です"
 
 #: src/Glpi/Api/HL/Search.php:112
 msgid "An internal error occurred while trying to fetch the data."
-msgstr ""
+msgstr "データ取得を試行中に内部エラーが発生しました。"
 
 #: src/ProjectTaskTeam.php:184
 msgid "An item ID is mandatory"
@@ -4259,7 +4259,7 @@ msgstr "このファイルを初期化します。よろしいですか？"
 #: js/modules/Dashboard/Dashboard.js:987
 #, javascript-format
 msgid "Are you sure you want to delete the dashboard %s?"
-msgstr ""
+msgstr "%s ダッシュボードを削除します。よろしいですか？"
 
 #: templates/pages/admin/log_viewer.html.twig
 #: templates/pages/admin/logs_list.html.twig
@@ -6173,7 +6173,7 @@ msgstr "特性"
 #: resources/.illustrations_translations.php:34
 msgctxt "Icon"
 msgid "Chart multiple"
-msgstr ""
+msgstr "複数グラフ"
 
 #: js/modules/Form/WebIconSelector.js:133
 msgctxt "icons"
@@ -6183,12 +6183,12 @@ msgstr "グラフ"
 #: resources/.illustrations_translations.php:37
 msgctxt "Icon"
 msgid "Chat 1"
-msgstr ""
+msgstr "チャット 1"
 
 #: resources/.illustrations_translations.php:38
 msgctxt "Icon"
 msgid "Chat 2"
-msgstr ""
+msgstr "チャット 2"
 
 #: src/Glpi/Console/Diagnostic/CheckSourceCodeIntegrityCommand.php:72
 msgid "Check GLPI source code file integrity."
@@ -6615,12 +6615,12 @@ msgstr "クラウド"
 #: resources/.illustrations_translations.php:41
 msgctxt "Icon"
 msgid "Cloud Network 1"
-msgstr ""
+msgstr "クラウドネットワーク 1"
 
 #: resources/.illustrations_translations.php:42
 msgctxt "Icon"
 msgid "Cloud Network 2"
-msgstr ""
+msgstr "クラウドネットワーク 2"
 
 #: resources/.illustrations_translations.php:40
 msgctxt "Icon"
@@ -6964,11 +6964,11 @@ msgstr "状態"
 
 #: templates/pages/admin/form/conditional_validation_dropdown.html.twig
 msgid "Conditional validation"
-msgstr ""
+msgstr "条件による検証"
 
 #: templates/pages/admin/form/conditional_validation_editor.html.twig
 msgid "Conditional validation is not available for this question type."
-msgstr ""
+msgstr "条件による検証は、この質問型では無効です"
 
 #: templates/pages/admin/form/conditional_visibility_dropdown.html.twig
 #: templates/pages/admin/form/submit_button_conditional_visibility_dropdown.html.twig
@@ -7028,7 +7028,7 @@ msgstr "作成条件の設定"
 #: templates/pages/admin/form/conditional_validation_dropdown.html.twig
 #: templates/pages/admin/form/form_question.html.twig
 msgid "Configure validation"
-msgstr ""
+msgstr "設定検証"
 
 #: templates/pages/admin/form/form_comment.html.twig
 #: templates/pages/admin/form/conditional_visibility_dropdown.html.twig
@@ -9445,7 +9445,7 @@ msgstr "%activate_link しますか？"
 
 #: templates/components/helpdesk_forms/delegation_alert.html.twig
 msgid "Do you want to be notified of future events of this ticket"
-msgstr ""
+msgstr "今後このチケットのイベントについて通知を受けますか？"
 
 #: templates/install/step1.html.twig src/Glpi/Console/AbstractCommand.php:253
 msgid "Do you want to continue?"
@@ -10580,7 +10580,7 @@ msgstr "操作の実行でエラー"
 
 #: src/Dropdown.php:1030
 msgid "Error reading icon directory"
-msgstr ""
+msgstr "アイコン ディレクトリーの読み取りでエラー"
 
 #: src/RuleDictionnaryDropdownCollection.php:128
 msgid "Error replaying rules"
@@ -10603,7 +10603,7 @@ msgstr "LDAPサーバー\"%s\"への問合せでエラーが発生しました�
 #: src/Glpi/Form/Migration/FormMigration.php:568
 #, php-format
 msgid "Error while importing question \"%s\" in section \"%s\" and form \"%s\": %s"
-msgstr ""
+msgstr "質問「%s」（「%s」セクション / 「%s」フォーム）のインポートでエラー : %s"
 
 #: src/User.php:898 src/User.php:1134
 msgid "Error: the two passwords do not match"
@@ -10713,13 +10713,13 @@ msgstr "%1$s 時間ごと"
 #: src/PendingReason.php:209
 #, php-format
 msgid "Every %s days"
-msgstr ""
+msgstr "%s 日ごと"
 
 #: src/PendingReason.php:211 src/PendingReason.php:212
 #: src/PendingReason.php:213
 #, php-format
 msgid "Every %s weeks"
-msgstr ""
+msgstr "%s 週間ごと"
 
 #: src/PendingReason.php:204
 msgid "Every day"
@@ -11967,7 +11967,7 @@ msgstr "歯車"
 #: resources/.illustrations_translations.php:59
 msgctxt "Icon"
 msgid "Gear hand"
-msgstr ""
+msgstr "ギヤと手"
 
 #: js/modules/Form/WebIconSelector.js:147
 msgctxt "icons"
@@ -12198,12 +12198,12 @@ msgstr "グループ表示"
 #: resources/.illustrations_translations.php:63
 msgctxt "Icon"
 msgid "Group alternative 1"
-msgstr ""
+msgstr "別グループ 1"
 
 #: resources/.illustrations_translations.php:64
 msgctxt "Icon"
 msgid "Group alternative 2"
-msgstr ""
+msgstr "別グループ 2"
 
 #: src/NotificationTargetCommonITILObject.php:2081
 msgid "Group assigned to task"
@@ -12304,7 +12304,7 @@ msgstr "グループ ユーザー"
 #: resources/.illustrations_translations.php:65
 msgctxt "Icon"
 msgid "Group web"
-msgstr ""
+msgstr "グループ & Web"
 
 #: templates/pages/assistance/planning/external_event.html.twig
 #: src/Glpi/Features/PlanningEvent.php:1075
@@ -12394,11 +12394,11 @@ msgstr ""
 
 #: templates/components/helpdesk_forms/delegation_alert.html.twig
 msgid "He doesn't want"
-msgstr ""
+msgstr "希望しない"
 
 #: templates/components/helpdesk_forms/delegation_alert.html.twig
 msgid "He wants"
-msgstr ""
+msgstr "希望する"
 
 #: templates/pages/admin/form/form_section.html.twig
 #: templates/pages/admin/form/form_editor.html.twig
@@ -12486,7 +12486,7 @@ msgstr "以下の条件で非表示 : "
 #: resources/.illustrations_translations.php:67
 msgctxt "Icon"
 msgid "Hierarchy"
-msgstr ""
+msgstr "階層"
 
 #: src/Glpi/Urgency.php:52
 msgid "High"
@@ -13220,7 +13220,7 @@ msgstr "コメントをインポートしています..."
 
 #: src/Glpi/Form/Migration/FormMigration.php:1166
 msgid "Importing conditions..."
-msgstr ""
+msgstr "条件をインポートしています..."
 
 #: src/Toolbox.php:2107
 msgid "Importing default data…"
@@ -13395,7 +13395,7 @@ msgstr "In-Reply-To メールヘッダ"
 #: resources/.illustrations_translations.php:68
 msgctxt "Icon"
 msgid "Inbox"
-msgstr ""
+msgstr "受信箱"
 
 #: templates/pages/admin/entity/assistance.html.twig src/Ticket.php:3308
 #: src/Ticket.php:3326 src/ITILCategory.php:485
@@ -13533,7 +13533,7 @@ msgstr "データベースのテーブルとデフォルトデータを初期化
 
 #: src/Update.php:301 src/Toolbox.php:2147
 msgid "Initializing default rules…"
-msgstr ""
+msgstr "標準ルールを初期化しています..."
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Inline (no toolbars)"
@@ -13878,7 +13878,7 @@ msgstr "無効な ID"
 
 #: src/Glpi/Form/Condition/ValidationStrategy.php:51
 msgid "Invalid if..."
-msgstr ""
+msgstr "無効条件 : "
 
 #: src/IPNetwork.php:346
 msgid "Invalid input format for the network"
@@ -14248,7 +14248,7 @@ msgstr "%s にアイテムを削除"
 
 #: templates/pages/admin/form/item_has_conditions_modal.html.twig
 msgid "Item has conditions and cannot be deleted"
-msgstr ""
+msgstr "アイテムに条件が残っているため、削除できません"
 
 #: src/Glpi/Csv/PlanningCsv.php:74
 msgid "Item id"
@@ -14660,12 +14660,12 @@ msgstr "最新の %d 個のイベント"
 #: templates/components/printer_graph_buttons.html.twig
 #, php-format
 msgid "Last %s days"
-msgstr ""
+msgstr "過去 %s 日間"
 
 #: templates/pages/setup/general/security_setup.html.twig
 #, php-format
 msgid "Last %s passwords"
-msgstr ""
+msgstr "過去 %s つのパスワード"
 
 #: templates/pages/management/database.html.twig
 #: templates/pages/management/databaseinstance.html.twig src/Database.php:205
@@ -16009,7 +16009,7 @@ msgstr "ファイルの最大数を超えました"
 #: src/Item_SoftwareLicense.php:302
 #, php-format
 msgid "Maximum number of items reached for license \"%s\"."
-msgstr ""
+msgstr "「%s」ライセンスの最大アイテム数に達しました。"
 
 #: templates/pages/setup/ldap/adv_info.html.twig
 msgid "Maximum number of results"
@@ -16213,7 +16213,7 @@ msgstr "マイク"
 #: src/Glpi/Console/Migration/RacksPluginToCoreCommand.php:159
 #, php-format
 msgid "Migrate %s plugin data into GLPI core tables"
-msgstr ""
+msgstr "%s プラグインのデータを GLPI コアテーブルへ移行する"
 
 #: src/Glpi/Console/Migration/MyIsamToInnoDbCommand.php:66
 msgid "Migrate MyISAM tables to InnoDB"
@@ -16221,7 +16221,7 @@ msgstr "MyISAMテーブルをInnoDBに移行する"
 
 #: src/Glpi/Console/Migration/GenericobjectPluginToCoreCommand.php:53
 msgid "Migrate plugin data into GLPI core tables"
-msgstr ""
+msgstr "プラグインのデータを GLPI コアテーブルへ移行する"
 
 #: src/Glpi/Console/Migration/UnsignedKeysCommand.php:66
 msgid "Migrate primary/foreign keys to unsigned integers"
@@ -20800,7 +20800,7 @@ msgstr "参照"
 
 #: src/RuleMailCollector.php:90
 msgid "References email header"
-msgstr ""
+msgstr "メールヘッダーの参照"
 
 #: src/Glpi/Marketplace/View.php:462
 msgid "Refresh plugin list"
@@ -22292,7 +22292,7 @@ msgstr "GLPI マーケットプレースを検索"
 #: resources/.illustrations_translations.php:36
 msgctxt "Icon"
 msgid "Search chart"
-msgstr ""
+msgstr "グラフ検索"
 
 #: templates/pages/admin/ldap.group_criteria.html.twig
 msgid "Search criteria for groups"
@@ -22341,7 +22341,7 @@ msgstr "ナレッジベースを検索"
 
 #: src/DisplayPreference.php:864
 msgid "Search option ID"
-msgstr ""
+msgstr "検索設定 ID"
 
 #: src/Glpi/Dashboard/Widget.php:261
 msgid "Search result"
@@ -22375,7 +22375,7 @@ msgstr "ローカライズしたアイテムのみ検索"
 #: resources/.illustrations_translations.php:99
 msgctxt "Icon"
 msgid "Search settings"
-msgstr ""
+msgstr "設定の検索"
 
 #: templates/pages/setup/ldap/group_config.html.twig
 msgid "Search type"
@@ -22737,7 +22737,7 @@ msgstr "このアクションに適用するアイテムの型を選んでくだ
 
 #: templates/components/helpdesk_forms/delegation_alert.html.twig
 msgid "Select the user to delegate"
-msgstr ""
+msgstr "委任するユーザーを選択"
 
 #: templates/pages/admin/form/import/step1_index.html.twig
 msgid "Select your file"
@@ -23128,7 +23128,7 @@ msgstr "システム設定"
 #: resources/.illustrations_translations.php:100
 msgctxt "Icon"
 msgid "Shaking hands"
-msgstr ""
+msgstr "握手"
 
 #: js/modules/Form/WebIconSelector.js:161
 msgctxt "icons"
@@ -23704,7 +23704,7 @@ msgstr "スポーツ"
 #: templates/components/search/controls.html.twig
 #, php-format
 msgid "Spreadsheet (%s)"
-msgstr ""
+msgstr "表計算 (%s)"
 
 #: src/Glpi/Dashboard/Widget.php:203
 msgid "Stacked bars"
@@ -23987,7 +23987,7 @@ msgstr "送信する"
 
 #: templates/pages/admin/form/submit_button_conditional_visibility_dropdown.html.twig
 msgid "Submit button visibility"
-msgstr ""
+msgstr "送信ボタンの表示・非表示"
 
 #: js/modules/Search/Table.js:71
 msgid "Submit current search before saving it"
@@ -24673,7 +24673,7 @@ msgstr "\"%s\" キャッシュ拡張モジュールはインストール済み"
 msgid ""
 "The \"%s\" destination field configuration of the form \"%s\" cannot be "
 "imported : %s"
-msgstr ""
+msgstr "行き先の「%s」フィールド（「%s」フォーム）の設定は、インポートできませんでした : %s"
 
 #: src/Glpi/Form/Migration/FormMigration.php:1076
 #, php-format
@@ -24874,7 +24874,7 @@ msgstr "「汎用オブジェクト」オブジェクト型に関する表示設
 msgid ""
 "The dragged event is a recurring event. Do you want to move the serie or "
 "instance?"
-msgstr ""
+msgstr "ドラッグしたイベントはくり返しのイベントです。一連のイベントを移動しますか？　またはインスタンスを移動しますか？"
 
 #: templates/pages/admin/rules/engine_summary.html.twig
 msgid "The engine passes the result of each rule to the next matching rule."
@@ -25137,7 +25137,7 @@ msgstr "システム名項目は、開発の進行に合わせて、実際に使
 
 #: src/Glpi/CustomObject/AbstractDefinition.php:396
 msgid "The system name is a reserved name."
-msgstr ""
+msgstr "システム名は予約語です。"
 
 #: src/Glpi/CustomObject/AbstractDefinition.php:373
 msgid "The system name is mandatory."
@@ -25208,57 +25208,57 @@ msgstr "ユーザーは有効ではありません。"
 #: src/Glpi/Form/Condition/ValueOperator.php:118
 #: src/Glpi/Form/Condition/ValueOperator.php:122
 msgid "The value is not valid"
-msgstr ""
+msgstr "値が無効です"
 
 #: src/Glpi/Form/Condition/ValueOperator.php:100
 #, php-format
 msgid "The value must be greater than %s"
-msgstr ""
+msgstr "%s より大きい値を入力してください"
 
 #: src/Glpi/Form/Condition/ValueOperator.php:101
 #, php-format
 msgid "The value must be greater than or equal to %s"
-msgstr ""
+msgstr "%s 以上の値を入力してください"
 
 #: src/Glpi/Form/Condition/ValueOperator.php:102
 #, php-format
 msgid "The value must be less than %s"
-msgstr ""
+msgstr "%s より小さい値を入力してください"
 
 #: src/Glpi/Form/Condition/ValueOperator.php:103
 #, php-format
 msgid "The value must be less than or equal to %s"
-msgstr ""
+msgstr "%s 以下の値を入力してください"
 
 #: src/Glpi/Form/Condition/ValueOperator.php:104
 #: src/Glpi/Form/Condition/ValueOperator.php:116
 msgid "The value must match the requested format"
-msgstr ""
+msgstr "指定の形式に沿って、値を入力してください"
 
 #: src/Glpi/Form/Condition/ValueOperator.php:111
 #, php-format
 msgid "The value must not be greater than %s"
-msgstr ""
+msgstr "%s より大きくない値を入力してください"
 
 #: src/Glpi/Form/Condition/ValueOperator.php:112
 #, php-format
 msgid "The value must not be greater than or equal to %s"
-msgstr ""
+msgstr "%s 以上ではない値を入力してください"
 
 #: src/Glpi/Form/Condition/ValueOperator.php:113
 #, php-format
 msgid "The value must not be less than %s"
-msgstr ""
+msgstr "%s より小さくない値を入力してください"
 
 #: src/Glpi/Form/Condition/ValueOperator.php:114
 #, php-format
 msgid "The value must not be less than or equal to %s"
-msgstr ""
+msgstr "%s 以下ではない値を入力してください"
 
 #: src/Glpi/Form/Condition/ValueOperator.php:105
 #: src/Glpi/Form/Condition/ValueOperator.php:115
 msgid "The value must not match the requested format"
-msgstr ""
+msgstr "指定の形式に沿わない値を入力してください"
 
 #: src/Glpi/Kernel/Listener/RequestListener/SessionCheckCookieListener.php:72
 msgid ""
@@ -25370,7 +25370,7 @@ msgstr "カテゴリー内のアイテム数 : "
 
 #: templates/pages/admin/form/item_has_conditions_modal.html.twig
 msgid "This comment is used in conditions of other form elements"
-msgstr ""
+msgstr "このコメントは、別のフォームの要素の条件として利用されています"
 
 #: templates/components/itilobject/timeline/timeline_item_header.html.twig
 msgid "This entry is \"internal\" (visible only to technicians)"
@@ -25384,7 +25384,7 @@ msgstr "この項目は %s の内容を受け付けました。[Ctrl] + [ スペ
 
 #: src/Glpi/Form/AnswersHandler/AnswersHandler.php:111
 msgid "This field is mandatory"
-msgstr ""
+msgstr "この項目は必須です"
 
 #: src/Glpi/Form/AccessControl/ControlType/DirectAccess.php:87
 msgid ""
@@ -25525,11 +25525,11 @@ msgstr "これはプロファイル上で編集権を持つ最後のプロファ
 
 #: templates/pages/admin/form/item_has_conditions_modal.html.twig
 msgid "This question is used in conditions of other form elements"
-msgstr ""
+msgstr "この質問は、別のフォームの要素の条件として利用されています"
 
 #: templates/pages/admin/form/item_has_conditions_modal.html.twig
 msgid "This section is used in conditions of other form elements"
-msgstr ""
+msgstr "このセクションは、別のフォームの要素の条件として利用されています"
 
 #: templates/components/itilobject/itiltemplate.html.twig
 msgid ""
@@ -25540,14 +25540,14 @@ msgstr "このテンプレートの変更は、アイテムに影響を与えま
 #: templates/components/helpdesk_forms/delegation_alert.html.twig
 #, php-format
 msgid "This ticket is for %1$s"
-msgstr ""
+msgstr "このチケットは %1$s 用"
 
 #: templates/components/helpdesk_forms/delegation_alert.html.twig
 #, php-format
 msgid ""
 "This ticket is for %1$s and %2$s to be notified of future events of this "
 "ticket."
-msgstr ""
+msgstr "このチケットは %1$s 用であり、今後このチケットにイベントが発生すると %2$s に通知します"
 
 #: src/Plugin.php:2850
 msgid "This will only affect plugins already enabled"
@@ -26925,7 +26925,7 @@ msgstr "無制限"
 #: templates/components/itilobject/linked_itilobjects.html.twig
 msgctxt "button"
 msgid "Unlink"
-msgstr ""
+msgstr "リンク解除"
 
 #: src/CommonITILObject.php:4148
 msgctxt "button"
@@ -27018,7 +27018,7 @@ msgstr "まで"
 
 #: src/Glpi/Form/Comment.php:192
 msgid "Untitled comment"
-msgstr ""
+msgstr "無題のコメント"
 
 #: front/form/form.form.php:51
 msgid "Untitled form"
@@ -27264,12 +27264,12 @@ msgstr "バージョン : %s への更新が完了しました。"
 #: templates/components/plugin_update_modal.html.twig
 #, php-format
 msgid "Update to version %s?"
-msgstr ""
+msgstr "%s バージョンに更新しますか？"
 
 #: templates/components/plugin_update_modal.html.twig
 msgctxt "button"
 msgid "Update?"
-msgstr ""
+msgstr "更新？"
 
 #: src/Glpi/Console/Migration/AppliancesPluginToCoreCommand.php:319
 msgid "Updating GLPI itemtypes..."
@@ -27371,7 +27371,7 @@ msgstr "アプリケーションを複数のテナントで共有する場合は
 
 #: templates/pages/setup/webhook/webhook_security.html.twig
 msgid "Use CRA Challenge?"
-msgstr ""
+msgstr "CRA チャレンジを利用？"
 
 #: templates/pages/setup/ldap/group_config.html.twig
 msgid "Use DN in the search"
@@ -27767,7 +27767,7 @@ msgstr ""
 
 #: src/Glpi/Form/Condition/ValidationStrategy.php:50
 msgid "Valid if..."
-msgstr ""
+msgstr "有効条件 : "
 
 #: src/Item_SoftwareVersion.php:1102
 msgid "Valid license"
@@ -28388,7 +28388,7 @@ msgstr "Webhook は定義済みのフィルターと一致したアイテムに�
 #: resources/.illustrations_translations.php:115
 msgctxt "Icon"
 msgid "Webinar"
-msgstr ""
+msgstr "ウェビナー"
 
 #: templates/pages/admin/entity/address.html.twig
 #: templates/generic_show_form.html.twig src/Contact_Supplier.php:180
@@ -28565,7 +28565,7 @@ msgstr "作業中…"
 #: resources/.illustrations_translations.php:117
 msgctxt "Icon"
 msgid "World"
-msgstr ""
+msgstr "世界"
 
 #: src/NetworkPortFiberchannel.php:107
 msgid "World Wide Name"
@@ -29003,15 +29003,15 @@ msgstr "このアイテムの向きを定義する必要があります"
 
 #: templates/pages/admin/form/item_has_conditions_modal.html.twig
 msgid "You must delete related conditions before deleting this comment"
-msgstr ""
+msgstr "このコメントを削除する前に、関連する条件を削除しなければなりません。"
 
 #: templates/pages/admin/form/item_has_conditions_modal.html.twig
 msgid "You must delete related conditions before deleting this question"
-msgstr ""
+msgstr "この質問を削除する前に、関連する条件を削除しなければなりません。"
 
 #: templates/pages/admin/form/item_has_conditions_modal.html.twig
 msgid "You must delete related conditions before deleting this section"
-msgstr ""
+msgstr "このセクションを削除する前に、関連する条件を削除しなければなりません。"
 
 #: templates/pages/setup/setup_notifications.html.twig
 msgid "You must enable at least one notification mode."
@@ -29106,7 +29106,7 @@ msgstr "進行中の自分の変更要求"
 
 #: src/Change.php:1295
 msgid "Your changes to validate"
-msgstr ""
+msgstr "自分の検証待ち変更"
 
 #: front/knowbaseitem_comment.form.php:68
 msgid "Your comment has been added"
@@ -29161,7 +29161,7 @@ msgstr "%sにパスワードの有効期限が切れます。"
 
 #: src/Glpi/Marketplace/View.php:460
 msgid "Your plugin here? Contact us."
-msgstr ""
+msgstr "あなたのプラグインはここに表示されていますか？　表示されていなければご連絡を。"
 
 #: src/Problem.php:932 src/Problem.php:981
 msgid "Your problems in progress"

@@ -6279,7 +6279,7 @@ msgstr "Cambiar método de conteo"
 
 #: src/SavedSearch.php:101
 msgid "Change entity"
-msgstr ""
+msgstr "Cambiar entidad"
 
 #: src/Change_Item.php:53
 msgid "Change item"
@@ -12381,7 +12381,7 @@ msgstr "Completo"
 
 #: src/RuleMailCollector.php:112
 msgid "Full email headers"
-msgstr ""
+msgstr "Encabezados de correo electrónico completos"
 
 #: src/Glpi/ContentTemplates/Parameters/UserParameters.php:75
 msgid "Full name"
@@ -13481,6 +13481,10 @@ msgid ""
 "will receive an email containing the information required to reset your "
 "password. Please contact your administrator if you do not receive an email."
 msgstr ""
+"Si la dirección de correo electrónico proporcionada corresponde a un único "
+"usuario en GLPI, recibirá un correo electrónico con la información necesaria"
+" para restablecer su contraseña. Si no recibe el correo electrónico, póngase"
+" en contacto con su administrador."
 
 #: templates/pages/setup/mailcollector/setup_form.html.twig
 msgid ""
@@ -21742,7 +21746,7 @@ msgstr ""
 
 #: src/Toolbox.php:1470
 msgid "Redirection failed"
-msgstr ""
+msgstr "La redirección falló"
 
 #: src/Glpi/Cache/CacheManager.php:549
 msgid "Redis (TCP)"
@@ -26025,7 +26029,7 @@ msgstr "El archivo es válido, y ha sido descargado correctamente."
 
 #: src/GLPIUploadHandler.php:88
 msgid "The file upload has been refused for security reasons."
-msgstr ""
+msgstr "La carga del archivo ha sido rechazada por razones de seguridad."
 
 #: src/Glpi/System/Requirement/DirectoryWriteAccess.php:123
 #, php-format
@@ -26056,7 +26060,7 @@ msgstr ""
 #: src/Glpi/CustomObject/AbstractDefinition.php:508
 #, php-format
 msgid "The following field has an incorrect value: \"%s\"."
-msgstr ""
+msgstr "El siguiente campo tiene un valor incorrecto: \"%s\"."
 
 #: templates/pages/admin/helpdesk_home_custom_scene_config.html.twig
 msgid "The following illustration from the parent entity will be used:"
