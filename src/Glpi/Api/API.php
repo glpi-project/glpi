@@ -1880,12 +1880,19 @@ abstract class API
                     $object["_add"] = true;
 
                     //add current item
-                    $new_id = $item->add($object);
-                    if ($new_id === false) {
-                        $failed++;
+                    try {
+                        $new_id = $item->add($object);
+                    } catch (\RuntimeException $e) {
+                        $new_id = false;
+                        $message = $e->getMessage();
                     }
 
-                    $message = $this->getGlpiLastMessage();
+                    if ($new_id === false) {
+                        $failed++;
+                    } else {
+                        $message = $this->getGlpiLastMessage();
+                    }
+
                     $current_res = ['id'      => $new_id,
                         'message' => $message,
                     ];
