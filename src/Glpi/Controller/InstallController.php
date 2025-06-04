@@ -52,6 +52,7 @@ use Toolbox;
 use Update;
 use Glpi\Progress\StoredProgressIndicator;
 
+use function Safe\fastcgi_finish_request;
 use function Safe\ini_set;
 use function Safe\ob_end_clean;
 use function Safe\session_write_close;
@@ -156,6 +157,15 @@ class InstallController extends AbstractController
                 // The browser will consider that the response is complete due to the `Connection: close` header
                 // and will not have to wait for operation to finish to consider the request as ended.
                 flush();
+
+                if (\function_exists('fastcgi_finish_request')) {
+                    // In PHP-FPM context, it indicates to the client (Apache, Nginx, ...)
+                    // that the request is finished.
+                    fastcgi_finish_request();
+                }
+
+                // Prevent the request to be terminated by the client.
+                \ignore_user_abort(true);
 
                 try {
                     $inner_callable();
