@@ -95,7 +95,8 @@ function getTableNameForForeignKeyField($fkname)
  *
  * @param $table string table name
  *
- * @return string itemtype corresponding to a table name parameter
+ * @return class-string<CommonDBTM>|null itemtype corresponding to a table name parameter,
+ *      or null if no valid itemtype is attached to the table
  **/
 function getItemTypeForTable($table)
 {
@@ -108,7 +109,8 @@ function getItemTypeForTable($table)
  *
  * @param string $fkname
  *
- * @return class-string<CommonDBTM> Itemtype class for the fkname parameter
+ * @return class-string<CommonDBTM>|null Itemtype class for the fkname parameter,
+ *      or null if no valid itemtype is attached to the foreign key field
  */
 function getItemtypeForForeignKeyField($fkname)
 {

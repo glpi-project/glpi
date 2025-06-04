@@ -572,7 +572,7 @@ final class SearchOption implements \ArrayAccess
 
                     // Specific case of TreeDropdown : add under
                     $itemtype_linked = $searchopt[$field_num]['itemtype'] ?? getItemTypeForTable($searchopt[$field_num]['table']);
-                    if ($itemlinked = getItemForItemtype($itemtype_linked)) {
+                    if ($itemtype_linked !== null && $itemlinked = getItemForItemtype($itemtype_linked)) {
                         if ($itemlinked instanceof \CommonTreeDropdown) {
                             $actions['under']    = __('under');
                             $actions['notunder'] = __('not under');

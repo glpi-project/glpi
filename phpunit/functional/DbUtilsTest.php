@@ -230,14 +230,14 @@ class DbUtilsTest extends DbTestCase
         if ($is_valid_type) {
             $this->assertSame($type, $instance->getItemTypeForTable($table));
         } else {
-            $this->assertSame('UNKNOWN', $instance->getItemTypeForTable($table));
+            $this->assertNull($instance->getItemTypeForTable($table));
         }
 
         //keep testing old method from db.function
         if ($is_valid_type) {
             $this->assertSame($type, getItemTypeForTable($table));
         } else {
-            $this->assertSame('UNKNOWN', getItemTypeForTable($table));
+            $this->assertNull(getItemTypeForTable($table));
         }
     }
 
