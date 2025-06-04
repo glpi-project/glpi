@@ -275,3 +275,9 @@ jobs:
         with:
           name: cypress-screenshots
           path: tests/cypress/screenshots
+      - name: "Upload GLPI logs"
+        if: "${{ failure() && steps.e2e.conclusion == 'failure' }}"
+        uses: actions/upload-artifact@v4
+        with:
+            name: glpi-logs
+            path: tests/files/_log
