@@ -139,6 +139,7 @@
     &[data-glpi-form-editor-active-form] {
         // Show secondary data on active form
         [data-glpi-form-editor-form-extra-details] {
+            position: relative;
             opacity: 1;
             visibility: visible;
             transition: visibility 0s, opacity 0.20s linear;
@@ -153,9 +154,12 @@
 
         // Do not show secondary data on inactive form
         [data-glpi-form-editor-form-extra-details] {
+            position: absolute;
             height: 0;
+            width: 0;
             opacity: 0;
             visibility: hidden;
+            overflow: hidden;
         }
     }
 }
@@ -164,6 +168,7 @@
     &[data-glpi-form-editor-active-section] {
         // Show secondary data on active form
         [data-glpi-form-editor-section-extra-details] {
+            position: relative;
             opacity: 1;
             visibility: visible;
             transition: visibility 0s, opacity 0.20s linear;
@@ -178,17 +183,18 @@
 
         // Do not show secondary data on inactive form
         [data-glpi-form-editor-section-extra-details] {
+            position: absolute;
             height: 0;
+            width: 0;
             opacity: 0;
             visibility: hidden;
+            overflow: hidden;
         }
     }
 }
 
 [data-glpi-form-editor-question] {
     &[data-glpi-form-editor-active-question] {
-        width: calc(100% + 2.5rem + 0.25rem);
-
         // Show secondary data on active form
         [data-glpi-form-editor-question-extra-details] {
             position: relative;
@@ -223,8 +229,6 @@
 
 [data-glpi-form-editor-comment] {
     &[data-glpi-form-editor-active-comment] {
-        width: calc(100% + 2.5rem + 0.25rem);
-
         // Show secondary data on active comments
         [data-glpi-form-editor-comment-extra-details] {
             position: relative;
@@ -535,5 +539,12 @@ html {
         [data-glpi-editor-validation-conditions-count-badge] {
             display: none !important;
         }
+    }
+}
+
+// Remove margins when form is empty
+[data-glpi-form-editor-blocks]:not(:has([data-glpi-form-editor-block])) {
+    [data-glpi-form-editor-section], [data-glpi-form-editor-section-blocks] {
+        margin-top: 0 !important;
     }
 }

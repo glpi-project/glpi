@@ -71,92 +71,94 @@
         <div class="designer col-12 px-4 py-3">
             <div class="row">
                 <div
-                    class="col-12 col-xxl-7"
+                    class="d-flex"
                     data-glpi-form-editor-form
                     data-glpi-form-editor-active-form
                 >
-                    <section
-                        data-glpi-form-editor-form-details
-                        data-glpi-form-editor-on-click="set-active"
-                        aria-label="{{ __("Form details") }}"
-                    >
-                        {# Card containing the main form data: title, header and status #}
-                        <div class="card form-details">
-                            <div
-                                class="card-status-start bg-primary"
-                                data-glpi-form-editor-active-form-status-indicator
-                            ></div>
-                            <div class="card-body">
+                    <div class="col-12 col-xxl-7">
+                        <section
+                            data-glpi-form-editor-form-details
+                            data-glpi-form-editor-on-click="set-active"
+                            aria-label="{{ __("Form details") }}"
+                        >
+                            {# Card containing the main form data: title, header and status #}
+                            <div class="card form-details">
+                                <div
+                                    class="card-status-start bg-primary"
+                                    data-glpi-form-editor-active-form-status-indicator
+                                ></div>
+                                <div class="card-body">
 
-                                {# Header #}
-                                <div class="d-flex">
-                                    {# Form's name #}
-                                    <input
-                                        title="{{ __("Form name") }}"
-                                        type="text"
-                                        class="form-control content-editable-h1"
-                                        name="name"
-                                        value="{{ item.fields.name }}"
-                                        data-glpi-form-editor-form-details-name
-                                    >
-
-                                    {# Form's status #}
-                                    <label class="form-check form-switch ms-3" style="margin-top: 2px">
-                                        <input type="hidden" value="0" name="is_active">
+                                    {# Header #}
+                                    <div class="d-flex">
+                                        {# Form's name #}
                                         <input
-                                            class="form-check-input"
-                                            name="is_active"
-                                            type="checkbox"
-                                            value="1"
-                                            {% if item.fields.is_active %} checked {% endif %}
+                                            title="{{ __("Form name") }}"
+                                            type="text"
+                                            class="form-control content-editable-h1"
+                                            name="name"
+                                            value="{{ item.fields.name }}"
+                                            data-glpi-form-editor-form-details-name
                                         >
-                                        <span class="form-check-label">{{ __("Active") }}</span>
-                                    </label>
-                                </div>
 
-                                {# Form's hader #}
-                                <div class="content-editable-tinymce" data-glpi-form-editor-header-description>
-                                    {{ fields.textareaField(
-                                        'header',
-                                        item.fields.header,
-                                        __('Header'),
-                                        base_field_options|merge({
-                                            'enable_richtext': true,
-                                            'add_body_classes': ['content-editable-tinymce-editor', 'text-muted'],
-                                            'editor_height': "0",
-                                            'rows' : 1,
-                                            'toolbar_location': 'bottom',
-                                            'mb': 'mb-0',
-                                            'aria_label': __("Form description"),
-                                            'placeholder': __("Add a description to your form..."),
-                                        })
-                                    ) }}
+                                        {# Form's status #}
+                                        <label class="form-check form-switch ms-3" style="margin-top: 2px">
+                                            <input type="hidden" value="0" name="is_active">
+                                            <input
+                                                class="form-check-input"
+                                                name="is_active"
+                                                type="checkbox"
+                                                value="1"
+                                                {% if item.fields.is_active %} checked {% endif %}
+                                            >
+                                            <span class="form-check-label">{{ __("Active") }}</span>
+                                        </label>
+                                    </div>
+
+                                    {# Form's hader #}
+                                    <div class="content-editable-tinymce" data-glpi-form-editor-header-description>
+                                        {{ fields.textareaField(
+                                            'header',
+                                            item.fields.header,
+                                            __('Header'),
+                                            base_field_options|merge({
+                                                'enable_richtext': true,
+                                                'add_body_classes': ['content-editable-tinymce-editor', 'text-muted'],
+                                                'editor_height': "0",
+                                                'rows' : 1,
+                                                'toolbar_location': 'bottom',
+                                                'mb': 'mb-0',
+                                                'aria_label': __("Form description"),
+                                                'placeholder': __("Add a description to your form..."),
+                                            })
+                                        ) }}
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </section>
+                        </section>
 
-                    {# Display all questions here #}
-                    <div data-glpi-form-editor-blocks>
-                        {% set number_of_sections = item.getSections()|length %}
-                        {% for section in item.getSections() %}
-                            {{ include('pages/admin/form/form_section.html.twig', {
-                                'form'                  : item,
-                                'section'               : section,
-                                'question_types_manager': question_types_manager,
-                                'section_index'         : loop.index,
-                                'can_update'            : item.canUpdate(),
-                                'show_section_form'     : number_of_sections > 1,
-                                'number_of_sections'    : number_of_sections,
-                            }, with_context = false) }}
-                        {% endfor %}
+                        {# Display all questions here #}
+                        <div data-glpi-form-editor-blocks>
+                            {% set number_of_sections = item.getSections()|length %}
+                            {% for section in item.getSections() %}
+                                {{ include('pages/admin/form/form_section.html.twig', {
+                                    'form'                  : item,
+                                    'section'               : section,
+                                    'question_types_manager': question_types_manager,
+                                    'section_index'         : loop.index,
+                                    'can_update'            : item.canUpdate(),
+                                    'show_section_form'     : number_of_sections > 1,
+                                    'number_of_sections'    : number_of_sections,
+                                }, with_context = false) }}
+                            {% endfor %}
+                        </div>
                     </div>
 
-                    <div data-glpi-form-editor-form-extra-details>
+                    <div class="mb-3" data-glpi-form-editor-form-extra-details>
                         {{ include('pages/admin/form/form_toolbar.html.twig', {
                             'can_update'     : item.canUpdate(),
                             'form'           : item,
-                            'vertical_layout': false,
+                            'vertical_layout': true,
                         }, with_context = false) }}
                     </div>
                 </div>
