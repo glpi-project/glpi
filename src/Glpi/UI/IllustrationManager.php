@@ -35,6 +35,7 @@
 namespace Glpi\UI;
 
 use Glpi\Application\View\TemplateRenderer;
+use Html;
 use RuntimeException;
 
 use function Safe\file_get_contents;
@@ -105,6 +106,21 @@ final class IllustrationManager
         } else {
             return $this->renderNativeIcon($icon_id, $size);
         }
+    }
+
+    public function getIconPath(string $icon_id): string
+    {
+        $custom_icon_prefix = self::CUSTOM_ILLUSTRATION_PREFIX;
+        $is_custom = str_starts_with($icon_id, $custom_icon_prefix);
+        if ($is_custom) {
+            // Remove custom prefix to get real icon id
+            $icon_id = substr($icon_id, strlen($custom_icon_prefix));
+            $path = "/UI/Illustration/CustomIllustration/$icon_id";
+        } else {
+            $path = $this->icons_sprites_path . "#$icon_id";
+        }
+
+        return Html::getPrefixedUrl($path);
     }
 
     /**

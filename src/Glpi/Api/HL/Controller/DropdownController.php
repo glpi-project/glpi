@@ -40,6 +40,7 @@ use DropdownVisibility;
 use Entity;
 use Glpi\Api\HL\Doc as Doc;
 use Glpi\Api\HL\Route;
+use Glpi\Form\Category;
 use Location;
 use Manufacturer;
 use State;
@@ -207,6 +208,24 @@ final class DropdownController extends AbstractController
                 'is_recursive' => ['type' => Doc\Schema::TYPE_BOOLEAN],
                 'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ],
+        ];
+
+        $schemas['FormCategory'] = [
+            'x-version-introduced' => '2.0',
+            'x-itemtype' => Category::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'x-readonly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING],
+                'description' => ['type' => Doc\Schema::TYPE_STRING],
+                'illustration' => ['type' => Doc\Schema::TYPE_STRING],
+                'parent' => self::getDropdownTypeSchema(class: Category::class, full_schema: 'FormCategory'),
+                'level' => ['type' => Doc\Schema::TYPE_INTEGER],
             ],
         ];
 
