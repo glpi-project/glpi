@@ -1284,9 +1284,9 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface
 
 
     /**
-     * get groups linked to a object
+     * Get linked groups
      *
-     * @param integer $type type to search (see constants)
+     * @param integer $type e.g.CommonITILActor::REQUESTER, etc
      *
      * @return array
      **/
