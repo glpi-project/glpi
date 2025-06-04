@@ -12,6 +12,7 @@ parameters:
         - inc
         - install
         - src
+    treatPhpDocTypesAsCertain: false
     universalObjectCratesClasses:
         - Sabre\VObject\Node
     dynamicConstantNames:

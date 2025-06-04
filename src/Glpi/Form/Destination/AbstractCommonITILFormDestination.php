@@ -161,9 +161,6 @@ abstract class AbstractCommonITILFormDestination implements FormDestinationInter
         // Create commonitil object
         $itil_object = new $itemtype();
 
-        // It is safer to ignore this phpstan error as plugin code may not be
-        // statically analyzed and we don't want it to create unexpected issues.
-        // @phpstan-ignore-next-line instanceof.alwaysTrue
         if (!($itil_object instanceof CommonITILObject)) {
             throw new \RuntimeException(
                 "The target itemtype must be an instance of CommonITILObject"

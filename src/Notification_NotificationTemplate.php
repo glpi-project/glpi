@@ -498,7 +498,6 @@ TWIG, $twig_params);
         } elseif ($extratype === 'setting') {
             $classname = 'Notification' . ucfirst($mode) . 'Setting';
         } else {
-            // @phpstan-ignore notIdentical.alwaysFalse (defensive programming)
             if ($extratype !== '') {
                 throw new \LogicException(sprintf('Unknown type `%s`.', $extratype));
             }
