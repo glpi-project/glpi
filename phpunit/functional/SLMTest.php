@@ -34,6 +34,7 @@
 
 namespace tests\units;
 
+use CommonITILObject;
 use DbTestCase;
 use Glpi\PHPUnit\Tests\Glpi\ITILTrait;
 use Glpi\PHPUnit\Tests\Glpi\SLMTrait;
@@ -228,7 +229,7 @@ class SLMTest extends DbTestCase
             'field'       => 'olas_id',
             'value'       => $ola_ttr_id,
         ]);
-//        $rule_builder->addAction('assign', 'olas_id', $ola->getID());
+        //        $rule_builder->addAction('assign', 'olas_id', $ola->getID());
         // une seule rule avec plusieurs actions
         $this->checkInput($ruleaction, $act_id, $act_input);
 
