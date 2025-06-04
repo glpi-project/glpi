@@ -1239,7 +1239,7 @@ class GenericobjectPluginMigration extends AbstractPluginMigration
                 $target_type = $this->getTargetItemtype($source_type);
             } else {
                 $target_type = \getItemtypeForForeignKeyField($field_name);
-                if ($target_type === 'UNKNOWN') {
+                if ($target_type === null) {
                     throw new MigrationException(
                         sprintf(__('Unable to import the "%s" field.'), $field_name),
                         sprintf('Unable to import the `%s` field.', $field_name)

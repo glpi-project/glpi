@@ -80,8 +80,12 @@ class GroupRequesterFilter extends AbstractFilter
                     "$table.groups_id" => $groups_id,
                 ];
             } elseif (in_array($table, [Ticket::getTable(), Change::getTable(), Problem::getTable()])) {
-                $itemtype  = getItemTypeForTable($table);
-                $main_item = getItemForItemtype($itemtype);
+                $main_item = match ($table) {
+                    Ticket::getTable() => new Ticket(),
+                    Change::getTable() => new Change(),
+                    Problem::getTable() => new Problem(),
+                    default => throw new \UnexpectedValueException(),
+                };
                 $grouplink = $main_item->grouplinkclass;
                 $gl_table  = $grouplink::getTable();
                 $fk        = $main_item->getForeignKeyField();

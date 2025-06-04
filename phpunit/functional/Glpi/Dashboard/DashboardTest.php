@@ -108,9 +108,7 @@ class DashboardTest extends DbTestCase
                     ],
                 ],
                 [
-                    [
-                        'entities_id' => 0,
-                    ],
+                    'entities_id' => [0],
                 ]
             )
         );
@@ -272,9 +270,7 @@ class DashboardTest extends DbTestCase
                     ],
                 ],
                 'rights'  => [
-                    [
-                        'entities_id' => 0,
-                    ],
+                    'entities_id' => [0],
                 ],
             ],
         ];

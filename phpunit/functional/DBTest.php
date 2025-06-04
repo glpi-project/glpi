@@ -380,7 +380,7 @@ class DBTest extends \GLPITestCase
                 continue;
             }
             $type = $dbu->getItemTypeForTable($table);
-            $this->assertNotEquals('UNKNOWN', $type, 'Cannot find type for table ' . $table);
+            $this->assertNotNull($type, 'Cannot find type for table ' . $table);
             $item = $dbu->getItemForItemtype($type);
             $this->assertInstanceOf(\CommonDBTM::class, $item, get_class($item));
             $this->assertEquals($type, get_class($item));

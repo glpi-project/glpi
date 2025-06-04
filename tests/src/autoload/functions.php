@@ -770,7 +770,7 @@ function loadDataset()
                         $input[$k] = $ids[$foreigntype][$v];
                     } elseif ($k == 'items_id'  &&  isset($input['itemtype']) && isset($ids[$input['itemtype']][$v]) && !is_numeric($v)) {
                         $input[$k] = $ids[$input['itemtype']][$v];
-                    } elseif ($foreigntype && $foreigntype != 'UNKNOWN' && !is_numeric($v)) {
+                    } elseif ($foreigntype && !is_numeric($v)) {
                         // not found in ids array, then must get it from DB
                         $foreign_id = getItemByTypeName($foreigntype, $v, true);
                         $input[$k] = $foreign_id;

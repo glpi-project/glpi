@@ -82,8 +82,12 @@ class UserTechFilter extends AbstractFilter
                     "$table.users_id_tech" => $users_id,
                 ];
             } elseif (in_array($table, [Ticket::getTable(), Change::getTable(), Problem::getTable()])) {
-                $itemtype  = getItemTypeForTable($table);
-                $main_item = getItemForItemtype($itemtype);
+                $main_item = match ($table) {
+                    Ticket::getTable() => new Ticket(),
+                    Change::getTable() => new Change(),
+                    Problem::getTable() => new Problem(),
+                    default => throw new \UnexpectedValueException(),
+                };
                 $userlink  = $main_item->userlinkclass;
                 $ul_table  = $userlink::getTable();
                 $fk        = $main_item->getForeignKeyField();

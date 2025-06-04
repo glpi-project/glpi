@@ -1752,7 +1752,7 @@ abstract class API
                 $col_ref_itemtype = $col_ref_table !== '' && $col_ref_field !== ''
                     ? \getItemTypeForTable($col['searchopt']['table'] ?? '')
                     : null;
-                if ($col_ref_itemtype !== null && \is_a($col_ref_itemtype, CommonDBTM::class, true)) {
+                if ($col_ref_itemtype !== null) {
                     $tmp_fields = [$col_ref_field => $current_values];
                     if (array_key_exists('additionalfields', $col['searchopt'])) {
                         foreach ($col['searchopt']['additionalfields'] as $field_name) {

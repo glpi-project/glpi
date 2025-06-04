@@ -479,7 +479,7 @@ class Lockedfield extends CommonDBTM
                     if ($field_name === $field) {
                         //name not found :(
                         $table = getTableNameForForeignKeyField($field);
-                        if ($table !== '' && $table !== 'UNKNOWN') {
+                        if ($table !== '') {
                             $type = getItemTypeForTable($table);
                             $field_name = $type::getTypeName(1);
                         }

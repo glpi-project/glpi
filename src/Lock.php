@@ -221,7 +221,7 @@ TWIG;
                 } elseif (isForeignKeyField($row['field'])) {
                     // on fkey, we can try to retrieve the object
                     $object = getItemtypeForForeignKeyField($row['field']);
-                    if ($object !== 'UNKNOWN') {
+                    if ($object !== null) {
                         $field_label = $object::getTypeName(1);
                     }
                 }

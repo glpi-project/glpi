@@ -691,7 +691,7 @@ class Migration
             // Clear possibly forced value of table name.
             // Actually the only forced value in core is for config table.
             $itemtype = getItemTypeForTable($newtable);
-            if (class_exists($itemtype)) {
+            if ($itemtype !== null && class_exists($itemtype)) {
                 $itemtype::forceTable($newtable);
             }
 

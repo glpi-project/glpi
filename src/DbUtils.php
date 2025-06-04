@@ -262,7 +262,8 @@ final class DbUtils
      *
      * @param string $table table name
      *
-     * @return string itemtype corresponding to a table name parameter
+     * @return class-string<CommonDBTM>|null itemtype corresponding to a table name parameter,
+     *      or null if no valid itemtype is attached to the table
      */
     public function getItemTypeForTable($table)
     {
@@ -354,7 +355,7 @@ final class DbUtils
                 return $itemtype;
             }
 
-            return "UNKNOWN";
+            return null;
         }
     }
 
@@ -495,7 +496,7 @@ final class DbUtils
      *
      * @param string $itemtype itemtype
      *
-     * @return string|null
+     * @return class-string<CommonGLPI>|null
      */
     public function getClassForItemtype(string $itemtype): ?string
     {
@@ -2286,7 +2287,8 @@ final class DbUtils
      *
      * @param string $fkname Foreign key
      *
-     * @return class-string<CommonDBTM> Itemtype class for the fkname parameter
+     * @return class-string<CommonDBTM>|null Itemtype class for the fkname parameter,
+     *      or null if no valid itemtype is attached to the foreign key field
      */
     public function getItemtypeForForeignKeyField($fkname)
     {
