@@ -3108,6 +3108,11 @@ abstract class CommonITILObject extends CommonDBTM
             $active_priorities = array_unique($active_priorities);
             if (count($active_priorities) > 0) {
                 foreach ($values as $priority => $name) {
+                    // dont unset non-standard priorities
+                    if ($priority <= 0 && $p['showtype'] == 'search') {
+                        continue;
+                    }
+
                     if (!in_array($priority, $active_priorities)) {
                         if ($p['withmajor'] && $priority == 6) {
                             continue;
