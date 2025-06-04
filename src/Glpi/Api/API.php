@@ -1879,6 +1879,8 @@ abstract class API
                     // to force having messages after redirect
                     $object["_add"] = true;
 
+                    $message = '';
+
                     //add current item
                     try {
                         $new_id = $item->add($object);
