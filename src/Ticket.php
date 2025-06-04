@@ -6377,6 +6377,7 @@ JAVASCRIPT;
         // add new olas
         $added_olas_ids = array_unique(array_diff($request_olas_ids, $current_olas_ids));
         foreach ($added_olas_ids as $olas_id) {
+            // insert in association table items_ola
             if (
                 !$items_ola->add([
                     'due_time' => null, // @todoseb à calculer ?
@@ -6390,6 +6391,32 @@ JAVASCRIPT;
             ) {
                 throw new \Exception("Failed to associate OLA #$olas_id to ticket #{$this->getID()}");
             }
+
+            // add ola associated group to ticket assigned groups
+            $ola = new OLA();
+            if (!$ola->getFromDB($olas_id)) {
+                throw new \Exception("Failed to get OLA #$olas_id");
+            }
+            $groups_id = $ola->fields['groups_id'];
+            if ($groups_id > 0) {
+                $group_ticket = new Group_Ticket();
+                if (!$group_ticket->getFromDBByCrit([
+                    'tickets_id' => $this->getID(),
+                    'groups_id'  => $groups_id,
+                    'type' => CommonITILActor::ASSIGN,
+                ])) {
+                    // add group to ticket
+                    if (!$group_ticket->add([
+                        'tickets_id' => $this->getID(),
+                        'groups_id'  => $groups_id,
+                        'type'       => CommonITILActor::ASSIGN,
+                    ])) {
+                        throw new \Exception("Failed to associat group #$groups_id to ticket #{$this->getID()}");
+                    }
+                }
+            }
+
+
         }
 
         OLA::deleteLevelsToDo($this);
