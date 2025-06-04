@@ -464,4 +464,203 @@ class RequestTest extends \DbTestCase
             $this->checkJsonResponse($response, '{"status":"error","message":"Access denied. Wrong login or password for basic authentication.","expiration":24}', 401);
         }
     }
+
+    public function testAuthOAuthClientCredentials()
+    {
+        /** @var mixed $DB */
+        global $DB;
+
+        // enable inventory with OAuth client credentials
+        $this->login();
+        $conf = new \Glpi\Inventory\Conf();
+        $this->assertTrue(
+            $conf->saveConf([
+                "enabled_inventory" => true,
+                'auth_required' => \Glpi\Inventory\Conf::CLIENT_CREDENTIALS,
+            ])
+        );
+        $DB->commit();
+        $this->logout();
+
+        // create an OAuth client
+        $client = new \OAuthClient();
+        $client_id = $client->add([
+            'name'            => __FUNCTION__,
+            'is_active'       => 1,
+            'is_confidential' => 1,
+            'grants'          => ['client_credentials'],
+            'scopes'          => ['inventory'],
+        ]);
+        $this->assertGreaterThan(0, $client_id);
+
+        // get client ID and secret
+        $it = $DB->request([
+            'SELECT' => ['identifier', 'secret'],
+            'FROM'   => \OAuthClient::getTable(),
+            'WHERE'  => ['id' => $client_id],
+        ]);
+        $this->assertCount(1, $it);
+        $client_data = $it->current();
+        $auth_data = [
+            'grant_type'    => 'client_credentials',
+            'client_id'     => $client_data['identifier'],
+            'client_secret' => (new \GLPIKey())->decrypt($client_data['secret']),
+            'scope'         => 'inventory',
+        ];
+
+        // call api.php/token to get an access token
+        $response = $this->http_client->request(
+            'POST',
+            $this->base_uri . 'api.php/token',
+            [
+                'headers' => [
+                    'Content-Type' => 'application/json',
+                ],
+                'body' => json_encode($auth_data),
+            ]
+        );
+
+        // check the response contains a valid access token
+        $this->assertEquals(200, $response->getStatusCode());
+        $responseContent = json_decode((string) $response->getBody(), true);
+
+        $this->assertArrayHasKey('token_type', $responseContent);
+        $this->assertArrayHasKey('access_token', $responseContent);
+        $this->assertArrayHasKey('expires_in', $responseContent);
+
+        $this->assertEquals('Bearer', $responseContent['token_type']);
+        $this->assertNotEmpty($responseContent['access_token']);
+        $this->assertIsNumeric($responseContent['expires_in']);
+        $this->assertGreaterThan(0, $responseContent['expires_in']);
+
+        //first call to inventory should be unauthorized and return 401
+        try {
+            $this->http_client->request(
+                'POST',
+                $this->base_uri . 'Inventory',
+                [
+                    'headers' => [
+                        'Content-Type' => 'application/xml',
+                    ],
+                    'body'   => '<?xml version="1.0" encoding="UTF-8" ?>' .
+                        '<REQUEST>' .
+                        '<DEVICEID>mydeviceuniqueid</DEVICEID>' .
+                        '<QUERY>PROLOG</QUERY>' .
+                        '</REQUEST>',
+                ]
+            );
+        } catch (RequestException $e) {
+            $response = $e->getResponse();
+            $this->assertInstanceOf(Response::class, $response);
+            $this->checkJsonResponse($response, '{"status":"error","message":"Authorization header required to send an inventory","expiration":24}', 401);
+        }
+
+        // second attempt with Bearer token, should be authorized
+        $response =  $this->http_client->request(
+            'POST',
+            $this->base_uri . 'Inventory',
+            [
+                'headers' => [
+                    'Content-Type' => 'application/xml',
+                    'Authorization' => 'Bearer ' . $responseContent['access_token'],
+                ],
+                'body'   => '<?xml version="1.0" encoding="UTF-8" ?>' .
+                    '<REQUEST>' .
+                    '<DEVICEID>mydeviceuniqueid</DEVICEID>' .
+                    '<QUERY>PROLOG</QUERY>' .
+                    '</REQUEST>',
+            ]
+        );
+
+        $this->checkXmlResponse($response, '<PROLOG_FREQ>24</PROLOG_FREQ><RESPONSE>SEND</RESPONSE>', 200);
+
+        // disable oauth client credentials
+        $this->login();
+        $conf = new \Glpi\Inventory\Conf();
+        $this->assertTrue(
+            $conf->saveConf([
+                "enabled_inventory" => true,
+                'auth_required' => 'none',
+            ])
+        );
+        $DB->commit();
+        $this->logout();
+    }
+
+    public function testAuthOAuthClientCredentialsInvalidToken()
+    {
+        /** @var mixed $DB */
+        global $DB;
+
+        $invalid_bearer_token = 'invalid_token';
+
+        // Enable inventory with OAuth client credentials
+        $this->login();
+        $conf = new \Glpi\Inventory\Conf();
+        $this->assertTrue(
+            $conf->saveConf([
+                "enabled_inventory" => true,
+                'auth_required' => \Glpi\Inventory\Conf::CLIENT_CREDENTIALS,
+            ])
+        );
+        $DB->commit();
+        $this->logout();
+
+        // first call to inventory should be unauthorized and return 401
+        try {
+            $this->http_client->request(
+                'POST',
+                $this->base_uri . 'Inventory',
+                [
+                    'headers' => [
+                        'Content-Type' => 'application/xml',
+                    ],
+                    'body'   => '<?xml version="1.0" encoding="UTF-8" ?>' .
+                        '<REQUEST>' .
+                        '<DEVICEID>mydeviceuniqueid</DEVICEID>' .
+                        '<QUERY>PROLOG</QUERY>' .
+                        '</REQUEST>',
+                ]
+            );
+        } catch (RequestException $e) {
+            $response = $e->getResponse();
+            $this->assertInstanceOf(Response::class, $response);
+            $this->checkJsonResponse($response, '{"status":"error","message":"Authorization header required to send an inventory","expiration":24}', 401);
+        }
+
+        // second call to inventory with an invalid Bearer token should return 401
+        try {
+            $this->http_client->request(
+                'POST',
+                $this->base_uri . 'Inventory',
+                [
+                    'headers' => [
+                        'Content-Type' => 'application/xml',
+                        'Authorization' => 'Bearer ' . $invalid_bearer_token,
+                    ],
+                    'body'   => '<?xml version="1.0" encoding="UTF-8" ?>' .
+                        '<REQUEST>' .
+                        '<DEVICEID>mydeviceuniqueid</DEVICEID>' .
+                        '<QUERY>PROLOG</QUERY>' .
+                        '</REQUEST>',
+                ]
+            );
+        } catch (RequestException $e) {
+            $response = $e->getResponse();
+            $this->assertInstanceOf(Response::class, $response);
+            $this->checkJsonResponse($response, '{"status":"error","message":"Authorization header required to send an inventory","expiration":24}', 401);
+        }
+
+        // disable oauth client credentials
+        $this->login();
+        $conf = new \Glpi\Inventory\Conf();
+        $this->assertTrue(
+            $conf->saveConf([
+                "enabled_inventory" => true,
+                'auth_required' => 'none',
+            ])
+        );
+        $DB->commit();
+        $this->logout();
+    }
 }
