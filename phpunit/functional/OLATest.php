@@ -532,6 +532,71 @@ class OLATest extends DbTestCase
             : $this->hasSessionMessages(ERROR, ['The group #' . $test_group->getID() . ' is not allowed to be associated with an OLA. group.is_assign must be set to 1']);
     }
 
+    public function testOlaAssociatedGroupIsAssignedToTicketWhenOlaIsAssociatedToTicketOnAdd(): void
+    {
+        $this->login();
+        // arrange
+        ['ola' => $ola, 'group' => $group] = $this->createOLA();
+
+        // act
+        $ticket = $this->createTicket(['_la_update' => true, '_olas_id' => [$ola->getID()]]);
+        // pour l'update
+        //        assert(empty($ticket->getGroups(CommonITILObject::ASSIGNED)), 'Ticket should not be assigned to any group before the OLA is associated'); - haveAGroup
+
+        // assert - check if the ticket is assigned to the OLA group
+        $this->assertTrue($ticket->haveAGroup(CommonITILObject::ASSIGNED, [$group->getID()]));
+    }
+
+    // @todoseb test inutile - le process à lieu dans Ticket::updateOlaAssociations() - à garder quand même ?
+    public function testOlaAssociatedGroupIsAssignedToTicketWhenOlaIsAssociatedToTicketOnUpdate(): void
+    {
+        $this->login();
+        // arrange
+        ['ola' => $ola, 'group' => $group] = $this->createOLA();
+        $ticket = $this->createTicket();
+        assert(false === $ticket->haveAGroup(CommonITILObject::ASSIGNED, [$group->getID()]));
+
+        // act
+        $ticket = $this->updateItem(Ticket::class, $ticket->getID(), ['_la_update' => true, '_olas_id' => [$ola->getID()]]);
+
+        // assert - check if the ticket is assigned to the OLA group
+        $this->assertTrue($ticket->haveAGroup(CommonITILObject::ASSIGNED, [$group->getID()]));
+    }
+
+    /**
+     * Despite the association with a group is mandatory, migrated data have ola without group associated.
+     */
+    public function testOlaAssociationCanBeDoneWhenNoGroupIsAssociatedToOla(): void
+    {
+        global $DB;
+        $this->login();
+
+        // arrange : create an OLA without group association - direct db insertion to bypass validation
+        $slm = $this->createSLM();
+        //
+        $ola_name = 'OLA ' . uniqid();
+        $result = $DB->insert('glpi_olas', [
+            'name' => $ola_name,
+            'is_recursive' => 1,
+            'type' => SLM::TTR,
+            'comment' => 'OLA comment ' . time(),
+            'number_time' => 90,
+            'definition_time' => 'minute',
+            'slms_id' => $slm->getID(),
+            'groups_id' => 0,
+        ]);
+        assert(false !== $result, 'failed to insert OLA without group association');
+        $ola = getItemByTypeName(\OLA::class, $ola_name);
+
+        // act - create ticket with OLA
+        $ticket = $this->createTicket(['_la_update' => true, '_olas_id' => [$ola->getID()]]);
+
+        // assert - check if the ticket has the OLA associated & no group associated with the ticket
+        $fetched_olas = array_column($ticket->getOlasData(), 'olas_id');
+        $this->assertEqualsCanonicalizing([$ola->getID()], $fetched_olas);
+        $this->assertEmpty($ticket->getGroups(\CommonITILActor::class));
+    }
+
     /**
      * - start_time is set at the moment the Ola is assigned to the dedicated group
      * - then due_time is start_time + ola_ttr duration
