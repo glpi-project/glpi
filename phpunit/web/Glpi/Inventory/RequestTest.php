@@ -37,8 +37,11 @@ namespace tests\units\Glpi\Inventory;
 use GuzzleHttp;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Response;
+use PHPUnit\Framework\TestCase;
+use Config;
+use GLPIKey;
 
-class RequestTest extends \DbTestCase
+class RequestTest extends TestCase
 {
     private $http_client;
     private $base_uri;
@@ -272,23 +275,17 @@ class RequestTest extends \DbTestCase
 
     public function testAuthBasic()
     {
-        /** @var mixed $DB */
-        global $DB;
-
         $basic_auth_password = "a_password";
         $basic_auth_login = "a_login";
-        $this->login();
-        $conf = new \Glpi\Inventory\Conf();
-        $this->assertTrue(
-            $conf->saveConf([
-                "enabled_inventory" => true,
-                'auth_required' => \Glpi\Inventory\Conf::BASIC_AUTH,
-                'basic_auth_login' => $basic_auth_login,
-                'basic_auth_password' => $basic_auth_password,
-            ])
-        );
-        $DB->commit();
-        $this->logout();
+
+        // enable inventory with basic auth
+        Config::setConfigurationValues('inventory', [
+            'enabled_inventory'   => true,
+            'auth_required'       => \Glpi\Inventory\Conf::BASIC_AUTH,
+            'basic_auth_login'    => $basic_auth_login,
+            'basic_auth_password' => (new GLPIKey())->encrypt($basic_auth_password),
+        ]);
+
         //first call should be unauthorized and return 401
         try {
             $this->http_client->request(
@@ -328,28 +325,28 @@ class RequestTest extends \DbTestCase
             ]
         );
         $this->checkXmlResponse($res, '<PROLOG_FREQ>24</PROLOG_FREQ><RESPONSE>SEND</RESPONSE>', 200);
+
+        // disable basic auth
+        Config::setConfigurationValues('inventory', [
+            'enabled_inventory'   => true,
+            'auth_required'       => 'none',
+            'basic_auth_login'    => '',
+            'basic_auth_password' => '',
+        ]);
     }
 
     public function testAuthBasicMalformed()
     {
-        /** @var mixed $DB */
-        global $DB;
-
         $basic_auth_password = "a_password";
         $basic_auth_login = "a_login";
 
-        $this->login();
-        $conf = new \Glpi\Inventory\Conf();
-        $this->assertTrue(
-            $conf->saveConf([
-                "enabled_inventory" => true,
-                'auth_required' => \Glpi\Inventory\Conf::BASIC_AUTH,
-                'basic_auth_login' => $basic_auth_login,
-                'basic_auth_password' => $basic_auth_password,
-            ])
-        );
-        $DB->commit();
-        $this->logout();
+        // enable inventory with basic auth
+        Config::setConfigurationValues('inventory', [
+            'enabled_inventory'   => true,
+            'auth_required'       => \Glpi\Inventory\Conf::BASIC_AUTH,
+            'basic_auth_login'    => $basic_auth_login,
+            'basic_auth_password' => (new GLPIKey())->encrypt($basic_auth_password),
+        ]);
 
         //first call should be unauthorized and return 401
         try {
@@ -396,6 +393,14 @@ class RequestTest extends \DbTestCase
             $this->assertInstanceOf(Response::class, $response);
             $this->checkJsonResponse($response, '{"status":"error","message":"Access denied. Wrong login or password for basic authentication.","expiration":24}', 401);
         }
+
+        // disable basic auth
+        Config::setConfigurationValues('inventory', [
+            'enabled_inventory'   => true,
+            'auth_required'       => 'none',
+            'basic_auth_login'    => '',
+            'basic_auth_password' => '',
+        ]);
     }
 
     public function testAuthBasicWithFakeCredential()
@@ -406,18 +411,13 @@ class RequestTest extends \DbTestCase
         $basic_auth_password = "a_password";
         $basic_auth_login = "a_login";
 
-        $this->login();
-        $conf = new \Glpi\Inventory\Conf();
-        $this->assertTrue(
-            $conf->saveConf([
-                "enabled_inventory" => true,
-                'auth_required' => \Glpi\Inventory\Conf::BASIC_AUTH,
-                'basic_auth_login' => $basic_auth_login,
-                'basic_auth_password' => $basic_auth_password,
-            ])
-        );
-        $DB->commit();
-        $this->logout();
+        // enable inventory with basic auth
+        Config::setConfigurationValues('inventory', [
+            'enabled_inventory'   => true,
+            'auth_required'       => \Glpi\Inventory\Conf::BASIC_AUTH,
+            'basic_auth_login'    => $basic_auth_login,
+            'basic_auth_password' => (new GLPIKey())->encrypt($basic_auth_password),
+        ]);
 
         //first call should be unauthorized and return 401
         try {
@@ -463,24 +463,23 @@ class RequestTest extends \DbTestCase
             $this->assertInstanceOf(Response::class, $response);
             $this->checkJsonResponse($response, '{"status":"error","message":"Access denied. Wrong login or password for basic authentication.","expiration":24}', 401);
         }
+
+        // disable basic auth
+        Config::setConfigurationValues('inventory', [
+            'enabled_inventory'   => true,
+            'auth_required'       => 'none',
+            'basic_auth_login'    => '',
+            'basic_auth_password' => '',
+        ]);
     }
 
     public function testAuthOAuthClientCredentials()
     {
-        /** @var mixed $DB */
-        global $DB;
-
         // enable inventory with OAuth client credentials
-        $this->login();
-        $conf = new \Glpi\Inventory\Conf();
-        $this->assertTrue(
-            $conf->saveConf([
-                "enabled_inventory" => true,
-                'auth_required' => \Glpi\Inventory\Conf::CLIENT_CREDENTIALS,
-            ])
-        );
-        $DB->commit();
-        $this->logout();
+        Config::setConfigurationValues('inventory', [
+            'enabled_inventory' => true,
+            'auth_required' => \Glpi\Inventory\Conf::CLIENT_CREDENTIALS,
+        ]);
 
         // create an OAuth client
         $client = new \OAuthClient();
@@ -494,6 +493,7 @@ class RequestTest extends \DbTestCase
         $this->assertGreaterThan(0, $client_id);
 
         // get client ID and secret
+        global $DB;
         $it = $DB->request([
             'SELECT' => ['identifier', 'secret'],
             'FROM'   => \OAuthClient::getTable(),
@@ -575,36 +575,21 @@ class RequestTest extends \DbTestCase
         $this->checkXmlResponse($response, '<PROLOG_FREQ>24</PROLOG_FREQ><RESPONSE>SEND</RESPONSE>', 200);
 
         // disable oauth client credentials
-        $this->login();
-        $conf = new \Glpi\Inventory\Conf();
-        $this->assertTrue(
-            $conf->saveConf([
-                "enabled_inventory" => true,
-                'auth_required' => 'none',
-            ])
-        );
-        $DB->commit();
-        $this->logout();
+        Config::setConfigurationValues('inventory', [
+            'enabled_inventory' => true,
+            'auth_required'     => 'none',
+        ]);
     }
 
     public function testAuthOAuthClientCredentialsInvalidToken()
     {
-        /** @var mixed $DB */
-        global $DB;
-
         $invalid_bearer_token = 'invalid_token';
 
         // Enable inventory with OAuth client credentials
-        $this->login();
-        $conf = new \Glpi\Inventory\Conf();
-        $this->assertTrue(
-            $conf->saveConf([
-                "enabled_inventory" => true,
-                'auth_required' => \Glpi\Inventory\Conf::CLIENT_CREDENTIALS,
-            ])
-        );
-        $DB->commit();
-        $this->logout();
+        Config::setConfigurationValues('inventory', [
+            'enabled_inventory' => true,
+            'auth_required' => \Glpi\Inventory\Conf::CLIENT_CREDENTIALS,
+        ]);
 
         // first call to inventory should be unauthorized and return 401
         try {
@@ -652,15 +637,9 @@ class RequestTest extends \DbTestCase
         }
 
         // disable oauth client credentials
-        $this->login();
-        $conf = new \Glpi\Inventory\Conf();
-        $this->assertTrue(
-            $conf->saveConf([
-                "enabled_inventory" => true,
-                'auth_required' => 'none',
-            ])
-        );
-        $DB->commit();
-        $this->logout();
+        Config::setConfigurationValues('inventory', [
+            'enabled_inventory' => true,
+            'auth_required'     => 'none',
+        ]);
     }
 }
