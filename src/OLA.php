@@ -41,6 +41,23 @@ class OLA extends LevelAgreement
 {
     protected static $prefix = 'ola';
 
+    public function prepareInputForAdd($input)
+    {
+        $groups_id = (int) ($input['groups_id'] ?? 0);
+
+        return $this->validateGroupInput($groups_id) ? parent::prepareInputForAdd($input) : false;
+    }
+
+    public function prepareInputForUpdate($input)
+    {
+        $groups_id = (int) ($input['groups_id'] ?? 0);
+
+        return !isset($input['groups_id']) || $this->validateGroupInput($groups_id)
+            ? parent::prepareInputForUpdate($input)
+            : false;
+    }
+
+
     /**
      * Remove OLA associations
      *
@@ -211,5 +228,43 @@ class OLA extends LevelAgreement
         }
         return true;
 
+    }
+
+    /**
+     * Validate groups_id value
+     *
+     * - group must be set
+     * - group must be allowed to be assigned to a ticket
+     */
+    private function validateGroupInput(int $groups_id): bool
+    {
+        if (0 === $groups_id) {
+            Session::addMessageAfterRedirect(
+                __('You must select a group to associate with the OLA.'),
+                false,
+                ERROR
+            );
+            return false;
+        }
+
+        if (!$this->canGroupBeAssociated($groups_id)) {
+            Session::addMessageAfterRedirect(
+                sprintf(
+                    __('The group #%s is not allowed to be associated with an OLA. group.is_assign must be set to 1'),
+                    $groups_id
+                ),
+                false,
+                ERROR
+            );
+            return false;
+        }
+
+        return true;
+    }
+
+    private function canGroupBeAssociated(int $groups_id): bool
+    {
+        // @todoseb maybe not the correct way to check ?
+        return (new Group())->getFromDBByCrit(['id' => $groups_id, 'is_assign' => 1]);
     }
 }
