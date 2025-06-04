@@ -41,16 +41,20 @@ use Glpi\Api\HL\RouteVersion;
 use Glpi\Api\HL\Search;
 use Glpi\Form\Category;
 use Glpi\Form\Form;
+use Glpi\Form\Question;
+use Glpi\Form\QuestionType\QuestionTypesManager;
+use Glpi\Form\Section;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
 use Glpi\UI\IllustrationManager;
 
-#[Route(path: '/Forms', priority: 1, tags: ['Forms'])]
+#[Route(path: '/Form', tags: ['Forms'])]
 class FormController extends AbstractController
 {
     protected static function getRawKnownSchemas(): array
     {
         $schemas = [];
+
         $schemas['Form'] = [
             'x-version-introduced' => '2.0',
             'x-itemtype' => Form::class,
@@ -83,8 +87,106 @@ class FormController extends AbstractController
                 'is_deleted' => ['type' => Doc\Schema::TYPE_BOOLEAN],
                 'is_draft' => ['type' => Doc\Schema::TYPE_BOOLEAN],
                 'is_pinned' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'sections' => [
+                    'type' => Doc\Schema::TYPE_ARRAY,
+                    'items' => [
+                        'type' => Doc\Schema::TYPE_OBJECT,
+                        'x-full-schema' => 'FormSection',
+                        'x-join' => [
+                            'table' => 'glpi_forms_sections', // The table with the desired data
+                            'fkey' => 'id', // The field in the main table
+                            'field' => 'forms_forms_id', // The field in the joined table
+                            'primary-property' => 'id', // Help the search engine understand the 'id' property is this object's primary key since the fkey and field params are reversed for this join.
+                        ],
+                        'properties' => [
+                            'id' => [
+                                'type' => Doc\Schema::TYPE_INTEGER,
+                                'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                                'description' => 'ID',
+                            ],
+                            'name' => ['type' => Doc\Schema::TYPE_STRING],
+                        ],
+                    ],
+                ],
                 'date_creation' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
                 'date_mod' => ['type' => Doc\Schema::TYPE_STRING, 'format' => Doc\Schema::FORMAT_STRING_DATE_TIME],
+            ],
+        ];
+
+        $schemas['FormSection'] = [
+            'x-version-introduced' => '2.0',
+            'x-itemtype' => Section::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'x-readonly' => true,
+                ],
+                'uuid' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::PATTERN_UUIDV4,
+                    'x-readonly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING],
+                'description' => ['type' => Doc\Schema::TYPE_STRING],
+                'rank' => ['type' => Doc\Schema::TYPE_INTEGER],
+                'form' => self::getDropdownTypeSchema(class: Form::class, full_schema: 'Form'),
+                'questions' => [
+                    'type' => Doc\Schema::TYPE_ARRAY,
+                    'items' => [
+                        'type' => Doc\Schema::TYPE_OBJECT,
+                        'x-full-schema' => 'FormQuestion',
+                        'x-join' => [
+                            'table' => 'glpi_forms_questions', // The table with the desired data
+                            'fkey' => 'id', // The field in the main table
+                            'field' => 'forms_sections_id', // The field in the joined table
+                            'primary-property' => 'id', // Help the search engine understand the 'id' property is this object's primary key since the fkey and field params are reversed for this join.
+                        ],
+                        'properties' => [
+                            'id' => [
+                                'type' => Doc\Schema::TYPE_INTEGER,
+                                'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                                'description' => 'ID',
+                            ],
+                            'name' => ['type' => Doc\Schema::TYPE_STRING],
+                        ],
+                    ],
+                ],
+            ],
+        ];
+
+        $schemas['FormQuestion'] = [
+            'x-version-introduced' => '2.0',
+            'x-itemtype' => Question::class,
+            'type' => Doc\Schema::TYPE_OBJECT,
+            'properties' => [
+                'id' => [
+                    'type' => Doc\Schema::TYPE_INTEGER,
+                    'format' => Doc\Schema::FORMAT_INTEGER_INT64,
+                    'x-readonly' => true,
+                ],
+                'uuid' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'format' => Doc\Schema::PATTERN_UUIDV4,
+                    'x-readonly' => true,
+                ],
+                'name' => ['type' => Doc\Schema::TYPE_STRING],
+                'description' => ['type' => Doc\Schema::TYPE_STRING],
+                'section' => self::getDropdownTypeSchema(class: Section::class, full_schema: 'FormSection'),
+                'type' => [
+                    'type' => Doc\Schema::TYPE_STRING,
+                    'enum' => array_map(
+                        static fn($t) => $t::class,
+                        QuestionTypesManager::getInstance()->getQuestionTypes()
+                    ),
+                    'x-readonly' => true,
+                ],
+                'is_mandatory' => ['type' => Doc\Schema::TYPE_BOOLEAN],
+                'vertical_rank' => ['type' => Doc\Schema::TYPE_INTEGER],
+                'horizontal_rank' => ['type' => Doc\Schema::TYPE_INTEGER],
+                'default_value' => ['type' => Doc\Schema::TYPE_STRING],
+                'extra_data' => ['type' => Doc\Schema::TYPE_STRING],
             ],
         ];
 
@@ -119,5 +221,44 @@ class FormController extends AbstractController
     public function getForm(Request $request): Response
     {
         return Search::getOneBySchema($this->getKnownSchema('Form', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    #[Route(path: '/{form_id}/Section', methods: ['GET'], requirements: [
+        'form_id' => '\d+',
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.0')]
+    #[Doc\Route(
+        description: 'List or search sections of a form by ID',
+        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT, self::PARAMETER_SORT],
+        responses: [
+            ['schema' => 'FormSection[]'],
+        ]
+    )]
+    public function searchFormSections(Request $request): Response
+    {
+        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
+        $filters .= ';form.id==' . $request->getAttribute('form_id');
+        $request->setParameter('filter', $filters);
+        return Search::searchBySchema($this->getKnownSchema('FormSection', $this->getAPIVersion($request)), $request->getParameters());
+    }
+
+    #[Route(path: '/{form_id}/Section/{section_id}/Question', methods: ['GET'], requirements: [
+        'form_id' => '\d+',
+        'section_id' => '\d+',
+    ], middlewares: [ResultFormatterMiddleware::class])]
+    #[RouteVersion(introduced: '2.0')]
+    #[Doc\Route(
+        description: 'List or search questions in a form section',
+        parameters: [self::PARAMETER_RSQL_FILTER, self::PARAMETER_START, self::PARAMETER_LIMIT, self::PARAMETER_SORT],
+        responses: [
+            ['schema' => 'FormQuestion'],
+        ]
+    )]
+    public function searchFormQuestions(Request $request): Response
+    {
+        $filters = $request->hasParameter('filter') ? $request->getParameter('filter') : '';
+        $filters .= ';section.id==' . $request->getAttribute('section_id');
+        $request->setParameter('filter', $filters);
+        return Search::searchBySchema($this->getKnownSchema('FormQuestion', $this->getAPIVersion($request)), $request->getParameters());
     }
 }
