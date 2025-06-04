@@ -196,7 +196,7 @@ abstract class LevelAgreement extends CommonDBChild
         if ($this->isField('groups_id')) {
             echo "<tr class='tab_bg_1'><td>" . _sn('Group', 'Groups', 1) . "</td>";
             echo "<td>";
-            Group::dropdown(['value' => $this->fields["groups_id"], 'display_emptychoice' => false]);
+            Group::dropdown(['value' => $this->fields["groups_id"], 'display_emptychoice' => false, 'condition' => ['is_assign' => 1]]);
             echo "</td>";
             echo "</tr>";
         }

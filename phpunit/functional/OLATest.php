@@ -38,6 +38,7 @@ use CommonITILObject;
 use DbTestCase;
 use Glpi\PHPUnit\Tests\Glpi\ITILTrait;
 use Glpi\PHPUnit\Tests\Glpi\SLMTrait;
+use PHPUnit\Framework\Attributes\TestWith;
 use SLM;
 use Ticket;
 
@@ -152,7 +153,7 @@ class OLATest extends DbTestCase
         $olas_ids = [$ola1->getID(), $ola2->getID(), $ola3->getID()];
 
         // act - create ticket with OLA
-        $ticket = $this->createTicket( ['_la_update' => true, '_olas_id' => $olas_ids,]);
+        $ticket = $this->createTicket(['_la_update' => true, '_olas_id' => $olas_ids,]);
 
         // assert
         $fetched_olas = array_column($ticket->getOlasData(), 'olas_id');
@@ -354,7 +355,7 @@ class OLATest extends DbTestCase
         $due_time_datetime->add($this->getDefaultTtoDelayInterval());
 
         // act associate ticket with ola
-        $ticket = $this->createTicket( ['_la_update' => true, '_olas_id' => [$ola_tto->getID()]]);
+        $ticket = $this->createTicket(['_la_update' => true, '_olas_id' => [$ola_tto->getID()]]);
 
         // assert
         // test using database object
@@ -406,7 +407,7 @@ class OLATest extends DbTestCase
         // arrange create ticket with OLA at 09:00:00, status WAITING
         $this->setCurrentTime('09:00:00');
         ['ola' => $ola ] = $this->createOLA(ola_type: SLM::TTR);
-        $ticket = $this->createTicket( ['_la_update' => true, '_olas_id' => [$ola->getID()], 'status' => \CommonITILObject::WAITING]);
+        $ticket = $this->createTicket(['_la_update' => true, '_olas_id' => [$ola->getID()], 'status' => \CommonITILObject::WAITING]);
         assert(\CommonITILObject::WAITING === (int) $ticket->fields['status']);
         $initial_due_time = $ticket->getOlasData()[0]['due_time'];
 
@@ -429,7 +430,7 @@ class OLATest extends DbTestCase
         // arrange create ticket with OLA at 09:00:00, status WAITING
         $this->setCurrentTime('09:00:00');
         ['ola' => $ola ] = $this->createOLA(ola_type: SLM::TTO);
-        $ticket = $this->createTicket( ['_la_update' => true, '_olas_id' => [$ola->getID()], 'status' => \CommonITILObject::WAITING]);
+        $ticket = $this->createTicket(['_la_update' => true, '_olas_id' => [$ola->getID()], 'status' => \CommonITILObject::WAITING]);
         assert(\CommonITILObject::WAITING === (int) $ticket->fields['status']);
         $initial_due_time = $ticket->getOlasData()[0]['due_time'];
 
@@ -450,7 +451,7 @@ class OLATest extends DbTestCase
         $this->login();
         $this->setCurrentTime('10:04:00');
         ['ola' => $ola ] = $this->createOLA(ola_type: SLM::TTR);
-        $ticket = $this->createTicket( ['_la_update' => true, '_olas_id' => [$ola->getID()], 'status' => \CommonITILObject::WAITING]);
+        $ticket = $this->createTicket(['_la_update' => true, '_olas_id' => [$ola->getID()], 'status' => \CommonITILObject::WAITING]);
         assert($ticket->fields['status'] === CommonITILObject::WAITING);
         $this->setCurrentTime('10:24:00');
         $this->updateItem(\Ticket::class, $ticket->getID(), ['status' => CommonITILObject::ASSIGNED]);
@@ -464,13 +465,71 @@ class OLATest extends DbTestCase
         $this->login();
         $this->setCurrentTime('10:04:00');
         ['ola' => $ola ] = $this->createOLA(ola_type: SLM::TTO);
-        $ticket = $this->createTicket( ['_la_update' => true, '_olas_id' => [$ola->getID()], 'status' => \CommonITILObject::WAITING]);
+        $ticket = $this->createTicket(['_la_update' => true, '_olas_id' => [$ola->getID()], 'status' => \CommonITILObject::WAITING]);
         assert($ticket->fields['status'] === CommonITILObject::WAITING);
         $this->setCurrentTime('10:24:00');
         $this->updateItem(\Ticket::class, $ticket->getID(), ['status' => CommonITILObject::ASSIGNED]);
 
         $ola_data = $ticket->getOlasData()[0];
         $this->assertEquals(0, $ola_data['waiting_time'], 'Waiting time should be 0 minute after 20 min in WAITING status for an OLA TTO');
+    }
+
+    /**
+     * An allowed group is a group that can be set as assigned to a ticket (Group > "visible in ticket" > "Assigned to")
+     */
+    #[TestWith([1, true])]
+    #[TestWith([0, false])]
+    public function testOlaCanBeAssociatedWithAnAllowedGroupOnAdd(int $is_assigned, bool $expected_add_return): void
+    {
+        // arrange
+        $test_group = $this->createItem(\Group::class, ['is_assign' => $is_assigned, 'name' => 'test group']);
+        $slm = $this->createSLM();
+
+        // act
+        $inserted = (bool) (new \OLA())->add([
+            'groups_id' => $test_group->getID(),
+            'slms_id' => $slm->getID(),
+            'name' => 'OLA',
+            'number_time' => 1,
+            'definition_time' => 'hour',
+        ]);
+
+        // assert
+        $expected_add_return
+            ? $this->assertTrue($inserted)
+            : $this->hasSessionMessages(ERROR, ['The group #' . $test_group->getID() . ' is not allowed to be associated with an OLA. group.is_assign must be set to 1']);
+    }
+
+    #[TestWith([1, true])]
+    #[TestWith([0, false])]
+    public function testOlaCanBeAssociatedWithAnAllowedGroupOnUpdate(int $is_assigned, bool $expected_add_return): void
+    {
+        // arrange
+        $allowed_group = $this->createItem(\Group::class, ['is_assign' => 1, 'name' => 'allowed group']);
+        $test_group = $this->createItem(\Group::class, ['is_assign' => $is_assigned, 'name' => 'test group']);
+        $slm = $this->createSLM();
+
+        $_ola = $this->createItem(
+            \OLA::class,
+            [
+                'groups_id' => $allowed_group->getID(),
+                'slms_id' => $slm->getID(),
+                'name' => 'OLA',
+                'number_time' => 1,
+                'definition_time' => 'hour',
+            ]
+        );
+
+        // act - update OLA with a group
+        $update = $_ola->update([
+            'id' => $_ola->getID(),
+            'groups_id' => $test_group->getID(),
+        ]);
+
+        // assert
+        $expected_add_return
+            ? $this->assertTrue((bool) $update)
+            : $this->hasSessionMessages(ERROR, ['The group #' . $test_group->getID() . ' is not allowed to be associated with an OLA. group.is_assign must be set to 1']);
     }
 
     /**
@@ -488,7 +547,7 @@ class OLATest extends DbTestCase
         $due_time_datetime->add($this->getDefaultTtoDelayInterval());
 
         // act - associate ticket with ola
-        $ticket = $this->createTicket( ['_la_update' => true, '_olas_id' => [$ola_tto->getID()]]);
+        $ticket = $this->createTicket(['_la_update' => true, '_olas_id' => [$ola_tto->getID()]]);
         // - one hour later, assign the ticket to a non dedicated group
         throw new \Exception('implement me');
         // @todoseb test assignation à un user qui n'est pas du group
