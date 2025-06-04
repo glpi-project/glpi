@@ -115,7 +115,7 @@
         "phpstan/extension-installer": "^1.4",
         "phpstan/phpstan": "^2.1",
         "phpstan/phpstan-deprecation-rules": "^2.0",
-        "phpunit/phpunit": "^11.2",
+        "phpunit/phpunit": "^11.5",
         "shipmonk/composer-dependency-analyser": "^1.8",
         "symfony/browser-kit": "^6.4",
         "symfony/http-client": "^6.4",
