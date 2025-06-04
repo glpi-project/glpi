@@ -44,12 +44,12 @@
 </div>
 
 <section
-    class="d-flex"
+    class="d-flex align-items-end"
     data-glpi-form-editor-horizontal-blocks-container
     aria-label="{{ __("Horizontal blocks layout") }}"
 >
     <section
-        class="flex-grow-1"
+        class="flex-grow-1 w-100"
         data-glpi-form-editor-horizontal-blocks
         aria-label="{{ __("Horizontal blocks") }}"
     >
@@ -88,11 +88,13 @@
             }, with_context = false) }}
         {% endif %}
     </section>
-    {{ include('pages/admin/form/form_toolbar.html.twig', {
-        'can_update'     : can_update,
-        'form'           : form,
-        'vertical_layout': true,
-    }, with_context = false) }}
+    <div class="position-relative mb-2">
+        {{ include('pages/admin/form/form_toolbar.html.twig', {
+            'can_update'     : can_update,
+            'form'           : form,
+            'vertical_layout': true,
+        }, with_context = false) }}
+    </div>
 </section>
 
 {# Add a small div to avoid an issue with the html5sortable library which
