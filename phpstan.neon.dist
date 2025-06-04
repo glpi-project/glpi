@@ -1,6 +1,6 @@
 includes:
     - .phpstan-baseline.php
-    - .phpstan-baseline.8.2.php
+    - .phpstan-baseline.specific.php
 
 parameters:
     level: 4
@@ -12,6 +12,7 @@ parameters:
         - inc
         - install
         - src
+    treatPhpDocTypesAsCertain: false
     universalObjectCratesClasses:
         - Sabre\VObject\Node
     dynamicConstantNames:
