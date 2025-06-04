@@ -543,8 +543,19 @@ html {
 }
 
 // Remove margins when form is empty
-[data-glpi-form-editor-blocks]:not(:has([data-glpi-form-editor-block])) {
-    [data-glpi-form-editor-section], [data-glpi-form-editor-section-blocks] {
-        margin-top: 0 !important;
+[data-glpi-form-editor-form] {
+    &:not(:has([data-glpi-form-editor-block], [data-glpi-form-editor-horizontal-blocks-container])) {
+        > [data-glpi-form-editor-form-extra-details] {
+            margin-bottom: 0 !important;
+        }
+
+        [data-glpi-form-editor-section], [data-glpi-form-editor-section-blocks] {
+            margin-top: 0 !important;
+        }
     }
+}
+
+// Hide section and toolbar container when section is hidden
+div:has(> [data-glpi-form-editor-section-details].d-none) {
+    display: none !important;
 }
