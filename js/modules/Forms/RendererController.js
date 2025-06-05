@@ -352,48 +352,6 @@ export class GlpiFormRendererController
         }
     }
 
-    #updateStepLabels() {
-        const number_of_visible_sections = this.#getNumberOfVisibleSections();
-
-        $(this.#target).find('[data-glpi-form-renderer-section]').each((_i, section) => {
-            const $section = $(section);
-
-            // If section if hidden, there is not label to display
-            if (section.dataset.glpiFormRendererHiddenByCondition !== undefined) {
-                $section
-                    .find('[data-glpi-form-renderer-step-label]')
-                    .html('')
-                ;
-                return;
-            }
-
-            const number_of_sections_after = $section.nextAll(
-                '[data-glpi-form-renderer-section]'
-            ).length;
-            const number_of_hidden_sections_after = $section.nextAll(
-                '[data-glpi-form-renderer-section][data-glpi-form-renderer-hidden-by-condition]'
-            ).length;
-            const number_of_visible_sections_after = number_of_sections_after - number_of_hidden_sections_after;
-
-            $section
-                .find('[data-glpi-form-renderer-step-label]')
-                .html(
-                    __("Step %1$d of %2$d")
-                        .replace("%1$d", number_of_visible_sections - number_of_visible_sections_after)
-                        .replace("%2$d", number_of_visible_sections)
-                )
-            ;
-        });
-    }
-
-    #getNumberOfVisibleSections() {
-        const total_sections = $(this.#target).find('[data-glpi-form-renderer-section]');
-        const hidden_sections = $(this.#target).find(
-            '[data-glpi-form-renderer-section][data-glpi-form-renderer-hidden-by-condition]'
-        );
-        return total_sections.length - hidden_sections.length;
-    }
-
     async #computeItemsVisibilities() {
         const results = await this.#condition_engine.computeVisiblity(this.#target);
         this.#applyVisibilityResults(results);
@@ -458,7 +416,6 @@ export class GlpiFormRendererController
         };
 
         this.#updateActionsVisiblity();
-        this.#updateStepLabels();
     }
 
     #applyVisibilityToItem(item, must_be_visible)

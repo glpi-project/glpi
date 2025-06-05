@@ -86,14 +86,12 @@
                     {% if not is_single_section_form %}
                         <div
                             class="bg-primary px-2 py-1 rounded-top "
-                            style="width: fit-content;"
-                            data-glpi-form-renderer-step-label
+                            style="width: fit-content; max-width: calc(100% - var(--tblr-border-radius) * 2);"
                         >
                             {% if visibility_engine_output.isSectionVisible(section.getID()) %}
-                                {{ __("Step %1$s of %2$s")|format(
-                                    section_visible_index,
-                                    visibility_engine_output.getNumberOfVisibleSections()
-                                ) }}
+                                <h2 class="mb-0 {{ not section.fields.name ? "text-muted" : "" }}">
+                                    {{ translate_item_key(section, constant('TRANSLATION_KEY_NAME', section))|default(__('Untitled section')) }}
+                                </h2>
                                 {% set section_visible_index = section_visible_index + 1 %}
                             {% endif %}
                         </div>
@@ -103,10 +101,6 @@
                     >
                         <div class="card-body">
                             {% if not is_single_section_form %}
-                                <h2 class="mb-1 {{ not section.fields.name ? "text-muted" : "" }}">
-                                {{ translate_item_key(section, constant('TRANSLATION_KEY_NAME', section))|default(__('Untitled section')) }}
-                            </h2>
-
                                 <div class="text-muted section-description mb-3">
                                     {{ translate_item_key(section, constant('TRANSLATION_KEY_DESCRIPTION', section))|safe_html }}
                                 </div>
