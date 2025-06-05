@@ -51,6 +51,7 @@ use Rule;
 use RuleAction;
 use RuleBuilder;
 use RuleCriteria;
+use Session;
 use SingletonRuleList;
 use TaskTemplate;
 use Ticket;
@@ -3041,5 +3042,71 @@ abstract class RuleCommonITILObjectTest extends DbTestCase
 
         // Check if the location "Test location" is assigned
         $this->assertEquals($location2->getID(), $itil_object->fields['locations_id']);
+    }
+
+    /**
+     * - create an ITIL object
+     * - create an update rule with a criteria on the entity
+     * - check it's applied on ITIL object update
+     */
+    public function testEntityIsInChangedFieldsOnUpdate(): void
+    {
+        $this->login();
+        $user_entity = Session::getActiveEntity();
+        $old_priority = 3;
+        $new_priority = 4;
+
+        // arrange
+        $category_1 = $this->createItem(ITILCategory::class, [
+            'name'         => 'Test category 1',
+            'entities_id'  => $user_entity,
+            'is_recursive' => true,
+        ]);
+        $category_2 = $this->createItem(ITILCategory::class, [
+            'name'         => 'Test category 2',
+            'entities_id'  => $user_entity,
+            'is_recursive' => true,
+        ]);
+
+        $itil_object_1 = $this->createItem($this->getITILObjectClass(), [
+            'name'              => 'Item that will NOT MATCH update criteria',
+            'content'           => __FUNCTION__,
+            'entities_id'       => $user_entity,
+            'priority'          => $old_priority,
+            'itilcategories_id' => 0,
+        ]);
+        $itil_object_2 = $this->createItem($this->getITILObjectClass(), [
+            'name'              => 'Item that will MATCH update criteria',
+            'content'           => __FUNCTION__,
+            'entities_id'       => $user_entity,
+            'priority'          => $old_priority,
+            'itilcategories_id' => $category_1->getID(),
+        ]);
+
+        $builder = new RuleBuilder('Change priority on update', $this->getTestedClass());
+        $builder->addCriteria('entities_id', Rule::PATTERN_IS, $user_entity);
+        $builder->addCriteria('itilcategories_id', Rule::PATTERN_IS, $category_2->getID());
+        $builder->addAction('assign', 'priority', $new_priority);
+        $this->createRule($builder);
+
+        // act
+        $itil_object_1 = $this->updateItem(
+            $itil_object_1::class,
+            $itil_object_1->getID(),
+            [
+                'itilcategories_id' => $category_1->getID(),
+            ]
+        );
+        $itil_object_2 = $this->updateItem(
+            $itil_object_2::class,
+            $itil_object_2->getID(),
+            [
+                'itilcategories_id' => $category_2->getID(),
+            ]
+        );
+
+        // assert
+        $this->assertEquals($old_priority, $itil_object_1->fields['priority']);
+        $this->assertEquals($new_priority, $itil_object_2->fields['priority']);
     }
 }
