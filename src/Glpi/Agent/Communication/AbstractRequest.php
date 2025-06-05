@@ -38,6 +38,7 @@ namespace Glpi\Agent\Communication;
 use DOMDocument;
 use DOMElement;
 use Glpi\Agent\Communication\Headers\Common;
+use Glpi\Exception\OAuth2KeyException;
 use Glpi\Inventory\Conf;
 use Glpi\Http\Request;
 use Glpi\OAuth\Server;
@@ -220,6 +221,10 @@ abstract class AbstractRequest
                     $this->addError('Access denied. Agent must authenticate using client credentials and have the "inventory" OAuth scope', 401);
                     return false;
                 }
+            } catch (OAuth2KeyException $e) {
+                $this->setMode(self::JSON_MODE);
+                $this->addError($e, 500);
+                return false;
             } catch (OAuthServerException) {
                 $this->setMode(self::JSON_MODE);
                 $this->addError('Authorization header required to send an inventory', 401);

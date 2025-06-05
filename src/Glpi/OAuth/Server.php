@@ -35,6 +35,7 @@
 
 namespace Glpi\OAuth;
 
+use Glpi\Exception\OAuth2KeyException;
 use Glpi\Http\Request;
 use League\OAuth2\Server\AuthorizationServer;
 use League\OAuth2\Server\Grant\AuthCodeGrant;
@@ -150,6 +151,7 @@ final class Server
      * @return array
      * @phpstan-return {client_id: string, user_id: string, scopes: string[]}
      * @throws \League\OAuth2\Server\Exception\OAuthServerException
+     * @throws OAuth2KeyException
      */
     public static function validateAccessToken(Request $request): array
     {
@@ -201,9 +203,9 @@ final class Server
             if (is_readable(self::PRIVATE_KEY_PATH) && is_readable(self::PUBLIC_KEY_PATH)) {
                 return true;
             } else {
-                throw new RuntimeException(
+                throw new OAuth2KeyException(
                     sprintf(
-                        'Either %s or %s cannot be read. Please check file system permisisons',
+                        'Either %s or %s cannot be read. Please check file system permissions',
                         self::PRIVATE_KEY_PATH,
                         self::PUBLIC_KEY_PATH
                     )
