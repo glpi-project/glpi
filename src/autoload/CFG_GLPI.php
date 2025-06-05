@@ -116,271 +116,273 @@ $CFG_GLPI['languages'] = [
 // Init to store glpi itemtype / tables link
 $CFG_GLPI['glpitables'] = [];
 
-$CFG_GLPI["unicity_types"]                = ['Budget', 'Computer', 'Contact', 'Contract',
-    'Infocom', 'Monitor', 'NetworkEquipment',
-    'Peripheral', 'Phone', 'Printer', 'Software',
-    'SoftwareLicense', 'Supplier','User', 'Certificate',
-    'Rack', 'Enclosure', 'PDU', 'Cluster', 'Item_DeviceSimcard',
+$CFG_GLPI['unicity_types']                = [
+    Budget::class, Computer::class, Contact::class, Contract::class,
+    Infocom::class, Monitor::class, NetworkEquipment::class,
+    Peripheral::class, Phone::class, Printer::class, Software::class,
+    SoftwareLicense::class, Supplier::class, User::class, Certificate::class,
+    Rack::class, Enclosure::class, PDU::class, Cluster::class, Item_DeviceSimcard::class,
 ];
 
-$CFG_GLPI["state_types"]                  = ['Computer', 'Monitor', 'NetworkEquipment',
-    'Peripheral', 'Phone', 'Printer', 'SoftwareLicense',
-    'Certificate', 'Enclosure', 'PDU', 'Line',
-    'Rack', 'SoftwareVersion', 'Cluster', 'Contract',
-    'Appliance', 'DatabaseInstance', 'Cable', 'Unmanaged', 'PassiveDCEquipment',
+$CFG_GLPI['state_types']                  = [Computer::class, Monitor::class, NetworkEquipment::class,
+    Peripheral::class, Phone::class, Printer::class, SoftwareLicense::class,
+    Certificate::class, Enclosure::class, PDU::class, Line::class,
+    Rack::class, SoftwareVersion::class, Cluster::class, Contract::class,
+    Appliance::class, DatabaseInstance::class, Cable::class, Unmanaged::class, PassiveDCEquipment::class,
 ];
 
-$CFG_GLPI["ruleimportasset_types"]                  = ['Computer', 'Monitor', 'NetworkEquipment',
-    'Peripheral', 'Phone', 'Printer', 'SoftwareLicense',
-    'Certificate', 'Enclosure', 'PDU', 'Line',
-    'Rack', 'SoftwareVersion', 'Cluster', 'Contract',
-    'Appliance', 'DatabaseInstance', 'Cable', 'Unmanaged', 'PassiveDCEquipment',
-];
-
-
-$CFG_GLPI["asset_types"]                  = ['Computer', 'Monitor', 'NetworkEquipment',
-    'Peripheral', 'Phone', 'Printer', 'SoftwareLicense',
-    'Certificate', 'Unmanaged', 'Appliance',
-];
-
-$CFG_GLPI["project_asset_types"]          = ['Computer', 'Monitor', 'NetworkEquipment',
-    'Peripheral', 'Phone', 'Printer', 'Software',
-    'DeviceMotherboard', 'DeviceProcessor', 'DeviceMemory',
-    'DeviceHardDrive', 'DeviceNetworkCard', 'DeviceDrive',
-    'DeviceControl', 'DeviceGraphicCard', 'DeviceSoundCard',
-    'DevicePci', 'DeviceCase', 'DevicePowerSupply', 'DeviceGeneric',
-    'DeviceBattery', 'DeviceFirmware', 'DeviceCamera',
-    'Certificate', 'Appliance',
+$CFG_GLPI['ruleimportasset_types']                  = [Computer::class, Monitor::class, NetworkEquipment::class,
+    Peripheral::class, Phone::class, Printer::class, SoftwareLicense::class,
+    Certificate::class, Enclosure::class, PDU::class, Line::class,
+    Rack::class, SoftwareVersion::class, Cluster::class, Contract::class,
+    Appliance::class, DatabaseInstance::class, Cable::class, Unmanaged::class, PassiveDCEquipment::class,
 ];
 
 
-$CFG_GLPI["document_types"]               = ['Budget', 'CartridgeItem', 'Change', 'Computer',
-    'ConsumableItem', 'Contact', 'Contract',
-    'Document', 'Entity', 'KnowbaseItem', 'Monitor',
-    'NetworkEquipment', 'Peripheral', 'Phone',
-    'Printer', 'Problem', 'Project', 'ProjectTask',
-    'Reminder', 'Software', 'Line',
-    'SoftwareLicense', 'Supplier', 'Ticket','User',
-    'Certificate', 'Cluster', 'ITILFollowup', 'ITILSolution',
-    'ChangeTask', 'ProblemTask', 'TicketTask', 'Appliance',
-    'DatabaseInstance',
+$CFG_GLPI['asset_types']                  = [Computer::class, Monitor::class, NetworkEquipment::class,
+    Peripheral::class, Phone::class, Printer::class, SoftwareLicense::class,
+    Certificate::class, Unmanaged::class, Appliance::class,
 ];
 
-$CFG_GLPI["consumables_types"]            = ['Group', 'User'];
+$CFG_GLPI['project_asset_types']          = [Computer::class, Monitor::class, NetworkEquipment::class,
+    Peripheral::class, Phone::class, Printer::class, Software::class,
+    DeviceMotherboard::class, DeviceProcessor::class, DeviceMemory::class,
+    DeviceHardDrive::class, DeviceNetworkCard::class, DeviceDrive::class,
+    DeviceControl::class, DeviceGraphicCard::class, DeviceSoundCard::class,
+    DevicePci::class, DeviceCase::class, DevicePowerSupply::class, DeviceGeneric::class,
+    DeviceBattery::class, DeviceFirmware::class, DeviceCamera::class,
+    Certificate::class, Appliance::class,
+];
 
-$CFG_GLPI["report_types"]                 = ['Computer', 'Monitor', 'NetworkEquipment',
-    'Peripheral', 'Phone', 'Printer', 'Project',
-    'Software', 'SoftwareLicense', 'Certificate',
+
+$CFG_GLPI['document_types']               = [Budget::class, CartridgeItem::class, Change::class, Computer::class,
+    ConsumableItem::class, Contact::class, Contract::class,
+    Document::class, Entity::class, KnowbaseItem::class, Monitor::class,
+    NetworkEquipment::class, Peripheral::class, Phone::class,
+    Printer::class, Problem::class, Project::class, ProjectTask::class,
+    Reminder::class, Software::class, Line::class,
+    SoftwareLicense::class, Supplier::class, Ticket::class, User::class,
+    Certificate::class, Cluster::class, ITILFollowup::class, ITILSolution::class,
+    ChangeTask::class, ProblemTask::class, TicketTask::class, Appliance::class,
+    DatabaseInstance::class,
+];
+
+$CFG_GLPI['consumables_types']            = [Group::class, User::class];
+
+$CFG_GLPI['report_types']                 = [Computer::class, Monitor::class, NetworkEquipment::class,
+    Peripheral::class, Phone::class, Printer::class, Project::class,
+    Software::class, SoftwareLicense::class, Certificate::class,
 ];
 
 // `peripheralhost_types` contains assets that can host peripherals
 // `directconnect_types` contains the list of assets that are considered as peripherals
-$CFG_GLPI["peripheralhost_types"]         = ['Computer'];
-$CFG_GLPI["directconnect_types"]          = ['Monitor', 'Peripheral', 'Phone', 'Printer'];
+$CFG_GLPI['peripheralhost_types']         = [Computer::class];
+$CFG_GLPI['directconnect_types']          = [Monitor::class, Peripheral::class, Phone::class, Printer::class];
 
-$CFG_GLPI["infocom_types"]                = ['Cartridge', 'CartridgeItem', 'Computer',
-    'Consumable', 'ConsumableItem', 'Monitor',
-    'NetworkEquipment', 'Peripheral', 'Phone',
-    'Printer', 'Software', 'SoftwareLicense',
-    'Line', 'Certificate', 'Domain', 'Appliance', 'Item_DeviceSimcard',
-    'Rack', 'Enclosure', 'PDU', 'PassiveDCEquipment',
-    'DatabaseInstance', 'Cable',
+$CFG_GLPI['infocom_types']                = [Cartridge::class, CartridgeItem::class, Computer::class,
+    Consumable::class, ConsumableItem::class, Monitor::class,
+    NetworkEquipment::class, Peripheral::class, Phone::class,
+    Printer::class, Software::class, SoftwareLicense::class,
+    Line::class, Certificate::class, Domain::class, Appliance::class, Item_DeviceSimcard::class,
+    Rack::class, Enclosure::class, PDU::class, PassiveDCEquipment::class,
+    DatabaseInstance::class, Cable::class,
 ];
 
-$CFG_GLPI["reservation_types"]            = ['Computer', 'Monitor', 'NetworkEquipment',
-    'Peripheral', 'Phone', 'Printer', 'Software', 'Rack',
+$CFG_GLPI['reservation_types']            = [Computer::class, Monitor::class, NetworkEquipment::class,
+    Peripheral::class, Phone::class, Printer::class, Software::class, Rack::class,
 ];
 
-$CFG_GLPI["assignable_types"] = [
-    'Appliance',
-    'Cable',
-    'CartridgeItem',
-    'Certificate',
-    'Cluster',
-    'Computer',
-    'ConsumableItem',
-    'DatabaseInstance',
-    'Domain',
-    'DomainRecord',
-    'Enclosure',
-    'Item_DeviceSimcard',
-    'Line',
-    'Monitor',
-    'NetworkEquipment',
-    'PassiveDCEquipment',
-    'PDU',
-    'Peripheral',
-    'Phone',
-    'Printer',
-    'Rack',
-    'Software',
-    'SoftwareLicense',
-    'Unmanaged',
+$CFG_GLPI['assignable_types'] = [
+    Appliance::class,
+    Cable::class,
+    CartridgeItem::class,
+    Certificate::class,
+    Cluster::class,
+    Computer::class,
+    ConsumableItem::class,
+    DatabaseInstance::class,
+    Domain::class,
+    DomainRecord::class,
+    Enclosure::class,
+    Item_DeviceSimcard::class,
+    Line::class,
+    Monitor::class,
+    NetworkEquipment::class,
+    PassiveDCEquipment::class,
+    PDU::class,
+    Peripheral::class,
+    Phone::class,
+    Printer::class,
+    Rack::class,
+    Software::class,
+    SoftwareLicense::class,
+    Unmanaged::class,
 ];
-$CFG_GLPI["linkuser_types"]         = $CFG_GLPI["assignable_types"];
-$CFG_GLPI["linkgroup_types"]        = $CFG_GLPI["assignable_types"];
-$CFG_GLPI["linkuser_tech_types"]    = $CFG_GLPI["assignable_types"];
-$CFG_GLPI["linkgroup_tech_types"]   = $CFG_GLPI["assignable_types"];
+$CFG_GLPI['linkuser_types']         = $CFG_GLPI['assignable_types'];
+$CFG_GLPI['linkgroup_types']        = $CFG_GLPI['assignable_types'];
+$CFG_GLPI['linkuser_tech_types']    = $CFG_GLPI['assignable_types'];
+$CFG_GLPI['linkgroup_tech_types']   = $CFG_GLPI['assignable_types'];
 
-$CFG_GLPI["location_types"]               = ['Budget', 'CartridgeItem', 'ConsumableItem',
-    'Computer', 'Monitor', "Glpi\\Socket",
-    'NetworkEquipment', 'Peripheral', 'Phone',
-    'Printer', 'Software', 'SoftwareLicense',
-    'Ticket', 'User', 'Certificate', 'Item_DeviceSimcard',
-    'Line', 'Appliance', 'PassiveDCEquipment', 'Datacenter',
-    'DCRoom', 'Rack', 'Enclosure', 'PDU',
-];
-
-$CFG_GLPI["ticket_types"]                 = ['Computer', 'Monitor', 'NetworkEquipment',
-    'Peripheral', 'Phone', 'Printer', 'Software',
-    'SoftwareLicense', 'Certificate',
-    'Line', 'DCRoom', 'Rack', 'Enclosure', 'Cluster', 'PDU',
-    'Domain', 'DomainRecord', 'Appliance', 'Item_DeviceSimcard', 'PassiveDCEquipment',
-    'DatabaseInstance', 'Database', 'Cable',
+$CFG_GLPI['location_types']               = [Budget::class, CartridgeItem::class, ConsumableItem::class,
+    Computer::class, Monitor::class, Glpi\Socket::class,
+    NetworkEquipment::class, Peripheral::class, Phone::class,
+    Printer::class, Software::class, SoftwareLicense::class,
+    Ticket::class, User::class, Certificate::class, Item_DeviceSimcard::class,
+    Line::class, Appliance::class, PassiveDCEquipment::class, Datacenter::class,
+    DCRoom::class, Rack::class, Enclosure::class, PDU::class,
 ];
 
-$CFG_GLPI["link_types"]                   = ['Budget', 'CartridgeItem', 'Computer',
-    'ConsumableItem', 'Contact', 'Contract', 'Monitor',
-    'NetworkEquipment', 'Peripheral', 'Phone',
-    'Printer', 'Software', 'Supplier', 'User', 'Certificate', 'Cluster',
-    'DCRoom', 'Domain', 'Appliance', 'DatabaseInstance',
+$CFG_GLPI['ticket_types']                 = [Computer::class, Monitor::class, NetworkEquipment::class,
+    Peripheral::class, Phone::class, Printer::class, Software::class,
+    SoftwareLicense::class, Certificate::class,
+    Line::class, DCRoom::class, Rack::class, Enclosure::class, Cluster::class, PDU::class,
+    Domain::class, DomainRecord::class, Appliance::class, Item_DeviceSimcard::class, PassiveDCEquipment::class,
+    DatabaseInstance::class, Database::class, Cable::class,
 ];
 
-$CFG_GLPI["dictionnary_types"]            = ['ComputerModel', 'ComputerType', 'Manufacturer',
-    'MonitorModel', 'MonitorType',
-    'NetworkEquipmentModel', 'NetworkEquipmentType',
-    'OperatingSystem', 'OperatingSystemServicePack',
-    'OperatingSystemVersion', 'PeripheralModel',
-    'PeripheralType', 'PhoneModel', 'PhoneType',
-    'Printer', 'PrinterModel', 'PrinterType',
-    'Software', 'OperatingSystemArchitecture',
-    'OperatingSystemKernel', 'OperatingSystemKernelVersion',
-    'OperatingSystemEdition', 'ImageResolution', 'ImageFormat',
-    'DatabaseInstanceType', SocketModel::class, 'CableType',
+$CFG_GLPI['link_types']                   = [Budget::class, CartridgeItem::class, Computer::class,
+    ConsumableItem::class, Contact::class, Contract::class, Monitor::class,
+    NetworkEquipment::class, Peripheral::class, Phone::class,
+    Printer::class, Software::class, Supplier::class, User::class, Certificate::class, Cluster::class,
+    DCRoom::class, Domain::class, Appliance::class, DatabaseInstance::class,
 ];
 
-$CFG_GLPI["helpdesk_visible_types"]       = ['Software', 'Appliance', 'DatabaseInstance'];
-
-$CFG_GLPI["networkport_types"]            = ['Computer', 'Monitor', 'NetworkEquipment', 'Peripheral',
-    'Phone', 'Printer', 'Enclosure', 'PDU', 'Cluster', 'Unmanaged',
+$CFG_GLPI['dictionnary_types']            = [ComputerModel::class, ComputerType::class, Manufacturer::class,
+    MonitorModel::class, MonitorType::class,
+    NetworkEquipmentModel::class, NetworkEquipmentType::class,
+    OperatingSystem::class, OperatingSystemServicePack::class,
+    OperatingSystemVersion::class, PeripheralModel::class,
+    PeripheralType::class, PhoneModel::class, PhoneType::class,
+    Printer::class, PrinterModel::class, PrinterType::class,
+    Software::class, OperatingSystemArchitecture::class,
+    OperatingSystemKernel::class, OperatingSystemKernelVersion::class,
+    OperatingSystemEdition::class, ImageResolution::class, ImageFormat::class,
+    DatabaseInstanceType::class, SocketModel::class, CableType::class,
 ];
 
-// Warning : the order is used for displaying different NetworkPort types ! Keep it !
-$CFG_GLPI['networkport_instantiations']   = ['NetworkPortEthernet', 'NetworkPortWifi',
-    'NetworkPortAggregate', 'NetworkPortAlias',
-    'NetworkPortDialup',   'NetworkPortLocal',
-    'NetworkPortFiberchannel',
+$CFG_GLPI['helpdesk_visible_types']       = [Software::class, Appliance::class, DatabaseInstance::class];
+
+$CFG_GLPI['networkport_types']            = [Computer::class, Monitor::class, NetworkEquipment::class, Peripheral::class,
+    Phone::class, Printer::class, Enclosure::class, PDU::class, Cluster::class, Unmanaged::class,
 ];
 
-$CFG_GLPI["contract_types"]               = [
-    'Computer', 'Monitor', 'NetworkEquipment',
-    'Peripheral', 'Phone', 'Printer', 'Project', 'Line',
-    'Software', 'SoftwareLicense', 'Certificate',
-    'DCRoom', 'Rack', 'Enclosure', 'Cluster', 'PDU', 'Appliance', 'Domain',
-    'DatabaseInstance',
+// Warning: the order is used for displaying different NetworkPort types ! Keep it !
+$CFG_GLPI['networkport_instantiations']   = [NetworkPortEthernet::class, NetworkPortWifi::class,
+    NetworkPortAggregate::class, NetworkPortAlias::class,
+    NetworkPortDialup::class,   NetworkPortLocal::class,
+    NetworkPortFiberchannel::class,
 ];
 
-$CFG_GLPI['device_types']                 = ['DeviceMotherboard', 'DeviceFirmware', 'DeviceProcessor',
-    'DeviceMemory', 'DeviceHardDrive', 'DeviceNetworkCard',
-    'DeviceDrive', 'DeviceBattery', 'DeviceGraphicCard',
-    'DeviceSoundCard', 'DeviceControl', 'DevicePci',
-    'DeviceCase', 'DevicePowerSupply', 'DeviceGeneric',
-    'DeviceSimcard', 'DeviceSensor', 'DeviceCamera',
+$CFG_GLPI['contract_types']               = [
+    Computer::class, Monitor::class, NetworkEquipment::class,
+    Peripheral::class, Phone::class, Printer::class, Project::class, Line::class,
+    Software::class, SoftwareLicense::class, Certificate::class,
+    DCRoom::class, Rack::class, Enclosure::class, Cluster::class, PDU::class, Appliance::class, Domain::class,
+    DatabaseInstance::class,
+];
+
+$CFG_GLPI['device_types']                 = [DeviceMotherboard::class, DeviceFirmware::class, DeviceProcessor::class,
+    DeviceMemory::class, DeviceHardDrive::class, DeviceNetworkCard::class,
+    DeviceDrive::class, DeviceBattery::class, DeviceGraphicCard::class,
+    DeviceSoundCard::class, DeviceControl::class, DevicePci::class,
+    DeviceCase::class, DevicePowerSupply::class, DeviceGeneric::class,
+    DeviceSimcard::class, DeviceSensor::class, DeviceCamera::class,
 ];
 
 
-$CFG_GLPI["socket_types"]                  = ['Computer','NetworkEquipment',
-    'Peripheral','Phone','Printer', 'PassiveDCEquipment',
+$CFG_GLPI['socket_types']                  = [Computer::class, NetworkEquipment::class,
+    Peripheral::class, Phone::class, Printer::class, PassiveDCEquipment::class,
 ];
 
 foreach ($CFG_GLPI['device_types'] as $dtype) {
     $CFG_GLPI['location_types'][] = 'Item_' . $dtype;
     $CFG_GLPI['state_types'][] = 'Item_' . $dtype;
-    $CFG_GLPI["contract_types"][] = 'Item_' . $dtype;
+    $CFG_GLPI['contract_types'][] = 'Item_' . $dtype;
 }
 
-$CFG_GLPI["itemdevices_types"]            = ['Computer', 'NetworkEquipment', 'Peripheral',
-    'Phone', 'Printer', 'Enclosure', 'PDU',
+$CFG_GLPI['itemdevices_types']            = [Computer::class, NetworkEquipment::class, Peripheral::class,
+    Phone::class, Printer::class, Enclosure::class, PDU::class,
 ];
 
-$CFG_GLPI["itemdevices_itemaffinity"]     = ['Computer'];
+$CFG_GLPI['itemdevices_itemaffinity']     = [Computer::class];
 
-$CFG_GLPI["itemdevicememory_types"]       = ['Computer', 'NetworkEquipment', 'Peripheral', 'Printer', 'Phone'];
+$CFG_GLPI['itemdevicememory_types']       = [Computer::class, NetworkEquipment::class, Peripheral::class, Printer::class, Phone::class];
 
-$CFG_GLPI["itemdevicepowersupply_types"]  = ['Computer', 'NetworkEquipment', 'Peripheral', 'Enclosure', 'Phone'];
+$CFG_GLPI['itemdevicepowersupply_types']  = [Computer::class, NetworkEquipment::class, Peripheral::class, Enclosure::class, Phone::class];
 
-$CFG_GLPI["itemdevicenetworkcard_types"]  = ['Computer', 'NetworkEquipment', 'Peripheral', 'Phone', 'Printer'];
+$CFG_GLPI['itemdevicenetworkcard_types']  = [Computer::class, NetworkEquipment::class, Peripheral::class, Phone::class, Printer::class];
 
-$CFG_GLPI['itemdeviceharddrive_types']    = ['Computer', 'Peripheral', 'NetworkEquipment', 'Printer', 'Phone'];
+$CFG_GLPI['itemdeviceharddrive_types']    = [Computer::class, Peripheral::class, NetworkEquipment::class, Printer::class, Phone::class];
 
-$CFG_GLPI['itemdevicebattery_types']      = ['Computer', 'Peripheral', 'Phone', 'Printer'];
+$CFG_GLPI['itemdevicebattery_types']      = [Computer::class, Peripheral::class, Phone::class, Printer::class];
 
-$CFG_GLPI['itemdevicefirmware_types']     = ['Computer', 'Peripheral', 'Phone', 'NetworkEquipment', 'Printer'];
+$CFG_GLPI['itemdevicefirmware_types']     = [Computer::class, Peripheral::class, Phone::class, NetworkEquipment::class, Printer::class];
 
-$CFG_GLPI['itemdevicesimcard_types']      = ['Computer', 'Peripheral', 'Phone', 'NetworkEquipment', 'Printer'];
+$CFG_GLPI['itemdevicesimcard_types']      = [Computer::class, Peripheral::class, Phone::class, NetworkEquipment::class, Printer::class];
 
 $CFG_GLPI['itemdevicegeneric_types']      = ['*'];
 
 $CFG_GLPI['itemdevicepci_types']          = ['*'];
 
-$CFG_GLPI['itemdevicecontrol_types']      = ['Computer'];
+$CFG_GLPI['itemdevicecontrol_types']      = [Computer::class];
 
-$CFG_GLPI['itemdevicedrive_types']        = ['Computer'];
+$CFG_GLPI['itemdevicedrive_types']        = [Computer::class];
 
-$CFG_GLPI['itemdevicesensor_types']       = ['Computer', 'Peripheral', 'Phone'];
+$CFG_GLPI['itemdevicesensor_types']       = [Computer::class, Peripheral::class, Phone::class];
 
-$CFG_GLPI['itemdeviceprocessor_types']    = ['Computer', 'Phone'];
+$CFG_GLPI['itemdeviceprocessor_types']    = [Computer::class, Phone::class];
 
-$CFG_GLPI['itemdevicesoundcard_types']    = ['Computer'];
+$CFG_GLPI['itemdevicesoundcard_types']    = [Computer::class];
 
-$CFG_GLPI['itemdevicegraphiccard_types']  = ['Computer', 'Phone'];
+$CFG_GLPI['itemdevicegraphiccard_types']  = [Computer::class, Phone::class];
 
-$CFG_GLPI['itemdevicemotherboard_types']  = ['Computer', 'Phone'];
+$CFG_GLPI['itemdevicemotherboard_types']  = [Computer::class, Phone::class];
 
-$CFG_GLPI['itemdevicecamera_types']  = ['Computer', 'Phone'];
+$CFG_GLPI['itemdevicecamera_types']  = [Computer::class, Phone::class];
 
-$CFG_GLPI['itemdevicedrive_types']  = ['Computer', 'Peripheral'];
+$CFG_GLPI['itemdevicedrive_types']  = [Computer::class, Peripheral::class];
 
-$CFG_GLPI['itemdevicecontrol_types']  = ['Computer', 'Peripheral', 'Phone', 'NetworkEquipment', 'Printer'];
+$CFG_GLPI['itemdevicecontrol_types']  = [Computer::class, Peripheral::class, Phone::class, NetworkEquipment::class, Printer::class];
 
-$CFG_GLPI["notificationtemplates_types"]  = ['CartridgeItem', 'Change', 'ConsumableItem',
-    'Contract', 'CronTask', 'DBConnection',
-    'FieldUnicity', 'Infocom', 'MailCollector',
-    'ObjectLock', 'PlanningRecall', 'Problem',
-    'Project', 'ProjectTask', 'Reservation',
-    'SoftwareLicense', 'Ticket', 'User',
-    'SavedSearch_Alert', 'Certificate', 'Glpi\\Marketplace\\Controller',
-    'Domain', 'KnowbaseItem',
+$CFG_GLPI['notificationtemplates_types']  = [CartridgeItem::class, Change::class, ConsumableItem::class,
+    Contract::class, CronTask::class, DBConnection::class,
+    FieldUnicity::class, Infocom::class, MailCollector::class,
+    ObjectLock::class, PlanningRecall::class, Problem::class,
+    Project::class, ProjectTask::class, Reservation::class,
+    SoftwareLicense::class, Ticket::class, User::class,
+    SavedSearch_Alert::class, Certificate::class, Glpi\Marketplace\Controller::class,
+    Domain::class, KnowbaseItem::class,
 ];
 
 
-$CFG_GLPI["union_search_type"]            = ['ReservationItem' => "reservation_types",
-    AllAssets::class       => "asset_types",
+$CFG_GLPI['union_search_type']            = [
+    ReservationItem::class => 'reservation_types',
+    AllAssets::class       => 'asset_types',
 ];
 
-$CFG_GLPI["systeminformations_types"]     = ['AuthLDAP', 'DBConnection', 'MailCollector',
-    'Plugin',
+$CFG_GLPI['systeminformations_types']     = [AuthLDAP::class, DBConnection::class, MailCollector::class,
+    Plugin::class,
 ];
 
-$CFG_GLPI["rulecollections_types"]        = [
-    'RuleDefineItemtypeCollection',
-    'RuleImportAssetCollection',
-    'RuleImportEntityCollection',
-    'RuleLocationCollection',
-    'RuleMailCollectorCollection',
-    'RuleRightCollection',
-    'RuleSoftwareCategoryCollection',
-    'RuleTicketCollection',
-    'RuleChangeCollection',
-    'RuleProblemCollection',
-    'RuleAssetCollection',
+$CFG_GLPI['rulecollections_types']        = [
+    RuleDefineItemtypeCollection::class,
+    RuleImportAssetCollection::class,
+    RuleImportEntityCollection::class,
+    RuleLocationCollection::class,
+    RuleMailCollectorCollection::class,
+    RuleRightCollection::class,
+    RuleSoftwareCategoryCollection::class,
+    RuleTicketCollection::class,
+    RuleChangeCollection::class,
+    RuleProblemCollection::class,
+    RuleAssetCollection::class,
 ];
 
 // Items which can planned something
-$CFG_GLPI['planning_types']               = ['ChangeTask', 'ProblemTask', 'Reminder',
-    'TicketTask', 'ProjectTask', 'PlanningExternalEvent',
+$CFG_GLPI['planning_types']               = [ChangeTask::class, ProblemTask::class, Reminder::class,
+    TicketTask::class, ProjectTask::class, PlanningExternalEvent::class,
 ];
-$CFG_GLPI['planning_add_types']           = ['PlanningExternalEvent'];
+$CFG_GLPI['planning_add_types']           = [PlanningExternalEvent::class];
 
 // supported components send by caldav server
 // - VTODO: All possible planning events of GLPI with a status of TODO/DONE,
@@ -390,20 +392,20 @@ $CFG_GLPI['planning_add_types']           = ['PlanningExternalEvent'];
 // The two first entry fallback on VEVENT if they are disabled (and they are planned, other are not displayed)
 $CFG_GLPI['caldav_supported_components']  = ['VEVENT', 'VJOURNAL'];
 
-$CFG_GLPI["globalsearch_types"]           = ['Computer', 'Contact', 'Contract',
-    'Document',  'Monitor',
-    'NetworkEquipment', 'Peripheral', 'Phone',
-    'Printer', 'Software', 'SoftwareLicense',
-    'Ticket', 'Problem', 'Change',
-    'User', 'Group', 'Project', 'Supplier',
-    'Budget', 'Certificate', 'Line', 'Datacenter',
-    'DCRoom', 'Enclosure', 'PDU', 'Rack', 'Cluster', 'PassiveDCEquipment',
-    'Domain', 'Appliance',
+$CFG_GLPI['globalsearch_types']           = [Computer::class, Contact::class, Contract::class,
+    Document::class,  Monitor::class,
+    NetworkEquipment::class, Peripheral::class, Phone::class,
+    Printer::class, Software::class, SoftwareLicense::class,
+    Ticket::class, Problem::class, Change::class,
+    User::class, Group::class, Project::class, Supplier::class,
+    Budget::class, Certificate::class, Line::class, Datacenter::class,
+    DCRoom::class, Enclosure::class, PDU::class, Rack::class, Cluster::class, PassiveDCEquipment::class,
+    Domain::class, Appliance::class,
 ];
 
 // New config options which can be missing during migration
-$CFG_GLPI["number_format"]  = 0;
-$CFG_GLPI["decimal_number"] = 2;
+$CFG_GLPI['number_format']  = 0;
+$CFG_GLPI['decimal_number'] = 2;
 
 // User Prefs fields which override $CFG_GLPI config
 $CFG_GLPI['user_pref_field'] = ['backcreated', 'csv_delimiter', 'date_format',
@@ -430,82 +432,82 @@ $CFG_GLPI['user_pref_field'] = ['backcreated', 'csv_delimiter', 'date_format',
     'show_search_form', 'search_pagination_on_top',
 ];
 
-$CFG_GLPI['lock_lockable_objects'] = ['Budget',  'Change', 'Contact', 'Contract', 'Document',
-    'CartridgeItem', 'Computer', 'ConsumableItem', 'Entity',
-    'Group', 'KnowbaseItem', 'Line', 'Link', 'Monitor',
-    'NetworkEquipment', 'NetworkName', 'Peripheral', 'Phone',
-    'Printer', 'Problem', 'Profile', 'Project', 'Reminder',
-    'RSSFeed', 'Software', 'Supplier', 'Ticket', 'User',
-    'SoftwareLicense', 'Certificate',
+$CFG_GLPI['lock_lockable_objects'] = [Budget::class,  Change::class, Contact::class, Contract::class, Document::class,
+    CartridgeItem::class, Computer::class, ConsumableItem::class, Entity::class,
+    Group::class, KnowbaseItem::class, Line::class, Link::class, Monitor::class,
+    NetworkEquipment::class, NetworkName::class, Peripheral::class, Phone::class,
+    Printer::class, Problem::class, Profile::class, Project::class, Reminder::class,
+    RSSFeed::class, Software::class, Supplier::class, Ticket::class, User::class,
+    SoftwareLicense::class, Certificate::class,
 ];
 
 $CFG_GLPI['inventory_types'] = [
-    'Computer',
-    'Phone',
-    'Printer',
-    'NetworkEquipment',
+    Computer::class,
+    Phone::class,
+    Printer::class,
+    NetworkEquipment::class,
 ];
 
-$CFG_GLPI['inventory_lockable_objects'] = [Asset_PeripheralAsset::class,  'Item_SoftwareLicense',
-    'Item_SoftwareVersion', 'Item_Disk', 'ItemVirtualMachine','ItemAntivirus',
-    'NetworkPort', 'NetworkName', 'IPAddress', 'Item_OperatingSystem', 'Item_DeviceBattery', 'Item_DeviceCase',
-    'Item_DeviceControl', 'Item_DeviceDrive', 'Item_DeviceFirmware', 'Item_DeviceGeneric', 'Item_DeviceGraphicCard',
-    'Item_DeviceHardDrive', 'Item_DeviceMemory', 'Item_DeviceMotherboard', 'Item_DeviceNetworkCard', 'Item_DevicePci',
-    'Item_DevicePowerSupply', 'Item_DeviceProcessor', 'Item_DeviceSensor', 'Item_DeviceSimcard', 'Item_DeviceSoundCard',
-    'DatabaseInstance', 'Item_RemoteManagement','Monitor', 'Domain_Item', 'Peripheral', 'Unmanaged', 'Database',
-    'Item_DeviceCamera', 'Item_DeviceCamera_ImageFormat', 'Item_DeviceCamera_ImageResolution',
-    'Item_Environment', 'Item_Process',
+$CFG_GLPI['inventory_lockable_objects'] = [Asset_PeripheralAsset::class,  Item_SoftwareLicense::class,
+    Item_SoftwareVersion::class, Item_Disk::class, ItemVirtualMachine::class, ItemAntivirus::class,
+    NetworkPort::class, NetworkName::class, IPAddress::class, Item_OperatingSystem::class, Item_DeviceBattery::class, Item_DeviceCase::class,
+    Item_DeviceControl::class, Item_DeviceDrive::class, Item_DeviceFirmware::class, Item_DeviceGeneric::class, Item_DeviceGraphicCard::class,
+    Item_DeviceHardDrive::class, Item_DeviceMemory::class, Item_DeviceMotherboard::class, Item_DeviceNetworkCard::class, Item_DevicePci::class,
+    Item_DevicePowerSupply::class, Item_DeviceProcessor::class, Item_DeviceSensor::class, Item_DeviceSimcard::class, Item_DeviceSoundCard::class,
+    DatabaseInstance::class, Item_RemoteManagement::class, Monitor::class, Domain_Item::class, Peripheral::class, Unmanaged::class, Database::class,
+    Item_DeviceCamera::class, Item_DeviceCamera_ImageFormat::class, Item_DeviceCamera_ImageResolution::class,
+    Item_Environment::class, Item_Process::class,
 ];
 
 $CFG_GLPI['printer_types'] = ['Printer'];
 
-$CFG_GLPI["kb_types"]              = ['Budget', 'Change', 'Computer',
-    'Contract', 'Entity',
-    'Monitor', 'NetworkEquipment',
-    'Peripheral', 'Phone', 'Printer',
-    'Problem', 'Project', 'Software',
-    'SoftwareLicense', 'Supplier',
-    'Ticket', 'Certificate', 'Appliance',
-    'DatabaseInstance',
+$CFG_GLPI['kb_types']              = [Budget::class, Change::class, Computer::class,
+    Contract::class, Entity::class,
+    Monitor::class, NetworkEquipment::class,
+    Peripheral::class, Phone::class, Printer::class,
+    Problem::class, Project::class, Software::class,
+    SoftwareLicense::class, Supplier::class,
+    Ticket::class, Certificate::class, Appliance::class,
+    DatabaseInstance::class,
 ];
-$CFG_GLPI["certificate_types"]     = ['Computer',
-    'NetworkEquipment', 'Peripheral',
-    'Phone', 'Printer',
-    'SoftwareLicense', 'User', 'Domain', 'Appliance',
-    'DatabaseInstance',
+$CFG_GLPI['certificate_types']     = [Computer::class,
+    NetworkEquipment::class, Peripheral::class,
+    Phone::class, Printer::class,
+    SoftwareLicense::class, User::class, Domain::class, Appliance::class,
+    DatabaseInstance::class,
 ];
 
-$CFG_GLPI["rackable_types"]        = ['Computer', 'Monitor', 'NetworkEquipment', 'Peripheral', 'Enclosure', 'PDU', 'PassiveDCEquipment'];
+$CFG_GLPI['rackable_types']        = [Computer::class, Monitor::class, NetworkEquipment::class, Peripheral::class, Enclosure::class, PDU::class, PassiveDCEquipment::class];
 
-$CFG_GLPI["cluster_types"]        = ['Computer', 'NetworkEquipment'];
+$CFG_GLPI['cluster_types']        = [Computer::class, NetworkEquipment::class];
 
-$CFG_GLPI['operatingsystem_types'] = ['Computer', 'Monitor', 'NetworkEquipment', 'Peripheral', 'Phone', 'Printer'];
+$CFG_GLPI['operatingsystem_types'] = [Computer::class, Monitor::class, NetworkEquipment::class, Peripheral::class, Phone::class, Printer::class];
 
 $CFG_GLPI['software_types']      = $CFG_GLPI['operatingsystem_types'];
 
-$CFG_GLPI['disk_types'] = ['Computer', 'NetworkEquipment', 'Phone', 'Printer'];
+$CFG_GLPI['disk_types'] = [Computer::class, NetworkEquipment::class, Phone::class, Printer::class];
 
-$CFG_GLPI['kanban_types']        = ['Project'];
+$CFG_GLPI['kanban_types']        = [Project::class];
 
-$CFG_GLPI['domain_types']        = ['Computer', 'Monitor', 'NetworkEquipment', 'Peripheral',
-    'Phone', 'Printer', 'Software', 'Appliance', 'Certificate', 'DatabaseInstance', 'Database', 'Unmanaged',
+$CFG_GLPI['domain_types']        = [Computer::class, Monitor::class, NetworkEquipment::class, Peripheral::class,
+    Phone::class, Printer::class, Software::class, Appliance::class, Certificate::class, DatabaseInstance::class, Database::class, Unmanaged::class,
 ];
 
-$CFG_GLPI['appliance_types']     = ['Computer', 'Monitor', 'NetworkEquipment', 'Peripheral', 'Phone',
-    'Printer', 'Software', 'Appliance', 'Cluster', 'DatabaseInstance', 'Database',
+$CFG_GLPI['appliance_types']     = [Computer::class, Monitor::class, NetworkEquipment::class, Peripheral::class, Phone::class,
+    Printer::class, Software::class, Appliance::class, Cluster::class, DatabaseInstance::class, Database::class,
 ];
 
-$CFG_GLPI['appliance_relation_types'] = ['Location', 'Network', 'Domain', 'ApplianceEnvironment'];
+$CFG_GLPI['appliance_relation_types'] = [Location::class, Network::class, Domain::class, ApplianceEnvironment::class];
 
-$CFG_GLPI['remote_management_types'] = ['Computer', 'Phone'];
+$CFG_GLPI['remote_management_types'] = [Computer::class, Phone::class];
 
-$CFG_GLPI['databaseinstance_types'] = ['Computer'];
+$CFG_GLPI['databaseinstance_types'] = [Computer::class];
 
-$CFG_GLPI['agent_types'] = ['Computer', 'Phone'];
+$CFG_GLPI['agent_types'] = [Computer::class, Phone::class];
 
 $CFG_GLPI['line_types'] = $CFG_GLPI['itemdevicesimcard_types'];
 
-$CFG_GLPI['itil_types'] = ['Ticket', 'Change', 'Problem'];
+$CFG_GLPI['itil_types'] = [Ticket::class, Change::class, Problem::class];
 
 $reservations_libs = ['fullcalendar', 'reservations'];
 
@@ -597,67 +599,67 @@ $CFG_GLPI['max_time_for_count'] = 200;
 /**
  * Impact itemtypes enabled by default
  */
-$CFG_GLPI["default_impact_asset_types"] = [
-    Appliance::class          => "/pics/impact/appliance.png",
-    Cluster::class            => "/pics/impact/cluster.png",
-    Computer::class           => "/pics/impact/computer.png",
-    Datacenter::class         => "/pics/impact/datacenter.png",
-    DCRoom::class             => "/pics/impact/dcroom.png",
-    Domain::class             => "/pics/impact/domain.png",
-    Enclosure::class          => "/pics/impact/enclosure.png",
-    Monitor::class            => "/pics/impact/monitor.png",
-    NetworkEquipment::class   => "/pics/impact/networkequipment.png",
-    PDU::class                => "/pics/impact/pdu.png",
-    Peripheral::class         => "/pics/impact/peripheral.png",
-    Phone::class              => "/pics/impact/phone.png",
-    Printer::class            => "/pics/impact/printer.png",
-    Rack::class               => "/pics/impact/rack.png",
-    Software::class           => "/pics/impact/software.png",
-    DatabaseInstance::class   => "/pics/impact/databaseinstance.png",
+$CFG_GLPI['default_impact_asset_types'] = [
+    Appliance::class          => '/pics/impact/appliance.png',
+    Cluster::class            => '/pics/impact/cluster.png',
+    Computer::class           => '/pics/impact/computer.png',
+    Datacenter::class         => '/pics/impact/datacenter.png',
+    DCRoom::class             => '/pics/impact/dcroom.png',
+    Domain::class             => '/pics/impact/domain.png',
+    Enclosure::class          => '/pics/impact/enclosure.png',
+    Monitor::class            => '/pics/impact/monitor.png',
+    NetworkEquipment::class   => '/pics/impact/networkequipment.png',
+    PDU::class                => '/pics/impact/pdu.png',
+    Peripheral::class         => '/pics/impact/peripheral.png',
+    Phone::class              => '/pics/impact/phone.png',
+    Printer::class            => '/pics/impact/printer.png',
+    Rack::class               => '/pics/impact/rack.png',
+    Software::class           => '/pics/impact/software.png',
+    DatabaseInstance::class   => '/pics/impact/databaseinstance.png',
 ];
 
 /**
  * All possible impact itemtypes: default + extra itemtypes that can be
  * added in GLPI configuration
  */
-$CFG_GLPI["impact_asset_types"] = $CFG_GLPI["default_impact_asset_types"] + [
-    AuthLDAP::class           => "/pics/impact/authldap.png",
-    CartridgeItem::class      => "/pics/impact/cartridgeitem.png",
-    Contract::class           => "/pics/impact/contract.png",
-    CronTask::class           => "/pics/impact/crontask.png",
-    DeviceSimcard::class      => "/pics/impact/devicesimcard.png",
-    Entity::class             => "/pics/impact/entity.png",
-    Group::class              => "/pics/impact/group.png",
-    ITILCategory::class       => "/pics/impact/itilcategory.png",
-    Line::class               => "/pics/impact/line.png",
-    Location::class           => "/pics/impact/location.png",
-    MailCollector::class      => "/pics/impact/mailcollector.png",
-    Notification::class       => "/pics/impact/notification.png",
-    Profile::class            => "/pics/impact/profile.png",
-    Project::class            => "/pics/impact/project.png",
-    Rack::class               => "/pics/impact/rack.png",
-    SLM::class                => "/pics/impact/slm.png",
-    SoftwareLicense::class    => "/pics/impact/softwarelicense.png",
-    Supplier::class           => "/pics/impact/supplier.png",
-    User::class               => "/pics/impact/user.png",
-    Database::class           => "/pics/impact/database.png",
+$CFG_GLPI['impact_asset_types'] = $CFG_GLPI['default_impact_asset_types'] + [
+    AuthLDAP::class           => '/pics/impact/authldap.png',
+    CartridgeItem::class      => '/pics/impact/cartridgeitem.png',
+    Contract::class           => '/pics/impact/contract.png',
+    CronTask::class           => '/pics/impact/crontask.png',
+    DeviceSimcard::class      => '/pics/impact/devicesimcard.png',
+    Entity::class             => '/pics/impact/entity.png',
+    Group::class              => '/pics/impact/group.png',
+    ITILCategory::class       => '/pics/impact/itilcategory.png',
+    Line::class               => '/pics/impact/line.png',
+    Location::class           => '/pics/impact/location.png',
+    MailCollector::class      => '/pics/impact/mailcollector.png',
+    Notification::class       => '/pics/impact/notification.png',
+    Profile::class            => '/pics/impact/profile.png',
+    Project::class            => '/pics/impact/project.png',
+    Rack::class               => '/pics/impact/rack.png',
+    SLM::class                => '/pics/impact/slm.png',
+    SoftwareLicense::class    => '/pics/impact/softwarelicense.png',
+    Supplier::class           => '/pics/impact/supplier.png',
+    User::class               => '/pics/impact/user.png',
+    Database::class           => '/pics/impact/database.png',
 ];
 
-$CFG_GLPI['itemantivirus_types'] = ['Computer', 'Phone'];
-$CFG_GLPI['itemvirtualmachines_types'] = ['Computer'];
-$CFG_GLPI['plug_types'] = ['PDU'];
+$CFG_GLPI['itemantivirus_types'] = [Computer::class, Phone::class];
+$CFG_GLPI['itemvirtualmachines_types'] = [Computer::class];
+$CFG_GLPI['plug_types'] = [PDU::class];
 
 $CFG_GLPI['management_types'] = [
-    'Budget', 'Supplier', 'Contact', 'Contract', 'Document', 'Project', 'Certificate', 'Appliance', 'Database',
+    Budget::class, Supplier::class, Contact::class, Contract::class, Document::class, Project::class, Certificate::class, Appliance::class, Database::class,
 ];
 
 $CFG_GLPI['tools_types'] = [
-    'Reminder', 'RSSFeed',
+    Reminder::class, RSSFeed::class,
 ];
 
 $CFG_GLPI['admin_types'] = [
-    'User', 'Group', 'Entity', 'Profile',
+    User::class, Group::class, Entity::class, Profile::class,
 ];
 
-$CFG_GLPI['process_types'] = ['Computer'];
-$CFG_GLPI['environment_types'] = ['Computer'];
+$CFG_GLPI['process_types'] = [Computer::class];
+$CFG_GLPI['environment_types'] = [Computer::class];
