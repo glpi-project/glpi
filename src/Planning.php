@@ -336,7 +336,7 @@ JAVASCRIPT;
         $message = '';
 
         foreach ($CFG_GLPI['planning_types'] as $itemtype) {
-            if (!is_a($itemtype, CommonITILTask::class, true) || !Toolbox::hasTrait($itemtype, PlanningEvent::class)) {
+            if (!is_a($itemtype, CommonDBTM::class, true) || !Toolbox::hasTrait($itemtype, PlanningEvent::class)) {
                 continue;
             }
             $item = new $itemtype();
