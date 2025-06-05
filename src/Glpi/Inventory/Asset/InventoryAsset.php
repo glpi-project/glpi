@@ -494,7 +494,10 @@ abstract class InventoryAsset
                     if (isset($this->known_links[$known_key])) {
                         $input[$key] = $this->known_links[$known_key];
                         $input['_raw' . $key] = $this->raw_links[$known_key];
-                    } else {
+                    } elseif (!$item->isNewItem()) {
+                        // If $item is new and the input key is locked, we do not want to set it using the raw value.
+                        // This is because locked fields are no longer processed or sanitized during the addition process.
+                        // For more details, see: https://github.com/glpi-project/glpi/pull/19426
                         $input[$key] = $this->raw_links[$known_key];
                     }
                 }

@@ -516,6 +516,7 @@ The present file will list all changes made to the project; according to the
 - `NetworkName::getInternetNameFromID()`
 - `NetworkPort::getAvailableDisplayOptions()`
 - `NetworkPort::getNetworkPortInstantiationsWithNames()`
+- `NetworkPort::getUnmanagedLink()`
 - `NetworkPort::resetConnections()`
 - `NetworkPortInstantiation::getGlobalInstantiationNetworkPortDisplayOptions()`
 - `NetworkPortInstantiation::getInstantiationHTMLTable()` and all sub classes overrides.

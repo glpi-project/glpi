@@ -4119,6 +4119,7 @@ abstract class CommonITILObject extends CommonDBTM
             case 'priority':
                 $options['name']  = $name;
                 $options['value'] = $values[$field];
+                $options['enable_filtering'] = false;
                 return static::dropdownPriority($options);
 
             case 'global_validation':
@@ -11280,6 +11281,32 @@ abstract class CommonITILObject extends CommonDBTM
             return false;
         }
         return self::canDelete();
+    }
+
+    public function canAddItem(string $type): bool
+    {
+        if ($type == Document::class) {
+            return $this->canAddDocuments();
+        }
+
+        return parent::canAddItem($type);
+    }
+
+
+    /**
+     * Check whether the current user can add documents.
+     */
+    final protected function canAddDocuments(): bool
+    {
+        if (in_array($this->fields['status'], $this->getClosedStatusArray())) {
+            return false;
+        }
+
+        if ($this->canAddFollowups()) {
+            return true;
+        }
+
+        return false;
     }
 
     public static function getTeamMemberForm(CommonITILObject $item): string
