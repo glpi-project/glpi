@@ -50,6 +50,7 @@ use Glpi\Form\QuestionType\QuestionTypeEmail;
 use Glpi\Form\QuestionType\QuestionTypeFile;
 use Glpi\Form\QuestionType\QuestionTypeItem;
 use Glpi\Form\QuestionType\QuestionTypeItemDropdown;
+use Glpi\Form\QuestionType\QuestionTypeItemDropdownExtraDataConfig;
 use Glpi\Form\QuestionType\QuestionTypeItemExtraDataConfig;
 use Glpi\Form\QuestionType\QuestionTypeLongText;
 use Glpi\Form\QuestionType\QuestionTypeNumber;
@@ -200,7 +201,7 @@ final class VisibilityConditionHandlerTest extends AbstractConditionHandler
             ],
             "QuestionTypeItemDropdown" => [
                 'type' => QuestionTypeItemDropdown::class,
-                'extra_data' => new QuestionTypeItemExtraDataConfig(
+                'extra_data' => new QuestionTypeItemDropdownExtraDataConfig(
                     itemtype: Location::class,
                 ),
             ],

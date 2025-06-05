@@ -40,6 +40,7 @@ use Glpi\Form\Destination\CommonITILField\LocationFieldConfig;
 use Glpi\Form\Destination\CommonITILField\LocationFieldStrategy;
 use Glpi\Form\Form;
 use Glpi\Form\QuestionType\QuestionTypeItemDropdown;
+use Glpi\Form\QuestionType\QuestionTypeItemDropdownExtraDataConfig;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
 use Location;
@@ -355,13 +356,13 @@ final class LocationFieldTest extends AbstractDestinationFieldTest
     {
         $this->login();
 
+        $extra_data_config = (new QuestionTypeItemDropdownExtraDataConfig(
+            itemtype: Location::getType(),
+        ));
+
         $builder = new FormBuilder();
-        $builder->addQuestion("Location 1", QuestionTypeItemDropdown::class, 0, json_encode([
-            'itemtype' => Location::getType(),
-        ]));
-        $builder->addQuestion("Location 2", QuestionTypeItemDropdown::class, 0, json_encode([
-            'itemtype' => Location::getType(),
-        ]));
+        $builder->addQuestion("Location 1", QuestionTypeItemDropdown::class, 0, json_encode($extra_data_config));
+        $builder->addQuestion("Location 2", QuestionTypeItemDropdown::class, 0, json_encode($extra_data_config));
         return $this->createForm($builder);
     }
 }

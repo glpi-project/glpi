@@ -92,6 +92,7 @@ use Glpi\Form\QuestionType\QuestionTypeActorsExtraDataConfig;
 use Glpi\Form\QuestionType\QuestionTypeAssignee;
 use Glpi\Form\QuestionType\QuestionTypeItem;
 use Glpi\Form\QuestionType\QuestionTypeItemDropdown;
+use Glpi\Form\QuestionType\QuestionTypeItemDropdownExtraDataConfig;
 use Glpi\Form\QuestionType\QuestionTypeItemExtraDataConfig;
 use Glpi\Form\QuestionType\QuestionTypeObserver;
 use Glpi\Form\QuestionType\QuestionTypeRequester;
@@ -574,9 +575,9 @@ final class FormSerializerDestinationTest extends \DbTestCase
             'questions_to_create' => [
                 [
                     'type' => QuestionTypeItemDropdown::class,
-                    'extra_data' => json_encode((new QuestionTypeItemExtraDataConfig(
+                    'extra_data' => json_encode((new QuestionTypeItemDropdownExtraDataConfig(
                         itemtype: \ITILCategory::class
-                    ))->jsonSerialize()),
+                    ))),
                 ],
             ],
         ];
@@ -606,7 +607,7 @@ final class FormSerializerDestinationTest extends \DbTestCase
             'questions_to_create' => [
                 [
                     'type' => QuestionTypeItemDropdown::class,
-                    'extra_data' => json_encode((new QuestionTypeItemExtraDataConfig(
+                    'extra_data' => json_encode((new QuestionTypeItemDropdownExtraDataConfig(
                         itemtype: \Location::class
                     ))->jsonSerialize()),
                 ],

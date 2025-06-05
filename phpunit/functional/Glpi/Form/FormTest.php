@@ -113,7 +113,10 @@ class FormTest extends DbTestCase
                 'itemtype' => 'Computer',
             ],
             \Glpi\Form\QuestionType\QuestionTypeItemDropdown::class => [
-                'itemtype' => 'Location',
+                'itemtype'          => 'Location',
+                'categories_filter' => [],
+                'root_items_id'     => 0,
+                'subtree_depth'     => 0,
             ],
         ];
 

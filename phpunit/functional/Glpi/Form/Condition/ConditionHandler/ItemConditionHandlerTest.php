@@ -38,6 +38,7 @@ use Computer;
 use Glpi\Form\Condition\ValueOperator;
 use Glpi\Form\QuestionType\QuestionTypeItem;
 use Glpi\Form\QuestionType\QuestionTypeItemDropdown;
+use Glpi\Form\QuestionType\QuestionTypeItemDropdownExtraDataConfig;
 use Glpi\Form\QuestionType\QuestionTypeItemExtraDataConfig;
 use Override;
 use SoftwareCategory;
@@ -45,6 +46,22 @@ use tests\units\Glpi\Form\Condition\AbstractConditionHandler;
 
 final class ItemConditionHandlerTest extends AbstractConditionHandler
 {
+    private static function getDefaultExtraDataConfig(string $question_type): QuestionTypeItemExtraDataConfig
+    {
+        switch ($question_type) {
+            case QuestionTypeItem::class:
+                return new QuestionTypeItemExtraDataConfig(
+                    itemtype: Computer::class,
+                );
+            case QuestionTypeItemDropdown::class:
+                return new QuestionTypeItemDropdownExtraDataConfig(
+                    itemtype: SoftwareCategory::class,
+                );
+            default:
+                throw new \InvalidArgumentException("Unsupported question type: $question_type");
+        }
+    }
+
     #[Override]
     public static function conditionHandlerProvider(): iterable
     {
@@ -54,9 +71,7 @@ final class ItemConditionHandlerTest extends AbstractConditionHandler
         ];
 
         foreach ($types as $type => $itemtype) {
-            $extra_data = new QuestionTypeItemExtraDataConfig(
-                itemtype: $itemtype,
-            );
+            $extra_data = self::getDefaultExtraDataConfig($type);
 
             // Test item answers with the EQUALS operator
             yield "Equals check - case 1 for $type (same items)" => [
@@ -95,9 +110,7 @@ final class ItemConditionHandlerTest extends AbstractConditionHandler
             ];
         }
 
-        $extra_data = new QuestionTypeItemExtraDataConfig(
-            itemtype: Computer::class,
-        );
+        $extra_data = self::getDefaultExtraDataConfig(QuestionTypeItem::class);
         $type = QuestionTypeItem::class;
 
         // Test item answers with the CONTAINS operator

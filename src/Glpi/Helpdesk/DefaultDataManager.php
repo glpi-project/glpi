@@ -317,7 +317,12 @@ final class DefaultDataManager
             'type' => QuestionTypeItemDropdown::class,
             'name' => _n('Category', 'Categories', 1),
             'default_value' => null,
-            'extra_data' => json_encode(['itemtype' => ITILCategory::class]),
+            'extra_data' => json_encode([
+                'itemtype'          => ITILCategory::class,
+                'categories_filter' => ['request', 'incident', 'change', 'problem'],
+                'root_items_id'     => 0,
+                'subtree_depth'     => 0,
+            ]),
         ];
     }
 
@@ -337,7 +342,12 @@ final class DefaultDataManager
             'type' => QuestionTypeItemDropdown::class,
             'name' => _n('Location', 'Locations', 1),
             'default_value' => null,
-            'extra_data' => json_encode(['itemtype' => Location::class]),
+            'extra_data' => json_encode([
+                'itemtype'          => Location::class,
+                'categories_filter' => [],
+                'root_items_id'     => 0,
+                'subtree_depth'     => 0,
+            ]),
         ];
     }
 

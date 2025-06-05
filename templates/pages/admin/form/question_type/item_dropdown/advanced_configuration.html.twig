@@ -1,0 +1,104 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2025 Teclib' and contributors.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% import 'components/form/fields_macros.html.twig' as fields %}
+
+{% extends 'pages/admin/form/question_type/base_advanced_configuration.html.twig' %}
+
+{% set rand = random() %}
+
+{% if question is not null %}
+    {% set itemtype = question.getQuestionType().getDefaultValueItemtype(question) %}
+{% endif %}
+
+{% block dropdown_content %}
+    <div data-glpi-form-editor-item-dropdown-advanced-configuration>
+        {{ fields.dropdownArrayField(
+            'extra_data[categories_filter]',
+            '',
+            {
+                'request' : __('Request categories'),
+                'incident': __('Incident categories'),
+                'change'  : __('Change categories'),
+                'problem' : __('Problem categories'),
+            },
+            __('Filter ticket categories'),
+            {
+                'full_width'   : true,
+                'is_horizontal': false,
+                'multiple'     : true,
+                'values'       : categories_filter|default({
+                    'request' : true,
+                    'incident': true,
+                    'change'  : true,
+                    'problem' : true,
+                }),
+                'init': question is not null ? true : false,
+                'add_data_attributes': {
+                    'glpi-form-editor-item-dropdown-advanced-configuration-visible-for-itemtype': 'ITILCategory'
+                }
+            }
+        ) }}
+        {{ fields.dropdownField(
+            'ITILCategory',
+            'extra_data[root_items_id]',
+            root_items_id|default(0),
+            __('Subtree root'),
+            {
+                'display_emptychoice': true,
+                'full_width'       : true,
+                'is_horizontal'    : false,
+                'init': question is not null ? true : false,
+            }
+        ) }}
+        {{ fields.numberField(
+            'extra_data[subtree_depth]',
+            subtree_depth|default(0),
+            __('Limit subtree depth'),
+            {
+                'full_width'   : true,
+                'is_horizontal': false,
+                'min'          : 0,
+                'max'          : 16,
+                'step'         : 1,
+            }
+        ) }}
+
+        {% if question is null %}
+            <script>
+                import("/js/modules/Forms/ItemDropdownAdvancedConfig.js").then((m) => {
+                    new m.GlpiFormItemDropdownAdvancedConfig();
+                });
+            </script>
+        {% endif %}
+    </div>
+{% endblock %}

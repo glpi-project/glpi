@@ -1385,6 +1385,12 @@ export class GlpiFormEditorController
                 $(this).attr("id", uid);
                 $(this).attr("data-glpi-form-editor-original-id", id);
 
+                // Check if label is set for this select2
+                if (copy.find(`label[for="${id}"]`).length > 0) {
+                    // Update label for attribute to match the new ID
+                    copy.find(`label[for="${id}"]`).attr("for", uid);
+                }
+
                 // Check if a select2 isn't already initialized
                 // and if a configuration is available
                 if (
