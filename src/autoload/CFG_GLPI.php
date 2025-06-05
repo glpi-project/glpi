@@ -120,7 +120,7 @@ $CFG_GLPI['unicity_types']                = [
     Budget::class, Computer::class, Contact::class, Contract::class,
     Infocom::class, Monitor::class, NetworkEquipment::class,
     Peripheral::class, Phone::class, Printer::class, Software::class,
-    SoftwareLicense::class, Supplier::class,User::class, Certificate::class,
+    SoftwareLicense::class, Supplier::class, User::class, Certificate::class,
     Rack::class, Enclosure::class, PDU::class, Cluster::class, Item_DeviceSimcard::class,
 ];
 
@@ -161,7 +161,7 @@ $CFG_GLPI['document_types']               = [Budget::class, CartridgeItem::class
     NetworkEquipment::class, Peripheral::class, Phone::class,
     Printer::class, Problem::class, Project::class, ProjectTask::class,
     Reminder::class, Software::class, Line::class,
-    SoftwareLicense::class, Supplier::class, Ticket::class,User::class,
+    SoftwareLicense::class, Supplier::class, Ticket::class, User::class,
     Certificate::class, Cluster::class, ITILFollowup::class, ITILSolution::class,
     ChangeTask::class, ProblemTask::class, TicketTask::class, Appliance::class,
     DatabaseInstance::class,
@@ -218,12 +218,12 @@ $CFG_GLPI['assignable_types'] = [
     SoftwareLicense::class,
     Unmanaged::class,
 ];
-$CFG_GLPI['linkuser_types']         = $CFG_GLPI['assignable_types"];
-$CFG_GLPI["linkgroup_types']        = $CFG_GLPI['assignable_types"];
-$CFG_GLPI["linkuser_tech_types']    = $CFG_GLPI['assignable_types"];
-$CFG_GLPI["linkgroup_tech_types']   = $CFG_GLPI['assignable_types"];
+$CFG_GLPI['linkuser_types']         = $CFG_GLPI['assignable_types'];
+$CFG_GLPI['linkgroup_types']        = $CFG_GLPI['assignable_types'];
+$CFG_GLPI['linkuser_tech_types']    = $CFG_GLPI['assignable_types'];
+$CFG_GLPI['linkgroup_tech_types']   = $CFG_GLPI['assignable_types'];
 
-$CFG_GLPI["location_types']               = [Budget::class, CartridgeItem::class, ConsumableItem::class,
+$CFG_GLPI['location_types']               = [Budget::class, CartridgeItem::class, ConsumableItem::class,
     Computer::class, Monitor::class, Glpi\Socket::class,
     NetworkEquipment::class, Peripheral::class, Phone::class,
     Printer::class, Software::class, SoftwareLicense::class,
@@ -290,8 +290,8 @@ $CFG_GLPI['device_types']                 = [DeviceMotherboard::class, DeviceFir
 ];
 
 
-$CFG_GLPI['socket_types']                  = [Computer::class,NetworkEquipment::class,
-    Peripheral::class,Phone::class,Printer::class, PassiveDCEquipment::class,
+$CFG_GLPI['socket_types']                  = [Computer::class, NetworkEquipment::class,
+    Peripheral::class, Phone::class, Printer::class, PassiveDCEquipment::class,
 ];
 
 foreach ($CFG_GLPI['device_types'] as $dtype) {
@@ -449,12 +449,12 @@ $CFG_GLPI['inventory_types'] = [
 ];
 
 $CFG_GLPI['inventory_lockable_objects'] = [Asset_PeripheralAsset::class,  Item_SoftwareLicense::class,
-    Item_SoftwareVersion::class, Item_Disk::class, ItemVirtualMachine::class,ItemAntivirus::class,
+    Item_SoftwareVersion::class, Item_Disk::class, ItemVirtualMachine::class, ItemAntivirus::class,
     NetworkPort::class, NetworkName::class, IPAddress::class, Item_OperatingSystem::class, Item_DeviceBattery::class, Item_DeviceCase::class,
     Item_DeviceControl::class, Item_DeviceDrive::class, Item_DeviceFirmware::class, Item_DeviceGeneric::class, Item_DeviceGraphicCard::class,
     Item_DeviceHardDrive::class, Item_DeviceMemory::class, Item_DeviceMotherboard::class, Item_DeviceNetworkCard::class, Item_DevicePci::class,
     Item_DevicePowerSupply::class, Item_DeviceProcessor::class, Item_DeviceSensor::class, Item_DeviceSimcard::class, Item_DeviceSoundCard::class,
-    DatabaseInstance::class, Item_RemoteManagement::class,Monitor::class, Domain_Item::class, Peripheral::class, Unmanaged::class, Database::class,
+    DatabaseInstance::class, Item_RemoteManagement::class, Monitor::class, Domain_Item::class, Peripheral::class, Unmanaged::class, Database::class,
     Item_DeviceCamera::class, Item_DeviceCamera_ImageFormat::class, Item_DeviceCamera_ImageResolution::class,
     Item_Environment::class, Item_Process::class,
 ];
