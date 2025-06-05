@@ -1884,6 +1884,7 @@ abstract class API
                     //add current item
                     try {
                         $new_id = $item->add($object);
+                        $message = $this->getGlpiLastMessage();
                     } catch (\RuntimeException $e) {
                         $new_id = false;
                         $message = $e->getMessage();
@@ -1891,8 +1892,6 @@ abstract class API
 
                     if ($new_id === false) {
                         $failed++;
-                    } else {
-                        $message = $this->getGlpiLastMessage();
                     }
 
                     $current_res = ['id'      => $new_id,
