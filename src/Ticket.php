@@ -2448,27 +2448,10 @@ class Ticket extends CommonITILObject
         }
     }
 
-
-    /**
-     * Overloaded from commonDBTM
-     *
-     * @since 0.83
-     *
-     * @param string $type itemtype of object to add
-     *
-     * @return boolean
-     **/
     public function canAddItem($type)
     {
-
-        if ($type == 'Document') {
-            if ($this->getField('status') == self::CLOSED) {
-                return false;
-            }
-
-            if ($this->canAddFollowups()) {
-                return true;
-            }
+        if ($type == Document::class) {
+            return $this->canAddDocuments();
         }
 
         // as self::canUpdate & $this->canUpdateItem checks more general rights

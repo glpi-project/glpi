@@ -7964,4 +7964,108 @@ HTML,
         // Assert: only the non closed tickets should be found.
         $this->assertEquals(5, $results['data']['totalcount']);
     }
+
+    public static function canAddDocumentProvider(): iterable
+    {
+        yield [
+            'profilerights' => [
+                'followup' => 0,
+                'ticket'   => 0,
+                'document' => 0,
+            ],
+            'expected' => false,
+        ];
+
+        yield [
+            'profilerights' => [
+                'followup' => \ITILFollowup::ADDMYTICKET,
+                'ticket'   => 0,
+                'document' => 0,
+            ],
+            'expected' => true,
+        ];
+
+        yield [
+            'profilerights' => [
+                'followup' => 0,
+                'ticket'   => UPDATE,
+                'document' => 0,
+            ],
+            'expected' => false,
+        ];
+
+        yield [
+            'profilerights' => [
+                'followup' => 0,
+                'ticket'   => 0,
+                'document' => CREATE,
+            ],
+            'expected' => true, // requester can always add docs if the ticket is not modified
+        ];
+
+        yield [
+            'profilerights' => [
+                'followup' => \ITILFollowup::ADDMYTICKET,
+                'ticket'   => UPDATE,
+                'document' => 0,
+            ],
+            'expected' => true,
+        ];
+
+        yield [
+            'profilerights' => [
+                'followup' => \ITILFollowup::ADDMYTICKET,
+                'ticket'   => 0,
+                'document' => CREATE,
+            ],
+            'expected' => true,
+        ];
+
+        yield [
+            'profilerights' => [
+                'followup' => 0,
+                'ticket'   => CREATE,
+                'document' => CREATE,
+            ],
+            'expected' => true, // requester can always add docs if the ticket is not modified
+        ];
+    }
+
+    /**
+     * @dataProvider canAddDocumentProvider
+     */
+    public function testCanAddDocument(array $profilerights, bool $expected): void
+    {
+        global $DB;
+
+        foreach ($profilerights as $right => $value) {
+            $this->assertTrue($DB->update(
+                'glpi_profilerights',
+                ['rights' => $value],
+                [
+                    'profiles_id'  => 4,
+                    'name'         => $right,
+                ]
+            ));
+        }
+
+        $this->login();
+
+        $ticket = $this->createItem(\Change::class, [
+            'name' => 'Ticket Test',
+            'content' => 'Ticket content',
+            '_actors' => [
+                'requester' => [
+                    [
+                        'itemtype'  => 'User',
+                        'items_id'  => \Session::getLoginUserID(),
+                    ],
+                ],
+            ],
+        ]);
+
+        $input = ['itemtype' => \Ticket::class, 'items_id' => $ticket->getID()];
+        $doc = new \Document();
+        $this->assertEquals($expected, $doc->can(-1, CREATE, $input));
+    }
 }

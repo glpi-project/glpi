@@ -9998,6 +9998,32 @@ abstract class CommonITILObject extends CommonDBTM
         return self::canDelete();
     }
 
+    public function canAddItem($type)
+    {
+        if ($type == Document::class) {
+            return $this->canAddDocuments();
+        }
+
+        return parent::canAddItem($type);
+    }
+
+
+    /**
+     * Check whether the current user can add documents.
+     */
+    final protected function canAddDocuments(): bool
+    {
+        if (in_array($this->fields['status'], $this->getClosedStatusArray())) {
+            return false;
+        }
+
+        if ($this->canAddFollowups()) {
+            return true;
+        }
+
+        return false;
+    }
+
     public static function getTeamMemberForm(CommonITILObject $item): string
     {
         $itiltemplate = $item->getITILTemplateToUse(

@@ -430,4 +430,108 @@ class ChangeTest extends DbTestCase
         $this->assertTrue(array_key_exists('ITEM_Change_74', $change_with_so));
         $this->assertEquals($last_solution_date, $change_with_so['ITEM_Change_74']);
     }
+
+    public static function canAddDocumentProvider(): iterable
+    {
+        yield [
+            'profilerights' => [
+                'followup' => 0,
+                'change'   => 0,
+                'document' => 0,
+            ],
+            'expected' => false,
+        ];
+
+        yield [
+            'profilerights' => [
+                'followup' => \ITILFollowup::ADDMYTICKET,
+                'change'   => 0,
+                'document' => 0,
+            ],
+            'expected' => true,
+        ];
+
+        yield [
+            'profilerights' => [
+                'followup' => 0,
+                'change'   => UPDATE,
+                'document' => 0,
+            ],
+            'expected' => false,
+        ];
+
+        yield [
+            'profilerights' => [
+                'followup' => 0,
+                'change'   => 0,
+                'document' => CREATE,
+            ],
+            'expected' => false,
+        ];
+
+        yield [
+            'profilerights' => [
+                'followup' => \ITILFollowup::ADDMYTICKET,
+                'change'   => UPDATE,
+                'document' => 0,
+            ],
+            'expected' => true,
+        ];
+
+        yield [
+            'profilerights' => [
+                'followup' => \ITILFollowup::ADDMYTICKET,
+                'change'   => 0,
+                'document' => CREATE,
+            ],
+            'expected' => true,
+        ];
+
+        yield [
+            'profilerights' => [
+                'followup' => 0,
+                'change'   => CREATE,
+                'document' => CREATE,
+            ],
+            'expected' => false,
+        ];
+    }
+
+    /**
+     * @dataProvider canAddDocumentProvider
+     */
+    public function testCanAddDocument(array $profilerights, bool $expected): void
+    {
+        global $DB;
+
+        foreach ($profilerights as $right => $value) {
+            $this->assertTrue($DB->update(
+                'glpi_profilerights',
+                ['rights' => $value],
+                [
+                    'profiles_id'  => 4,
+                    'name'         => $right,
+                ]
+            ));
+        }
+
+        $this->login();
+
+        $change = $this->createItem(\Change::class, [
+            'name' => 'Change Test',
+            'content' => 'Change content',
+            '_actors' => [
+                'requester' => [
+                    [
+                        'itemtype'  => 'User',
+                        'items_id'  => \Session::getLoginUserID(),
+                    ],
+                ],
+            ],
+        ]);
+
+        $input = ['itemtype' => \Change::class, 'items_id' => $change->getID()];
+        $doc = new \Document();
+        $this->assertEquals($expected, $doc->can(-1, CREATE, $input));
+    }
 }
