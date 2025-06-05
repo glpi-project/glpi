@@ -191,7 +191,18 @@ final class Server
             && file_exists(self::PUBLIC_KEY_PATH)
         ) {
             // Keys are already generated
-            return;
+
+            if (is_readable(self::PRIVATE_KEY_PATH) && is_readable(self::PUBLIC_KEY_PATH)) {
+                return;
+            } else {
+                throw new RuntimeException(
+                    sprintf(
+                        'Either %s or %s cannot be read. Please check file system permisisons',
+                        self::PRIVATE_KEY_PATH,
+                        self::PUBLIC_KEY_PATH
+                    )
+                );
+            }
         }
 
         // Partial data: unsure how to proceed, let the user review the files.
