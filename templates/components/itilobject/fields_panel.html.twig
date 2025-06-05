@@ -70,9 +70,7 @@
                      item.fields['entities_id'],
                      _n('Entity', 'Entities', 1),
                      field_options|merge({
-                        'entity': userentities|default(
-                           session('glpiactive_entity')
-                        ),
+                        'entity': userentities|default(-1),
                         'on_change': 'this.form.submit()',
                      })
                   ) }}
