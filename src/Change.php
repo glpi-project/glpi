@@ -59,10 +59,6 @@ class Change extends CommonITILObject
     public const IMPACT_MASK_FIELD             = 'impact_mask';
     public const STATUS_MATRIX_FIELD           = 'change_status';
 
-
-    public const READMY                        = 1;
-    public const READALL                       = 1024;
-
     // Specific status for changes
     public const EVALUATION             = 9;
     public const TEST                   = 11;
