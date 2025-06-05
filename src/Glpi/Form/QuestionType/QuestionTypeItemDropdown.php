@@ -281,9 +281,7 @@ final class QuestionTypeItemDropdown extends QuestionTypeItem
                 $root_items_id
             );
 
-            if (count($sons) > 0) {
-                $params[$itemtype::getTableField('id')] = $sons;
-            }
+            $params[$itemtype::getTableField('id')] = $sons;
             $root_item = new $itemtype();
             if ($root_item->getFromDB($root_items_id)) {
                 $root_item_level = $root_item->fields['level'];
