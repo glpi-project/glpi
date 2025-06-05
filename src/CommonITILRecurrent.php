@@ -152,9 +152,11 @@ abstract class CommonITILRecurrent extends CommonDropdown
             'calendars_id',
         ];
 
-        foreach ($fields_to_check as $field) {
-            if (!isset($input[$field])) {
-                $input[$field] = $this->fields[$field];
+        if (array_intersect(array_keys($input), $fields_to_check)) {
+            foreach ($fields_to_check as $field) {
+                if (!isset($input[$field])) {
+                    $input[$field] = $this->fields[$field];
+                }
             }
         }
 
