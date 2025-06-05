@@ -338,13 +338,18 @@ JAVASCRIPT;
         foreach ($CFG_GLPI['planning_types'] as $itemtype) {
             if (
                 !is_a($itemtype, CommonDBTM::class, true)
-                // methods from the `Glpi\Features\PlanningEvent` trait
-                || !method_exists($itemtype, 'populatePlanning')
-                || !method_exists($itemtype, 'getAlreadyPlannedInformation')
             ) {
                 continue;
             }
             $item = new $itemtype();
+            if (
+                // methods from the `Glpi\Features\PlanningEvent` trait
+                !method_exists($item, 'populatePlanning')
+                || !method_exists($item, 'getAlreadyPlannedInformation')
+            ) {
+                continue;
+            }
+
             $data = $item->populatePlanning([
                 'who'           => $users_id,
                 'whogroup'      => 0,
