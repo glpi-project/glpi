@@ -218,6 +218,7 @@ abstract class AbstractRequest
                 $client = Server::validateAccessToken($request);
                 // Agent must authenticate both using client credentials (and therefore no valid user ID associated) and have the "inventory" OAuth scope
                 if (!\User::isNewID($client['user_id']) || !in_array('inventory', $client['scopes'], true)) {
+                    $this->setMode(self::JSON_MODE);
                     $this->addError('Access denied. Agent must authenticate using client credentials and have the "inventory" OAuth scope', 401);
                     return false;
                 }
