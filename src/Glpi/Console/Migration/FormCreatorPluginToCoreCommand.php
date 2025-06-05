@@ -38,6 +38,7 @@ use Glpi\Form\AccessControl\FormAccessControlManager;
 use Glpi\Form\Migration\FormMigration;
 use Glpi\Migration\AbstractPluginMigration;
 use Override;
+use Symfony\Component\Console\Input\InputOption;
 
 class FormCreatorPluginToCoreCommand extends AbstractPluginMigrationCommand
 {
@@ -56,6 +57,29 @@ class FormCreatorPluginToCoreCommand extends AbstractPluginMigrationCommand
     #[Override]
     public function getMigration(): AbstractPluginMigration
     {
-        return new FormMigration($this->db, FormAccessControlManager::getInstance());
+        $specificForms = $this->input->getOption('specific-forms');
+        if (!is_array($specificForms)) {
+            $specificForms = [$specificForms];
+        }
+
+        return new FormMigration(
+            $this->db,
+            FormAccessControlManager::getInstance(),
+            $specificForms
+        );
+    }
+
+    #[Override]
+    protected function configure()
+    {
+        parent::configure();
+
+        $this->addOption(
+            'specific-forms',
+            null,
+            InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
+            __('Import only specific forms by their IDs'),
+            []
+        );
     }
 }
