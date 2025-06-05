@@ -3837,6 +3837,7 @@ abstract class CommonITILObject extends CommonDBTM
             case 'priority':
                 $options['name']  = $name;
                 $options['value'] = $values[$field];
+                $options['enable_filtering'] = false;
                 return static::dropdownPriority($options);
 
             case 'global_validation':
