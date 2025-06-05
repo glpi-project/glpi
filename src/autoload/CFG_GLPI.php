@@ -227,7 +227,7 @@ $CFG_GLPI["location_types"]               = ['Budget', 'CartridgeItem', 'Consuma
     'NetworkEquipment', 'Peripheral', 'Phone',
     'Printer', 'Software', 'SoftwareLicense',
     'Ticket', 'User', 'Certificate', 'Item_DeviceSimcard',
-    'Line', 'Appliance', 'PassiveDCEquipment', 'DataCenter',
+    'Line', 'Appliance', 'PassiveDCEquipment', 'Datacenter',
     'DCRoom', 'Rack', 'Enclosure', 'PDU',
 ];
 
