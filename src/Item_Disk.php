@@ -295,6 +295,7 @@ TWIG, $twig_params);
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
             'is_tab' => true,
             'nofilter' => true,
+            'nosort' => true,
             'columns' => [
                 'name' => __('Name'),
                 'is_dynamic' => __('Automatic inventory'),
