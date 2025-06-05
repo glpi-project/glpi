@@ -725,11 +725,11 @@ class CommonGLPI implements CommonGLPIInterface
      * @param integer $nb   number of items (default 0)
      * @param class-string<CommonGLPI>|null $form_itemtype
      * @param string $icon
-     * @param integer $total_nb
+     * @param ?integer $total_nb
      *
      *  @return string The tab text (including icon and counter if applicable)
      **/
-    public static function createTabEntry($text, $nb = 0, ?string $form_itemtype = null, string $icon = '', $total_nb = 0)
+    public static function createTabEntry($text, $nb = 0, ?string $form_itemtype = null, string $icon = '', ?int $total_nb = null)
     {
         if ($icon === '') {
             $icon = static::getTabIconClass($form_itemtype);
@@ -741,7 +741,7 @@ class CommonGLPI implements CommonGLPIInterface
         $icon_html = $icon !== '' ? sprintf('<i class="%s me-2"></i>', htmlescape($icon)) : '';
         $counter_html = '';
         if ($nb > 0) {
-            $badge_content = $total_nb >= $nb ? "$nb/$total_nb" : "$nb";
+            $badge_content = $total_nb !== null ? "$nb/$total_nb" : "$nb";
             $counter_html = sprintf(' <span class="badge glpi-badge">%s</span>', $badge_content);
         }
 

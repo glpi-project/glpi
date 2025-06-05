@@ -123,8 +123,8 @@
                {% set status = _x('adjective', 'Invalid') %}
            {% endif %}
            <span class="badge" style="background-color: {{ color }};">{{ status }}</span>
-           <span class="badge" style="background-color: {{ color }};">{{ _x('adjective', 'Assigned') }} : {{ licences_assigned }}</span>
-           <span class="badge" style="background-color: {{ color }};">{{ _x('adjective', 'Remaining') }} : {{ item.fields['number']|number_format - licences_assigned }}</span>
+           <span class="badge" style="background-color: {{ color }};">{{ __('%s: %s')|format(_x('adjective', 'Assigned'), licences_assigned) }}</span>
+           <span class="badge" style="background-color: {{ color }};">{{ __('%s: %s')|format(_x('adjective', 'Remaining'), item.fields['number']|number_format - licences_assigned) }}</span>
          </div>
       {% endset %}
    {% endif %}
