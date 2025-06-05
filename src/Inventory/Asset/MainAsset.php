@@ -675,6 +675,13 @@ abstract class MainAsset extends InventoryAsset
             $val->states_id = $default_states_id > 0 ? $default_states_id : 0;
         }
 
+        // set states_id in known links if needed
+        if (property_exists($val, 'states_id')) {
+            $known_key = md5('states_id' . $val->states_id);
+            $this->known_links[$known_key] = $val->states_id;
+            $this->raw_links[$known_key] = $val->states_id;
+        }
+
         // append data from RuleImportEntity
         foreach ($this->ruleentity_data as $attribute => $value) {
             $known_key = md5($attribute . $value);
@@ -700,6 +707,10 @@ abstract class MainAsset extends InventoryAsset
         if ($items_id != 0) {
             $this->item->getFromDB($items_id);
         }
+
+        // set entities_id in known links
+        $entities_key = md5('entities_id' . $val->entities_id);
+        $this->known_links[$entities_key] = $val->entities_id;
 
         //handleLinks relies on $this->data; update it before the call
         $this->handleLinks();
@@ -744,9 +755,7 @@ abstract class MainAsset extends InventoryAsset
         } else {
             $val->states_id =  $this->item->fields['states_id'];
         }
-        $known_key = md5('states_id' . $val->states_id);
-        $this->known_links[$known_key] = $val->states_id;
-        $this->raw_links[$known_key] = $val->states_id;
+
         $val->id = $this->item->fields['id'];
 
         if ($entities_id == -1) {
