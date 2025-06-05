@@ -96,12 +96,10 @@ final class Server
         $this->access_token_repository = new AccessTokenRepository();
         $this->scope_repository = new ScopeRepository();
 
-        $public_key_path = GLPI_CONFIG_DIR . '/oauth.pub';
-        $this->resource_server = new ResourceServer($this->access_token_repository, "file://$public_key_path");
+        $this->resource_server = new ResourceServer($this->access_token_repository, "file://" . self::PUBLIC_KEY_PATH);
 
-        $private_key_path = GLPI_CONFIG_DIR . '/oauth.pem';
         $encryption_key = (new \GLPIKey())->get();
-        $this->auth_server = new AuthorizationServer($this->client_repository, $this->access_token_repository, $this->scope_repository, "file://$private_key_path", $encryption_key);
+        $this->auth_server = new AuthorizationServer($this->client_repository, $this->access_token_repository, $this->scope_repository, "file://" . self::PRIVATE_KEY_PATH, $encryption_key);
         $this->auth_server->enableGrantType(
             new ClientCredentialsGrant(),
             new \DateInterval(self::GLPI_OAUTH_ACCESS_TOKEN_EXPIRES)
