@@ -153,6 +153,9 @@ final class Server
      */
     public static function validateAccessToken(Request $request): array
     {
+        //check for keys
+        self::checkKeys();
+
         $new_request = self::getInstance()->resource_server->validateAuthenticatedRequest($request);
         return [
             'client_id' => $new_request->getAttribute('oauth_client_id'),
