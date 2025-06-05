@@ -410,4 +410,138 @@ class ProblemTest extends DbTestCase
         $doc = new \Document();
         $this->assertEquals($expected, $doc->can(-1, CREATE, $input));
     }
+
+    public function testClosedProblemWithObserverStatus()
+    {
+        $this->login('glpi', 'glpi');
+
+        $tech_user = getItemByTypeName(\User::class, 'tech');
+        $glpi_user = getItemByTypeName(\User::class, 'glpi');
+
+        $problem = $this->createItem(
+            \Problem::class,
+            [
+                'name' => 'Problem',
+                'content' => 'Content of the problem',
+                'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
+                '_actors' => [
+                    'requester' => [
+                        [
+                            'items_id' => $glpi_user->getID(),
+                            'itemtype' => 'User',
+                        ],
+                    ],
+                    'assign' => [
+                        [
+                            'items_id' => $tech_user->getID(),
+                            'itemtype' => 'User',
+                        ],
+                    ],
+                ],
+            ]
+        );
+
+        $user_problem = new \Problem_User();
+        $this->assertEquals(
+            1,
+            count($user_problem->find([
+                'problems_id' => $problem->getID(),
+                'users_id' => $glpi_user->getID(),
+                'type' => \CommonITILActor::REQUESTER
+            ]))
+        );
+        $this->assertEquals(
+            1,
+            count($user_problem->find([
+                'problems_id' => $problem->getID(),
+                'users_id' => $tech_user->getID(),
+                'type' => \CommonITILActor::ASSIGN
+            ]))
+        );
+
+        $this->createItem(
+            \ITILSolution::class,
+            [
+                'itemtype' => \Problem::class,
+                'items_id' => $problem->getID(),
+                'content' => 'Solution content',
+            ]
+        );
+
+        $problem->getFromDB($problem->getID());
+        $this->assertEquals(\Problem::SOLVED, $problem->fields['status']);
+        $this->updateItem(
+            \Problem::class,
+            $problem->getID(),
+            [
+                'status' => \Problem::OBSERVED,
+            ]
+        );
+
+        $this->createItem(
+            \ITILFollowup::class,
+            [
+                'itemtype' => \Problem::class,
+                'items_id' => $problem->getID(),
+                'content' => 'Followup content',
+                'add_reopen' => 1,
+            ],
+            ['add_reopen']
+        );
+
+        $solution = new \ITILSolution();
+        $this->assertEquals(
+            1,
+            count($solution->find([
+                'itemtype' => \Problem::class,
+                'items_id' => $problem->getID(),
+                'status' => \CommonITILValidation::REFUSED,
+            ]))
+        );
+        $problem->getFromDB($problem->getID());
+        $this->assertEquals(\Problem::ASSIGNED, $problem->fields['status']);
+
+        $this->createItem(
+            \ITILSolution::class,
+            [
+                'itemtype' => \Problem::class,
+                'items_id' => $problem->getID(),
+                'content' => 'Solution content',
+            ]
+        );
+
+        $problem->getFromDB($problem->getID());
+        $this->assertEquals(\Problem::SOLVED, $problem->fields['status']);
+        $this->updateItem(
+            \Problem::class,
+            $problem->getID(),
+            [
+                'status' => \Problem::OBSERVED,
+            ]
+        );
+
+        $this->createItem(
+            \ITILFollowup::class,
+            [
+                'itemtype' => \Problem::class,
+                'items_id' => $problem->getID(),
+                'content' => 'Followup content',
+                'add_close' => 1,
+            ],
+            ['add_close']
+        );
+
+        $solution = new \ITILSolution();
+        $this->assertEquals(
+            1,
+            count($solution->find([
+                'itemtype' => \Problem::class,
+                'items_id' => $problem->getID(),
+                'status' => \CommonITILValidation::ACCEPTED,
+            ]))
+        );
+
+        $problem->getFromDB($problem->getID());
+        $this->assertEquals(\Problem::CLOSED, $problem->fields['status']);
+    }
 }
