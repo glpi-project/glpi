@@ -167,20 +167,20 @@ describe("Ticket Form", () => {
                 cy.visit(`/front/ticket.form.php?id=${ticket_id}`);
                 cy.get('.timeline-buttons .main-actions button.dropdown-toggle-split').click();
                 cy.findByText('Ask for validation').click();
-                cy.get('.itilvalidation').within(() => {
+                cy.get('.ITILValidation.show').within(() => {
                     cy.getDropdownByLabelText('Template').selectDropdownValue(`test ${rand}`);
                     cy.get('select[name="[validatortype]"]').should('have.value', 'User');
                     cy.get('select[name="items_id_target"]').should('have.value', '2');
-                    cy.get('textarea[name="comment_submission"]').awaitTinyMCE().should('contain.text', 'test content');
+                    cy.findByLabelText('Comment').awaitTinyMCE().should('contain.text', 'test content');
                 });
                 cy.visit(`/front/ticket.form.php?id=${ticket_id}`);
                 cy.get('.timeline-buttons .main-actions button.dropdown-toggle-split').click();
                 cy.findByText('Ask for validation').click();
-                cy.get('.itilvalidation').within(() => {
+                cy.get('.ITILValidation.show').within(() => {
                     cy.getDropdownByLabelText('Template').selectDropdownValue(`test no approver ${rand}`);
                     cy.get('select[name="[validatortype]"]').should('have.value', '0');
                     cy.get('select[name="items_id_target"]').should('not.exist');
-                    cy.get('textarea[name="comment_submission"]').awaitTinyMCE().should('contain.text', 'no approver test content');
+                    cy.findByLabelText('Comment').awaitTinyMCE().should('contain.text', 'no approver test content');
                 });
             });
         });
