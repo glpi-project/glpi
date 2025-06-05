@@ -2160,6 +2160,7 @@ abstract class API
                                 $params['force_purge'],
                                 $params['history']
                             );
+                            $message = $this->getGlpiLastMessage();
                         } catch (\RuntimeException $e) {
                             $message = $e->getMessage();
                             $delete_return = false;
