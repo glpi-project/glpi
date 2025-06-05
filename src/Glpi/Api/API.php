@@ -2170,7 +2170,7 @@ abstract class API
                         }
                         $idCollection[] = [
                             $object->id => $delete_return,
-                            'message'   => $message
+                            'message'   => $message,
                         ];
                     }
                 }
