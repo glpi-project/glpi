@@ -2006,9 +2006,9 @@ final class FormMigrationTest extends DbTestCase
         $question = getItemByTypeName(Question::class, 'Test form migration question for dropdown item question with advanced options');
         /** @var QuestionTypeItemDropdown $question_type */
         $question_type = $question->getQuestionType();
-        $this->assertEquals($question_type->getDefaultValueItemtype($question), \ITILCategory::getType());
-        $this->assertEquals($question_type->getCategoriesFilter($question), ['request']);
-        $this->assertEquals($question_type->getRootItemsId($question), $itilcategory->getId());
-        $this->assertEquals($question_type->getSubtreeDepth($question), 0);
+        $this->assertEquals(\ITILCategory::getType(), $question_type->getDefaultValueItemtype($question));
+        $this->assertEquals(['request'], $question_type->getCategoriesFilter($question));
+        $this->assertEquals($itilcategory->getId(), $question_type->getRootItemsId($question));
+        $this->assertEquals(0, $question_type->getSubtreeDepth($question));
     }
 }
