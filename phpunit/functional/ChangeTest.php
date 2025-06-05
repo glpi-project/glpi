@@ -431,12 +431,12 @@ class ChangeTest extends DbTestCase
         $this->assertEquals($last_solution_date, $change_with_so['ITEM_Change_74']);
     }
 
-    public function testCanAddDocumentProvider()
+    public static function canAddDocumentProvider(): iterable
     {
         yield [
             'profilerights' => [
                 'followup' => 0,
-                'change' => 0,
+                'change'   => 0,
                 'document' => 0,
             ],
             'expected' => false,
@@ -445,7 +445,7 @@ class ChangeTest extends DbTestCase
         yield [
             'profilerights' => [
                 'followup' => \ITILFollowup::ADDMYTICKET,
-                'change' => 0,
+                'change'   => 0,
                 'document' => 0,
             ],
             'expected' => true,
@@ -454,7 +454,7 @@ class ChangeTest extends DbTestCase
         yield [
             'profilerights' => [
                 'followup' => 0,
-                'change' => 2, //update
+                'change'   => UPDATE,
                 'document' => 0,
             ],
             'expected' => false,
@@ -463,8 +463,8 @@ class ChangeTest extends DbTestCase
         yield [
             'profilerights' => [
                 'followup' => 0,
-                'change' => 0,
-                'document' => 4, //create
+                'change'   => 0,
+                'document' => CREATE,
             ],
             'expected' => false,
         ];
@@ -472,7 +472,7 @@ class ChangeTest extends DbTestCase
         yield [
             'profilerights' => [
                 'followup' => \ITILFollowup::ADDMYTICKET,
-                'change' => 2, //update
+                'change'   => UPDATE,
                 'document' => 0,
             ],
             'expected' => true,
@@ -481,8 +481,8 @@ class ChangeTest extends DbTestCase
         yield [
             'profilerights' => [
                 'followup' => \ITILFollowup::ADDMYTICKET,
-                'change' => 0,
-                'document' => 4, //create
+                'change'   => 0,
+                'document' => CREATE,
             ],
             'expected' => true,
         ];
@@ -490,52 +490,48 @@ class ChangeTest extends DbTestCase
         yield [
             'profilerights' => [
                 'followup' => 0,
-                'change' => 4, //update
-                'document' => 4, //create
+                'change'   => CREATE,
+                'document' => CREATE,
             ],
             'expected' => false,
         ];
     }
 
-    public function testCanAddDocument()
+    /**
+     * @dataProvider canAddDocumentProvider
+     */
+    public function testCanAddDocument(array $profilerights, bool $expected): void
     {
         global $DB;
 
-        $user = new \User();
-        $user->getFromDB(getItemByTypeName('User', TU_USER, true));
+        foreach ($profilerights as $right => $value) {
+            $this->assertTrue($DB->update(
+                'glpi_profilerights',
+                ['rights' => $value],
+                [
+                    'profiles_id'  => 4,
+                    'name'         => $right,
+                ]
+            ));
+        }
 
-        foreach ($this->testCanAddDocumentProvider() as $provider) {
-            foreach ($provider['profilerights'] as $right => $value) {
-                $this->assertTrue($DB->update(
-                    'glpi_profilerights',
-                    ['rights' => $value],
+        $this->login();
+
+        $change = $this->createItem(\Change::class, [
+            'name' => 'Change Test',
+            'content' => 'Change content',
+            '_actors' => [
+                'requester' => [
                     [
-                        'profiles_id'  => 4,
-                        'name'         => $right,
-                    ]
-                ));
-            }
-
-            //login to get session
-            $auth = new \Auth();
-            $this->assertTrue($auth->login(TU_USER, TU_PASS, true));
-
-            $change = $this->createItem(\Change::class, [
-                'name' => 'Change Test',
-                'content' => 'Change content',
-                '_actors' => [
-                    'requester' => [
-                        [
-                            'itemtype'  => 'User',
-                            'items_id'  => $user->getID(),
-                        ],
+                        'itemtype'  => 'User',
+                        'items_id'  => \Session::getLoginUserID(),
                     ],
                 ],
-            ]);
+            ],
+        ]);
 
-            $input = ['itemtype' => 'Change', 'items_id' => $change->getID()];
-            $doc = new \Document();
-            $this->assertEquals($provider['expected'], $doc->can(-1, CREATE, $input));
-        }
+        $input = ['itemtype' => \Change::class, 'items_id' => $change->getID()];
+        $doc = new \Document();
+        $this->assertEquals($expected, $doc->can(-1, CREATE, $input));
     }
 }

@@ -139,20 +139,6 @@ class Change extends CommonITILObject
         return Session::haveRight(self::$rightname, CREATE);
     }
 
-    public function canAddItem($type)
-    {
-        if ($type == Document::class) {
-            if (in_array($this->fields['status'], $this->getClosedStatusArray())) {
-                return false;
-            }
-
-            if ($this->canAddFollowups()) {
-                return true;
-            }
-        }
-
-        return parent::canAddItem($type);
-    }
 
     /**
      * is the current user could reopen the current change

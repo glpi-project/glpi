@@ -306,4 +306,108 @@ class ProblemTest extends DbTestCase
         $this->assertTrue(array_key_exists('ITEM_Problem_74', $problem_with_so));
         $this->assertEquals($last_solution_date, $problem_with_so['ITEM_Problem_74']);
     }
+
+    public static function canAddDocumentProvider(): iterable
+    {
+        yield [
+            'profilerights' => [
+                'followup' => 0,
+                'problem'  => 0,
+                'document' => 0,
+            ],
+            'expected' => false,
+        ];
+
+        yield [
+            'profilerights' => [
+                'followup' => \ITILFollowup::ADDMYTICKET,
+                'problem'  => 0,
+                'document' => 0,
+            ],
+            'expected' => true,
+        ];
+
+        yield [
+            'profilerights' => [
+                'followup' => 0,
+                'problem'  => UPDATE,
+                'document' => 0,
+            ],
+            'expected' => false,
+        ];
+
+        yield [
+            'profilerights' => [
+                'followup' => 0,
+                'problem'  => 0,
+                'document' => CREATE,
+            ],
+            'expected' => false,
+        ];
+
+        yield [
+            'profilerights' => [
+                'followup' => \ITILFollowup::ADDMYTICKET,
+                'problem'  => UPDATE,
+                'document' => 0,
+            ],
+            'expected' => true,
+        ];
+
+        yield [
+            'profilerights' => [
+                'followup' => \ITILFollowup::ADDMYTICKET,
+                'problem'  => 0,
+                'document' => CREATE,
+            ],
+            'expected' => true,
+        ];
+
+        yield [
+            'profilerights' => [
+                'followup' => 0,
+                'problem'  => CREATE,
+                'document' => CREATE,
+            ],
+            'expected' => false,
+        ];
+    }
+
+    /**
+     * @dataProvider canAddDocumentProvider
+     */
+    public function testCanAddDocument(array $profilerights, bool $expected): void
+    {
+        global $DB;
+
+        foreach ($profilerights as $right => $value) {
+            $this->assertTrue($DB->update(
+                'glpi_profilerights',
+                ['rights' => $value],
+                [
+                    'profiles_id'  => 4,
+                    'name'         => $right,
+                ]
+            ));
+        }
+
+        $this->login();
+
+        $problem = $this->createItem(\Problem::class, [
+            'name' => 'Problem Test',
+            'content' => 'Problem content',
+            '_actors' => [
+                'requester' => [
+                    [
+                        'itemtype'  => 'User',
+                        'items_id'  => \Session::getLoginUserID(),
+                    ],
+                ],
+            ],
+        ]);
+
+        $input = ['itemtype' => \Problem::class, 'items_id' => $problem->getID()];
+        $doc = new \Document();
+        $this->assertEquals($expected, $doc->can(-1, CREATE, $input));
+    }
 }
