@@ -8000,7 +8000,7 @@ HTML,
                 'ticket'   => 0,
                 'document' => CREATE,
             ],
-            'expected' => false,
+            'expected' => true, // requester can always add docs if the ticket is not modified
         ];
 
         yield [
@@ -8027,7 +8027,7 @@ HTML,
                 'ticket'   => CREATE,
                 'document' => CREATE,
             ],
-            'expected' => false,
+            'expected' => true, // requester can always add docs if the ticket is not modified
         ];
     }
 
