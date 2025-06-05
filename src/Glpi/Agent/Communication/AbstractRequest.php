@@ -211,6 +211,11 @@ abstract class AbstractRequest
      */
     public function handleRequest(mixed $data): bool
     {
+        $guess_mode = ($this->mode === null);
+        if ($guess_mode) {
+            $this->setMode(self::JSON_MODE);
+        }
+
         $auth_required = \Config::getConfigurationValue('inventory', 'auth_required');
         if ($auth_required === Conf::CLIENT_CREDENTIALS) {
             $request = new Request('POST', $_SERVER['REQUEST_URI'], $this->headers->getHeaders());
@@ -218,17 +223,14 @@ abstract class AbstractRequest
                 $client = Server::validateAccessToken($request);
                 // Agent must authenticate both using client credentials (and therefore no valid user ID associated) and have the "inventory" OAuth scope
                 if (!\User::isNewID($client['user_id']) || !in_array('inventory', $client['scopes'], true)) {
-                    $this->setMode(self::JSON_MODE);
                     $this->addError('Access denied. Agent must authenticate using client credentials and have the "inventory" OAuth scope', 401);
                     return false;
                 }
             } catch (OAuth2KeyException $e) {
-                $this->setMode(self::JSON_MODE);
                 trigger_error($e->getMessage(), E_USER_WARNING);
                 $this->addError($e->getMessage());
                 return false;
             } catch (OAuthServerException) {
-                $this->setMode(self::JSON_MODE);
                 $this->addError('Authorization header required to send an inventory', 401);
                 return false;
             }
@@ -237,7 +239,6 @@ abstract class AbstractRequest
         if ($auth_required === Conf::BASIC_AUTH) {
             $authorization_header = $this->headers->getHeader('Authorization');
             if (is_null($authorization_header)) {
-                $this->setMode(self::JSON_MODE);
                 $this->headers->setHeader("www-authenticate", 'Basic realm="basic"');
                 $this->addError('Authorization header required to send an inventory', 401);
                 return false;
@@ -258,7 +259,6 @@ abstract class AbstractRequest
                     }
                 }
                 if (!$allowed) {
-                    $this->setMode(self::JSON_MODE);
                     $this->addError('Access denied. Wrong login or password for basic authentication.', 401);
                     return false;
                 }
@@ -306,7 +306,7 @@ abstract class AbstractRequest
             }
         }
 
-        if ($this->mode === null) {
+        if ($guess_mode) {
             $this->guessMode($data);
         }
 
