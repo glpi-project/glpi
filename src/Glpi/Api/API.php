@@ -1879,9 +1879,8 @@ abstract class API
                     // to force having messages after redirect
                     $object["_add"] = true;
 
-                    $message = '';
-
                     //add current item
+                    $message = '';
                     try {
                         $new_id = $item->add($object);
                         $message = $this->getGlpiLastMessage();
@@ -1894,7 +1893,8 @@ abstract class API
                         $failed++;
                     }
 
-                    $current_res = ['id'      => $new_id,
+                    $current_res = [
+                        'id'      => $new_id,
                         'message' => $message,
                     ];
                 }
@@ -2023,13 +2023,22 @@ abstract class API
                         }
 
                         //update item
-                        $object = $this->inputObjectToArray($object);
-                        $update_return = $item->update($object);
+                        $message = '';
+                        try {
+                            $object = $this->inputObjectToArray($object);
+                            $update_return = $item->update($object);
+                            $message = $this->getGlpiLastMessage();
+                        } catch (\RuntimeException $e) {
+                            $update_return = false;
+                            $message = $e->getMessage();
+                        }
+
                         if ($update_return === false) {
                             $failed++;
                         }
-                        $current_res = [$item->fields["id"] => $update_return,
-                            'message'           => $this->getGlpiLastMessage(),
+                        $current_res = [
+                            $item->fields["id"] => $update_return,
+                            'message'           => $message,
                         ];
                     }
                 }
@@ -2144,15 +2153,25 @@ abstract class API
                         ];
                     } else {
                         //delete item
-                        $delete_return = $item->delete(
-                            (array) $object,
-                            $params['force_purge'],
-                            $params['history']
-                        );
+                        $message = '';
+                        try {
+                            $delete_return = $item->delete(
+                                (array) $object,
+                                $params['force_purge'],
+                                $params['history']
+                            );
+                        } catch (\RuntimeException $e) {
+                            $message = $e->getMessage();
+                            $delete_return = false;
+                        }
+
                         if ($delete_return === false) {
                             $failed++;
                         }
-                        $idCollection[] = [$object->id => $delete_return, 'message' => $this->getGlpiLastMessage()];
+                        $idCollection[] = [
+                            $object->id => $delete_return,
+                            'message'   => $message
+                        ];
                     }
                 }
             }
