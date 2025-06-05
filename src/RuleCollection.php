@@ -38,6 +38,12 @@ use Glpi\DBAL\QueryExpression;
 use Glpi\Event;
 use Glpi\Plugin\Hooks;
 
+use function Safe\file_get_contents;
+use function Safe\json_encode;
+use function Safe\json_decode;
+use function Safe\preg_match;
+use function Safe\simplexml_load_string;
+
 class RuleCollection extends CommonDBTM
 {
     public const MOVE_BEFORE = 'before';
@@ -298,14 +304,17 @@ class RuleCollection extends CommonDBTM
     }
 
     /**
-     * @return class-string<Rule>|string class-string if valid; else empty string
+     * @return class-string<Rule> class-string if valid; else empty string
      */
     public static function getRuleClassName()
     {
+        $classname = '';
         if (preg_match('/(.*)Collection/', static::class, $rule_class)) {
-            return $rule_class[1];
+            if (is_a($rule_class[1], Rule::class, true)) {
+                $classname = $rule_class[1];
+            }
         }
-        return "";
+        return $classname;
     }
 
     /**
@@ -950,9 +959,9 @@ TWIG, $twig_params);
     }
 
     /**
-     * Export rules in a xml format
+     * Export rules in XML format
      *
-     * @param array $items the input data to transform to xml
+     * @param array $items the input data to transform to XML
      *
      * @since 0.85
      *
@@ -961,20 +970,20 @@ TWIG, $twig_params);
     public static function exportRulesToXML($items = [])
     {
         if (!count($items)) {
-            return false;
+            return;
         }
 
         $rulecollection = new self();
         $rulecritera    = new RuleCriteria();
         $ruleaction     = new RuleAction();
 
-        //create xml
+        //create XML
         $xmlE           = new SimpleXMLElement('<rules/>');
 
         //parse all rules
         foreach ($items as $ID) {
             $rulecollection->getFromDB($ID);
-            if (!class_exists($rulecollection->fields['sub_type'])) {
+            if (!class_exists($rulecollection->fields['sub_type']) || !is_a($rulecollection->fields['sub_type'], Rule::class, true)) {
                 continue;
             }
             $rule = new $rulecollection->fields['sub_type']();
@@ -1056,7 +1065,7 @@ TWIG, $twig_params);
             }
         }
 
-        // convert SimpleXMLElement to xml string
+        // convert SimpleXMLElement to XML string
         $xml = $xmlE->asXML();
 
         // send attachment to browser
@@ -1066,7 +1075,7 @@ TWIG, $twig_params);
     }
 
     /**
-     * Print a form to select a xml file for import rules
+     * Print a form to select a XML file for import rules
      *
      * @since 0.85
      *
@@ -1097,7 +1106,7 @@ TWIG, $twig_params);
     }
 
     /**
-     * Print a form to inform user when conflicts appear during the import of rules from a xml file
+     * Print a form to inform user when conflicts appear during the import of rules from a XML file
      *
      * @since 0.85
      *
@@ -1116,16 +1125,16 @@ TWIG, $twig_params);
             Session::addMessageAfterRedirect(__s("No file was uploaded"));
             return false;
         }
-        // get xml file content
+        // get XML file content
         $xml           = file_get_contents($_FILES["xml_file"]["tmp_name"]);
-        // convert a xml string into a SimpleXml object
+        // convert a XML string into a SimpleXml object
         if (!$xmlE = simplexml_load_string($xml)) {
             Session::addMessageAfterRedirect(__s('Unauthorized file type'), false, ERROR);
         }
         $errors = libxml_get_errors();
         // convert SimpleXml object into an array and store it in session
         $rules         = json_decode(json_encode((array) $xmlE), true);
-        // check rules (check if entities, criterias and actions is always good in this glpi)
+        // check rules (check if entities, criteria and actions is always good in this glpi)
         $entity        = new Entity();
         $rules_refused = [];
         /** @var array<class-string<Rule>, Rule> $rule_subtypes Cache of rule subtype instances */
@@ -1137,8 +1146,16 @@ TWIG, $twig_params);
         }
 
         foreach ($rules['rule'] as $k_rule => &$rule) {
-            $tmprule = $rule_subtypes[$rule['sub_type']] ?? new $rule['sub_type']();
-            $rule_subtypes[$rule['sub_type']] ??= $tmprule;
+            if (!$rule_subtypes[$rule['sub_type']]) {
+                if (!is_a($rule['sub_type'], Rule::class, true)) {
+                    continue;
+                }
+                $tmprule = new $rule['sub_type']();
+                $rule_subtypes[$tmprule::class] = $tmprule;
+            } else {
+                $tmprule = $rule_subtypes[$rule['sub_type']];
+            }
+
             $refused_rule = [
                 'uuid' => $rule['uuid'],
                 'rule_name' => $rule['name'],
@@ -1149,7 +1166,7 @@ TWIG, $twig_params);
             if ($tmprule->isEntityAssign()) {
                 $entities_found = $entity->find(['completename' => $rule['entities_id']]);
                 if (empty($entities_found)) {
-                    $refused_rule['reasons'][] = ['entity' => $rule['entities_id']];
+                    $refused_rule['reasons']['entity'][] = ['id' => $rule['entities_id']];
                 }
             }
 
@@ -1274,7 +1291,7 @@ TWIG, $twig_params);
         foreach ($rules_refused as $k => $rule) {
             $r = [];
             if (isset($rule['reasons']['entity'])) {
-                $r['entity'] = true;
+                $r['entity'] = array_map(static fn($c) => $c['id'], $rule['reasons']['entity']);
             }
             if (isset($rule['reasons']['criteria'])) {
                 $r['criterias'] = array_map(static fn($c) => $c['id'], $rule['reasons']['criteria']);
@@ -1408,7 +1425,7 @@ TWIG, $twig_params);
                     foreach ($current_rule['rulecriteria'] as $criteria) {
                         $criteria['rules_id'] = $rules_id;
                         // fix array in value key
-                        // (simplexml bug, empty xml node are converted in empty array instead of null)
+                        // (simplexml bug, empty XML node are converted in empty array instead of null)
                         if (is_array($criteria['pattern'])) {
                             $criteria['pattern'] = null;
                         }
@@ -1421,7 +1438,7 @@ TWIG, $twig_params);
                     foreach ($current_rule['ruleaction'] as $action) {
                         $action['rules_id'] = $rules_id;
                         // fix array in value key
-                        // (simplexml bug, empty xml node are converted in empty array instead of null)
+                        // (simplexml bug, empty XML node are converted in empty array instead of null)
                         if (is_array($action['value'])) {
                             $action['value'] = null;
                         }
@@ -2021,6 +2038,9 @@ TWIG, $twig_params);
 
         $rules = [];
         foreach ($CFG_GLPI["rulecollections_types"] as $rulecollectionclass) {
+            if (!is_a($rulecollectionclass, RuleCollection::class, true)) {
+                continue;
+            }
             $rulecollection = new $rulecollectionclass();
             if ($rulecollection->canList()) {
                 if ($plug = isPluginItemType($rulecollectionclass)) {

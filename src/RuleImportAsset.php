@@ -463,6 +463,11 @@ class RuleImportAsset extends Rule
             isset($input['itemtype'])
             && (is_array($input['itemtype']))
         ) {
+            foreach ($input['itemtype'] as $k => $v) {
+                if (!is_a($v, CommonDBTM::class, true)) {
+                    unset($input['itemtype'][$k]);
+                }
+            }
             $itemtypeselected = array_merge($itemtypeselected, $input['itemtype']);
         } elseif (
             isset($input['itemtype'])
@@ -474,6 +479,7 @@ class RuleImportAsset extends Rule
             foreach ($CFG_GLPI["asset_types"] as $itemtype) {
                 if (
                     class_exists($itemtype)
+                    && is_a($itemtype, CommonDBTM::class, true)
                     && $itemtype !== SoftwareLicense::class
                     && $itemtype !== Certificate::class
                 ) {
@@ -486,7 +492,7 @@ class RuleImportAsset extends Rule
 
         $found = false;
         foreach ($itemtypeselected as $itemtype) {
-            $item = new $itemtype();
+            $item = new $itemtype(); //$itemtypeselected entries are filtered to contain only CommonDBTM classes - should be safe.
             $itemtable = $item->getTable();
 
             // Build the request to check if the asset exists in GLPI
@@ -1082,7 +1088,7 @@ TWIG, $twig_params);
 
         $types = [];
         foreach ($CFG_GLPI["ruleimportasset_types"] as $itemtype) {
-            if (class_exists($itemtype)) {
+            if (class_exists($itemtype) && is_a($itemtype, CommonDBTM::class, true)) {
                 $item = new $itemtype();
                 $types[$itemtype] = $item->getTypeName();
             }

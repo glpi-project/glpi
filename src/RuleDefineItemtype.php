@@ -229,7 +229,7 @@ TWIG, $twig_params);
 
         $types = [];
         foreach ($CFG_GLPI['inventory_types'] as $itemtype) {
-            if (class_exists($itemtype)) {
+            if (class_exists($itemtype) && is_a($itemtype, CommonDBTM::class, true)) {
                 /** @var CommonDBTM $item */
                 $item = new $itemtype();
                 $types[$itemtype] = $item->getTypeName(1);

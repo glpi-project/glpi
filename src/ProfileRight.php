@@ -337,7 +337,7 @@ class ProfileRight extends CommonDBChild
     {
 
         $itemtype = $options['searchopt']['rightclass'];
-        $item     = new $itemtype();
+        $item     = getItemForItemtype($itemtype());
         $rights   = '';
         $prem     = true;
         foreach ($item->getRights() as $val => $name) {
