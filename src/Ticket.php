@@ -58,8 +58,7 @@ use function Safe\strtotime;
  *
  * Additionnal fields for $input add/update
  *  - _olas_id : array of olas to associate with the ticket, used only if _la_update field is set
- *  - _la_update : flag to know if _olas_id field must be handled or not, value ignored, if set _olas_id are handled
- *  - @todo complete
+ *  - _la_update : flag to know if _olas_id field must be handled. Do not handle unless it's true
  **/
 class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
 {
@@ -6345,16 +6344,11 @@ JAVASCRIPT;
 
     private function updateOlaAssociations(): void
     {
-        // invalidate olas cache
-        //        $this->associatedOlas = null;
-        //        dump('invaldate cache');
-
         // handle _olas_id fiels only if _la_update is set
         if (!isset($this->input['_la_update'])) {
             return;
         }
 
-        // $this->input['_olas_id'] is an array, form field name is _olas_id[]
         $request_olas_ids = $this->input['_olas_id'] ?? [];
         $current_olas_ids = array_column($this->getOlasData(), 'olas_id');
 
@@ -6380,13 +6374,10 @@ JAVASCRIPT;
             // insert in association table items_ola
             if (
                 !$items_ola->add([
-                    'due_time' => null, // @todoseb à calculer ?
-                    //            'end_time' => ,
+                    'due_time' => null, // @todoseb utile ?
                     'items_id' => $this->getID(),
                     'itemtype' => $this->getType(),
                     'olas_id' => $olas_id,
-                    //                'start_time' => null, // @todoseb à calculer, fait ailleurs ? noter les fonctions essentielles de recompute du temps
-                    //            'waiting_time' ,
                 ])
             ) {
                 throw new \Exception("Failed to associate OLA #$olas_id to ticket #{$this->getID()}");
