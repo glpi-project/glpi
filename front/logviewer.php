@@ -54,7 +54,7 @@ if (!file_exists(GLPI_LOG_DIR . '/' . $filepath) || is_dir(GLPI_LOG_DIR . '/' . 
     throw new NotFoundHttpException('Not found');
 }
 
-if (($_GET['action'] ?? '') === 'download') {
+if (($_GET['action'] ?? '') === 'download_log_file') {
     $logparser = new LogParser();
     $logparser->download($filepath);
 } elseif (($_POST['action'] ?? '') === 'empty') {
