@@ -92,6 +92,9 @@ final class Server
 
     public function __construct()
     {
+        //check for keys
+        self::checkKeys();
+
         $this->client_repository = new ClientRepository();
         $this->access_token_repository = new AccessTokenRepository();
         $this->scope_repository = new ScopeRepository();
@@ -184,7 +187,7 @@ final class Server
         ];
     }
 
-    public static function generateKeys(): void
+    public static function checkKeys(): bool
     {
         if (
             file_exists(self::PRIVATE_KEY_PATH)
@@ -193,7 +196,7 @@ final class Server
             // Keys are already generated
 
             if (is_readable(self::PRIVATE_KEY_PATH) && is_readable(self::PUBLIC_KEY_PATH)) {
-                return;
+                return true;
             } else {
                 throw new RuntimeException(
                     sprintf(
@@ -203,6 +206,15 @@ final class Server
                     )
                 );
             }
+        }
+
+        return false;
+    }
+    public static function generateKeys(): void
+    {
+        if (self::checkKeys()) {
+            // Keys are already generated
+            return;
         }
 
         // Partial data: unsure how to proceed, let the user review the files.
