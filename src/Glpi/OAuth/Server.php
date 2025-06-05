@@ -203,13 +203,7 @@ final class Server
             if (is_readable(self::PRIVATE_KEY_PATH) && is_readable(self::PUBLIC_KEY_PATH)) {
                 return true;
             } else {
-                throw new OAuth2KeyException(
-                    sprintf(
-                        'Either %s or %s cannot be read. Please check file system permissions',
-                        self::PRIVATE_KEY_PATH,
-                        self::PUBLIC_KEY_PATH
-                    )
-                );
+                throw new OAuth2KeyException('Either private or public OAuth keys cannot be read. Please check file system permissions');
             }
         }
 
