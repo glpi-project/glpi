@@ -224,7 +224,7 @@ abstract class AbstractRequest
             } catch (OAuth2KeyException $e) {
                 $this->setMode(self::JSON_MODE);
                 trigger_error($e->getMessage(), E_USER_WARNING);
-                $this->addError($e);
+                $this->addError($e->getMessage());
                 return false;
             } catch (OAuthServerException) {
                 $this->setMode(self::JSON_MODE);
