@@ -227,7 +227,7 @@ abstract class AbstractRequest
                     return false;
                 }
             } catch (OAuth2KeyException $e) {
-                trigger_error($e->getMessage(), E_USER_WARNING);
+                \Glpi\Error\ErrorHandler::logCaughtException($e);
                 $this->addError($e->getMessage());
                 return false;
             } catch (OAuthServerException) {
