@@ -447,7 +447,7 @@ class ProblemTest extends DbTestCase
             count($user_problem->find([
                 'problems_id' => $problem->getID(),
                 'users_id' => $glpi_user->getID(),
-                'type' => \CommonITILActor::REQUESTER
+                'type' => \CommonITILActor::REQUESTER,
             ]))
         );
         $this->assertEquals(
@@ -455,7 +455,7 @@ class ProblemTest extends DbTestCase
             count($user_problem->find([
                 'problems_id' => $problem->getID(),
                 'users_id' => $tech_user->getID(),
-                'type' => \CommonITILActor::ASSIGN
+                'type' => \CommonITILActor::ASSIGN,
             ]))
         );
 
