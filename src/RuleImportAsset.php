@@ -1088,7 +1088,7 @@ TWIG, $twig_params);
 
         $types = [];
         foreach ($CFG_GLPI["ruleimportasset_types"] as $itemtype) {
-            if (class_exists($itemtype) && is_a($itemtype, CommonDBTM::class, true)) {
+            if (is_a($itemtype, CommonDBTM::class, true)) {
                 $item = new $itemtype();
                 $types[$itemtype] = $item->getTypeName();
             }

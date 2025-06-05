@@ -336,7 +336,12 @@ JAVASCRIPT;
         $message = '';
 
         foreach ($CFG_GLPI['planning_types'] as $itemtype) {
-            if (!is_a($itemtype, CommonDBTM::class, true) || !Toolbox::hasTrait($itemtype, PlanningEvent::class)) {
+            if (
+                !is_a($itemtype, CommonDBTM::class, true)
+                // methods from the `Glpi\Features\PlanningEvent` trait
+                || !method_exists($itemtype, 'populatePlanning')
+                || !method_exists($itemtype, 'getAlreadyPlannedInformation')
+            ) {
                 continue;
             }
             $item = new $itemtype();
