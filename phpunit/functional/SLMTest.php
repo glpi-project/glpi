@@ -34,7 +34,6 @@
 
 namespace tests\units;
 
-use CommonITILObject;
 use DbTestCase;
 use Glpi\PHPUnit\Tests\Glpi\ITILTrait;
 use Glpi\PHPUnit\Tests\Glpi\SLMTrait;
@@ -2386,9 +2385,9 @@ class SLMTest extends DbTestCase
     /**
      * Check recalculating the SLA when the SLA is changed to an SLA with a different calendar
      *
-     * @return void
+     * @todoseb même test for OLA (est-ce vraiment utile ?)
      */
-    public function testLaChangeCalendar(): void
+    public function testSLaChangeCalendar(): void
     {
         $this->login();
         $entity = getItemByTypeName('Entity', '_test_root_entity', true);
@@ -2422,14 +2421,13 @@ class SLMTest extends DbTestCase
         ]);
 
         // Create rules to set SLA on ticket creation
-        $la_class = \SLA::class;
-        $la = new $la_class();
-        foreach ([SLM::TTO, SLM::TTR] as $la_type) {
-            [$la_date_field, $la_fk_field] = $la->getFieldNames($la_type);
+        $sla = new \SLA();
+        foreach ([\SLM::TTO, \SLM::TTR] as $la_type) {
+            [$la_date_field, $la_fk_field] = $sla->getFieldNames($la_type);
 
             // Create two LA with one escalation level
-            $la = $this->createItem($la_class, [
-                'name'                => "$la_class $la_type",
+            $sla = $this->createItem(\SLA::class, [
+                'name'                => "\SLA $la_type",
                 'entities_id'         => $entity,
                 'is_recursive'        => true,
                 'type'                => $la_type,
@@ -2440,9 +2438,9 @@ class SLMTest extends DbTestCase
                 'slms_id'             => $slm->getID(),
                 'use_ticket_calendar' => false,
             ]);
-            $this->createItem($la->getLevelClass(), [
-                'name'                          => $la->fields['name'] . ' level',
-                $la_class::getForeignKeyField() => $la->getID(),
+            $this->createItem($sla->getLevelClass(), [
+                'name'                          => $sla->fields['name'] . ' level',
+                \SLA::class::getForeignKeyField() => $sla->getID(),
                 'execution_time'                => - HOUR_TIMESTAMP,
                 'is_active'                     => true,
                 'entities_id'                   => $entity,
@@ -2456,7 +2454,7 @@ class SLMTest extends DbTestCase
                 ->setCondtion(RuleTicket::ONADD)
                 ->addCriteria('name', Rule::PATTERN_IS, $test_ticket_name)
                 ->addCriteria('entities_id', Rule::PATTERN_IS, $entity)
-                ->addAction('assign', $la_fk_field, $la->getID());
+                ->addAction('assign', $la_fk_field, $sla->getID());
             $this->createRule($builder);
         }
 
@@ -2468,16 +2466,16 @@ class SLMTest extends DbTestCase
         ]);
 
         // Check that TTO and TTR are set as expected
-        $la = new $la_class();
-        $level_class = $la->getLevelClass();
+        $sla = new \SLA();
+        $level_class = $sla->getLevelClass();
         $expected_la_levels = [];
 
-        foreach ([SLM::TTO, SLM::TTR] as $la_type) {
-            [$la_date_field, $la_fk_field] = $la->getFieldNames($la_type);
+        foreach ([\SLM::TTO, \SLM::TTR] as $la_type) {
+            [$la_date_field, $la_fk_field] = $sla->getFieldNames($la_type);
 
             // Check that the correct LA is assigned to the ticket
-            $expected_la = getItemByTypeName($la_class, "$la_class $la_type", true);
-            $expected_la_levels[] = getItemByTypeName($level_class, "$la_class $la_type level", true);
+            $expected_la = getItemByTypeName(\SLA::class, "\SLA $la_type", true);
+            $expected_la_levels[] = getItemByTypeName($level_class, "\SLA $la_type level", true);
             $this->assertEquals($expected_la, $ticket->fields[$la_fk_field]);
 
             // Check that the target date is correct (+ 4 hours)
@@ -2485,7 +2483,7 @@ class SLMTest extends DbTestCase
         }
 
         // Check that all escalations levels are sets
-        $level_ticket_class = $la->getLevelTicketClass();
+        $level_ticket_class = $sla->getLevelTicketClass();
         $sa_levels_ticket = (new $level_ticket_class())->find(['tickets_id' => $ticket->getID()]);
         $this->assertCount(2, $sa_levels_ticket); // One TTO and one TTR
 
@@ -2512,23 +2510,25 @@ class SLMTest extends DbTestCase
         $this->assertTrue($ticket->getFromDB($ticket->getID()));
 
         // Check that TTO and TTR have been modified as expected
-        $la = new $la_class();
-        $level_class = $la->getLevelClass();
+        $sla = new \SLA();
+        $level_class = $sla->getLevelClass();
         $expected_la_levels = [];
 
+        $la_type = \SLM::TTR;
+        [$la_date_field, $la_fk_field] = $sla->getFieldNames($la_type);
         $la_type = SLM::TTR;
         [$la_date_field, $la_fk_field] = $la->getFieldNames($la_type);
 
         // Check that the correct LA is assigned to the ticket
-        $expected_la = getItemByTypeName($la_class, "$la_class $la_type", true);
-        $expected_la_levels[] = getItemByTypeName($level_class, "$la_class $la_type level", true);
+        $expected_la = getItemByTypeName(\SLA::class, "\SLA $la_type", true);
+        $expected_la_levels[] = getItemByTypeName($level_class, "\SLA $la_type level", true);
         $this->assertEquals($expected_la, $ticket->fields[$la_fk_field]);
 
         // Check that the target date is correct (+ 4 hours)
         $this->assertEquals('2034-08-16 17:10:00', $ticket->fields[$la_date_field]);
 
         // Check that all escalations levels are sets
-        $level_ticket_class = $la->getLevelTicketClass();
+        $level_ticket_class = $sla->getLevelTicketClass();
         $sa_levels_ticket = (new $level_ticket_class())->find(['tickets_id' => $ticket->getID()], [$level_class::getForeignKeyField()]);
         $this->assertCount(1, $sa_levels_ticket);
 
@@ -2569,12 +2569,12 @@ class SLMTest extends DbTestCase
 
         // Create rules to set full SLA on ticket update
         foreach ([SLM::TTO, SLM::TTR] as $la_type) {
-            $la = new $la_class();
-            [$la_date_field, $la_fk_field] = $la->getFieldNames($la_type);
+            $sla = new SLA();
+            [$la_date_field, $la_fk_field] = $sla->getFieldNames($la_type);
 
             // Create two LA with one escalation level
-            $la = $this->createItem($la_class, [
-                'name'                => "$la_class $la_type 2",
+            $sla = $this->createItem(\SLA::class, [
+                'name'                => "\SLA $la_type 2",
                 'entities_id'         => $entity,
                 'is_recursive'        => true,
                 'type'                => $la_type,
@@ -2585,9 +2585,9 @@ class SLMTest extends DbTestCase
                 'slms_id'             => $slm2->getID(),
                 'use_ticket_calendar' => false,
             ]);
-            $this->createItem($la->getLevelClass(), [
-                'name'                          => $la->fields['name'] . ' level',
-                $la_class::getForeignKeyField() => $la->getID(),
+            $this->createItem($sla->getLevelClass(), [
+                'name'                          => $sla->fields['name'] . ' level',
+                \SLA::class::getForeignKeyField() => $sla->getID(),
                 'execution_time'                => - HOUR_TIMESTAMP,
                 'is_active'                     => true,
                 'entities_id'                   => $entity,
@@ -2601,7 +2601,7 @@ class SLMTest extends DbTestCase
                 ->setCondtion(RuleTicket::ONUPDATE)
                 ->addCriteria('name', Rule::PATTERN_IS, $test_ticket_name)
                 ->addCriteria('urgency', Rule::PATTERN_IS, 5)
-                ->addAction('assign', $la_fk_field, $la->getID());
+                ->addAction('assign', $la_fk_field, $sla->getID());
             $this->createRule($builder);
         }
 
@@ -2613,16 +2613,16 @@ class SLMTest extends DbTestCase
         $this->assertTrue($ticket->getFromDB($ticket->getID()));
 
         // Check that TTO and TTR have been modified as expected
-        $la = new $la_class();
-        $level_class = $la->getLevelClass();
+        $sla = new \SLA();
+        $level_class = $sla->getLevelClass();
         $expected_la_levels = [];
 
         foreach ([SLM::TTO, SLM::TTR] as $la_type) {
-            [$la_date_field, $la_fk_field] = $la->getFieldNames($la_type);
+            [$la_date_field, $la_fk_field] = $sla->getFieldNames($la_type);
 
             // Check that the correct LA is assigned to the ticket
-            $expected_la = getItemByTypeName($la_class, "$la_class $la_type 2", true);
-            $expected_la_levels[] = getItemByTypeName($level_class, "$la_class $la_type 2 level", true);
+            $expected_la = getItemByTypeName(\SLA::class, "\SLA $la_type 2", true);
+            $expected_la_levels[] = getItemByTypeName($level_class, "\SLA $la_type 2 level", true);
             $this->assertEquals($expected_la, $ticket->fields[$la_fk_field]);
 
             // Check that the target date is correct (+ 6 hours)
@@ -2630,7 +2630,7 @@ class SLMTest extends DbTestCase
         }
 
         // Check that all escalations levels are sets
-        $level_ticket_class = $la->getLevelTicketClass();
+        $level_ticket_class = $sla->getLevelTicketClass();
         $sa_levels_ticket = (new $level_ticket_class())->find(['tickets_id' => $ticket->getID()], [$level_class::getForeignKeyField()]);
         $this->assertCount(2, $sa_levels_ticket);
 
