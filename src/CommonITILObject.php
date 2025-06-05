@@ -1131,7 +1131,7 @@ abstract class CommonITILObject extends CommonDBTM
      */
     public static function getReopenableStatusArray()
     {
-        return [self::CLOSED, self::SOLVED, self::WAITING];
+        return [self::CLOSED, self::SOLVED, self::WAITING, self::OBSERVED];
     }
 
 
