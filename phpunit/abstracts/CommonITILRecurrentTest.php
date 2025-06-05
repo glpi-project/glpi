@@ -677,10 +677,10 @@ abstract class CommonITILRecurrentTest extends DbTestCase
 
         // Create a recurrent ticket with all required fields
         $recurrent = $this->createItem(
-            \TicketRecurrent::class,
+            $child_class,
             [
-                'name' => 'Test recurrent ticket',
-                'tickettemplates_id' => $template->getID(),
+                'name' => 'Test recurrent item',
+                $template->getForeignKeyField() => $template->getID(),
                 'begin_date' => date('Y-m-d H:i:s', strtotime('-7 days')),
                 'end_date' => date('Y-m-d H:i:s', strtotime('+1 month')),
                 'periodicity' => HOUR_TIMESTAMP,
