@@ -2606,8 +2606,8 @@ TWIG;
                                 'class="btn btn-danger w-100"'
                             ),
                             'content' => sprintf(
-                                __s('By uninstalling the "%s" plugin you will lose all the data of the plugin.'),
-                                htmlescape($plugin->getField('name'))
+                                __s('By uninstalling the %s plugin you will lose all the data of the plugin.'),
+                                '"' . htmlescape($plugin->getField('name')) . '"'
                             ),
                         ]);
                     } else {
