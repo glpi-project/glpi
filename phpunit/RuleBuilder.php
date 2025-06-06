@@ -94,6 +94,8 @@ class RuleBuilder
         $this->criteria     = [];
         $this->actions      = [];
 
+        assert(is_a($this->rule_type, Rule::class, true), '$rule_type parameter must be a subclass of \Rule');
+
         if (is_a($this->rule_type, RuleCommonITILObject::class, true)) {
             $this->condition = RuleTicket::ONADD | RuleTicket::ONUPDATE;
         } else {

@@ -259,13 +259,15 @@ class Calendar extends CommonDropdown
 
 
     /**
-     * Get active time between to date time for the active calendar
+     * Seconds elapsed between two dates
+     *
+     * Taking opening hours into account unless param $include_inactive_time is true
      *
      * @param string $start                 begin datetime
      * @param string $end                   end datetime
      * @param bool   $include_inactive_time true to just get the time passed between start time and end time
      *
-     * @return int timestamp of delay
+     * @return int seconds elapsed between the two dates, taking opening hours into account.
      *
      * @FIXME Remove `$include_inactive_time` parameter in GLPI 11.0. It does not seems to be used and makes no sense.
      */

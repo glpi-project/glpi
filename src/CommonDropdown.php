@@ -388,10 +388,15 @@ abstract class CommonDropdown extends CommonDBTM
 
     public function pre_deleteItem()
     {
-
         if (isset($this->fields['is_protected']) && $this->fields['is_protected']) {
+            Session::addMessageAfterRedirect(
+                msg: __s('Protected item cannot be deleted.'),
+                message_type: ERROR
+            );
+
             return false;
         }
+
         return true;
     }
 

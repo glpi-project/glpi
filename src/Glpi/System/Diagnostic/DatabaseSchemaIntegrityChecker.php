@@ -165,8 +165,8 @@ class DatabaseSchemaIntegrityChecker
             new UnifiedDiffOutputBuilder(
                 sprintf(
                     "--- %s\n+++ %s\n",
-                    __('Expected database schema'),
-                    __('Current database schema')
+                    __('Expected database schema (glpi-empty.sql)'),
+                    __('Current database schema (migration result)')
                 )
             )
         );

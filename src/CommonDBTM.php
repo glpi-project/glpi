@@ -1615,9 +1615,9 @@ class CommonDBTM extends CommonGLPI
     /**
      * Prepare input data for adding the item. If false, add is cancelled.
      *
-     * @param array $input datas used to add the item
+     * @param array<string, mixed> $input datas used to add the item
      *
-     * @return false|array the modified $input array
+     * @return false|array<string, mixed> the modified $input array
      **/
     public function prepareInputForAdd($input)
     {
@@ -2043,9 +2043,9 @@ class CommonDBTM extends CommonGLPI
     /**
      * Prepare input data for updating the item. If false, update is cancelled.
      *
-     * @param array $input data used to update the item
+     * @param array<string, mixed> $input data used to update the item
      *
-     * @return false|array the modified $input array
+     * @return false|array<string, mixed> the modified $input array
      **/
     public function prepareInputForUpdate($input)
     {
@@ -4235,18 +4235,7 @@ class CommonDBTM extends CommonGLPI
      *
      * This should be overloaded in Class
      *
-     * @param array $options array of possible options:
-     * Parameters which could be used in options array :
-     *    - name : string / name of the select (default is depending itemtype)
-     *    - value : integer / preselected value (default 0)
-     *    - comments : boolean / is the comments displayed near the dropdown (default true)
-     *    - entity : integer or array / restrict to a defined entity or array of entities
-     *                   (default -1 : no restriction)
-     *    - toupdate : array / Update a specific item on select change on dropdown
-     *                   (need value_fieldname, to_update, url (see Ajax::updateItemOnSelectEvent for information)
-     *                   and may have moreparams)
-     *    - used : array / Already used items ID: not to display in dropdown (default empty)
-     *    - hide_if_no_elements  : boolean / hide dropdown if there is no elements (default false)
+     * @param array $options @see Dropdown::show()
      *
      * @return string|false|integer
      **/
