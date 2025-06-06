@@ -141,6 +141,15 @@ class ValidationStep extends \CommonDropdown
         return parent::prepareInputForUpdate($input);
     }
 
+    public function showForm($ID, array $options = [])
+    {
+        $show_delete_button = !$this->isDefault() && !$this->isInUsage();
+
+        return parent::showForm($ID, $options + ['candel' => $show_delete_button]);
+    }
+
+
+
     public function getAdditionalFields()
     {
         return [
