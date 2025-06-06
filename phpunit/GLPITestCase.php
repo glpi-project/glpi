@@ -239,6 +239,12 @@ class GLPITestCase extends TestCase
         }
     }
 
+    /**
+     * Check that the session contains messages for the given level.
+     *
+     * @param int $level one of the constant values (INFO, ERROR, WARNING) @see src/autoload/constants.php:105
+     * @param array<string> $messages
+     */
     protected function hasSessionMessages(int $level, array $messages): void
     {
         $this->has_failed = true;
@@ -498,7 +504,7 @@ class GLPITestCase extends TestCase
     /**
      * Return the minimal fields required for the creation of an item of the given class.
      *
-     * @param string $class
+     * @param class-string $class
      * @return array
      */
     protected function getMinimalCreationInput(string $class): array
