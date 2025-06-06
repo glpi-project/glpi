@@ -171,6 +171,20 @@ class ValidationStep extends \CommonDropdown
     }
 
 
+    public function rawSearchOptions()
+    {
+        $tab[] = [
+            'id'                => '252',
+            'table'             => $this->getTable(),
+            'field'             => 'is_default',
+            'name'              => __('Default'),
+            'datatype'          => 'bool',
+            'massiveaction'     => false,
+        ];
+
+        return $tab + parent::rawSearchOptions();
+    }
+
     public static function getDefault(): self
     {
         $vs = new self();
