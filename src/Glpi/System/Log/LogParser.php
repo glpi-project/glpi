@@ -246,7 +246,7 @@ final class LogParser extends CommonGLPI
      *
      * @return string|null
      */
-    private function getFullPath(string $filepath): ?string
+    public function getFullPath(string $filepath): ?string
     {
         $filepath = str_replace('\\', '/', $filepath);
 
