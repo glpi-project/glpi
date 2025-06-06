@@ -653,7 +653,6 @@ export class GlpiFormEditorController
     #refreshUX() {
         this.#updateAddSectionActionVisiblity();
         this.#addFakeDivToEmptySections();
-        this.#updateSectionCountLabels();
         this.#updateSectionsDetailsVisiblity();
         this.#updateMergeSectionActionVisibility();
     }
@@ -1157,7 +1156,7 @@ export class GlpiFormEditorController
             }
 
             // Check if condition is in a section
-            const parentSection = $(element).closest('[data-glpi-form-editor-section-details]');
+            const parentSection = $(element).closest('[data-glpi-form-editor-section]');
             if (parentSection.length > 0) {
                 elementsWithConditions.push({
                     name: this.#getItemInput(parentSection, "name"),
@@ -2037,35 +2036,12 @@ export class GlpiFormEditorController
             $(this.#target)
                 .find("[data-glpi-form-editor-section-details]")
                 .addClass("d-none");
-            $(this.#target)
-                .find("[data-glpi-form-editor-section-number-display]")
-                .addClass("d-none");
         } else {
             // Mutliple sections, display all details
             $(this.#target)
                 .find("[data-glpi-form-editor-section-details]")
                 .removeClass("d-none");
-            $(this.#target)
-                .find("[data-glpi-form-editor-section-number-display]")
-                .removeClass("d-none");
         }
-    }
-
-    /**
-     * Update "Step X of Y" labels
-     */
-    #updateSectionCountLabels() {
-        const sections = $(this.#target).find("[data-glpi-form-editor-section]");
-        sections.each((s_index, section) => {
-            const display = $(section)
-                .find("[data-glpi-form-editor-section-number-display]");
-
-            display.html(
-                __("Step %1$d of %2$d")
-                    .replace("%1$d", s_index + 1)
-                    .replace("%2$d", sections.length)
-            );
-        });
     }
 
     /**

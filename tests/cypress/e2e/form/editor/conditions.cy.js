@@ -292,9 +292,6 @@ function validateSectionOrder(sections) {
     sections.forEach((section, i) => {
         cy.findByRole('heading', {'name': section}).should('be.visible');
 
-        // Make sure step label is accurate
-        cy.findByText(`Step ${i + 1} of ${sections.length}`).should('be.visible');
-
         if (i + 1 === sections.length) {
             // Last section, do not submit form
             cy.findByRole('button', {'name': "Submit"}).should('be.visible');

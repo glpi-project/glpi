@@ -55,11 +55,23 @@
     aria-label="{{ __("Form section") }}"
 >
     <div
-        class="bg-primary px-2 py-1 rounded-top {{ show_section_form ? "" : "d-none" }}"
-        style="width: fit-content;"
-        data-glpi-form-editor-section-number-display
+        class="bg-primary p-1 rounded-top {{ show_section_form ? "" : "d-none" }}"
+        style="width: fit-content; max-width: 50%;"
+        data-glpi-form-editor-section-details
     >
-        {{ __("Step %d of %d")|format(section_index, number_of_sections) }}
+        {# Section's name #}
+        <input
+            title="{{ __("Section name") }}"
+            type="text"
+            class="form-control content-editable-h2 mb-0"
+            style="max-width: 100%;"
+            name="name"
+            value="{{ section is not null ? section.fields.name : '' }}"
+            placeholder="{{ __("New section") }}"
+            data-glpi-form-editor-section-details-name
+            data-glpi-form-editor-dynamic-input
+            data-glpi-form-editor-on-input="compute-dynamic-input"
+        />
     </div>
 
     <div class="d-flex align-items-end">
@@ -80,19 +92,6 @@
                 <div class="card-body">
                     {# Header #}
                     <div class="d-flex align-items-center">
-                        {# Section's name #}
-                        <input
-                            title="{{ __("Section name") }}"
-                            type="text"
-                            class="form-control content-editable-h2 mb-0"
-                            name="name"
-                            value="{{ section is not null ? section.fields.name : '' }}"
-                            placeholder="{{ __("New section") }}"
-                            data-glpi-form-editor-section-details-name
-                            data-glpi-form-editor-dynamic-input
-                            data-glpi-form-editor-on-input="compute-dynamic-input"
-                        />
-
                         <div class="ms-auto"></div>
 
                         {# Visibility dropdown #}
