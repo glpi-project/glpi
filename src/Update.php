@@ -399,11 +399,9 @@ class Update
             );
         }
 
-        $private_key_path = GLPI_CONFIG_DIR . '/oauth.pem';
-        $public_key_path = GLPI_CONFIG_DIR . '/oauth.pub';
-        if (!file_exists($private_key_path) && !file_exists($public_key_path)) {
-            \Glpi\OAuth\Server::generateKeys();
-        }
+        //generate keys, if needed
+        \Glpi\OAuth\Server::generateKeys();
+
         $progress_indicator?->advance($generate_keys_weight);
         $progress_indicator?->addMessage(MessageType::Success, __('Security keys generated.'));
 

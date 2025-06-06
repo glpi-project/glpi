@@ -35,6 +35,7 @@
 
 namespace Glpi\OAuth;
 
+use Glpi\Exception\OAuth2KeyException;
 use Glpi\Http\Request;
 use League\OAuth2\Server\AuthorizationServer;
 use League\OAuth2\Server\Grant\AuthCodeGrant;
@@ -50,6 +51,8 @@ use Throwable;
 use function Safe\file_put_contents;
 use function Safe\openssl_pkey_export_to_file;
 use function Safe\openssl_pkey_new;
+use function Safe\chmod;
+use function Safe\unlink;
 
 final class Server
 {
@@ -92,16 +95,17 @@ final class Server
 
     public function __construct()
     {
+        //check for keys
+        self::checkKeys();
+
         $this->client_repository = new ClientRepository();
         $this->access_token_repository = new AccessTokenRepository();
         $this->scope_repository = new ScopeRepository();
 
-        $public_key_path = GLPI_CONFIG_DIR . '/oauth.pub';
-        $this->resource_server = new ResourceServer($this->access_token_repository, "file://$public_key_path");
+        $this->resource_server = new ResourceServer($this->access_token_repository, "file://" . self::PUBLIC_KEY_PATH);
 
-        $private_key_path = GLPI_CONFIG_DIR . '/oauth.pem';
         $encryption_key = (new \GLPIKey())->get();
-        $this->auth_server = new AuthorizationServer($this->client_repository, $this->access_token_repository, $this->scope_repository, "file://$private_key_path", $encryption_key);
+        $this->auth_server = new AuthorizationServer($this->client_repository, $this->access_token_repository, $this->scope_repository, "file://" . self::PRIVATE_KEY_PATH, $encryption_key);
         $this->auth_server->enableGrantType(
             new ClientCredentialsGrant(),
             new \DateInterval(self::GLPI_OAUTH_ACCESS_TOKEN_EXPIRES)
@@ -147,11 +151,15 @@ final class Server
     /**
      * @param Request $request
      * @return array
-     * @phpstan-return {client_id: string, user_id: string, scopes: string[]}
+     * @phpstan-return array{client_id: string, user_id: string, scopes: string[]}
      * @throws \League\OAuth2\Server\Exception\OAuthServerException
+     * @throws OAuth2KeyException
      */
     public static function validateAccessToken(Request $request): array
     {
+        //check for keys
+        self::checkKeys();
+
         $new_request = self::getInstance()->resource_server->validateAuthenticatedRequest($request);
         return [
             'client_id' => $new_request->getAttribute('oauth_client_id'),
@@ -186,12 +194,26 @@ final class Server
         ];
     }
 
-    public static function generateKeys(): void
+    public static function checkKeys(): bool
     {
         if (
             file_exists(self::PRIVATE_KEY_PATH)
             && file_exists(self::PUBLIC_KEY_PATH)
         ) {
+            // Keys are already generated
+
+            if (is_readable(self::PRIVATE_KEY_PATH) && is_readable(self::PUBLIC_KEY_PATH)) {
+                return true;
+            } else {
+                throw new OAuth2KeyException('Either private or public OAuth keys cannot be read. Please check file system permissions');
+            }
+        }
+
+        return false;
+    }
+    public static function generateKeys(): void
+    {
+        if (self::checkKeys()) {
             // Keys are already generated
             return;
         }
@@ -262,11 +284,11 @@ final class Server
             throw new RuntimeException('Unable to export public key');
         }
 
-        // Set permisisons to both key files
-        if (
-            !chmod(self::PRIVATE_KEY_PATH, 0o660)
-            || !chmod(self::PUBLIC_KEY_PATH, 0o660)
-        ) {
+        // Set permissions to both key files
+        try {
+            chmod(self::PRIVATE_KEY_PATH, 0o660);
+            chmod(self::PUBLIC_KEY_PATH, 0o660);
+        } catch (FilesystemException $e) {
             throw new RuntimeException('Unable to set permissions on the generated keys');
         }
     }
