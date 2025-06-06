@@ -68,7 +68,6 @@
                 {% include "components/helpdesk_forms/delegation_alert.html.twig" %}
             </div>
 
-            {% set section_visible_index = 1 %}
             {% for section in form.getSections() %}
                 {# Is this the first section of a form ? #}
                 {% set is_first_section = loop.index0 == 0 %}
@@ -88,12 +87,9 @@
                             class="bg-primary px-2 py-1 rounded-top "
                             style="width: fit-content; max-width: calc(100% - var(--tblr-border-radius) * 2);"
                         >
-                            {% if visibility_engine_output.isSectionVisible(section.getID()) %}
-                                <h2 class="mb-0 {{ not section.fields.name ? "text-muted" : "" }}">
-                                    {{ translate_item_key(section, constant('TRANSLATION_KEY_NAME', section))|default(__('Untitled section')) }}
-                                </h2>
-                                {% set section_visible_index = section_visible_index + 1 %}
-                            {% endif %}
+                            <h2 class="mb-0 {{ not section.fields.name ? "text-muted" : "" }}">
+                                {{ translate_item_key(section, constant('TRANSLATION_KEY_NAME', section))|default(__('Untitled section')) }}
+                            </h2>
                         </div>
                     {% endif %}
                     <div

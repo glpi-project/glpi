@@ -1156,7 +1156,7 @@ export class GlpiFormEditorController
             }
 
             // Check if condition is in a section
-            const parentSection = $(element).closest('[data-glpi-form-editor-section-details]');
+            const parentSection = $(element).closest('[data-glpi-form-editor-section]');
             if (parentSection.length > 0) {
                 elementsWithConditions.push({
                     name: this.#getItemInput(parentSection, "name"),

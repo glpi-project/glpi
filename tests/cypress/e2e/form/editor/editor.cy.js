@@ -257,7 +257,7 @@ describe ('Form editor', () => {
         cy.saveFormEditorAndReload();
 
         // Validate values
-        cy.findAllByRole('region', {'name': 'Section details'}).as('sections');
+        cy.findAllByRole('region', {'name': 'Form section'}).as('sections');
         cy.get('@sections').should('have.length', 2);
         cy.get('@sections').eq(1).as('second_section');
         cy.get('@second_section')
@@ -317,7 +317,7 @@ describe ('Form editor', () => {
             cy.get('@sections_details').eq(section_index).as('section_detail');
 
             // Validate section name
-            cy.get('@section_detail')
+            cy.get('@section_container')
                 .findByRole('textbox', {'name': 'Section name'})
                 .should('have.value', "Second section")
             ;
