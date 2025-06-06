@@ -657,9 +657,11 @@ TWIG, $twig_params);
     }
 
     /**
-     * Get computed resolution time
+     * Get delay (due time duration) in seconds for the current agreement
      *
-     * @return integer resolution time in seconds (default 0)
+     * The time to own or to resolve duration
+     *
+     * @return integer own/resolution time (default 0)
      **/
     public function getTime()
     {
@@ -676,12 +678,12 @@ TWIG, $twig_params);
     }
 
     /**
-     * Get active time between to date time for the active calendar
+     * Elapsed time between two dates in seconds
      *
-     * @param datetime $start begin
-     * @param datetime $end end
+     * @param string $start start date formated 'Y-m-d H:i:s'
+     * @param string $end end date formated 'Y-m-d H:i:s'
      *
-     * @return integer timestamp of delay
+     * @return integer elapsed time in seconds
      **/
     public function getActiveTimeBetween($start, $end)
     {
@@ -707,7 +709,7 @@ TWIG, $twig_params);
     }
 
     /**
-     * Get date for current agreement
+     * Get due date for current agreement
      *
      * @param string  $start_date        datetime start date ('Y-m-d H:i:s')
      * @param integer $additional_delay  integer  additional delay to add or substract (for waiting time)

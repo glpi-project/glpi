@@ -2425,6 +2425,7 @@ abstract class CommonITILObject extends CommonDBTM
         }
 
         if (isset($this->input["status"])) {
+            // status changed to solved
             if (
                 in_array("status", $this->updates)
                 && in_array($this->input["status"], $this->getSolvedStatusArray())
@@ -2438,6 +2439,7 @@ abstract class CommonITILObject extends CommonDBTM
                 }
             }
 
+            // status changed to closed
             if (
                 in_array("status", $this->updates)
                 && in_array($this->input["status"], $this->getClosedStatusArray())
@@ -5561,7 +5563,12 @@ abstract class CommonITILObject extends CommonDBTM
 
 
     /**
-     * Compute close delay stat of the current ticket
+     * Closing delay in seconds.
+     *
+     * Taking working time into account if calendar is defined.
+     * Removes waiting duration from the total time.
+     *
+     * @return int
      **/
     public function computeCloseDelayStat()
     {
@@ -10567,7 +10574,7 @@ abstract class CommonITILObject extends CommonDBTM
     }
 
     /**
-     * Fill input with values related to business rules.
+     * Change $input values before applying business rules
      *
      * @param array $input
      *
