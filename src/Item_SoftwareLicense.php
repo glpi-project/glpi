@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryUnion;
 
@@ -124,24 +125,12 @@ class Item_SoftwareLicense extends CommonDBRelation
                 $softlicense = new SoftwareLicense();
                 $softlicense->getFromDB($options['raw_data']['id']);
                 $assign_item = self::countForLicense($options['raw_data']['id']);
-                $remaining_item = $softlicense->fields['number'] - $assign_item;
-                $total = sprintf(__('%s: %s'), __('Total'), $softlicense->fields["number"]);
-                $assigned = sprintf(__('%s: %s'), __('Assigned'), $assign_item);
-                $remaining = sprintf(__('%s: %s'), __('Remaining'), $remaining_item);
-                $color = $remaining_item >= 0 ? '#74b72e' : '#cf9b9b';
-                $class = htmlescape($color);
-                return sprintf(
-                    '<div>
-                        <span class="badge" style="background-color: %s;">%s</span>
-                        <span class="badge" style="background-color: %s;">%s</span>
-                        <span class="badge" style="background-color: %s;">%s</span>
-                    </div>',
-                    $class,
-                    htmlescape($assigned),
-                    $class,
-                    htmlescape($remaining),
-                    $class,
-                    htmlescape($total)
+                return TemplateRenderer::getInstance()->render(
+                    'pages/management/license_progressbar.html.twig',
+                    [
+                        'item' => $softlicense,
+                        'licences_assigned' => $assign_item,
+                    ]
                 );
         }
 

@@ -112,19 +112,7 @@
    {% if item_type == 'SoftwareLicense' %}
       {% set validity_msg %}
          <div class="d-flex justify-content-around pt-2">
-         {% if item.fields['is_valid'] %}
-               {% set color = '#74b72e' %}
-               {% set status = _x('adjective', 'Valid') %}
-           {% elseif item.fields['allow_overquota'] %}
-               {% set color = '#74b72e' %}
-               {% set status = _x('adjective', 'Valid (Over Quota)') %}
-           {% else %}
-               {% set color = '#cf9b9b' %}
-               {% set status = _x('adjective', 'Invalid') %}
-           {% endif %}
-           <span class="badge" style="background-color: {{ color }};">{{ status }}</span>
-           <span class="badge" style="background-color: {{ color }};">{{ __('%s: %s')|format(_x('adjective', 'Assigned'), licences_assigned) }}</span>
-           <span class="badge" style="background-color: {{ color }};">{{ __('%s: %s')|format(_x('adjective', 'Remaining'), item.fields['number']|number_format - licences_assigned) }}</span>
+            {{ include('pages/management/license_progressbar.html.twig') }}
          </div>
       {% endset %}
    {% endif %}
