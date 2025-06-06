@@ -664,4 +664,76 @@ abstract class CommonITILRecurrentTest extends DbTestCase
             }
         }
     }
+
+    public function testPrepareInputForUpdateWithPartialData()
+    {
+        $this->login();
+
+        $child_class = $this->getChildClass();
+        $template_class = $child_class::getTemplateClass();
+
+        // Create a template
+        $template = $this->createItem($template_class, ['name' => 'Test template']);
+
+        // Create a recurrent ticket with all required fields
+        $recurrent = $this->createItem(
+            $child_class,
+            [
+                'name' => 'Test recurrent item',
+                $template->getForeignKeyField() => $template->getID(),
+                'begin_date' => date('Y-m-d H:i:s', strtotime('-7 days')),
+                'end_date' => date('Y-m-d H:i:s', strtotime('+1 month')),
+                'periodicity' => HOUR_TIMESTAMP,
+                'create_before' => 0,
+                'calendars_id' => 0,
+                'is_active' => 1,
+            ]
+        );
+
+        // Store the original next_creation_date
+        $original_date = $recurrent->fields['next_creation_date'];
+
+        // Update with partial data (only name)
+        $update_result = $recurrent->update([
+            'id' => $recurrent->getID(),
+            'name' => 'Updated name',
+        ]);
+
+        // Check that the update was successful
+        $this->assertTrue($update_result);
+
+        // Reload the recurrent ticket to get fresh data
+        $recurrent->getFromDB($recurrent->getID());
+
+        // Check that next_creation_date was computed correctly despite missing fields in the input
+        $this->assertEquals($original_date, $recurrent->fields['next_creation_date']);
+
+        // Now update with a new begin_date to see if next_creation_date changes
+        $new_begin_date = date('Y-m-d H:i:s', strtotime('+1 day'));
+        $update_result = $recurrent->update([
+            'id' => $recurrent->getID(),
+            'begin_date' => $new_begin_date,
+        ]);
+
+        // Check that the update was successful
+        $this->assertTrue($update_result);
+
+        // Reload the recurrent ticket
+        $recurrent->getFromDB($recurrent->getID());
+
+        // Verify that next_creation_date was recomputed
+        $this->assertNotEquals($original_date, $recurrent->fields['next_creation_date']);
+
+        // Compute the expected next_creation_date for comparison
+        $expected_date = $recurrent->computeNextCreationDate(
+            $new_begin_date,
+            $recurrent->fields['end_date'],
+            $recurrent->fields['periodicity'],
+            $recurrent->fields['create_before'],
+            $recurrent->fields['calendars_id']
+        );
+
+        // Verify it matches what was saved in the database
+        $this->assertEquals($expected_date, $recurrent->fields['next_creation_date']);
+    }
 }
