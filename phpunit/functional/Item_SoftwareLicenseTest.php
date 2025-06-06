@@ -247,7 +247,7 @@ class Item_SoftwareLicenseTest extends DbTestCase
         $_SESSION['glpishow_count_on_tabs'] = 1;
         $expected = [
             1 => "Summary",
-            2 => "Affected items 2",
+            2 => "Affected items 2/" . $license->fields['number'],
         ];
         $tabs = array_map(
             'strip_tags',

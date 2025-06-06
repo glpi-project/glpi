@@ -1,0 +1,61 @@
+<div class="position-relative w-100 d-flex">
+
+    {% set remaining = item.fields['number'] - licences_assigned %}
+    {% set overflow = remaining < 0 %}
+    {% set progress = overflow ? 100 : (remaining >= 0 ? (100 * licences_assigned / item.fields['number'])|round(2) : 0) %}
+    {% set color = overflow ? 'bg-red' : 'bg-green' %}
+
+    {% set progress_popover %}
+        <div class="d-flex flex-column">
+            <div class="d-flex justify-content-between">
+                <span class="text-nowrap me-4">{{ _x('adjective', 'Assigned') }}</span>
+                <span class="text-nowrap">{{ licences_assigned }}</span>
+            </div>
+            <div class="d-flex justify-content-between">
+                <span class="text-nowrap me-4">{{ _x('adjective', 'Remaining') }}</span>
+                <span class="text-nowrap">{{ overflow ? 0 : remaining|number_format }}</span>
+            </div>
+            {% if overflow %}
+                <div class="d-flex justify-content-between text-red">
+                    <span class="text-nowrap me-4">{{ _x('adjective', 'Over') }}</span>
+                    <span class="text-nowrap">{{ overflow ? (remaining|abs)|number_format : 0 }}</span>
+                </div>
+            {% endif %}
+        </div>
+    {% endset %}
+
+    <div class="progress me-2" style="height: 20px;">
+        <div class="progress-bar {{ color }}"
+             role="progressbar"
+             style="width: {{ progress }}%;"
+             aria-valuenow="{{ progress|round }}"
+             aria-valuemin="0"
+             aria-valuemax="100">
+        </div>
+    </div>
+
+    {% if overflow %}
+        <i class="ti ti-alert-triangle text-red"></i>
+    {% else %}
+        <i class="ti ti-rosette-discount-check text-green"></i>
+    {% endif %}
+
+    <button type="button"
+            class="position-absolute top-0 start-0 w-100 h-100"
+            style="opacity: 0;"
+            data-bs-toggle="popover"
+            data-bs-html="true"
+            data-bs-placement="bottom"
+            data-bs-trigger="hover focus"
+            data-bs-content='{{ progress_popover }}'>
+    </button>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
+            popoverTriggerList.map(function (popoverTriggerEl) {
+                return new bootstrap.Popover(popoverTriggerEl);
+            });
+        });
+    </script>
+</div>
