@@ -335,6 +335,7 @@ class Software extends InventoryAsset
                 'glpi_items_softwareversions.id as item_soft_version_id',
                 'glpi_softwares.id as softid',
                 'glpi_softwares.name',
+                'glpi_softwares.is_dynamic',
                 'glpi_softwareversions.id AS versionid',
                 'glpi_softwareversions.name AS version',
                 'glpi_softwareversions.arch',
