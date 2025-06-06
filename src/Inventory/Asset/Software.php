@@ -509,8 +509,8 @@ class Software extends InventoryAsset
             $fields_to_update['softwarecategories_id'] = ($this->known_links[$sckey] ?? 0);
         }
 
+        // Check ifis_dynamic needs to be set
         if ($db_software_data[$key_wo_version]['is_dynamic'] != $val->is_dynamic) {
-            // Check if the name needs to be updated
             $fields_to_update['is_dynamic'] = $val->is_dynamic;
         }
 
