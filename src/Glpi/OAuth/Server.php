@@ -51,6 +51,8 @@ use Throwable;
 use function Safe\file_put_contents;
 use function Safe\openssl_pkey_export_to_file;
 use function Safe\openssl_pkey_new;
+use function Safe\chmod;
+use function Safe\unlink;
 
 final class Server
 {
@@ -149,7 +151,7 @@ final class Server
     /**
      * @param Request $request
      * @return array
-     * @phpstan-return {client_id: string, user_id: string, scopes: string[]}
+     * @phpstan-return array{client_id: string, user_id: string, scopes: string[]}
      * @throws \League\OAuth2\Server\Exception\OAuthServerException
      * @throws OAuth2KeyException
      */
@@ -282,11 +284,11 @@ final class Server
             throw new RuntimeException('Unable to export public key');
         }
 
-        // Set permisisons to both key files
-        if (
-            !chmod(self::PRIVATE_KEY_PATH, 0o660)
-            || !chmod(self::PUBLIC_KEY_PATH, 0o660)
-        ) {
+        // Set permissions to both key files
+        try {
+            chmod(self::PRIVATE_KEY_PATH, 0o660);
+            chmod(self::PUBLIC_KEY_PATH, 0o660);
+        } catch (FilesystemException $e) {
             throw new RuntimeException('Unable to set permissions on the generated keys');
         }
     }

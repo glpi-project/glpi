@@ -120,7 +120,7 @@ class Router
     private ?RoutePath $last_invoked_route = null;
 
     /**
-     * @var array{client_id: string, user_id: int, scopes: array}|null The current client information if the user is authenticated.
+     * @var array{client_id: string, user_id: string, scopes: array}|null The current client information if the user is authenticated.
      */
     private ?array $current_client = null;
 
