@@ -44,13 +44,9 @@ class ValidationStep extends \CommonDropdown
         return _n('Approval step', 'Approval steps', $nb);
     }
 
-    /**
-     * Ensure there is always a default validation step
-     * and eventually set it as default.
-     */
     public function pre_deleteItem()
     {
-        if ($this->fields['is_default']) {
+        if ($this->isDefault() || $this->isInUsage()) {
             return false;
         }
 
@@ -132,26 +128,50 @@ class ValidationStep extends \CommonDropdown
         return parent::prepareInputForUpdate($input);
     }
 
-    public function getAdditionalFields()
+    public function canPurgeItem(): bool
     {
-        return [
-            [
-                'name'   => 'is_default',
-                'label'  => __('Use as default'),
-                'type'   => 'bool',
-                'required' => true,
-            ],
-            [
-                'name'  => 'minimal_required_validation_percent',
-                'label' => __('Minimal required approval percent'),
-                'type'  => 'integer',
-                'min'   => 0,
-                'max'   => 100,
-            ],
-
-        ] + parent::getAdditionalFields();
+        return !$this->isDefault() && !$this->isInUsage();
     }
 
+    public function getAdditionalFields()
+    {
+        $is_default_select = [
+            'name' => 'is_default',
+            'label' => __('Use as default'),
+            'type' => 'bool',
+        ];
+        if ($this->isDefault()) {
+            $is_default_select['form_params'] = [
+                'disabled' => true,
+                'tooltip' => __('This is the default approval step, it cannot be changed. Update another step to make it the default one.')];
+        }
+
+        $additional_fields[] = $is_default_select;
+        $additional_fields[] = [
+            'name' => 'minimal_required_validation_percent',
+            'label' => __('Minimal required approval percent'),
+            'type' => 'integer',
+            'min' => 0,
+            'max' => 100,
+        ];
+
+        return $additional_fields + parent::getAdditionalFields();
+    }
+
+
+    public function rawSearchOptions()
+    {
+        $tab[] = [
+            'id'                => '252',
+            'table'             => $this->getTable(),
+            'field'             => 'is_default',
+            'name'              => __('Default'),
+            'datatype'          => 'bool',
+            'massiveaction'     => false,
+        ];
+
+        return $tab + parent::rawSearchOptions();
+    }
 
     public static function getDefault(): self
     {
@@ -178,6 +198,15 @@ class ValidationStep extends \CommonDropdown
 
     private function isDefault(): bool
     {
-        return $this->fields['is_default'] == 1;
+        return isset($this->fields['is_default']) && $this->fields['is_default'] == 1;
+    }
+
+    private function isInUsage(): bool
+    {
+        return (count(
+            (new ChangeValidationStep())->find([static::getForeignKeyField() => $this->getID()])
+                + (new TicketValidationStep())->find([static::getForeignKeyField() => $this->getID()])
+        )
+        ) > 0;
     }
 }

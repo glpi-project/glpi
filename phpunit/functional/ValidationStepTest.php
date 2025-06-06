@@ -58,6 +58,22 @@ class ValidationStepTest extends \DbTestCase
         $this->assertFalse($default->delete(['id' => $default->getID()]), 'The last remaining validation step must not be deleted');
     }
 
+    public function testUsedValidationCannotBeDeleted()
+    {
+        $itil_classnames = [\Ticket::class, \Change::class];
+        foreach ($itil_classnames as $itil_classname) {
+            // create a validation step + an itil_validationstep
+            $vs = $this->createValidationStepTemplate(100);
+            [$itil, $itil_validationstep] = $this->createITILSValidationStepWithValidations($vs, [CommonITILValidation::WAITING], itil_classname: $itil_classname);
+            $this->assertFalse($vs->delete(['id' => $vs->getID()]), 'A used validation step must not be deleted');
+
+            // remove the itil and itil validationstep, so the validation step is not used anymore, then it can be deleted
+            $this->deleteItem($itil::class, $itil->getID());
+            $this->deleteItem($itil_validationstep::class, $itil_validationstep->getID());
+            $this->assertTrue($vs->delete(['id' => $vs->getID()]), 'A used validation step can be deleted when not used anymore');
+        }
+    }
+
     public function testDefaultAttributeCannotBeRemoved()
     {
         assert(1 === countElementsInTable(\ValidationStep::getTable()), 'Test expects only one validation step at start');
