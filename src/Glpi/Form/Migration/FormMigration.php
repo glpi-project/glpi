@@ -35,8 +35,10 @@
 namespace Glpi\Form\Migration;
 
 use DBmysql;
+use Entity;
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\DBAL\QueryExpression;
+use Glpi\DBAL\QuerySubQuery;
 use Glpi\DBAL\QueryUnion;
 use Glpi\Form\AccessControl\ControlType\AllowList;
 use Glpi\Form\AccessControl\ControlType\AllowListConfig;
@@ -94,7 +96,8 @@ class FormMigration extends AbstractPluginMigration
 
     public function __construct(
         DBmysql $db,
-        FormAccessControlManager $formAccessControlManager
+        FormAccessControlManager $formAccessControlManager,
+        private array $specificFormsIds = []
     ) {
         parent::__construct($db);
 
@@ -261,6 +264,19 @@ class FormMigration extends AbstractPluginMigration
         throw new LogicException("Strategy config not found for access type {$form_access_rights['access_rights']}");
     }
 
+    private function getFormWhereCriteria(): array
+    {
+        $criteria = [];
+
+        if (!empty($this->specificFormsIds)) {
+            $criteria[] = [
+                'glpi_plugin_formcreator_forms.id' => $this->specificFormsIds,
+            ];
+        }
+
+        return $criteria;
+    }
+
     protected function validatePrerequisites(): bool
     {
         $formcreator_schema = [
@@ -392,9 +408,24 @@ class FormMigration extends AbstractPluginMigration
                 'is_deleted',
             ],
             'FROM'   => 'glpi_plugin_formcreator_forms',
+            'WHERE'  => $this->getFormWhereCriteria(),
         ]);
 
         foreach ($raw_forms as $raw_form) {
+            // Check if the form entity exists
+            if (!Entity::getById($raw_form['entities_id'])) {
+                $this->result->addMessage(
+                    MessageType::Warning,
+                    sprintf(
+                        __('Form "%s" has an entity that does not exist. Form will not be imported.'),
+                        $raw_form['name'],
+                    )
+                );
+
+                // Skip this form if the entity does not exist
+                continue;
+            }
+
             $form = $this->importItem(
                 Form::class,
                 [
@@ -601,13 +632,21 @@ class FormMigration extends AbstractPluginMigration
         ]);
 
         foreach ($raw_comments as $raw_comment) {
+            $section_id = $this->getMappedItemTarget(
+                'PluginFormcreatorSection',
+                $raw_comment['plugin_formcreator_sections_id']
+            )['items_id'] ?? 0;
+
+            // If the section ID is 0, it means the section does not exist
+            if ($section_id === 0) {
+                // No need to warn the user, as this comment was not visible in formcreator anyway.
+                continue;
+            }
+
             $comment = $this->importItem(
                 Comment::class,
                 [
-                    Section::getForeignKeyField() => $this->getMappedItemTarget(
-                        'PluginFormcreatorSection',
-                        $raw_comment['plugin_formcreator_sections_id']
-                    )['items_id'],
+                    Section::getForeignKeyField() => $section_id,
                     'name'                        => $raw_comment['name'],
                     'description'                 => $raw_comment['description'],
                     'vertical_rank'               => $raw_comment['row'],
@@ -778,6 +817,12 @@ class FormMigration extends AbstractPluginMigration
                     ],
                 ],
             ],
+            'WHERE'   => [
+                'glpi_plugin_formcreator_forms.entities_id' => new QuerySubQuery([
+                    'SELECT' => 'id',
+                    'FROM'   => Entity::getTable(),
+                ])
+            ] + $this->getFormWhereCriteria(),
             'GROUPBY' => ['forms_id', 'access_rights'],
         ]);
 
@@ -1239,26 +1284,15 @@ class FormMigration extends AbstractPluginMigration
                 $raw_condition['plugin_formcreator_questions_id']
             )['items_id'] ?? 0;
 
+            // The target_item is null if the target was not migrated or not existing.
+            // In this case, we skip the condition
             if ($target_item === null) {
-                $this->result->addMessage(
-                    MessageType::Error,
-                    sprintf(
-                        'Condition for itemtype "%s" and items_id "%s" not found. It will not be migrated.',
-                        $raw_condition['itemtype'],
-                        $raw_condition['items_id']
-                    )
-                );
+                // No need to warn the user, as this conditions was not visible/valid in formcreator anyway.
                 continue;
             } elseif ($question_id === 0) {
-                $this->result->addMessage(
-                    MessageType::Error,
-                    sprintf(
-                        'Question with id "%s" for itemtype "%s" and items_id "%s" not found. It will not be migrated.',
-                        $raw_condition['plugin_formcreator_questions_id'],
-                        $raw_condition['itemtype'],
-                        $raw_condition['items_id']
-                    )
-                );
+                // If the question ID is 0, it means the question was not migrated or not existing.
+                // No need to warn the user, as this condition was not visible/valid in formcreator anyway.
+                continue;
             }
 
             $question = Question::getById($question_id);
