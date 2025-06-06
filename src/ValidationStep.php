@@ -45,12 +45,21 @@ class ValidationStep extends \CommonDropdown
     }
 
     /**
-     * Ensure there is always a default validation step
-     * and eventually set it as default.
+     * Disallow deletion of default or used approval step
      */
     public function pre_deleteItem()
     {
-        if ($this->fields['is_default']) {
+        // do not allow deletion of default step
+        if ($this->isDefault()) {
+            Session::addMessageAfterRedirect(msg: __s('Default approval step cannot be deleted.'), message_type: ERROR);
+
+            return false;
+        }
+
+        // do not allow deletion of validation steps in use
+        if ($this->isInUsage()) {
+            Session::addMessageAfterRedirect(msg: __s('Used approval step cannot be deleted.'), message_type: ERROR);
+
             return false;
         }
 
@@ -179,5 +188,14 @@ class ValidationStep extends \CommonDropdown
     private function isDefault(): bool
     {
         return $this->fields['is_default'] == 1;
+    }
+
+    private function isInUsage(): bool
+    {
+        return (count(
+            (new ChangeValidationStep())->find([static::getForeignKeyField() => $this->getID()])
+                + (new TicketValidationStep())->find([static::getForeignKeyField() => $this->getID()])
+        )
+        ) > 0;
     }
 }
