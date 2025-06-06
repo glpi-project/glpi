@@ -38,3 +38,4 @@
  */
 
 $migration->addField('glpi_softwares', 'is_dynamic', "tinyint unsigned DEFAULT '0'");
+$migration->addKey('glpi_softwares', 'is_dynamic');
