@@ -211,10 +211,9 @@ abstract class AbstractRequest
      */
     public function handleRequest(mixed $data): bool
     {
-        $guess_mode = ($this->mode === null);
-        if ($guess_mode) {
-            $this->setMode(self::JSON_MODE);
-        }
+        $base_mode = $this->mode;
+        $guess_mode = ($base_mode === null);
+        $this->setMode(self::JSON_MODE);
 
         $auth_required = \Config::getConfigurationValue('inventory', 'auth_required');
         if ($auth_required === Conf::CLIENT_CREDENTIALS) {
@@ -308,6 +307,8 @@ abstract class AbstractRequest
 
         if ($guess_mode) {
             $this->guessMode($data);
+        } else {
+            $this->setMode($base_mode);
         }
 
         //load and check data
