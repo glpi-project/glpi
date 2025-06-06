@@ -6580,6 +6580,7 @@ CREATE TABLE `glpi_softwarecategories` (
   `level` int NOT NULL DEFAULT '0',
   `ancestors_cache` longtext,
   `sons_cache` longtext,
+  `is_dynamic` tinyint NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
   KEY `softwarecategories_id` (`softwarecategories_id`),

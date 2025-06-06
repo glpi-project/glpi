@@ -488,6 +488,7 @@ $CFG_GLPI['inventory_types'] = [
     'Phone',
     'Printer',
     'NetworkEquipment',
+    'Software',
 ];
 
 $CFG_GLPI['inventory_lockable_objects'] = ['Computer_Item',  'Item_SoftwareLicense',
