@@ -232,6 +232,9 @@ class Software extends InventoryAsset
             if (!property_exists($val, 'comment')) {
                 $val->comment = null;
             }
+
+            // add dynamic flag
+            $val->is_dynamic = 1;
         }
 
         //NOTE: A same software may have a manufacturer or not. Keep the one with manufacturer.
@@ -504,6 +507,11 @@ class Software extends InventoryAsset
         $sckey = md5('softwarecategories_id' . ($val->softwarecategories_id ?? 0));
         if ($db_software_data[$key_wo_version]['softwarecategories'] != ($this->known_links[$sckey] ?? 0)) {
             $fields_to_update['softwarecategories_id'] = ($this->known_links[$sckey] ?? 0);
+        }
+
+        if ($db_software_data[$key_wo_version]['is_dynamic'] != $val->is_dynamic) {
+            // Check if the name needs to be updated
+            $fields_to_update['is_dynamic'] = $val->is_dynamic;
         }
 
         // Perform the update if there are fields to update
