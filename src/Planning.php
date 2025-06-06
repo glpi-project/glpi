@@ -336,7 +336,20 @@ JAVASCRIPT;
         $message = '';
 
         foreach ($CFG_GLPI['planning_types'] as $itemtype) {
+            if (
+                !is_a($itemtype, CommonDBTM::class, true)
+            ) {
+                continue;
+            }
             $item = new $itemtype();
+            if (
+                // methods from the `Glpi\Features\PlanningEvent` trait
+                !method_exists($item, 'populatePlanning')
+                || !method_exists($item, 'getAlreadyPlannedInformation')
+            ) {
+                continue;
+            }
+
             $data = $item->populatePlanning([
                 'who'           => $users_id,
                 'whogroup'      => 0,
@@ -348,19 +361,14 @@ JAVASCRIPT;
                 $data = $data['items'] ?? [];
             }
 
-            if (
-                count($data)
-                && method_exists($itemtype, 'getAlreadyPlannedInformation')
-            ) {
-                foreach ($data as $val) {
-                    if (
-                        !isset($except[$itemtype])
-                        || (is_array($except[$itemtype]) && !in_array($val['id'], $except[$itemtype]))
-                    ) {
-                        $planned  = true;
-                        $message .= '- ' . $item->getAlreadyPlannedInformation($val);
-                        $message .= '<br/>';
-                    }
+            foreach ($data as $val) {
+                if (
+                    !isset($except[$itemtype])
+                    || (is_array($except[$itemtype]) && !in_array($val['id'], $except[$itemtype]))
+                ) {
+                    $planned  = true;
+                    $message .= '- ' . $item->getAlreadyPlannedInformation($val);
+                    $message .= '<br/>';
                 }
             }
         }
@@ -440,7 +448,7 @@ JAVASCRIPT;
                         }
                     }
                 }
-                $task = new ($item::getTaskClass());
+                $task = getItemForItemtype($item::getTaskClass());
                 if ($task->getFromDBByCrit(['tickets_id' => $item->fields['id']])) {
                     $users[$task->fields['users_id_tech']] = getUserName($task->fields['users_id_tech']);
                     $group_id = $task->fields['groups_id_tech'];

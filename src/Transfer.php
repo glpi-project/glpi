@@ -3543,7 +3543,7 @@ final class Transfer extends CommonDBTM
                     $devicetable     = getTableForItemType($devicetype);
                     $fk              = getForeignKeyFieldForTable($devicetable);
 
-                    $device          = new $devicetype();
+                    $device          = getItemForItemtype($devicetype);
                     // Get contracts for the item
                     $criteria = [
                         'FROM'   => $itemdevicetable,

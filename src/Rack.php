@@ -886,16 +886,14 @@ JAVASCRIPT;
                 continue;
             }
             $units = 1;
-            $width = 1;
             $depth = 1;
             $model_class = $item->getModelClass();
+            $model = new $model_class();
             $modelsfield = $model_class::getForeignKeyField();
             if ($item->fields[$modelsfield] != 0) {
-                $model = new $model_class();
                 if ($model->getFromDB($item->fields[$modelsfield])) {
                     $units = $model->fields['required_units'];
                     $depth = $model->fields['depth'];
-                    $width = $model->fields['is_half_rack'] == 0 ? 1 : 0.5;
                 }
             }
             $position = $row['position'];

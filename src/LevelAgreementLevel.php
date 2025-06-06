@@ -407,11 +407,6 @@ abstract class LevelAgreementLevel extends RuleTicket
         return abs($this->fields['execution_time']) >= DAY_TIMESTAMP;
     }
 
-    /**
-     * Show the Level Agreement rule form
-     *
-     * {@inheritdoc}
-     **/
     public function showForm($ID, array $options = [])
     {
         /** @var class-string<LevelAgreement> $parent_class */
@@ -434,6 +429,8 @@ abstract class LevelAgreementLevel extends RuleTicket
                 'canedit' => $canedit,
             ],
         ]);
+
+        return true;
     }
 
     /**

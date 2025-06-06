@@ -37,10 +37,12 @@ use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\Plugin\Hooks;
 
+use function Safe\simplexml_load_file;
+
 /**
- * Rule Class store all information about a GLPI rule :
+ * Rule Class store all information about a GLPI rule:
  *   - description
- *   - criterias
+ *   - criteria
  *   - actions
  **/
 class Rule extends CommonDBTM
@@ -58,12 +60,12 @@ class Rule extends CommonDBTM
     // preview context ?
     protected $is_preview = false;
 
-    /// restrict matching to self::AND_MATCHING or self::OR_MATCHING : specify value to activate
+    /// restrict matching to self::AND_MATCHING or self::OR_MATCHING: specify value to activate
     public $restrict_matching     = false;
 
     protected $rules_id_field     = 'rules_id';
-    protected $ruleactionclass    = 'RuleAction';
-    protected $rulecriteriaclass  = 'RuleCriteria';
+    protected $ruleactionclass    = RuleAction::class;
+    protected $rulecriteriaclass  = RuleCriteria::class;
 
     public $specific_parameters   = false;
 
@@ -131,7 +133,7 @@ class Rule extends CommonDBTM
     {
         $rule = new self();
         if ($rule->getFromDB($rules_id)) {
-            if (class_exists($rule->fields['sub_type'])) {
+            if (class_exists($rule->fields['sub_type']) && is_a($rule->fields['sub_type'], Rule::class, true)) {
                 $realrule = new $rule->fields['sub_type']();
                 return $realrule;
             }
@@ -223,6 +225,9 @@ class Rule extends CommonDBTM
             $menu['rule']['icon']  = static::getIcon();
 
             foreach ($CFG_GLPI["rulecollections_types"] as $rulecollectionclass) {
+                if (!is_a($rulecollectionclass, RuleCollection::class, true)) {
+                    continue;
+                }
                 $rulecollection = new $rulecollectionclass();
                 if ($rulecollection->canList()) {
                     $ruleclassname = $rulecollection->getRuleClassName();
@@ -599,8 +604,8 @@ class Rule extends CommonDBTM
         do {
             $collection_class = $parent . 'Collection';
             $parent = get_parent_class($parent);
-        } while ($parent !== 'CommonDBTM' && $parent !== false && !class_exists($collection_class));
-        if ($collection_class === null) {
+        } while ($parent !== CommonDBTM::class && $parent !== false && !class_exists($collection_class));
+        if (!is_a($collection_class, RuleCollection::class, true)) {
             throw new \LogicException(sprintf('Unable to find collection class for `%s`.', static::getType()));
         }
         return $collection_class;
@@ -671,7 +676,7 @@ class Rule extends CommonDBTM
             case 'move_rule':
                 $input          = $ma->getInput();
                 $collectionname = $input['rule_class_name'] . 'Collection';
-                $rulecollection = new $collectionname();
+                $rulecollection = getItemForItemtype($collectionname);
                 if ($rulecollection->canUpdate()) {
                     foreach ($ids as $id) {
                         if ($item->getFromDB($id)) {
@@ -827,7 +832,7 @@ class Rule extends CommonDBTM
         }
 
         if (isset($options['searchopt']['real_type'])) {
-            $ruleclass = new $options['searchopt']['real_type']();
+            $ruleclass = getItemForItemtype($options['searchopt']['real_type']);
             return $ruleclass->getSpecificValueToDisplay($field, $values, $options);
         }
 
@@ -858,7 +863,7 @@ class Rule extends CommonDBTM
         $options['display'] = false;
 
         if (isset($options['searchopt']['real_type'])) {
-            $ruleclass = new $options['searchopt']['real_type']();
+            $ruleclass = getItemForItemtype($options['searchopt']['real_type']);
             return $ruleclass->getSpecificValueToSelect($field, $name, $values, $options);
         }
 
@@ -875,16 +880,6 @@ class Rule extends CommonDBTM
         return parent::getSpecificValueToSelect($field, $name, $values, $options);
     }
 
-    /**
-     * Show the rule
-     *
-     * @param integer $ID    ID of the rule
-     * @param array $options array of possible options:
-     *     - target filename : where to go when done.
-     *     - withtemplate boolean : template or basic item
-     *
-     * @return void
-     **/
     public function showForm($ID, array $options = [])
     {
         /** @var array $CFG_GLPI */
@@ -927,6 +922,8 @@ class Rule extends CommonDBTM
             ],
         ], $options);
         TemplateRenderer::getInstance()->display('pages/admin/rules/form.html.twig', $twig_params);
+
+        return true;
     }
 
     /**
@@ -1885,13 +1882,13 @@ JS
         // Delete a rule and all associated criteria and actions
         if (!empty($this->ruleactionclass)) {
             $ruleactionclass = $this->ruleactionclass;
-            $ra = new $ruleactionclass();
+            $ra = getItemForItemtype($ruleactionclass);
             $ra->deleteByCriteria([$this->rules_id_field => $this->fields['id']]);
         }
 
         if (!empty($this->rulecriteriaclass)) {
             $rulecriteriaclass = $this->rulecriteriaclass;
-            $rc = new $rulecriteriaclass();
+            $rc = getItemForItemtype($rulecriteriaclass);
             $rc->deleteByCriteria([$this->rules_id_field => $this->fields['id']]);
         }
     }
@@ -2050,6 +2047,9 @@ JS
             }
             // Ensure we always use the right rule class in case the original object was instantiated as the base class 'Rule'.
             $rule_class = $this->fields['sub_type'] ?? static::class;
+            if (!is_a($rule_class, Rule::class, true)) {
+                return;
+            }
             $rule = new $rule_class();
             $collection_class = $rule->getCollectionClassName();
             $collection = new $collection_class();

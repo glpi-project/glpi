@@ -420,5 +420,7 @@ class RuleRight extends Rule
             ],
         ], $options);
         TemplateRenderer::getInstance()->display('pages/admin/rules/ruleright_form.html.twig', $twig_params);
+
+        return true;
     }
 }
