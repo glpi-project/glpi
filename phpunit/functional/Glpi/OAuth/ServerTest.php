@@ -33,13 +33,14 @@
  */
 
 namespace tests\units\Glpi\Migration;
+
 class ServerTest extends \DbTestCase
 {
     public function tearDown(): void
     {
         //reset correct chmod
-        \Safe\chmod(GLPI_CONFIG_DIR . '/oauth.pem', 0644);
-        \Safe\chmod(GLPI_CONFIG_DIR . '/oauth.pub', 0644);
+        \Safe\chmod(GLPI_CONFIG_DIR . '/oauth.pem', 0o644);
+        \Safe\chmod(GLPI_CONFIG_DIR . '/oauth.pub', 0o644);
         parent::tearDown();
     }
 
@@ -55,7 +56,7 @@ class ServerTest extends \DbTestCase
         $this->assertTrue(\Glpi\OAuth\Server::checkKeys());
 
         //change ACLs on private key to make it unreadable
-        \Safe\chmod(GLPI_CONFIG_DIR . '/oauth.pem', 0000);
+        \Safe\chmod(GLPI_CONFIG_DIR . '/oauth.pem', 0o000);
         $this->expectException(\Glpi\Exception\OAuth2KeyException::class);
         $this->expectExceptionMessage('Either private or public OAuth keys cannot be read. Please check file system permissions');
         $this->assertTrue(\Glpi\OAuth\Server::checkKeys());
@@ -67,7 +68,7 @@ class ServerTest extends \DbTestCase
         $this->assertTrue(\Glpi\OAuth\Server::checkKeys());
 
         //change ACLs on public key to make it unreadable
-        \Safe\chmod(GLPI_CONFIG_DIR . '/oauth.pub', 0000);
+        \Safe\chmod(GLPI_CONFIG_DIR . '/oauth.pub', 0o000);
         $this->expectException(\Glpi\Exception\OAuth2KeyException::class);
         $this->expectExceptionMessage('Either private or public OAuth keys cannot be read. Please check file system permissions');
         $this->assertTrue(\Glpi\OAuth\Server::checkKeys());
