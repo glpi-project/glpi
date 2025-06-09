@@ -140,7 +140,7 @@ class SLA extends LevelAgreement
         $level     = new static::$levelclass();
         $level->deleteByCriteria([$fk => $this->getID()]);
 
-        // Update tickets : clean SLA/OLA
+        // Update tickets : clean SLA
         [, $laField] = static::getFieldNames($this->fields['type']);
         $iterator =  $DB->request([
             'SELECT' => 'id',

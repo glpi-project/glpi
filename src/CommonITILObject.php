@@ -2672,7 +2672,7 @@ abstract class CommonITILObject extends CommonDBTM
                 $item_olas = $_item_ola->getByIds(array_column($item_olas_array, 'id'));
                 $calendars_id = $this->getCalendar();
 
-                // OLA::deleteLevelsToDo($this); // @todoseb cleanup
+                // OLA::deleteLevelsToDo($this); // @todoseb cleanup - encapsuler dans item_ola !
                 foreach ($item_olas as $item_ola) {
                     $ola = $item_ola->getOla();
 
@@ -3002,7 +3002,7 @@ abstract class CommonITILObject extends CommonDBTM
                                         unset($mandatory_missing[$dateField]);
                                     }
 
-                                    // @todoseb a réimplementer
+                                    // @todoseb a réimplementer - gestion des champs obligatoires selon template
                                     //                                    [$dateField, $olaField] = OLA::getFieldNames($slmType);
                                     //                                    if (
                                     //                                        ($key == $dateField)
