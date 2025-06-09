@@ -8092,7 +8092,7 @@ HTML,
         $task = $this->createItem(\TicketTask::class, [
             'content' => 'Task content',
             'tickets_id' => $ticket->getID(),
-            'users_id' => \Session::getLoginUserID()
+            'users_id' => \Session::getLoginUserID(),
         ]);
 
         $ticket2 = $this->createItem(\Ticket::class, [
@@ -8114,6 +8114,5 @@ HTML,
             'tickets_id_1' => $ticket2->getID(),
             'tickets_id_2' => $ticket->getID(),
         ]));
-        
     }
 }
