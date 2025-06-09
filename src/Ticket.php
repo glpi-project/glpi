@@ -51,6 +51,8 @@ use Glpi\RichText\UserMention;
  *  - _olas_id : array of olas to associate with the ticket, used only if _la_update field is set
  *  - _la_update : flag to know if _olas_id field must be handled. Do not handle unless it's true
  *  - _la_append : flag to know if _olas_id must be appended to the existing olas without removing the existing ones
+ *
+ *  - _groups_id_assign : assign the ticket to a group
  **/
 class Ticket extends CommonITILObject
 {
@@ -1271,6 +1273,7 @@ class Ticket extends CommonITILObject
         }
 
         $this->updateOlaAssociations();
+        !isset($this->input['_auto_update']) && $this->recomputeOlas();
 
         if (count($this->updates)) {
             // Update Ticket Tco
@@ -6399,7 +6402,7 @@ JAVASCRIPT;
 
         // add new olas
         $added_olas_ids = array_unique(array_diff($request_olas_ids, $current_olas_ids));
-        OLA::deleteLevelsToDo($this);
+        OLA::deleteLevelsToDo($this); // @todoseb déplacer plus bas
         foreach ($added_olas_ids as $olas_id) {
             // insert in association table items_ola
             if (
@@ -6412,11 +6415,22 @@ JAVASCRIPT;
             ) {
                 throw new \Exception("Failed to associate OLA #$olas_id to ticket #{$this->getID()}");
             }
+            // @todoseb peut-être relancer le compute de l'ola
         }
 
         $current_olas_ids = array_column($this->getOlasData(), 'olas_id');
         foreach ($current_olas_ids as $olas_id) {
             $this->manageOlaLevel($olas_id);
+        }
+    }
+
+    private function recomputeOlas(): void
+    {
+        // recompute all OLA for this ticket
+        OLA::deleteLevelsToDo($this); // todo levels are rebuild in Item_Ola::compute()
+        $olas = $this->getOlasData();
+        foreach ($olas as $ola) {
+            Item_Ola::compute($this, $ola['olas_id']);
         }
     }
 

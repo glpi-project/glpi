@@ -2662,53 +2662,7 @@ abstract class CommonITILObject extends CommonDBTM
                 }
             }
 
-            // --- OLA case : compute ola durations and delays (note, both ttr and tto are computed for ola)
-            // @todoseb encapsuler cette logique dans item_ola
-
-            if (is_a($this, Ticket::class)) {
-                $_item_ola = new Item_Ola();
-                $item_olas_array = $_item_ola->find(['items_id' => $this->fields['id'], 'itemtype' => static::class]);
-
-                $item_olas = $_item_ola->getByIds(array_column($item_olas_array, 'id'));
-                $calendars_id = $this->getCalendar();
-
-                // OLA::deleteLevelsToDo($this); // @todoseb cleanup - encapsuler dans item_ola !
-                foreach ($item_olas as $item_ola) {
-                    $ola = $item_ola->getOla();
-
-                    // OLA TTO is not impacted by waiting time, update only for TTR
-                    if ($ola->fields['type'] === SLM::TTR) {
-
-                        $ola->setTicketCalendar($calendars_id);
-                        $item_ola_data['id'] = $item_ola->getID();
-
-                        // update waiting_time
-                        $item_ola_data['waiting_time'] = $item_ola->fields['waiting_time'] + $ola->getActiveTimeBetween(
-                            $this->fields['begin_waiting_date'],
-                            $_SESSION["glpi_currenttime"]
-                        );
-
-                        // update due_time (former internal_time_to_own, internal_time_to_resolve)
-                        $item_ola_data['due_time'] = $ola->computeDate(
-                            $item_ola->fields['start_time'],
-                            $item_ola_data['waiting_time']
-                        );
-
-                        if (!(new Item_Ola())->update($item_ola_data)) {
-                            throw new \Exception('Failed to update item_ola');
-                        }
-                    }
-
-                    $this->manageOlaLevel($item_ola->fields['olas_id']);
-                }
-
-                $this->updates[] = "waiting_duration";
-                $this->fields["waiting_duration"] += $delay_time;
-
-                // Reset begin_waiting_date
-                $this->updates[] = "begin_waiting_date";
-                $this->fields["begin_waiting_date"] = 'NULL';
-            }
+            // --- OLA case is handled in Ticket::recomputeOlas
         }
 
         // Set begin waiting date if needed
@@ -2728,6 +2682,8 @@ abstract class CommonITILObject extends CommonDBTM
 
             OLA::deleteLevelsToDo($this);
         }
+
+        // @todoseb cleanup - fintraitement ola
 
         // solve_delay_stat : use delay between opendate and solvedate
         if (in_array("solvedate", $this->updates)) {
