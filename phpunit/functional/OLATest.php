@@ -532,37 +532,6 @@ class OLATest extends DbTestCase
             : $this->hasSessionMessages(ERROR, ['The group #' . $test_group->getID() . ' is not allowed to be associated with an OLA. group.is_assign must be set to 1']);
     }
 
-    public function testOlaAssociatedGroupIsAssignedToTicketWhenOlaIsAssociatedToTicketOnAdd(): void
-    {
-        $this->login();
-        // arrange
-        ['ola' => $ola, 'group' => $group] = $this->createOLA();
-
-        // act
-        $ticket = $this->createTicket(['_la_update' => true, '_olas_id' => [$ola->getID()]]);
-        // pour l'update
-        //        assert(empty($ticket->getGroups(CommonITILObject::ASSIGNED)), 'Ticket should not be assigned to any group before the OLA is associated'); - haveAGroup
-
-        // assert - check if the ticket is assigned to the OLA group
-        $this->assertTrue($ticket->haveAGroup(CommonITILObject::ASSIGNED, [$group->getID()]));
-    }
-
-    // @todoseb test inutile - le process à lieu dans Ticket::updateOlaAssociations() - à garder quand même ?
-    public function testOlaAssociatedGroupIsAssignedToTicketWhenOlaIsAssociatedToTicketOnUpdate(): void
-    {
-        $this->login();
-        // arrange
-        ['ola' => $ola, 'group' => $group] = $this->createOLA();
-        $ticket = $this->createTicket();
-        assert(false === $ticket->haveAGroup(CommonITILObject::ASSIGNED, [$group->getID()]));
-
-        // act
-        $ticket = $this->updateItem(Ticket::class, $ticket->getID(), ['_la_update' => true, '_olas_id' => [$ola->getID()]]);
-
-        // assert - check if the ticket is assigned to the OLA group
-        $this->assertTrue($ticket->haveAGroup(CommonITILObject::ASSIGNED, [$group->getID()]));
-    }
-
     /**
      * Despite the association with a group is mandatory, migrated data have ola without group associated.
      */

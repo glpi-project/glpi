@@ -46,6 +46,7 @@ class TicketParametersTest extends AbstractParameters
         $this->login();
 
         $test_entity_id = getItemByTypeName('Entity', '_test_child_2', true);
+        $ola_group_id = $this->createItem(\Group::class, ['name' => 'ola_assigned_group'])->fields['id'];
         // - create associatied objects
         $this->createItem('ITILCategory', [
             'name' => 'category_testGetValues',
@@ -76,13 +77,14 @@ class TicketParametersTest extends AbstractParameters
         $slas_id_tto = getItemByTypeName('SLA', 'sla_tto_testGetValue', true);
         $slas_id_ttr = getItemByTypeName('SLA', 'sla_ttr_testGetValue', true);
 
-        $this->createItems('OLA', [
+        $this->createItems(\OLA::class, [
             [
                 'name'            => 'ola_tto_testGetValue',
                 'entities_id'     => $test_entity_id,
                 'type'            => \SLM::TTO,
                 'number_time'     => 15,
                 'definition_time' => 'minute',
+                'groups_id'       => $ola_group_id,
             ],
             [
                 'name'            => 'ola_ttr_testGetValue',
@@ -90,6 +92,7 @@ class TicketParametersTest extends AbstractParameters
                 'type'            => \SLM::TTR,
                 'number_time'     => 4,
                 'definition_time' => 'hour',
+                'groups_id'       => $ola_group_id,
             ],
             [
                 'name'            => 'ola_ttr_testGetValue_2',
@@ -97,6 +100,7 @@ class TicketParametersTest extends AbstractParameters
                 'type'            => \SLM::TTR,
                 'number_time'     => 6,
                 'definition_time' => 'hour',
+                'groups_id'       => $ola_group_id,
             ],
         ]);
         $olas_id_tto = getItemByTypeName('OLA', 'ola_tto_testGetValue', true);
