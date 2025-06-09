@@ -341,64 +341,123 @@ class OLATest extends DbTestCase
         }
     }
 
+    // --- business tests
+
     /**
      * - start_time is set at the moment the Ola is assigned to the ticket
-     * - due_time is start_time + ola_tto duration
+     * - due_time is set at the moment the Ola is assigned to the ticket
+     * - endtime is set not set
+     * - waiting_time is not set
      */
-    public function testOlaTtoStartsWhenOlaIsAssignedAtCreation(): void
+    public function testInitialOlaValuesOnCreation(): void
     {
         $this->login();
         // arrange
         $ola_tto = $this->createOLA(ola_type: \SLM::TTO)['ola'];
-        $start_time_datetime = $this->setCurrentTime('09:00:00');
-        $due_time_datetime = clone $start_time_datetime;
-        $due_time_datetime->add($this->getDefaultTtoDelayInterval());
+        $start_time_datetime = $this->setCurrentTime('09:00:00', '2025-06-02');
 
         // act associate ticket with ola
         $ticket = $this->createTicket(['_la_update' => true, '_olas_id' => [$ola_tto->getID()]]);
 
         // assert
-        // test using database object
-        $item_ola = new \Item_Ola();
-        assert(true === $item_ola->getFromDBByCrit(['items_id' => $ticket->getID(), 'itemtype' => $ticket::getType(), 'olas_id' => $ola_tto->getID()]), 'failed to find created Item_Ola');
-        // start_time is now
-        $this->assertEquals($start_time_datetime->format('Y-m-d H:i:s'), $item_ola->fields['start_time']);
-        // due_time is set to now() + OLA_TTO_DELAY
-        $this->assertEquals($due_time_datetime->format('Y-m-d H:i:s'), $item_ola->fields['due_time']);
+        $ola_data = $ticket->getOlasData()[0];
+        // start_time = ola association with ticket
+        $this->assertEquals($ola_data['start_time'], $start_time_datetime->format('Y-m-d H:i:s'), 'Start time should be set to the moment OLA is assigned to ticket.');
 
-        // test using getAssociatedOlas()
-        $ola = $ticket->getOlasData()[0];
-        $this->assertEquals($start_time_datetime->format('Y-m-d H:i:s'), $ola['start_time']);
-        $this->assertEquals($due_time_datetime->format('Y-m-d H:i:s'), $ola['due_time']);
+        // due_time is set and equal to start_time + OLA_TTO_DELAY
+        $due_time_datetime = clone $start_time_datetime;
+        $due_time_datetime->add($this->getDefaultTtoDelayInterval());
+        $this->assertEquals($ola_data['due_time'], $due_time_datetime->format('Y-m-d H:i:s'), 'Start time should be set to the moment OLA is assigned to ticket.');
+
+        // end_time is not set
+        // @todoseb est actuellement null, zero c'est mieux ?
+        $this->assertNull($ola_data['end_time'], 'End time should not be set when OLA is assigned to ticket.');
+
+        // waiting_time is not set
+        $this->assertEquals(0, $ola_data['waiting_time'], 'Waiting time should not be set for TTO OLA.');
     }
 
-    public function testOlaTtoStartsWhenOlaIsAssignedAtUpdate(): void
+    /**
+     * Same as above but ola is assigned at update time
+     */
+    public function testInitialOlaValuesOnUpdate(): void
     {
         $this->login();
         // arrange
         $ola_tto = $this->createOLA(ola_type: \SLM::TTO)['ola'];
-        $start_time_datetime = $this->setCurrentTime('09:00:00');
-        $due_time_datetime = clone $start_time_datetime;
-        $due_time_datetime->add($this->getDefaultTtoDelayInterval());
+        $this->setCurrentTime('09:00:00', '2025-06-02');
         $ticket = $this->createTicket();
+        assert(empty($ticket->getOlasData()), 'no OLA should be associated with ticket at this point');
 
-        // act associate ticket with ola
+        // act associate ticket with ola after 30 minutes
+        $ola_association_datetime = $this->setCurrentTime('09:30:00', '2025-06-02');
         $ticket = $this->updateItem($ticket::class, $ticket->getID(), ['_la_update' => true, '_olas_id' => [$ola_tto->getID()]]);
 
         // assert
-        // test using database object
-        $item_ola = new \Item_Ola();
-        assert(true === $item_ola->getFromDBByCrit(['items_id' => $ticket->getID(), 'itemtype' => $ticket::getType(), 'olas_id' => $ola_tto->getID()]), 'failed to find created Item_Ola');
-        // start_time is now
-        $this->assertEquals($start_time_datetime->format('Y-m-d H:i:s'), $item_ola->fields['start_time']);
-        // due_time is set to now() + OLA_TTO_DELAY
-        $this->assertEquals($due_time_datetime->format('Y-m-d H:i:s'), $item_ola->fields['due_time']);
+        $ola_data = $ticket->getOlasData()[0];
+        // start_time = ola association with ticket
+        $this->assertEquals($ola_data['start_time'], $ola_association_datetime->format('Y-m-d H:i:s'), 'Start time should be set to the moment OLA is assigned to ticket.');
 
-        // test using getAssociatedOlas()
-        $ola = $ticket->getOlasData()[0];
-        $this->assertEquals($start_time_datetime->format('Y-m-d H:i:s'), $ola['start_time']);
-        $this->assertEquals($due_time_datetime->format('Y-m-d H:i:s'), $ola['due_time']);
+        // due_time is set and equal to start_time + OLA_TTO_DELAY
+        $due_time_datetime = clone $ola_association_datetime;
+        $due_time_datetime->add($this->getDefaultTtoDelayInterval());
+        $this->assertEquals($ola_data['due_time'], $due_time_datetime->format('Y-m-d H:i:s'), 'Start time should be set to the moment OLA is assigned to ticket.');
+
+        // end_time is not set
+        $this->assertNull($ola_data['end_time'], 'End time should not be set when OLA is assigned to ticket.');
+
+        // waiting_time is not set
+        $this->assertEquals(0, $ola_data['waiting_time'], 'Waiting time should not be set for TTO OLA.');
     }
+
+    /**
+     *  - endtime (completion) is set when ticket is assigned to a dedicated group
+     */
+    public function testOlaIsCompleteWhenTicketIsAssignedToDedicatedGroup(): void
+    {
+        $this->login();
+        // arrange
+        $ola_tto = $this->createOLA(ola_type: \SLM::TTO)['ola'];
+        $this->setCurrentTime('09:00:00', '2025-06-10');
+        $ticket = $this->createTicket(['_la_update' => true, '_olas_id' => [$ola_tto->getID()]]);
+
+        $ola_data = $ticket->getOlasData()[0];
+        assert(null === $ola_data['end_time'], 'End time should not be set when OLA is assigned to ticket.');
+
+        // act - wait 10 minutes, assign ticket to a dedicated group
+        $group_assignation_datetime = $this->setCurrentTime('09:10:00', '2025-06-10');
+        $ticket = $this->updateItem($ticket::class, $ticket->getID(), ['_groups_id_assign' => $ola_tto->fields['groups_id']]);
+        assert($ticket->haveAGroup(\CommonITILActor::ASSIGN, [$ola_tto->fields['groups_id']]), 'Ticket should be assigned to the dedicated group of the OLA.');
+        $ola_data = $ticket->getOlasData()[0];
+
+        // assert : end_time is set to the moment ticket is assigned to a dedicated group
+        $this->assertEquals($group_assignation_datetime->format('Y-m-d H:i:s'), $ola_data['end_time'], 'End time should be set to the moment ticket is assigned to a dedicated group.');
+    }
+
+    public function testOlaIsNotCompleteWhenTicketIsAssignedToNonDedicatedGroup(): void
+    {
+        $this->login();
+        // arrange
+        $ola_tto = $this->createOLA(ola_type: \SLM::TTO)['ola'];
+        $this->setCurrentTime('09:00:00', '2025-06-10');
+        $ticket = $this->createTicket(['_la_update' => true, '_olas_id' => [$ola_tto->getID()]]);
+        $non_dedicated_group = getItemByTypeName(\GROUP::class, '_test_group_2');
+        assert($non_dedicated_group->getID() !== $ola_tto->fields['groups_id'], 'Non dedicated group should not be the same as the OLA group');
+
+        $ola_data = $ticket->getOlasData()[0];
+        assert(null === $ola_data['end_time'], 'End time should not be set when OLA is assigned to ticket.');
+
+        // act - wait 10 minutes, assign ticket to a dedicated group
+        $group_assignation_datetime = $this->setCurrentTime('09:10:00', '2025-06-10');
+        $ticket = $this->updateItem($ticket::class, $ticket->getID(), ['_groups_id_assign' => $non_dedicated_group->getID()]);
+        assert($ticket->haveAGroup(\CommonITILActor::ASSIGN, [$non_dedicated_group->getID()]), 'Ticket should be assigned to the dedicated group of the OLA.');
+        $ola_data = $ticket->getOlasData()[0];
+
+        // assert : end_time is set to the moment ticket is assigned to a dedicated group
+        $this->assertEquals(null, $ola_data['end_time'], 'End time should be set to the moment ticket is assigned to a dedicated group.');
+    }
+
+    // @todoseb et si on désagine le groupe du ticket, le tto reste accompli ? : oui : faire le test
 
     public function testOlaTTRDueTimeIsDelayedWhileTicketStatusIsWaiting()
     {
@@ -472,6 +531,21 @@ class OLATest extends DbTestCase
 
         $ola_data = $ticket->getOlasData()[0];
         $this->assertEquals(0, $ola_data['waiting_time'], 'Waiting time should be 0 minute after 20 min in WAITING status for an OLA TTO');
+    }
+
+    public function testOlaTtrStartsWhenTicketIsAssignedToAUserInDedicatedGroup(): void
+    {
+        $this->markTestIncomplete('implement me');
+    }
+
+    public function testOlaTtrDoesNotStartWhenTicketIsAssignedToANonDedicatedGroup(): void
+    {
+        $this->markTestIncomplete('implement me');
+    }
+
+    public function testOlaTtrDoesNotStartWhenTicketIsAssignedToAUserNotInDedicatedGroup(): void
+    {
+        $this->markTestIncomplete('implement me');
     }
 
     /**
@@ -564,57 +638,6 @@ class OLATest extends DbTestCase
         $fetched_olas = array_column($ticket->getOlasData(), 'olas_id');
         $this->assertEqualsCanonicalizing([$ola->getID()], $fetched_olas);
         $this->assertEmpty($ticket->getGroups(\CommonITILActor::class));
-    }
-
-    /**
-     * - start_time is set at the moment the Ola is assigned to the dedicated group
-     * - then due_time is start_time + ola_ttr duration
-     */
-    public function testOlaTtrStartsWhenTicketIsAssignedToDedicatedGroup(): void
-    {
-        $this->markTestIncomplete('implement me');
-        $this->login();
-        // arrange
-        $ola_tto = $this->createOLA(ola_type: \SLM::TTO)['ola'];
-        $start_time_datetime = $this->setCurrentTime('09:00:00');
-        $due_time_datetime = clone $start_time_datetime;
-        $due_time_datetime->add($this->getDefaultTtoDelayInterval());
-
-        // act - associate ticket with ola
-        $ticket = $this->createTicket(['_la_update' => true, '_olas_id' => [$ola_tto->getID()]]);
-        // - one hour later, assign the ticket to a non dedicated group
-        throw new \Exception('implement me');
-        // @todoseb test assignation à un user qui n'est pas du group
-        // - assign
-
-        // assert
-        // test using database object
-        $item_ola = new \Item_Ola();
-        assert(true === $item_ola->getFromDBByCrit(['items_id' => $ticket->getID(), 'itemtype' => $ticket::getType(), 'olas_id' => $ola_tto->getID()]), 'failed to find created Item_Ola');
-        // start_time is now
-        $this->assertEquals($start_time_datetime->format('Y-m-d H:i:s'), $item_ola->fields['start_time']);
-        // due_time is set to now() + OLA_TTO_DELAY
-        $this->assertEquals($due_time_datetime->format('Y-m-d H:i:s'), $item_ola->fields['due_time']);
-
-        // test using getAssociatedOlas()
-        $ola = $ticket->getOlasData()[0];
-        $this->assertEquals($start_time_datetime->format('Y-m-d H:i:s'), $ola['start_time']);
-        $this->assertEquals($due_time_datetime->format('Y-m-d H:i:s'), $ola['due_time']);
-    }
-
-    public function testOlaTtrStartsWhenTicketIsAssignedToAUserInDedicatedGroup(): void
-    {
-        $this->markTestIncomplete('implement me');
-    }
-
-    public function testOlaTtrDoesNotStartWhenTicketIsAssignedToANonDedicatedGroup(): void
-    {
-        $this->markTestIncomplete('implement me');
-    }
-
-    public function testOlaTtrDoesNotStartWhenTicketIsAssignedToAUserNotInDedicatedGroup(): void
-    {
-        $this->markTestIncomplete('implement me');
     }
 
     private function getDefaultTtoDelayInterval(): \DateInterval
