@@ -109,6 +109,7 @@ class RuleTicket extends RuleCommonITILObject
                         // olas_id - assign an ola
                         if ($action->fields["field"] === 'olas_id') {
                             $output['_la_update'] = true;
+                            $output['_la_append'] = true;
                             $output['_olas_id'][] = $action->fields["value"];
                         }
 

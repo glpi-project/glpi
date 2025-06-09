@@ -59,6 +59,7 @@ use function Safe\strtotime;
  * Additionnal fields for $input add/update
  *  - _olas_id : array of olas to associate with the ticket, used only if _la_update field is set
  *  - _la_update : flag to know if _olas_id field must be handled. Do not handle unless it's true
+ *  - _la_append : flag to know if _olas_id must be appended to the existing olas without removing the existing ones
  **/
 class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
 {
@@ -1160,7 +1161,10 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
 
         $ola = new OLA();
         if ($olalevels_id && $ola->getFromDB($olas_id)) {
-            $ola->clearInvalidLevels($this->fields['id']);
+            //            $ola->clearInvalidLevels($this->fields['id']);
+            // dégagé car supprime les niveaux des autres olas
+            // @todo peut-être remettre ce nettoyage en filtrant par ola
+            // mais à priori c'est inutile car on deleteLevelsToDo avant l'appel de manageOlaLevel (sauf dans /home/seb/dev/glpi_main/src/CommonITILObject.php) mais ça va dégager
             $calendars_id = Entity::getUsedConfig(
                 'calendars_strategy',
                 $this->fields['entities_id'],
@@ -6243,7 +6247,7 @@ JAVASCRIPT;
      *
      * Data from ola + item_ola + custom data
      *
-     * @return array<array{id_ola: int, items_olas_id: int, name: string, entities_id: int, is_recursive: bool, type: int, comment: string, number_time: int, use_ticket_calendar: bool, calendars_id: int, date_mod: string, definition_time: string, end_of_working_day: string, date_creation: string, slms_id: int, due_time: string, class: string, item: Ticket, nextaction: false|OlaLevel_Ticket|SlaLevel_Ticket, level: false|\LevelAgreementLevel}>
+     * @return array<array{olas_id: int, items_olas_id: int, name: string, entities_id: int, is_recursive: bool, type: int, comment: string, number_time: int, use_ticket_calendar: bool, calendars_id: int, date_mod: string, definition_time: string, end_of_working_day: string, date_creation: string, slms_id: int, due_time: string, class: string, item: Ticket, nextaction: false|OlaLevel_Ticket|SlaLevel_Ticket, level: false|\LevelAgreementLevel}>
     */
     public function getOlasData(): array
     {
@@ -6353,8 +6357,12 @@ JAVASCRIPT;
         $current_olas_ids = array_column($this->getOlasData(), 'olas_id');
 
         $items_ola = new Item_Ola();
-        // remove olas no more associated
+        // remove olas no more associated unless _la_append field is set
         $removed_olas_ids = array_diff($current_olas_ids, $request_olas_ids);
+        if (isset($this->input['_la_append']) && $this->input['_la_append'] === true) {
+            // do not remove olas, just add new ones
+            $removed_olas_ids = [];
+        }
         foreach ($removed_olas_ids as $olas_id) {
             // find item_ola id
             $items_ola->getFromDBByCrit([
@@ -6370,6 +6378,7 @@ JAVASCRIPT;
 
         // add new olas
         $added_olas_ids = array_unique(array_diff($request_olas_ids, $current_olas_ids));
+        OLA::deleteLevelsToDo($this);
         foreach ($added_olas_ids as $olas_id) {
             // insert in association table items_ola
             if (
@@ -6382,36 +6391,10 @@ JAVASCRIPT;
             ) {
                 throw new \Exception("Failed to associate OLA #$olas_id to ticket #{$this->getID()}");
             }
-
-            // add ola associated group to ticket assigned groups
-            $ola = new OLA();
-            if (!$ola->getFromDB($olas_id)) {
-                throw new \Exception("Failed to get OLA #$olas_id");
-            }
-            $groups_id = $ola->fields['groups_id'];
-            if ($groups_id > 0) {
-                $group_ticket = new Group_Ticket();
-                if (!$group_ticket->getFromDBByCrit([
-                    'tickets_id' => $this->getID(),
-                    'groups_id'  => $groups_id,
-                    'type' => CommonITILActor::ASSIGN,
-                ])) {
-                    // add group to ticket
-                    if (!$group_ticket->add([
-                        'tickets_id' => $this->getID(),
-                        'groups_id'  => $groups_id,
-                        'type'       => CommonITILActor::ASSIGN,
-                    ])) {
-                        throw new \Exception("Failed to associat group #$groups_id to ticket #{$this->getID()}");
-                    }
-                }
-            }
-
-
         }
 
-        OLA::deleteLevelsToDo($this);
-        foreach ($added_olas_ids as $olas_id) {
+        $current_olas_ids = array_column($this->getOlasData(), 'olas_id');
+        foreach ($current_olas_ids as $olas_id) {
             $this->manageOlaLevel($olas_id);
         }
     }

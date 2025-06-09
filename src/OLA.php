@@ -150,9 +150,7 @@ class OLA extends LevelAgreement
     }
 
     /**
-     * remove a ttr level to do for a ticket
-     *
-     * There can be only one level to do for a ticket
+     * remove all levels to do for a ticket
      *
      * @param Ticket $ticket object
      *

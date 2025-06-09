@@ -338,11 +338,9 @@ TWIG, ['message' => __('An action related to an approval exists, but there is no
                                 $output["items_id"] = [];
                             }
                             $output["items_id"][Appliance::getType()][] = $value;
+                        } elseif (isset($actions[$action->fields["field"]]["appendto"])) {
+                            $output[ $actions[$action->fields["field"]]["appendto"] ] [] = $value;
                         }
-                        // @todo cas par défault pour ??? - désactivé car on match ce cas alors que ça n'est pas attendu
-                        //                        else {
-                        //                            $output[$actions[$action->fields["field"]]["appendto"]][] = $value;
-                        //                        }
 
                         // Special case of users_id_requester
                         if ($action->fields["field"] === '_users_id_requester') {
