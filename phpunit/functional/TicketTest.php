@@ -58,6 +58,7 @@ use Ticket_User;
 use TicketValidation;
 use User;
 use Session;
+use Ticket_Ticket;
 
 /* Test for inc/ticket.class.php */
 
@@ -8067,5 +8068,52 @@ HTML,
         $input = ['itemtype' => \Ticket::class, 'items_id' => $ticket->getID()];
         $doc = new \Document();
         $this->assertEquals($expected, $doc->can(-1, CREATE, $input));
+    }
+
+    public function testPromoteTaskToTicket(): void
+    {
+        global $DB;
+
+        $this->login();
+
+        $ticket = $this->createItem(\Ticket::class, [
+            'name' => 'Ticket Test',
+            'content' => 'Ticket content',
+            '_actors' => [
+                'requester' => [
+                    [
+                        'itemtype'  => 'User',
+                        'items_id'  => \Session::getLoginUserID(),
+                    ],
+                ],
+            ],
+        ]);
+
+        $task = $this->createItem(\TicketTask::class, [
+            'content' => 'Task content',
+            'tickets_id' => $ticket->getID(),
+            'users_id' => \Session::getLoginUserID()
+        ]);
+
+        $ticket2 = $this->createItem(\Ticket::class, [
+            'name' => 'Ticket Test 2',
+            'content' => 'Ticket content 2',
+            '_promoted_task_id' => $task->getID(),
+            '_actors' => [
+                'requester' => [
+                    [
+                        'itemtype'  => 'User',
+                        'items_id'  => \Session::getLoginUserID(),
+                    ],
+                ],
+            ],
+        ]);
+
+        $ticket_ticket = new Ticket_Ticket();
+        $this->assertNotFalse($ticket_ticket->getFromDBByCrit([
+            'tickets_id_1' => $ticket2->getID(),
+            'tickets_id_2' => $ticket->getID(),
+        ]));
+        
     }
 }
