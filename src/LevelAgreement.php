@@ -79,7 +79,7 @@ abstract class LevelAgreement extends CommonDBChild
      * @param integer $subtype of OLA/SLA, can be SLM::TTO or SLM::TTR
      *
      * @return array of 'date' and 'sla' field names
-     * // @todoseb déplacer dans SLA ?
+     * // @todoseb déplacer dans SLA et OLA ou rendre abstract
      */
     public static function getFieldNames($subtype)
     {
@@ -459,11 +459,12 @@ TWIG, $twig_params);
         global $DB;
 
         if ($this instanceof OLA) {
-            // @todoseb re implement me
+            // @todoseb re implement me - a implémenter dans OLA
             return;
         }
 
-        $fk      = static::getFieldNames($this->fields['type'])[1];
+        // @todoseb à déplacer dans SLA
+        $fk      = static::getFieldNames($this->fields['type'])[1]; // remove getFieldNames() - faux positif
         $rule    = new RuleTicket();
         $canedit = self::canUpdate();
 
@@ -553,6 +554,7 @@ TWIG, $twig_params);
      * @param int $type
      * @return false|iterable
      * @used-by templates/components/itilobject/service_levels.html.twig
+     * @todo deprécier, n'est plus utilisé
      */
     public function getDataForTicket($tickets_id, $type)
     {
@@ -938,7 +940,7 @@ TWIG, $twig_params);
     }
 
     /**
-     * remove a level to do for a ticket
+     * Remove all levels to do for a ticket
      *
      * @param Ticket $ticket object
      *
@@ -998,7 +1000,7 @@ TWIG, $twig_params);
     }
 
     /**
-     * Remove level of previously assigned level agreements for a given ticket
+     * Remove levels todo of the current level agreement for a given ticket
      *
      * @param int $tickets_id
      *
@@ -1008,6 +1010,7 @@ TWIG, $twig_params);
     {
         // CLear levels of others LA of the same type
         // e.g. if a new LA TTR was assigned, clear levels from others (= previous) LA TTR
+        // @todoseb       throw new \Exception('à reimplementer pour OLA ou à ne plus appeller carrément ?');
         $level_ticket_class = $this->getLevelTicketClass();
         $level_ticket = getItemForItemtype($level_ticket_class);
         $level_class = $this->getLevelClass();
