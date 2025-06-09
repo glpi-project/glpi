@@ -2270,7 +2270,7 @@ class SLMTest extends DbTestCase
         $this->assertTrue((new \OlaLevel_Ticket())->getFromDBByCrit(['tickets_id' => $ticket->getID(), 'olalevels_id' => $level_2->getID()]));
         $ticket = new \Ticket();
         $ticket->getFromDB($ticket_id);
-        $this->assertEquals(4, $ticket->fields['priority']); // level_1 action is applied
+        $this->assertEquals(4, $ticket->fields['priority'], 'Level action not processed'); // level_1 action is applied
 
         // --- 11:31 ticket : level 2 is reached
         $this->setCurrentTime('11:31:00', '2025-05-26');
