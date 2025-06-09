@@ -41,16 +41,14 @@ use Glpi\PHPUnit\Tests\Glpi\ITILTrait;
 use Glpi\PHPUnit\Tests\Glpi\SLMTrait;
 use ITILFollowup;
 use ITILFollowupTemplate;
-use Location;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rule;
 use RuleAction;
+use RuleCommonITILObject;
 use Ticket_Contract;
 
 // Force import because of autoloader not working
 require_once __DIR__ . '/../abstracts/RuleCommonITILObjectTest.php';
-
-/* Test for inc/ruleticket.class.php */
 
 class RuleTicketTest extends RuleCommonITILObjectTest
 {
@@ -1507,6 +1505,45 @@ class RuleTicketTest extends RuleCommonITILObjectTest
         $this->assertCount(1, $olas_tto_data);
         $olas_ids = array_column($olas_tto_data, 'olas_id');
         $this->assertEqualsCanonicalizing($olas_ids, [$ola_tto->getID()]);
+    }
+
+    public function testAssignOlaOnUpdatePreserveOlas(): void
+    {
+        $this->login();
+        // arrange
+        $entity = getItemByTypeName(\Entity::class, '_test_child_1');
+        ['ola' => $ola_on_creation, 'slm' => $slm, 'group' => $group] = $this->createOLA();
+        ['ola' => $ola_on_update] = $this->createOLA(group: $group, slm: $slm);
+
+        $rule_builder_on_creation = new \RuleBuilder(__FUNCTION__, \RuleTicket::class);
+        $rule_builder_on_creation->setCondtion(RuleCommonITILObject::ONADD);
+        $rule_builder_on_creation->addCriteria('entities_id', Rule::PATTERN_IS, $entity->getID());
+        $rule_builder_on_creation->addAction('append', 'olas_id', $ola_on_creation->getID());
+        $this->createRule($rule_builder_on_creation);
+
+        $rule_builder_on_update = new \RuleBuilder(__FUNCTION__, \RuleTicket::class);
+        $rule_builder_on_update->setCondtion(RuleCommonITILObject::ONUPDATE);
+        $rule_builder_on_update->addCriteria('priority', Rule::PATTERN_IS, 2);
+        $rule_builder_on_update->addAction('append', 'olas_id', $ola_on_update->getID());
+        $this->createRule($rule_builder_on_update);
+
+        $ticket = $this->createTicket(['entities_id' => $entity->getID()]);
+        $ticket = $this->reloadItem($ticket); // @todoseb peut-être suprrimé probablement
+
+        $olas_data = $ticket->getOlasData();
+        assert(1 === count($olas_data));
+        $ola_data = $olas_data[0];
+        assert($ola_on_creation->getID() === $ola_data['olas_id']);
+
+        // act - update ticket to apply rule on update
+        $this->updateItem(\Ticket::class, $ticket->getID(), [
+            'priority' => 2,
+        ]);
+
+        // assert - all olas are preserved
+        $olas_data = $ticket->getOlasData();
+        $this->assertCount(2, $olas_data);
+        $this->assertEqualsCanonicalizing([$ola_on_creation->getID(), $ola_on_update->getID()], array_column($olas_data, 'olas_id'));
     }
 
     public function testCriteriaOlaOnCreate()
