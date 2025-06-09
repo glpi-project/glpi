@@ -2168,8 +2168,16 @@ class Ticket extends CommonITILObject
             $fup->getFromDB($this->input['_promoted_fup_id']);
             $fup->update([
                 'id'                 => $this->input['_promoted_fup_id'],
-                'sourceof_items_id'  => $this->getID(),
+                'sourceof_items_id'  => $this->getID()
             ]);
+
+            $ticketticket = new Ticket_Ticket();
+            $ticketticket->add([
+                'tickets_id_1' => $this->getID(),
+                'tickets_id_2' => $fup->fields['tickets_id'],
+                'link'         => Ticket_Ticket::LINK_TO,
+            ]);
+
             Event::log(
                 $this->getID(),
                 "ticket",
@@ -2184,8 +2192,16 @@ class Ticket extends CommonITILObject
             $tickettask->getFromDB($this->input['_promoted_task_id']);
             $tickettask->update([
                 'id'                => $this->input['_promoted_task_id'],
-                'sourceof_items_id' => $this->getID(),
+                'sourceof_items_id' => $this->getID()
             ]);
+
+            $ticketticket = new Ticket_Ticket();
+            $ticketticket->add([
+                'tickets_id_1' => $this->getID(),
+                'tickets_id_2' => $tickettask->fields['tickets_id'],
+                'link'         => Ticket_Ticket::LINK_TO,
+            ]);
+
             Event::log(
                 $this->getID(),
                 "ticket",
