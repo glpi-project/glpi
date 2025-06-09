@@ -1,9 +1,9 @@
 <div class="position-relative w-100 d-flex">
 
-    {% set remaining = item.fields['number'] - licences_assigned %}
+    {% set remaining = total - licences_assigned %}
     {% set overflow = remaining < 0 %}
-    {% set progress = overflow ? 100 : (remaining >= 0 ? (100 * licences_assigned / item.fields['number'])|round(2) : 0) %}
-    {% set color = overflow ? 'bg-red' : 'bg-green' %}
+    {% set progress = overflow ? 100 : (remaining >= 0 ? (100 * licences_assigned / total)|round(2) : 0) %}
+    {% set color = overflow ? 'bg-danger' : 'bg-success' %}
 
     {% set progress_popover %}
         <div class="d-flex flex-column">

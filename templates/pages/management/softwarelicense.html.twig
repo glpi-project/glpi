@@ -112,7 +112,9 @@
    {% if item_type == 'SoftwareLicense' %}
       {% set validity_msg %}
          <div class="d-flex justify-content-around pt-2">
-            {{ include('pages/management/license_progressbar.html.twig') }}
+            {{ include('pages/management/license_progressbar.html.twig', {
+               total: item.fields['number']
+            }) }}
          </div>
       {% endset %}
    {% endif %}

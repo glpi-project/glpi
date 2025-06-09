@@ -128,7 +128,7 @@ class Item_SoftwareLicense extends CommonDBRelation
                 return TemplateRenderer::getInstance()->render(
                     'pages/management/license_progressbar.html.twig',
                     [
-                        'item' => $softlicense,
+                        'total' => $softlicense->fields['number'],
                         'licences_assigned' => $assign_item,
                     ]
                 );
