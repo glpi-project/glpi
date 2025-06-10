@@ -72,9 +72,7 @@ class RuleDictionnaryDropdownCollection extends RuleCollection
         $i          = $offset;
         if ($nb > $offset) {
             // Step to refresh progressbar
-            $step              = (($nb > 20) ? floor($nb / 20) : 1);
-            $send              = [];
-            $send["tablename"] = $this->item_table;
+            $step = (($nb > 20) ? floor($nb / 20) : 1);
 
             foreach ($iterator as $data) {
                 if (!($i % $step)) {
@@ -86,7 +84,7 @@ class RuleDictionnaryDropdownCollection extends RuleCollection
                     }
                 }
 
-                //Replay Type dictionnary
+                //Replay Type dictionary
                 $ID = Dropdown::importExternal(
                     getItemTypeForTable($this->item_table),
                     addslashes($data["name"]),
@@ -141,7 +139,7 @@ class RuleDictionnaryDropdownCollection extends RuleCollection
             printf(__('Replay rules on existing database started on %s') . "\n", date("r"));
         }
 
-        // Model check : need to check using manufacturer extra data
+        // Model check: need to check using manufacturer extra data
         if (strpos($this->item_table, 'models') === false) {
             echo __('Error replaying rules');
             return false;
@@ -206,7 +204,7 @@ class RuleDictionnaryDropdownCollection extends RuleCollection
                     $data["manufacturer"] = Manufacturer::processName(addslashes($data["manufacturer"]));
                 }
 
-                //Replay Type dictionnary
+                //Replay Type dictionary
                 $ID = Dropdown::importExternal(
                     getItemTypeForTable($this->item_table),
                     addslashes($data["name"]),
@@ -254,7 +252,7 @@ class RuleDictionnaryDropdownCollection extends RuleCollection
 
                 $deletecartmodel  = false;
 
-                // No item left : delete old item
+                // No item left: delete old item
                 if (
                     $result
                     && ($result['cpt'] == 0)
@@ -269,7 +267,7 @@ class RuleDictionnaryDropdownCollection extends RuleCollection
                 }
 
                 // Manage cartridge assoc Update items
-                if ($this->getRuleClassName() == 'RuleDictionnaryPrinterModel') {
+                if ($this->getRuleClassName() == RuleDictionnaryPrinterModel::class) {
                     $iterator2 = $DB->request([
                         'FROM'   => 'glpi_cartridgeitems_printermodels',
                         'WHERE'  => ['printermodels_id' => $ID],

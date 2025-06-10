@@ -1810,7 +1810,7 @@ class MassiveAction
      * Set the page to redirect for specific actions. By default, call previous page.
      * This should be call once for the given action.
      *
-     * @param $redirect link to the page
+     * @param string $redirect link to the page
      *
      * @return void
      **/
@@ -1837,13 +1837,13 @@ class MassiveAction
      * Set an item as done. If the delay is too long, then reload the page to continue the action.
      * Update the progress if necessary.
      *
-     * @param string  $itemtype    the type of the item that has been done
-     * @param integer $id          id or array of ids of the item(s) that have been done.
-     * @param integer $result
-     *                self::NO_ACTION      in case of no specific action (used internally for older actions)
-     *                MassiveAction::ACTION_OK      everything is OK for the action
-     *                MassiveAction::ACTION_KO      something went wrong for the action
-     *                MassiveAction::ACTION_NORIGHT not anough right for the action
+     * @param string    $itemtype    the type of the item that has been done
+     * @param array|int $id          id or array of ids of the item(s) that have been done.
+     * @param integer   $result
+     *                  self::NO_ACTION      in case of no specific action (used internally for older actions)
+     *                  MassiveAction::ACTION_OK      everything is OK for the action
+     *                  MassiveAction::ACTION_KO      something went wrong for the action
+     *                  MassiveAction::ACTION_NORIGHT not anough right for the action
      **/
     public function itemDone($itemtype, $id, $result)
     {
