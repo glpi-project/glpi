@@ -521,7 +521,7 @@ describe('Edit form translations', () => {
         cy.findByRole('textbox', { name: 'Short answer question' }).should('exist').should('have.value', 'Ceci est une question de réponse courte');
     });
 
-    it.only('can translate description of a question', () => {
+    it('can translate description of a question', () => {
         // Go to the form editor
         cy.findByRole('tab', { name: 'Form' }).click();
 
