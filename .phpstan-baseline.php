@@ -4472,12 +4472,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Http/Firewall.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Function preg_replace is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
-	'identifier' => 'theCodingMachineSafe.function',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Http/Firewall.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
 	'identifier' => 'theCodingMachineSafe.function',
 	'count' => 1,
@@ -4928,45 +4922,15 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Kernel/Listener/PostBootListener/SessionStart.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Function parse_url is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\parse_url;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
-	'identifier' => 'theCodingMachineSafe.function',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Kernel/Listener/PostBootListener/SessionStart.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
-	'identifier' => 'theCodingMachineSafe.function',
-	'count' => 8,
-	'path' => __DIR__ . '/src/Glpi/Kernel/Listener/PostBootListener/SessionStart.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Function preg_replace is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
-	'identifier' => 'theCodingMachineSafe.function',
-	'count' => 3,
-	'path' => __DIR__ . '/src/Glpi/Kernel/Listener/PostBootListener/SessionStart.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Function mime_content_type is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\mime_content_type;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
 	'identifier' => 'theCodingMachineSafe.function',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Kernel/Listener/RequestListener/FrontEndAssetsListener.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Function parse_url is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\parse_url;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
-	'identifier' => 'theCodingMachineSafe.function',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Kernel/Listener/RequestListener/FrontEndAssetsListener.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
 	'identifier' => 'theCodingMachineSafe.function',
-	'count' => 9,
-	'path' => __DIR__ . '/src/Glpi/Kernel/Listener/RequestListener/FrontEndAssetsListener.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Function preg_replace is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
-	'identifier' => 'theCodingMachineSafe.function',
-	'count' => 3,
+	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Kernel/Listener/RequestListener/FrontEndAssetsListener.php',
 ];
 $ignoreErrors[] = [
@@ -4988,21 +4952,9 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Kernel/Listener/RequestListener/LegacyRouterListener.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Function parse_url is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\parse_url;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
-	'identifier' => 'theCodingMachineSafe.function',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Kernel/Listener/RequestListener/LegacyRouterListener.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
 	'identifier' => 'theCodingMachineSafe.function',
-	'count' => 9,
-	'path' => __DIR__ . '/src/Glpi/Kernel/Listener/RequestListener/LegacyRouterListener.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Function preg_replace is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
-	'identifier' => 'theCodingMachineSafe.function',
-	'count' => 3,
+	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Kernel/Listener/RequestListener/LegacyRouterListener.php',
 ];
 $ignoreErrors[] = [

@@ -37,7 +37,10 @@ namespace Glpi\Http;
 use Symfony\Component\HttpFoundation\Request;
 use Toolbox;
 
-trait LegacyRouterTrait
+use function Safe\preg_match;
+use function Safe\preg_replace;
+
+trait RequestRouterTrait
 {
     /**
      * GLPI root directory.
@@ -54,7 +57,7 @@ trait LegacyRouterTrait
     {
         // Check extension on path directly to be able to recognize that target is supposed to be a PHP
         // script even if it not exists. This is usefull to send most appropriate response code (i.e. 403 VS 404).
-        return preg_match('/^php\d*$/i', pathinfo($path, PATHINFO_EXTENSION)) === 1;
+        return preg_match('/^php\d*$/i', \pathinfo($path, PATHINFO_EXTENSION)) === 1;
     }
 
     protected function isHiddenFile(string $path): bool
@@ -69,7 +72,7 @@ trait LegacyRouterTrait
             $plugin_dir = null;
             foreach ($this->plugin_directories as $plugins_directory) {
                 $to_check = $plugins_directory . DIRECTORY_SEPARATOR . $path_matches['plugin_key'];
-                if (is_dir($to_check)) {
+                if (\is_dir($to_check)) {
                     $plugin_dir = $to_check;
                     break;
                 }
@@ -82,7 +85,7 @@ trait LegacyRouterTrait
             $relative_path = $path_matches['plugin_resource'];
             if (
                 $this->isTargetAPhpScript($path)
-                && \preg_match('#^/(ajax|front|report)/#', $relative_path)
+                && preg_match('#^/(ajax|front|report)/#', $relative_path)
                 && \is_file($plugin_dir . $relative_path)
             ) {
                 // legacy scripts located in the `/ajax`, `/front` or `/report` directory
@@ -94,11 +97,11 @@ trait LegacyRouterTrait
         } elseif (
             (
                 // legacy scripts located in the `/ajax`, `/front` or `/install` directory
-                (\preg_match('#^(/ajax/|/front/|/install/(install|update)\.php)#', $path) && $this->isTargetAPhpScript($path))
+                (preg_match('#^(/ajax/|/front/|/install/(install|update)\.php)#', $path) && $this->isTargetAPhpScript($path))
                 // JS scripts located in the `/js` directory
                 || preg_match('#^/js/.+\.js$#', $path)
             )
-            && is_file($this->glpi_root . $path)
+            && \is_file($this->glpi_root . $path)
         ) {
             $filename = $this->glpi_root . $path;
         } else {
@@ -109,38 +112,14 @@ trait LegacyRouterTrait
         return \is_file($filename) ? $filename : null;
     }
 
-    protected function extractPathAndPrefix(Request $request): array
+    protected function normalizePath(Request $request): string
     {
-        $script_name = $request->server->get('SCRIPT_NAME');
-        $request_uri = $request->server->get('REQUEST_URI');
-
-        if (
-            $script_name === '/public/index.php'
-            && preg_match('/^\/public/', $request_uri) !== 1
-        ) {
-            // When requested URI does not start with '/public' but `$request->server->get('SCRIPT_NAME')` is '/public/index.php',
-            // it means that document root is the GLPI root directory, but a rewrite rule redirects the request to the PHP router.
-            // This case happen when redirection to PHP router is made by an `.htaccess` file placed in the GLPI root directory,
-            // and has to be handled to support shared hosting where it is not possible to change the web server root directory.
-            $uri_prefix = '';
-        } else {
-            // `$request->server->get('SCRIPT_NAME')` corresponds to the script path relative to server document root.
-            // -> if server document root is `/public`, then `$request->server->get('SCRIPT_NAME')` will be equal to `/index.php`
-            // -> if script is located into a `/glpi-alias` alias directory, then `$request->server->get('SCRIPT_NAME')` will be equal to `/glpi-alias/index.php`
-            $uri_prefix = rtrim(str_replace('\\', '/', dirname($script_name)), '/');
-        }
-
         // Get URI path relative to GLPI (i.e. without alias directory prefix).
-        $request_uri = preg_replace('/\/{2,}/', '/', $request_uri); // remove duplicates `/`
-        $path = preg_replace(
-            '/^' . preg_quote($uri_prefix, '/') . '/',
-            '',
-            parse_url($request_uri, PHP_URL_PATH)
-        );
+        $path = $request->getPathInfo();
 
         // Normalize plugins paths.
         // All plugins resources should now be accessed using the `/plugins/${plugin_key}/${resource_path}`.
-        if (str_starts_with($path, '/marketplace/')) {
+        if (\str_starts_with($path, '/marketplace/')) {
             // /!\ `/marketplace/` URLs were massively used prior to GLPI 11.0.
             //
             // To not break URLs than can be found in the wild (in e-mail, forums, external apps configuration, ...),
@@ -149,7 +128,7 @@ trait LegacyRouterTrait
             $path = preg_replace(
                 '#^/marketplace/#',
                 '/plugins/',
-                parse_url($request_uri, PHP_URL_PATH)
+                $path
             );
         }
 
@@ -158,9 +137,9 @@ trait LegacyRouterTrait
         $path = '';
 
         $slash_pos = 0;
-        while ($slash_pos !== false && ($dot_pos = strpos($init_path, '.', $slash_pos)) !== false) {
-            $slash_pos = strpos($init_path, '/', $dot_pos);
-            $filepath = substr($init_path, 0, $slash_pos !== false ? $slash_pos : strlen($init_path));
+        while ($slash_pos !== false && ($dot_pos = \strpos($init_path, '.', $slash_pos)) !== false) {
+            $slash_pos = \strpos($init_path, '/', $dot_pos);
+            $filepath = \substr($init_path, 0, $slash_pos !== false ? $slash_pos : \strlen($init_path));
             if ($this->getTargetFile($filepath) !== null) {
                 $path = $filepath;
                 break;
@@ -170,7 +149,7 @@ trait LegacyRouterTrait
             // e.g. `/plugins/myplugin/public/css.php` -> `/plugins/myplugin/css.php`.
             $path_matches = [];
             if (preg_match('#^/plugins/(?<plugin_key>[^\/]+)/public(?<plugin_resource>/.+)$#', $filepath, $path_matches) === 1) {
-                $new_path = sprintf('/plugins/%s%s', $path_matches['plugin_key'], $path_matches['plugin_resource']);
+                $new_path = \sprintf('/plugins/%s%s', $path_matches['plugin_key'], $path_matches['plugin_resource']);
                 if ($this->getTargetFile($new_path) !== null) {
                     // To not break URLs than can be found in the wild (in e-mail, forums, external apps configuration, ...),
                     // please do not remove this behaviour before, at least, 2030 (about 5 years after GLPI 11.0.0 release).
@@ -186,7 +165,7 @@ trait LegacyRouterTrait
             $path = $init_path;
 
             // Clean trailing `/`.
-            $path = rtrim($path, '/');
+            $path = \rtrim($path, '/');
 
             // If URI matches a directory path, consider `index.php` is the requested script.
             if ($this->getTargetFile($path . '/index.php') !== null) {
@@ -194,6 +173,6 @@ trait LegacyRouterTrait
             }
         }
 
-        return [$uri_prefix, $path];
+        return $path;
     }
 }

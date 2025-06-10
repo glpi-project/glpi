@@ -44,6 +44,8 @@ use Symfony\Component\HttpFoundation\Request;
  */
 final class Firewall
 {
+    use RequestRouterTrait;
+
     /**
      * Nothing to check. Entrypoint accepts anonymous access.
      */
@@ -85,17 +87,6 @@ final class Firewall
     private const FALLBACK_STRATEGY_FOR_LEGACY_SCRIPTS = self::STRATEGY_AUTHENTICATED;
 
     /**
-     * GLPI root directory.
-     */
-    private string $root_dir;
-
-    /**
-     * GLPI plugins root directories.
-     * @var string[]
-     */
-    private array $plugins_dirs;
-
-    /**
      * Registered plugins strategies for legacy scripts.
      *
      * @phpstan-var array<string, array<string, self::STRATEGY_*>>
@@ -103,13 +94,13 @@ final class Firewall
     private static array $plugins_legacy_scripts_strategies = [];
 
     /**
-     * @param ?string $root_dir             GLPI root directory on filesystem
-     * @param ?array  $plugins_dirs         GLPI plugins root directories on filesystem
+     * @param ?string $glpi_root             GLPI root directory on filesystem
+     * @param ?array  $plugin_directories         GLPI plugins root directories on filesystem
      */
-    public function __construct(?string $root_dir = null, ?array $plugins_dirs = null)
+    public function __construct(?string $glpi_root = null, ?array $plugin_directories = null)
     {
-        $this->root_dir = $root_dir ?? GLPI_ROOT;
-        $this->plugins_dirs = $plugins_dirs ?? GLPI_PLUGINS_DIRECTORIES;
+        $this->glpi_root = $glpi_root ?? GLPI_ROOT;
+        $this->plugin_directories = $plugin_directories ?? GLPI_PLUGINS_DIRECTORIES;
     }
 
     /**
@@ -176,22 +167,18 @@ final class Firewall
      */
     public function computeFallbackStrategy(Request $request): string
     {
-        $unprefixed_path = preg_replace(
-            '/^' . preg_quote($request->getBasePath(), '/') . '/',
-            '',
-            $request->getPathInfo()
-        );
+        $path = $this->normalizePath($request);
 
         $path_matches = [];
-        $plugin_path_pattern = '#^/(plugins|marketplace)/(?<plugin_key>[^/]+)(?<plugin_resource>/.+)$#';
-        if (preg_match($plugin_path_pattern, $unprefixed_path, $path_matches) === 1) {
+        $plugin_path_pattern = '#^/plugins/(?<plugin_key>[^/]+)(?<plugin_resource>/.+)$#';
+        if (preg_match($plugin_path_pattern, $path, $path_matches) === 1) {
             return $this->computeFallbackStrategyForPlugin(
                 $path_matches['plugin_key'],
                 $path_matches['plugin_resource']
             );
         }
 
-        return $this->computeFallbackStrategyForCore($unprefixed_path);
+        return $this->computeFallbackStrategyForCore($path);
     }
 
     /**
@@ -199,7 +186,7 @@ final class Firewall
      */
     private function computeFallbackStrategyForCore(string $path): string
     {
-        if (!file_exists($this->root_dir . $path)) {
+        if (!file_exists($this->glpi_root . $path)) {
             $paths = [
                 '/_wdt/' => self::STRATEGY_NO_CHECK,
                 '/_profiler/' => self::STRATEGY_NO_CHECK,
@@ -252,7 +239,7 @@ final class Firewall
     private function computeFallbackStrategyForPlugin(string $plugin_key, string $plugin_resource): string
     {
         // Check if the file exists to apply the strategies related to legacyy scripts
-        foreach ($this->plugins_dirs as $plugin_dir) {
+        foreach ($this->plugin_directories as $plugin_dir) {
             $expected_filenames = [
                 $plugin_dir . '/' . $plugin_key . $plugin_resource,
 
