@@ -817,7 +817,7 @@
          {% endif %}
       </div>
    {% endset %}
-   {{ _self.field(id, field, label, options|merge({'id': id ~ '_' ~ options.rand})) }}
+   {{ _self.field(id, field, label, options|merge({'id': id ~ '_' ~ options.rand ?? random()})) }}
 {% endmacro %}
 
 {% macro nullField(options = {}) %}
