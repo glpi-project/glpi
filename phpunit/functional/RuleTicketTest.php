@@ -1597,5 +1597,116 @@ class RuleTicketTest extends RuleCommonITILObjectTest
     // @todoseb tests sur les critères d'ola - supprimer si existe test sur dates saisies directement
     // @todoseb tests d'assignation d'un SLA manquants
 
+    public function testAssignOlaOnTicketCreation()
+    {
+        $this->login();
+        // create Ola + Rule to assign it on ticket update
+        ['ola' => $ola] = $this->createOLA();
+
+        $builder = new \RuleBuilder('Assign OLA rule', \RuleTicket::class);
+        $builder->setCondtion(RuleCommonITILObject::ONADD);
+        $builder->addCriteria('priority', \Rule::PATTERN_IS, 4);
+        $builder->addAction('append', 'olas_id', $ola->getID());
+        $builder->setEntity(0);
+        $this->createRule($builder);
+
+        // create ticket : no ola assigned
+        $ticket = $this->createTicket(
+            [
+                'priority' => 4,
+                'name' => __METHOD__ . ' ticket']
+        );
+        $this->assertNotEmpty($ticket->getOlasData());
+    }
+
+    public function testAssignSlaOnTicketCreation()
+    {
+        $this->login();
+        $_sla = new \SLA();
+        // create Ola + Rule to assign it on ticket update
+        foreach ([\SLM::TTR, \SLM::TTO] as $sla_type) {
+            [, $field_name] = $_sla->getFieldNames($sla_type);
+
+            ['sla' => $sla] = $this->createSLA(sla_type: $sla_type);
+
+            $builder = new \RuleBuilder('Assign SLA rule', \RuleTicket::class);
+            $builder->setCondtion(RuleCommonITILObject::ONADD);
+            $builder->addCriteria('priority', \Rule::PATTERN_IS, 4);
+            $builder->addAction('assign', $field_name, $sla->getID());
+            $builder->setEntity(0);
+            $this->createRule($builder);
+
+            // create ticket : no sla assigned
+            $ticket = $this->createTicket(
+                [
+                    'priority' => 4,
+                    'name' => __METHOD__ . ' ticket']
+            );
+            $this->assertEquals($ticket->fields[$field_name], $sla->getID());
+        }
+    }
+
+    public function testAssignOlaOnTicketUpdate()
+    {
+        $this->login();
+        // create Ola + Rule to assign it on ticket update
+        ['ola' => $ola] = $this->createOLA();
+
+        $builder = new \RuleBuilder('Assign OLA rule', \RuleTicket::class);
+        $builder->setCondtion(RuleCommonITILObject::ONUPDATE);
+        $builder->addCriteria('priority', \Rule::PATTERN_IS, 4);
+        $builder->addAction('append', 'olas_id', $ola->getID());
+        $builder->setEntity(0);
+        $this->createRule($builder);
+
+        // create ticket : no ola assigned
+        $ticket = $this->createTicket(
+            [
+                'priority' => 3,
+                'name' => __METHOD__ . ' ticket']
+        );
+        $this->assertEmpty($ticket->getOlasData());
+
+        // update ticket : ola should be assigned
+        $ticket = $this->updateItem(Ticket::class, $ticket->getID(), [
+            'content' => 'content updated',
+            'priority' => 4,
+        ]);
+        $this->assertNotEmpty($ticket->getOlasData());
+    }
+
+    public function testAssignSlaOnTicketUpdate()
+    {
+        $this->login();
+        // create Ola + Rule to assign it on ticket update
+        ['sla' => $sla] = $this->createSLA();
+
+        $builder = new \RuleBuilder('Assign SLA rule', \RuleTicket::class);
+        $builder->setCondtion(RuleCommonITILObject::ONUPDATE);
+        $builder->addCriteria('priority', \Rule::PATTERN_IS, 4);
+        $builder->addAction('assign', 'slas_id_ttr', $sla->getID());
+        $builder->setEntity(0);
+        $this->createRule($builder);
+
+        // create ticket : no sla assigned
+        $ticket = $this->createTicket(
+            [
+                'priority' => 3,
+                'name' => __METHOD__ . ' ticket',
+            ]
+        );
+        $this->assertEquals(0, $ticket->fields['slas_id_ttr']);
+
+        // update ticket : sla should be assigned
+        $ticket = $this->updateItem(
+            \Ticket::class,
+            $ticket->getID(),
+            [
+                'content' => 'content updated',
+                'priority' => 4,
+            ]
+        );
+        $this->assertEquals($sla->getID(), $ticket->fields['slas_id_ttr']);
+    }
 
 }
