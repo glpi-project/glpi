@@ -117,7 +117,7 @@ final class DefaultDataManager
 
         $this->tiles_manager->addTile($root_entity, GlpiPageTile::class, [
             'title'        => __("View approval requests"),
-            'description'  => __("View all tickets waiting for your validation."),
+            'description'  => __("View all tickets waiting for your approval."),
             'illustration' => "approve-requests",
             'page'         => GlpiPageTile::PAGE_APPROVAL,
         ]);

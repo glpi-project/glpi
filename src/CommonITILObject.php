@@ -7448,8 +7448,8 @@ abstract class CommonITILObject extends CommonDBTM
                 'type'          => 'ITILValidation',
                 'class'         => $validation::getType(),
                 'icon'          => CommonITILValidation::getIcon(),
-                'label'         => _x('button', 'Ask for validation'),
-                'short_label'   => _x('button', 'Validation'),
+                'label'         => _x('button', 'Ask for approval'),
+                'short_label'   => CommonITILValidation::getTypeName(1),
                 'template'      => 'components/itilobject/timeline/form_validation.html.twig',
                 'item'          => $validation,
                 'hide_in_menu'  => !$canadd_validation,
@@ -7748,7 +7748,7 @@ abstract class CommonITILObject extends CommonDBTM
                 $request_key = $validation_obj::getType() . '_' . $validations_id
                     . (empty($validation_row['validation_date']) ? '' : '_request'); // If no answer, no suffix to see attached documents on request
 
-                $content = __('Validation request');
+                $content = __('Approval request');
                 if (is_a($validation_row['itemtype_target'], CommonDBTM::class, true)) {
                     $validation_target = new $validation_row['itemtype_target']();
                     if ($validation_target->getFromDB($validation_row['items_id_target'])) {
@@ -7787,7 +7787,7 @@ abstract class CommonITILObject extends CommonDBTM
                         'item' => [
                             'id'        => $validations_id,
                             'date'      => $validation_row['validation_date'],
-                            'content'   => __('Validation request answer') . " : " .
+                            'content'   => __('Approval request answer') . " : " .
                             _sx('status', ucfirst($validation_class::getStatus($validation_row['status']))),
                             'comment_validation' => $validation_row['comment_validation'],
                             'users_id'  => $validation_row['users_id_validate'],

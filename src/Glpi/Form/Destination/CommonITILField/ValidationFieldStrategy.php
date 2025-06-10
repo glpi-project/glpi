@@ -46,7 +46,7 @@ enum ValidationFieldStrategy: string
     public function getLabel(): string
     {
         return match ($this) {
-            self::NO_VALIDATION    => __("No validation"),
+            self::NO_VALIDATION    => __("No approval"),
             self::SPECIFIC_ACTORS   => __("Specific actors"),
             self::SPECIFIC_ANSWERS => __("Answer from specific questions"),
         };

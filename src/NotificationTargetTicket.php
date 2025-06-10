@@ -138,9 +138,9 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
             'update'            => __('Update of a ticket'),
             'solved'            => __('Ticket solved'),
             'rejectsolution'    => __('Solution rejected'),
-            'validation'        => __('Validation request'),
-            'validation_answer' => __('Validation request answer'),
-            'validation_reminder' => __('Validation reminder'),
+            'validation'        => __('Approval request'),
+            'validation_answer' => __('Approval request answer'),
+            'validation_reminder' => __('Approval reminder'),
             'closed'            => __('Closing of the ticket'),
             'delete'            => __('Deletion of a ticket'),
             'alertnotclosed'    => __('Not solved tickets'),
@@ -698,7 +698,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
             ),
             'validation.validationdate'    => sprintf(
                 __('%1$s: %2$s'),
-                _n('Validation', 'Validations', 1),
+                CommonITILValidation::getTypeName(1),
                 _n('Date', 'Dates', 1)
             ),
             'validation.validator_target_type'  => __('Approval target type (User or Group)'),
@@ -706,7 +706,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
             'validation.validator'              => __('Approver'),
             'validation.commentvalidation'      => sprintf(
                 __('%1$s: %2$s'),
-                _n('Validation', 'Validations', 1),
+                CommonITILValidation::getTypeName(1),
                 _n('Comment', 'Comments', Session::getPluralNumber())
             ),
         ];
@@ -720,9 +720,9 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
         }
         //Tags without lang for validation
         $tags = ['validation.submission.title'
-                                          => __('A validation request has been submitted'),
+                                          => __('An approval request has been submitted'),
             'validation.answer.title'
-                                          => __('An answer to a validation request was produced'),
+                                          => __('An answer to an approval request was produced'),
         ];
 
         foreach ($tags as $tag => $label) {
@@ -735,7 +735,8 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
         }
 
         //Foreach global tags
-        $tags = ['validations'   => _n('Validation', 'Validations', Session::getPluralNumber()),
+        $tags = [
+            'validations'   => CommonITILValidation::getTypeName(Session::getPluralNumber()),
             'problems'      => Problem::getTypeName(Session::getPluralNumber()),
             'changes'       => _n('Change', 'Changes', Session::getPluralNumber()),
             'items'         => _n('Associated item', 'Associated items', Session::getPluralNumber()),
@@ -784,7 +785,7 @@ class NotificationTargetTicket extends NotificationTargetCommonITILObject
         //Tags without lang
         $tags = ['ticket.urlvalidation'    => sprintf(
             __('%1$s: %2$s'),
-            __('Validation request'),
+            __('Approval request'),
             __('URL')
         ),
             'problem.id'              => sprintf(__('%1$s: %2$s'), Problem::getTypeName(1), __('ID')),

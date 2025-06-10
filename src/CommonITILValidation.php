@@ -1111,7 +1111,7 @@ abstract class CommonITILValidation extends CommonDBChild
                     'waiting_percent'    => $step_achievements[self::WAITING],
                     'step_threshold'     => $step_threshold,
                     'edit_dialog_params' => $edit_dialog_params,
-                    'edit_button_label'  => __('Edit validation step'),
+                    'edit_button_label'  => __('Edit approval step'),
                     'progress_label'     => __('Progress: %1$s%% of %2$s%% required'),
                 ]
             );

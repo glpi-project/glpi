@@ -51,7 +51,7 @@ class ITILValidationTemplate extends AbstractITILChildTemplate
 
     public static function getTypeName($nb = 0)
     {
-        return _n('Validation template', 'Validation templates', $nb);
+        return _n('Approval template', 'Approval templates', $nb);
     }
 
     public function prepareInputForUpdate($input)

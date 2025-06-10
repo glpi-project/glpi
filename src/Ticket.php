@@ -4256,7 +4256,7 @@ JAVASCRIPT;
 
                         $main_header = "<a href=\"" . Ticket::getSearchURL() . "?" .
                         Toolbox::append_params($options, '&amp;') . "\">" .
-                        Html::makeTitle(__('Your tickets to validate'), $displayed_row_count, $total_row_count) . "</a>";
+                        Html::makeTitle(__('Your tickets to approve'), $displayed_row_count, $total_row_count) . "</a>";
 
                         break;
 

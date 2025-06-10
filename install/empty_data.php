@@ -2721,7 +2721,7 @@ $empty_data_builder = new class {
                 'is_active' => 1,
             ], [
                 'id' => 12,
-                'name' => 'Ticket Validation',
+                'name' => 'Ticket Approval',
                 'itemtype' => 'Ticket',
                 'event' => 'validation',
                 'is_recursive' => 1,
@@ -2896,7 +2896,7 @@ $empty_data_builder = new class {
                 'is_active' => 1,
             ], [
                 'id' => 37,
-                'name' => 'Ticket Validation Answer',
+                'name' => 'Ticket Approval Answer',
                 'itemtype' => 'Ticket',
                 'event' => 'validation_answer',
                 'is_recursive' => 1,
@@ -4614,7 +4614,7 @@ $empty_data_builder = new class {
                 'itemtype' => 'Ticket',
             ], [
                 'id' => '7',
-                'name' => 'Tickets Validation',
+                'name' => 'Tickets Approval',
                 'itemtype' => 'Ticket',
             ], [
                 'id' => '8',
@@ -9540,7 +9540,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
         // initial validation steps
         $tables[ValidationStep::getTable()][] = [
             'id' => 1,
-            'name' => _n('Approval', 'Approvals', 1),
+            'name' => CommonITILValidation::getTypeName(1),
             'minimal_required_validation_percent' => 100,
             'is_default' => 1,
             'date_creation' => date('Y-m-d H:i:s'),
