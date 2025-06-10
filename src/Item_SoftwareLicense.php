@@ -1164,7 +1164,7 @@ JAVASCRIPT;
                             $nb,
                             $item::class,
                             'ti ti-package',
-                            $item->fields['number'],
+                            $item->fields['number'] > 0 ? $item->fields['number'] : null,
                         ),
                     ];
                 }
