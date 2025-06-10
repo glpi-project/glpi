@@ -210,7 +210,7 @@ class RuleDictionnaryDropdownCollection extends RuleCollection
                     addslashes($data["name"]),
                     -1,
                     $data,
-                    addslashes($data["comment"])
+                    addslashes($data["comment"] ?? '')
                 );
 
                 if ($data['id'] != $ID) {
