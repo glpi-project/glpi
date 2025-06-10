@@ -76,7 +76,7 @@
             item.fields['users_id'],
             __('By'),
             {
-                entity      : item.fields['entities_id'],
+                entity      : item.fields['entities_id'] ?? -1,
                 right       : 'all'
             }
         ) }}
