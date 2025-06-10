@@ -84,13 +84,14 @@
             {{ __("No items will be created for this form.") }}
         </p>
     {% else %}
-        <div class="accordion mt-4" id="glpi-destinations-accordion">
+        <section class="accordion mt-4" id="glpi-destinations-accordion" aria-label="{{ __("Form destinations") }}">
             {% for destination in destinations %}
                 {% set is_expanded = active_destination == destination.getID() or destinations|length == 1 %}
                 {% set concrete_destination = destination.getConcreteDestinationItem() %}
                 {% set rand = random() %}
-                <div
+                <section
                     class="accordion-item"
+                    aria-label="{{ destination.getName() }}"
                 >
                     <div class="accordion-header">
                         <div
@@ -165,9 +166,9 @@
                             </form>
                         </div>
                     </div>
-                </div>
+                </section>
             {% endfor %}
-        </div>
+        </section>
     {% endif %}
 </div>
 

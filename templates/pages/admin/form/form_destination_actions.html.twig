@@ -54,6 +54,16 @@
                 {{ __("Delete") }}
             </button>
         {% endif %}
+        <button
+            class="btn btn-ghost-secondary me-1"
+            name="duplicate"
+            type="submit"
+            formaction="{{ path('/Form/%d/Destination/Add'|format(form.getID())) }}"
+            formmethod="post"
+        >
+            <i class="ti ti-copy me-2"></i>
+            {{ __("Duplicate") }}
+        </button>
     </div>
     <div>
         <button
