@@ -64,7 +64,6 @@ class Database extends CommonDBChild
         return [
             Appliance_Item::class,
             Domain_Item::class,
-            ImpactRelation::class,
         ];
     }
 
