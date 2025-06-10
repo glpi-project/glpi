@@ -48,3 +48,10 @@ $migration->addCrontask(
         'logs_lifetime' => 300,
     ]
 );
+
+if ($DB->fieldExists('glpi_softwares', 'is_dynamic')) {
+    // The field already exists, no need to add it again
+    return;
+}
+$migration->addField('glpi_softwares', 'is_dynamic', "tinyint unsigned DEFAULT '0'");
+$migration->addKey('glpi_softwares', 'is_dynamic');
