@@ -6868,6 +6868,7 @@ CREATE TABLE `glpi_softwares` (
   `softwarecategories_id` int unsigned NOT NULL DEFAULT '0',
   `is_valid` tinyint NOT NULL DEFAULT '1',
   `date_creation` timestamp NULL DEFAULT NULL,
+  `is_dynamic` tinyint NOT NULL DEFAULT '0',
   `pictures` text,
   PRIMARY KEY (`id`),
   KEY `date_mod` (`date_mod`),
@@ -6884,7 +6885,8 @@ CREATE TABLE `glpi_softwares` (
   KEY `softwares_id` (`softwares_id`),
   KEY `is_deleted` (`is_deleted`),
   KEY `is_helpdesk_visible` (`is_helpdesk_visible`),
-  KEY `date_creation` (`date_creation`)
+  KEY `date_creation` (`date_creation`),
+  KEY `is_dynamic` (`is_dynamic`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
 

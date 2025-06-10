@@ -232,6 +232,9 @@ class Software extends InventoryAsset
             if (!property_exists($val, 'comment')) {
                 $val->comment = null;
             }
+
+            // add dynamic flag
+            $val->is_dynamic = 1;
         }
 
         //NOTE: A same software may have a manufacturer or not. Keep the one with manufacturer.
@@ -333,6 +336,7 @@ class Software extends InventoryAsset
                 'glpi_items_softwareversions.date_install as item_soft_version_date_install',
                 'glpi_softwares.id as softid',
                 'glpi_softwares.name',
+                'glpi_softwares.is_dynamic',
                 'glpi_softwareversions.id AS versionid',
                 'glpi_softwareversions.name AS version',
                 'glpi_softwareversions.arch',
@@ -524,6 +528,11 @@ class Software extends InventoryAsset
         $sckey = md5('softwarecategories_id' . ($val->softwarecategories_id ?? 0));
         if ($db_software_data[$key_wo_version]['softwarecategories'] != ($this->known_links[$sckey] ?? 0)) {
             $fields_to_update['softwarecategories_id'] = ($this->known_links[$sckey] ?? 0);
+        }
+
+        // Check ifis_dynamic needs to be set
+        if ($db_software_data[$key_wo_version]['is_dynamic'] != $val->is_dynamic) {
+            $fields_to_update['is_dynamic'] = $val->is_dynamic;
         }
 
         // Perform the update if there are fields to update
