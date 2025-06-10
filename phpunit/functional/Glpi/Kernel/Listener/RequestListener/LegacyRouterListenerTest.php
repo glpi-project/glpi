@@ -83,13 +83,6 @@ class LegacyRouterListenerTest extends \GLPITestCase
             'target_pathinfo' => null,
             'included'        => false,
         ];
-        yield '///ajax' => [
-            'structure'       => $structure,
-            'path'            => '///ajax', // triple `/` in URL
-            'target_path'     => '/ajax',
-            'target_pathinfo' => null,
-            'included'        => false,
-        ];
 
         // Path to an invalid PHP script.
         yield '/is/not/valid.php' => [
@@ -104,13 +97,6 @@ class LegacyRouterListenerTest extends \GLPITestCase
         yield '/front/index.php' => [
             'structure'       => $structure,
             'path'            => '/front/index.php',
-            'target_path'     => '/front/index.php',
-            'target_pathinfo' => null,
-            'included'        => true,
-        ];
-        yield '//front/index.php' => [
-            'structure'       => $structure,
-            'path'            => '//front/index.php', // double `/` in URL
             'target_path'     => '/front/index.php',
             'target_pathinfo' => null,
             'included'        => true,
@@ -309,13 +295,6 @@ class LegacyRouterListenerTest extends \GLPITestCase
                 'file_path' => $file,
                 'is_served' => true,
             ];
-
-            // extra leading slash should not change result
-            yield '/' . $file => [
-                'url_path'  => '/' . $file,
-                'file_path' => $file,
-                'is_served' => true,
-            ];
         }
 
         foreach ($glpi_protected_php_files as $file) {
@@ -329,18 +308,6 @@ class LegacyRouterListenerTest extends \GLPITestCase
             // but any file inside the `/public` dir should be served
             yield $file . ' (in /public)' => [
                 'url_path'  => $file,
-                'file_path' => '/public' . $file,
-                'is_served' => true,
-            ];
-
-            // extra leading slash should not change result
-            yield '/' . $file => [
-                'url_path'  => '/' . $file,
-                'file_path' => $file,
-                'is_served' => false,
-            ];
-            yield '/' . $file . ' (in /public)' => [
-                'url_path'  => '/' . $file,
                 'file_path' => '/public' . $file,
                 'is_served' => true,
             ];
@@ -361,18 +328,6 @@ class LegacyRouterListenerTest extends \GLPITestCase
             // even if the file is inside the `/public`
             yield $file . ' (in /public)' => [
                 'url_path'  => $file,
-                'file_path' => '/public' . $file,
-                'is_served' => false,
-            ];
-
-            // extra leading slash should not change result
-            yield '/' . $file => [
-                'url_path'  => '/' . $file,
-                'file_path' => $file,
-                'is_served' => false,
-            ];
-            yield '/' . $file . ' (in /public)' => [
-                'url_path'  => '/' . $file,
                 'file_path' => '/public' . $file,
                 'is_served' => false,
             ];
@@ -470,13 +425,6 @@ class LegacyRouterListenerTest extends \GLPITestCase
                 'file_path' => '/plugins/tester' . $file,
                 'is_served' => true,
             ];
-
-            // extra leading slash should not change result
-            yield '/plugins/tester' . '/' . $file => [
-                'url_path'  => '/plugins/tester' . '/' . $file,
-                'file_path' => '/plugins/tester' . $file,
-                'is_served' => true,
-            ];
         }
 
         foreach ($plugins_protected_php_files as $file) {
@@ -490,18 +438,6 @@ class LegacyRouterListenerTest extends \GLPITestCase
             // unless the file is inside the `/public`
             yield '/plugins/tester' . $file . ' (in /public)' => [
                 'url_path'  => '/plugins/tester' . $file,
-                'file_path' => '/plugins/tester/public' . $file,
-                'is_served' => true,
-            ];
-
-            // extra leading slash should not change result
-            yield '/plugins/tester' . '/' . $file => [
-                'url_path'  => '/plugins/tester' . '/' . $file,
-                'file_path' => '/plugins/tester' . $file,
-                'is_served' => false,
-            ];
-            yield '/plugins/tester' . '/' . $file . ' (in /public)' => [
-                'url_path'  => '/plugins/tester' . '/' . $file,
                 'file_path' => '/plugins/tester/public' . $file,
                 'is_served' => true,
             ];
@@ -522,18 +458,6 @@ class LegacyRouterListenerTest extends \GLPITestCase
             // even if the file is inside the `/public`
             yield '/plugins/tester' . $file . ' (in /public)' => [
                 'url_path'  => '/plugins/tester' . $file,
-                'file_path' => '/plugins/tester/public' . $file,
-                'is_served' => false,
-            ];
-
-            // extra leading slash should not change result
-            yield '/plugins/tester' . '/' . $file => [
-                'url_path'  => '/plugins/tester' . '/' . $file,
-                'file_path' => '/plugins/tester' . $file,
-                'is_served' => false,
-            ];
-            yield '/plugins/tester' . '/' . $file . ' (in /public)' => [
-                'url_path'  => '/plugins/tester' . '/' . $file,
                 'file_path' => '/plugins/tester/public' . $file,
                 'is_served' => false,
             ];

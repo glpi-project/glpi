@@ -36,7 +36,7 @@ namespace Glpi\Kernel\Listener\RequestListener;
 
 use Glpi\Controller\LegacyFileLoadController;
 use Glpi\Exception\Http\NotFoundHttpException;
-use Glpi\Http\LegacyRouterTrait;
+use Glpi\Http\RequestRouterTrait;
 use Glpi\Kernel\KernelListenerTrait;
 use Glpi\Kernel\ListenersPriority;
 use Plugin;
@@ -47,7 +47,7 @@ use Symfony\Component\HttpKernel\KernelEvents;
 
 final class LegacyRouterListener implements EventSubscriberInterface
 {
-    use LegacyRouterTrait;
+    use RequestRouterTrait;
     use KernelListenerTrait;
 
     public function __construct(
@@ -75,7 +75,7 @@ final class LegacyRouterListener implements EventSubscriberInterface
             return;
         }
 
-        [$uri_prefix, $path] = $this->extractPathAndPrefix($request);
+        $path = $this->normalizePath($request);
 
         $target_file = $this->getTargetFile($path);
 

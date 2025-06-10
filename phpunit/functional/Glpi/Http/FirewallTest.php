@@ -40,6 +40,7 @@ use Glpi\Http\Firewall;
 use KnowbaseItem;
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\Attributes\DataProvider;
+use Psr\Log\LogLevel;
 use Symfony\Component\HttpFoundation\Request;
 
 class FirewallTest extends \DbTestCase
@@ -267,6 +268,14 @@ class FirewallTest extends \DbTestCase
             $instance->computeFallbackStrategy($request),
             $path
         );
+
+        if (\str_contains($path, '/marketplace/')) {
+            $this->hasPhpLogRecordThatContains('User Deprecated: Accessing the plugins resources from the `/marketplace/` path is deprecated. Use the `/plugins/` path instead.', LogLevel::INFO);
+        }
+
+        if (\str_contains($path, '/public/')) {
+            $this->hasPhpLogRecordThatContains('User Deprecated: Plugins URLs containing the `/public` path are deprecated. You should remove the `/public` prefix from the URL.', LogLevel::INFO);
+        }
     }
 
     public static function provideStrategy(): iterable

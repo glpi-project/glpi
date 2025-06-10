@@ -319,13 +319,6 @@ class FrontEndAssetsListenerTest extends \GLPITestCase
                 'file_path' => $file,
                 'is_served' => true,
             ];
-
-            // extra leading slash should not change result
-            yield '/' . $file => [
-                'url_path'  => '/' . $file,
-                'file_path' => $file,
-                'is_served' => true,
-            ];
         }
 
         foreach ($glpi_protected_static_files as $file) {
@@ -339,18 +332,6 @@ class FrontEndAssetsListenerTest extends \GLPITestCase
             // but any file inside the `/public` dir should be served
             yield $file . ' (in /public)' => [
                 'url_path'  => $file,
-                'file_path' => '/public' . $file,
-                'is_served' => true,
-            ];
-
-            // extra leading slash should not change result
-            yield '/' . $file => [
-                'url_path'  => '/' . $file,
-                'file_path' => $file,
-                'is_served' => false,
-            ];
-            yield '/' . $file . ' (in /public)' => [
-                'url_path'  => '/' . $file,
                 'file_path' => '/public' . $file,
                 'is_served' => true,
             ];
@@ -371,18 +352,6 @@ class FrontEndAssetsListenerTest extends \GLPITestCase
             // even if the file is inside the `/public`
             yield $file . ' (in /public)' => [
                 'url_path'  => $file,
-                'file_path' => '/public' . $file,
-                'is_served' => false,
-            ];
-
-            // extra leading slash should not change result
-            yield '/' . $file => [
-                'url_path'  => '/' . $file,
-                'file_path' => $file,
-                'is_served' => false,
-            ];
-            yield '/' . $file . ' (in /public)' => [
-                'url_path'  => '/' . $file,
                 'file_path' => '/public' . $file,
                 'is_served' => false,
             ];
@@ -483,18 +452,6 @@ class FrontEndAssetsListenerTest extends \GLPITestCase
                 'file_path' => '/plugins/tester/public' . $file,
                 'is_served' => true,
             ];
-
-            // extra leading slash should not change result
-            yield '/plugins/tester' . '/' . $file => [
-                'url_path'  => '/plugins/tester' . '/' . $file,
-                'file_path' => '/plugins/tester' . $file,
-                'is_served' => false,
-            ];
-            yield '/plugins/tester' . '/' . $file . ' (in /public)' => [
-                'url_path'  => '/plugins/tester' . '/' . $file,
-                'file_path' => '/plugins/tester/public' . $file,
-                'is_served' => true,
-            ];
         }
 
         $not_served_files = \array_merge(
@@ -512,18 +469,6 @@ class FrontEndAssetsListenerTest extends \GLPITestCase
             // even if the file is inside the `/public`
             yield '/plugins/tester' . $file . ' (in /public)' => [
                 'url_path'  => '/plugins/tester' . $file,
-                'file_path' => '/plugins/tester/public' . $file,
-                'is_served' => false,
-            ];
-
-            // extra leading slash should not change result
-            yield '/plugins/tester' . '/' . $file => [
-                'url_path'  => '/plugins/tester' . '/' . $file,
-                'file_path' => '/plugins/tester' . $file,
-                'is_served' => false,
-            ];
-            yield '/plugins/tester' . '/' . $file . ' (in /public)' => [
-                'url_path'  => '/plugins/tester' . '/' . $file,
                 'file_path' => '/plugins/tester/public' . $file,
                 'is_served' => false,
             ];

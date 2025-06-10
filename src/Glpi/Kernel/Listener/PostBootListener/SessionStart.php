@@ -34,7 +34,7 @@
 
 namespace Glpi\Kernel\Listener\PostBootListener;
 
-use Glpi\Http\LegacyRouterTrait;
+use Glpi\Http\RequestRouterTrait;
 use Glpi\Kernel\KernelListenerTrait;
 use Glpi\Kernel\ListenersPriority;
 use Glpi\Kernel\PostBootEvent;
@@ -45,8 +45,8 @@ use Symfony\Component\HttpFoundation\Request;
 
 final class SessionStart implements EventSubscriberInterface
 {
-    use LegacyRouterTrait;
     use KernelListenerTrait;
+    use RequestRouterTrait;
 
     public function __construct(
         #[Autowire('%kernel.project_dir%')]
@@ -86,7 +86,7 @@ final class SessionStart implements EventSubscriberInterface
             // Specific configuration related to web context
 
             $request = Request::createFromGlobals();
-            [$uri_prefix, $path] = $this->extractPathAndPrefix($request);
+            $path = $this->normalizePath($request);
 
             $use_cookies = true;
             if (\str_starts_with($path, '/api.php') || \str_starts_with($path, '/apirest.php')) {

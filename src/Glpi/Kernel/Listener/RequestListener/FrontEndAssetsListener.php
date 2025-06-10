@@ -35,7 +35,7 @@
 namespace Glpi\Kernel\Listener\RequestListener;
 
 use Glpi\Exception\Http\NotFoundHttpException;
-use Glpi\Http\LegacyRouterTrait;
+use Glpi\Http\RequestRouterTrait;
 use Glpi\Kernel\ListenersPriority;
 use Plugin;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
@@ -46,7 +46,7 @@ use Symfony\Component\HttpKernel\KernelEvents;
 
 final class FrontEndAssetsListener implements EventSubscriberInterface
 {
-    use LegacyRouterTrait;
+    use RequestRouterTrait;
 
     public function __construct(
         #[Autowire('%kernel.project_dir%')]
@@ -68,7 +68,7 @@ final class FrontEndAssetsListener implements EventSubscriberInterface
     {
         $request = $event->getRequest();
 
-        [$uri_prefix, $path] = $this->extractPathAndPrefix($request);
+        $path = $this->normalizePath($request);
 
         $target_file = $this->getTargetFile($path);
 
