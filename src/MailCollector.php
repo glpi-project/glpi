@@ -2517,6 +2517,11 @@ class MailCollector extends CommonDBTM
                 if (preg_match('/^WINDOWS-\d{4}$/i', $charset)) {
                     $charset = preg_replace('/^WINDOWS-(\d{4})$/i', 'CP$1', $charset);
                 }
+                //convert ISO-8859-8-i
+                if (strtoupper($charset) === 'ISO-8859-8-I') {
+                    $charset = 'ISO-8859-8';
+                }
+
 
                 // Try to convert using iconv with TRANSLIT, then with IGNORE.
                 // TRANSLIT may result in failure depending on system iconv implementation.
