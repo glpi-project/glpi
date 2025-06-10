@@ -505,7 +505,7 @@ class Software extends CommonDBTM
 
         $newtab = [
             'id'                 => '72',
-            'table'              => 'glpi_items_softwareversions',
+            'table'              => Item_SoftwareVersion::getTable(),
             'field'              => 'id',
             'name'               => _x('quantity', 'Number of installations'),
             'forcegroupby'       => true,
@@ -515,7 +515,7 @@ class Software extends CommonDBTM
             'joinparams'         => [
                 'jointype'   => 'child',
                 'beforejoin' => [
-                    'table'      => 'glpi_softwareversions',
+                    'table'      => SoftwareVersion::getTable(),
                     'joinparams' => ['jointype' => 'child'],
                 ],
                 'condition'  => ['NEWTABLE.is_deleted_item' => 0,
@@ -526,8 +526,8 @@ class Software extends CommonDBTM
         ];
 
         if (Session::getLoginUserID()) {
-            $newtab['joinparams']['beforejoin']['condition'] = array_merge(
-                $newtab['joinparams']['beforejoin']['condition'] ?? [],
+            $newtab['joinparams']['condition'] = array_merge(
+                $newtab['joinparams']['condition'],
                 getEntitiesRestrictCriteria('NEWTABLE')
             );
         }
