@@ -55,8 +55,15 @@ class SLMTest extends DbTestCase
     /**
      * Create a full SLM with all level filled (slm/sla/ola/levels/action/criteria)
      * And Delete IT to check clean os sons objects
+     *
+     * - assign SLA and OLA by rule
+     * - delete SLM : related objects should be deleted
+     *      - ola/sla
+     *     - ola/sla levels
+     *     - ola/sla criteria
+     *     - ola/sla actions
      */
-    public function testLifecyle()
+    public function testSlmDeletion()
     {
         $this->login();
         // ## 1 - test adding sla and sub objects
@@ -215,8 +222,6 @@ class SLMTest extends DbTestCase
         ]);
         $this->checkInput($ruleaction, $act_id, $act_input);
         // assign olas
-        // add rules for using ola // @todoseb à remplacer
-        // @todoseb ajouter plusieurs olas
         // @todoseb reécrire avec RuleBuilder
         $act_id = $ruleaction->add($act_input = [
             'rules_id'    => $ruletid,
@@ -231,7 +236,6 @@ class SLMTest extends DbTestCase
             'field'       => 'olas_id',
             'value'       => $ola_ttr_id,
         ]);
-        //        $rule_builder->addAction('assign', 'olas_id', $ola->getID());
         // une seule rule avec plusieurs actions
         $this->checkInput($ruleaction, $act_id, $act_input);
 
@@ -278,7 +282,7 @@ class SLMTest extends DbTestCase
         $this->assertEquals(19, strlen($ticket->getField('time_to_resolve')));
 
         // ## 3 - test purge of slm and check if we don't find any sub objects
-        $this->assertTrue($slm->delete(['id' => $slm_id], true));
+        $this->deleteItem(\SLM::class, $slm_id, true);
         //sla
         $this->assertFalse($sla->getFromDB($sla1_id));
         $this->assertFalse($sla->getFromDB($sla2_id));
@@ -297,11 +301,16 @@ class SLMTest extends DbTestCase
         //action
         $this->assertFalse($saction->getFromDB($saction_id));
         $this->assertFalse($oaction->getFromDB($oaction_id));
+
+        // @todo what about rules ? are they deleted too ? If preserved, how does glpi handle rule action when the ola/sla is deleted ?
+        // @todo what about tickets ? are they deassociated from sla/ola ?
     }
 
     /**
      * Create a full SLM by month with all level filled (slm/sla/ola/levels/action/criterias)
      * And Delete IT to check clean os sons objects
+     *
+     * tested : @see self::testLifecyle()
      */
     public function testLifecylebyMonth()
     {
@@ -532,121 +541,8 @@ class SLMTest extends DbTestCase
         $this->assertFalse($oaction->getFromDB($oaction_id));
     }
 
-
-    public function testAssignOlaOnTicketCreation()
-    {
-        $this->login();
-        // create Ola + Rule to assign it on ticket update
-        ['ola' => $ola] = $this->createOLA();
-
-        $builder = new RuleBuilder('Assign OLA rule', RuleTicket::class);
-        $builder->setCondtion(RuleCommonITILObject::ONADD);
-        $builder->addCriteria('priority', \Rule::PATTERN_IS, 4);
-        $builder->addAction('append', 'olas_id', $ola->getID());
-        $builder->setEntity(0);
-        $this->createRule($builder);
-
-        // create ticket : no ola assigned
-        $ticket = $this->createTicket(
-            [
-                'priority' => 4,
-                'name' => __METHOD__ . ' ticket']
-        );
-        $this->assertNotEmpty($ticket->getOlasData());
-    }
-
-    public function testAssignSlaOnTicketCreation()
-    {
-        $this->login();
-        $_sla = new SLA();
-        // create Ola + Rule to assign it on ticket update
-        foreach ([\SLM::TTR, \SLM::TTO] as $sla_type) {
-            [, $field_name] = $_sla->getFieldNames($sla_type);
-
-            ['sla' => $sla] = $this->createSLA(sla_type: $sla_type);
-
-            $builder = new RuleBuilder('Assign SLA rule', RuleTicket::class);
-            $builder->setCondtion(RuleCommonITILObject::ONADD);
-            $builder->addCriteria('priority', \Rule::PATTERN_IS, 4);
-            $builder->addAction('assign', $field_name, $sla->getID());
-            $builder->setEntity(0);
-            $this->createRule($builder);
-
-            // create ticket : no sla assigned
-            $ticket = $this->createTicket(
-                [
-                    'priority' => 4,
-                    'name' => __METHOD__ . ' ticket']
-            );
-            $this->assertEquals($ticket->fields[$field_name], $sla->getID());
-        }
-    }
-
-    public function testAssignOlaOnTicketUpdate()
-    {
-        $this->login();
-        // create Ola + Rule to assign it on ticket update
-        ['ola' => $ola] = $this->createOLA();
-
-        $builder = new RuleBuilder('Assign OLA rule', RuleTicket::class);
-        $builder->setCondtion(RuleCommonITILObject::ONUPDATE);
-        $builder->addCriteria('priority', \Rule::PATTERN_IS, 4);
-        $builder->addAction('append', 'olas_id', $ola->getID());
-        $builder->setEntity(0);
-        $this->createRule($builder);
-
-        // create ticket : no ola assigned
-        $ticket = $this->createTicket(
-            [
-                'priority' => 3,
-                'name' => __METHOD__ . ' ticket']
-        );
-        $this->assertEmpty($ticket->getOlasData());
-
-        // update ticket : ola should be assigned
-        $ticket = $this->updateItem(Ticket::class, $ticket->getID(), [
-            'content' => 'content updated',
-            'priority' => 4,
-        ]);
-        $this->assertNotEmpty($ticket->getOlasData());
-    }
-
-    public function testAssignSlaOnTicketUpdate()
-    {
-        $this->login();
-        // create Ola + Rule to assign it on ticket update
-        ['sla' => $sla] = $this->createSLA();
-
-        $builder = new RuleBuilder('Assign SLA rule', RuleTicket::class);
-        $builder->setCondtion(RuleCommonITILObject::ONUPDATE);
-        $builder->addCriteria('priority', \Rule::PATTERN_IS, 4);
-        $builder->addAction('assign', 'slas_id_ttr', $sla->getID());
-        $builder->setEntity(0);
-        $this->createRule($builder);
-
-        // create ticket : no sla assigned
-        $ticket = $this->createTicket(
-            [
-                'priority' => 3,
-                'name' => __METHOD__ . ' ticket',
-            ]
-        );
-        $this->assertEquals(0, $ticket->fields['slas_id_ttr']);
-
-        // update ticket : sla should be assigned
-        $ticket = $this->updateItem(
-            Ticket::class,
-            $ticket->getID(),
-            [
-                'content' => 'content updated',
-                'priority' => 4,
-            ]
-        );
-        $this->assertEquals($sla->getID(), $ticket->fields['slas_id_ttr']);
-    }
-
     /**
-     * Check OLA TTR computed dates.
+     * Check OLA TTR computed dates (start_time + due_time)
      */
     public function testOlaTtrComputation()
     {
@@ -741,10 +637,13 @@ class SLMTest extends DbTestCase
     }
 
     /**
-     * Check 'internal_time_to_resolve' computed dates.
+     * Check SLA and OLA due date computation on an slm without calendar (24/24 7/7 time is counted).
+     * - time_to_resolve + time_to_own for SLA
+     * - due_time for OLA Tto + Ttr
      */
-    public function testComputationByMonth()
+    public function testComputationByMonthWithoutCalendar()
     {
+        // --- arrange
         $this->login();
 
         $currenttime_bak = $_SESSION['glpi_currenttime'];
@@ -817,6 +716,7 @@ class SLMTest extends DbTestCase
         );
         $this->assertGreaterThan(0, $sla_tto_id);
 
+        // --- act
         // Create ticket with SLA/OLA TTO/TTR to test computation based on SLA OLA
         $ticket = new \Ticket();
         $ticket_id = $ticket->add(
@@ -836,6 +736,8 @@ class SLMTest extends DbTestCase
         $this->assertTrue($ticket->getFromDB($ticket_id));
 
         $this->assertTrue($ticket->getFromDB($ticket_id));
+
+        // --- assert
         //check computed data from SLA / OLA
         $this->assertEquals($sla_tto_id, (int) $ticket->fields['slas_id_tto']);
         $this->assertEquals(
@@ -935,13 +837,14 @@ class SLMTest extends DbTestCase
     }
 
     /**
-     * Functional tests to ensure all SLA and OLA target dates are set properly
-     * in a ticket, as well as their escalation date
+     * Ensure all SLA time_to_own and time_to_resolve + OLA due_time are properly set
+     * in a ticket as well as their escalation date
      *
      * @return void
      */
-    public function testDatesAndEscalation(): void
+    public function testDueDatesAndEscalationDate(): void
     {
+        // --- arrange
         $this->login();
         $entity = getItemByTypeName("Entity", "_test_root_entity", true);
 
@@ -1024,6 +927,7 @@ class SLMTest extends DbTestCase
             ],
         ]);
 
+        // --- act
         // Create a ticket 1 hour ago without any SLA
         $date_1_hour_ago = date('Y-m-d H:i:s', strtotime('-1 hour', strtotime($_SESSION['glpi_currenttime'])));
         $ticket = $this->createItem("Ticket", [
@@ -1401,7 +1305,7 @@ class SLMTest extends DbTestCase
     }
 
     #[DataProvider('laProvider')]
-    public function testComputationOnSla(
+    public function testEscalationLevelComputationOnSla(
         string $la_class,
         array $la_params,
         string $begin_date,
@@ -1416,7 +1320,8 @@ class SLMTest extends DbTestCase
             return;
         }
 
-        $this->login(); // must be logged in to be able to change ticket status
+        // --- arrange
+        $this->login();
 
         // Create a calendar with working hours from 8 a.m. to 7 p.m. Monday to Friday
         $calendar = $this->createItem(\Calendar::class, ['name' => __FUNCTION__]);
@@ -1473,6 +1378,7 @@ class SLMTest extends DbTestCase
             ]
         );
 
+        // --- act
         // Apply pauses
         foreach ($pauses as $pause) {
             $_SESSION['glpi_currenttime'] = $pause['from'];
@@ -1500,7 +1406,7 @@ class SLMTest extends DbTestCase
     }
 
     #[DataProvider('laProvider')]
-    public function testComputationOnOla(
+    public function testEscalationLevelComputationOnOla(
         string $la_class,
         array $la_params,
         string $begin_date,
@@ -1515,7 +1421,8 @@ class SLMTest extends DbTestCase
             return;
         }
 
-        $this->login(); // must be logged in to be able to change ticket status
+        // --- arrange
+        $this->login();
 
         // Create a calendar with working hours from 8 a.m. to 7 p.m. Monday to Friday
         $calendar = $this->createItem(\Calendar::class, ['name' => __FUNCTION__]);
@@ -1574,6 +1481,7 @@ class SLMTest extends DbTestCase
             ]
         );
 
+        // --- act
         // Apply pauses
         foreach ($pauses as $pause) {
             $_SESSION['glpi_currenttime'] = $pause['from'];
@@ -2468,7 +2376,7 @@ class SLMTest extends DbTestCase
     /**
      * Check recalculating the SLA when the SLA is changed to an SLA with a different calendar
      *
-     * @todoseb même test for OLA (est-ce vraiment utile ?)
+     * @todoseb même test for OLA
      */
     public function testSLaChangeCalendar(): void
     {
