@@ -530,8 +530,8 @@ class Software extends InventoryAsset
             $fields_to_update['softwarecategories_id'] = ($this->known_links[$sckey] ?? 0);
         }
 
-        // Check ifis_dynamic needs to be set
-        if ($db_software_data[$key_wo_version]['is_dynamic'] != $val->is_dynamic) {
+        // Check if is_dynamic needs to be set
+        if (!isset($db_software_data[$key_wo_version]['is_dynamic']) || $db_software_data[$key_wo_version]['is_dynamic'] != $val->is_dynamic) {
             $fields_to_update['is_dynamic'] = $val->is_dynamic;
         }
 
@@ -795,7 +795,6 @@ class Software extends InventoryAsset
 
         $software = new GSoftware();
         $soft_fields = $DB->listFields($software->getTable());
-        $stmt = $stmt_types = null;
 
         foreach ($this->data as $val) {
             $skey = $this->getSoftwareKey($val->name, $val->manufacturers_id);
@@ -807,20 +806,19 @@ class Software extends InventoryAsset
                 $stmt_columns['date_creation'] = $_SESSION["glpi_currenttime"];
                 $stmt_columns['is_helpdesk_visible'] = $CFG_GLPI["default_software_helpdesk_visible"];
 
-                if ($stmt === null) {
-                    $stmt_types = str_repeat('s', count($stmt_columns));
-                    $reference = array_fill_keys(
-                        array_keys($stmt_columns),
-                        new QueryParam()
-                    );
-                    $insert_query = $DB->buildInsert(
-                        $software->getTable(),
-                        $reference
-                    );
-                    $stmt = $DB->prepare($insert_query);
-                }
+                $stmt_types = str_repeat('s', count($stmt_columns));
+                $reference = array_fill_keys(
+                    array_keys($stmt_columns),
+                    new QueryParam()
+                );
+                $insert_query = $DB->buildInsert(
+                    $software->getTable(),
+                    $reference
+                );
+                $stmt = $DB->prepare($insert_query);
 
                 $stmt_values = array_values($stmt_columns);
+
                 $stmt->bind_param($stmt_types, ...$stmt_values);
                 $DB->executeStatement($stmt);
                 $softwares_id = $DB->insertId();
@@ -832,11 +830,9 @@ class Software extends InventoryAsset
                     \Log::HISTORY_CREATE_ITEM
                 );
                 $this->softwares[$skey] = $softwares_id;
-            }
-        }
 
-        if ($stmt) {
-            $stmt->close();
+                $stmt->close();
+            }
         }
     }
 
