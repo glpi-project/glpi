@@ -40,6 +40,7 @@
     --tblr-primary-darken: color-mix(in srgb, var(--tblr-primary), black 10%);
     --tblr-secondary: #606f91;
     --tblr-secondary-fg: var(--tblr-body-bg);
+    --tblr-tertiary: #8a97ab;
     --tblr-muted: var(--tblr-secondary);
     --tblr-muted-darken: color-mix(in srgb, var(--tblr-muted), black 10%);
     --tblr-info: #80abe4;
@@ -417,7 +418,13 @@ body input {
 }
 
 :-webkit-autofill {
-   -webkit-text-fill-color: var(--tblr-body-color);
+    &, &:hover, &:focus, &:active {
+        color: var(--tblr-body-color);
+        -webkit-text-fill-color: var(--tblr-body-color);
+        -webkit-background-clip: text !important;
+        background-clip: text !important;
+        -webkit-box-shadow: 0 0 0 30px var(--tblr-bg-forms) inset !important;
+    }
 }
 
 body .dropdown-menu {
@@ -509,4 +516,13 @@ body pre {
 
 .text-muted {
     color: var(--tblr-muted) !important;
+}
+
+.input-group {
+    box-shadow: none !important;
+}
+
+.input-group-text {
+    color: inherit !important;
+    background-color: inherit !important;
 }

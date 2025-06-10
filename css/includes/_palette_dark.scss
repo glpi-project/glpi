@@ -37,6 +37,7 @@
     --tblr-info: #5885c0;
     --tblr-body-bg: #000;
     --tblr-body-color: #e6e6e6;
+    --tblr-body-color-rgb: 230, 230, 230;
     --tblr-bg-surface: color-mix(in srgb, var(--tblr-body-bg), black 2%);
     --tblr-border-color: color-mix(in srgb, var(--tblr-body-bg), white 33.33%);
     --tblr-gray-100: var(--tblr-dark);
@@ -102,10 +103,6 @@
 
         color: var(--tblr-light);
         border-color: #6d000a;
-    }
-
-    .accordion-item .accordion-button {
-        background-color: var(--tblr-dark) !important;
     }
 
     .search_page .search-container .search-card .search-results.deleted-results td {
