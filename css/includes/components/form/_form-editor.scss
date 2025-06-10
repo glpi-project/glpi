@@ -70,15 +70,10 @@
     // Use all available parent space
     flex-grow: 1;
 
-    // Subtle gradient to avoid white on white cards while still keeping a white/white connection to the active tab (experimental)
-    // TODO: keep / remove / tweak when the UX is more complete (questions, sections, ...)
+    // Subtle gradient to avoid the same background color of the cards and tab content/editor
     background: linear-gradient(169deg,
-            rgb(255, 255, 255) 0%,
-            rgb(254, 254, 254) 14%,
-            rgb(253, 253, 253) 22%,
-            rgb(252, 252, 252) 33%,
-            rgb(251, 251, 252) 41%,
-            rgb(248, 250, 252) 48%);
+            var(--tblr-bg-surface) 0%,
+            var(--tblr-bg-surface-tertiary) 48%);
 
     .designer {
         .form-details {
@@ -89,7 +84,7 @@
         }
     }
 
-    overflow: scroll;
+    overflow: auto;
 
     // Revert border radius change from parent div
     .card {
@@ -125,7 +120,6 @@
 
 .editor-footer {
     border-top: 1px solid var(--tblr-border-color);
-    background: var(--glpi-form-toolbar-bg);
 }
 
 // Show required mark on mandatory question
