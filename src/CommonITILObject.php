@@ -7615,7 +7615,7 @@ abstract class CommonITILObject extends CommonDBTM
                         'users_id_tech' => $current_user_id,
                     ],
                 ];
-                
+
                 if (!empty(Group_User::getUserGroups($current_user_id))) {
                     if (Session::haveRight($task_obj::$rightname, CommonITILTask::SEEPRIVATEGROUPS)) {
                         $restrict_task['OR']['groups_id_tech'] = $_SESSION["glpigroups"];
