@@ -7608,23 +7608,15 @@ abstract class CommonITILObject extends CommonDBTM
             } else {
                 $current_user_id = (Session::getCurrentInterface() === "central") ? (int) Session::getLoginUserID() : 0;
 
-                if (empty(Group_User::getUserGroups($current_user_id))) {
-                    // If the user is in a group, we can show tasks for that group
-                    $restrict_task = [
-                        'OR' => [
-                            'is_private' => 0,
-                            'users_id'   => $current_user_id,
-                        ],
-                    ];
-                } else {
-                    $restrict_task = [
-                        'OR' => [
-                            'is_private' => 0,
-                            'users_id'   => $current_user_id,
-                            'users_id_tech' => $current_user_id,
-                        ],
-                    ];
-
+                $restrict_task = [
+                    'OR' => [
+                        'is_private' => 0,
+                        'users_id'   => $current_user_id,
+                        'users_id_tech' => $current_user_id,
+                    ],
+                ];
+                
+                if (!empty(Group_User::getUserGroups($current_user_id))) {
                     if (Session::haveRight($task_obj::$rightname, CommonITILTask::SEEPRIVATEGROUPS)) {
                         $restrict_task['OR']['groups_id_tech'] = $_SESSION["glpigroups"];
                     }

@@ -7247,7 +7247,7 @@ HTML,
             Group_User::class,
             [
                 'groups_id' => $group->getID(),
-                'users_id'  => $normal_user_id,
+                'users_id'  => $tech_user_id,
             ]
         );
 
@@ -7385,7 +7385,6 @@ HTML,
                 'public followup',
             ],
             'expected_tasks'     => [
-                'private task assigned to see group',
                 'private task assigned to normal user',
                 'private task of normal user',
                 'public task',
