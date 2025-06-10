@@ -84,6 +84,10 @@ class Impact extends CommonGLPI
         /** @var \DBmysql $DB */
         global $DB;
 
+        if ($withtemplate != 0) {
+            return '';
+        }
+
         // Class of the current item
         $class = $item::class;
 
@@ -141,8 +145,8 @@ class Impact extends CommonGLPI
         $tabnum = 1,
         $withtemplate = 0
     ) {
-        // Impact analysis should not be available outside of central
-        if (Session::getCurrentInterface() !== "central") {
+        // Impact analysis should not be available outside of central or used with templates
+        if (Session::getCurrentInterface() !== "central" || $withtemplate != 0) {
             return false;
         }
 
