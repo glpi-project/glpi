@@ -55,31 +55,61 @@ use Ticket;
  *          - at update time :@see self::testAssociateMultipleOlaWithUpdatedTicket()
  *      - ola are unchanged when no ola input is specified : @see self::testUpdateTicketWithoutOlaInputs()
  *      - existing ola associations can be changed : @see self::testDeassociateOlaToTicket()
- *      - multiple times the same ola results in a single association : @see self::testUpdateTicketWithSameOlasInputs()
+ *      - multiple times the same ola results in a single association : @see self::testUpdateTicketWithDuplicatedOlasInputs()
  *      - Create and update a ticket with old form params (olas_id_tto, olas_id_ttr) still works :
- *          - @see self::testUpdateTicketWithOldFormParams()
- *          - @see self::testUpdateTicketWithSameOlasInputs()
+ *          - on creation : @see self::testCreateTicketWithOldFormParams()
+ *          - on update : @see self::testUpdateTicketWithOldFormParams()
  * - passing removed parameters throws execption ('ola_tto_begin_date', 'ola_ttr_begin_date', ...)
  *      - on create ticket : @see self::testCreateTicketWithOlaRemovedFieldsThrowsAnExecption()
  *      - on update ticket : @see self::testUpdateTicketWithOlaRemovedFieldsThrowsAnExecption()
+ * - ola association with a group :
+ *      - succeed when group has ability to be assigned to a ticket and fails if it hasn't the ability,
+ *          - when ola is created @see self::testOlaCanBeAssociatedWithAnAllowedGroupOnAdd()
+ *          - when ola is updated @see self::testOlaCanBeAssociatedWithAnAllowedGroupOnUpdate()
+ *       - succeed when group has ability to be assigned to a ticket and fails if it hasn't the ability,
+ *           - when ola is created @see self::testOlaCanBeAssociatedWithAnAllowedGroupOnAdd() (same test as for success)
+ *           - when ola is updated @see self::testOlaCanBeAssociatedWithAnAllowedGroupOnUpdate() (same test as for success)
+ *      - testOlaAssociationCanBeDoneWhenNoGroupIsAssociatedToOla
  *
  * - time computing
- *      - ola tto 'starts' when ola is associated with a ticket : 'start_time' is set to now & 'due_time' is calculated
- *          - on ticket creation : @see self::testOlaTtoStartsWhenOlaIsAssignedAtCreation()
- *          - on ticket update : @see self::testOlaTtoStartsWhenOlaIsAssignedAtUpdate()
- *      - due time is delayed until the ticket is on WAITING status : @see self::testOlaDueTimeIsDelayWhileTicketStatusIsWaiting()
+ *      - TTO (Time To Own)
+ *          - ola tto is associated with a ticket then 'start_time' is set to now & 'due_time' is calculated
+ *              - on ticket creation : @see self::testInitialOlaValuesOnCreation()
+ *              - on ticket update : @see self::testInitialOlaValuesOnUpdate()
  *
- *      - ola ttr starts when a ticket is assigned to :
- *          - a dedicated group : @see self::testOlaTtrStartsWhenTicketIsAssignedToDedicatedGroup()
- *          - a user in the dedicated group : @see self::testOlaTtrStartsWhenTicketIsAssignedToAUserInDedicatedGroup()
- *      - ola ttr does not start when a ticket is assigned to :
- *          - a group out of dedicated group : @see self::testOlaTtrDoesNotStartWhenTicketIsAssignedToANonDedicatedGroup()
- *          - a user not in dedicated group :  @see self::testOlaTtrDoesNotStartWhenTicketIsAssignedToAUserNotInDedicatedGroup()
- * // @todoseb plan à completer
+ *          - ola tto completion :
+ *              - is done when the dedicated group is assigned to the ticket : @see self::testOlaIsCompleteWhenTicketIsAssignedToDedicatedGroup()
+ *              - is done when user of the dedicated group is assigned to the ticket : @see self::testOlaIsCompleteWhenTicketIsAssignedToDedicatedUser() @todoseb
+ *              - is not done when a non dedicated group is assigned to the ticket : @see self::testOlaIsNotCompleteWhenTicketIsAssignedToNonDedicatedGroup()
+ *              - test avec une autre ola avec un groupe dédié différent : @todoseb
+ *
+ *          - ola due time is not delayed if the ticket status is WAITING : @see self::testOlaTTODueTimeIsNotDelayedWhileTicketStatusIsWaiting() @todoseb maintenant plus subtile, doit être compté avant que le groupe assigné au ticket l'ai pris en charge.
+ *          - ola waiting time is not incremented while the ticket is WAITING @see self::testOlaTTOWaitingTimeIsNotIncrementedWhileTicketStatusIsWaiting()
+ *
+ *          - ola can be associated by rule and form at the same time @see self::testOlaCanBeAssociatedByRulesAndByForm() @todo test rule pour ttr
+ *
+ *      - TTR (Time To Resolve)
+ *
+ *          - ola ttr is associated with a ticket then 'start_time' is set to now & 'due_time' is calculated @todo conforme à la spec ?
+ *              - a dedicated group : @see self::testOlaTtrStartsWhenTicketIsAssignedToDedicatedGroup()
+ *              - a user in the dedicated group : @see self::testOlaTtrStartsWhenTicketIsAssignedToAUserInDedicatedGroup()
+ *
+ *          - ttr due time is delayed if the ticket status is WAITING : @see testOlaTTRDueTimeIsDelayedWhileTicketStatusIsWaiting
+*           - ttr waiting time is incremented while the ticket status is WAITING : @see self::testOlaTTRWaitingTimeIsIncrementedWhileTicketStatusIsWaiting()
+ *
+ *          - ola ttr does not start when a ticket is assigned to :
+ *              - a group out of dedicated group : @see self::testOlaTtrDoesNotStartWhenTicketIsAssignedToANonDedicatedGroup()
+ *              - a user not in dedicated group :  @see self::testOlaTtrDoesNotStartWhenTicketIsAssignedToAUserNotInDedicatedGroup()
+ *
+ *          // @todoseb ttr est complétée quand le ticket est à un status résolu
+ *
+ * // @todoseb remettre les tests dans l'ordre du plan
+ * // @todoseb tests manquants / symétrique tto/ttr
  */
 
-// @todoseb test à la suppression d'un OLA ? comportement à adopter ? est déjà protégé ?
+// @todoseb test à la suppression d'un OLA ? comportement à adopter ? est déjà protégé ? -> a tester
 // @todoseb test à la modification d'un OLA ? : recalcul sur les dates d'échéance ?
+// @todoseb revoir les messages des assertions
 // @todoseb tests sur getSlasData() - ailleurs
 
 class OLATest extends DbTestCase
@@ -246,7 +276,7 @@ class OLATest extends DbTestCase
      * When passing multiple OLA IDs to the ticket, the same OLA ID should not be passed associated multiple times
      * Just test for update, no need to test for create (process is in the same function)
      */
-    public function testUpdateTicketWithSameOlasInputs(): void
+    public function testUpdateTicketWithDuplicatedOlasInputs(): void
     {
         // arrange
         $this->login();
@@ -521,9 +551,12 @@ class OLATest extends DbTestCase
 
     public function testOlaTTOWaitingTimeIsNotIncrementedWhileTicketStatusIsWaiting()
     {
+        // arrange
         $this->login();
         $this->setCurrentTime('10:04:00');
         ['ola' => $ola ] = $this->createOLA(ola_type: SLM::TTO);
+
+        // act - create ticket, set status to waiting, wait 20 minutes, switch ticket to assigned
         $ticket = $this->createTicket(['_la_update' => true, '_olas_id' => [$ola->getID()], 'status' => \CommonITILObject::WAITING]);
         assert($ticket->fields['status'] === CommonITILObject::WAITING);
         $this->setCurrentTime('10:24:00');
