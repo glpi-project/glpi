@@ -4604,12 +4604,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Software.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Offset \'condition\' on array\\{table\\: \'glpi…\', joinparams\\: array\\{jointype\\: \'child\'\\}\\} on left side of \\?\\? does not exist\\.$#',
-	'identifier' => 'nullCoalesce.offset',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Software.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method SoftwareLicense\\:\\:cronSoftware\\(\\) should return 0 but returns 1\\.$#',
 	'identifier' => 'return.type',
 	'count' => 1,
