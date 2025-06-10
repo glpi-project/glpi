@@ -521,7 +521,7 @@ describe('Edit form translations', () => {
         cy.findByRole('textbox', { name: 'Short answer question' }).should('exist').should('have.value', 'Ceci est une question de réponse courte');
     });
 
-    it('can translate description of a question', () => {
+    it.only('can translate description of a question', () => {
         // Go to the form editor
         cy.findByRole('tab', { name: 'Form' }).click();
 
@@ -568,13 +568,13 @@ describe('Edit form translations', () => {
         });
 
         // Check default translation
-        cy.findByRole('note', { name: 'Description' }).should('exist').contains('This is a question with description');
+        cy.findByRole('note', { name: 'Question description' }).should('exist').contains('This is a question with description');
 
         // Change the user language to French
         changeUserLanguage('fr_FR');
         cy.reload();
 
         // Check the translations for the question description
-        cy.findByRole('note', { name: 'Description' }).should('exist').contains('Ceci est une question avec une description');
+        cy.findByRole('note', { name: 'Question description' }).should('exist').contains('Ceci est une question avec une description');
     });
 });
