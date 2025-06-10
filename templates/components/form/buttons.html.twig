@@ -156,5 +156,9 @@
       </div>
 
       <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
+   </div> {# #mainformtable #}
+</form> {# [name=asset_form] #}
+    {% else %}
+   </div> {# #mainformtable #}
     {% endif %}
 {% endif %}
