@@ -833,6 +833,7 @@ class MailCollectorTest extends DbTestCase
                     '41 - Image src without quotes',
                     '42 - Missing Content Type',
                     '43 - Korean encoding issue',
+                    '44 - Hebrew encoding issue',
                 ],
             ],
             // Mails having "normal" user as observer (add_cc_to_observer = true)
@@ -954,6 +955,13 @@ PLAINTEXT,
 </div>
 <div class="elementToProof" style="font-family: Aptos, Aptos_EmbeddedFont, Aptos_MSFontService, Calibri, Helvetica, sans-serif; font-size: 12pt; color: rgb(0, 0, 0);">
 <br>
+</div>
+PLAINTEXT,
+            '44 - Hebrew encoding issue' => <<<PLAINTEXT
+<div class="WordSection1">
+<p class="MsoNormal"><span lang="EN-US">Testing at the request of glpi support</span></p>
+<p class="MsoNormal" dir="RTL" style="text-align:right;direction:rtl;unicode-bidi:embed">
+<span lang="HE" style="font-family:&quot;Arial&quot;,sans-serif">בדיקה של מייל עם עברית ואנגלית</span></p>
 </div>
 PLAINTEXT,
         ];
