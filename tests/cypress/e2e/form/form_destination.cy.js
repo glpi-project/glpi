@@ -193,4 +193,53 @@ describe('Form destination', () => {
             cy.findByRole('combobox', {name: 'User who filled the form'}).should('exist');
         });
     });
+
+    it('can duplicate a form destination', () => {
+        // Configure the destination with some custom values
+        cy.findByRole("textbox", {name: "Form destination name"}).clear();
+        cy.findByRole("textbox", {name: "Form destination name"}).type('Original destination');
+
+        // Configure title field
+        cy.findByRole('region', {name: 'Title configuration'}).awaitTinyMCE().as("title_field");
+        cy.get("@title_field").clear();
+        cy.get("@title_field").type('Custom title for duplication test');
+
+        // Save the original configuration
+        cy.findByRole("button", {name: "Update item"}).click();
+        cy.checkAndCloseAlert('Item successfully updated');
+
+        // Click the duplicate button
+        cy.findByRole("button", {name: "Duplicate"}).click();
+
+        // Check that the duplication was successful
+        cy.findAllByRole('region', {name: 'Original destination'})
+            .should('have.length', 2);
+
+        // Check that the duplicated destination has the same configuration
+        cy.findByRole("textbox", {name: "Form destination name"}).should('have.value', 'Original destination');
+
+        // Verify the title field content is duplicated
+        cy.findByRole('region', {name: 'Title configuration'}).awaitTinyMCE().as("duplicated_title_field");
+        cy.get("@duplicated_title_field").should('contain.text', 'Custom title for duplication test');
+
+        // Verify this is indeed a new destination by changing the name
+        cy.findByRole("textbox", {name: "Form destination name"}).clear();
+        cy.findByRole("textbox", {name: "Form destination name"}).type('Duplicated destination');
+        cy.findByRole("button", {name: "Update item"}).click();
+        cy.checkAndCloseAlert('Item successfully updated');
+
+        // Verify the name change
+        cy.findByRole("textbox", {name: "Form destination name"}).should('have.value', 'Duplicated destination');
+        cy.findAllByRole('region', {name: 'Duplicated destination'})
+            .should('have.length', 1);
+
+        // Verify the original destination is still there
+        cy.findAllByRole('region', {name: 'Original destination'})
+            .should('have.length', 1)
+            .click();
+
+        cy.findByRole("textbox", {name: "Form destination name"}).should('have.value', 'Original destination');
+        cy.findByRole('region', {name: 'Title configuration'}).awaitTinyMCE().as("original_title_field");
+        cy.get("@original_title_field").should('contain.text', 'Custom title for duplication test');
+    });
 });
