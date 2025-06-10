@@ -131,6 +131,7 @@ final class Question extends CommonDBChild implements BlockInterface, Conditiona
                 key: self::TRANSLATION_KEY_DESCRIPTION,
                 name: __('Question description'),
                 value: $this->fields['description'],
+                is_rich_text: true,
             );
         }
 
