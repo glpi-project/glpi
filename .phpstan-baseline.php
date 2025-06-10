@@ -3188,12 +3188,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/RuleCriteria.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method RuleDictionnarySoftwareCollection\\:\\:replayRulesOnExistingDB\\(\\) should return int\\|false but returns true\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/RuleDictionnarySoftwareCollection.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Property RuleImportAsset\\:\\:\\$restrict_entity is never read, only written\\.$#',
 	'identifier' => 'property.onlyWritten',
 	'count' => 1,
