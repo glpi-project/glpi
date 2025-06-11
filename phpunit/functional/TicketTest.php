@@ -7485,7 +7485,7 @@ HTML,
     public function testGetTimelineItems(): void
     {
         $provider = $this->timelineItemsProvider();
-        
+
         foreach ($provider as $row) {
             $login = $row['login'] ?? null;
             $pass = $row['pass'] ?? null;
@@ -7514,7 +7514,7 @@ HTML,
                     )
                 ),
             );
-            
+
             $this->assertEquals($expected_followups, $followups_content);
 
             $tasks_content = array_map(
