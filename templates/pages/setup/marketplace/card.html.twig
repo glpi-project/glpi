@@ -1,0 +1,116 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2025 Teclib' and contributors.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{% macro misc_right(plugin) %}
+    <span class="misc-right">
+        <span class="license">
+            {% if plugin['license'] is not empty %}
+                <i class="ti ti-license"></i>
+                {{ plugin['license']|html_to_text }}
+            {% endif %}
+        </span>
+        <span class="authors">
+            {% if plugin['authors'] is not empty %}
+                <i class="ti ti-users"></i>
+                {{ plugin['authors']|join(', ')|html_to_text }}
+            {% endif %}
+        </span>
+        <span class="version">
+            {% if plugin['version'] is not empty %}
+                <i class="ti ti-git-branch"></i>
+                {{ plugin['version']|html_to_text }}
+            {% endif %}
+        </span>
+    </span>
+{% endmacro %}
+
+{% macro misc_left(plugin, tab) %}
+    <span class="misc-left">
+        {% if tab == 'discover' %}
+            <div class="note">{{ plugin['stars']|raw }}</div>
+        {% endif %}
+        <span class="links">
+            {% if plugin['homepage_url'] is not empty %}
+                <a href="{{ plugin['homepage_url'] }}" target="_blank">
+                    <i class="ti ti-home-2 add_tooltip" title="{{ __('Homepage') }}"></i>
+                </a>
+            {% endif %}
+            {% if plugin['issues_url'] is not empty %}
+                <a href="{{ plugin['issues_url'] }}" target="_blank">
+                    <i class="ti ti-bug add_tooltip" title="{{ __('Get help') }}"></i>
+                </a>
+            {% endif %}
+            {% if plugin['readme_url'] is not empty %}
+                <a href="{{ plugin['readme_url'] }}" target="_blank">
+                    <i class="ti ti-book add_tooltip" title="{{ __('Readme') }}"></i>
+                </a>
+            {% endif %}
+            {% if plugin['changelog_url'] is not empty %}
+                <a href="{{ plugin['changelog_url'] }}" target="_blank">
+                    <i class="ti ti-news add_tooltip" title="{{ __('Changelog') }}"></i>
+                </a>
+            {% endif %}
+        </span>
+    </span>
+{% endmacro %}
+
+{% if tab == 'discover' %}
+    <li class="plugin {{ plugin['state'] }}" data-key="{{ plugin['key'] }}">
+        <div class="main">
+            <span class="icon">{{ plugin['icon']|raw }}</span>
+            <span class="details">
+                <span class="title fs-3 fw-bold">{{ plugin['name'] }}</span>
+                {{ plugin['network_info']|raw }}
+                <p class="description">{{ plugin['description']|html_to_text }}</p>
+            </span>
+            <span class="buttons">{{ plugin['buttons']|raw }}</span>
+        </div>
+        <div class="footer">
+            {{ _self.misc_left(plugin, tab) }}
+            {{ _self.misc_right(plugin) }}
+        </div>
+    </li>
+{% else %}
+    <li class="plugin {{ plugin['state'] }}" data-key="{{ plugin['key'] }}">
+        <div class="main">
+            <span class="icon">{{ plugin['icon']|raw }}</span>
+            <span class="details">
+                <span class="title fs-3 fw-bold">{{ plugin['name'] }}</span>
+                {{ _self.misc_right(plugin) }}
+            </span>
+            <span class="buttons">{{ plugin['buttons']|raw }}</span>
+        </div>
+        <div class="footer">
+            {{ _self.misc_left(plugin, tab) }}
+        </div>
+    </li>
+{% endif %}

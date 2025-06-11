@@ -530,126 +530,29 @@ JS;
         $plugin_key   = $plugin['key'];
         $plugin_inst  = new Plugin();
         $plugin_inst->getFromDBbyDir($plugin_key);
-        $plugin_state = Plugin::getStateKey($plugin_inst->fields['state'] ?? -1);
-        $buttons      = self::getButtons($plugin_key);
 
-        $name = htmlescape(Toolbox::stripTags($plugin['name']));
-        $description = htmlescape(Toolbox::stripTags($plugin['description']));
+        $plugin_info = [
+            'key'           => $plugin['key'],
+            'name'          => $plugin['name'],
+            'description'   => $plugin['description'],
+            'homepage_url'  => $plugin['homepage_url'],
+            'issues_url'    => $plugin['issues_url'],
+            'readme_url'    => $plugin['readme_url'],
+            'changelog_url' => $plugin['changelog_url'],
+            'license'       => $plugin['license'] ?? null,
+            'version'       => $plugin['version'] ?? null,
 
-        $authors = htmlescape(Toolbox::stripTags(implode(', ', array_column($plugin['authors'] ?? [], 'name', 'id'))));
-        $authors_title = $authors;
-        $authors = strlen($authors)
-            ? "<i class='ti ti-users'></i>{$authors}"
-            : "";
-
-        $licence = htmlescape(Toolbox::stripTags($plugin['license'] ?? ''));
-        $licence = strlen($licence)
-            ? "<i class='ti ti-license'></i>{$licence}"
-            : "";
-
-        $version = htmlescape(Toolbox::stripTags($plugin['version'] ?? ''));
-        $version = strlen($version)
-            ? "<i class='ti ti-git-branch'></i>{$version}"
-            : "";
-
-        $stars = ($plugin['note'] ?? -1) > 0
-            ? self::getStarsHtml($plugin['note'])
-            : "";
-
-        $home_url = htmlescape($plugin['homepage_url']);
-        $home_url = strlen($home_url)
-            ? "<a href='{$home_url}' target='_blank' >
-               <i class='ti ti-home-2 add_tooltip' title='" . __s("Homepage") . "'></i>
-               </a>"
-            : "";
-
-        $issues_url = htmlescape($plugin['issues_url']);
-        $issues_url = strlen($issues_url)
-            ? "<a href='{$issues_url}' target='_blank' >
-               <i class='ti ti-bug add_tooltip' title='" . __s("Get help") . "'></i>
-               </a>"
-            : "";
-
-        $readme_url = htmlescape($plugin['readme_url']);
-        $readme_url = strlen($readme_url)
-            ? "<a href='{$readme_url}' target='_blank' >
-               <i class='ti ti-book add_tooltip' title='" . __s("Readme") . "'></i>
-               </a>"
-            : "";
-
-        $changelog_url = htmlescape($plugin['changelog_url']);
-        $changelog_url = strlen($changelog_url)
-            ? "<a href='{$changelog_url}' target='_blank' >
-               <i class='ti ti-news add_tooltip' title='" . __s("Changelog") . "'></i>
-               </a>"
-             : "";
-        $icon    = self::getPluginIcon($plugin);
-        $network = !static::$offline_mode ? self::getNetworkInformations($plugin) : '';
-
-        if ($tab === "discover") {
-            $card = <<<HTML
-                <li class="plugin {$plugin_state}" data-key="{$plugin_key}">
-                    <div class="main">
-                        <span class="icon">{$icon}</span>
-                        <span class="details">
-                            <h3 class="title">{$name}</h3>
-                            $network
-                            <p class="description">{$description}</p>
-                        </span>
-                        <span class="buttons">
-                            {$buttons}
-                        </span>
-                    </div>
-                    <div class="footer">
-                        <span class="misc-left">
-                            <div class="note">{$stars}</div>
-                            <div class="links">
-                                {$home_url}
-                                {$issues_url}
-                                {$readme_url}
-                                {$changelog_url}
-                            </div>
-                        </span>
-                        <span class='misc-right'>
-                            <div class="license">{$licence}</div>
-                            <div class="authors" title="{$authors_title}">{$authors}</div>
-                            <div class="version">{$version}</div>
-                        </span>
-                    </div>
-                </li>
-HTML;
-        } else {
-            $card = <<<HTML
-                <li class="plugin {$plugin_state}" data-key="{$plugin_key}">
-                    <div class="main">
-                        <span class="icon">{$icon}</span>
-                        <span class="details">
-                            <h3 class="title">{$name}</h3>
-                            <span class='misc-right'>
-                                <div class="license">{$licence}</div>
-                                <div class="authors" title="{$authors_title}">{$authors}</div>
-                                <div class="version">{$version}</div>
-                            </span>
-                        </span>
-                        <span class="buttons">
-                            {$buttons}
-                        </span>
-                    </div>
-                    <div class="footer">
-                        <span class="misc-left">
-                            <div class="links">
-                                {$home_url}
-                                {$issues_url}
-                                {$readme_url}
-                                {$changelog_url}
-                            </div>
-                        </span>
-                    </div>
-                </li>
-HTML;
-        }
-
-        return $card;
+            'icon'          => self::getPluginIcon($plugin),
+            'state'         => Plugin::getStateKey($plugin_inst->fields['state'] ?? -1),
+            'network_info'  => !static::$offline_mode ? self::getNetworkInformations($plugin) : '',
+            'buttons'       => self::getButtons($plugin_key),
+            'authors'       => array_column($plugin['authors'] ?? [], 'name', 'id'),
+            'stars'         => ($plugin['note'] ?? -1) > 0 ? self::getStarsHtml($plugin['note']) : '',
+        ];
+        return TemplateRenderer::getInstance()->render('pages/setup/marketplace/card.html.twig', [
+            'tab'    => $tab,
+            'plugin' => $plugin_info,
+        ]);
     }
 
     /**
@@ -912,8 +815,8 @@ HTML;
                                        ' . _x("button", "Uninstall") . '
                                    </a>',
                 'content' => sprintf(
-                    __s('By uninstalling the "%s" plugin you will lose all the data of the plugin.'),
-                    htmlescape($plugin_inst->getField('name'))
+                    __('By uninstalling the "%s" plugin you will lose all the data of the plugin.'),
+                    $plugin_inst->getField('name')
                 ),
             ]);
 
