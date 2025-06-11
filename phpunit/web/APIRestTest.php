@@ -67,7 +67,7 @@ class APIRestTest extends TestCase
 
     public function setUp(): void
     {
-        global $CFG_GLPI, $GLPI_CACHE;
+        global $GLPI_CACHE;
 
         $GLPI_CACHE->clear();
 
@@ -76,7 +76,7 @@ class APIRestTest extends TestCase
         $this->assertNotSame(false, $file_updated);
 
         $this->http_client = new GuzzleHttp\Client();
-        $this->base_uri    = \Glpi\Api\HL\Router::getAPIVersions()[0]['endpoint'] . '/';
+        $this->base_uri    = trim(GLPI_URI, '/') . '/api.php/v1/';
 
         $this->initSessionCredentials();
         parent::setUp();
