@@ -7371,7 +7371,7 @@ HTML,
             ]
         );
 
-        // tech has rights to see all private followups/tasks
+        // glpi has rights to see all private followups/tasks
         yield [
             'login'              => 'glpi',
             'pass'               => 'glpi',
@@ -7391,6 +7391,7 @@ HTML,
             ],
         ];
 
+        // tech will only see own private tasks and all private followups
         yield [
             'login'              => 'tech',
             'pass'               => 'tech',
@@ -7407,7 +7408,7 @@ HTML,
             ],
         ];
 
-        // normal will only see own private followups/tasks
+        // normal will only see own private followups/tasks + private followups/tasks from its group
         yield [
             'login'              => 'normal',
             'pass'               => 'normal',
@@ -7485,7 +7486,6 @@ HTML,
     public function testGetTimelineItems(): void
     {
         $provider = $this->timelineItemsProvider();
-
         foreach ($provider as $row) {
             $login = $row['login'] ?? null;
             $pass = $row['pass'] ?? null;
@@ -7514,7 +7514,6 @@ HTML,
                     )
                 ),
             );
-
             $this->assertEquals($expected_followups, $followups_content);
 
             $tasks_content = array_map(
