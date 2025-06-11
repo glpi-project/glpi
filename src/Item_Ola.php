@@ -91,7 +91,7 @@ class Item_Ola extends CommonDBRelation
         $item_ola_data['id'] = $item_ola->getID();
 
         // - update start_time skipped
-        // nothing to do for TTO (and TTR ?) : done at creation of item_ola
+        // nothing to do for TTO : done at creation of item_ola
 
         // update waiting_time (to do before due_time)
         // update waiting_time for TTR only, TTO is not impacted by waiting time
@@ -131,14 +131,23 @@ class Item_Ola extends CommonDBRelation
         // for TTO, endtime is when the ticket is assigned to the dedicated group.
         if ($ola->fields['type'] === SLM::TTO) {
             if ($item_ola->fields['end_time'] == null
-                && $ticket->haveAGroup(CommonITILActor::ASSIGN, [$ola->fields['groups_id']])
+                &&
+                (
+                    $ticket->haveAGroup(CommonITILActor::ASSIGN, [$ola->fields['groups_id']])
+                || self::ticketHasAnAssigneeOfOlaGroup($ticket, $ola)
+                )
             ) {
                 $item_ola->fields['end_time'] = Session::getCurrentTime();
                 $item_ola_data['end_time'] = $item_ola->fields['end_time'];
             }
-        } else {
-            // For TTR, end_time is when the ticket is closed
-            // @todoseb à implémenter
+        }
+
+        // For TTR, end_time is when the ticket is closed
+        if ($ola->fields['type'] === SLM::TTR) {
+            if ($ticket->isClosed() || $ticket->isSolved()) {
+                $item_ola->fields['end_time'] = Session::getCurrentTime();
+                $item_ola_data['end_time'] = $item_ola->fields['end_time'];
+            }
         }
 
         if (!(new Item_Ola())->update($item_ola_data)) {
@@ -164,5 +173,16 @@ class Item_Ola extends CommonDBRelation
         }
 
         throw new \RuntimeException('Linked OLA not found');
+    }
+
+    private static function ticketHasAnAssigneeOfOlaGroup(Ticket $ticket, OLA $ola): bool
+    {
+        $users_ids_of_ticket = array_column($ticket->getUsers(\CommonITILActor::ASSIGN), 'users_id');
+        $users_of_dedicated_group = array_column(Group_User::getGroupUsers($ola->fields['groups_id']), 'id');
+
+        return !empty(array_intersect(
+            $users_ids_of_ticket,
+            $users_of_dedicated_group
+        ));
     }
 }
