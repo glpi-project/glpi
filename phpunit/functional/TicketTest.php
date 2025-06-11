@@ -8074,6 +8074,7 @@ HTML,
         global $CFG_GLPI;
         $CFG_GLPI['use_notifications'] = 1;
         $CFG_GLPI['notifications_mailing'] = 1;
+
         $this->login('glpi', 'glpi');
 
         $user = getItemByTypeName(User::class, 'tech');
@@ -8143,34 +8144,14 @@ HTML,
             'recipientname' => 'tech',
         ]));
 
-        $queue->delete([
-            'id' => $queue->getID(),
-            'itemtype' => Ticket::class,
-            'items_id' => $ticket->getID(),
-            'event' => 'solved',
-            'mode' => 'mailing',
-            'recipientname' => 'tech',
-        ], true);
-
-        $this->assertEquals(0, count($queue->find([
-            'itemtype' => Ticket::class,
-            'items_id' => $ticket->getID(),
-            'event' => 'solved',
-            'mode' => 'mailing',
-            'recipientname' => 'tech',
-        ])));
+        $this->assertTrue($queue->delete(['id' => $queue->getID()], true));
 
         $solution = new \ITILSolution();
-        $this->assertEquals(1, count($solution->find([
+        $this->assertTrue($solution->getFromDBByCrit([
             'items_id' => $ticket->getID(),
             'itemtype' => Ticket::class,
             'status'   => 2,
-        ])));
-        $solution->getFromDBByCrit([
-            'items_id' => $ticket->getID(),
-            'itemtype' => Ticket::class,
-            'status'   => 2,
-        ]);
+        ]));
 
         // Test Notification for solved ticket with solution template rule at update
         $this->updateItem(
@@ -8199,22 +8180,7 @@ HTML,
             'recipientname' => 'tech',
         ]));
 
-        $queue->delete([
-            'id' => $queue->getID(),
-            'itemtype' => Ticket::class,
-            'items_id' => $ticket->getID(),
-            'event' => 'solved',
-            'mode' => 'mailing',
-            'recipientname' => 'tech',
-        ], true);
-
-        $this->assertEquals(0, count($queue->find([
-            'itemtype' => Ticket::class,
-            'items_id' => $ticket->getID(),
-            'event' => 'solved',
-            'mode' => 'mailing',
-            'recipientname' => 'tech',
-        ])));
+        $this->assertTrue($queue->delete(['id' => $queue->getID()], true));
 
         $this->updateItem(
             \Ticket::class,

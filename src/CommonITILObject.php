@@ -8271,14 +8271,18 @@ abstract class CommonITILObject extends CommonDBTM
             NotificationEvent::raiseEvent('new', $this);
 
             $status = $this->fields['status'] ?? null;
+
             //Check if a waiting ITIL solution has been posted to avoid sending duplicate notifications.
-            $solution = new ITILSolution();
-            $has_solution = $solution->getFromDBByCrit([
-                'itemtype' => Ticket::class,
-                'items_id' => $this->getID(),
-                'status'   => CommonITILValidation::WAITING,
-            ]);
-            if (in_array($status, $this->getSolvedStatusArray()) && !$has_solution) {
+            $has_waiting_solution = countElementsInTable(
+                ITILSolution::getTable(),
+                [
+                    'itemtype' => Ticket::class,
+                    'items_id' => $this->getID(),
+                    'status'   => CommonITILValidation::WAITING,
+                ]
+            ) > 0;
+
+            if (in_array($status, $this->getSolvedStatusArray()) && !$has_waiting_solution) {
                 NotificationEvent::raiseEvent('solved', $this);
             }
             if (in_array($status, $this->getClosedStatusArray())) {
