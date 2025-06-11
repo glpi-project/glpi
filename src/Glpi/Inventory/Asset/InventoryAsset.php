@@ -133,6 +133,11 @@ abstract class InventoryAsset
         return (bool) $this->is_recursive;
     }
 
+    public function isDynamic(): bool
+    {
+        return (bool) $this->is_dynamic;
+    }
+
     /**
      * Get current data
      *
