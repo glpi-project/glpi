@@ -150,17 +150,9 @@ class TestUpdatedDataCommand extends Command
             $table_name = $table_data['TABLE_NAME'];
 
             $itemtype = getItemTypeForTable($table_name);
-            if (!class_exists($itemtype)) {
-                $itemtype = null;
-            }
 
             $excluded_fields = $this->getExcludedFields($table_name);
             $excluded_fields[] = $itemtype != null ? $itemtype::getIndexName() : 'id';
-
-            $itemtype = getItemTypeForTable($table_name);
-            if (!class_exists($itemtype)) {
-                $itemtype = null;
-            }
 
             $row_iterator = $fresh_db->request(['FROM' => $table_name]);
             foreach ($row_iterator as $row_data) {
@@ -245,7 +237,7 @@ class TestUpdatedDataCommand extends Command
             'glpi_notifications',
             'glpi_notifications_notificationtemplates',
             'glpi_notificationtargets',
-            'glpi_notificationtemplate',
+            'glpi_notificationtemplates',
             'glpi_notificationtemplatetranslations',
 
             // Profiles are not automatically updated
