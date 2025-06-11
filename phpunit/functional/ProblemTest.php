@@ -442,21 +442,19 @@ class ProblemTest extends DbTestCase
         );
 
         $user_problem = new \Problem_User();
-        $this->assertEquals(
-            1,
-            count($user_problem->find([
+        $this->assertTrue(
+            $user_problem->getFromDBByCrit([
                 'problems_id' => $problem->getID(),
                 'users_id' => $glpi_user->getID(),
                 'type' => \CommonITILActor::REQUESTER,
-            ]))
+            ])
         );
-        $this->assertEquals(
-            1,
-            count($user_problem->find([
+        $this->assertTrue(
+            $user_problem->getFromDBByCrit([
                 'problems_id' => $problem->getID(),
                 'users_id' => $tech_user->getID(),
                 'type' => \CommonITILActor::ASSIGN,
-            ]))
+            ])
         );
 
         $this->createItem(
@@ -468,7 +466,7 @@ class ProblemTest extends DbTestCase
             ]
         );
 
-        $problem->getFromDB($problem->getID());
+        $this->assertTrue($problem->getFromDB($problem->getID()));
         $this->assertEquals(\Problem::SOLVED, $problem->fields['status']);
         $this->updateItem(
             \Problem::class,
@@ -490,15 +488,14 @@ class ProblemTest extends DbTestCase
         );
 
         $solution = new \ITILSolution();
-        $this->assertEquals(
-            1,
-            count($solution->find([
+        $this->assertTrue(
+            $solution->getFromDBByCrit([
                 'itemtype' => \Problem::class,
                 'items_id' => $problem->getID(),
                 'status' => \CommonITILValidation::REFUSED,
-            ]))
+            ])
         );
-        $problem->getFromDB($problem->getID());
+        $this->assertTrue($problem->getFromDB($problem->getID()));
         $this->assertEquals(\Problem::ASSIGNED, $problem->fields['status']);
 
         $this->createItem(
@@ -510,7 +507,7 @@ class ProblemTest extends DbTestCase
             ]
         );
 
-        $problem->getFromDB($problem->getID());
+        $this->assertTrue($problem->getFromDB($problem->getID()));
         $this->assertEquals(\Problem::SOLVED, $problem->fields['status']);
         $this->updateItem(
             \Problem::class,
@@ -532,16 +529,15 @@ class ProblemTest extends DbTestCase
         );
 
         $solution = new \ITILSolution();
-        $this->assertEquals(
-            1,
-            count($solution->find([
+        $this->assertTrue(
+            $solution->getFromDBByCrit([
                 'itemtype' => \Problem::class,
                 'items_id' => $problem->getID(),
                 'status' => \CommonITILValidation::ACCEPTED,
-            ]))
+            ])
         );
 
-        $problem->getFromDB($problem->getID());
+        $this->assertTrue($problem->getFromDB($problem->getID()));
         $this->assertEquals(\Problem::CLOSED, $problem->fields['status']);
     }
 }
