@@ -44,6 +44,7 @@ use Glpi\Api\HL\Controller\CoreController;
 use Glpi\Api\HL\Controller\CRUDControllerTrait;
 use Glpi\Api\HL\Controller\CustomAssetController;
 use Glpi\Api\HL\Controller\DropdownController;
+use Glpi\Api\HL\Controller\FormController;
 use Glpi\Api\HL\Controller\GraphQLController;
 use Glpi\Api\HL\Controller\ITILController;
 use Glpi\Api\HL\Controller\ManagementController;
@@ -209,6 +210,7 @@ EOT;
             $instance->registerController(new GraphQLController());
             $instance->registerController(new ReportController());
             $instance->registerController(new RuleController());
+            $instance->registerController(new FormController());
 
             // Register controllers from plugins
             if (isset($PLUGIN_HOOKS[Hooks::API_CONTROLLERS])) {
