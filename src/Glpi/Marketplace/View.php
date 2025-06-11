@@ -806,8 +806,8 @@ HTML;
                                        ' . _x("button", "Uninstall") . '
                                    </a>',
                 'content' => sprintf(
-                    __s('By uninstalling the %s plugin you will lose all the data of the plugin.'),
-                    '"' . htmlescape($plugin_inst->getField('name')) . '"'
+                    __('By uninstalling the "%s" plugin you will lose all the data of the plugin.'),
+                    $plugin_inst->getField('name')
                 ),
             ]);
 
