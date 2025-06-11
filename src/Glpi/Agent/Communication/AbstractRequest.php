@@ -221,7 +221,6 @@ abstract class AbstractRequest
             try {
                 $client = Server::validateAccessToken($request);
                 if (!in_array('inventory', $client['scopes'], true)) {
-                    $this->setMode(self::JSON_MODE);
                     $this->addError('Access denied. Agent must authenticate using client credentials and have the "inventory" OAuth scope', 401);
                     return false;
                 }
