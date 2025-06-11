@@ -33,21 +33,21 @@
 {% macro misc_right(plugin) %}
     <span class="misc-right">
         <span class="license">
-            {% if plugin['license']|default('') is not empty %}
+            {% if plugin['license'] is not empty %}
                 <i class="ti ti-license"></i>
-                {{ plugin['license'] }}
+                {{ plugin['license']|html_to_text }}
             {% endif %}
         </span>
         <span class="authors">
-            {% if plugin['authors']|default([]) is not empty %}
+            {% if plugin['authors'] is not empty %}
                 <i class="ti ti-users"></i>
-                {{ plugin['authors']|join(', ') }}
+                {{ plugin['authors']|join(', ')|html_to_text }}
             {% endif %}
         </span>
         <span class="version">
-            {% if plugin['version']|default('') is not empty %}
+            {% if plugin['version'] is not empty %}
                 <i class="ti ti-git-branch"></i>
-                {{ plugin['version'] }}
+                {{ plugin['version']|html_to_text }}
             {% endif %}
         </span>
     </span>
@@ -59,22 +59,22 @@
             <div class="note">{{ plugin['stars']|raw }}</div>
         {% endif %}
         <span class="links">
-            {% if plugin['homepage_url']|default('') is not empty %}
+            {% if plugin['homepage_url'] is not empty %}
                 <a href="{{ plugin['homepage_url'] }}" target="_blank">
                     <i class="ti ti-home-2 add_tooltip" title="{{ __('Homepage') }}"></i>
                 </a>
             {% endif %}
-            {% if plugin['issues_url']|default('') is not empty %}
+            {% if plugin['issues_url'] is not empty %}
                 <a href="{{ plugin['issues_url'] }}" target="_blank">
                     <i class="ti ti-bug add_tooltip" title="{{ __('Get help') }}"></i>
                 </a>
             {% endif %}
-            {% if plugin['readme_url']|default('') is not empty %}
+            {% if plugin['readme_url'] is not empty %}
                 <a href="{{ plugin['readme_url'] }}" target="_blank">
                     <i class="ti ti-book add_tooltip" title="{{ __('Readme') }}"></i>
                 </a>
             {% endif %}
-            {% if plugin['changelog_url']|default('') is not empty %}
+            {% if plugin['changelog_url'] is not empty %}
                 <a href="{{ plugin['changelog_url'] }}" target="_blank">
                     <i class="ti ti-news add_tooltip" title="{{ __('Changelog') }}"></i>
                 </a>
@@ -90,7 +90,7 @@
             <span class="details">
                 <span class="title fs-3 fw-bold">{{ plugin['name'] }}</span>
                 {{ plugin['network_info']|raw }}
-                <p class="description">{{ plugin['description']|striptags }}</p>
+                <p class="description">{{ plugin['description']|html_to_text }}</p>
             </span>
             <span class="buttons">{{ plugin['buttons']|raw }}</span>
         </div>

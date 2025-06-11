@@ -531,17 +531,26 @@ JS;
         $plugin_inst  = new Plugin();
         $plugin_inst->getFromDBbyDir($plugin_key);
 
-        $plugin_info = array_replace($plugin, [
-            'description' => htmlspecialchars_decode($plugin['description']),
-            'icon' => self::getPluginIcon($plugin),
-            'state' => Plugin::getStateKey($plugin_inst->fields['state'] ?? -1),
-            'network_info' => !static::$offline_mode ? self::getNetworkInformations($plugin) : '',
-            'buttons' => self::getButtons($plugin_key),
-            'authors' => array_column($plugin['authors'] ?? [], 'name', 'id'),
-            'stars' => ($plugin['note'] ?? -1) > 0 ? self::getStarsHtml($plugin['note']) : '',
-        ]);
+        $plugin_info = [
+            'key'           => $plugin['key'],
+            'name'          => $plugin['name'],
+            'description'   => $plugin['description'],
+            'homepage_url'  => $plugin['homepage_url'],
+            'issues_url'    => $plugin['issues_url'],
+            'readme_url'    => $plugin['readme_url'],
+            'changelog_url' => $plugin['changelog_url'],
+            'license'       => $plugin['license'] ?? null,
+            'version'       => $plugin['version'] ?? null,
+
+            'icon'          => self::getPluginIcon($plugin),
+            'state'         => Plugin::getStateKey($plugin_inst->fields['state'] ?? -1),
+            'network_info'  => !static::$offline_mode ? self::getNetworkInformations($plugin) : '',
+            'buttons'       => self::getButtons($plugin_key),
+            'authors'       => array_column($plugin['authors'] ?? [], 'name', 'id'),
+            'stars'         => ($plugin['note'] ?? -1) > 0 ? self::getStarsHtml($plugin['note']) : '',
+        ];
         return TemplateRenderer::getInstance()->render('pages/setup/marketplace/card.html.twig', [
-            'tab' => $tab,
+            'tab'    => $tab,
             'plugin' => $plugin_info,
         ]);
     }
