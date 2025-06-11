@@ -54,40 +54,39 @@ class RuleDictionnaryPrinterModelCollectionTest extends DbTestCase
 
     public function testIgnoreImport()
     {
-        $rule       = new \Rule();
-        $criteria   = new \RuleCriteria();
-        $action     = new \RuleAction();
         $collection = new \RuleDictionnaryPrinterModelCollection();
 
-        $rules_id = $rule->add([
-            'name'        => 'Ignore import',
-            'is_active'   => 1,
-            'entities_id' => 0,
-            'sub_type'    => \RuleDictionnaryPrinterModel::class,
-            'match'       => \Rule::AND_MATCHING,
-            'condition'   => 0,
-            'description' => '',
-        ]);
-        $this->assertGreaterThan(0, $rules_id);
+        $rule = $this->createItem(
+            \Rule::class,
+            [
+                'name'        => 'Ignore import',
+                'is_active'   => 1,
+                'entities_id' => 0,
+                'sub_type'    => \RuleDictionnaryPrinterModel::class,
+                'match'       => \Rule::AND_MATCHING,
+                'condition'   => 0,
+                'description' => '',
+            ]
+        );
 
-        $this->assertGreaterThan(
-            0,
-            (int) $criteria->add([
-                'rules_id'  => $rules_id,
+        $this->createItem(
+            \RuleCriteria::class,
+            [
+                'rules_id'  => $rule->getID(),
                 'criteria'  => 'name',
                 'condition' => \Rule::PATTERN_IS,
                 'pattern'   => 'Model to ignore',
-            ])
+            ]
         );
 
-        $this->assertGreaterThan(
-            0,
-            (int) $action->add([
-                'rules_id'    => $rules_id,
+        $this->createItem(
+            \RuleAction::class,
+            [
+                'rules_id'    => $rule->getID(),
                 'action_type' => 'assign',
                 'field'       => '_ignore_import',
                 'value'       => '1',
-            ])
+            ]
         );
 
         $input = [
@@ -95,7 +94,7 @@ class RuleDictionnaryPrinterModelCollectionTest extends DbTestCase
 
         ];
         $result = $collection->processAllRules($input);
-        $expected = ['_ignore_import' => '1', '_ruleid' => "$rules_id"];
+        $expected = ['_ignore_import' => '1', '_ruleid' => (string)$rule->getID()];
         $this->assertSame($expected, $result);
 
         $input = [
@@ -108,40 +107,39 @@ class RuleDictionnaryPrinterModelCollectionTest extends DbTestCase
 
     public function testRule(): void
     {
-        $rule       = new \Rule();
-        $criteria   = new \RuleCriteria();
-        $action     = new \RuleAction();
         $collection = new \RuleDictionnaryPrinterModelCollection();
 
-        $rules_id = $rule->add([
-            'name'        => 'Adapt Model',
-            'is_active'   => 1,
-            'entities_id' => 0,
-            'sub_type'    => \RuleDictionnaryPrinterModel::class,
-            'match'       => \Rule::AND_MATCHING,
-            'condition'   => 0,
-            'description' => '',
-        ]);
-        $this->assertGreaterThan(0, $rules_id);
+        $rule = $this->createItem(
+            \Rule::class,
+            [
+                'name'        => 'Adapt Model',
+                'is_active'   => 1,
+                'entities_id' => 0,
+                'sub_type'    => \RuleDictionnaryPrinterModel::class,
+                'match'       => \Rule::AND_MATCHING,
+                'condition'   => 0,
+                'description' => '',
+            ]
+        );
 
-        $this->assertGreaterThan(
-            0,
-            (int) $criteria->add([
-                'rules_id'  => $rules_id,
+        $this->createItem(
+            \RuleCriteria::class,
+            [
+                'rules_id'  => $rule->getID(),
                 'criteria'  => 'name',
                 'condition' => \Rule::PATTERN_IS,
                 'pattern'   => 'WrongOne',
-            ])
+            ]
         );
 
-        $this->assertGreaterThan(
-            0,
-            (int) $action->add([
-                'rules_id'    => $rules_id,
+        $this->createItem(
+            \RuleAction::class,
+            [
+                'rules_id'    => $rule->getID(),
                 'action_type' => 'assign',
                 'field'       => 'name',
                 'value'       => 'GoodOne',
-            ])
+            ]
         );
 
         $input = [
@@ -149,71 +147,70 @@ class RuleDictionnaryPrinterModelCollectionTest extends DbTestCase
         ];
 
         $result = $collection->processAllRules($input);
-        $expected = ['name' => 'GoodOne', '_ruleid' => "$rules_id"];
+        $expected = ['name' => 'GoodOne', '_ruleid' => (string)$rule->getID()];
         $this->assertSame($expected, $result);
     }
 
     public function testReplay(): void
     {
-        $rule       = new \Rule();
-        $criteria   = new \RuleCriteria();
-        $action     = new \RuleAction();
         $collection = new \RuleDictionnaryPrinterModelCollection();
 
-        $rules_id = $rule->add([
-            'name'        => 'Adapt Model',
-            'is_active'   => 1,
-            'entities_id' => 0,
-            'sub_type'    => \RuleDictionnaryPrinterModel::class,
-            'match'       => \Rule::AND_MATCHING,
-            'condition'   => 0,
-            'description' => '',
-        ]);
-        $this->assertGreaterThan(0, $rules_id);
+        $rule = $this->createItem(
+            \Rule::class,
+            [
+                'name'        => 'Adapt Model',
+                'is_active'   => 1,
+                'entities_id' => 0,
+                'sub_type'    => \RuleDictionnaryPrinterModel::class,
+                'match'       => \Rule::AND_MATCHING,
+                'condition'   => 0,
+                'description' => '',
+            ]
+        );
 
-        $this->assertGreaterThan(
-            0,
-            (int) $criteria->add([
-                'rules_id'  => $rules_id,
+        $this->createItem(
+            \RuleCriteria::class,
+            [
+                'rules_id'  => $rule->getID(),
                 'criteria'  => 'name',
                 'condition' => \Rule::PATTERN_IS,
                 'pattern'   => 'WrongOne',
-            ])
+            ]
         );
 
-        $this->assertGreaterThan(
-            0,
-            (int) $action->add([
-                'rules_id'    => $rules_id,
+        $this->createItem(
+            \RuleAction::class,
+            [
+                'rules_id'    => $rule->getID(),
                 'action_type' => 'assign',
                 'field'       => 'name',
                 'value'       => 'GoodOne',
-            ])
+            ]
         );
 
-        $input = [
-            'name' => 'WrongOne',
-        ];
-
-        $printermodel = new \PrinterModel();
-        $wrong_models_id = $printermodel->add([
-            'name' => 'WrongOne',
-        ]);
-        $this->assertGreaterThan(0, $wrong_models_id);
+        $printermodel = $this->createItem(
+            \PrinterModel::class,
+            [
+                'name' => 'WrongOne',
+            ]
+        );
+        $wrong_models_id = $printermodel->getID();
 
         //new model must not exist to reproduce issue https://github.com/glpi-project/glpi/issues/18987
 
-        $printer = new \Printer();
-        $printers_id = $printer->add([
-            'name' => 'My test printer',
-            'printermodels_id' => $wrong_models_id,
-            'entities_id' => 0,
-        ]);
+        $printer = $this->createItem(
+            \Printer::class,
+            [
+                'name' => 'My test printer',
+                'printermodels_id' => $wrong_models_id,
+                'entities_id' => 0,
+            ]
+        );
 
         $this->expectOutputRegex('/.*Replay rules on existing database started on.*/');
         $collection->replayRulesOnExistingDB(0, 0, [], []);
 
-        $this->assertTrue($printer->getFromDB($printers_id));
+        $this->assertTrue($printer->getFromDB($printer->getID()));
         $this->assertNotEquals($wrong_models_id, $printer->fields['printermodels_id']);
 
         $this->assertTrue($printermodel->getFromDB($printer->fields['printermodels_id']));
