@@ -94,7 +94,7 @@ class RuleDictionnaryPrinterModelCollectionTest extends DbTestCase
 
         ];
         $result = $collection->processAllRules($input);
-        $expected = ['_ignore_import' => '1', '_ruleid' => (string)$rule->getID()];
+        $expected = ['_ignore_import' => '1', '_ruleid' => (string) $rule->getID()];
         $this->assertSame($expected, $result);
 
         $input = [
@@ -147,7 +147,7 @@ class RuleDictionnaryPrinterModelCollectionTest extends DbTestCase
         ];
 
         $result = $collection->processAllRules($input);
-        $expected = ['name' => 'GoodOne', '_ruleid' => (string)$rule->getID()];
+        $expected = ['name' => 'GoodOne', '_ruleid' => (string) $rule->getID()];
         $this->assertSame($expected, $result);
     }
 
