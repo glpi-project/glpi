@@ -806,6 +806,7 @@ class Software extends InventoryAsset
                 //set create date
                 $stmt_columns['date_creation'] = $_SESSION["glpi_currenttime"];
                 $stmt_columns['is_helpdesk_visible'] = $CFG_GLPI["default_software_helpdesk_visible"];
+                $stmt_columns['is_dynamic'] = !(empty($val->is_dynamic) ? $val->is_dynamic : 1);
 
                 $stmt_types = str_repeat('s', count($stmt_columns));
                 $reference = array_fill_keys(
