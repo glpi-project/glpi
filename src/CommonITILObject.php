@@ -8276,7 +8276,7 @@ abstract class CommonITILObject extends CommonDBTM
             $has_solution = $solution->getFromDBByCrit([
                 'itemtype' => Ticket::class,
                 'items_id' => $this->getID(),
-                'status'   => 2,
+                'status'   => CommonITILValidation::WAITING,
             ]);
             if (in_array($status, $this->getSolvedStatusArray()) && !$has_solution) {
                 NotificationEvent::raiseEvent('solved', $this);
