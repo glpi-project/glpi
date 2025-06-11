@@ -520,4 +520,61 @@ describe('Edit form translations', () => {
         cy.findByRole('heading', { name: 'Short answer question' }).should('exist');
         cy.findByRole('textbox', { name: 'Short answer question' }).should('exist').should('have.value', 'Ceci est une question de réponse courte');
     });
+
+    it('can translate description of a question', () => {
+        // Go to the form editor
+        cy.findByRole('tab', { name: 'Form' }).click();
+
+        // Add a question with description
+        cy.findByRole('button', { name: 'Add a question' }).click();
+        cy.findByRole('region', { name: 'Question details' }).within(() => {
+            cy.findByLabelText('Question description')
+                .awaitTinyMCE()
+                .type('This is a question with description');
+        });
+
+        // Save the form
+        cy.findByRole('button', { name: 'Save' }).click();
+        cy.checkAndCloseAlert('Item successfully updated');
+
+        // Go to the form translations page
+        cy.findByRole('tab', { name: 'Form translations' }).click();
+
+        // Add a language translation
+        cy.findByRole('button', { name: 'Add language' }).click();
+        cy.getDropdownByLabelText('Select language to translate').selectDropdownValue('Français');
+        cy.findByRole('button', { name: 'Add' }).click();
+        cy.findByRole('dialog').should('have.attr', 'data-cy-shown', 'true');
+
+        // Add translations for the question description
+        cy.findByRole('table', { name: 'Form translations' }).as('formTranslationsTable');
+        cy.get('@formTranslationsTable').findAllByRole('row').as('formTranslationsRows');
+        cy.get('@formTranslationsRows').eq(-2).within(() => {
+            cy.findByRole('cell', { name: 'Translation name' }).contains('Question description');
+            cy.findByRole('cell', { name: 'Default value' }).contains('This is a question with description');
+            cy.findByRole('cell', { name: 'Translated value' })
+                .findByLabelText('Enter translation')
+                .awaitTinyMCE()
+                .type('Ceci est une question avec une description');
+        });
+
+        // Save the translations
+        cy.findByRole('button', { name: 'Save translation' }).click();
+        cy.checkAndCloseAlert('Item successfully updated');
+
+        // Go to the form preview
+        cy.get('@form_id').then((form_id) => {
+            cy.visit(`/Form/Render/${form_id}`);
+        });
+
+        // Check default translation
+        cy.findByRole('note', { name: 'Question description' }).should('exist').contains('This is a question with description');
+
+        // Change the user language to French
+        changeUserLanguage('fr_FR');
+        cy.reload();
+
+        // Check the translations for the question description
+        cy.findByRole('note', { name: 'Question description' }).should('exist').contains('Ceci est une question avec une description');
+    });
 });

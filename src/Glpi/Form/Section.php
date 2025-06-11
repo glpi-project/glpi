@@ -162,6 +162,7 @@ final class Section extends CommonDBChild implements ConditionableVisibilityInte
                     key: self::TRANSLATION_KEY_DESCRIPTION,
                     name: __('Section description'),
                     value: $this->fields['description'],
+                    is_rich_text: true,
                 );
             }
         }

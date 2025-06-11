@@ -162,6 +162,7 @@ final class Comment extends CommonDBChild implements
                 key: self::TRANSLATION_KEY_DESCRIPTION,
                 name: __('Comment description'),
                 value: $this->fields['description'],
+                is_rich_text: true,
             );
         }
 
