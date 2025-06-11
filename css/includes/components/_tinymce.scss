@@ -32,11 +32,11 @@
  */
 
 html:not([data-glpi-theme-dark="1"]) {
-    @import "~tinymce/skins/ui/oxide/skin.css";
+    @import "../../lib/tinymce/skins/ui/oxide/skin";
 }
 
 html[data-glpi-theme-dark="1"] {
-    @import "~tinymce/skins/ui/oxide-dark/skin.css";
+    @import "../../lib/tinymce/skins/ui/oxide-dark/skin";
 }
 
 /* Tiny mce applied these styles to its toolbar but not to its content, we have to set them up manually */
