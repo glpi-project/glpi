@@ -415,6 +415,7 @@ class Software extends InventoryAsset
 
             $val->entities_id  = $this->entities_id;
             $val->is_recursive = $this->is_recursive;
+            $val->is_dynamic = $this->is_dynamic;
 
             $key_w_version  = $this->getFullCompareKey($val);
             $key_wo_version = $this->getFullCompareKey($val, false);
