@@ -153,7 +153,7 @@ final class ValidatorSubstitute extends CommonDBTM
     {
         if (isset($input['users_id']) && $input['users_id'] != $this->fields['users_id']) {
             // Do not change the user.
-            Session::addMessageAfterRedirect(__s('Cannot change the validation delegator'));
+            Session::addMessageAfterRedirect(__s('Cannot change the approval delegator'));
             return [];
         }
 

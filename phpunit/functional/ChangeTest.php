@@ -455,7 +455,7 @@ class ChangeTest extends DbTestCase
         ob_start();
         \Change::showCentralList(0, 'tovalidate', false);
         $output = ob_get_clean();
-        $this->assertStringContainsString("Your changes to validate <span class='primary-bg primary-fg count'>1</span>", $output);
+        $this->assertStringContainsString("Your changes to approve <span class='primary-bg primary-fg count'>1</span>", $output);
         $this->assertMatchesRegularExpression("/href='\/front\/change.form.php\?id=" . $change->getID() . "[^']+'>/", $output);
 
         // login as tech to check if the change validation is not shown
@@ -464,7 +464,7 @@ class ChangeTest extends DbTestCase
         ob_start();
         \Change::showCentralList(0, 'tovalidate', false);
         $output = ob_get_clean();
-        $this->assertStringNotContainsString("Your changes to validate", $output);
+        $this->assertStringNotContainsString("Your changes to approve", $output);
     }
 
     public function testShowFormNewItem(): void

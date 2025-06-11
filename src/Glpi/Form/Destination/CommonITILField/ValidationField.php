@@ -34,6 +34,7 @@
 
 namespace Glpi\Form\Destination\CommonITILField;
 
+use CommonITILValidation;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\JsonFieldInterface;
 use Glpi\Form\AnswersSet;
@@ -60,7 +61,7 @@ final class ValidationField extends AbstractConfigField implements DestinationFi
     #[Override]
     public function getLabel(): string
     {
-        return _n('Validation', 'Validations', 1);
+        return CommonITILValidation::getTypeName(1);
     }
 
     #[Override]

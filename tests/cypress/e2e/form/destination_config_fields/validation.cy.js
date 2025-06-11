@@ -66,13 +66,13 @@ describe('Validation configuration', () => {
     });
 
     it('can use all possibles configuration options', () => {
-        cy.findByRole('region', {'name': "Validation configuration"}).as("config");
+        cy.findByRole('region', {'name': "Approval configuration"}).as("config");
         cy.get('@config').getDropdownByLabelText('Select strategy...').as("validation_dropdown");
 
         // Default value
         cy.get('@validation_dropdown').should(
             'have.text',
-            'No validation'
+            'No approval'
         );
 
         // Make sure hidden dropdowns are not displayed
@@ -112,7 +112,7 @@ describe('Validation configuration', () => {
 
     it('can create ticket using a specific question answer', () => {
         // Switch to "Answer from specific questions"
-        cy.findByRole('region', {'name': "Validation configuration"}).as("config");
+        cy.findByRole('region', {'name': "Approval configuration"}).as("config");
         cy.get('@config').getDropdownByLabelText('Select strategy...').selectDropdownValue('Answer from specific questions');
         cy.get('@config').getDropdownByLabelText('Select questions...').as('specific_answers_dropdown');
         cy.get('@specific_answers_dropdown').selectDropdownValue('My User question');

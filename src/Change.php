@@ -1281,7 +1281,7 @@ class Change extends CommonITILObject
 
                         $main_header = "<a href=\"" . Change::getSearchURL() . "?" .
                         Toolbox::append_params($options, '&amp;') . "\">" .
-                        Html::makeTitle(__('Your changes to validate'), $displayed_row_count, $total_row_count) . "</a>";
+                        Html::makeTitle(__('Your changes to approve'), $displayed_row_count, $total_row_count) . "</a>";
 
                         break;
 

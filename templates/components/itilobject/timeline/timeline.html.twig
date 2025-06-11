@@ -220,7 +220,7 @@
     {{ include('components/itilobject/timeline/todo-list-summary.html.twig') }}
 
     <div class="timeline-item validations-title d-none mt-4">
-        <h3>{{ _n('Validation', 'Validations', get_plural_number()) }}</h3>
+        <h3>{{ 'CommonITILValidation'|itemtype_name(get_plural_number()) }}</h3>
     </div>
 
     {% if not is_timeline_reversed %}

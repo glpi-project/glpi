@@ -60,8 +60,8 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject
         $events = ['new'               => __('New change'),
             'update'            => __('Update of a change'),
             'solved'            => __('Change solved'),
-            'validation'        => __('Validation request'),
-            'validation_answer' => __('Validation request answer'),
+            'validation'        => __('Approval request'),
+            'validation_answer' => __('Approval request answer'),
             'closed'            => __('Closure of a change'),
             'delete'            => __('Deleting a change'),
             'satisfaction'      => __('Satisfaction survey'),
@@ -319,7 +319,7 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject
             ),
             'validation.validationdate'    => sprintf(
                 __('%1$s: %2$s'),
-                _n('Validation', 'Validations', 1),
+                CommonITILValidation::getTypeName(1),
                 _n('Date', 'Dates', 1)
             ),
             'validation.validator_target_type'  => __('Approval target type (User or Group)'),
@@ -327,7 +327,7 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject
             'validation.validator'              => __('Approver'),
             'validation.commentvalidation'      => sprintf(
                 __('%1$s: %2$s'),
-                _n('Validation', 'Validations', 1),
+                CommonITILValidation::getTypeName(1),
                 _n('Comment', 'Comments', Session::getPluralNumber())
             ),
         ];
@@ -342,13 +342,13 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject
 
         //Tags without lang for validation
         $tags = ['validation.submission.title'
-                                    => __('A validation request has been submitted'),
+                                    => __('An approval request has been submitted'),
             'validation.answer.title'
-                                    => __('An answer to a validation request was produced'),
+                                    => __('An answer to an approval request was produced'),
             'change.urlvalidation'
                                     => sprintf(
                                         __('%1$s: %2$s'),
-                                        __('Validation request'),
+                                        __('Approval request'),
                                         __('URL')
                                     ),
         ];
@@ -366,7 +366,7 @@ class NotificationTargetChange extends NotificationTargetCommonITILObject
         $tags = ['tickets'     => _n('Ticket', 'Tickets', Session::getPluralNumber()),
             'problems'    => Problem::getTypeName(Session::getPluralNumber()),
             'items'       => _n('Item', 'Items', Session::getPluralNumber()),
-            'validations' => _n('Validation', 'Validations', Session::getPluralNumber()),
+            'validations' => CommonITILValidation::getTypeName(Session::getPluralNumber()),
             'documents'   => Document::getTypeName(Session::getPluralNumber()),
         ];
 

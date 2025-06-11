@@ -156,7 +156,7 @@ TWIG, ['message' => __('Urgency or impact used in actions, think to add Priority
                 <div class="alert alert-warning">
                     {{ message }}
                 </div>
-TWIG, ['message' => __('An action defines the validation step, but there is no action related to this validation step. Did you forgot to add an action?')]);
+TWIG, ['message' => __('An action defines the approval step, but there is no action related to this approval step. Did you forgot to add an action?')]);
         } elseif (
             count(array_intersect($action_keys, $fields_trigerring_validation)) > 0
             && in_array('validationsteps_id', $action_keys, true) === false
@@ -166,7 +166,7 @@ TWIG, ['message' => __('An action defines the validation step, but there is no a
                 <div class="alert alert-warning">
                     {{ message }}
                 </div>
-TWIG, ['message' => __('An action related to a validation exists, but there is no action assigning the corresponding validation step. Therefore, the default one will be used.')]);
+TWIG, ['message' => __('An action related to an approval exists, but there is no action assigning the approval validation step. Therefore, the default one will be used.')]);
         }
 
         return;
@@ -802,7 +802,7 @@ TWIG, ['message' => __('An action related to a validation exists, but there is n
         $criterias['_contract_types']['type']                 = 'dropdown';
 
         if ($itemtype::getValidationClassInstance() !== null) {
-            $criterias['global_validation']['name'] = _n('Validation', 'Validations', 1);
+            $criterias['global_validation']['name'] = CommonITILValidation::getTypeName(1);
             $criterias['global_validation']['type'] = 'dropdown_validation_status';
         }
 

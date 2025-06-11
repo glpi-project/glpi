@@ -326,7 +326,7 @@ class Provider
 
             case 'waiting_validation':
                 $params['icon']  = "ti ti-eye";
-                $params['label'] = __("Tickets waiting for validation");
+                $params['label'] = __("Tickets waiting for approval");
                 $search_criteria = [
                     [
                         'field'      => 55,
@@ -1682,7 +1682,7 @@ class Provider
                     'color'  => '#f1a129',
                 ], [
                     'number' => $tovalidate['number'],
-                    'label'  => __("To validate"),
+                    'label'  => __("To approve"),
                     'url'    => $tovalidate['url'],
                     'color'  => '#266ae9',
                 ], [
