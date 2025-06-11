@@ -46,7 +46,7 @@ enum ValidationStrategy: string implements StrategyInterface
     public function getLabel(): string
     {
         return match ($this) {
-            self::NO_VALIDATION => __('No approval'),
+            self::NO_VALIDATION => __('No validation'),
             self::VALID_IF      => __('Valid if...'),
             self::INVALID_IF    => __('Invalid if...'),
         };
