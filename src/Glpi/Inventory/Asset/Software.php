@@ -796,6 +796,7 @@ class Software extends InventoryAsset
 
         $software = new GSoftware();
         $soft_fields = $DB->listFields($software->getTable());
+        $stmt = $stmt_types = null;
 
         foreach ($this->data as $val) {
             $skey = $this->getSoftwareKey($val->name, $val->manufacturers_id);
@@ -808,16 +809,18 @@ class Software extends InventoryAsset
                 $stmt_columns['is_helpdesk_visible'] = $CFG_GLPI["default_software_helpdesk_visible"];
                 $stmt_columns['is_dynamic'] = !(empty($val->is_dynamic) ? $val->is_dynamic : 1);
 
-                $stmt_types = str_repeat('s', count($stmt_columns));
-                $reference = array_fill_keys(
-                    array_keys($stmt_columns),
-                    new QueryParam()
-                );
-                $insert_query = $DB->buildInsert(
-                    $software->getTable(),
-                    $reference
-                );
-                $stmt = $DB->prepare($insert_query);
+                if ($stmt === null) {
+                    $stmt_types = str_repeat('s', count($stmt_columns));
+                    $reference = array_fill_keys(
+                        array_keys($stmt_columns),
+                        new QueryParam()
+                    );
+                    $insert_query = $DB->buildInsert(
+                        $software->getTable(),
+                        $reference
+                    );
+                    $stmt = $DB->prepare($insert_query);
+                }
 
                 $stmt_values = array_values($stmt_columns);
 
@@ -833,7 +836,9 @@ class Software extends InventoryAsset
                 );
                 $this->softwares[$skey] = $softwares_id;
 
-                $stmt->close();
+                if ($stmt) {
+                    $stmt->close();
+                }
             }
         }
     }

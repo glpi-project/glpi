@@ -74,11 +74,11 @@ class MailCollectorTest extends DbTestCase
                 'use_mail_date'        => '',
                 'date_creation'        => '',
                 'requester_field'      => '',
+                'add_to_to_observer'   => '',
                 'add_cc_to_observer'   => '',
                 'collect_only_unread'  => '',
-                'last_collect_date'    => '',
                 'create_user_from_email' => '',
-                'add_to_to_observer'   => '',
+                'last_collect_date'    => '',
             ],
             $instance->fields
         );

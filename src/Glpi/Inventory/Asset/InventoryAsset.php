@@ -374,19 +374,6 @@ abstract class InventoryAsset
     }
 
     /**
-     * Set is dynamic from main asset
-     *
-     * @param integer $is_dynamic
-     *
-     * @return $this
-     */
-    public function setIsDynamic($is_dynamic): InventoryAsset
-    {
-        $this->is_dynamic = $is_dynamic;
-        return $this;
-    }
-
-    /**
      * Set request query
      *
      * @param string $query Requested query
