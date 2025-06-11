@@ -807,7 +807,6 @@ class Software extends InventoryAsset
                 //set create date
                 $stmt_columns['date_creation'] = $_SESSION["glpi_currenttime"];
                 $stmt_columns['is_helpdesk_visible'] = $CFG_GLPI["default_software_helpdesk_visible"];
-                $stmt_columns['is_dynamic'] = !(empty($val->is_dynamic) ? $val->is_dynamic : 1);
 
                 if ($stmt === null) {
                     $stmt_types = str_repeat('s', count($stmt_columns));
@@ -835,11 +834,11 @@ class Software extends InventoryAsset
                     \Log::HISTORY_CREATE_ITEM
                 );
                 $this->softwares[$skey] = $softwares_id;
-
-                if ($stmt) {
-                    $stmt->close();
-                }
             }
+        }
+
+        if ($stmt) {
+            $stmt->close();
         }
     }
 

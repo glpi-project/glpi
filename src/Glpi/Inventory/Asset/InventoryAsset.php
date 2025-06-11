@@ -65,8 +65,6 @@ abstract class InventoryAsset
     protected $entities_id = 0;
     /** @var integer */
     protected $is_recursive = 0;
-    /** @var integer */
-    protected $is_dynamic = 0;
     /** @var array */
     protected $ruleentity_data = [];
     /** @var array */
@@ -131,11 +129,6 @@ abstract class InventoryAsset
     public function isRecursive(): bool
     {
         return (bool) $this->is_recursive;
-    }
-
-    public function isDynamic(): bool
-    {
-        return (bool) $this->is_dynamic;
     }
 
     /**
