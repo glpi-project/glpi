@@ -43,10 +43,8 @@ class InventoryTest extends \GLPITestCase
 
     public function setUp(): void
     {
-        global $CFG_GLPI;
-
         $this->http_client = new GuzzleHttp\Client();
-        $this->base_uri    = trim($CFG_GLPI['url_base'], "/") . "/";
+        $this->base_uri    = trim(GLPI_URI, '/') . '/';
 
         parent::setUp();
     }

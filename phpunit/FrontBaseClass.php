@@ -42,10 +42,8 @@ class FrontBaseClass extends \GLPITestCase
     private array $items_to_cleanup = [];
     public function setUp(): void
     {
-        global $CFG_GLPI;
-
         $this->http_client = new HttpBrowser();
-        $this->base_uri    = trim($CFG_GLPI['url_base'], "/") . "/";
+        $this->base_uri    = trim(GLPI_URI, '/') . '/';
 
         $this->doCleanup();
         parent::setUp();
