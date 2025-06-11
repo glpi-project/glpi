@@ -4530,7 +4530,7 @@ class CommonDBTM extends CommonGLPI
 
         $result = true;
 
-        //Do not check unicity when creating infocoms or if checking is expliclty disabled
+        //Do not check unicity when creating infocoms or if checking is explicitly disabled
         if ($p['disable_unicity_check']) {
             return $result;
         }

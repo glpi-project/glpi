@@ -116,11 +116,10 @@ class RuleDictionnarySoftwareCollection extends RuleCollection
         if (isCommandLine()) {
             echo "replayRulesOnExistingDB started : " . date("r") . "\n";
         }
-        $nb = 0;
         $i  = $offset;
 
         if (count($items) == 0) {
-            //Select all the differents software
+            //Select all the different software
             $criteria = [
                 'SELECT'          => [
                     'glpi_softwares.name',
@@ -229,7 +228,7 @@ class RuleDictionnarySoftwareCollection extends RuleCollection
             }
         } else {
             $this->replayDictionnaryOnSoftwaresByID($items);
-            return true;
+            return count($items);
         }
 
         if (isCommandLine()) {

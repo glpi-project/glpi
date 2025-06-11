@@ -68,11 +68,6 @@ class Software extends CommonDBTM
     }
 
 
-    /**
-     * @see CommonGLPI::getMenuShorcut()
-     *
-     *  @since 0.85
-     **/
     public static function getMenuShorcut()
     {
         return 's';
@@ -179,9 +174,9 @@ class Software extends CommonDBTM
 
 
     /**
-     * Update validity indicator of a specific software
+     * Update validity indicator of specific software
      *
-     * @param $ID ID of the licence
+     * @param integer $ID ID of the license
      *
      * @since 0.85
      *
@@ -212,16 +207,6 @@ class Software extends CommonDBTM
     }
 
 
-    /**
-     * Print the software form
-     *
-     * @param $ID integer ID of the item
-     * @param $options array
-     *     - target filename : where to go when done.
-     *     - withtemplate boolean : template or basic item
-     *
-     * @return boolean item found
-     **/
     public function showForm($ID, array $options = [])
     {
         $this->initForm($ID, $options);
@@ -247,9 +232,6 @@ class Software extends CommonDBTM
     }
 
 
-    /**
-     * @see CommonDBTM::getSpecificMassiveActions()
-     **/
     public function getSpecificMassiveActions($checkitem = null)
     {
 
@@ -281,11 +263,6 @@ class Software extends CommonDBTM
     }
 
 
-    /**
-     * @since 0.85
-     *
-     * @see CommonDBTM::processMassiveActionsForOneItemtype()
-     **/
     public static function processMassiveActionsForOneItemtype(
         MassiveAction $ma,
         CommonDBTM $item,
@@ -644,10 +621,10 @@ class Software extends CommonDBTM
 
 
     /**
-     * Make a select box for  software to install
+     * Make a select box for software to install
      *
-     * @param $myname          select name
-     * @param $entity_restrict restrict to a defined entity
+     * @param string $myname          select name
+     * @param mixed  $entity_restrict restrict to a defined entity
      *
      * @return integer random part of elements id
      **/
@@ -686,8 +663,8 @@ class Software extends CommonDBTM
     /**
      * Make a select box for license software to associate
      *
-     * @param $myname          select name
-     * @param $entity_restrict restrict to a defined entity
+     * @param string $myname          select name
+     * @param mixed  $entity_restrict restrict to a defined entity
      *
      * @return integer random part of elements id
      **/
@@ -747,14 +724,14 @@ class Software extends CommonDBTM
 
 
     /**
-     * Create a new software
+     * Create new software
      *
      * @param string   $name                the software's name (need to be addslashes)
      * @param integer  $manufacturer_id     id of the software's manufacturer
      * @param integer  $entity              the entity in which the software must be added
      * @param string   $comment             (default '')
      * @param boolean  $is_recursive        must the software be recursive (false by default)
-     * @param ?boolean $is_helpdesk_visible show in helpdesk, default : from config (false by default)
+     * @param ?boolean $is_helpdesk_visible show in helpdesk, default: from config (false by default)
      *
      * @return integer the software's ID
      **/
@@ -800,7 +777,7 @@ class Software extends CommonDBTM
 
 
     /**
-     * Add a software. If already exist in trashbin restore it
+     * Add software. If already exist in trashbin restore it
      *
      * @param string  $name                the software's name
      * @param string  $manufacturer        the software's manufacturer
@@ -869,8 +846,8 @@ class Software extends CommonDBTM
     /**
      * Put software in trashbin because it's been removed by GLPI software dictionary
      *
-     * @param $ID        the ID of the software to put in trashbin
-     * @param $comment   the comment to add to the already existing software's comment (default '')
+     * @param int    $ID      the ID of the software to put in trashbin
+     * @param string $comment the comment to add to the already existing software's comment (default '')
      *
      * @return boolean (success)
      **/
@@ -899,11 +876,11 @@ class Software extends CommonDBTM
 
 
     /**
-     * Restore a software from trashbin
+     * Restore software from trashbin
      *
-     * @param $ID  the ID of the software to put in trashbin
+     * @param int $ID the ID of the software to put in trashbin
      *
-     * @return boolean (success)
+     * @return boolean
      **/
     public function removeFromTrash($ID)
     {
