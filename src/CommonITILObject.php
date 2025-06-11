@@ -7616,9 +7616,13 @@ abstract class CommonITILObject extends CommonDBTM
                     ],
                 ];
 
-                if (!empty(Group_User::getUserGroups($current_user_id))) {
+                $groupsuser = Group_User::getUserGroups($current_user_id);
+                if (!empty($groupsuser)) {
+                    foreach ($groupsuser as $groupuser) {
+                        $groups_ids[] = $groupuser['id'];
+                    }
                     if (Session::haveRight($task_obj::$rightname, CommonITILTask::SEEPRIVATEGROUPS)) {
-                        $restrict_task['OR']['groups_id_tech'] = $_SESSION["glpigroups"];
+                        $restrict_task['OR']['groups_id_tech'] = $groups_ids;
                     }
                 }
             }
