@@ -54,6 +54,7 @@ use Glpi\RichText\UserMention;
  *  - _la_append : flag to know if _olas_id must be appended to the existing olas without removing the existing ones
  *
  *  - _groups_id_assign : assign the ticket to a group
+ *  - _users_id_assign : assign the ticket to a user
  **/
 class Ticket extends CommonITILObject
 {
@@ -6420,6 +6421,9 @@ JAVASCRIPT;
         }
     }
 
+    /**
+     * Update Ola data + Manage OLA level
+     */
     private function recomputeOlas(): void
     {
         // recompute all OLA for this ticket
