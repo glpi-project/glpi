@@ -37,7 +37,8 @@ describe('Dropdown item form question type', () => {
         uuid = new Date().getTime();
 
         cy.createWithAPI('Glpi\\Form\\Form', {
-            'name': 'Tests form for the dropdown item form question type suite',
+            'name'     : 'Tests form for the dropdown item form question type suite',
+            'is_active': true,
         }).as('form_id');
 
         cy.createWithAPI('ITILCategory', {
@@ -148,5 +149,45 @@ describe('Dropdown item form question type', () => {
             // Check that the "Filter ticket categories" field is visible
             cy.findByLabelText('Filter ticket categories').should('not.be.visible');
         });
+    });
+
+    it('only "Visible in the simplified interface" ITIL categories are displayed in self service interface', () => {
+        // Create a new ITIL category that is not visible in the simplified interface
+        cy.createWithAPI('ITILCategory', {
+            'name': `Hidden for self service category ${uuid}`,
+            'is_helpdeskvisible': false,
+        }).as('hidden_category_id');
+
+        // Create a new ITIL category that is visible in the simplified interface
+        cy.createWithAPI('ITILCategory', {
+            'name': `Visible in self service category ${uuid}`,
+            'is_helpdeskvisible': true,
+        }).as('visible_category_id');
+
+        // Save form
+        cy.findByRole('button', { name: 'Save' }).click();
+        cy.checkAndCloseAlert('Item successfully updated');
+
+        // Render the form in self service interface
+        cy.changeProfile('Self-Service');
+        cy.get('@form_id').then((form_id) => {
+            cy.visit(`/Form/Render/${form_id}`);
+        });
+
+        // Check that the dropdown contains only the visible ITIL categories
+        cy.getDropdownByLabelText('Test dropdown item question')
+            .hasDropdownValue(`»Hidden for self service category ${uuid}`, false);
+        cy.getDropdownByLabelText('Test dropdown item question')
+            .hasDropdownValue(`»Visible in self service category ${uuid}`, true);
+
+        // Change back to Super-Admin profile
+        cy.changeProfile('Super-Admin');
+        cy.reload();
+
+        // Check that the dropdown contains both ITIL categories in the form
+        cy.getDropdownByLabelText('Test dropdown item question')
+            .hasDropdownValue(`»Hidden for self service category ${uuid}`, true);
+        cy.getDropdownByLabelText('Test dropdown item question')
+            .hasDropdownValue(`»Visible in self service category ${uuid}`, true);
     });
 });

@@ -253,8 +253,13 @@ final class QuestionTypeItemDropdown extends QuestionTypeItem
             return $params;
         }
 
-        // Apply categories filter if itemtype is an ITILCategory
         if (is_a($itemtype, ITILCategory::class, true)) {
+            // Ensure only visible categories are shown
+            if (Session::getCurrentInterface() == "helpdesk") {
+                $params['is_helpdeskvisible'] = 1;
+            }
+
+            // Apply categories filter if itemtype is an ITILCategory
             $categories_filter = $this->getCategoriesFilter($question);
             if (is_array($categories_filter) && count($categories_filter) > 0) {
                 foreach ($categories_filter as $category) {

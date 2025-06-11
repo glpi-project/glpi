@@ -88,3 +88,35 @@ Cypress.Commands.add('selectDropdownValue', {prevSubject: true}, (
     });
 
 });
+
+Cypress.Commands.add('hasDropdownValue', {prevSubject: true}, (
+    subject,
+    expected_value,
+    should_exist = true
+) => {
+    cy.wrap(subject).click();
+
+    // Select2 content is displayed at the root of the DOM, we must thus
+    // "recalibrate" the within function using the entire document.
+    // Without this, any call inside a `within` block would fail as the select2
+    // content will be unreachable.
+    cy.document().its('body').within(() => {
+        // Reduce the scope to the dropdown
+        if (subject.hasClass('select2-selection--multiple')) {
+            cy.wrap(subject).find('.select2-search__field').then(($input) => {
+                cy.get(`#${$input.attr('aria-controls')}`)
+                    .findByRole('option', { name: expected_value })
+                    .should(should_exist ? 'exist' : 'not.exist');
+            });
+        } else {
+            const select2_id = subject.get(0).children[0].id.replace('-container', '');
+            cy.get(`[id="${select2_id}-results"]`).findByRole('option', { name: expected_value }).should(should_exist ? 'exist' : 'not.exist');
+        }
+    });
+
+    // Close the dropdown
+    cy.wrap(subject).click();
+
+    // Ensure the dropdown is closed
+    cy.get('body').should('not.have.class', 'select2-container--open');
+});
