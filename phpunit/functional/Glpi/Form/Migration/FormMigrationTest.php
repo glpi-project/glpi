@@ -2044,13 +2044,9 @@ final class FormMigrationTest extends DbTestCase
         $this->assertTrue($this->callPrivateMethod($migration, 'processMigration'));
 
         // Verify that the form has not been migrated
-        $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage('Unable to load a single `Glpi\Form\Form` item with the name `Test form migration with entity that does not exist` (none or many exist may exist).');
-        getItemByTypeName(Form::class, 'Test form migration with entity that does not exist');
+        $this->assertFalse((new Form())->getFromDBByCrit(['name' => 'Test form migration with entity that does not exist']));
 
         // Verify that the section has not been migrated
-        $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage('Unable to load a single `Glpi\Form\Section` item with the name `Test form migration with entity that does not exist - Section` (none or many exist may exist).');
-        getItemByTypeName(Section::class, 'Test form migration with entity that does not exist - Section');
+        $this->assertFalse((new Section())->getFromDBByCrit(['name' => 'Test form migration with entity that does not exist - Section']));
     }
 }

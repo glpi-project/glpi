@@ -70,10 +70,10 @@ class FormCreatorPluginToCoreCommand extends AbstractPluginMigrationCommand
         parent::configure();
 
         $this->addOption(
-            'specific-forms',
+            'form-id',
             null,
             InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY,
-            __('Import only specific forms by their IDs'),
+            __('Import only specific forms with the given IDs'),
             []
         );
     }

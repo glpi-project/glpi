@@ -274,7 +274,7 @@ class FormMigration extends AbstractPluginMigration
             ];
         } else {
             $criteria[] = [
-                // Handle orphan forms that have no associated entity
+                // Exclude orphan forms that have no associated entity
                 'glpi_plugin_formcreator_forms.entities_id' => new QuerySubQuery([
                     'SELECT' => 'id',
                     'FROM'   => Entity::getTable(),
@@ -356,10 +356,10 @@ class FormMigration extends AbstractPluginMigration
         $this->processMigrationOfTranslations();
         $this->processMigrationOfConditions();
 
-        $this->displayWarningForNonMigratedItems();
-
         $this->progress_indicator?->setProgressBarMessage('');
         $this->progress_indicator?->finish();
+
+        $this->displayWarningForNonMigratedItems();
 
         return true;
     }
@@ -1400,8 +1400,6 @@ class FormMigration extends AbstractPluginMigration
 
     private function displayWarningForNonMigratedItems(): void
     {
-        $this->progress_indicator?->setProgressBarMessage(__('Checking for non-migrated items...'));
-
         // Retrieve orphan forms
         $orphan_forms = $this->db->request([
             'FROM'   => 'glpi_plugin_formcreator_forms',
@@ -1420,7 +1418,7 @@ class FormMigration extends AbstractPluginMigration
             $this->result->addMessage(
                 MessageType::Warning,
                 sprintf(
-                    __('%d forms ignored because they were either attached to an invalid entity'),
+                    __('%d forms ignored because they were attached to an invalid entity'),
                     count($orphan_forms)
                 )
             );
