@@ -312,9 +312,14 @@ class SLMTest extends DbTestCase
      * Create a full SLM by month with all level filled (slm/sla/ola/levels/action/criterias)
      * And Delete IT to check clean os sons objects
      *
-     * tested : @see self::testLifecyle()
+     * - assign SLA and OLA by rule
+     * - delete SLM : related objects should be deleted
+     *     - ola/sla
+     *     - ola/sla levels
+     *     - ola/sla criteria
+     *     - ola/sla actions
      */
-    public function testLifecylebyMonth()
+    public function testSlmDeletionByMonth()
     {
         $this->login();
 

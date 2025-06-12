@@ -50,6 +50,21 @@ use Ticket_Contract;
 // Force import because of autoloader not working
 require_once __DIR__ . '/../abstracts/RuleCommonITILObjectTest.php';
 
+/**
+ * Test Plan / Spec (@todo to complete)
+ * Ola :
+ *  - Actions
+ *      - assign an ola :
+ *          - oncreation : @see self::testAssignSingleOla()
+ *          - onupdate : @see self::testAssignOlaOnTicketUpdate()
+ *      - assign mulitple olas : @see self::testAssignMultipleOlas()
+ *      - previous ola are preserved when a rule which add ola runs : @see self::testAssignOlaOnUpdatePreserveOlas()
+ *  - Criteria
+ *      - specified ola id match :
+ *          - on creation : @see self::testCriteriaOlaOnCreate()
+ *          - on update : @see self::testCriteriaOlaOnUpdate()
+ */
+
 class RuleTicketTest extends RuleCommonITILObjectTest
 {
     use SLMTrait;
@@ -1456,7 +1471,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
         $entity = getItemByTypeName(\Entity::class, '_test_child_1');
         ['ola' => $ola, 'slm' => $slm, 'group' => $group] = $this->createOLA();
 
-        $rule_builder = new \RuleBuilder(__FUNCTION__, \RuleTicket::class);
+        $rule_builder = new \RuleBuilder('Assign OLA rule', \RuleTicket::class);
         $rule_builder->addCriteria('entities_id', Rule::PATTERN_IS, $entity->getID());
         $rule_builder->addAction('append', 'olas_id', $ola->getID());
         $this->createRule($rule_builder);
@@ -1594,31 +1609,6 @@ class RuleTicketTest extends RuleCommonITILObjectTest
         $this->assertEquals(4, $ticket->fields['priority']);
     }
 
-    // @todoseb tests sur les critères d'ola - supprimer si existe test sur dates saisies directement
-    // @todoseb tests d'assignation d'un SLA manquants
-
-    public function testAssignOlaOnTicketCreation()
-    {
-        $this->login();
-        // create Ola + Rule to assign it on ticket update
-        ['ola' => $ola] = $this->createOLA();
-
-        $builder = new \RuleBuilder('Assign OLA rule', \RuleTicket::class);
-        $builder->setCondtion(RuleCommonITILObject::ONADD);
-        $builder->addCriteria('priority', \Rule::PATTERN_IS, 4);
-        $builder->addAction('append', 'olas_id', $ola->getID());
-        $builder->setEntity(0);
-        $this->createRule($builder);
-
-        // create ticket : no ola assigned
-        $ticket = $this->createTicket(
-            [
-                'priority' => 4,
-                'name' => __METHOD__ . ' ticket']
-        );
-        $this->assertNotEmpty($ticket->getOlasData());
-    }
-
     public function testAssignSlaOnTicketCreation()
     {
         $this->login();
@@ -1668,7 +1658,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
         $this->assertEmpty($ticket->getOlasData());
 
         // update ticket : ola should be assigned
-        $ticket = $this->updateItem(Ticket::class, $ticket->getID(), [
+        $ticket = $this->updateItem(\Ticket::class, $ticket->getID(), [
             'content' => 'content updated',
             'priority' => 4,
         ]);
