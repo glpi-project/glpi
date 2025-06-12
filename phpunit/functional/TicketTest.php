@@ -7219,12 +7219,29 @@ HTML,
         $postonly_user_id = getItemByTypeName(User::class, 'post-only', true);
         $normal_user_id   = getItemByTypeName(User::class, 'normal', true);
         $tech_user_id     = getItemByTypeName(User::class, 'tech', true);
+        $glpi_user_id     = getItemByTypeName(User::class, 'glpi', true);
 
-        $profile = getItemByTypeName(\Profile::class, 'Observer');
+        $profile_id = getItemByTypeName(\Profile::class, 'Observer', true);
 
         $profile_right = new \ProfileRight();
         $profile_right->getFromDBByCrit([
-            'profiles_id' => $profile->getID(),
+            'profiles_id' => $profile_id,
+            'name'        => 'task',
+        ]);
+
+        $this->updateItem(
+            \ProfileRight::class,
+            $profile_right->getID(),
+            [
+                'rights' => \CommonITILTask::SEEPRIVATEGROUPS + \CommonITILTask::SEEPUBLIC,
+            ]
+        );
+
+        $tprofile_id = getItemByTypeName(\Profile::class, 'Technician', true);
+
+        $profile_right = new \ProfileRight();
+        $profile_right->getFromDBByCrit([
+            'profiles_id' => $tprofile_id,
             'name'        => 'task',
         ]);
 
@@ -7262,7 +7279,7 @@ HTML,
                 'content'             => __FUNCTION__,
                 '_users_id_requester' => $postonly_user_id,
                 '_users_id_observer'  => $normal_user_id,
-                '_users_id_assign'    => $tech_user_id,
+                '_users_id_assign'    => [$tech_user_id, $glpi_user_id],
                 '_groups_id_assign'   => $seegroup_id,
             ]
         );
@@ -7354,10 +7371,10 @@ HTML,
             ]
         );
 
-        // tech has rights to see all private followups/tasks
+        // glpi has rights to see all private followups/tasks
         yield [
-            'login'              => 'tech',
-            'pass'               => 'tech',
+            'login'              => 'glpi',
+            'pass'               => 'glpi',
             'ticket_id'          => $ticket->getID(),
             'options'            => [],
             'expected_followups' => [
@@ -7374,7 +7391,24 @@ HTML,
             ],
         ];
 
-        // normal will only see own private followups/tasks
+        // tech will only see own private tasks and all private followups
+        yield [
+            'login'              => 'tech',
+            'pass'               => 'tech',
+            'ticket_id'          => $ticket->getID(),
+            'options'            => [],
+            'expected_followups' => [
+                'private followup of normal user',
+                'private followup of tech user',
+                'public followup',
+            ],
+            'expected_tasks'     => [
+                'private task of tech user',
+                'public task',
+            ],
+        ];
+
+        // normal will only see own private followups/tasks + private followups/tasks from its group
         yield [
             'login'              => 'normal',
             'pass'               => 'normal',
