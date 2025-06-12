@@ -582,8 +582,7 @@ var GLPIPlanning  = {
                             begin: start.toISOString(),
                             end: end.toISOString(),
                             res_itemtype: itemtype,
-                            res_items_id: items_id,
-                            in_modal: 1
+                            res_items_id: items_id
                         },
                         dialogclass: 'modal-lg planning-modal',
                         title: __('Add an event'),
