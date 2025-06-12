@@ -1762,7 +1762,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Unreachable statement \\- code above always terminates\\.$#',
 	'identifier' => 'deadCode.unreachable',
-	'count' => 3,
+	'count' => 2,
 	'path' => __DIR__ . '/src/Html.php',
 ];
 $ignoreErrors[] = [
