@@ -70,7 +70,7 @@ use Ticket;
  *
  * - time computing & completion
  *      - TTO (Time To Own)
- *          - ola tto is associated with a ticket then 'start_time' is set to now & 'due_time' is calculated (group is not taken into account)
+ *          - ola tto is associated with a ticket then 'start_time' is set to ticket date & 'due_time' is calculated (group is not taken into account)
  *              - on ticket creation : @see self::testInitialOlaTtoValuesOnCreation()
  *              - on ticket update : @see self::testInitialOlaTtoValuesOnUpdate()
  *
@@ -87,7 +87,7 @@ use Ticket;
  *          - ola can be associated by rule and form at the same time @see self::testOlaCanBeAssociatedByRulesAndByForm()
  *
  *      - TTR (Time To Resolve)
- *          - ola ttr is associated with a ticket then 'start_time' is set to now & 'due_time' is calculated, however the group (or a user in the group) is not assigned to the ticket yet
+ *          - ola ttr is associated with a ticket then 'start_time' is set to ticket 'date' & 'due_time' is calculated, however the group (or a user in the group) is not assigned to the ticket yet
  *              - on creation : @see self::testInitialOlaTtrValuesOnCreation()
  *              - on update : @see self::testInitialOlaTtrValuesOnUpdate()
  *
@@ -125,6 +125,7 @@ class OLATest extends DbTestCase
         $association_data = [
             'items_id' => $ticket->getID(),
             'itemtype' => $ticket::class,
+            'start_time' => date('Y-m-d H:i:s'),
         ];
 
         // act - create associations
@@ -438,7 +439,7 @@ class OLATest extends DbTestCase
     }
 
     /**
-     * - start_time is set at the moment the Ola is assigned to the ticket
+     * - start_time is set using ticket 'date' field (which is the current time when not specified))
      * - due_time is set at the moment the Ola is assigned to the ticket
      * - endtime is set not set
      * - waiting_time is not set
@@ -449,17 +450,18 @@ class OLATest extends DbTestCase
         // arrange
         $ola_tto = $this->createOLA(ola_type: \SLM::TTO)['ola'];
         $start_time_datetime = $this->setCurrentTime('09:00:00', '2025-06-02');
+        $ticket_date = new \DateTime('- 30 minutes');
 
         // act associate ticket with ola
-        $ticket = $this->createTicket(['_la_update' => true, '_olas_id' => [$ola_tto->getID()]]);
+        $ticket = $this->createTicket(['_la_update' => true, '_olas_id' => [$ola_tto->getID()], 'date' => $ticket_date->format('Y-m-d H:i:s')]);
 
         // assert
         $ola_data = $ticket->getOlasData()[0];
-        // start_time = ola association with ticket
-        $this->assertEquals($ola_data['start_time'], $start_time_datetime->format('Y-m-d H:i:s'), 'Start time should be set to the moment OLA is assigned to ticket.');
+        // start_time
+        $this->assertEquals($ola_data['start_time'], $ticket_date->format('Y-m-d H:i:s'), 'Start time should be set to the \'date\' field of associated ticket.');
 
         // due_time is set and equal to start_time + OLA_TTO_DELAY
-        $due_time_datetime = clone $start_time_datetime;
+        $due_time_datetime = clone $ticket_date;
         $due_time_datetime->add($this->getDefaultTtoDelayInterval());
         $this->assertEquals($ola_data['due_time'], $due_time_datetime->format('Y-m-d H:i:s'), 'Due time should be start_time + OLA_TTO_DELAY.');
 
