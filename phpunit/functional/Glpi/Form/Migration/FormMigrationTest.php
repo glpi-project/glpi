@@ -85,7 +85,6 @@ use Glpi\Tests\FormTesterTrait;
 use Location;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\Attributes\DataProvider;
-use RuntimeException;
 
 final class FormMigrationTest extends DbTestCase
 {
