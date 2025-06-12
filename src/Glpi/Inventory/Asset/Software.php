@@ -234,7 +234,7 @@ class Software extends InventoryAsset
             }
 
             // add dynamic flag
-            $val->is_dynamic = 1;
+            $val->is_dynamic = true;
         }
 
         //NOTE: A same software may have a manufacturer or not. Keep the one with manufacturer.
