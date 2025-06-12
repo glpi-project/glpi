@@ -165,10 +165,3 @@ See :
 GLPI is a living software. Improvements are continuously made, new functionalities are being developed, and issues are being fixed.
 
 To ease support and development, we need your help when encountering issues.
-There is a GLPI version typical lifecycle:
- * A new major version (9.3) is released.
- * Minor versions (9.3.x), fixing bugs or issues, are published after several weeks.
-   Please consider updating to the latest released minor version if you encounter some bugs or performance issues.
- * Several months after major version released, a new major version (9.4) is released.
-   Previous major versions become unsupported, please update to the new major version.
-   Obviously, we provide support for the migration tools too!
