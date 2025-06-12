@@ -253,6 +253,19 @@ describe('Search Table', () => {
         // Restore sort
         restore_initial_sort_state();
         verify_initial_sort_state();
+
+        // Ensure non-consecutive sorts do not add extra, null sorts.
+        real_table.getElement().find('th').eq(0).attr('data-sort-num', '1');
+        real_table.getElement().find('th').eq(0).attr('data-sort-order', 'ASC');
+        real_table.getElement().find('th').eq(2).attr('data-sort-num', '1');
+        real_table.getElement().find('th').eq(2).attr('data-sort-order', 'ASC');
+        state = real_table.setSortStateFromColumns();
+        expect(state['sort'].length).toBe(2);
+        expect(state['order'].length).toBe(2);
+
+        // Restore sort
+        restore_initial_sort_state();
+        verify_initial_sort_state();
     });
     test('AJAX refresh on sort', async () => {
         restore_initial_sort_state();

@@ -363,20 +363,24 @@ window.GLPI.Search.Table = class Table extends GenericView {
     }
 
     setSortStateFromColumns() {
-        const columns = this.getElement().find('thead th[data-searchopt-id]:not([data-searchopt-id=""])[data-sort-order]:not([data-sort-order=""])');
+        let columns = this.getElement()
+            .find('thead th[data-searchopt-id]:not([data-searchopt-id=""])[data-sort-num]:not([data-sort-num=""])');
         if (columns.length === 0) {
             return null;
         }
+        // sort solumns by sort-num
+        columns = $(columns.get().sort((a, b) => {
+            return $(a).attr('data-sort-num') - $(b).attr('data-sort-num');
+        }));
 
         this.resetSortState();
 
         columns.each((i, c) => {
             const col = $(c);
-
             const order = col.attr('data-sort-order');
             if (order !== 'nosort') {
-                this.sort_state['sort'][col.attr('data-sort-num') || 0] = col.attr('data-searchopt-id');
-                this.sort_state['order'][col.attr('data-sort-num') || 0] = order;
+                this.sort_state['sort'].push(col.attr('data-searchopt-id'));
+                this.sort_state['order'].push(order);
             }
         });
         return this.sort_state;
@@ -397,8 +401,8 @@ window.GLPI.Search.Table = class Table extends GenericView {
 
         // fill with new values
         $.each(sort, (i, v) => {
-            this.sort_state['sort'][i] = v;
-            this.sort_state['order'][i] = order[i];
+            this.sort_state['sort'].push(v);
+            this.sort_state['order'].push(order[i]);
         });
     }
 };
