@@ -74,7 +74,7 @@
                {% for item in items %}
                   <tr>
                      <td>{{ itemtype|itemtype_name }}</td>
-                     <td>{{ item['locname'] }}</td>
+                     <td>{{ item['entname'] }}</td>
                      <td>{{ item['id'] }}</td>
                      <td>{{ item['name']|default('(' ~ item['id'] ~ ')') }}</td>
                   </tr>
