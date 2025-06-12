@@ -3496,11 +3496,7 @@ JS;
         $content_css .= ',' . implode(',', array_map(static function ($path) {
             return preg_replace('/^.*href="([^"]+)".*$/', '$1', self::scss($path, ['force_no_version' => true]));
         }, $content_css_paths));
-        $skin_url = preg_replace('/^.*href="([^"]+)".*$/', '$1', self::css('css/standalone/tinymce_empty_skin', ['force_no_version' => true]));
-
-        // TODO: the recent changes to $skin_url above break tinyMCE's placeholders
-        // Reverted to the previous version here, but this should be fixed properly
-        $skin_url = $CFG_GLPI['root_doc'] . "/lib/tinymce/skins/ui/oxide";
+        $skin_url = preg_replace('/^.*href="([^"]+)".*$/', '$1', self::css('css/tinymce_empty_skin', ['force_no_version' => true], false));
 
         $cache_suffix = '?v=' . FrontEnd::getVersionCacheKey(GLPI_VERSION);
         $readonlyjs   = $readonly ? 'true' : 'false';
@@ -6373,11 +6369,13 @@ HTML;
                     return null;
                 }
 
-                $extension = $file_chunks['extension'] ?? 'scss';
-                $possible_filenames = [
-                    sprintf('%s/css/lib/%s/%s.%s', GLPI_ROOT, $file_chunks['directory'], $file_chunks['file'], $extension),
-                    sprintf('%s/css/lib/%s/_%s.%s', GLPI_ROOT, $file_chunks['directory'], $file_chunks['file'], $extension),
-                ];
+                $possible_extensions = array_key_exists('extension', $file_chunks) ? $file_chunks['extension'] : ['scss', 'css'];
+
+                $possible_filenames  = [];
+                foreach ($possible_extensions as $extension) {
+                    $possible_filenames[] = sprintf('%s/css/lib/%s/%s.%s', GLPI_ROOT, $file_chunks['directory'], $file_chunks['file'], $extension);
+                    $possible_filenames[] = sprintf('%s/css/lib/%s/_%s.%s', GLPI_ROOT, $file_chunks['directory'], $file_chunks['file'], $extension);
+                }
                 foreach ($possible_filenames as $filename) {
                     if (file_exists($filename)) {
                         return $filename;
