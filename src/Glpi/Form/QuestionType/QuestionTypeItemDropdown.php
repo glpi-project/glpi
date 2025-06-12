@@ -262,6 +262,7 @@ final class QuestionTypeItemDropdown extends QuestionTypeItem
             // Apply categories filter if itemtype is an ITILCategory
             $categories_filter = $this->getCategoriesFilter($question);
             if (is_array($categories_filter) && count($categories_filter) > 0) {
+                $type_params = [];
                 foreach ($categories_filter as $category) {
                     $key = match ($category) {
                         'request'  => 'is_request',
@@ -273,9 +274,18 @@ final class QuestionTypeItemDropdown extends QuestionTypeItem
                         ),
                     };
 
-                    $params[$itemtype::getTableField($key)] = 1;
+                    $type_params['AND']['OR'][] = [
+                        $itemtype::getTableField($key) => 1,
+                    ];
                 }
+
+                $params[] = $type_params;
             }
+        }
+
+        if ((new $itemtype())->maybeActive()) {
+            // Ensure only active items are shown
+            $params[$itemtype::getTableField('is_active')] = 1;
         }
 
         // Apply specific root
