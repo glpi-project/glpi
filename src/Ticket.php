@@ -1286,7 +1286,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
             }
         }
 
-        $this->updateOlaAssociations();
+        $this->updateOlaAssociations(false);
         !isset($this->input['_auto_update']) && $this->recomputeOlas();
 
         if (count($this->updates)) {
@@ -1610,7 +1610,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
             }
         }
 
-        $this->updateOlaAssociations();
+        $this->updateOlaAssociations(true);
 
         // Add project task link if needed
         if (isset($this->input['_projecttasks_id'])) {
@@ -6361,7 +6361,7 @@ JAVASCRIPT;
         return $slas;
     }
 
-    private function updateOlaAssociations(): void
+    private function updateOlaAssociations(bool $on_ticket_creation): void
     {
         // handle _olas_id fiels only if _la_update is set
         if (!isset($this->input['_la_update'])) {
@@ -6394,14 +6394,16 @@ JAVASCRIPT;
         // add new olas
         $added_olas_ids = array_unique(array_diff($request_olas_ids, $current_olas_ids));
         OLA::deleteLevelsToDo($this); // @todoseb déplacer plus bas
+        $items_ola = new Item_Ola();
         foreach ($added_olas_ids as $olas_id) {
             // insert in association table items_ola
             if (
                 !$items_ola->add([
-                    'due_time' => null, // @todoseb utile ?
                     'items_id' => $this->getID(),
                     'itemtype' => $this->getType(),
                     'olas_id' => $olas_id,
+                    // on creation, use date from ticket creation, on update use current time
+                    'start_time' => $on_ticket_creation ? $this->fields['date'] : Session::getCurrentTime(),
                 ])
             ) {
                 throw new \Exception("Failed to associate OLA #$olas_id to ticket #{$this->getID()}");
