@@ -49,14 +49,14 @@ class Item_Ola extends CommonDBRelation
      * Prepare the input for add
      *
      * add start_time and due_time values.
-     * @param $input
+     *
+     * @param array{start_time: string, olas_id: int, itemtype: class-string<\CommonITILObject>, items_id: int} $input
      * @return array|false
      */
     public function prepareInputForAdd($input)
     {
-        // @todoseb attention filter si TTO ou TTR ? -> test
-        if (in_array(['due_time', 'start_time'], array_keys($input))) {
-            throw new \RuntimeException('due_time and start_time are not allowed in the input. Values are computed.');
+        if (in_array(['due_time'], array_keys($input))) {
+            throw new \RuntimeException('due_time is not allowed in the input. Values is computed.');
         }
 
         // get the related ola (cannot use getConnexityItem() ou getOnePeer() because it is not in the database yet)
@@ -66,8 +66,8 @@ class Item_Ola extends CommonDBRelation
         }
 
         return parent::prepareInputForAdd([
-            'due_time' => $_ola->computeDate($_SESSION['glpi_currenttime']),
-            'start_time' => $_SESSION['glpi_currenttime'],
+            'due_time' => $_ola->computeDate($input['start_time']),
+            'start_time' => $input['start_time'],
         ] + $input);
     }
 
