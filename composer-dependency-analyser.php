@@ -65,7 +65,6 @@ return $config
     ->ignoreErrorsOnPackages([
         'symfony/twig-bundle',
         'symfony/web-profiler-bundle',
-        'alisqi/twigqi',
     ], [ErrorType::DEV_DEPENDENCY_IN_PROD])
 
     ->ignoreErrorsOnExtension('ext-bcmath', [ErrorType::UNUSED_DEPENDENCY]) // Required by tc-lib-barcode

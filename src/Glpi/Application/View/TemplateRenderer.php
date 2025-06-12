@@ -34,8 +34,6 @@
 
 namespace Glpi\Application\View;
 
-use AlisQI\TwigQI\Extension as TwigIQExtension;
-use AlisQI\TwigQI\Logger\TriggerErrorLogger;
 use Glpi\Application\Environment as GLPIEnvironment;
 use Glpi\Application\View\Extension\ConfigExtension;
 use Glpi\Application\View\Extension\DataHelpersExtension;
@@ -122,13 +120,6 @@ class TemplateRenderer
         $this->environment->addExtension(new SearchExtension());
         $this->environment->addExtension(new SessionExtension());
         $this->environment->addExtension(new TeamExtension());
-        if (GLPIEnvironment::get()->shouldEnableExtraDevAndDebugTools() || GLPI_STRICT_ENV) {
-            $this->environment->addExtension(
-                new TwigIQExtension(
-                    new TriggerErrorLogger()
-                )
-            );
-        }
 
         // add superglobals
         $this->environment->addGlobal('_post', $_POST);
