@@ -40,7 +40,7 @@ use Glpi\Toolbox\FrontEnd;
 
 /* Test for inc/html.class.php */
 
-class HtmlTest extends \GLPITestCase
+class HtmlTest extends \DbTestCase
 {
     public function testConvDate()
     {
@@ -1066,5 +1066,232 @@ SCSS,
     public function testSanitizeInputName(string $name, string $expected): void
     {
         $this->assertEquals($expected, \Html::sanitizeInputName($name));
+    }
+
+    public function testTimestampToRelativeStrProvider(): iterable
+    {
+        yield [
+            'current' => '2025-01-01 00:00:00.000',
+            'timestamp' => null,
+            'expected'  => 'Never',
+        ];
+
+        yield [
+            'current' => '2025-01-01 00:00:00.000',
+            'timestamp' => '2025-01-01 00:00:00.000',
+            'expected'  => 'Now',
+        ];
+
+        yield [
+            'current' => '2025-01-01 12:00:00.000',
+            'timestamp' => '2025-01-01 11:59:59.000',
+            'expected'  => 'Just now',
+        ];
+
+        yield [
+            'current' => '2025-01-01 12:00:00.000',
+            'timestamp' => '2025-01-01 11:59:01.000',
+            'expected'  => 'Just now',
+        ];
+
+        yield [
+            'current' => '2025-01-01 12:00:00.000',
+            'timestamp' => '2025-01-01 11:59:00.000',
+            'expected'  => '1 minutes ago',
+        ];
+
+        yield [
+            'current' => '2025-01-01 12:00:00.000',
+            'timestamp' => '2025-01-01 11:00:01.000',
+            'expected'  => '59 minutes ago',
+        ];
+
+        yield [
+            'current' => '2025-01-01 23:59:59.000',
+            'timestamp' => '2025-01-01 22:59:59.000',
+            'expected'  => '1 hours ago',
+        ];
+
+        yield [
+            'current' => '2025-01-01 23:59:59.000',
+            'timestamp' => '2025-01-01 00:00:00.000',
+            'expected'  => '23 hours ago',
+        ];
+
+        yield [
+            'current' => '2025-01-01 00:00:00.000',
+            'timestamp' => '2024-12-31 00:00:00.000',
+            'expected'  => 'Yesterday',
+        ];
+
+        yield [
+            'current' => '2025-01-01 00:00:00.000',
+            'timestamp' => '2024-12-30 00:00:00.000',
+            'expected'  => '2 days ago',
+        ];
+
+        yield [
+            'current' => '2025-01-01 00:00:00.000',
+            'timestamp' => '2024-12-19 00:00:00.000',
+            'expected'  => '13 days ago',
+        ];
+
+        yield [
+            'current' => '2025-01-01 00:00:00.000',
+            'timestamp' => '2024-12-18 00:00:00.000',
+            'expected'  => '2 weeks ago',
+        ];
+
+        yield [
+            'current' => '2025-01-01 00:00:00.000',
+            'timestamp' => '2024-12-02 00:00:00.000',
+            'expected'  => '4 weeks ago',
+        ];
+
+        yield [
+            'current' => '2025-01-01 00:00:00.000',
+            'timestamp' => '2024-12-01 00:00:00.000',
+            'expected'  => 'Last month',
+        ];
+
+        yield [
+            'current' => '2025-01-01 00:00:00.000',
+            'timestamp' => '2024-11-03 00:00:00.000',
+            'expected'  => 'Last month',
+        ];
+
+        yield [
+            'current' => '2025-01-01 00:00:00.000',
+            'timestamp' => '2024-11-02 00:00:00.000',
+            'expected'  => 'November 2024',
+        ];
+
+        yield [
+            'current' => '2026-01-01 00:00:00.000',
+            'timestamp' => '2024-12-31 00:00:00.000',
+            'expected'  => 'December 2024',
+        ];
+
+        yield [
+            'current' => '2025-01-01 00:00:00.000',
+            'timestamp' => '2025-01-01 00:00:01.000',
+            'expected'  => 'In a minute',
+        ];
+
+        yield [
+            'current' => '2025-01-01 00:00:00.000',
+            'timestamp' => '2025-01-01 00:01:59.000',
+            'expected'  => 'In a minute',
+        ];
+
+        yield [
+            'current' => '2025-01-01 00:00:00.000',
+            'timestamp' => '2025-01-01 00:02:00.000',
+            'expected'  => 'In 2 minutes',
+        ];
+
+        yield [
+            'current' => '2025-01-01 00:00:00.000',
+            'timestamp' => '2025-01-01 00:59:59.000',
+            'expected'  => 'In 59 minutes',
+        ];
+
+        yield [
+            'current' => '2025-01-01 00:00:00.000',
+            'timestamp' => '2025-01-01 01:00:00.000',
+            'expected'  => 'In an hour',
+        ];
+
+        yield [
+            'current' => '2025-01-01 00:00:00.000',
+            'timestamp' => '2025-01-01 01:59:59.000',
+            'expected'  => 'In an hour',
+        ];
+
+        yield [
+            'current' => '2025-01-01 00:00:00.000',
+            'timestamp' => '2025-01-01 02:00:00.000',
+            'expected'  => 'In 2 hours',
+        ];
+
+        yield [
+            'current' => '2025-01-01 00:00:00.000',
+            'timestamp' => '2025-01-01 23:59:59.000',
+            'expected'  => 'In 23 hours',
+        ];
+
+        yield [
+            'current' => '2025-01-01 00:00:00.000',
+            'timestamp' => '2025-01-02 00:00:00.000',
+            'expected'  => 'Tomorrow',
+        ];
+
+        yield [
+            'current' => '2025-01-01 00:00:00.000',
+            'timestamp' => '2025-01-02 23:59:59.000',
+            'expected'  => 'Tomorrow',
+        ];
+
+        yield [
+            'current' => '2025-01-01 00:00:00.000',
+            'timestamp' => '2025-01-03 00:00:00.000',
+            'expected'  => 'In 2 days',
+        ];
+
+        yield [
+            'current' => '2025-01-01 00:00:00.000',
+            'timestamp' => '2025-01-14 23:59:59.000',
+            'expected'  => 'In 13 days',
+        ];
+
+        yield [
+            'current' => '2025-01-01 00:00:00.000',
+            'timestamp' => '2025-01-15 00:00:00.000',
+            'expected'  => 'In 2 weeks',
+        ];
+
+        yield [
+            'current' => '2025-01-01 00:00:00.000',
+            'timestamp' => '2025-01-31 23:59:59.000',
+            'expected'  => 'In 4 weeks',
+        ];
+
+        yield [
+            'current' => '2025-01-01 00:00:00.000',
+            'timestamp' => '2025-02-01 00:00:00.000',
+            'expected'  => 'Next month',
+        ];
+
+        yield [
+            'current' => '2025-01-01 00:00:00.000',
+            'timestamp' => '2025-03-01 23:59:59.000',
+            'expected'  => 'Next month',
+        ];
+
+        yield [
+            'current' => '2025-01-01 00:00:00.000',
+            'timestamp' => '2025-03-02 00:00:00.000',
+            'expected'  => 'March 2025',
+        ];
+
+        yield [
+            'current' => '2025-01-01 00:00:00.000',
+            'timestamp' => '2025-12-31 00:00:00.000',
+            'expected'  => 'December 2025',
+        ];
+    }
+
+
+    /**
+     * @dataProvider testTimestampToRelativeStrProvider
+     */
+    public function testTimestampToRelativeStr(string $current, ?string $timestamp, string $expected): void
+    {
+        $this->login();
+
+        $_SESSION['glpi_currenttime'] = $current;
+        $_SESSION['glpilanguage'] = 'en_GB';
+
+        $this->assertSame($expected, \Html::timestampToRelativeStr($timestamp));
     }
 }
