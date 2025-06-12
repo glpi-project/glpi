@@ -64,6 +64,10 @@ switch ($action) {
     case 'clean':
         $plugin->clean($id);
         break;
+    case 'resume_execution':
+        $plugin->getFromDB($id);
+        $plugin->resumeExecution();
+        break;
     default:
         throw new BadRequestHttpException();
 }

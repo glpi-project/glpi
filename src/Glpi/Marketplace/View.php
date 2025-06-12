@@ -607,6 +607,7 @@ JS;
 
         $config_page        = $PLUGIN_HOOKS['config_page'][$plugin_key] ?? "";
         $must_be_cleaned   = $exists && !$plugin_inst->isLoadable($plugin_key);
+        $is_suspended      = $exists && $plugin_inst->fields['state'] === Plugin::SUSPENDED;
         $has_local_install = $exists && !$must_be_cleaned && !$is_installed;
         $has_local_update  = $exists && !$must_be_cleaned && $plugin_inst->isUpdatable($plugin_key);
 
@@ -783,6 +784,12 @@ JS;
                                          data-action='disable_plugin'
                                          title='" . __s("Disable") . "'>
                             <i class='ti ti-toggle-right-filled'></i>
+                        </button>";
+                } elseif ($is_suspended) {
+                    $buttons .= "<button class='modify_plugin'
+                                         data-action='resume_plugin_execution'
+                                         title='" . __s("This plugin has been temporarily suspended. You can force it to run again.") . "'>
+                            <i class='ti ti-player-pause-filled'></i>
                         </button>";
                 } else {
                     $buttons .= "<button class='modify_plugin'

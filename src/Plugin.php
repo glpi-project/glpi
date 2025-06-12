@@ -1237,11 +1237,9 @@ class Plugin extends CommonDBTM
     }
 
     /**
-     * Suspend a plugin. This can be used to disable the execution of a plugin during its update process.
-     *
-     * @return boolean
-     **/
-    public function suspend(): bool
+     * Suspend a plugin execution.
+     */
+    final public function suspendExecution(): bool
     {
         $success = $this->update([
             'id'    => $this->getID(),
@@ -1250,6 +1248,24 @@ class Plugin extends CommonDBTM
 
         if ($success) {
             $this->unload($this->fields['directory']);
+        }
+
+        return $success;
+    }
+
+    /**
+     * Resume a plugin execution.
+     */
+    final public function resumeExecution(): bool
+    {
+        $success = $this->update([
+            'id'    => $this->getID(),
+            'state' => self::ACTIVATED,
+        ]);
+
+        if ($success) {
+            $this->load($this->fields['directory']);
+            self::$activated_plugins[] = $this->fields['directory'];
         }
 
         return $success;
@@ -1467,7 +1483,7 @@ class Plugin extends CommonDBTM
 
         if ($this->getFromDBbyDir($directory)) {
             return $this->isLoadable($directory)
-                && in_array($this->fields['state'], [self::ACTIVATED, self::TOBECONFIGURED, self::NOTACTIVATED]);
+                && in_array($this->fields['state'], [self::ACTIVATED, self::TOBECONFIGURED, self::NOTACTIVATED, self::SUSPENDED]);
         }
 
         return false;
@@ -2588,6 +2604,15 @@ class Plugin extends CommonDBTM
                         _x('button', 'Disable'),
                         ['id' => $ID],
                         'ti-toggle-right-filled fs-2x enabled'
+                    ) . '&nbsp;';
+                } elseif ($state === self::SUSPENDED) {
+                    // Resume execution button for suspended plugins
+                    $output .= Html::getSimpleForm(
+                        static::getFormURL(),
+                        ['action' => 'resume_execution'],
+                        _x('button', 'This plugin has been temporarily suspended. You can force it to run again.'),
+                        ['id' => $ID],
+                        'ti-player-pause-filled fs-2x'
                     ) . '&nbsp;';
                 } elseif ($state === self::NOTACTIVATED) {
                     // Activate button for configured and up to date plugins

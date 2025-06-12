@@ -585,15 +585,28 @@ class Controller extends CommonGLPI
     }
 
     /**
-     * Suspend current plugin
-     *
-     * @return bool
+     * Suspend current plugin execution
      */
-    public function suspendPlugin(): bool
+    public function suspendPluginExecution(): bool
     {
         $plugin = new Plugin();
+
         if ($plugin->getFromDBbyDir($this->plugin_key)) {
-            return $plugin->suspend();
+            return $plugin->suspendExecution();
+        }
+
+        return true;
+    }
+
+    /**
+     * Suspend current plugin execution
+     */
+    public function resumePluginExecution(): bool
+    {
+        $plugin = new Plugin();
+
+        if ($plugin->getFromDBbyDir($this->plugin_key)) {
+            return $plugin->resumeExecution();
         }
 
         return true;

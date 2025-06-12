@@ -33,7 +33,6 @@
  * ---------------------------------------------------------------------
  */
 
-use function Safe\json_encode;
 
 // follow download progress of a plugin with a minimal loading of files
 // So we get a ajax answer in 5ms instead 100ms
@@ -72,10 +71,11 @@ if (isset($_POST['key']) && isset($_POST["action"])) {
     if ($_POST["action"] == "disable_plugin") {
         $marketplace_ctrl->disablePlugin();
     }
-    if ($_POST["action"] == "suspend_plugin") {
-        header("Content-Type: application/json; charset=UTF-8");
-        echo json_encode(['success' => $marketplace_ctrl->suspendPlugin()]);
-        return;
+    if ($_POST["action"] == "suspend_plugin_execution") {
+        $marketplace_ctrl->suspendPluginExecution();
+    }
+    if ($_POST["action"] == "resume_plugin_execution") {
+        $marketplace_ctrl->resumePluginExecution();
     }
 
     echo MarketplaceView::getButtons($_POST['key']);
