@@ -2038,4 +2038,44 @@ class DropdownTest extends DbTestCase
             )
         );
     }
+
+    /**
+     * Test that `getDropdownActors` for suppliers only returns active suppliers by default.
+     * @return void
+     */
+    public function testSupplierActorDropdownOnlyActive()
+    {
+        $this->login();
+        $this->createItem('Supplier', [
+            'name' => __FUNCTION__ . '_active',
+            'is_active' => 1,
+            'entities_id' => $this->getTestRootEntity(true),
+            'is_recursive' => 1,
+        ]);
+        $inactive_supplier = $this->createItem('Supplier', [
+            'name' => __FUNCTION__ . '_inactive',
+            'is_active' => 0,
+            'entities_id' => $this->getTestRootEntity(true),
+            'is_recursive' => 1,
+        ]);
+        $params = [
+            'itemtype' => 'Ticket',
+            'actortype' => 'assign',
+            'returned_itemtypes' => ['Supplier'],
+            'searchText' => '',
+        ];
+        $results = \Dropdown::getDropdownActors($params + ['_idor_token' => \Session::getNewIDORToken('Ticket', $params)], false);
+        $this->assertNotEmpty($results['results'][0]['children']);
+        $this->assertCount(0, array_filter($results['results'][0]['children'], function ($result) use ($inactive_supplier) {
+            return $result['id'] === 'Supplier_' . $inactive_supplier->getID();
+        }));
+
+        // If asking for inactive_deleted, it should return the inactive supplier
+        $params['inactive_deleted'] = 1;
+        $results = \Dropdown::getDropdownActors($params + ['_idor_token' => \Session::getNewIDORToken('Ticket', $params)], false);
+        $this->assertNotEmpty($results['results'][0]['children']);
+        $this->assertCount(1, array_filter($results['results'][0]['children'], function ($result) use ($inactive_supplier) {
+            return $result['id'] === 'Supplier_' . $inactive_supplier->getID();
+        }));
+    }
 }

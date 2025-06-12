@@ -4254,16 +4254,19 @@ JAVASCRIPT;
             && !$template->isHiddenField("_suppliers_id_{$post['actortype']}")
             && in_array('Supplier', $post['returned_itemtypes'])
         ) {
-            // Bypass checks, idor token validation has already been made earlier in method
-            $supplier_idor = Session::getNewIDORToken('Supplier', ['entity_restrict' => $entity_restrict]);
-
-            $suppliers    = Dropdown::getDropdownValue([
+            $supplier_params = [
                 'itemtype'            => 'Supplier',
-                '_idor_token'         => $supplier_idor,
                 'display_emptychoice' => false,
                 'searchText'          => $post['searchText'],
                 'entity_restrict'     => $entity_restrict,
-            ], false);
+                'condition'           => [],
+            ];
+            if (!$post['inactive_deleted']) {
+                $supplier_params['condition'] = static::addNewCondition(['is_active' => 1]);
+            }
+            // Bypass checks, idor token validation has already been made earlier in method
+            $supplier_idor = Session::getNewIDORToken('Supplier', ['entity_restrict' => $entity_restrict, 'condition' => $supplier_params['condition']]);
+            $suppliers    = Dropdown::getDropdownValue($supplier_params + ['_idor_token' => $supplier_idor], false);
             foreach ($suppliers['results'] as $supplier) {
                 if (isset($supplier['children'])) {
                     foreach ($supplier['children'] as &$children) {
