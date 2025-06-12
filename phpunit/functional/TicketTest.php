@@ -40,6 +40,7 @@ use Computer;
 use CronTask;
 use DbTestCase;
 use Entity;
+use Glpi\PHPUnit\Tests\Glpi\ITILTrait;
 use Glpi\PHPUnit\Tests\Glpi\ValidationStepTrait;
 use Glpi\Search\SearchOption;
 use Glpi\Team\Team;
@@ -67,6 +68,7 @@ use Session;
 class TicketTest extends DbTestCase
 {
     use ValidationStepTrait;
+    use ITILTrait;
 
     public static function addActorsProvider(): iterable
     {
@@ -8779,5 +8781,30 @@ HTML,
         $input = ['itemtype' => \Ticket::class, 'items_id' => $ticket->getID()];
         $doc = new \Document();
         $this->assertEquals($expected, $doc->can(-1, CREATE, $input));
+    }
+
+    /**
+     * date & date_creation field initial value test
+     *
+     * - use the current time is not set
+     * - use the value provided otherwise
+     *
+     * date field can be changed in front office
+     * date_creation cannot be changed in front office, it is not supposed to be changed.
+     */
+    public function testDateFieldsInitialValues(): void
+    {
+        // test 1 : date & date_creation field is not set : current time is used
+        $now = $this->setCurrentTime('02:11:44');
+        $ticket = $this->createTicket();
+
+        $this->assertEquals($now->format('Y-m-d H:i:s'), $ticket->fields['date']);
+        $this->assertEquals($now->format('Y-m-d H:i:s'), $ticket->fields['date_creation']);
+
+        // test 2 : date & date_creation set : provided values used
+        $provided_date = '2023-11-27 10:00:00';
+        $ticket = $this->createTicket(['date' => $provided_date, 'date_creation' => $provided_date]);
+        $this->assertEquals($provided_date, $ticket->fields['date']);
+        $this->assertEquals($provided_date, $ticket->fields['date_creation']);
     }
 }
