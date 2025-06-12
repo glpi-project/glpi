@@ -8619,15 +8619,17 @@ abstract class CommonITILObject extends CommonDBTM
                 $this->getForeignKeyField() => $this->getID(),
             ];
 
-            if (!$bypass_rights) {
+           if (!$bypass_rights) {
                 $private_task_crit = [];
                 if (!Session::haveRight($task_class::$rightname, CommonITILTask::SEEPRIVATE)) {
                     $private_task_crit = ['is_private' => 0, 'users_id' => Session::getLoginUserID()];
                 }
-                if (Session::haveRight($task_class::$rightname, CommonITILTask::SEEPRIVATEGROUPS)) {
+                if (Session::haveRight($task_class::$rightname, CommonITILTask::SEEPRIVATEGROUPS) && !empty($_SESSION["glpigroups"])) {
                     $private_task_crit['groups_id_tech'] = $_SESSION["glpigroups"];
                 }
-                $tasks_crit['OR'] = $private_task_crit;
+                if (!empty($private_task_crit)) {
+                    $tasks_crit[] = ['OR' => $private_task_crit];
+                }
             }
 
             // Run the subquery separately. It's better for huge databases
