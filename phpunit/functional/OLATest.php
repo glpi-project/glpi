@@ -84,7 +84,7 @@ use Ticket;
  *              - ola due time is not delayed if the ticket status is WAITING : @see self::testOlaTTODueTimeIsNotDelayedWhileTicketStatusIsWaiting() @todoseb maintenant plus subtile, doit être compté avant que le groupe assigné au ticket l'ai pris en charge.
  *              - ola waiting time is not incremented while the ticket is WAITING @see self::testOlaTTOWaitingTimeIsNotIncrementedWhileTicketStatusIsWaiting()
  *
- *          - ola can be associated by rule and form at the same time @see self::testOlaCanBeAssociatedByRulesAndByForm() @todo test rule pour ttr
+ *          - ola can be associated by rule and form at the same time @see self::testOlaCanBeAssociatedByRulesAndByForm()
  *
  *      - TTR (Time To Resolve)
  *          - ola ttr is associated with a ticket then 'start_time' is set to now & 'due_time' is calculated, however the group (or a user in the group) is not assigned to the ticket yet
