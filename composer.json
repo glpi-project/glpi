@@ -104,7 +104,6 @@
     },
     "require-dev": {
         "ext-xml": "*",
-        "alisqi/twigqi": "^3.0",
         "atoum/atoum": "^4.3",
         "friendsofphp/php-cs-fixer": "^3.75",
         "friendsoftwig/twigcs": "^6.5",
