@@ -822,7 +822,6 @@ class Software extends InventoryAsset
                 }
 
                 $stmt_values = array_values($stmt_columns);
-
                 $stmt->bind_param($stmt_types, ...$stmt_values);
                 $DB->executeStatement($stmt);
                 $softwares_id = $DB->insertId();
