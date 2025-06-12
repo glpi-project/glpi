@@ -75,28 +75,22 @@ It is distributed under the GNU GENERAL PUBLIC LICENSE Version 3 - please consul
 
 * A web server (Apache, Nginx, IIS, etc.)
 * MariaDB >= 10.5 or MySQL >= 8.0
-* PHP (See compatibility matrix below)
-
-    | GLPI Version | Minimum PHP | Maximum PHP |
-    | ------------ | ----------- | ----------- |
-    | 9.5.X        | 7.2         | 8.0         |
-    | 10.0.X       | 7.4         | 8.4         |
-    | 11.0.X       | 8.2         | 8.4         |
+* PHP >= 8.2
 * Mandatory PHP extensions:
-    - dom, fileinfo, json, session, simplexml (these are enabled in PHP by default)
+    - dom, fileinfo, filter, libxml, simplexml, xmlreader, xmlwriter (these are enabled in PHP by default)
+    - bcmath (QRCode generation)
     - curl (access to remote resources, like inventory agents, marketplace API, RSS feeds, ...)
     - gd (pictures handling)
     - intl (internationalization)
-    - libxml (XML handling)
+    - mbstring (multibyte chars support and charset conversion)
     - mysqli (communication with database server)
+    - openssl (email sending using SSL/TLS, encrypted communication with inventory agents and OAuth 2.0 authentication)
     - zlib (handling of compressed communication with inventory agents, installation of gzip packages from marketplace, PDF generation)
-
 * Suggested PHP extensions
+    - bz2, phar and zip (support of most common packages formats in marketplace)
     - exif (security enhancement on images validation)
     - ldap (usage of authentication through remote LDAP server)
-    - openssl (email sending using SSL/TLS)
-    - zip and bz2 (installation of zip and bz2 packages from marketplace)
-
+    - Zend OPcache (improve performances)
  * Supported browsers:
     - Edge
     - Firefox (including 2 latest ESR versions)
