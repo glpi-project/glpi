@@ -82,7 +82,6 @@ class RequirementsManager
                 'fileinfo',
                 'filter',
                 'libxml',
-                'json',
                 'simplexml',
                 'xmlreader', // required/used by simplepie/simplepie and sabre/xml
                 'xmlwriter', // required/used by sabre/xml
@@ -134,7 +133,7 @@ class RequirementsManager
         $requirements[] = new Extension(
             'openssl',
             false,
-            __('Required for handling of encrypted communication with inventory agents and OAuth 2.0 authentication.')
+            __('Required for email sending using SSL/TLS, handling of encrypted communication with inventory agents and OAuth 2.0 authentication.')
         );
 
         if ($db instanceof \DBmysql) {
@@ -171,11 +170,6 @@ class RequirementsManager
             'ldap',
             true,
             __('Enable usage of authentication through remote LDAP server.')
-        );
-        $requirements[] = new Extension(
-            'openssl',
-            true,
-            __('Enable email sending using SSL/TLS.')
         );
         $requirements[] = new ExtensionGroup(
             __('PHP extensions for marketplace'),
