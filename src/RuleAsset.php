@@ -133,9 +133,14 @@ class RuleAsset extends Rule
         $criterias['entities_id']['linkfield']      = 'entities_id';
         $criterias['entities_id']['type']           = 'dropdown';
 
-        $criterias['users_id']['name']            = User::getTypeName(1);
-        $criterias['users_id']['type']            = 'dropdown_users';
-        $criterias['users_id']['table']           = 'glpi_users';
+        $criterias['users_id']['name']              = User::getTypeName(1);
+        $criterias['users_id']['type']              = 'dropdown_users';
+        $criterias['users_id']['table']             = 'glpi_users';
+
+        $criterias['users_id_tech']['name']         = User::getTypeName(1);
+        $criterias['users_id_tech']['type']         = 'dropdown_users';
+        $criterias['users_id_tech']['table']        = 'glpi_users';
+        $criterias['users_id_tech']['name']         = __('Technician in charge');
 
         $criterias['_tag']['name']            = sprintf('%s > %s', Agent::getTypeName(1), __('Inventory tag'));
 
@@ -150,6 +155,18 @@ class RuleAsset extends Rule
         $criterias['_groups_id_of_user']['name']         = __('User in group');
         $criterias['_groups_id_of_user']['linkfield']    = '_groups_id_of_user';
         $criterias['_groups_id_of_user']['type']         = 'dropdown';
+
+        $criterias['_groups_id']['table']                = 'glpi_groups';
+        $criterias['_groups_id']['field']                = 'completename';
+        $criterias['_groups_id']['name']                 = __('Group');
+        $criterias['_groups_id']['linkfield']            = '_groups_id';
+        $criterias['_groups_id']['type']                 = 'dropdown';
+
+        $criterias['_groups_id_tech']['table']           = 'glpi_groups';
+        $criterias['_groups_id_tech']['field']           = 'completename';
+        $criterias['_groups_id_tech']['name']            = __('Group in charge');
+        $criterias['_groups_id_tech']['linkfield']       = '_groups_id_tech';
+        $criterias['_groups_id_tech']['type']            = 'dropdown';
 
         $criterias['last_inventory_update']['name']            = __('Last inventory update');
         $criterias['last_inventory_update']['type']            = 'datetime';
@@ -203,16 +220,21 @@ class RuleAsset extends Rule
         $actions['groups_id']['type']          = 'dropdown';
         $actions['groups_id']['table']         = 'glpi_groups';
         $actions['groups_id']['condition']     = ['is_itemgroup' => 1];
-        $actions['groups_id']['force_actions'] = ['assign', 'defaultfromuser', 'firstgroupfromuser'];
+        $actions['groups_id']['force_actions'] = ['assign', 'defaultfromuser', 'firstgroupfromuser', 'append'];
+        $actions['groups_id']['permitseveral'] = ['append'];
+        $actions['groups_id']['appendto']      = '_groups_id';
 
         $actions['users_id_tech']['table']      = 'glpi_users';
         $actions['users_id_tech']['type']       = 'dropdown_users';
         $actions['users_id_tech']['name']       = __('Technician in charge');
 
-        $actions['groups_id_tech']['name']      = __('Group in charge');
-        $actions['groups_id_tech']['type']      = 'dropdown';
-        $actions['groups_id_tech']['table']     = 'glpi_groups';
-        $actions['groups_id_tech']['condition'] = ['is_assign' => 1];
+        $actions['groups_id_tech']['name']          = __('Group in charge');
+        $actions['groups_id_tech']['type']          = 'dropdown';
+        $actions['groups_id_tech']['table']         = 'glpi_groups';
+        $actions['groups_id_tech']['condition']     = ['is_assign' => 1];
+        $actions['groups_id_tech']['force_actions'] = ['assign', 'append'];
+        $actions['groups_id_tech']['permitseveral'] = ['append'];
+        $actions['groups_id_tech']['appendto']      = '_groups_id_tech';
 
         $actions['comment']['table']            = '';
         $actions['comment']['field']            = 'comment';
@@ -278,6 +300,7 @@ class RuleAsset extends Rule
                             = $action->fields["value"];
                         }
                         $output[$actions[$action->fields["field"]]["appendto"]][] = $value;
+                        \Toolbox::logDebug($input, $output);
                         break;
 
                     case "regex_result":
