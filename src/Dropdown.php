@@ -4276,7 +4276,7 @@ JAVASCRIPT;
                         $children['items_id']          = $children['id'];
                         $children['id']                = "Supplier_" . $children['id'];
                         $children['itemtype']          = "Supplier";
-                        $children['use_notification']  = strlen($supplier_obj->fields['email']) > 0 ? 1 : 0;
+                        $children['use_notification']  = strlen($supplier_obj->fields['email'] ?? '') > 0 ? 1 : 0;
                         $children['default_email']     = $supplier_obj->fields['email'];
                         $children['alternative_email'] = '';
                     }
