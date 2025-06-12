@@ -1038,4 +1038,146 @@ class LockedfieldTest extends DbTestCase
         $this->assertEquals(0, $networkEquipment->fields['networkequipmenttypes_id'], 'Network equipment type should be 0 before applying the global locked field.');
     }
 
+    public function testWithSoftware()
+    {
+        $software = new \Software();
+        $sid = (int) $software->add([
+            'name'         => 'Software from inventory',
+            'comment'      => 'Software comment',
+            'entities_id'  => 0,
+            'is_dynamic'   => 1,
+        ]);
+        $this->assertGreaterThan(0, $sid);
+
+        $lockedfield = new \Lockedfield();
+        $this->assertTrue($lockedfield->isHandled($software));
+        $this->assertEmpty($lockedfield->getLockedValues($software->getType(), $sid));
+
+        //update software manually, to add a locked field
+        $this->assertTrue(
+            $software->update(['id' => $sid, 'comment' => 'Software comment updated'])
+        );
+
+        $this->assertTrue($software->getFromDB($sid));
+        $this->assertSame(['comment' => null], $lockedfield->getLockedValues($software->getType(), $sid));
+
+        //ensure new dynamic update does not override otherserial again
+        $this->assertTrue(
+            $software->update([
+                'id' => $sid,
+                'comment'  => 'Software comment updated dynamic',
+                'is_dynamic'   => 1,
+            ])
+        );
+
+        $this->assertTrue($software->getFromDB($sid));
+        $this->assertEquals('Software comment updated', $software->fields['comment']);
+        $this->assertSame(['comment' => 'Software comment updated dynamic'], $lockedfield->getLockedValues($software->getType(), $sid));
+
+        //ensure new dynamic update do not set new lock on regular update
+        $this->assertTrue(
+            $software->update([
+                'id' => $sid,
+                'name'         => 'Software name changed',
+                'is_dynamic'   => 1,
+            ])
+        );
+
+        $this->assertTrue($software->getFromDB($sid));
+        $this->assertEquals('Software name changed', $software->fields['name']);
+        $this->assertSame(['comment' => 'Software comment updated dynamic'], $lockedfield->getLockedValues($software->getType(), $sid));
+
+        //ensure regular update do work on locked field
+        $this->assertTrue(
+            $software->update(['id' => $sid, 'comment' => 'Software comment updated again'])
+        );
+        $this->assertTrue($software->getFromDB($sid));
+        $this->assertEquals('Software comment updated again', $software->fields['comment']);
+    }
+
+    public function testGlobalLockSoftware()
+    {
+        $lockedfield = new \Lockedfield();
+
+        //add a global lock on comment field for Software
+        $this->assertGreaterThan(
+            0,
+            $lockedfield->add([
+                'item' => 'Software - comment',
+            ])
+        );
+
+        $software = new \Software();
+        $sid = (int) $software->add([
+            'name'         => 'Software with global lock',
+            'comment'      => 'Initial comment',
+            'entities_id'  => 0,
+            'is_dynamic'   => 1,
+        ]);
+        $this->assertGreaterThan(0, $sid);
+
+        $this->assertTrue($lockedfield->isHandled($software));
+        //lockedfield value must be null because it's a global lock
+        $this->assertSame(['comment' => null], $lockedfield->getLockedValues($software->getType(), $sid));
+
+        //ensure dynamic update does not override comment
+        $this->assertTrue(
+            $software->update([
+                'id' => $sid,
+                'comment'  => 'Attempted dynamic comment change',
+                'is_dynamic' => 1,
+            ])
+        );
+
+        $this->assertTrue($software->getFromDB($sid));
+        $this->assertEquals('Initial comment', $software->fields['comment']);
+        //lockedfield must be null because it's a global lock
+        $this->assertSame(['comment' => null], $lockedfield->getLockedValues($software->getType(), $sid));
+
+        //ensure dynamic update still works on non-locked fields
+        $this->assertTrue(
+            $software->update([
+                'id' => $sid,
+                'name' => 'Software name changed dynamically',
+                'is_dynamic' => 1,
+            ])
+        );
+
+        $this->assertTrue($software->getFromDB($sid));
+        $this->assertEquals('Software name changed dynamically', $software->fields['name']);
+        //lockedfield must be null because it's a global lock
+        $this->assertSame(['comment' => null], $lockedfield->getLockedValues($software->getType(), $sid));
+
+        //ensure regular update still works on locked field
+        $this->assertTrue(
+            $software->update(['id' => $sid, 'comment' => 'Manually updated comment'])
+        );
+        $this->assertTrue($software->getFromDB($sid));
+        $this->assertEquals('Manually updated comment', $software->fields['comment']);
+        
+        //create a second software to confirm the global lock applies to all
+        $sid2 = (int) $software->add([
+            'name'         => 'Second software',
+            'comment'      => 'Second comment',
+            'entities_id'  => 0,
+            'is_dynamic'   => 1,
+        ]);
+        $this->assertGreaterThan(0, $sid2);
+        
+        //verify global lock applies to new software
+        $this->assertTrue($software->getFromDB($sid2));
+        $this->assertSame(['comment' => null], $lockedfield->getLockedValues($software->getType(), $sid2));
+        
+        //ensure dynamic update doesn't change locked field on second software
+        $this->assertTrue(
+            $software->update([
+                'id' => $sid2,
+                'comment'  => 'Try changing second software',
+                'is_dynamic' => 1,
+            ])
+        );
+        
+        $this->assertTrue($software->getFromDB($sid2));
+        $this->assertEquals('Second comment', $software->fields['comment']);
+    }
 }
