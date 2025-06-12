@@ -6369,11 +6369,13 @@ HTML;
                     return null;
                 }
 
-                $extension = $file_chunks['extension'] ?? 'scss';
-                $possible_filenames = [
-                    sprintf('%s/css/lib/%s/%s.%s', GLPI_ROOT, $file_chunks['directory'], $file_chunks['file'], $extension),
-                    sprintf('%s/css/lib/%s/_%s.%s', GLPI_ROOT, $file_chunks['directory'], $file_chunks['file'], $extension),
-                ];
+                $possible_extensions = array_key_exists('extension', $file_chunks) ? $file_chunks['extension'] : ['scss', 'css'];
+
+                $possible_filenames  = [];
+                foreach ($possible_extensions as $extension) {
+                    $possible_filenames[] = sprintf('%s/css/lib/%s/%s.%s', GLPI_ROOT, $file_chunks['directory'], $file_chunks['file'], $extension);
+                    $possible_filenames[] = sprintf('%s/css/lib/%s/_%s.%s', GLPI_ROOT, $file_chunks['directory'], $file_chunks['file'], $extension);
+                }
                 foreach ($possible_filenames as $filename) {
                     if (file_exists($filename)) {
                         return $filename;
