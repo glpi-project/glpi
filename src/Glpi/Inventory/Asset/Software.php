@@ -59,6 +59,8 @@ class Software extends InventoryAsset
     private $items_versions = [];
     /** @var array */
     private $current_versions = [];
+    /** @var boolean */
+    private $is_dynamic = true;
     /** @var array */
     private $added_versions   = [];
     /** @var array */
