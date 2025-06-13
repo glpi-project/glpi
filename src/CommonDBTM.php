@@ -5855,7 +5855,7 @@ TWIG, $twig_params);
             }
 
             // Set the condition (add or update)
-            $output = $ruleasset->processAllRules($input, [], [], [
+            $output = $ruleasset->processAllRules($input, $input, [], [
                 'condition' => $condition,
             ]);
 

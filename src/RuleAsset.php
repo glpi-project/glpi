@@ -300,7 +300,6 @@ class RuleAsset extends Rule
                             = $action->fields["value"];
                         }
                         $output[$actions[$action->fields["field"]]["appendto"]][] = $value;
-                        \Toolbox::logDebug($input, $output);
                         break;
 
                     case "regex_result":
