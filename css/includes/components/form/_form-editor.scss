@@ -405,7 +405,7 @@ input.value-selector {
     width: fit-content;
 
     // Add scrolling as a last ressort, will not happen most of the time
-    overflow: scroll;
+    overflow: auto;
 }
 
 [data-glpi-form-editor-block] {
