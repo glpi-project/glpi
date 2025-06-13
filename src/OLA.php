@@ -44,9 +44,23 @@ class OLA extends LevelAgreement
     public function prepareInputForAdd($input)
     {
         $groups_id = (int) ($input['groups_id'] ?? 0);
+        $slms_id = (int) $input['slms_id'];
 
-        return $this->validateGroupInput($groups_id) ? parent::prepareInputForAdd($input) : false;
-    }
+        $input = $this->validateGroupInput($groups_id) ? parent::prepareInputForAdd($input) : false;
+
+        // @todo for cedric : trick for redirect after creation failure on GenericFormController : src/Glpi/Controller/GenericFormController.php:168 (final return of handleFormAction())
+        // GenericFormController::handleFormAction() must be fixed to handle this case properly (page is slm form, submited form is OLA, at the moment Generic controller redirects to olaform, but it should redirect to SLM form)
+        // the trick below is not enough because the form to update is not shown. but at least no internal error is raised.
+        if(false === $input) {
+            global $CFG_GLPI;
+            $slm = new SLM();
+            $slm->getFromDB($slms_id);
+            $_SESSION['glpibackcreated'] = false;
+            $_SERVER['HTTP_REFERER'] = $CFG_GLPI['url_base'].$CFG_GLPI['root_doc'].$slm->getLinkURL().'&forcetab=OLA$1';
+        }
+
+        return $input;
+     }
 
     public function prepareInputForUpdate($input)
     {

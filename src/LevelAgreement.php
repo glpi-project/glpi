@@ -163,6 +163,20 @@ abstract class LevelAgreement extends CommonDBChild
             $this->check(-1, CREATE, $options);
         }
 
+        // show form
+        // choose a default group if not set
+        $groups_id = $this->fields["groups_id"] ?: 0;
+        if(0 === $groups_id) {
+            $_group = new Group();
+            $groups_ids = $_group->find(['is_assign' => 1]);
+            if(count($groups_ids) > 0) {
+                $grp = array_pop($groups_ids);
+                $groups_id = $grp['id'];
+                unset($grp);
+            }
+            unset($_group);
+        }
+
         $this->showFormHeader($options);
         echo "<tr class='tab_bg_1'>";
         echo "<td>" . __s('Name') . "</td>";
@@ -197,7 +211,17 @@ abstract class LevelAgreement extends CommonDBChild
         if ($this->isField('groups_id')) {
             echo "<tr class='tab_bg_1'><td>" . _sn('Group', 'Groups', 1) . "</td>";
             echo "<td>";
-            Group::dropdown(['value' => $this->fields["groups_id"], 'display_emptychoice' => false, 'condition' => ['is_assign' => 1]]);
+            Group::dropdown(
+                [
+                    'value' => $groups_id,
+                    'display_emptychoice' => false,
+                    'condition' => ['is_assign' => 1],
+                    // @todoseb rendre le choix obligatoire, pas réussi
+//                    'specific_tags' => [
+//                        'required' => 'required',
+//                    ],
+//                    'required' => true,
+                ]);
             echo "</td>";
             echo "</tr>";
         }
