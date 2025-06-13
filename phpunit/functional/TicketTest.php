@@ -6576,7 +6576,14 @@ HTML,
                         break;
                     }
                 }
-                $this->assertTrue($found, json_encode($expected_actor));
+                $this->assertTrue(
+                    $found,
+                    sprintf(
+                        "Expected:\n%s\nFound:\n%s",
+                        json_encode($expected_actor),
+                        json_encode($actors)
+                    )
+                );
             }
         }
     }
