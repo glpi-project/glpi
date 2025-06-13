@@ -350,6 +350,11 @@ class Software extends CommonDBTM
         parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
     }
 
+    public function useDeletedToLockIfDynamic()
+    {
+        return false;
+    }
+
     public function rawSearchOptions()
     {
         // Only use for History (not by search Engine)

@@ -48,3 +48,6 @@ $migration->addCrontask(
         'logs_lifetime' => 300,
     ]
 );
+
+$migration->addField('glpi_softwares', 'is_dynamic', "tinyint NOT NULL DEFAULT '0'");
+$migration->addKey('glpi_softwares', 'is_dynamic');

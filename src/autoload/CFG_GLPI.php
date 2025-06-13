@@ -446,6 +446,7 @@ $CFG_GLPI['inventory_types'] = [
     Phone::class,
     Printer::class,
     NetworkEquipment::class,
+    Software::class,
 ];
 
 $CFG_GLPI['inventory_lockable_objects'] = [Asset_PeripheralAsset::class,  Item_SoftwareLicense::class,
