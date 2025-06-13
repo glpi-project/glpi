@@ -849,7 +849,9 @@ class Plugin extends DbTestCase
 
             $this->string($plugin->fields['directory'])->isIdenticalTo($expected_data['directory']);
             $this->string($plugin->fields['name'])->isIdenticalTo($expected_data['name']);
-            $this->string($plugin->fields['license'])->isIdenticalTo($expected_data['license']);
+            if (isset($expected_data['license'])) {
+                $this->string($plugin->fields['license'])->isIdenticalTo($expected_data['license']);
+            }
             $this->string($plugin->fields['version'])->isIdenticalTo($expected_data['version']);
             $this->integer((int) $plugin->fields['state'])->isIdenticalTo($expected_data['state']);
         } else {
