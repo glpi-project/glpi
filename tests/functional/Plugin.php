@@ -841,7 +841,7 @@ class Plugin extends DbTestCase
                ->exists();
         } else {
             $plugin->checkPluginState($plugin_directory, true);
-            $plugin->updatePluginInformationIfNeeded($plugin_directory);
+            $plugin->updatePluginInformation($plugin_directory);
         }
 
         // Assert that data in DB matches expected
