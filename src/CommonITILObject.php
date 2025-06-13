@@ -4041,7 +4041,7 @@ abstract class CommonITILObject extends CommonDBTM
     public static function getActorFieldNameType($type)
     {
 
-        return match ($type) {
+        return match ((int)$type) {
             CommonITILActor::REQUESTER => 'requester',
             CommonITILActor::OBSERVER => 'observer',
             CommonITILActor::ASSIGN => 'assign',
