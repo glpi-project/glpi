@@ -159,16 +159,30 @@ class KnowbaseItem_Revision extends CommonDBTM
               "<td></td>" .
               "</tr>";
 
-        $revisions = $DB->request(
-            'glpi_knowbaseitems_revisions',
-            $where + ['ORDER' => 'id DESC']
-        );
+        $revisions = $DB->request([
+            'SELECT' => [
+                'id',
+                'knowbaseitems_id',
+                'revision',
+                'users_id',
+                'date',
+            ],
+            'FROM' => 'glpi_knowbaseitems_revisions',
+            'WHERE' => $where,
+            'ORDER' => 'id DESC',
+        ]);
 
         $is_checked = true;
+        $author_cache = [
+            $item->fields['users_id'] => $user->getLink(),
+        ];
         foreach ($revisions as $revision) {
-            // Before GLPI 9.3.1, author was not stored in revision.
-            // See https://github.com/glpi-project/glpi/issues/4377.
-            $hasRevUser = $user->getFromDB($revision['users_id']);
+            if (!isset($author_cache[$revision['users_id']])) {
+                // Before GLPI 9.3.1, author was not stored in revision.
+                // See https://github.com/glpi-project/glpi/issues/4377.
+                $hasRevUser = $user->getFromDB($revision['users_id']);
+                $author_cache[$revision['users_id']] = $hasRevUser ? $user->getLink() : __s('Unknown user');
+            }
 
             echo "<tr class='tab_bg_2'>";
             echo "<td>" . $revision['revision'] . "</td>" .
@@ -181,7 +195,7 @@ class KnowbaseItem_Revision extends CommonDBTM
 
             echo "/> <input type='radio' name='diff' value='{$revision['id']}'/></td>";
 
-            echo "<td>" . ($hasRevUser ? $user->getLink() : __('Unknown user')) . "</td>" .
+            echo "<td>" . $author_cache[$revision['users_id']] . "</td>" .
              "<td class='tab_date'>" . $revision['date'] . "</td>";
 
             $form = null;
