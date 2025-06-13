@@ -7320,7 +7320,7 @@ HTML,
             ]
         );
 
-        $this->createItem(
+        $task1 = $this->createItem(
             \TicketTask::class,
             [
                 'tickets_id'    => $ticket->getID(),
@@ -7329,7 +7329,7 @@ HTML,
             ]
         );
 
-        $this->createItem(
+        $task2 = $this->createItem(
             \TicketTask::class,
             [
                 'tickets_id'    => $ticket->getID(),
@@ -7340,7 +7340,7 @@ HTML,
             ]
         );
 
-        $this->createItem(
+        $task3 = $this->createItem(
             \TicketTask::class,
             [
                 'tickets_id'    => $ticket->getID(),
@@ -7351,7 +7351,7 @@ HTML,
             ]
         );
 
-        $this->createItem(
+        $task4 = $this->createItem(
             \TicketTask::class,
             [
                 'tickets_id'    => $ticket->getID(),
@@ -7362,7 +7362,7 @@ HTML,
             ]
         );
 
-        $this->createItem(
+        $task5 = $this->createItem(
             \TicketTask::class,
             [
                 'tickets_id'        => $ticket->getID(),
@@ -7370,6 +7370,39 @@ HTML,
                 'is_private'        => 1,
                 'groups_id_tech'    => $seegroup_id,
                 'date_creation'     => date('Y-m-d H:i:s', strtotime('+50s', $now)), // to ensure result order is correct
+            ]
+        );
+
+        $document = $this->createTxtDocument();
+
+        $this->createItems(
+            \Document_Item::class,
+            [
+                [
+                    'documents_id'   => $document->getID(),
+                    'items_id'       => $task1->getID(),
+                    'itemtype'       => \TicketTask::class,
+                ],
+                [
+                    'documents_id'   => $document->getID(),
+                    'items_id'       => $task2->getID(),
+                    'itemtype'       => \TicketTask::class,
+                ],
+                [
+                    'documents_id'   => $document->getID(),
+                    'items_id'       => $task3->getID(),
+                    'itemtype'       => \TicketTask::class,
+                ],
+                [
+                    'documents_id'   => $document->getID(),
+                    'items_id'       => $task4->getID(),
+                    'itemtype'       => \TicketTask::class,
+                ],
+                [
+                    'documents_id'   => $document->getID(),
+                    'items_id'       => $task5->getID(),
+                    'itemtype'       => \TicketTask::class,
+                ],
             ]
         );
 
@@ -7528,6 +7561,15 @@ HTML,
                 ),
             );
             $this->assertEquals($expected_tasks, $tasks_content);
+
+            foreach ($timeline as $entry) {
+                if (
+                    $entry['type'] === \TicketTask::class &&
+                    isset($entry['item']['object']['fields']['name']) &&
+                    $entry['item']['object']['fields']['name'] !== 'private task assigned to normal user') {
+                    $this->assertArrayHasKey('documents', $entry);
+                }
+            }
         }
     }
 
