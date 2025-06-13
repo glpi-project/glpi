@@ -2174,11 +2174,10 @@ class SLMTest extends DbTestCase
         // next level to be processed is level_1
         $this->assertTrue((new \OlaLevel_Ticket())->getFromDBByCrit(['tickets_id' => $ticket->getID(), 'olalevels_id' => $level_1->getID()]));
 
-        // --- 11:01 ticket : level 1 is reached
+        // --- 11:01 ticket : level 1 is reached, so executed then removed from todo levels -> next level to be processed is level_2
         $this->setCurrentTime('11:01:00', '2025-05-26');
         $this->runOlaCron();
 
-        // next level to be processed is level_2
         $this->assertTrue((new \OlaLevel_Ticket())->getFromDBByCrit(['tickets_id' => $ticket->getID(), 'olalevels_id' => $level_2->getID()]));
         $ticket = new \Ticket();
         $ticket->getFromDB($ticket_id);

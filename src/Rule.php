@@ -2279,7 +2279,6 @@ JS
      **/
     public function getCriteriaDisplayPattern($ID, $condition, $pattern)
     {
-
         if (
             ($condition == self::PATTERN_EXISTS)
             || ($condition == self::PATTERN_DOES_NOT_EXISTS)
