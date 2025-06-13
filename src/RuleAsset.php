@@ -158,7 +158,7 @@ class RuleAsset extends Rule
 
         $criterias['_groups_id']['table']                = 'glpi_groups';
         $criterias['_groups_id']['field']                = 'completename';
-        $criterias['_groups_id']['name']                 = __('Group');
+        $criterias['_groups_id']['name']                 = Group::getTypeName(1);
         $criterias['_groups_id']['linkfield']            = '_groups_id';
         $criterias['_groups_id']['type']                 = 'dropdown';
 
