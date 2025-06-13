@@ -4019,7 +4019,7 @@ abstract class CommonITILObject extends CommonDBTM
      *
      * @since 0.84
      *
-     * @param integer $value     status ID
+     * @param integer $value status ID
      **/
     public static function getStatus($value)
     {
@@ -4032,7 +4032,7 @@ abstract class CommonITILObject extends CommonDBTM
     /**
      * get field part name corresponding to actor type
      *
-     * @param $type      integer : user type
+     * @param integer $type user type
      *
      * @since 0.84.6
      *
@@ -4041,7 +4041,7 @@ abstract class CommonITILObject extends CommonDBTM
     public static function getActorFieldNameType($type)
     {
 
-        return match ((int)$type) {
+        return match ((int) $type) {
             CommonITILActor::REQUESTER => 'requester',
             CommonITILActor::OBSERVER => 'observer',
             CommonITILActor::ASSIGN => 'assign',
@@ -4049,17 +4049,6 @@ abstract class CommonITILObject extends CommonDBTM
         };
     }
 
-    /**
-     * display a value according to a field
-     *
-     * @since 0.83
-     *
-     * @param $field     String         name of the field
-     * @param $values    String / Array with the value to display
-     * @param $options   Array          of option
-     *
-     * @return string
-     **/
     public static function getSpecificValueToDisplay($field, $values, array $options = [])
     {
 
@@ -4077,14 +4066,6 @@ abstract class CommonITILObject extends CommonDBTM
     }
 
 
-    /**
-     * @since 0.84
-     *
-     * @param $field
-     * @param $name            (default '')
-     * @param $values          (default '')
-     * @param $options   array
-     **/
     public static function getSpecificValueToSelect($field, $name = '', $values = '', array $options = [])
     {
 
