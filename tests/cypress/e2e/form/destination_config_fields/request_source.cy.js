@@ -95,4 +95,36 @@ describe('Request source configuration', () => {
 
         // Others possibles configurations are tested directly by the backend.
     });
+
+    it('only assigns request source to ticket are displayed', () => {
+        const uuid = Date.now();
+
+        // Create request sources
+        cy.createWithAPI('RequestType', {
+            'name'           : `Assignable request source ${uuid}`,
+            'is_active'      : 1,
+            'is_ticketheader': 1,
+        });
+        cy.createWithAPI('RequestType', {
+            'name'           : `Non assignable request source ${uuid}`,
+            'is_active'      : 1,
+            'is_ticketheader': 0,
+        });
+        cy.createWithAPI('RequestType', {
+            'name'           : `Disabled request source ${uuid}`,
+            'is_active'      : 0,
+            'is_ticketheader': 1,
+        });
+
+        cy.openAccordionItem('Destination fields accordion', 'Properties');
+        cy.findByRole('region', { 'name': "Request source configuration" }).as("config");
+        cy.get('@config').getDropdownByLabelText('Request source').as("source_dropdown");
+        cy.get('@source_dropdown').selectDropdownValue('Specific request source');
+        cy.get('@config').getDropdownByLabelText('Select a request source...').as('specific_request_source_id_dropdown');
+
+        // Check that only assignable request sources are displayed
+        cy.get('@specific_request_source_id_dropdown').hasDropdownValue(`Assignable request source ${uuid}`, true);
+        cy.get('@specific_request_source_id_dropdown').hasDropdownValue(`Non assignable request source ${uuid}`, false);
+        cy.get('@specific_request_source_id_dropdown').hasDropdownValue(`Disabled request source ${uuid}`, false);
+    });
 });
