@@ -543,7 +543,7 @@ class Plugin extends CommonDBTM
         self::$plugins_state_checked = true;
     }
 
-    public function updatePluginInformation(string $plugin_key) 
+    public function updatePluginInformation(string $plugin_key)
     {
         $information = $this->getPluginInformation($plugin_key);
 

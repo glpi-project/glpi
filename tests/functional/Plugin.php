@@ -272,7 +272,6 @@ class Plugin extends DbTestCase
 
     public function testUpdatePluginInformations()
     {
-
         $initial_data = [
             'directory' => $this->test_plugin_directory,
             'name'      => 'Test plugin',
