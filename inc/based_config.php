@@ -135,8 +135,8 @@ include_once(GLPI_ROOT . "/inc/autoload.function.php");
     }
 
     // Define constants values from local configuration file
-    if (file_exists(GLPI_ROOT . '/config/local_define.php') && !defined('TU_USER')) {
-        require_once GLPI_ROOT . '/config/local_define.php';
+    if (file_exists(GLPI_CONFIG_DIR . '/local_define.php') && !defined('TU_USER')) {
+        require_once GLPI_CONFIG_DIR . '/local_define.php';
     }
 
     // Define constants values from downstream distribution file
