@@ -143,6 +143,7 @@ final class Form extends CommonDBTM implements
         $this->addStandardTab(FormDestination::class, $tabs, $options);
         $this->addStandardTab(FormTranslation::class, $tabs, $options);
         $this->addStandardTab(Log::class, $tabs, $options);
+        $tabs['no_all_tab'] = true;
         return $tabs;
     }
 
