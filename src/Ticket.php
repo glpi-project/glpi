@@ -6142,11 +6142,6 @@ JAVASCRIPT;
         return Item_Ticket::class;
     }
 
-    public static function getTaskClass()
-    {
-        return TicketTask::class;
-    }
-
     public static function getContentTemplatesParametersClass(): string
     {
         return TicketParameters::class;

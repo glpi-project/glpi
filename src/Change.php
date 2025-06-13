@@ -1033,11 +1033,6 @@ class Change extends CommonITILObject
         }
     }
 
-    public static function getTaskClass()
-    {
-        return ChangeTask::class;
-    }
-
     public static function getContentTemplatesParametersClass(): string
     {
         return ChangeParameters::class;

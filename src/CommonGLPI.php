@@ -128,7 +128,7 @@ class CommonGLPI implements CommonGLPIInterface
     }
 
     /**
-     * Return the type of the object : class name
+     * Return the type of the object: class name
      *
      * @return string
      **/

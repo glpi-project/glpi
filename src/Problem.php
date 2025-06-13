@@ -1533,11 +1533,6 @@ class Problem extends CommonITILObject
         return Item_Problem::class;
     }
 
-    public static function getTaskClass()
-    {
-        return ProblemTask::class;
-    }
-
     public static function getContentTemplatesParametersClass(): string
     {
         return ProblemParameters::class;
