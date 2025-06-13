@@ -562,18 +562,7 @@ class Plugin extends CommonDBTM
             // Remove fields that are not part of plugin table definition
             unset($input['requirements']);
 
-            // Extract fields that are different from the current plugin information
-            $fields_diff = array_diff_assoc($plugin->fields, $input);
-
-            // Remove fields that are not part of plugin information
-            unset($fields_diff['id']);
-            unset($fields_diff['state']);
-            unset($fields_diff['directory']);
-
-            // If there are differences in fields, update the plugin
-            if (!empty($fields_diff)) {
-                $plugin->update($input);
-            }
+            $plugin->update($input);
         }
     }
 
