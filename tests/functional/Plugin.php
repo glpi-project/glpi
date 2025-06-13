@@ -269,6 +269,49 @@ class Plugin extends DbTestCase
         $this->boolean($plugin_inst->isActivated($this->test_plugin_directory));
     }
 
+
+    public function testUpdatePluginInformations()
+    {
+
+        $initial_data = [
+            'directory' => $this->test_plugin_directory,
+            'name'      => 'Test plugin',
+            'license'   => 'GPL v2+',
+            'version'   => '1.0',
+            'state'     => \Plugin::ACTIVATED,
+        ];
+        $expected_data = $initial_data;
+
+        $this->doTestCheckPluginState(
+            $initial_data,
+            null,
+            $expected_data,
+            'Unable to load plugin "' . $this->test_plugin_directory . '" information.'
+        );
+
+        // check when initial data differe
+        $plugin_inst = new \Plugin();
+        $this->boolean($plugin_inst->isActivated($this->test_plugin_directory));
+
+        $initial_data = [
+            'directory' => $this->test_plugin_directory,
+            'name'      => 'Test plugin',
+            'license'   => 'GPL v3+', // update license
+            'version'   => '1.0',
+            'state'     => \Plugin::ACTIVATED,
+        ];
+        $expected_data = $initial_data;
+
+        $this->doTestCheckPluginState(
+            $initial_data,
+            null,
+            $expected_data,
+            'Unable to load plugin "' . $this->test_plugin_directory . '" information.'
+        );
+    }
+
+
+
     /**
      * Test state checking on a valid directory corresponding to an unknown plugin.
      * Should results in creating plugin with "NOTINSTALLED" state.
@@ -798,6 +841,7 @@ class Plugin extends DbTestCase
                ->exists();
         } else {
             $plugin->checkPluginState($plugin_directory, true);
+            $plugin->updatePluginInformationIfNeeded($plugin_directory);
         }
 
         // Assert that data in DB matches expected
@@ -806,6 +850,7 @@ class Plugin extends DbTestCase
 
             $this->string($plugin->fields['directory'])->isIdenticalTo($expected_data['directory']);
             $this->string($plugin->fields['name'])->isIdenticalTo($expected_data['name']);
+            $this->string($plugin->fields['license'])->isIdenticalTo($expected_data['license']);
             $this->string($plugin->fields['version'])->isIdenticalTo($expected_data['version']);
             $this->integer((int) $plugin->fields['state'])->isIdenticalTo($expected_data['state']);
         } else {

@@ -537,9 +537,44 @@ class Plugin extends CommonDBTM
         // Check all directories from the checklist
         foreach ($directories as $directory) {
             $this->checkPluginState($directory, $scan_inactive_and_new_plugins);
+            $this->updatePluginInformationIfNeeded($directory);
         }
 
         self::$plugins_state_checked = true;
+    }
+
+    public function updatePluginInformationIfNeeded(string $plugin_key) {
+        $information = $this->getPluginInformation($plugin_key);
+
+        // If we are unable to load information, we ignore it
+        if ($information === null) {
+            return;
+        }
+
+        // Update plugin information in DB if needed
+        $plugin = new self();
+        if ($plugin->getFromDBByCrit(['directory' => $plugin_key])) {
+            // Prepare input for update
+            $input = [
+                'id'    => $plugin->fields['id'],
+            ] + $information;
+
+            // Remove fields that are not part of plugin table definition
+            unset($input['requirements']);
+
+            // Extract fields that are different from the current plugin information
+            $fields_diff = array_diff_assoc($plugin->fields, $input);
+
+            // Remove fields that are not part of plugin information
+            unset($fields_diff['id']);
+            unset($fields_diff['state']);
+            unset($fields_diff['directory']);
+
+            // If there are differences in fields, update the plugin
+            if (!empty($fields_diff)) {
+                $plugin->update($input);
+            }
+        }
     }
 
     /**
@@ -2634,12 +2669,18 @@ TWIG;
                 $state = $plugin->isLoadable($values['directory']) ? $values[$field] : self::TOBECLEANED;
                 return self::getState($state);
             case 'homepage':
-                $value = Toolbox::formatOutputWebLink($values[$field]);
-                if (!empty($value)) {
-                    $value = htmlescape($value);
-                    return "<a href=\"" . $value . "\" target='_blank'>
-                     <i class='ti ti-external-link-alt fs-2x'></i><span class='sr-only'>$value</span>
-                  </a>";
+                if (!empty($values[$field] ?? null)) {
+                    $value = Toolbox::formatOutputWebLink($values[$field]);
+
+                    if (!empty($value)) {
+                        return sprintf(
+                            '<a href="%1$s" target="_blank">
+                                <i class="ti ti-external-link fs-2x"></i>
+                                <span class="sr-only">%1$s</span>
+                            </a>',
+                            htmlescape($value)
+                        );
+                    }
                 }
                 return "&nbsp;";
             case 'name':
