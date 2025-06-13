@@ -246,21 +246,10 @@ class RuleTicket extends RuleCommonITILObject
         $criterias['slas_id_tto']['type']                     = 'dropdown';
         $criterias['slas_id_tto']['condition']                = ['glpi_slas.type' => SLM::TTO];
 
-        $criterias['olas_id_ttr']['table']                    = 'glpi_olas';
-        $criterias['olas_id_ttr']['field']                    = 'name';
-        $criterias['olas_id_ttr']['name']                     = sprintf(
-            __('%1$s %2$s'),
-            __('OLA'),
-            __('Time to resolve')
-        );
-        $criterias['olas_id_ttr']['linkfield']                = 'olas_id_ttr';
-        $criterias['olas_id_ttr']['type']                     = 'dropdown';
-        $criterias['olas_id_ttr']['condition']                = ['glpi_olas.type' => SLM::TTR];
-
         // associated ola
         $criterias['_olas_id_rule_criteria']['type']           = 'dropdown';
         $criterias['_olas_id_rule_criteria']['table']          = 'glpi_olas';
-        $criterias['_olas_id_rule_criteria']['field']          = 'name'; // @todoseb peut-être faire une concaténation avec le nom du slm - getSpecificValue ou une fonction dans le style existe.
+        $criterias['_olas_id_rule_criteria']['field']          = 'name';
         $criterias['_olas_id_rule_criteria']['name']           = __('OLA');
         $criterias['_olas_id_rule_criteria']['linkfield']      = '_olas_id';
 
@@ -322,7 +311,7 @@ class RuleTicket extends RuleCommonITILObject
         $actions['slas_id_ttr']['condition']                  = ['glpi_slas.type' => SLM::TTR];
 
         // empty ttr
-        $actions['time_to_resolve']['name']                   = __('Time to resolve');
+        $actions['time_to_resolve']['name']                   = __('Remove Time To Resolve value');
         $actions['time_to_resolve']['type']                   = 'yesno';
         $actions['time_to_resolve']['force_actions']          = ['delete'];
 
@@ -339,15 +328,9 @@ class RuleTicket extends RuleCommonITILObject
         $actions['slas_id_tto']['condition']                  = ['glpi_slas.type' => SLM::TTO];
 
         // empty sla tto
-        $actions['time_to_own']['name']                       = __('Time to own');
+        $actions['time_to_own']['name']                       = __('Remove Time To Own value');
         $actions['time_to_own']['type']                       = 'yesno';
         $actions['time_to_own']['force_actions']              = ['delete'];
-
-
-        // @todoseb à remimplementer la suppression de la valeur, pertinent ? concerne les items associés ? (et pas les valeurs ?)
-        $actions['internal_time_to_resolve']['name']          = __('Internal time to resolve');
-        $actions['internal_time_to_resolve']['type']          = 'yesno';
-        $actions['internal_time_to_resolve']['force_actions'] = ['delete'];
 
         // assign (existing) ola tto
         $actions['olas_id']['type']                       = 'dropdown';
@@ -356,11 +339,6 @@ class RuleTicket extends RuleCommonITILObject
         $actions['olas_id']['name']                       = 'OLA TTR/TTO';
         $actions['olas_id']['force_actions']              = ['append'];
         $actions['olas_id']['permitseveral']              = ['append'];
-
-        // @todoseb à remimplementer - voir commentaire au dessus.
-        $actions['internal_time_to_own']['name']              = __('Internal Time to own');
-        $actions['internal_time_to_own']['type']              = 'yesno';
-        $actions['internal_time_to_own']['force_actions']     = ['delete'];
 
         // assign a location
         $actions['locations_id']['name']                            = Location::getTypeName(1);
