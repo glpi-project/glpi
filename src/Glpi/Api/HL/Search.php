@@ -673,7 +673,7 @@ final class Search
                 $criteria['SELECT'][] = '_itemtype';
                 $criteria['GROUPBY'] = ['_itemtype', '_.id'];
             } else {
-                $criteria['SELECT'][] = ['_.id'];
+                $criteria['SELECT'][] = '_.id';
                 foreach ($this->joins as $join_alias => $join) {
                     $s = $this->getSelectCriteriaForProperty($this->getPrimaryKeyPropertyForJoin($join_alias), true);
                     if ($s !== null) {
