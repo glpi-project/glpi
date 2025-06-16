@@ -35,7 +35,7 @@
       {% for rules_block in rules_group %}
          <div class="col-12 {{ rules_group|length > 2 ? 'col-xxl-3' : 'col-xxl-9' }}">
             <h2 class="justify-content-center my-4 d-flex align-items-center mb-6 pb-3 fs-1">
-                {% if rules_block['icon']|length %}
+                {% if rules_block['icon'] is defined and rules_block['icon'] is not empty %}
                     <i class="{{ rules_block['icon'] }} me-1"></i>
                 {% endif %}
                 {{ rules_block['type'] }}
