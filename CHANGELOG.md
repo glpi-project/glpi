@@ -10,6 +10,7 @@ The present file will list all changes made to the project; according to the
 ### Changed
 - Only unsolved/unclosed tickets will be shown in the dropdown when performing the "Merge as Followup" action.
 - Domain records must be attached to a domain. Existing unattached records will remain but will require a domain if edited.
+- Inactive suppliers are hidden in assigned technician dropdown results. This does not affect items already assigned to inactive suppliers.
 
 ### Deprecated
 
