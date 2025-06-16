@@ -1214,7 +1214,7 @@ abstract class CommonITILObject extends CommonDBTM
      */
     public static function getReopenableStatusArray()
     {
-        return [self::CLOSED, self::SOLVED, self::WAITING];
+        return [self::CLOSED, self::SOLVED, self::WAITING, self::OBSERVED];
     }
 
 
@@ -8825,7 +8825,18 @@ abstract class CommonITILObject extends CommonDBTM
             NotificationEvent::raiseEvent('new', $this);
 
             $status = $this->fields['status'] ?? null;
-            if (in_array($status, $this->getSolvedStatusArray())) {
+
+            //Check if a waiting ITIL solution has been posted to avoid sending duplicate notifications.
+            $has_waiting_solution = countElementsInTable(
+                ITILSolution::getTable(),
+                [
+                    'itemtype' => Ticket::class,
+                    'items_id' => $this->getID(),
+                    'status'   => CommonITILValidation::WAITING,
+                ]
+            ) > 0;
+
+            if (in_array($status, $this->getSolvedStatusArray()) && !$has_waiting_solution) {
                 NotificationEvent::raiseEvent('solved', $this);
             }
             if (in_array($status, $this->getClosedStatusArray())) {

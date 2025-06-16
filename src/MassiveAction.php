@@ -1768,7 +1768,7 @@ class MassiveAction
      * Set the page to redirect for specific actions. By default, call previous page.
      * This should be call once for the given action.
      *
-     * @param $redirect link to the page
+     * @param string $redirect link to the page
      *
      * @return void
      **/

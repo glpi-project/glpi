@@ -175,7 +175,7 @@ TWIG, $twig_params);
             }
         } else {
             $this->replayDictionnaryOnSoftwaresByID($items);
-            return true;
+            return count($items);
         }
 
         return (($i == $nb) ? -1 : $i);

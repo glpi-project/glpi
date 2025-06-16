@@ -179,7 +179,7 @@ class Software extends CommonDBTM
     }
 
     /**
-     * Update validity indicator of a specific software
+     * Update validity indicator of specific software
      *
      * @param integer $ID ID of the licence
      *
@@ -210,11 +210,6 @@ class Software extends CommonDBTM
         }
     }
 
-    /**
-     * Print the software form
-     *
-     * {@inheritdoc}
-     */
     public function showForm($ID, array $options = [])
     {
         $this->initForm($ID, $options);
@@ -517,7 +512,7 @@ class Software extends CommonDBTM
             'joinparams'         => [
                 'jointype'   => 'child',
                 'beforejoin' => [
-                    'table'      => 'glpi_softwareversions',
+                    'table'      => SoftwareVersion::getTable(),
                     'joinparams' => ['jointype' => 'child'],
                 ],
                 'condition'  => ['NEWTABLE.is_deleted_item' => 0,
@@ -528,8 +523,8 @@ class Software extends CommonDBTM
         ];
 
         if (Session::getLoginUserID()) {
-            $newtab['joinparams']['beforejoin']['condition'] = array_merge(
-                $newtab['joinparams']['beforejoin']['condition'] ?? [],
+            $newtab['joinparams']['condition'] = array_merge(
+                $newtab['joinparams']['condition'],
                 getEntitiesRestrictCriteria('NEWTABLE')
             );
         }
@@ -645,7 +640,7 @@ class Software extends CommonDBTM
     }
 
     /**
-     * Make a select box for  software to install
+     * Make a select box for software to install
      *
      * @param string $myname select name
      * @param integer|array<int> $entity_restrict restrict to a defined entity
@@ -745,14 +740,14 @@ class Software extends CommonDBTM
     }
 
     /**
-     * Create a new software
+     * Create new software
      *
      * @param string   $name                the software's name
      * @param integer  $manufacturer_id     id of the software's manufacturer
      * @param integer  $entity              the entity in which the software must be added
      * @param string   $comment             (default '')
      * @param boolean  $is_recursive        must the software be recursive (false by default)
-     * @param ?boolean $is_helpdesk_visible show in helpdesk, default : from config (false by default)
+     * @param ?boolean $is_helpdesk_visible show in helpdesk, default: from config (false by default)
      *
      * @return integer the software's ID
      **/
@@ -797,7 +792,7 @@ class Software extends CommonDBTM
     }
 
     /**
-     * Add a software. If already exist in trashbin restore it
+     * Add software. If already exist in trashbin restore it
      *
      * @param string  $name                the software's name
      * @param string  $manufacturer        the software's manufacturer
@@ -865,8 +860,8 @@ class Software extends CommonDBTM
     /**
      * Put software in trashbin because it's been removed by GLPI software dictionary
      *
-     * @param integer $ID        the ID of the software to put in trashbin
-     * @param comment $comment   the comment to add to the already existing software's comment (default '')
+     * @param int    $ID      the ID of the software to put in trashbin
+     * @param string $comment the comment to add to the already existing software's comment (default '')
      *
      * @return boolean (success)
      **/
@@ -894,11 +889,11 @@ class Software extends CommonDBTM
     }
 
     /**
-     * Restore a software from trashbin
+     * Restore software from trashbin
      *
-     * @param integer $ID  the ID of the software to put in trashbin
+     * @param int $ID the ID of the software to put in trashbin
      *
-     * @return boolean (success)
+     * @return boolean
      **/
     public function removeFromTrash($ID)
     {

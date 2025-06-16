@@ -4473,18 +4473,21 @@ HTML;
         if (
             $post["actortype"] == 'assign'
             && !$template->isHiddenField("_suppliers_id_{$post['actortype']}")
-            && in_array('Supplier', $post['returned_itemtypes'])
+            && in_array(\Supplier::class, $post['returned_itemtypes'])
         ) {
-            // Bypass checks, idor token validation has already been made earlier in method
-            $supplier_idor = Session::getNewIDORToken('Supplier', ['entity_restrict' => $entity_restrict]);
-
-            $suppliers    = Dropdown::getDropdownValue([
-                'itemtype'            => 'Supplier',
-                '_idor_token'         => $supplier_idor,
+            $supplier_params = [
+                'itemtype'            => \Supplier::class,
                 'display_emptychoice' => false,
                 'searchText'          => $post['searchText'],
                 'entity_restrict'     => $entity_restrict,
-            ], false);
+                'condition'           => [],
+            ];
+            if (!$post['inactive_deleted']) {
+                $supplier_params['condition'] = static::addNewCondition(['is_active' => 1]);
+            }
+            // Bypass checks, idor token validation has already been made earlier in method
+            $supplier_idor = Session::getNewIDORToken(\Supplier::class, ['entity_restrict' => $entity_restrict, 'condition' => $supplier_params['condition']]);
+            $suppliers    = Dropdown::getDropdownValue($supplier_params + ['_idor_token' => $supplier_idor], false);
             foreach ($suppliers['results'] as $supplier) {
                 if (isset($supplier['children'])) {
                     foreach ($supplier['children'] as &$children) {
@@ -4494,7 +4497,7 @@ HTML;
                         $children['items_id']          = $children['id'];
                         $children['id']                = "Supplier_" . $children['id'];
                         $children['itemtype']          = "Supplier";
-                        $children['use_notification']  = strlen($supplier_obj->fields['email']) > 0 ? 1 : 0;
+                        $children['use_notification']  = strlen($supplier_obj->fields['email'] ?? '') > 0 ? 1 : 0;
                         $children['default_email']     = $supplier_obj->fields['email'];
                         $children['alternative_email'] = '';
                     }

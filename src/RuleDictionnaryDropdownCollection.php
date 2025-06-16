@@ -73,9 +73,6 @@ class RuleDictionnaryDropdownCollection extends RuleCollection
         $nb         = count($iterator) + $offset;
         $i          = $offset;
         if ($nb > $offset) {
-            $send              = [];
-            $send["tablename"] = $this->item_table;
-
             foreach ($iterator as $data) {
                 // Replay Type dictionnary
                 $ID = Dropdown::importExternal(
@@ -86,8 +83,7 @@ class RuleDictionnaryDropdownCollection extends RuleCollection
                     $data["comment"]
                 );
                 if ($data['id'] != $ID) {
-                    $tomove[$data['id']] = $ID;
-                    $type                = getItemTypeForTable($this->item_table);
+                    $type = getItemTypeForTable($this->item_table);
 
                     if ($dropdown = getItemForItemtype($type)) {
                         $dropdown->delete(['id'          => $data['id'],
@@ -123,7 +119,7 @@ class RuleDictionnaryDropdownCollection extends RuleCollection
             printf(__('Replay rules on existing database started on %s') . "\n", date("r"));
         }
 
-        // Model check : need to check using manufacturer extra data
+        // Model check: need to check using manufacturer extra data
         if (!str_contains($this->item_table, 'models')) {
             echo __('Error replaying rules');
             return false;
@@ -152,7 +148,7 @@ class RuleDictionnaryDropdownCollection extends RuleCollection
                     $data["manufacturer"] = Manufacturer::processName($data["manufacturer"]);
                 }
 
-                //Replay Type dictionnary
+                //Replay Type dictionary
                 $ID = Dropdown::importExternal(
                     getItemTypeForTable($this->item_table),
                     $data["name"],
@@ -198,7 +194,7 @@ class RuleDictionnaryDropdownCollection extends RuleCollection
 
                 $deletecartmodel  = false;
 
-                // No item left : delete old item
+                // No item left: delete old item
                 if (
                     $result
                     && ($result['cpt'] == 0)

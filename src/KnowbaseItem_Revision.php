@@ -138,10 +138,18 @@ class KnowbaseItem_Revision extends CommonDBTM
         $user = new User();
         $user->getFromDB($item->fields['users_id']);
         $revisions = $DB->request([
+            'SELECT' => [
+                'id',
+                'knowbaseitems_id',
+                'revision',
+                'users_id',
+                'date',
+            ],
             'FROM' => 'glpi_knowbaseitems_revisions',
             'WHERE' => $where,
             'ORDER' => 'id DESC',
         ]);
+
         $is_checked = true;
         $author_cache = [
             $item->fields['users_id'] => $user->getLink(),

@@ -8856,4 +8856,145 @@ HTML,
         $this->assertEquals($provided_date, $ticket->fields['date']);
         $this->assertEquals($provided_date, $ticket->fields['date_creation']);
     }
+
+    public function testRequesterHaveDoubleSolvedTicketNotification()
+    {
+        global $CFG_GLPI;
+        $CFG_GLPI['use_notifications'] = 1;
+        $CFG_GLPI['notifications_mailing'] = 1;
+
+        $this->login('glpi', 'glpi');
+
+        $user = getItemByTypeName(User::class, 'tech');
+
+        $itilsolution_template = $this->createItem(
+            \SolutionTemplate::class,
+            [
+                'entities_id' => 0,
+                'name' => 'ITILsolution Template',
+                'content' => 'ITILsolution Content',
+            ]
+        );
+
+        $rule = $this->createItem(
+            \Rule::class,
+            [
+                'entities_id' => 0,
+                'name' => 'Rule name',
+                'sub_type' => 'RuleTicket',
+                'match' => 'AND',
+                'is_active' => 1,
+                'condition' => 3,
+            ]
+        );
+
+        $this->createItem(\RuleAction::class, [
+            'rules_id' => $rule->getID(),
+            'action_type' => 'assign',
+            'field' => 'solution_template',
+            'value' => $itilsolution_template->getID(),
+        ]);
+
+        $this->createItem(\RuleCriteria::class, [
+            'rules_id' => $rule->getID(),
+            'criteria' => 'name',
+            'condition' => \Rule::PATTERN_CONTAIN,
+            'pattern' => 'ITILsolution',
+        ]);
+
+        $this->createItem(\UserEmail::class, [
+            'users_id' => $user->getID(),
+            'is_default' => 1,
+            'email' => 'tech@tech.tech',
+        ]);
+
+        //Test Notification for solved ticket with solution template rule at creation
+        $ticket = $this->createItem(
+            \Ticket::class,
+            [
+                'name'        => 'ITILsolution Title',
+                'content'     => '',
+                'entities_id' => 0,
+                '_actors'     => [
+                    'requester' => [
+                        ['itemtype' => 'User', 'items_id' => $user->getID(), 'use_notification' => 1],
+                    ],
+                ],
+            ]
+        );
+
+        $queue = new \QueuedNotification();
+        $this->assertTrue($queue->getFromDBByCrit([
+            'itemtype' => Ticket::class,
+            'items_id' => $ticket->getID(),
+            'event' => 'solved',
+            'mode' => 'mailing',
+            'recipientname' => 'tech',
+        ]));
+
+        $this->assertTrue($queue->delete(['id' => $queue->getID()], true));
+
+        $solution = new \ITILSolution();
+        $this->assertTrue($solution->getFromDBByCrit([
+            'items_id' => $ticket->getID(),
+            'itemtype' => Ticket::class,
+            'status'   => 2,
+        ]));
+
+        // Test Notification for solved ticket with solution template rule at update
+        $this->updateItem(
+            \ITILSolution::class,
+            $solution->getID(),
+            [
+                'status' => 3,
+            ],
+        );
+
+        $this->updateItem(
+            \Ticket::class,
+            $ticket->getID(),
+            [
+                'name'        => 'ITILsolution',
+                'status'      => \CommonITILObject::ASSIGNED,
+            ],
+            ['status']
+        );
+
+        $this->assertTrue($queue->getFromDBByCrit([
+            'itemtype' => Ticket::class,
+            'items_id' => $ticket->getID(),
+            'event' => 'solved',
+            'mode' => 'mailing',
+            'recipientname' => 'tech',
+        ]));
+
+        $this->assertTrue($queue->delete(['id' => $queue->getID()], true));
+
+        $this->updateItem(
+            \Ticket::class,
+            $ticket->getID(),
+            [
+                'status'      => \CommonITILObject::ASSIGNED,
+            ],
+            ['status']
+        );
+        $solution = new \ITILSolution();
+        $this->createItem(
+            \ITILSolution::class,
+            [
+                'items_id' => $ticket->getID(),
+                'itemtype' => Ticket::class,
+                'content' => 'ITILsolution Content',
+                'status' => 2,
+            ]
+        );
+
+        $this->assertTrue($queue->getFromDBByCrit([
+            'itemtype' => Ticket::class,
+            'items_id' => $ticket->getID(),
+            'event' => 'solved',
+            'mode' => 'mailing',
+            'recipientname' => 'tech',
+        ]));
+    }
 }

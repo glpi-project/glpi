@@ -879,7 +879,7 @@ class User extends CommonDBTM
             } else {
                 if ($input["password"] == $input["password2"]) {
                     $password_errors = [];
-                    if ($this->validatePassword($input["password"], $password_errors)) {
+                    if ($this->validatePassword($input["password"] ?? '', $password_errors)) {
                         $input["password"]
                         = Auth::getPasswordHash($input["password"]);
 
@@ -1109,7 +1109,7 @@ class User extends CommonDBTM
                     $password_errors = [];
                     if (
                         isset($input['id'])
-                        && $this->validatePassword($input["password"], $password_errors)
+                        && $this->validatePassword($input["password"] ?? '', $password_errors)
                         && (($input['id'] == Session::getLoginUserID())
                         || $this->currentUserHaveMoreRightThan($input['id'])
                         // Permit to change password with token and email

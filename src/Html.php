@@ -6532,12 +6532,12 @@ CSS;
         $ts_date = new DateTime();
         $ts_date->setTimestamp($ts);
 
-        $diff = time() - $ts;
+        $diff = strtotime($_SESSION['glpi_currenttime']) - $ts;
+        $date = new DateTime(date('Y-m-d', $ts));
+        $today = new DateTime(date('Y-m-d', strtotime($_SESSION['glpi_currenttime'])));
         if ($diff == 0) {
             return __('Now');
         } elseif ($diff > 0) {
-            $date = new DateTime(date('Y-m-d', $ts));
-            $today = new DateTime('today');
             $day_diff = $date->diff($today)->days;
             if ($day_diff == 0) {
                 if ($diff < 60) {
@@ -6562,12 +6562,8 @@ CSS;
             if ($day_diff < 60) {
                 return __('Last month');
             }
-
-            return IntlDateFormatter::formatObject($ts_date, 'MMMM Y', $_SESSION['glpilanguage'] ?? 'en_GB');
         } else {
             $diff     = abs($diff);
-            $today = new DateTime('today');
-            $date = new DateTime(date('Y-m-d', $ts));
             $day_diff = $today->diff($date)->days;
             if ($day_diff == 0) {
                 if ($diff < 120) {
@@ -6595,9 +6591,9 @@ CSS;
             if ($day_diff < 60) {
                 return __('Next month');
             }
-
-            return IntlDateFormatter::formatObject($ts_date, 'MMMM Y', $_SESSION['glpilanguage'] ?? 'en_GB');
         }
+
+        return IntlDateFormatter::formatObject($ts_date, 'MMMM y', $_SESSION['glpilanguage'] ?? 'en_GB');
     }
 
     /**

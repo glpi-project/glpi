@@ -681,7 +681,7 @@ class Auth extends CommonGLPI
                         $user->getFromDB($cookie_id);
                         $hash = $user->getAuthToken('cookie_token');
 
-                        if (Auth::checkPassword($cookie_token, $hash)) {
+                        if (self::checkPassword($cookie_token, $hash)) {
                             $this->user->fields['name'] = $user->fields['name'];
                             return true;
                         } else {

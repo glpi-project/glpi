@@ -810,6 +810,7 @@ abstract class CommonDropdown extends CommonDBTM
             $res_rule = $rulecollection->processAllRules($ruleinput, [], []);
             if (isset($res_rule["name"])) {
                 $input["name"] = $res_rule["name"];
+                unset($external_params['id']); //ID won't match one set from rules
             }
         }
         // Merge extra input fields into $input

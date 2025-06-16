@@ -5830,7 +5830,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Class DateTime is unsafe to use\\. Its methods can return FALSE instead of throwing an exception\\. Please add \'use Safe\\\\DateTime;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
 	'identifier' => 'theCodingMachineSafe.class',
-	'count' => 6,
+	'count' => 4,
 	'path' => __DIR__ . '/src/Html.php',
 ];
 $ignoreErrors[] = [
@@ -5902,7 +5902,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Function strtotime is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\strtotime;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
 	'identifier' => 'theCodingMachineSafe.function',
-	'count' => 5,
+	'count' => 7,
 	'path' => __DIR__ . '/src/Html.php',
 ];
 $ignoreErrors[] = [
@@ -7646,12 +7646,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/RuleCriteria.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method RuleDictionnarySoftwareCollection\\:\\:replayRulesOnExistingDB\\(\\) should return int\\|false but returns true\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/RuleDictionnarySoftwareCollection.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Property RuleImportAsset\\:\\:\\$restrict_entity is never read, only written\\.$#',
 	'identifier' => 'property.onlyWritten',
 	'count' => 1,
@@ -7784,12 +7778,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Software.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Default value of the parameter \\#2 \\$comment \\(string\\) of method Software\\:\\:putInTrash\\(\\) is incompatible with type comment\\.$#',
-	'identifier' => 'parameter.defaultValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Software.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
 	'identifier' => 'theCodingMachineSafe.function',
 	'count' => 4,
@@ -7810,18 +7798,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Offset \'_system_category\' does not exist on array\\{name\\: string, manufacturers_id\\: int, entities_id\\: int, is_recursive\\: 0\\|1, is_helpdesk_visible\\: mixed\\}\\.$#',
 	'identifier' => 'offsetAccess.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Software.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Offset \'condition\' on array\\{table\\: \'glpi…\', joinparams\\: array\\{jointype\\: \'child\'\\}\\} on left side of \\?\\? does not exist\\.$#',
-	'identifier' => 'nullCoalesce.offset',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Software.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Parameter \\$comment of method Software\\:\\:putInTrash\\(\\) has invalid type comment\\.$#',
-	'identifier' => 'class.notFound',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Software.php',
 ];
