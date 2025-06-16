@@ -77,11 +77,12 @@ abstract class Device extends InventoryAsset
         $itemdevicetype = $this->getItemtype();
         if (in_array($itemdevicetype, $devicetypes)) {
             $value = $this->data;
-            $itemdevice = new $itemdevicetype();
+            /** @var Item_Devices $itemdevice */
+            $itemdevice = getItemForItemtype($itemdevicetype);
 
             $itemdevicetable = getTableForItemType($itemdevicetype);
-            $devicetype      = $itemdevicetype::getDeviceType();
-            $device          = new $devicetype();
+            $devicetype      = $itemdevice::getDeviceType();
+            $device          = getItemForItemtype($devicetype);
             $devicetable     = getTableForItemType($devicetype);
             $fk              = getForeignKeyFieldForTable($devicetable);
 

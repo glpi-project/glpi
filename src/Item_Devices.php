@@ -92,7 +92,7 @@ class Item_Devices extends CommonDBRelation
     {
         $itemtype = static::$itemtype_2;
         if (!empty($this->fields[static::$itemtype_1])) {
-            $item = new $this->fields[static::$itemtype_1]();
+            $item = getItemForItemtype($this->fields[static::$itemtype_1]);
             $item->getFromDB($this->fields[static::$items_id_1]);
             $name = sprintf(__('%1$s of item "%2$s"'), $itemtype::getTypeName(1), $item->getName());
         } else {
@@ -459,6 +459,7 @@ class Item_Devices extends CommonDBRelation
         $types = [];
 
         foreach (CommonDevice::getDeviceTypes() as $device_class) {
+            /** @var CommonDevice $device_class */
             $types[] = $device_class::getItem_DeviceType();
         }
 
@@ -570,7 +571,7 @@ class Item_Devices extends CommonDBRelation
 
             foreach ($iterator as $row) {
                 $input = $row;
-                $item = new $link_type();
+                $item = getItemForItemtype($link_type);
                 $item->getFromDB($input['id']);
                 $res[] = $item;
             }
@@ -1002,7 +1003,7 @@ class Item_Devices extends CommonDBRelation
         $fk = $item instanceof CommonDevice ? 'items_id' : $this->getDeviceForeignKey();
 
         if (!empty($peer_type)) {
-            $peer = new $peer_type();
+            $peer = getItemForItemtype($peer_type);
             $peer->getEmpty();
         } else {
             $peer = null;
@@ -1012,7 +1013,7 @@ class Item_Devices extends CommonDBRelation
         // Will be loaded only if/when data is needed from the device model
         $device_type = static::getDeviceType();
         /** @var CommonDevice $device */
-        $device = new $device_type();
+        $device = getItemForItemtype($device_type);
         foreach ($iterator as $link) {
             Session::addToNavigateListItems(static::getType(), $link["id"]);
             $this->getFromDB($link['id']);
@@ -1186,7 +1187,7 @@ class Item_Devices extends CommonDBRelation
         $input[static::getDeviceForeignKey()] = $devices_id;
 
         $device_type = static::getDeviceType();
-        $device      = new $device_type();
+        $device      = getItemForItemtype($device_type);
         $device->getFromDB($devices_id);
 
         foreach (static::getSpecificities() as $field => $attributs) {

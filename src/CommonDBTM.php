@@ -6159,6 +6159,20 @@ TWIG, $twig_params);
         return $this->isField($model_fk) ? $model_class : null;
     }
 
+    public function getModelClassInstance(): CommonDBTM
+    {
+        $model_class = $this->getModelClass();
+        if (is_a($model_class, CommonDBTM::class, true)) {
+            return new $model_class();
+        }
+
+        throw new \RuntimeException(sprintf(
+            'Model class "%s" does not exist or is not a valid CommonDBTM.',
+            $model_class
+        ));
+    }
+
+
     /**
      * Returns model class foreign key field name, or null if item has no model class.
      *

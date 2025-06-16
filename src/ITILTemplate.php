@@ -78,10 +78,10 @@ abstract class ITILTemplate extends CommonDropdown
     {
         if ($this->getFromDB($ID)) {
             $itiltype = static::getITILObjectClass();
-            $itil_object  = new $itiltype();
+            $itil_object  = getItemForItemtype($itiltype);
             $itemstable = $itil_object->getItemsTable();
             $tth_class = $itiltype . 'TemplateHiddenField';
-            $tth          = new $tth_class();
+            $tth          = getItemForItemtype($tth_class);
             $this->hidden = $tth->getHiddenFields($ID, $withtypeandcategory);
 
             // Force items_id if itemtype is defined
@@ -97,7 +97,7 @@ abstract class ITILTemplate extends CommonDropdown
             }
             // Always get all mandatory fields
             $ttm_class = $itiltype . 'TemplateMandatoryField';
-            $ttm             = new $ttm_class();
+            $ttm             = getItemForItemtype($ttm_class);
             $this->mandatory = $ttm->getMandatoryFields($ID);
 
             // Force items_id if itemtype is defined
@@ -114,7 +114,7 @@ abstract class ITILTemplate extends CommonDropdown
 
             // Always get all read only fields
             $ttr_class = $itiltype . 'TemplateReadonlyField';
-            $ttr             = new $ttr_class();
+            $ttr             = getItemForItemtype($ttr_class);
             $this->readonly = $ttr->getReadonlyFields($ID);
 
             // Force items_id if itemtype is defined
@@ -130,7 +130,7 @@ abstract class ITILTemplate extends CommonDropdown
             }
 
             $ttp_class = $itiltype . 'TemplatePredefinedField';
-            $ttp              = new $ttp_class();
+            $ttp              = getItemForItemtype($ttp_class);
             $this->predefined = $ttp->getPredefinedFields($ID, $withtypeandcategory);
             // Compute time_to_resolve
             if (isset($this->predefined['time_to_resolve'])) {
@@ -227,7 +227,7 @@ abstract class ITILTemplate extends CommonDropdown
         }
 
         if (!isset($allowed_fields[$itiltype][$withtypeandcategory][$withitemtype])) {
-            $itil_object = new $itiltype();
+            $itil_object = getItemForItemtype($itiltype);
             $itemstable = $itil_object->getItemsTable();
 
             // SearchOption ID => name used for options
@@ -559,8 +559,7 @@ abstract class ITILTemplate extends CommonDropdown
             return false;
         }
         if ($tt->getFromDBWithData($tt->getID())) {
-            $itiltype = static::getITILObjectClass();
-            $itil_object = new $itiltype();
+            $itil_object = getItemForItemtype(static::getITILObjectClass());
             $itil_object->showForm(0, ['template_preview' => $tt->getID()]);
         }
     }
@@ -925,7 +924,7 @@ abstract class ITILTemplate extends CommonDropdown
     }
 
     /**
-     * Get the ITILObject class that is related to the current ITILTemplate class
+     * Get the ITILObject class related to the current ITILTemplate class
      * @return string
      */
     public static function getITILObjectClass(): string

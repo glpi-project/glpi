@@ -661,10 +661,10 @@ class NetworkPort extends InventoryAsset
         }
         $netport = new \NetworkPort();
         if (empty($itemtype)) {
-            $itemtype = 'Unmanaged';
+            $itemtype = \Unmanaged::class;
         }
         $port = $this->current_connection ?? $this->current_port;
-        $item = new $itemtype();
+        $item = getItemForItemtype($itemtype);
 
         if ($items_id == "0") {
             //not yet existing, create
@@ -675,7 +675,6 @@ class NetworkPort extends InventoryAsset
                     $input['name'] = $name;
                 }
             }
-            $input['entities_id'] = $this->entities_id;
             $input['is_recursive'] = $this->is_recursive;
             $items_id = $item->add($input);
         }

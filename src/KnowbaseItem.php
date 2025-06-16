@@ -801,6 +801,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         $item = null;
         // Load ticket solution
         if (empty($ID) && !empty($options['item_itemtype']) && !empty($options['item_items_id'])) {
+            /** @var ?CommonITILObject $item */
             if ($item = getItemForItemtype($options['item_itemtype'])) {
                 if ($item->getFromDB($options['item_items_id'])) {
                     $this->fields['name']   = $item->getField('name');
@@ -813,8 +814,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
                         ]);
                         $this->fields['answer'] = $fup->getField('content');
                     } elseif (isset($options['_task_to_kb'])) {
-                        $tasktype = $item::class . 'Task';
-                        $task = new $tasktype();
+                        $task = $item->getTaskClassInstance();
                         $task->getFromDB($options['_task_to_kb']);
                         $this->fields['answer'] = $task->getField('content');
                     } elseif (isset($options['_sol_to_kb'])) {

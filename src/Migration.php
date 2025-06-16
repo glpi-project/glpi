@@ -893,6 +893,9 @@ class Migration
         $rule['description'] = '';
 
         // Compute ranking
+        if (!is_a($rule['sub_type'], Rule::class)) {
+            return 0;
+        }
         $ruleinst = new $rule['sub_type']();
         $ranking = $ruleinst->getNextRanking();
         if (!$ranking) {

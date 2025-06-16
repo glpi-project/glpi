@@ -88,8 +88,7 @@ abstract class ITILTemplateField extends CommonDBChild
 
     protected function computeFriendlyName()
     {
-        $tt_class = static::$itemtype;
-        $tt     = new $tt_class();
+        $tt     = getItemForItemtype(static::$itemtype);
         $fields = $tt->getAllowedFieldsNames(true);
 
         if (isset($fields[$this->fields["num"]])) {
@@ -147,9 +146,8 @@ abstract class ITILTemplateField extends CommonDBChild
             'comments'       => true,
             'html'           => true,
         ];
-        $itil_class    = static::$itiltype;
-        $searchOption  = SearchOption::getOptionsForItemtype($itil_class);
-        $itil_object   = new $itil_class();
+        $itil_object   = getItemForItemtype(static::$itiltype);
+        $searchOption  = SearchOption::getOptionsForItemtype($itil_object::class);
         $rand = mt_rand();
 
         $crtiteria = [

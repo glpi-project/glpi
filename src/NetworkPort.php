@@ -1141,7 +1141,7 @@ class NetworkPort extends CommonDBChild
                                         ) . '</div>';
                                     } else {
                                         foreach ($hub_equipments as $hrow) {
-                                            $asset = new $hrow['itemtype']();
+                                            $asset = getItemForItemtype($hrow['itemtype']);
                                             $asset->getFromDB($hrow['items_id']);
                                             $asset->fields['mac'] = $hrow['mac'];
                                             $houtput .= '<div>' . $this->getAssetLink($asset) . '</div>';

@@ -8665,7 +8665,7 @@ abstract class CommonITILObject extends CommonDBTM
         $tab = [];
         foreach ($assets as $asset) {
             if (!class_exists($asset['itemtype'])) {
-                //ignore if class does not exists (maybe a plugin)
+                //ignore if class does not exist (maybe a plugin)
                 continue;
             }
             $tab[$asset['itemtype']][$asset['items_id']] = $asset['items_id'];
@@ -10765,7 +10765,10 @@ abstract class CommonITILObject extends CommonDBTM
     public static function getSatisfactionClass(): ?string
     {
         $classname = static::class . 'Satisfaction';
-        return class_exists($classname) ? $classname : null;
+        if (class_exists($classname) && is_a($classname, CommonITILSatisfaction::class, true)) {
+            return $classname;
+        }
+        return null;
     }
 
     /**

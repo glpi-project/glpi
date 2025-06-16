@@ -87,7 +87,7 @@ abstract class ITIL_ValidationStep extends CommonDBChild
     #[Override()]
     public function cleanDBonPurge()
     {
-        $validation = new static::$validation_classname();
+        $validation = getItemForItemtype(static::$validation_classname);
         $validation->deleteByCriteria([
             $this->fields['itemtype']::getForeignKeyField() => $this->fields['items_id'],
         ]);
@@ -174,7 +174,7 @@ abstract class ITIL_ValidationStep extends CommonDBChild
      */
     public function getAchievements(): array
     {
-        $validations = (new static::$validation_classname())->find([
+        $validations = getItemForItemtype(static::$validation_classname)->find([
             'itils_validationsteps_id' => $this->getID(),
         ]);
 

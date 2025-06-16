@@ -98,7 +98,7 @@ class ITILFollowup extends CommonDBChild
             $item = $this->item;
         } else {
             $itemtype = $this->getItilObjectItemType();
-            $item     = new $itemtype();
+            $item     = getItemForItemtype($itemtype);
         }
         if (!$item->can($this->getField($item->getForeignKeyField()), READ)) {
             return false;
@@ -416,7 +416,7 @@ class ITILFollowup extends CommonDBChild
             }
         }
 
-        $input["_job"] = new $input['itemtype']();
+        $input["_job"] = new $input['itemtype'](); //itemtype is checked, should be safe
 
         if (
             empty($input['content'])

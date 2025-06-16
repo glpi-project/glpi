@@ -285,7 +285,7 @@ abstract class LevelAgreement extends CommonDBChild
         }
 
         $pre  = static::$prefix;
-        $nextlevel  = new static::$levelclass();
+        $nextlevel  = getItemForItemtype(static::$levelclass);
         if (!$nextlevel->getFromDB($nextaction->fields[$pre . 'levels_id'])) {
             return false;
         }
@@ -306,7 +306,8 @@ abstract class LevelAgreement extends CommonDBChild
      */
     public function getNextActionForTicket(Ticket $ticket, int $type)
     {
-        $nextaction = new static::$levelticketclass();
+        /** @var OlaLevel_Ticket|SlaLevel_Ticket $nextaction */
+        $nextaction = getItemForItemtype(static::$levelticketclass);
         if (!$nextaction->getFromDBForTicket($ticket->fields["id"], $type)) {
             return false;
         }
@@ -773,7 +774,7 @@ TWIG, $twig_params);
     public function computeExecutionDate($start_date, $levels_id, $additional_delay = 0)
     {
         if (isset($this->fields['id'])) {
-            $level = new static::$levelclass();
+            $level = getItemForItemtype(static::$levelclass);
             $fk = getForeignKeyFieldForItemType(static::class);
 
             if ($level->getFromDB($levels_id)) { // level exists
@@ -955,7 +956,7 @@ TWIG, $twig_params);
                 $toadd['date']           = $date;
                 $toadd[$pre . 'levels_id'] = $levels_id;
                 $toadd['tickets_id']     = $ticket->fields["id"];
-                $levelticket             = new static::$levelticketclass();
+                $levelticket             = getItemForItemtype(static::$levelticketclass);
                 $levelticket->add($toadd);
             }
         }
@@ -976,7 +977,7 @@ TWIG, $twig_params);
         $ticketfield = static::$prefix . "levels_id_ttr";
 
         if ($ticket->fields[$ticketfield] > 0) {
-            $levelticket = new static::$levelticketclass();
+            $levelticket = getItemForItemtype(static::$levelticketclass);
             $iterator = $DB->request([
                 'SELECT' => 'id',
                 'FROM'   => $levelticket::getTable(),
@@ -996,7 +997,7 @@ TWIG, $twig_params);
 
         // Clean levels
         $fk        = getForeignKeyFieldForItemType(static::class);
-        $level     = new static::$levelclass();
+        $level     = getItemForItemtype(static::$levelclass);
         $level->deleteByCriteria([$fk => $this->getID()]);
 
         // Update tickets : clean SLA/OLA
@@ -1022,7 +1023,7 @@ TWIG, $twig_params);
         // Clone levels
         $classname = get_called_class();
         $fk        = getForeignKeyFieldForItemType($classname);
-        $level     = new static::$levelclass();
+        $level     = getItemForItemtype(static::$levelclass);
         foreach ($level->find([$fk => $source->getID()]) as $data) {
             $level->getFromDB($data['id']);
             $level->clone([$fk => $this->getID()]);
@@ -1061,8 +1062,9 @@ TWIG, $twig_params);
         // CLear levels of others LA of the same type
         // e.g. if a new LA TTR was assigned, clear levels from others (= previous) LA TTR
         $level_ticket_class = $this->getLevelTicketClass();
+        $level_ticket = getItemForItemtype($level_ticket_class);
         $level_class = $this->getLevelClass();
-        $levels = (new $level_ticket_class())->find([
+        $levels = $level_ticket->find([
             'tickets_id' => $tickets_id,
             [$level_class::getForeignKeyField() => ['!=', $this->getID()]],
             [
@@ -1082,8 +1084,7 @@ TWIG, $twig_params);
 
         // Delete invalid levels
         foreach ($levels as $level) {
-            $em = new $level_ticket_class();
-            $em->delete(['id' => $level['id']]);
+            $level_ticket->delete(['id' => $level['id']]);
         }
     }
 }

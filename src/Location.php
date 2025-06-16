@@ -485,7 +485,7 @@ class Location extends CommonTreeDropdown
         $queries = [];
         $itemtypes = (!isset($filters['type']) || in_array('', $filters['type'], true)) ? array_keys($location_types) : $filters['type'];
         foreach ($itemtypes as $itemtype) {
-            $item = new $itemtype();
+            $item = getItemForItemtype($itemtype);
             if (!$item->maybeLocated()) {
                 continue;
             }

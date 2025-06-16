@@ -251,7 +251,7 @@ class Item_Project extends CommonDBRelation
 
                             if (count($linkeditems)) {
                                 foreach ($linkeditems as $type => $tab) {
-                                    $typeitem = new $type();
+                                    $typeitem = getItemForItemtype($type);
                                     foreach ($tab as $ID) {
                                         $typeitem->getFromDB($ID);
                                         $nb += self::countForItem($typeitem);

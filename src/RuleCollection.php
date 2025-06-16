@@ -324,7 +324,7 @@ class RuleCollection extends CommonDBTM
     public function getRuleClass()
     {
         $name = static::getRuleClassName();
-        if ($name !==  '') {
+        if ($name !==  '' && is_a($name, Rule::class, true)) {
             return new $name();
         }
         return null;

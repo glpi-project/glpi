@@ -353,7 +353,7 @@ class Inventory
             $this->agent = new Agent();
             $this->agent->handleAgent($this->metadata);
 
-            $this->item = new $this->agent->fields['itemtype']();
+            $this->item = getItemForItemtype($this->agent->fields['itemtype']);
 
             //load existing itemtype, if any
             if (!empty($this->agent->fields['items_id'])) {
@@ -362,6 +362,14 @@ class Inventory
 
             //instanciate inventory main asset class, and proceed
             $main_class = $this->getMainClass();
+            if (!is_subclass_of($main_class, \Glpi\Inventory\MainAsset\MainAsset::class, true)) {
+                throw new \RuntimeException(
+                    sprintf(
+                        'Main asset class %s is not a valid MainAsset class',
+                        $main_class
+                    )
+                );
+            }
             $main = new $main_class($this->item, $this->raw_data);
             $main
                 ->setDiscovery($this->is_discovery)

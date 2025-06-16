@@ -543,11 +543,10 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
         global $DB;
 
         if (isset($options['validation_id'])) {
-            $validation_type = $this->obj->getType() . 'Validation';
-            $validation = new $validation_type();
+            $validation = $this->obj->getValidationClassInstance();
             $validation->getFromDB($options['validation_id']);
-            if ($validation->fields['itemtype_target'] === 'User') {
-                $validationtable = getTableForItemType($this->obj->getType() . 'Validation');
+            if ($validation->fields['itemtype_target'] === User::class) {
+                $validationtable = $validation::getTable();
 
                 $criteria = [
                     'LEFT JOIN' => [
@@ -566,7 +565,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
                 foreach ($iterator as $data) {
                     $this->addToRecipientsList($data);
                 }
-            } elseif ($validation->fields['itemtype_target'] === 'Group') {
+            } elseif ($validation->fields['itemtype_target'] === Group::class) {
                 $this->addForGroup(0, $validation->fields['items_id_target']);
             }
         }
@@ -1153,7 +1152,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
      *
      * @return array
      **/
-    public function getDataForObject(CommonDBTM $item, array $options, $simple = false)
+    public function getDataForObject(CommonITILObject $item, array $options, $simple = false)
     {
         /**
          * @var array $CFG_GLPI
@@ -1449,7 +1448,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
 
             foreach ($linked as $link) {
                 $itemtype = $link['itemtype'];
-                $link_item = new $link['itemtype']();
+                $link_item = getItemForItemtype($itemtype);
                 if ($link_item->getFromDB($link['items_id'])) {
                     $tmp = [];
                     $tmp['##linked' . strtolower($itemtype) . '.id##'] = $link['items_id'];
@@ -1670,8 +1669,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
             $data["##$objettype.numberofcosts##"] = count($data['costs']);
 
             //Task infos
-            $tasktype = $item->getType() . 'Task';
-            $taskobj  = new $tasktype();
+            $taskobj = $item->getTaskClassInstance();
             $restrict = [$item->getForeignKeyField() => $item->getField('id')];
             if (
                 $taskobj->maybePrivate()
@@ -1778,7 +1776,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
             /** @var CommonITILObject $item */
             $inquest_type = $item::getSatisfactionClass();
             if ($inquest_type !== null) {
-                $inquest = new $inquest_type();
+                $inquest = new $inquest_type(); //type is checked from getSatisfactionClass(); should be safe
                 $data['##satisfaction.type##'] = '';
                 $data['##satisfaction.datebegin##'] = '';
                 $data['##satisfaction.dateanswered##'] = '';

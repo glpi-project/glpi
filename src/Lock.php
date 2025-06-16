@@ -131,7 +131,7 @@ TWIG;
             // get locked field for other lockable object
             foreach ($CFG_GLPI['inventory_lockable_objects'] as $lockable_itemtype) {
                 $lockable_itemtype_table = getTableForItemType($lockable_itemtype);
-                $lockable_object = new $lockable_itemtype();
+                $lockable_object = getItemForItemtype($lockable_itemtype);
                 $query  = [
                     'SELECT' => $lockedfield_table . ".*",
                     'FROM'   => $lockedfield_table,
@@ -876,7 +876,7 @@ TWIG, $twig_params);
             ];
 
             foreach ($types as $type) {
-                $type_item = new $type();
+                $type_item = getItemForItemtype($type);
 
                 $associated_type  = str_replace('Item_', '', $type);
                 $associated_table = getTableForItemType($associated_type);
@@ -906,7 +906,7 @@ TWIG, $twig_params);
 
                 foreach ($iterator as $data) {
                     $show_checkbox = $type_item->can($data['id'], UPDATE) || $type_item->can($data['id'], PURGE);
-                    $object_item_type = new $type();
+                    $object_item_type = getItemForItemtype($type);
                     $object_item_type->getFromDB($data['id']);
                     $object_name = htmlescape($data['name']);
                     $object_link = "<a href='" . $object_item_type->getLinkURL() . "'>{$object_name}</a>";
@@ -1437,7 +1437,7 @@ TWIG);
                         } else {
                             $ma->itemDone($baseItemType, $id, MassiveAction::ACTION_KO);
 
-                            $erroredItem = new $baseItemType();
+                            $erroredItem = getItemForItemtype($baseItemType);
                             $erroredItem->getFromDB($id);
                             $ma->addMessage($erroredItem->getErrorMessage(ERROR_ON_ACTION));
                         }
