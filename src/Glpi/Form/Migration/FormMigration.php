@@ -52,6 +52,7 @@ use Glpi\Form\Comment;
 use Glpi\Form\Condition\ConditionHandler\ConditionHandlerInterface;
 use Glpi\Form\Condition\CreationStrategy;
 use Glpi\Form\Condition\LogicOperator;
+use Glpi\Form\Condition\ValidationStrategy;
 use Glpi\Form\Condition\ValueOperator;
 use Glpi\Form\Condition\VisibilityStrategy;
 use Glpi\Form\Destination\AbstractConfigField;
@@ -354,7 +355,8 @@ class FormMigration extends AbstractPluginMigration
         $this->processMigrationOfAccessControls();
         $this->processMigrationOfFormTargets();
         $this->processMigrationOfTranslations();
-        $this->processMigrationOfConditions();
+        $this->processMigrationOfVisibilityConditions();
+        $this->processMigrationOfValidationConditions();
 
         $this->progress_indicator?->setProgressBarMessage('');
         $this->progress_indicator?->finish();
@@ -1197,9 +1199,9 @@ class FormMigration extends AbstractPluginMigration
         }
     }
 
-    private function processMigrationOfConditions(): void
+    private function processMigrationOfVisibilityConditions(): void
     {
-        $this->progress_indicator?->setProgressBarMessage(__('Importing conditions...'));
+        $this->progress_indicator?->setProgressBarMessage(__('Importing visibility conditions...'));
 
         // Retrieve data from glpi_plugin_formcreator_conditions table
         $raw_conditions = $this->db->request([
@@ -1422,6 +1424,118 @@ class FormMigration extends AbstractPluginMigration
                     count($orphan_forms)
                 )
             );
+        }
+    }
+
+    private function processMigrationOfValidationConditions(): void
+    {
+        $this->progress_indicator?->setProgressBarMessage(__('Importing validation conditions...'));
+
+        // Retrieve data from glpi_plugin_formcreator_questionranges and glpi_plugin_formcreator_questionregexes tables
+        $raw_conditions = $this->db->request([
+            'SELECT' => [
+                'glpi_plugin_formcreator_questions.id',
+                'glpi_plugin_formcreator_questionranges.range_min',
+                'glpi_plugin_formcreator_questionranges.range_max',
+                'glpi_plugin_formcreator_questionregexes.regex',
+            ],
+            'FROM'   => 'glpi_plugin_formcreator_questions',
+            'LEFT JOIN' => [
+                'glpi_plugin_formcreator_questionranges' => [
+                    'ON' => [
+                        'glpi_plugin_formcreator_questions' => 'id',
+                        'glpi_plugin_formcreator_questionranges' => 'plugin_formcreator_questions_id',
+                    ],
+                ],
+                'glpi_plugin_formcreator_questionregexes' => [
+                    'ON' => [
+                        'glpi_plugin_formcreator_questions' => 'id',
+                        'glpi_plugin_formcreator_questionregexes' => 'plugin_formcreator_questions_id',
+                    ],
+                ],
+            ],
+            'WHERE' => [
+                'OR' => [
+                    'NOT' => [
+                        'glpi_plugin_formcreator_questionranges.range_min' => 'NULL',
+                        'glpi_plugin_formcreator_questionranges.range_max' => 'NULL',
+                        'glpi_plugin_formcreator_questionregexes.regex'    => 'NULL',
+                    ],
+                ],
+            ],
+        ]);
+
+        foreach ($raw_conditions as $raw_condition) {
+            $question_id = $this->getMappedItemTarget(
+                'PluginFormcreatorQuestion',
+                $raw_condition['id']
+            )['items_id'] ?? 0;
+
+            if ($question_id === 0) {
+                // If the question ID is 0, it means the question was not migrated or not existing.
+                // No need to warn the user, as this condition was not visible/valid in formcreator anyway.
+                continue;
+            }
+
+            $question = Question::getById($question_id);
+            if ($question === false) {
+                continue;
+            }
+
+            $input = [
+                'id'                     => $question_id,
+                'validation_strategy'    => ValidationStrategy::VALID_IF->value,
+            ];
+
+            if ($question->fields['horizontal_rank'] !== null) {
+                $input['horizontal_rank'] = $question->fields['horizontal_rank'];
+            }
+
+            // Apply minimum range condition
+            if (is_numeric($raw_condition['range_min'])) {
+                $input['_validation_conditions'][] = [
+                    'item'           => sprintf('question-%s', $question->getUUID()),
+                    'value'          => $raw_condition['range_min'],
+                    'item_type'      => 'question',
+                    'item_uuid'      => $question->getUUID(),
+                    'value_operator' => ValueOperator::GREATER_THAN_OR_EQUALS->value,
+                    'logic_operator' => LogicOperator::AND->value,
+                ];
+            }
+
+            // Apply maximum range condition
+            if (is_numeric($raw_condition['range_max'])) {
+                $input['_validation_conditions'][] = [
+                    'item'           => sprintf('question-%s', $question->getUUID()),
+                    'value'          => $raw_condition['range_max'],
+                    'item_type'      => 'question',
+                    'item_uuid'      => $question->getUUID(),
+                    'value_operator' => ValueOperator::LESS_THAN_OR_EQUALS->value,
+                    'logic_operator' => LogicOperator::AND->value,
+                ];
+            }
+
+            // Apply regex validation condition
+            if (!empty($raw_condition['regex'])) {
+                $input['_validation_conditions'][] = [
+                    'item'           => sprintf('question-%s', $question->getUUID()),
+                    'value'          => $raw_condition['regex'],
+                    'item_type'      => 'question',
+                    'item_uuid'      => $question->getUUID(),
+                    'value_operator' => ValueOperator::MATCH_REGEX->value,
+                    'logic_operator' => LogicOperator::AND->value,
+                ];
+            }
+
+            $this->importItem(
+                Question::class,
+                $input,
+                [
+                    'id' => $question_id,
+                ]
+            );
+
+            $this->progress_indicator?->advance();
         }
     }
 
