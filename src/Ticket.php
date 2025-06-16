@@ -2738,34 +2738,47 @@ JAVASCRIPT;
             'name'               => __('OLA'),
         ];
 
+        // associated OLA TTO names
         $tab[] = [
             'id'                 => '190',
             'table'              => 'glpi_olas',
             'field'              => 'name',
-            'linkfield'          => 'olas_id_tto',
             'name'               => __('OLA') . ' ' . __('Internal time to own'),
             'massiveaction'      => false,
             'datatype'           => 'dropdown',
             'joinparams'         => [
                 'condition'          => ['NEWTABLE.type' => SLM::TTO],
+                'beforejoin'         => [
+                    'table'              => 'glpi_items_olas',
+                    'joinparams'         => [
+                        'jointype'           => 'itemtype_item',
+                    ],
+                ],
             ],
-            'condition'          => ['glpi_olas.type' => SLM::TTO],
+            'forcegroupby'       => true,
         ];
 
+        // associated OLA TTR names
         $tab[] = [
             'id'                 => '191',
             'table'              => 'glpi_olas',
             'field'              => 'name',
-            'linkfield'          => 'olas_id_ttr',
             'name'               => __('OLA') . ' ' . __('Internal time to resolve'),
             'massiveaction'      => false,
             'datatype'           => 'dropdown',
             'joinparams'         => [
                 'condition'          => ['NEWTABLE.type' => SLM::TTR],
+                'beforejoin'         => [
+                    'table'              => 'glpi_items_olas',
+                    'joinparams'         => [
+                        'jointype'           => 'itemtype_item',
+                    ],
+                ],
             ],
-            'condition'          => ['glpi_olas.type' => SLM::TTR],
+            'forcegroupby'       => true,
         ];
 
+        // Ola levels
         $tab[] = [
             'id'                 => '192',
             'table'              => 'glpi_olalevels',
