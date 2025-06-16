@@ -126,8 +126,18 @@ final class FormTile extends CommonDBChild implements TileInterface
     {
         $form_access_manager = FormAccessControlManager::getInstance();
 
+        // Form must be defined
+        if ($this->form === null) {
+            return false;
+        }
+
         // Form must be active
         if (!$this->form->isActive()) {
+            return false;
+        }
+
+        // Form must not be deleted
+        if ($this->form->isDeleted()) {
             return false;
         }
 

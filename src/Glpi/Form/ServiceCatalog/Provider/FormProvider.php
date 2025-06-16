@@ -69,7 +69,8 @@ final class FormProvider implements LeafProviderInterface
 
         $forms = [];
         $raw_forms = (new Form())->find([
-            'is_active' => 1,
+            'is_active'           => 1,
+            'is_deleted'          => 0,
             'forms_categories_id' => $category ? $category->getID() : 0,
         ] + $entity_restriction, ['name']);
 
