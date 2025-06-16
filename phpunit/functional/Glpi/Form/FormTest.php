@@ -748,7 +748,7 @@ class FormTest extends DbTestCase
         }
 
         // Act: get tabs names
-        $tabs = $form->defineTabs();
+        $tabs = array_filter($form->defineTabs(), static fn($tab): bool => $tab !== 'no_all_tab', ARRAY_FILTER_USE_KEY);
         $tabs = array_map('strip_tags', $tabs); // Strip html
         $tabs = array_values($tabs); // Ignore keys
 
