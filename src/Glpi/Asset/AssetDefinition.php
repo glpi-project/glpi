@@ -41,10 +41,7 @@ use Glpi\Asset\CustomFieldType\DropdownType;
 use Glpi\Asset\CustomFieldType\StringType;
 use Glpi\Asset\CustomFieldType\TextType;
 use Glpi\CustomObject\AbstractDefinition;
-use Glpi\DBAL\QueryExpression;
-use Glpi\DBAL\QueryFunction;
 use Glpi\Features\AssetImage;
-use Glpi\Search\SearchOption;
 use Group;
 use Location;
 use Manufacturer;
@@ -462,40 +459,6 @@ TWIG, $twig_params);
         }
         $updated_capacity = $this->getDecodedCapacitiesField()[$capacity->getName()];
         $capacity_instance->onCapacityUpdated($this->getAssetClassName(), $capacity->getConfig(), $updated_capacity->getConfig());
-    }
-
-    public function rawSearchOptions()
-    {
-        $search_options = parent::rawSearchOptions();
-
-        $search_options[] = [
-            'id'   => 'capacities',
-            'name' => __('Capacities'),
-        ];
-        foreach (AssetDefinitionManager::getInstance()->getAvailableCapacities() as $capacity) {
-            // capacity is stored in a JSON array, so entry is surrounded by double quotes
-            $search_string = json_encode($capacity::class);
-            // Backslashes must be doubled in LIKE clause, according to MySQL documentation:
-            // > To search for \, specify it as \\\\; this is because the backslashes are stripped
-            // > once by the parser and again when the pattern match is made,
-            // > leaving a single backslash to be matched against.
-            $search_string = str_replace('\\', '\\\\', $search_string);
-
-            $search_options[] = [
-                'id'            => SearchOption::generateAProbablyUniqueId($capacity::class),
-                'table'         => self::getTable(),
-                'field'         => sprintf('_capacities_%s', $capacity::class),
-                'name'          => $capacity->getLabel(),
-                'computation'   => QueryFunction::if(
-                    condition: ['capacities' => ['LIKE', '%' . $search_string . '%']],
-                    true_expression: new QueryExpression('1'),
-                    false_expression: new QueryExpression('0')
-                ),
-                'datatype'      => 'bool',
-            ];
-        }
-
-        return $search_options;
     }
 
     /**
