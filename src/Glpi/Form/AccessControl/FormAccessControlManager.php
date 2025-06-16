@@ -121,6 +121,10 @@ final class FormAccessControlManager
             return true;
         }
 
+        if ($form->isDeleted()) {
+            return false;
+        }
+
         if (!$form->isActive()) {
             return false;
         }
