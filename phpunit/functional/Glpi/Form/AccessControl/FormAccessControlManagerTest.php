@@ -236,6 +236,46 @@ final class FormAccessControlManagerTest extends DbTestCase
         );
     }
 
+    public function testDeletedFormCannotBeAnswered(): void
+    {
+        // Create a form with active access controls
+        $form = $this->createAndGetFormAccessibleOnlyToTechUserWithMandatoryToken();
+
+        // Ensure the form can be answered before deletion
+        $this->checkCanAnswerForm(
+            form: $form,
+            parameters: self::getTechUserAndValidTokenParameters(),
+            expected: true,
+        );
+
+        // Mark the form as deleted by setting is_deleted = 1
+        $this->updateItem(
+            Form::class,
+            $form->getID(),
+            ['is_deleted' => 1]
+        );
+
+        // Reload the form to get the updated state
+        $form->getFromDB($form->getID());
+
+        // Verify that the form cannot be answered when deleted
+        $this->checkCanAnswerForm(
+            form: $form,
+            parameters: self::getTechUserAndValidTokenParameters(),
+            expected: false,
+        );
+
+        // Also test with admin bypass
+        $admin_parameters = new FormAccessParameters(
+            bypass_restriction: true,
+        );
+        $this->checkCanAnswerForm(
+            form: $form,
+            parameters: $admin_parameters,
+            expected: true,
+        );
+    }
+
     private function checkCanAnswerForm(
         Form $form,
         FormAccessParameters $parameters,
