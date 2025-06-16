@@ -1154,7 +1154,7 @@ class LockedfieldTest extends DbTestCase
         );
         $this->assertTrue($software->getFromDB($sid));
         $this->assertEquals('Manually updated comment', $software->fields['comment']);
-        
+
         //create a second software to confirm the global lock applies to all
         $sid2 = (int) $software->add([
             'name'         => 'Second software',
@@ -1163,11 +1163,11 @@ class LockedfieldTest extends DbTestCase
             'is_dynamic'   => 1,
         ]);
         $this->assertGreaterThan(0, $sid2);
-        
+
         //verify global lock applies to new software
         $this->assertTrue($software->getFromDB($sid2));
         $this->assertSame(['comment' => null], $lockedfield->getLockedValues($software->getType(), $sid2));
-        
+
         //ensure dynamic update doesn't change locked field on second software
         $this->assertTrue(
             $software->update([
@@ -1176,7 +1176,7 @@ class LockedfieldTest extends DbTestCase
                 'is_dynamic' => 1,
             ])
         );
-        
+
         $this->assertTrue($software->getFromDB($sid2));
         $this->assertEquals('Second comment', $software->fields['comment']);
     }
