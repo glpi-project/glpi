@@ -537,7 +537,9 @@ class Plugin extends CommonDBTM
         // Check all directories from the checklist
         foreach ($directories as $directory) {
             $this->checkPluginState($directory, $scan_inactive_and_new_plugins);
-            $this->updatePluginInformation($directory);
+            if ($scan_inactive_and_new_plugins) {
+                $this->updatePluginInformation($directory);
+            }
         }
 
         self::$plugins_state_checked = true;
