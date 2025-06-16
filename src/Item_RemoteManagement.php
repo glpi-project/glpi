@@ -144,6 +144,10 @@ class Item_RemoteManagement extends CommonDBChild
             'canedit'  => $canedit && !(!empty($withtemplate) && $withtemplate == 2),
             'form_url' => self::getFormURL() . "?itemtype=$itemtype&items_id=$ID&withtemplate=$withtemplate",
             'entries'  => $entries,
+            'massiveactionparams' => [
+                'num_displayed' => min($_SESSION['glpilist_limit'], count($entries)),
+                'container'     => 'mass' . static::class . mt_rand(),
+            ],
         ]);
     }
 
