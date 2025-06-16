@@ -218,7 +218,7 @@ final class QuestionTypeItemDropdownTest extends DbTestCase
         $result = (new QuestionTypeItemDropdown())->getDropdownRestrictionParams($question);
 
         if ($config->getItemtype() === ITILCategory::class) {
-            $expected['WHERE']['is_helpdeskvisible'];
+            $expected['WHERE']['is_helpdeskvisible'] = 1;
         }
 
         $this->assertEquals($expected, $result);
