@@ -46,6 +46,7 @@ use Glpi\Form\Comment;
 use Glpi\Form\Condition\ConditionData;
 use Glpi\Form\Condition\CreationStrategy;
 use Glpi\Form\Condition\LogicOperator;
+use Glpi\Form\Condition\ValidationStrategy;
 use Glpi\Form\Condition\ValueOperator;
 use Glpi\Form\Condition\VisibilityStrategy;
 use Glpi\Form\Destination\CommonITILField\ContentField;
@@ -1314,7 +1315,7 @@ final class FormMigrationTest extends DbTestCase
         );
     }
 
-    public static function provideFormMigrationConditionsForQuestions(): iterable
+    public static function provideFormMigrationVisibilityConditionsForQuestions(): iterable
     {
         yield 'QuestionTypeShortText - Always visible' => [
             'text',
@@ -1510,8 +1511,8 @@ final class FormMigrationTest extends DbTestCase
         ];
     }
 
-    #[DataProvider('provideFormMigrationConditionsForQuestions')]
-    public function testFormMigrationConditionsForQuestions(
+    #[DataProvider('provideFormMigrationVisibilityConditionsForQuestions')]
+    public function testFormMigrationVisibilityConditionsForQuestions(
         string $field_type,
         int $show_rule,
         array $conditions,
@@ -1615,7 +1616,263 @@ final class FormMigrationTest extends DbTestCase
         );
     }
 
-    public function testFormMigrationConditionsForSections(): void
+    public static function provideFormMigrationValidationConditionsForQuestions(): iterable
+    {
+        yield 'No validation' => [
+            'text',
+            [],
+            ValidationStrategy::NO_VALIDATION,
+        ];
+
+        yield 'QuestionTypeShortText - Valid if condition' => [
+            'text',
+            [
+                [
+                    'regex'     => '/^Test valid answer$/',
+                    'fieldname' => 'regex',
+                ],
+            ],
+            ValidationStrategy::VALID_IF,
+            [
+                [
+                    'value_operator' => ValueOperator::MATCH_REGEX,
+                    'value'          => '/^Test valid answer$/',
+                    'logic_operator' => LogicOperator::AND,
+                ],
+            ],
+        ];
+
+        yield 'QuestionTypeNumber - Range validation with min only' => [
+            'float',
+            [
+                [
+                    'range_min' => '10',
+                    'range_max' => null,
+                    'fieldname' => 'range',
+                ],
+            ],
+            ValidationStrategy::VALID_IF,
+            [
+                [
+                    'value_operator' => ValueOperator::GREATER_THAN_OR_EQUALS,
+                    'value'          => '10',
+                    'logic_operator' => LogicOperator::AND,
+                ],
+            ],
+        ];
+
+        yield 'QuestionTypeNumber - Range validation with max only' => [
+            'float',
+            [
+                [
+                    'range_min' => null,
+                    'range_max' => '100',
+                    'fieldname' => 'range',
+                ],
+            ],
+            ValidationStrategy::VALID_IF,
+            [
+                [
+                    'value_operator' => ValueOperator::LESS_THAN_OR_EQUALS,
+                    'value'          => '100',
+                    'logic_operator' => LogicOperator::AND,
+                ],
+            ],
+        ];
+
+        yield 'QuestionTypeNumber - Range validation with min and max' => [
+            'float',
+            [
+                [
+                    'range_min' => '10',
+                    'range_max' => '100',
+                    'fieldname' => 'range',
+                ],
+            ],
+            ValidationStrategy::VALID_IF,
+            [
+                [
+                    'value_operator' => ValueOperator::GREATER_THAN_OR_EQUALS,
+                    'value'          => '10',
+                    'logic_operator' => LogicOperator::AND,
+                ],
+                [
+                    'value_operator' => ValueOperator::LESS_THAN_OR_EQUALS,
+                    'value'          => '100',
+                    'logic_operator' => LogicOperator::AND,
+                ],
+            ],
+        ];
+
+        yield 'QuestionTypeNumber - Range validation with integer values' => [
+            'integer',
+            [
+                [
+                    'range_min' => '5',
+                    'range_max' => '50',
+                    'fieldname' => 'range',
+                ],
+            ],
+            ValidationStrategy::VALID_IF,
+            [
+                [
+                    'value_operator' => ValueOperator::GREATER_THAN_OR_EQUALS,
+                    'value'          => '5',
+                    'logic_operator' => LogicOperator::AND,
+                ],
+                [
+                    'value_operator' => ValueOperator::LESS_THAN_OR_EQUALS,
+                    'value'          => '50',
+                    'logic_operator' => LogicOperator::AND,
+                ],
+            ],
+        ];
+
+        yield 'QuestionTypeShortText - Regex and range validation' => [
+            'text',
+            [
+                [
+                    'regex'     => '/^[A-Za-z0-9]+$/',
+                    'fieldname' => 'regex',
+                ],
+                [
+                    'range_min' => '5',
+                    'range_max' => '50',
+                    'fieldname' => 'range',
+                ],
+            ],
+            ValidationStrategy::VALID_IF,
+            [
+                [
+                    'value_operator' => ValueOperator::GREATER_THAN_OR_EQUALS,
+                    'value'          => '5',
+                    'logic_operator' => LogicOperator::AND,
+                ],
+                [
+                    'value_operator' => ValueOperator::LESS_THAN_OR_EQUALS,
+                    'value'          => '50',
+                    'logic_operator' => LogicOperator::AND,
+                ],
+                [
+                    'value_operator' => ValueOperator::MATCH_REGEX,
+                    'value'          => '/^[A-Za-z0-9]+$/',
+                    'logic_operator' => LogicOperator::AND,
+                ],
+            ],
+        ];
+    }
+
+    #[DataProvider('provideFormMigrationValidationConditionsForQuestions')]
+    public function testFormMigrationValidationConditionsForQuestions(
+        string $field_type,
+        array $conditions,
+        ValidationStrategy $expected_validation_strategy,
+        array $expected_conditions = [],
+        ?string $values = null
+    ): void {
+        /**
+         * @var \DBmysql $DB
+         */
+        global $DB;
+
+        // Create a form
+        $this->assertTrue($DB->insert(
+            'glpi_plugin_formcreator_forms',
+            [
+                'name' => 'Test form migration condition for questions',
+            ]
+        ));
+        $form_id = $DB->insertId();
+
+        // Insert a section for the form
+        $this->assertTrue($DB->insert(
+            'glpi_plugin_formcreator_sections',
+            [
+                'plugin_formcreator_forms_id' => $form_id,
+            ]
+        ));
+
+        $section_id = $DB->insertId();
+
+        // Insert a question for the form
+        $this->assertTrue($DB->insert(
+            'glpi_plugin_formcreator_questions',
+            [
+                'name'                           => 'Test form migration visibility condition for questions',
+                'plugin_formcreator_sections_id' => $section_id,
+                'fieldtype'                      => $field_type,
+                'values'                         => $values,
+                'row'                            => 0,
+                'col'                            => 0,
+            ]
+        ));
+        $question_id = $DB->insertId();
+
+        // Insert condition if needed
+        if (!empty($conditions)) {
+            foreach ($conditions as $condition) {
+                if ($condition['fieldname'] === 'regex') {
+                    // Insert regex validation condition
+                    $this->assertTrue($DB->insert(
+                        'glpi_plugin_formcreator_questionregexes',
+                        [
+                            'plugin_formcreator_questions_id' => $question_id,
+                            'regex'                           => $condition['regex'],
+                            'fieldname'                       => $condition['fieldname'],
+                        ]
+                    ));
+                } elseif ($condition['fieldname'] === 'range') {
+                    // Insert range validation condition
+                    $range_data = [
+                        'plugin_formcreator_questions_id' => $question_id,
+                        'fieldname'                       => $condition['fieldname'],
+                    ];
+
+                    if (isset($condition['range_min']) && $condition['range_min'] !== null) {
+                        $range_data['range_min'] = $condition['range_min'];
+                    }
+
+                    if (isset($condition['range_max']) && $condition['range_max'] !== null) {
+                        $range_data['range_max'] = $condition['range_max'];
+                    }
+
+                    $this->assertTrue($DB->insert(
+                        'glpi_plugin_formcreator_questionranges',
+                        $range_data
+                    ));
+                }
+            }
+        }
+
+        // Process migration
+        $migration = new FormMigration($DB, FormAccessControlManager::getInstance());
+        $this->setPrivateProperty($migration, 'result', new PluginMigrationResult());
+        $this->assertTrue($this->callPrivateMethod($migration, 'processMigration'));
+
+        // Verify that the condition has been migrated correctly
+        /** @var Form $form */
+        $form = getItemByTypeName(Form::class, 'Test form migration condition for questions');
+        $this->assertCount(1, $form->getSections());
+        $this->assertCount(1, $form->getQuestions());
+
+        /** @var Question $condition_question */
+        $condition_question = getItemByTypeName(Question::class, 'Test form migration visibility condition for questions');
+        $this->assertNotFalse($condition_question);
+        $this->assertEquals($expected_validation_strategy, $condition_question->getConfiguredValidationStrategy());
+        $this->assertEquals(
+            $expected_conditions,
+            array_map(
+                fn(ConditionData $condition) => [
+                    'value_operator' => $condition->getValueOperator(),
+                    'value'          => $condition->getValue(),
+                    'logic_operator' => $condition->getLogicOperator(),
+                ],
+                $condition_question->getConfiguredValidationConditionsData()
+            )
+        );
+    }
+
+    public function testFormMigrationVisibilityConditionsForSections(): void
     {
         /**
          * @var \DBmysql $DB
@@ -1708,7 +1965,7 @@ final class FormMigrationTest extends DbTestCase
         );
     }
 
-    public function testFormMigrationConditionsForComments(): void
+    public function testFormMigrationVisibilityConditionsForComments(): void
     {
         /**
          * @var \DBmysql $DB
@@ -1803,7 +2060,7 @@ final class FormMigrationTest extends DbTestCase
         );
     }
 
-    public static function provideFormMigrationConditionsForDestinations(): iterable
+    public static function provideFormMigrationVisibilityConditionsForDestinations(): iterable
     {
         $creation_strategies = [
             1 => CreationStrategy::ALWAYS_CREATED,
@@ -1842,8 +2099,8 @@ final class FormMigrationTest extends DbTestCase
         }
     }
 
-    #[DataProvider('provideFormMigrationConditionsForDestinations')]
-    public function testFormMigrationConditionsForDestinations(
+    #[DataProvider('provideFormMigrationVisibilityConditionsForDestinations')]
+    public function testFormMigrationVisibilityConditionsForDestinations(
         string $legacy_itemtype,
         string $legacy_table,
         int $legacy_strategy,

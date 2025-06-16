@@ -528,4 +528,35 @@ CREATE TABLE `glpi_plugin_formcreator_conditions` (
   KEY `item` (`itemtype`,`items_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=825 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
 
+--
+-- Table structure for table `glpi_plugin_formcreator_questionranges`
+--
+
+DROP TABLE IF EXISTS `glpi_plugin_formcreator_questionranges`;
+CREATE TABLE `glpi_plugin_formcreator_questionranges` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `plugin_formcreator_questions_id` int unsigned NOT NULL DEFAULT '0',
+  `range_min` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `range_max` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `fieldname` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `uuid` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `plugin_formcreator_questions_id` (`plugin_formcreator_questions_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=304 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
+--
+-- Table structure for table `glpi_plugin_formcreator_questionregexes`
+--
+
+DROP TABLE IF EXISTS `glpi_plugin_formcreator_questionregexes`;
+CREATE TABLE `glpi_plugin_formcreator_questionregexes` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `plugin_formcreator_questions_id` int unsigned NOT NULL DEFAULT '0',
+  `regex` mediumtext COLLATE utf8mb4_unicode_ci,
+  `fieldname` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `uuid` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `plugin_formcreator_questions_id` (`plugin_formcreator_questions_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=297 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci ROW_FORMAT=DYNAMIC;
+
 -- Dump completed on 2025-01-21 11:41:32
