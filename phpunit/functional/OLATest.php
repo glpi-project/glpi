@@ -449,8 +449,10 @@ class OLATest extends DbTestCase
         $this->login();
         // arrange
         $ola_tto = $this->createOLA(ola_type: \SLM::TTO)['ola'];
-        $start_time_datetime = $this->setCurrentTime('09:00:00', '2025-06-02');
-        $ticket_date = new \DateTime('- 30 minutes');
+        // ticket date is set to 30 minutes before current time
+        $now = $this->setCurrentTime('09:00:00', '2025-06-02');
+        $ticket_date = clone $now;
+        $ticket_date->modify('- 30 minutes');
 
         // act associate ticket with ola
         $ticket = $this->createTicket(['_la_update' => true, '_olas_id' => [$ola_tto->getID()], 'date' => $ticket_date->format('Y-m-d H:i:s')]);
