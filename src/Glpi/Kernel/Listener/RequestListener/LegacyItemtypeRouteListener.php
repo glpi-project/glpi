@@ -348,12 +348,6 @@ final readonly class LegacyItemtypeRouteListener implements EventSubscriberInter
             return null;
         }
 
-        $item = \getItemForItemtype($itemtype);
-
-        if ($item instanceof CommonGLPI) {
-            return $item::class;
-        }
-
         // PluginMyPluginItem -> /plugins/myplugin/front/item.php
         $legacy_item = \getItemForItemtype(\sprintf('Plugin%s%s', ucfirst($plugin), ucfirst($itemtype)));
         if ($legacy_item instanceof CommonGLPI) {
