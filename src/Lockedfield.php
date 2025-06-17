@@ -354,7 +354,7 @@ class Lockedfield extends CommonDBTM
                 if (isset($values['items_id']) && !$values['items_id']) {
                     return '-';
                 }
-                if (isset($values['itemtype'])) {
+                if (isset($values['itemtype']) && is_a($values['itemtype'], CommonDBTM::class, true)) {
                     $itemtype = $values['itemtype'];
                     $item = new $itemtype();
                     $item->getFromDB($values['items_id']);

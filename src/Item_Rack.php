@@ -206,9 +206,8 @@ class Item_Rack extends CommonDBRelation
                 'reserved'  => (bool) $row['is_reserved'],
             ];
 
-            $model_class = $item->getType() . 'Model';
-            $modelsfield = $model_class::getForeignKeyField();
-            $model = new $model_class();
+            $model = $item->getModelClassInstance();
+            $modelsfield = $model::getForeignKeyField();
             if ($model->getFromDB($item->fields[$modelsfield])) {
                 if ($model->fields['required_units'] > 1) {
                     $gs_item['height'] = $model->fields['required_units'];
@@ -468,9 +467,8 @@ JAVASCRIPT;
             $item = getItemForItemtype($row['itemtype']);
             $item->getFromDB($row['items_id']);
 
-            $model_class = $item->getType() . 'Model';
-            $modelsfield = $model_class::getForeignKeyField();
-            $model = new $model_class();
+            $model = $item->getModelClassInstance();
+            $modelsfield = $model::getForeignKeyField();
 
             if ($model->getFromDB($item->fields[$modelsfield])) {
                 $required_units = $model->fields['required_units'];
@@ -1004,9 +1002,8 @@ JAVASCRIPT;
 
             $item = getItemForItemtype($itemtype);
             $item->getFromDB($items_id);
-            $model_class = $item->getType() . 'Model';
-            $modelsfield = $model_class::getForeignKeyField();
-            $model = new $model_class();
+            $model = $item->getModelClassInstance();
+            $modelsfield = $model::getForeignKeyField();
 
             $required_units = 1;
             $width          = 1;

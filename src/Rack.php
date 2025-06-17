@@ -888,7 +888,7 @@ JAVASCRIPT;
             $units = 1;
             $depth = 1;
             $model_class = $item->getModelClass();
-            $model = new $model_class();
+            $model = new $model_class(); //class type is checkd from getModelClass, should be safe
             $modelsfield = $model_class::getForeignKeyField();
             if ($item->fields[$modelsfield] != 0) {
                 if ($model->getFromDB($item->fields[$modelsfield])) {

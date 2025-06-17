@@ -501,7 +501,7 @@ class Socket extends CommonDBChild
 
         switch ($field) {
             case 'items_id':
-                if (isset($values['itemtype'])) {
+                if (isset($values['itemtype']) && is_a($values['itemtype'], CommonDBTM::class, true)) {
                     if ($values[$field] > 0) {
                         $item = new $values['itemtype']();
                         $item->getFromDB($values[$field]);
@@ -861,7 +861,7 @@ class Socket extends CommonDBChild
             $socketmodel = new SocketModel();
             $socketmodel->getFromDB($data['socketmodels_id']);
             $link = '';
-            if (isset($data['itemtype']) && class_exists($data['itemtype'])) {
+            if (isset($data['itemtype']) && class_exists($data['itemtype']) && is_a($data['itemtype'], CommonDBTM::class, true)) {
                 $itemtype = $data['itemtype'];
                 $asset = new $itemtype();
                 if ($asset->getFromDB($data['items_id'])) {

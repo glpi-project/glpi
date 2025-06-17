@@ -415,7 +415,7 @@ abstract class LevelAgreementLevel extends RuleTicket
         if (isset($options['la'])) {
             $la = $options['la'];
         } else {
-            $la = new $parent_class();
+            $la = getItemForItemtype($parent_class);
             $la->getFromDB($this->fields[$parent_class::getForeignKeyField()]);
         }
 

@@ -56,8 +56,7 @@ abstract class ITILTemplatePredefinedField extends ITILTemplateField
     protected function computeFriendlyName()
     {
 
-        $tt_class = static::$itemtype;
-        $tt     = new $tt_class();
+        $tt     = getItemForItemtype(static::$itemtype);
         $fields = $tt->getAllowedFieldsNames(true, true);
 
         if (isset($fields[$this->fields["num"]])) {
@@ -112,8 +111,7 @@ abstract class ITILTemplatePredefinedField extends ITILTemplateField
 
         parent::post_purgeItem();
 
-        $itil_class = static::$itiltype;
-        $itil_object = new $itil_class();
+        $itil_object = getItemForItemtype(static::$itiltype);
         $itemtype_id = $itil_object->getSearchOptionIDByField('field', 'itemtype', $itil_object->getTable());
         $items_id_id = $itil_object->getSearchOptionIDByField('field', 'items_id', $itil_object->getTable());
 
@@ -187,8 +185,7 @@ abstract class ITILTemplatePredefinedField extends ITILTemplateField
             'ORDER'  => 'id',
         ]);
 
-        $tt_class       = static::$itemtype;
-        $tt             = new $tt_class();
+        $tt             = getItemForItemtype(static::$itemtype);
         $allowed_fields = $tt->getAllowedFields($withtypeandcategory, true);
         $fields         = [];
         $multiple       = self::getMultiplePredefinedValues();
@@ -221,17 +218,17 @@ abstract class ITILTemplatePredefinedField extends ITILTemplateField
     {
 
         $itil_class = static::$itiltype;
-        $itil_object = new $itil_class();
+        $itil_object = getItemForItemtype(static::$itiltype);
 
         $itemstable = null;
         switch ($itil_class) {
-            case 'Change':
+            case Change::class:
                 $itemstable = 'glpi_changes_items';
                 break;
-            case 'Problem':
+            case Problem::class:
                 $itemstable = 'glpi_items_problems';
                 break;
-            case 'Ticket':
+            case Ticket::class:
                 $itemstable = 'glpi_items_tickets';
                 break;
             default:
@@ -248,7 +245,7 @@ abstract class ITILTemplatePredefinedField extends ITILTemplateField
     }
 
     /**
-     * Return fields who doesn't need to be used for this part of template
+     * Return fields who don't need to be used for this part of template
      *
      * @since 9.2
      *

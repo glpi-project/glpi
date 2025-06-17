@@ -180,7 +180,7 @@ class Impact extends CommonGLPI
             foreach ($linked_items as $itemtype => $linked_item_ids) {
                 $class = $itemtype;
                 if (self::isEnabled($class)) {
-                    $item = new $class();
+                    $item = getItemForItemtype($class);
                     foreach ($linked_item_ids as $linked_item_id) {
                         if (!$item->getFromDB($linked_item_id)) {
                             continue;
@@ -641,7 +641,7 @@ JS);
             }
 
             // Add to itemtype
-            $itemtype_item = new $itemtype();
+            $itemtype_item = getItemForItemtype($itemtype);
             $itemtype_item->getFromDB($items_id);
             $data[$itemtype][] = [
                 'stored' => $itemtype_item,

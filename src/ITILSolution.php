@@ -189,6 +189,7 @@ class ITILSolution extends CommonDBChild
         if (isset($input['itemtype']) && !is_a($input['itemtype'], CommonDBTM::class, true)) {
             return false;
         }
+        $parent_item = new $input['itemtype'](); //itemtype is checked, should be safe
 
         if (
             $this->item == null
@@ -202,7 +203,6 @@ class ITILSolution extends CommonDBChild
         // Handle template
         if (isset($input['_solutiontemplates_id'])) {
             $template = new SolutionTemplate();
-            $parent_item = new $input['itemtype']();
             if (
                 !$template->getFromDB($input['_solutiontemplates_id'])
                 || !$parent_item->getFromDB($input['items_id'])
@@ -228,7 +228,6 @@ class ITILSolution extends CommonDBChild
             $template_fields = $template->fields;
             unset($template_fields['id']);
             if (isset($template_fields['content'])) {
-                $parent_item = new $input['itemtype']();
                 $parent_item->getFromDB($input['items_id']);
                 $template_fields['content'] = $template->getRenderedContent($parent_item);
             }

@@ -437,7 +437,7 @@ abstract class InventoryAsset
     protected function addOrMoveItem(array $input): void
     {
         $itemtype = $input['itemtype_peripheral'];
-        $item = new $itemtype();
+        $item = getItemForItemtype($itemtype);
         $item->getFromDB($input['items_id_peripheral']);
 
         if (!$item->isGlobal()) {
