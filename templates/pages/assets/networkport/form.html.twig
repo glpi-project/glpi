@@ -60,6 +60,7 @@
             </div>
         {% endset %}
         {{ fields.htmlField('', logical_num_field, _n('Port number', 'Port number', 1)) }}
+        <input type="hidden" name="several" value="yes">
     {% endif %}
     {{ fields.textField('name', item.fields['name'], __('Name')) }}
     {{ fields.textField('ifalias', item.fields['ifalias'], __('Alias')) }}
