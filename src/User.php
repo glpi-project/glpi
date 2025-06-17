@@ -1430,8 +1430,11 @@ class User extends CommonDBTM
      */
     public function syncLdapGroups()
     {
-        /** @var \DBmysql $DB */
-        global $DB;
+        /**
+         * @var array $CFG_GLPI
+         * @var \DBmysql $DB
+         */
+        global $CFG_GLPI, $DB;
 
         // input["_groups"] not set when update from user.form or preference
         if (
@@ -1446,7 +1449,7 @@ class User extends CommonDBTM
                 if (count($authtype)) {
                     // Clean groups
                     $this->input["_groups"] = array_unique($this->input["_groups"]);
-                    $this->oldvalues["_ldap_groups"] = $this->input["_groups"];
+                    $CFG_GLPI["_ldap_groups"] = $this->input["_groups"];
 
                     // Delete not available groups like to LDAP
                     $iterator = $DB->request([
@@ -6584,6 +6587,9 @@ HTML;
      */
     public function applyGroupsRules()
     {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
         if (!isset($this->input["_ldap_rules"]['groups_id'])) {
             if (isset($this->input["_ldap_rules"]) && isset($this->input['id'])) {
                 $group_user = new Group_User();
@@ -6592,7 +6598,7 @@ HTML;
                     'is_dynamic' => true,
                 ]);
                 foreach ($groups as $group) {
-                    if (!isset($this->oldvalues['_ldap_groups']) || !in_array($group['groups_id'], $this->oldvalues['_ldap_groups'])) {
+                    if (!isset($CFG_GLPI['_ldap_groups']) || !in_array($group['groups_id'], $CFG_GLPI['_ldap_groups'])) {
                         $group_user->delete($group);
                     }
                 }
