@@ -151,4 +151,25 @@ describe('Illustration picker', () => {
             .should('be.greaterThan', 0)
         ;
     });
+
+    it('Can pick an image searchable by tag', () => {
+        // The default icon should be selected.
+        cy.findByRole('img', {'name': 'Request a service'}).should('be.visible');
+
+        // Open icon picker
+        openIllustrationPicker();
+
+        // Search for an icon by tag
+        cy.findByRole('textbox', {'name': "Search"}).should('be.focused');
+        cy.focused().type("planet");
+
+        // Only 1 icon must be found
+        cy.findByRole('dialog')
+            .findAllByRole('img')
+            .should('have.length', 1)
+        ;
+
+        // The icon must be the one we are looking for
+        cy.findByRole('img', {'name': 'World'}).should('be.visible');
+    });
 });

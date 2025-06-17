@@ -157,7 +157,13 @@ final class IllustrationManager
             fn($icon) => str_contains(
                 strtolower(_x("Icon", $icon['title'])),
                 strtolower($filter),
-            )
+            ) || !empty(array_filter(
+                $icon['tags'] ?? [],
+                fn($tag) => str_contains(
+                    strtolower(_x("Icon", $tag)),
+                    strtolower($filter)
+                ),
+            )),
         );
 
         $icons = array_slice(
@@ -178,6 +184,19 @@ final class IllustrationManager
         }
 
         return $titles;
+    }
+
+    public function getAllIconsTags(): array
+    {
+        $icons = $this->getIconsDefinitions();
+        $tags = [];
+        foreach ($icons as $icon) {
+            if (isset($icon['tags']) && is_array($icon['tags'])) {
+                $tags = array_merge($tags, $icon['tags']);
+            }
+        }
+
+        return array_unique($tags);
     }
 
     public function saveCustomIllustration(string $id, string $path): void

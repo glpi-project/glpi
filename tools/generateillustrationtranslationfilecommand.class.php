@@ -58,6 +58,11 @@ final class GenerateIllustrationTranslationFileCommand extends Command
             $content .= '_sx("Icon", "' . $title . '");' . PHP_EOL;
         }
 
+        foreach ($manager->getAllIconsTags() as $tag) {
+            $tag = addslashes($tag);
+            $content .= '_sx("Icon", "' . $tag . '");' . PHP_EOL;
+        }
+
         $written_bytes = file_put_contents(
             IllustrationManager::TRANSLATION_FILE,
             $content
