@@ -1645,4 +1645,9 @@ class Item_Devices extends CommonDBRelation
         $device_class = static::$itemtype_2 ?? "CommonDevice";
         return $device_class::getIcon();
     }
+
+    public function getImportCriteria(): array
+    {
+        return [];
+    }
 }
