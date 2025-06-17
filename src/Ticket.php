@@ -2463,7 +2463,6 @@ JAVASCRIPT;
         parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
     }
 
-
     public function rawSearchOptions()
     {
         /** @var \DBmysql $DB */
@@ -2555,25 +2554,46 @@ JAVASCRIPT;
             'computation'        => self::generateSLAOLAComputation('internal_time_to_resolve'),
         ];
 
-        $tab[] = [ // @todoseb trouver solution ou dégager
-            'id'                 => '185',
-            'table'              => $this->getTable(),
-            'field'              => 'internal_time_to_own',
-            'name'               => __('Internal time to own'),
-            'datatype'           => 'datetime',
-            'maybefuture'        => true,
-            'massiveaction'      => false,
-            'additionalfields'   => ['date', 'status', 'takeintoaccount_delay_stat', 'takeintoaccountdate'],
-        ];
+        //        $tab[] = [ // @todoseb trouver solution ou dégager
+        //            'id'                 => '185',
+        //            'table'              => $this->getTable(),
+        //            'field'              => 'internal_time_to_own',
+        //            'name'               => __('Internal time to own'),
+        //            'datatype'           => 'datetime',
+        //            'maybefuture'        => true,
+        //            'massiveaction'      => false,
+        //            'additionalfields'   => ['date', 'status', 'takeintoaccount_delay_stat', 'takeintoaccountdate'],
+        //        ];
 
-        $tab[] = [ // @todoseb trouver solution ou dégager
-            'id'                 => '186',
-            'table'              => $this->getTable(),
-            'field'              => 'internal_time_to_own',
-            'name'               => __('Internal time to own + Progress'),
-            'massiveaction'      => false,
-            'nosearch'           => true,
-            'additionalfields'   => ['status'],
+        // OLA TTO due time
+        $tab[] = [
+            'id' => '190',
+            'name' => __('OLA') . ' ' . __('Internal time to own'),
+            'massiveaction' => false,
+            'datatype' => 'dropdown',
+            'table' => 'glpi_items_olas',
+            'field' => 'due_time',
+            'joinparams' => [
+                'jointype' => 'child',
+                'linkfield' => 'olas_id',
+                'condition' => [
+                    'NEWTABLE.items_id' => new QueryExpression('glpi_items_olas.items_id'),
+                    'NEWTABLE.itemtype' => new QueryExpression('glpi_items_olas.itemtype'),
+                ],
+                'beforejoin' => [
+                    'table' => 'glpi_olas',
+                    'joinparams' => [
+                        'condition' => ['NEWTABLE.type' => SLM::TTO,],
+                        'beforejoin' => [
+                            'table' => 'glpi_items_olas',
+                            'joinparams' => [
+                                'jointype' => 'itemtype_item',
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+            'forcegroupby' => true,
         ];
 
         $tab[] = [ // @todoseb trouver solution ou dégager
@@ -3100,7 +3120,6 @@ JAVASCRIPT;
         return $tab;
     }
 
-
     public static function getSpecificValueToDisplay($field, $values, array $options = [])
     {
 
@@ -3125,6 +3144,7 @@ JAVASCRIPT;
 
                 return sprintf(__('%s hours %s minutes'), floor($time / 3600), floor(($time % 3600) / 60));
         }
+
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }
 
