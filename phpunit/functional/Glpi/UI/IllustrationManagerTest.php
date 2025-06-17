@@ -71,9 +71,9 @@ final class IllustrationManagerTest extends GLPITestCase
             'page' => 1,
             'page_size' => 3,
             'expected' => [
-                'antivirus',
-                'application',
-                'application-altenative',
+                'advanced-dashboards',
+                'alert',
+                'anonymise',
             ],
         ];
 
@@ -81,9 +81,9 @@ final class IllustrationManagerTest extends GLPITestCase
             'page' => 2,
             'page_size' => 3,
             'expected' => [
-                'application-edit',
-                'approve-requests',
-                'asset-cartridge',
+                'anonymize-alt',
+                'ansible',
+                'antivirus',
             ],
         ];
 
@@ -91,16 +91,16 @@ final class IllustrationManagerTest extends GLPITestCase
             'page' => 1,
             'page_size' => 10,
             'expected' => [
+                'advanced-dashboards',
+                'alert',
+                'anonymise',
+                'anonymize-alt',
+                'ansible',
                 'antivirus',
                 'application',
                 'application-altenative',
                 'application-edit',
-                'approve-requests',
-                'asset-cartridge',
-                'asset-desktop-1',
-                'asset-desktop-2',
-                'asset-laptop',
-                'asset-lost',
+                'approval-by-mail',
             ],
         ];
     }
