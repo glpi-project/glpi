@@ -274,12 +274,10 @@ final class QuestionTypeItemDropdown extends QuestionTypeItem
                         ),
                     };
 
-                    $type_params['AND']['OR'][] = [
-                        $itemtype::getTableField($key) => 1,
-                    ];
+                    $type_params[$itemtype::getTableField($key)] = 1;
                 }
 
-                $params[] = $type_params;
+                $params[] = ['OR' => $type_params];
             }
         }
 
