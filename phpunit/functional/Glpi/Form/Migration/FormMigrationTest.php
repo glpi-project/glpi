@@ -1050,8 +1050,9 @@ final class FormMigrationTest extends DbTestCase
         $this->assertTrue($DB->insert(
             'glpi_plugin_formcreator_forms',
             [
-                'name'       => 'Test form migration for deleted form',
-                'is_deleted' => 1,
+                'name'        => 'Test form migration for deleted form',
+                'entities_id' => $this->getTestRootEntity(true),
+                'is_deleted'  => 1,
             ]
         ));
 
@@ -2010,5 +2011,41 @@ final class FormMigrationTest extends DbTestCase
         $this->assertEquals(['request'], $question_type->getCategoriesFilter($question));
         $this->assertEquals($itilcategory->getId(), $question_type->getRootItemsId($question));
         $this->assertEquals(0, $question_type->getSubtreeDepth($question));
+    }
+
+    public function testFormMigrationWithEntityThatDoesNotExist(): void
+    {
+        /**
+         * @var \DBmysql $DB
+         */
+        global $DB;
+
+        // Create a form
+        $this->assertTrue($DB->insert(
+            'glpi_plugin_formcreator_forms',
+            [
+                'name' => 'Test form migration with entity that does not exist',
+                "entities_id" => 999, // Non-existing entity ID
+            ]
+        ));
+
+        // Create a section for the form
+        $this->assertTrue($DB->insert(
+            'glpi_plugin_formcreator_sections',
+            [
+                'plugin_formcreator_forms_id' => $DB->insertId(),
+            ]
+        ));
+
+        // Process migration
+        $migration = new FormMigration($DB, FormAccessControlManager::getInstance());
+        $this->setPrivateProperty($migration, 'result', new PluginMigrationResult());
+        $this->assertTrue($this->callPrivateMethod($migration, 'processMigration'));
+
+        // Verify that the form has not been migrated
+        $this->assertFalse((new Form())->getFromDBByCrit(['name' => 'Test form migration with entity that does not exist']));
+
+        // Verify that the section has not been migrated
+        $this->assertFalse((new Section())->getFromDBByCrit(['name' => 'Test form migration with entity that does not exist - Section']));
     }
 }
