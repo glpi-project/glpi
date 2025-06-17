@@ -1822,6 +1822,7 @@ HTML;
             'rand'                => $params['rand'],
             'width'               => $params['width'],
             'required'            => $params['required'],
+            'aria_label'          => __('Approver type'),
         ]);
 
         if ($validatortype) {

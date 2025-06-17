@@ -34,9 +34,13 @@ describe("Ticket Form", () => {
     beforeEach(() => {
         cy.login();
     });
+
     it('TODO List', () => {
-        cy.visit('/front/ticket.php');
-        cy.get('td[data-searchopt-content-id="1"] a').first().click();
+        cy.createWithAPI('Ticket', {
+            name: 'Test TODO List',
+            content: 'Test TODO List',
+        }).as('ticket_id');
+        cy.get('@ticket_id').then((ticket_id) => cy.visit(`/front/ticket.form.php?id=${ticket_id}`));
 
         cy.get('.itil-timeline').should('exist').then((container) => {
             // Append fake content to the timeline
@@ -79,9 +83,14 @@ describe("Ticket Form", () => {
 
     it('Search for Solution', () => {
         cy.createWithAPI('Ticket', {
-            name: 'apple',
-            content: 'apple',
+            name: 'Test search solution',
+            content: 'Test search solution',
         }).as('ticket_id');
+        cy.createWithAPI('KnowbaseItem', {
+            name: 'Test kb item for search solution test',
+            answer: 'Test kb item for search solution test',
+            description: 'Test kb item for search solution test',
+        }).as('knowbaseitem_id');
         cy.get('@ticket_id').then((ticket_id) => {
             cy.visit(`/front/ticket.form.php?id=${ticket_id}`);
             cy.get('.timeline-buttons .main-actions button.dropdown-toggle-split').click();
@@ -90,8 +99,8 @@ describe("Ticket Form", () => {
                 cy.findByLabelText('Search in the knowledge base').click();
             });
             cy.get('#modal_search_knowbaseitem').within(() => {
-                cy.findByLabelText('Search…').should('have.value', 'apple');
-                cy.findAllByRole('listitem').should('have.length.at.least', 2);
+                cy.findByLabelText('Search…').should('have.value', 'Test search solution');
+                cy.findAllByRole('listitem').should('have.length.at.least', 1);
 
                 cy.findAllByTitle('Preview').first().click();
                 cy.findByText('Subject').should('be.visible');
@@ -111,9 +120,14 @@ describe("Ticket Form", () => {
 
     it('Search for Followup', () => {
         cy.createWithAPI('Ticket', {
-            name: 'apple',
-            content: 'apple',
+            name: 'Test search followup',
+            content: 'Test search followup',
         }).as('ticket_id');
+        cy.createWithAPI('KnowbaseItem', {
+            name: 'Test kb item for search followup test',
+            answer: 'Test kb item for search followup test',
+            description: 'Test kb item for search followup test',
+        }).as('knowbaseitem_id');
         cy.get('@ticket_id').then((ticket_id) => {
             cy.visit(`/front/ticket.form.php?id=${ticket_id}`);
             cy.findByText('Answer').click();
@@ -121,8 +135,8 @@ describe("Ticket Form", () => {
                 cy.findByLabelText('Search in the knowledge base').click();
             });
             cy.get('#modal_search_knowbaseitem').within(() => {
-                cy.findByLabelText('Search…').should('have.value', 'apple');
-                cy.findAllByRole('listitem').should('have.length.at.least', 2);
+                cy.findByLabelText('Search…').should('have.value', 'Test search followup');
+                cy.findAllByRole('listitem').should('have.length.at.least', 1);
 
                 cy.findAllByTitle('Preview').first().click();
                 cy.findByText('Subject').should('be.visible');
@@ -140,11 +154,11 @@ describe("Ticket Form", () => {
         });
     });
 
-    it('Validation Template', { retries: 0 }, () => {
+    it('Validation Template', () => {
         const rand = Math.floor(Math.random() * 1000);
         cy.createWithAPI('Ticket', {
-            name: 'apple',
-            content: 'apple',
+            name: 'Test validation template',
+            content: 'Test validation template',
         }).as('ticket_id');
         cy.createWithAPI('ITILValidationTemplate', {
             name: `test ${rand}`,
@@ -165,24 +179,123 @@ describe("Ticket Form", () => {
                     items_id: 2
                 });
                 cy.visit(`/front/ticket.form.php?id=${ticket_id}`);
-                cy.get('.timeline-buttons .main-actions button.dropdown-toggle-split').click();
+                cy.findByRole('button', { name: 'View other actions' }).click();
                 cy.findByText('Ask for approval').click();
                 cy.get('.ITILValidation.show').within(() => {
                     cy.getDropdownByLabelText('Template').selectDropdownValue(`test ${rand}`);
-                    cy.get('select[name="[validatortype]"]').should('have.value', 'User');
-                    cy.waitForNetworkIdle(200);
-                    cy.get('select[name="items_id_target"]').should('have.value', '2');
+                    cy.getDropdownByLabelText('Approver type').should('have.text', 'User');
+                    cy.getDropdownByLabelText('Select a user').should('have.text', 'glpi');
                     cy.findByLabelText('Comment').awaitTinyMCE().should('contain.text', 'test content');
                 });
                 cy.visit(`/front/ticket.form.php?id=${ticket_id}`);
-                cy.get('.timeline-buttons .main-actions button.dropdown-toggle-split').click();
+                cy.findByRole('button', { name: 'View other actions' }).click();
                 cy.findByText('Ask for approval').click();
                 cy.get('.ITILValidation.show').within(() => {
                     cy.getDropdownByLabelText('Template').selectDropdownValue(`test no approver ${rand}`);
-                    cy.get('select[name="[validatortype]"]').should('have.value', '0');
-                    cy.get('select[name="items_id_target"]').should('not.exist');
+                    cy.getDropdownByLabelText('Approver type').should('have.text', '-----');
+                    cy.getDropdownByLabelText('Select a user').should('not.exist');
                     cy.findByLabelText('Comment').awaitTinyMCE().should('contain.text', 'no approver test content');
                 });
+            });
+        });
+    });
+
+    it('Switch between validation templates', () => {
+        const rand = Math.floor(Math.random() * 1000);
+        cy.createWithAPI('Ticket', {
+            name: 'Test validation template switch',
+            content: 'Test validation template switch',
+        }).as('ticket_id');
+
+        // Create validation template with user approver
+        cy.createWithAPI('ITILValidationTemplate', {
+            name: `test validation template with user ${rand}`,
+            content: 'test content',
+            entities_id: 1,
+        }).as('user_validationtemplates_id').then((validationtemplates_id) => {
+            cy.createWithAPI('ITILValidationTemplate_Target', {
+                itilvalidationtemplates_id: validationtemplates_id,
+                itemtype: 'User',
+                items_id: 2 // glpi user
+            });
+        });
+
+        // Create validation template with group approver
+        cy.createWithAPI('ITILValidationTemplate', {
+            name: `test validation template with group ${rand}`,
+            content: 'test content',
+            entities_id: 1,
+        }).as('group_validationtemplates_id').then((validationtemplates_id) => {
+            cy.createWithAPI('Group', {
+                name: `test group ${rand}`,
+            }).then((group_id) => {
+                cy.createWithAPI('ITILValidationTemplate_Target', {
+                    itilvalidationtemplates_id: validationtemplates_id,
+                    itemtype: 'Group',
+                    items_id: group_id
+                });
+            });
+        });
+
+        // Create validation template with group user(s) approver
+        cy.createWithAPI('ITILValidationTemplate', {
+            name: `test validation template with group user ${rand}`,
+            content: 'test content',
+            entities_id: 1,
+        }).as('group_user_validationtemplates_id').then((validationtemplates_id) => {
+            cy.createWithAPI('Group', {
+                name: `test group user ${rand}`,
+            }).then((group_id) => {
+                cy.createWithAPI('Group_User', {
+                    groups_id: group_id,
+                    users_id: 2 // glpi user
+                });
+                cy.createWithAPI('ITILValidationTemplate_Target', {
+                    itilvalidationtemplates_id: validationtemplates_id,
+                    itemtype: 'User',
+                    items_id: 2, // glpi user
+                    groups_id: group_id
+                });
+            });
+        });
+
+        // Create validation template with no approver
+        cy.createWithAPI('ITILValidationTemplate', {
+            name: `test validation template with no approver ${rand}`,
+            content: 'no approver test content',
+            entities_id: 1,
+        }).as('no_approver_validationtemplates_id');
+
+        cy.get('@ticket_id').then((ticket_id) => {
+            cy.visit(`/front/ticket.form.php?id=${ticket_id}`);
+            cy.findByRole('button', { name: 'View other actions' }).click();
+            cy.findByText('Ask for approval').click();
+            cy.get('.ITILValidation.show').within(() => {
+                // Select user validation template
+                cy.getDropdownByLabelText('Template').selectDropdownValue(`test validation template with user ${rand}`);
+                cy.getDropdownByLabelText('Approver type').should('have.text', 'User');
+                cy.getDropdownByLabelText('Select a user').should('have.text', 'glpi');
+                cy.findByLabelText('Comment').awaitTinyMCE().should('contain.text', 'test content');
+
+                // Switch to group validation template
+                cy.getDropdownByLabelText('Template').selectDropdownValue(`test validation template with group ${rand}`);
+                cy.getDropdownByLabelText('Approver type').should('have.text', 'Group');
+                cy.getDropdownByLabelText('Select a group').should('have.text', `test group ${rand}`);
+                cy.findByLabelText('Comment').awaitTinyMCE().should('contain.text', 'test content');
+
+                // Switch to group user validation template
+                cy.getDropdownByLabelText('Template').selectDropdownValue(`test validation template with group user ${rand}`);
+                cy.getDropdownByLabelText('Approver type').should('have.text', 'Group user(s)');
+                cy.getDropdownByLabelText('Select a group').should('have.text', `test group user ${rand}`);
+                cy.getDropdownByLabelText('Select users').should('have.text', '×glpi');
+                cy.findByLabelText('Comment').awaitTinyMCE().should('contain.text', 'test content');
+
+                // Switch to no approver validation template
+                cy.getDropdownByLabelText('Template').selectDropdownValue(`test validation template with no approver ${rand}`);
+                cy.getDropdownByLabelText('Approver type').should('have.text', '-----');
+                cy.getDropdownByLabelText('Select a user').should('not.exist');
+                cy.getDropdownByLabelText('Select a group').should('not.exist');
+                cy.findByLabelText('Comment').awaitTinyMCE().should('contain.text', 'no approver test content');
             });
         });
     });

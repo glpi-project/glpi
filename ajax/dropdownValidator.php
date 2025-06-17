@@ -106,25 +106,27 @@ if (isset($_POST["validatortype"])) {
                 ];
             }
             User::dropdown([
-                'name'   => $items_id_name,
-                'entity' => $_POST['entity'],
-                'value'  => $_POST['items_id_target'],
-                'right'  => $_POST['right'],
-                'width'  => '100%',
-                'toadd'  => $added_supervisors,
-                'rand'   => $_POST['rand'],
+                'name'       => $items_id_name,
+                'entity'     => $_POST['entity'],
+                'value'      => $_POST['items_id_target'],
+                'right'      => $_POST['right'],
+                'width'      => '100%',
+                'toadd'      => $added_supervisors,
+                'rand'       => $_POST['rand'],
+                'aria_label' => __('Select a user'),
             ]);
             echo Html::hidden($itemtype_name, ['value' => 'User']);
             break;
 
         case 'group':
             Group::dropdown([
-                'name'   => $items_id_name,
-                'entity' => $_POST['entity'],
-                'value'  => !is_array($_POST['items_id_target']) ? $_POST['items_id_target'] : '',
-                'right'  => $_POST['right'],
-                'width'  => '100%',
-                'rand'   => $_POST['rand'],
+                'name'       => $items_id_name,
+                'entity'     => $_POST['entity'],
+                'value'      => !is_array($_POST['items_id_target']) ? $_POST['items_id_target'] : '',
+                'right'      => $_POST['right'],
+                'width'      => '100%',
+                'rand'       => $_POST['rand'],
+                'aria_label' => __('Select a group'),
             ]);
             echo Html::hidden($itemtype_name, ['value' => 'Group']);
             break;
@@ -133,11 +135,12 @@ if (isset($_POST["validatortype"])) {
             $value = $_POST['groups_id'] ?? 0;
 
             $rand = Group::dropdown([
-                'name'   => $groups_id_name,
-                'value'  => $value,
-                'entity' => $_POST["entity"],
-                'width'  => '100%',
-                'rand'   => $_POST['rand'],
+                'name'       => $groups_id_name,
+                'value'      => $value,
+                'entity'     => $_POST["entity"],
+                'width'      => '100%',
+                'rand'       => $_POST['rand'],
+                'aria_label' => __('Select a group'),
             ]);
             echo Html::hidden($itemtype_name, ['value' => 'User']);
 
@@ -199,10 +202,11 @@ if (isset($_POST["validatortype"])) {
                 }
             }
 
-            $param['multiple'] = true;
-            $param['display']  = true;
-            $param['size']     = count($users);
-            $param['rand']     = $_POST['rand'];
+            $param['multiple']   = true;
+            $param['display']    = true;
+            $param['size']       = count($users);
+            $param['rand']       = $_POST['rand'];
+            $param['aria_label'] = __('Select users');
 
             $rand  = Dropdown::showFromArray(
                 $items_id_name,
