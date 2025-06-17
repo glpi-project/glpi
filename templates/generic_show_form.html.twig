@@ -83,7 +83,7 @@
                                   item.fields['states_id'],
                                   __('Status'),
                                   specific_field_options|merge({
-                                      'entity': item.fields['entities_id'],
+                                      'entity': item.fields['entities_id']|default(-1),
                                       'condition': item.getStateVisibilityCriteria()
                                   })
                               ) }}
@@ -94,7 +94,7 @@
                                   item.fields[field],
                                   __('As child of'),
                                   specific_field_options|merge({
-                                      entity: item.fields['entities_id'],
+                                      entity: item.fields['entities_id']|default(-1),
                                       used: [item.getID()]
                                   })
                               ) }}
@@ -142,7 +142,7 @@
                                   item.fields['locations_id'],
                                   'Location'|itemtype_name,
                                   specific_field_options|merge({
-                                      'entity': item.fields['entities_id'],
+                                      'entity': item.fields['entities_id']|default(-1),
                                   })
                               ) }}
                           {% elseif field is same as 'item_type' and item_type == 'Unmanaged' %}
@@ -180,7 +180,7 @@
                                   item.fields['usertitles_id'],
                                   'UserTitle'|itemtype_name,
                                   specific_field_options|merge({
-                                      'entity': item.fields['entities_id'],
+                                      'entity': item.fields['entities_id']|default(-1),
                                   })
                               ) }}
                           {% elseif field is same as 'registration_number' %}
@@ -313,7 +313,7 @@
                                   item.fields['users_id_tech'],
                                   __('Technician in charge'),
                                   specific_field_options|merge({
-                                      'entity': item.fields['entities_id'],
+                                      'entity': item.fields['entities_id']|default(-1),
                                       'right': 'own_ticket',
                                   })
                               ) }}
@@ -332,7 +332,7 @@
                                   item.fields['groups_id_tech'],
                                   __('Group in charge'),
                                   specific_field_options|merge({
-                                      'entity': item.fields['entities_id'],
+                                      'entity': item.fields['entities_id']|default(-1),
                                       'condition': {'is_assign': 1},
                                       'multiple': item is usingtrait('Glpi\\Features\\AssignableItem') ? true : false
                                   })
@@ -394,7 +394,7 @@
                                   item.fields['users_id'],
                                   'User'|itemtype_name,
                                   specific_field_options|merge({
-                                      'entity': item.fields['entities_id'],
+                                      'entity': item.fields['entities_id']|default(-1),
                                       'right': 'all',
                                   })
                               ) }}
@@ -450,7 +450,7 @@
                                   item.fields['groups_id'],
                                   'Group'|itemtype_name,
                                   specific_field_options|merge({
-                                      'entity': item.fields['entities_id'],
+                                      'entity': item.fields['entities_id']|default(-1),
                                       'condition': {'is_itemgroup': 1},
                                       'multiple': item is usingtrait('Glpi\\Features\\AssignableItem') ? true : false
                                   })
