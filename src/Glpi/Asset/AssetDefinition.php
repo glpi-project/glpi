@@ -857,10 +857,7 @@ TWIG, $twig_params);
     {
         $enabled_profiles = [];
         foreach ($profile_data as $data) {
-            $helpdesk_item_types = json_decode($data['helpdesk_item_type'], associative: true) ?? [];
-            if (!is_array($helpdesk_item_types)) {
-                $helpdesk_item_types = [];
-            }
+            $helpdesk_item_types = importArrayFromDB($data['helpdesk_item_type']);
             if (in_array($this->getCustomObjectClassName(), $helpdesk_item_types, true)) {
                 $enabled_profiles[] = $data['id'];
             }
@@ -901,7 +898,7 @@ TWIG, $twig_params);
             'FROM' => Profile::getTable(),
         ]);
         foreach ($it as $data) {
-            $old_values[$data['id']] = json_decode($data['helpdesk_item_type'], associative: true);
+            $old_values[$data['id']] = importArrayFromDB($data['helpdesk_item_type']);
             if (!is_array($old_values[$data['id']])) {
                 $old_values[$data['id']] = [];
             }
