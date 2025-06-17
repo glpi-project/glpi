@@ -96,7 +96,7 @@ final class QuestionTypeItemDropdownTest extends DbTestCase
                     subtree_depth: 0
                 ),
                 ['WHERE' => [
-                    ['AND' => ['OR' => [['glpi_itilcategories.is_request' => 1]]]],
+                    ['OR' => ['glpi_itilcategories.is_request' => 1]],
                 ]],
             ],
             'ITILCategory with incident filter' => [
@@ -107,7 +107,7 @@ final class QuestionTypeItemDropdownTest extends DbTestCase
                     subtree_depth: 0
                 ),
                 ['WHERE' => [
-                    ['AND' => ['OR' => [['glpi_itilcategories.is_incident' => 1]]]],
+                    ['OR' => ['glpi_itilcategories.is_incident' => 1]],
                 ]],
             ],
             'ITILCategory with multiple filters' => [
@@ -118,10 +118,10 @@ final class QuestionTypeItemDropdownTest extends DbTestCase
                     subtree_depth: 0
                 ),
                 ['WHERE' => [
-                    ['AND' => ['OR' => [
-                        ['glpi_itilcategories.is_request' => 1],
-                        ['glpi_itilcategories.is_incident' => 1],
-                    ]]],
+                    ['OR' => [
+                        'glpi_itilcategories.is_request' => 1,
+                        'glpi_itilcategories.is_incident' => 1,
+                    ]],
                 ]],
             ],
             'ITILCategory with change filter' => [
@@ -132,7 +132,7 @@ final class QuestionTypeItemDropdownTest extends DbTestCase
                     subtree_depth: 0
                 ),
                 ['WHERE' => [
-                    ['AND' => ['OR' => [['glpi_itilcategories.is_change' => 1]]]],
+                    ['OR' => ['glpi_itilcategories.is_change' => 1]],
                 ]],
             ],
             'ITILCategory with problem filter' => [
@@ -143,7 +143,7 @@ final class QuestionTypeItemDropdownTest extends DbTestCase
                     subtree_depth: 0
                 ),
                 ['WHERE' => [
-                    ['AND' => ['OR' => [['glpi_itilcategories.is_problem' => 1]]]],
+                    ['OR' => ['glpi_itilcategories.is_problem' => 1]],
                 ]],
             ],
             'ITILCategory with all filters' => [
@@ -154,12 +154,12 @@ final class QuestionTypeItemDropdownTest extends DbTestCase
                     subtree_depth: 0
                 ),
                 'expected' => ['WHERE' => [
-                    ['AND' => ['OR' => [
-                        ['glpi_itilcategories.is_request' => 1],
-                        ['glpi_itilcategories.is_incident' => 1],
-                        ['glpi_itilcategories.is_change' => 1],
-                        ['glpi_itilcategories.is_problem' => 1],
-                    ]]],
+                    ['OR' => [
+                        'glpi_itilcategories.is_request' => 1,
+                        'glpi_itilcategories.is_incident' => 1,
+                        'glpi_itilcategories.is_change' => 1,
+                        'glpi_itilcategories.is_problem' => 1,
+                    ]],
                 ]],
             ],
         ];
@@ -237,7 +237,7 @@ final class QuestionTypeItemDropdownTest extends DbTestCase
                 ),
                 'expected' => fn() => [
                     'WHERE' => [
-                        ['AND' => ['OR' => [['glpi_itilcategories.is_request' => 1]]]],
+                        ['OR' => ['glpi_itilcategories.is_request' => 1]],
                     ],
                 ],
             ],
@@ -251,7 +251,7 @@ final class QuestionTypeItemDropdownTest extends DbTestCase
                 ),
                 'expected' => fn() => [
                     'WHERE' => [
-                        ['AND' => ['OR' => [['glpi_itilcategories.is_request' => 1]]]],
+                        ['OR' => ['glpi_itilcategories.is_request' => 1]],
                         'glpi_itilcategories.id' => [
                             getItemByTypeName(ITILCategory::class, 'Root Item', true) => getItemByTypeName(ITILCategory::class, 'Root Item', true),
                             getItemByTypeName(ITILCategory::class, 'Child Item', true) => getItemByTypeName(ITILCategory::class, 'Child Item', true),
@@ -270,7 +270,7 @@ final class QuestionTypeItemDropdownTest extends DbTestCase
                 ),
                 'expected' => fn() => [
                     'WHERE' => [
-                        ['AND' => ['OR' => [['glpi_itilcategories.is_request' => 1]]]],
+                        ['OR' => ['glpi_itilcategories.is_request' => 1]],
                         'glpi_itilcategories.id' => [
                             getItemByTypeName(ITILCategory::class, 'Root Item', true) => getItemByTypeName(ITILCategory::class, 'Root Item', true),
                             getItemByTypeName(ITILCategory::class, 'Child Item', true) => getItemByTypeName(ITILCategory::class, 'Child Item', true),
@@ -290,7 +290,7 @@ final class QuestionTypeItemDropdownTest extends DbTestCase
                 ),
                 'expected' => fn() => [
                     'WHERE' => [
-                        ['AND' => ['OR' => [['glpi_itilcategories.is_request' => 1]]]],
+                        ['OR' => ['glpi_itilcategories.is_request' => 1]],
                         'glpi_itilcategories.id' => [
                             getItemByTypeName(ITILCategory::class, 'Child Item', true) => getItemByTypeName(ITILCategory::class, 'Child Item', true),
                             getItemByTypeName(ITILCategory::class, 'Deep Child Item', true) => getItemByTypeName(ITILCategory::class, 'Deep Child Item', true),
