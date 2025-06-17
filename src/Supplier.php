@@ -484,7 +484,7 @@ class Supplier extends CommonDBTM
                     $criteria['INNER JOIN']['glpi_consumableitems'] = [
                         'ON' => [
                             'glpi_consumableitems'  => 'id',
-                            'glpi_consumables'      => 'cartridgeitems_id',
+                            'glpi_consumables'      => 'consumableitems_id',
                         ],
                     ];
 
