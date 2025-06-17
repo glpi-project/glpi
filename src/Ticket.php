@@ -2451,7 +2451,6 @@ JAVASCRIPT;
         parent::processMassiveActionsForOneItemtype($ma, $item, $ids);
     }
 
-
     public function rawSearchOptions()
     {
         global $DB;
@@ -2542,28 +2541,49 @@ JAVASCRIPT;
             'computation'        => self::generateSLAOLAComputation('internal_time_to_resolve'),
         ];
 
+        //        $tab[] = [ // @todoseb trouver solution ou dégager
+        //            'id'                 => '185',
+        //            'table'              => $this->getTable(),
+        //            'field'              => 'internal_time_to_own',
+        //            'name'               => __('Internal time to own'),
+        //            'datatype'           => 'datetime',
+        //            'maybefuture'        => true,
+        //            'massiveaction'      => false,
+        //            'additionalfields'   => ['date', 'status', 'takeintoaccount_delay_stat', 'takeintoaccountdate'],
+        //        ];
+
+        // OLA TTO due time
         $tab[] = [
-            'id'                 => '185',
-            'table'              => $this->getTable(),
-            'field'              => 'internal_time_to_own',
-            'name'               => __('Internal time to own'),
-            'datatype'           => 'datetime',
-            'maybefuture'        => true,
-            'massiveaction'      => false,
-            'additionalfields'   => ['date', 'status', 'takeintoaccount_delay_stat', 'takeintoaccountdate'],
+            'id' => '190',
+            'name' => __('OLA') . ' ' . __('Internal time to own'),
+            'massiveaction' => false,
+            'datatype' => 'dropdown',
+            'table' => 'glpi_items_olas',
+            'field' => 'due_time',
+            'joinparams' => [
+                'jointype' => 'child',
+                'linkfield' => 'olas_id',
+                'condition' => [
+                    'NEWTABLE.items_id' => new QueryExpression('glpi_items_olas.items_id'),
+                    'NEWTABLE.itemtype' => new QueryExpression('glpi_items_olas.itemtype'),
+                ],
+                'beforejoin' => [
+                    'table' => 'glpi_olas',
+                    'joinparams' => [
+                        'condition' => ['NEWTABLE.type' => SLM::TTO,],
+                        'beforejoin' => [
+                            'table' => 'glpi_items_olas',
+                            'joinparams' => [
+                                'jointype' => 'itemtype_item',
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+            'forcegroupby' => true,
         ];
 
-        $tab[] = [
-            'id'                 => '186',
-            'table'              => $this->getTable(),
-            'field'              => 'internal_time_to_own',
-            'name'               => __('Internal time to own + Progress'),
-            'massiveaction'      => false,
-            'nosearch'           => true,
-            'additionalfields'   => ['status'],
-        ];
-
-        $tab[] = [
+        $tab[] = [ // @todoseb trouver solution ou dégager
             'id'                 => '187',
             'table'              => 'glpi_tickets',
             'field'              => 'is_late',
@@ -2607,7 +2627,7 @@ JAVASCRIPT;
                     ),
                     QueryFunction::if(
                         condition: ['TABLE.solvedate' => null],
-                        true_expression: QueryFunction::coalesce(['TABLE.internal_time_to_resolve', $max_date]),
+                        true_expression: QueryFunction::coalesce(['TABLE.internal_time_to_resolve', $max_date]), // @todoseb trouver solution ou dégager
                         false_expression: $max_date
                     ),
                 ]),
@@ -3087,7 +3107,6 @@ JAVASCRIPT;
         return $tab;
     }
 
-
     public static function getSpecificValueToDisplay($field, $values, array $options = [])
     {
 
@@ -3112,6 +3131,7 @@ JAVASCRIPT;
 
                 return sprintf(__('%s hours %s minutes'), floor($time / 3600), floor(($time % 3600) / 60));
         }
+
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }
 
