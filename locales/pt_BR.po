@@ -17,14 +17,14 @@
 # Eduardo Spinola <eduardo.spinola@gmail.com>, 2024
 # Diego Nobre <diego@koruma.com.br>, 2025
 # Elthon Abreu <elthon.abreu@gmail.com>, 2025
-# DOMBRE Julien <moyo@indepnet.net>, 2025
 # Stevenes Donato <stevenesdonato@gmail.com>, 2025
-# Cédric Anne, 2025
 # Eduardo Mozart de Oliveira <eduardomozart182@gmail.com>, 2025
 # pedroalves5770, 2025
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2025
 # Arthur Schaefer <arthur.r.schaefer@gmail.com>, 2025
 # Nathan Calheiros, 2025
+# Cédric Anne, 2025
+# DOMBRE Julien <moyo@indepnet.net>, 2025
 # 
 #, fuzzy
 msgid ""
@@ -33,7 +33,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-06-13 14:42+0200\n"
 "PO-Revision-Date: 2022-09-16 06:53+0000\n"
-"Last-Translator: Nathan Calheiros, 2025\n"
+"Last-Translator: DOMBRE Julien <moyo@indepnet.net>, 2025\n"
 "Language-Team: Portuguese (Brazil) (https://app.transifex.com/glpi/teams/1637/pt_BR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1760,7 +1760,7 @@ msgstr "Status de validação global"
 
 #: templates/components/itilobject/validation.html.twig
 msgid "Approvals"
-msgstr ""
+msgstr "Validações"
 
 #: templates/components/itilobject/validation.html.twig
 #: phpunit/functional/RuleTest.php:355 phpunit/functional/RuleTest.php:361
@@ -7191,7 +7191,7 @@ msgstr "Atualizar item"
 
 #: templates/pages/admin/form/form_destination_actions.html.twig
 msgid "Duplicate"
-msgstr ""
+msgstr "Duplicar"
 
 #: templates/pages/admin/form/form_destination_actions.html.twig
 msgid "Configure creation conditions"
@@ -15739,11 +15739,11 @@ msgstr "Aprovador"
 
 #: src/NotificationTargetChange.php:345 src/NotificationTargetTicket.php:723
 msgid "An approval request has been submitted"
-msgstr ""
+msgstr "Uma requisição para validação foi enviada"
 
 #: src/NotificationTargetChange.php:347 src/NotificationTargetTicket.php:725
 msgid "An answer to an approval request was produced"
-msgstr ""
+msgstr "Uma resposta a um pedido de validação foi realizada"
 
 #: src/CommonDropdown.php:61 src/Glpi/Event.php:173
 #: src/Glpi/Asset/CustomFieldType/DropdownType.php:47

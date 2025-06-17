@@ -6,8 +6,8 @@
 # Translators:
 # Mikkel Holst, 2024
 # Jens Hyllegaard <jens.hyllegaard@gmail.com>, 2025
-# DOMBRE Julien <moyo@indepnet.net>, 2025
 # Peter, 2025
+# DOMBRE Julien <moyo@indepnet.net>, 2025
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2025
 # 
 #, fuzzy
@@ -1732,7 +1732,7 @@ msgstr "Global validerings-status"
 
 #: templates/components/itilobject/validation.html.twig
 msgid "Approvals"
-msgstr ""
+msgstr "Valideringer"
 
 #: templates/components/itilobject/validation.html.twig
 #: phpunit/functional/RuleTest.php:355 phpunit/functional/RuleTest.php:361
@@ -7070,7 +7070,7 @@ msgstr ""
 
 #: templates/pages/admin/form/form_destination_actions.html.twig
 msgid "Duplicate"
-msgstr ""
+msgstr "Duplikér"
 
 #: templates/pages/admin/form/form_destination_actions.html.twig
 msgid "Configure creation conditions"
@@ -15277,7 +15277,7 @@ msgstr ""
 
 #: src/NotificationTargetChange.php:345 src/NotificationTargetTicket.php:723
 msgid "An approval request has been submitted"
-msgstr ""
+msgstr "En godkendelses-forespørgsel er blevet indsendt"
 
 #: src/NotificationTargetChange.php:347 src/NotificationTargetTicket.php:725
 msgid "An answer to an approval request was produced"

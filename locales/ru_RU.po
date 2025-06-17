@@ -25,8 +25,6 @@
 # Arsalan, 2023
 # Стаут Овсян <alyoshka100@gmail.com>, 2024
 # Ilia Kireev, 2024
-# DOMBRE Julien <moyo@indepnet.net>, 2024
-# Nikolai Petrov <techobsl@yandex.ru>, 2024
 # Konstantin Panin, 2024
 # Dmitrii S, 2024
 # Petr Kutepov, 2024
@@ -46,8 +44,10 @@
 # Vitaliy Zhukov <DragonZX@yandex.ru>, 2025
 # leruetkins, 2025
 # Гайткулов Николай Валентинович <kvozar@ya.ru>, 2025
-# alexandre delaunay <delaunay.alexandre@gmail.com>, 2025
 # Mikhail Degterev <mikhail.degterev@gmail.com>, 2025
+# alexandre delaunay <delaunay.alexandre@gmail.com>, 2025
+# DOMBRE Julien <moyo@indepnet.net>, 2025
+# Nikolai Petrov <techobsl@yandex.ru>, 2025
 # 
 #, fuzzy
 msgid ""
@@ -56,7 +56,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-06-13 14:42+0200\n"
 "PO-Revision-Date: 2022-09-16 06:53+0000\n"
-"Last-Translator: Mikhail Degterev <mikhail.degterev@gmail.com>, 2025\n"
+"Last-Translator: Nikolai Petrov <techobsl@yandex.ru>, 2025\n"
 "Language-Team: Russian (Russia) (https://app.transifex.com/glpi/teams/1637/ru_RU/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1793,7 +1793,7 @@ msgstr "Общее состояние согласований"
 
 #: templates/components/itilobject/validation.html.twig
 msgid "Approvals"
-msgstr ""
+msgstr "Согласований"
 
 #: templates/components/itilobject/validation.html.twig
 #: phpunit/functional/RuleTest.php:355 phpunit/functional/RuleTest.php:361
@@ -7280,7 +7280,7 @@ msgstr "Обновить элемент"
 
 #: templates/pages/admin/form/form_destination_actions.html.twig
 msgid "Duplicate"
-msgstr ""
+msgstr "Дублировать"
 
 #: templates/pages/admin/form/form_destination_actions.html.twig
 msgid "Configure creation conditions"
@@ -15960,11 +15960,11 @@ msgstr "Цель согласования"
 
 #: src/NotificationTargetChange.php:345 src/NotificationTargetTicket.php:723
 msgid "An approval request has been submitted"
-msgstr ""
+msgstr "Запрос на утверждение был подан"
 
 #: src/NotificationTargetChange.php:347 src/NotificationTargetTicket.php:725
 msgid "An answer to an approval request was produced"
-msgstr ""
+msgstr "Ответ на запрос утверждения получен"
 
 #: src/CommonDropdown.php:61 src/Glpi/Event.php:173
 #: src/Glpi/Asset/CustomFieldType/DropdownType.php:47

@@ -4,10 +4,10 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # 
 # Translators:
-# DOMBRE Julien <moyo@indepnet.net>, 2024
 # 5b63a00e0726b96d7ef35c99d5553cd0_b787b5f <8bb2d0f7e8927228f17fba8639d787be_31711>, 2025
-# Cédric Anne, 2025
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2025
+# DOMBRE Julien <moyo@indepnet.net>, 2025
+# Cédric Anne, 2025
 # Francisco Bolivar, 2025
 # 
 #, fuzzy
@@ -27,7 +27,7 @@ msgstr ""
 
 #: templates/updatepassword.html.twig front/updatepassword.php:93
 msgid "Password update"
-msgstr "Actualizar contraseña"
+msgstr "Actualización de contraseña"
 
 #: templates/maintenance.html.twig
 msgid "MAINTENANCE MODE"
@@ -1749,7 +1749,7 @@ msgstr "Estado de aprobación global"
 
 #: templates/components/itilobject/validation.html.twig
 msgid "Approvals"
-msgstr ""
+msgstr "Aprobaciones"
 
 #: templates/components/itilobject/validation.html.twig
 #: phpunit/functional/RuleTest.php:355 phpunit/functional/RuleTest.php:361
@@ -2266,7 +2266,7 @@ msgstr "Solicitud de aprobación"
 
 #: templates/components/itilobject/validationstep.html.twig
 msgid "Minimum approval required (%)"
-msgstr ""
+msgstr "Aprobación mínima requerida (%)"
 
 #: templates/components/itilobject/timeline/pending_reasons.html.twig
 msgid "Automatic follow-up"
@@ -2684,9 +2684,9 @@ msgstr[2] "Plantillas"
 #: src/ValidationStep.php:44
 msgid "Approval step"
 msgid_plural "Approval step"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Paso de aprobación"
+msgstr[1] "Pasos de aprobación"
+msgstr[2] "Pasos de aprobación"
 
 #: templates/components/itilobject/timeline/form_validation.html.twig
 #: src/NotificationTargetChange.php:327 src/NotificationTargetTicket.php:676
@@ -6750,7 +6750,7 @@ msgstr "Configurar la validación"
 #: templates/pages/admin/form/conditional_visibility_dropdown.html.twig
 #: templates/pages/admin/form/form_destination_actions.html.twig
 msgid "Conditions count"
-msgstr ""
+msgstr "Recuento de condiciones"
 
 #: templates/pages/admin/form/conditional_validation_dropdown.html.twig
 msgid "Conditional validation"
@@ -6909,7 +6909,7 @@ msgstr "No se crearán elementos para este formulario."
 
 #: templates/pages/admin/form/form_destination.html.twig
 msgid "Form destinations"
-msgstr ""
+msgstr "Destinos del formulario"
 
 #: templates/pages/admin/form/form_destination.html.twig
 msgid "Form destination name"
@@ -6970,35 +6970,35 @@ msgstr "Descripción del comentario"
 
 #: templates/pages/admin/form/question_type/item_dropdown/advanced_configuration.html.twig
 msgid "Request categories"
-msgstr ""
+msgstr "Solicitar categorías"
 
 #: templates/pages/admin/form/question_type/item_dropdown/advanced_configuration.html.twig
 msgid "Incident categories"
-msgstr ""
+msgstr "Categorias de incidencia"
 
 #: templates/pages/admin/form/question_type/item_dropdown/advanced_configuration.html.twig
 msgid "Change categories"
-msgstr ""
+msgstr "Cambiar categorías"
 
 #: templates/pages/admin/form/question_type/item_dropdown/advanced_configuration.html.twig
 msgid "Problem categories"
-msgstr ""
+msgstr "Categorías de problemas"
 
 #: templates/pages/admin/form/question_type/item_dropdown/advanced_configuration.html.twig
 msgid "Filter ticket categories"
-msgstr ""
+msgstr "Filtrar categorías de casos"
 
 #: templates/pages/admin/form/question_type/item_dropdown/advanced_configuration.html.twig
 msgid "Subtree root"
-msgstr ""
+msgstr "Raíz del subárbol"
 
 #: templates/pages/admin/form/question_type/item_dropdown/advanced_configuration.html.twig
 msgid "Limit subtree depth"
-msgstr ""
+msgstr "Limite de profundidad del subárbol"
 
 #: templates/pages/admin/form/question_type/base_advanced_configuration.html.twig
 msgid "Advanced configuration"
-msgstr ""
+msgstr "Configuración avanzada"
 
 #: templates/pages/admin/form/form_horizontal_block.html.twig
 msgid "Horizontal blocks layout"
@@ -7214,7 +7214,7 @@ msgstr "Actualizar elemento"
 
 #: templates/pages/admin/form/form_destination_actions.html.twig
 msgid "Duplicate"
-msgstr ""
+msgstr "Duplicar"
 
 #: templates/pages/admin/form/form_destination_actions.html.twig
 msgid "Configure creation conditions"
@@ -7785,7 +7785,7 @@ msgstr "Fecha final "
 
 #: templates/pages/admin/user.substitute.html.twig
 msgid "Approval substitutes"
-msgstr ""
+msgstr "Sustitutos de aprobación"
 
 #: templates/pages/admin/user.substitute.html.twig
 msgid ""
@@ -10786,7 +10786,7 @@ msgstr "Sección sin título"
 #: templates/pages/form_renderer.html.twig
 #, php-format
 msgid "%s description"
-msgstr ""
+msgstr "%s descripción"
 
 #: templates/pages/form_renderer.html.twig
 msgid "Submit"
@@ -13994,9 +13994,9 @@ msgstr "Asociar"
 #: src/TicketValidationStep.php:42
 msgid "Ticket approval step"
 msgid_plural "Ticket approval steps"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Paso de aprobación del caso"
+msgstr[1] "Pasos para la aprobación de casos"
+msgstr[2] "Pasos para la aprobación de casos"
 
 #: src/Lock.php:62
 msgid "Lock"
@@ -14372,9 +14372,9 @@ msgstr "Debes seleccionar un elemento asociado"
 #: src/ChangeValidationStep.php:42
 msgid "Change Approval step"
 msgid_plural "Change Approval steps"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Paso de aprobación de cambios"
+msgstr[1] "Pasos de aprobación de cambios"
+msgstr[2] "Pasos de aprobación de cambios"
 
 #: src/Group_User.php:218 src/Group_User.php:501 src/Group_User.php:599
 #: src/Database.php:242 src/Database.php:333
@@ -15761,7 +15761,7 @@ msgstr "Cambio resuelto"
 #: src/NotificationTargetChange.php:64 src/NotificationTargetTicket.php:142
 #: src/CommonITILObject.php:7803
 msgid "Approval request answer"
-msgstr ""
+msgstr "Respuesta a la solicitud de aprobación"
 
 #: src/NotificationTargetChange.php:65
 msgid "Closure of a change"
@@ -15800,11 +15800,11 @@ msgstr "Objetivo de aprobación"
 
 #: src/NotificationTargetChange.php:345 src/NotificationTargetTicket.php:723
 msgid "An approval request has been submitted"
-msgstr ""
+msgstr "Una solicitud de aprobación ha sido creada"
 
 #: src/NotificationTargetChange.php:347 src/NotificationTargetTicket.php:725
 msgid "An answer to an approval request was produced"
-msgstr ""
+msgstr "Se ha producido una respuesta a su solicitud de Aprobación"
 
 #: src/CommonDropdown.php:61 src/Glpi/Event.php:173
 #: src/Glpi/Asset/CustomFieldType/DropdownType.php:47
@@ -15823,7 +15823,7 @@ msgstr "Número de Producto"
 
 #: src/CommonDropdown.php:393
 msgid "Protected item cannot be deleted."
-msgstr ""
+msgstr "El elemento protegido no se puede eliminar."
 
 #: src/CommonDropdown.php:438
 msgid "Product number"
@@ -17268,9 +17268,9 @@ msgstr[2] "Elementos de cambio"
 #: src/ITILValidationTemplate_Target.php:50
 msgid "Approval template target"
 msgid_plural "Approval template targets"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Objetivo de la plantilla de aprobación"
+msgstr[1] "Objetivos de la plantilla de aprobación"
+msgstr[2] "Objetivos de la plantilla de aprobación"
 
 #: src/DevicePowerSupply.php:43
 msgid "Power supply"
@@ -18886,6 +18886,9 @@ msgid ""
 "Required for email sending using SSL/TLS, handling of encrypted "
 "communication with inventory agents and OAuth 2.0 authentication."
 msgstr ""
+"Necesario para el envío de correo electrónico mediante SSL/TLS, el manejo de"
+" la comunicación cifrada con agentes de inventario y la autenticación OAuth "
+"2.0."
 
 #: src/Glpi/System/RequirementsManager.php:148
 msgid "Permissions for GLPI data directories"
@@ -19257,7 +19260,7 @@ msgstr "Ver solicitudes de aprobación"
 
 #: src/Glpi/Helpdesk/DefaultDataManager.php:120
 msgid "View all tickets waiting for your approval."
-msgstr ""
+msgstr "Ver todos los casos esperando su aprobación."
 
 #: src/Glpi/Helpdesk/DefaultDataManager.php:135
 msgid "Report an issue"
@@ -20995,7 +20998,7 @@ msgstr ""
 
 #: src/Glpi/Console/Database/UpdateCommand.php:233
 msgid "Upddate failed."
-msgstr ""
+msgstr "La actualización falló."
 
 #: src/Glpi/Console/Database/UpdateCommand.php:240
 #, php-format
@@ -21373,7 +21376,7 @@ msgstr ""
 
 #: src/Glpi/Console/Application.php:201
 msgid "Allow the console to be executed by the root user"
-msgstr ""
+msgstr "Permitir que la consola sea ejecutada por el usuario root"
 
 #: src/Glpi/Console/Application.php:223
 #, php-format
@@ -23131,7 +23134,7 @@ msgstr "Casos retrasados"
 
 #: src/Glpi/Dashboard/Provider.php:329 src/Glpi/Dashboard/FakeProvider.php:195
 msgid "Tickets waiting for approval"
-msgstr ""
+msgstr "Casos en espera de aprobación"
 
 #: src/Glpi/Dashboard/Provider.php:374 src/Glpi/Dashboard/FakeProvider.php:196
 msgid "Incoming tickets"
@@ -23208,7 +23211,7 @@ msgstr "Asignado"
 #: src/Glpi/Dashboard/Provider.php:1685
 #: src/Glpi/Dashboard/FakeProvider.php:158
 msgid "To approve"
-msgstr ""
+msgstr "Para aprobar"
 
 #: src/Glpi/Dashboard/Provider.php:1690
 #: src/Glpi/Dashboard/FakeProvider.php:163
@@ -23494,7 +23497,7 @@ msgstr "Seleccione una plantilla..."
 
 #: src/Glpi/Form/Destination/CommonITILField/ValidationFieldStrategy.php:49
 msgid "No approval"
-msgstr ""
+msgstr "Sin aprobación"
 
 #: src/Glpi/Form/Destination/CommonITILField/ValidationFieldStrategy.php:50
 #: src/Glpi/Form/Destination/CommonITILField/ITILActorFieldStrategy.php:63
@@ -23805,11 +23808,11 @@ msgstr "Siempre creado"
 
 #: src/Glpi/Form/Condition/CreationStrategy.php:50
 msgid "Created if..."
-msgstr ""
+msgstr "Creado si..."
 
 #: src/Glpi/Form/Condition/CreationStrategy.php:51
 msgid "Created unless..."
-msgstr ""
+msgstr "Creado a menos que..."
 
 #: src/Glpi/Form/Condition/ValidationStrategy.php:49
 msgid "No validation"
@@ -24818,7 +24821,7 @@ msgstr "Solución rechazada"
 
 #: src/NotificationTargetTicket.php:143
 msgid "Approval reminder"
-msgstr ""
+msgstr "Recordatorio de aprobación"
 
 #: src/NotificationTargetTicket.php:144
 msgid "Closing of the ticket"
@@ -25110,7 +25113,7 @@ msgstr "Sus casos en curso"
 
 #: src/Ticket.php:4259
 msgid "Your tickets to approve"
-msgstr ""
+msgstr "Tus casos para aprobar"
 
 #: src/Ticket.php:4277
 msgid "Your tickets having rejected approval status"
@@ -26321,21 +26324,23 @@ msgstr "El campo %s es obligatorio"
 #: phpunit/functional/ValidationStepTest.php:142
 #, php-format
 msgid "The %s field is mandatory and must be beetween 0 and 100."
-msgstr ""
+msgstr "El campo %s es obligatorio y debe estar entre 0 y 100."
 
 #: src/ValidationStep.php:140
 msgid "Use as default"
-msgstr ""
+msgstr "Usar como predeterminado"
 
 #: src/ValidationStep.php:146
 msgid ""
 "This is the default approval step, it cannot be changed. Update another step"
 " to make it the default one."
 msgstr ""
+"Este es el paso de aprobación predeterminado y no se puede cambiar. "
+"Actualice otro paso para que sea el predeterminado."
 
 #: src/ValidationStep.php:152
 msgid "Minimal required approval percent"
-msgstr ""
+msgstr "Porcentaje mínimo de aprobación requerido"
 
 #: src/NetworkAlias.php:54
 msgid "Network alias"
@@ -26869,7 +26874,7 @@ msgstr[2] "Suplentes Autorizados"
 
 #: src/ValidatorSubstitute.php:156
 msgid "Cannot change the approval delegator"
-msgstr ""
+msgstr "No se puede cambiar el delegador de aprobación"
 
 #: src/ValidatorSubstitute.php:175
 msgid "You cannot change substitutes for this user."
@@ -26925,7 +26930,7 @@ msgstr "Crear para solicitud"
 
 #: src/TicketValidation.php:109
 msgid "Create an approval request for a request"
-msgstr ""
+msgstr "Crear una solicitud de aprobación para una solicitud"
 
 #: src/TicketValidation.php:112
 msgid "Create for incident"
@@ -26933,15 +26938,15 @@ msgstr "Crear para incidente"
 
 #: src/TicketValidation.php:113
 msgid "Create an approval request for an incident"
-msgstr ""
+msgstr "Crear una solicitud de aprobación para un incidente"
 
 #: src/TicketValidation.php:116
 msgid "Approve a request"
-msgstr ""
+msgstr "Aprobar una solicitud"
 
 #: src/TicketValidation.php:118
 msgid "Approve an incident"
-msgstr ""
+msgstr "Aprobar un incidente"
 
 #: src/ProjectType.php:45
 msgid "Project type"
@@ -27593,13 +27598,13 @@ msgstr "Agregar una acción"
 #: src/ITILValidationTemplate.php:54
 msgid "Approval template"
 msgid_plural "Approval templates"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Plantilla de aprobación"
+msgstr[1] "Plantillas de aprobación"
+msgstr[2] "Plantillas de aprobación"
 
 #: src/ITILValidationTemplate.php:61
 msgid "Invalid approval step"
-msgstr ""
+msgstr "Paso de aprobación no válido"
 
 #: src/Certificate.php:72
 msgid "Certificate"
@@ -28958,7 +28963,7 @@ msgstr "Documento"
 #: src/CommonITILObject.php:7458
 msgctxt "button"
 msgid "Ask for approval"
-msgstr ""
+msgstr "Solicitar aprobación"
 
 #: src/CommonITILObject.php:7895
 #, php-format
@@ -29718,7 +29723,7 @@ msgstr "Sus cambios en curso"
 
 #: src/Change.php:1284
 msgid "Your changes to approve"
-msgstr ""
+msgstr "Sus cambios para aprobar"
 
 #: src/Change.php:1656
 msgid "No change found."
@@ -30653,11 +30658,11 @@ msgstr "Grupo de usuarios"
 
 #: phpunit/functional/RuleTest.php:366
 msgid "Set approval request step"
-msgstr ""
+msgstr "Establecer el paso de solicitud de aprobación"
 
 #: phpunit/functional/RuleTest.php:370
 msgid "Set approval threshold (in percentage)"
-msgstr ""
+msgstr "Establecer el umbral de aprobación (en porcentaje)"
 
 #: phpunit/functional/RuleTest.php:373
 msgid "Approval request to requester group manager"

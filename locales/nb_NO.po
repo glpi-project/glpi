@@ -5,13 +5,13 @@
 # 
 # Translators:
 # Kheder Habachi <habachi89@gmail.com>, 2022
-# seppola <bjornar@seppola.net>, 2024
 # Kjell Edvard Medhaug <keme6206@gmail.com>, 2025
 # esplor <esplor@gmail.com>, 2025
 # DOMBRE Julien <moyo@indepnet.net>, 2025
 # jostein berge <jbe01@karmoy.kommune.no>, 2025
 # Evert Meulie <evert@arkivo.no>, 2025
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2025
+# seppola <bjornar@seppola.net>, 2025
 # 
 #, fuzzy
 msgid ""
@@ -20,7 +20,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-06-13 14:42+0200\n"
 "PO-Revision-Date: 2022-09-16 06:53+0000\n"
-"Last-Translator: alexandre delaunay <delaunay.alexandre@gmail.com>, 2025\n"
+"Last-Translator: seppola <bjornar@seppola.net>, 2025\n"
 "Language-Team: Norwegian Bokmål (Norway) (https://app.transifex.com/glpi/teams/1637/nb_NO/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1735,7 +1735,7 @@ msgstr "Global status for godkjenning"
 
 #: templates/components/itilobject/validation.html.twig
 msgid "Approvals"
-msgstr ""
+msgstr "Godkjenninger"
 
 #: templates/components/itilobject/validation.html.twig
 #: phpunit/functional/RuleTest.php:355 phpunit/functional/RuleTest.php:361
@@ -7078,7 +7078,7 @@ msgstr ""
 
 #: templates/pages/admin/form/form_destination_actions.html.twig
 msgid "Duplicate"
-msgstr ""
+msgstr "Duplikat"
 
 #: templates/pages/admin/form/form_destination_actions.html.twig
 msgid "Configure creation conditions"

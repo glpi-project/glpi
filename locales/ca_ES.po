@@ -15,10 +15,10 @@
 # Ivan Fustero, 2024
 # Oriol Lladó, 2025
 # Josep Rodriguez Tolosa <josep@asic.udl.cat>, 2025
-# DOMBRE Julien <moyo@indepnet.net>, 2025
 # Joan F, 2025
 # Ivan Fustero, 2025
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2025
+# DOMBRE Julien <moyo@indepnet.net>, 2025
 # Nuria Costa <nuria.costa@uvic.cat>, 2025
 # 
 #, fuzzy
@@ -1744,7 +1744,7 @@ msgstr "Estat de validació global"
 
 #: templates/components/itilobject/validation.html.twig
 msgid "Approvals"
-msgstr ""
+msgstr "Validacions"
 
 #: templates/components/itilobject/validation.html.twig
 #: phpunit/functional/RuleTest.php:355 phpunit/functional/RuleTest.php:361
@@ -7108,7 +7108,7 @@ msgstr ""
 
 #: templates/pages/admin/form/form_destination_actions.html.twig
 msgid "Duplicate"
-msgstr ""
+msgstr "Duplica"
 
 #: templates/pages/admin/form/form_destination_actions.html.twig
 msgid "Configure creation conditions"
@@ -15397,11 +15397,11 @@ msgstr ""
 
 #: src/NotificationTargetChange.php:345 src/NotificationTargetTicket.php:723
 msgid "An approval request has been submitted"
-msgstr ""
+msgstr "S'ha sol·licitat una petició de validació"
 
 #: src/NotificationTargetChange.php:347 src/NotificationTargetTicket.php:725
 msgid "An answer to an approval request was produced"
-msgstr ""
+msgstr "Una resposta a una sol·licitud de validació s'ha portat a terme"
 
 #: src/CommonDropdown.php:61 src/Glpi/Event.php:173
 #: src/Glpi/Asset/CustomFieldType/DropdownType.php:47

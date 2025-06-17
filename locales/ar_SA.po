@@ -14,6 +14,7 @@
 # Mohammad Mousa <mm84010@gmail.com>, 2025
 # Roshan Roche <roshan6@gmail.com>, 2025
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2025
+# Virus Al-Karar, 2025
 # 
 #, fuzzy
 msgid ""
@@ -22,7 +23,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-06-13 14:42+0200\n"
 "PO-Revision-Date: 2022-09-16 06:53+0000\n"
-"Last-Translator: alexandre delaunay <delaunay.alexandre@gmail.com>, 2025\n"
+"Last-Translator: Virus Al-Karar, 2025\n"
 "Language-Team: Arabic (Saudi Arabia) (https://app.transifex.com/glpi/teams/1637/ar_SA/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -32,7 +33,7 @@ msgstr ""
 
 #: templates/updatepassword.html.twig front/updatepassword.php:93
 msgid "Password update"
-msgstr ""
+msgstr "تحديث كلمة المرور"
 
 #: templates/maintenance.html.twig
 msgid "MAINTENANCE MODE"
@@ -312,11 +313,11 @@ msgstr "تعديل مجموعة"
 #: src/ProjectState.php:58 src/ProjectState.php:79
 #: src/PlanningEventCategory.php:48
 msgid "Color"
-msgstr ""
+msgstr "اللون"
 
 #: templates/components/notepad/form.html.twig
 msgid "Add a note"
-msgstr ""
+msgstr "أضافة ملاحظة"
 
 #: templates/components/notepad/form.html.twig
 #: templates/pages/tools/kb/knowbaseitem.html.twig
@@ -372,7 +373,7 @@ msgstr ""
 #: js/modules/Screenshot/Screenshot.js:235 js/impact.js:1412
 #: js/planning.js:284 js/src/vue/Kanban/SearchInput.js:416
 msgid "Delete"
-msgstr ""
+msgstr "حذف"
 
 #: templates/components/notepad/form.html.twig
 #: templates/components/itilobject/timeline/main_description.html.twig
@@ -382,11 +383,11 @@ msgstr ""
 #: templates/pages/tools/kb/comments.html.twig src/KnowbaseItem.php:254
 #: src/KnowbaseItemTranslation.php:90
 msgid "Edit"
-msgstr ""
+msgstr "تحرير"
 
 #: templates/components/notepad/form.html.twig
 msgid "Edit a note"
-msgstr ""
+msgstr "تعديل ملاحظة"
 
 #: templates/components/notepad/form.html.twig
 #: templates/components/search/displaypreference_config.html.twig
@@ -444,11 +445,11 @@ msgstr ""
 
 #: templates/components/search/criteria_filter.html.twig
 msgid "Create a filter"
-msgstr ""
+msgstr "إنشاء فرز"
 
 #: templates/components/search/query_builder/sort/criteria.html.twig
 msgid "Delete a sort"
-msgstr ""
+msgstr "حذف فرز"
 
 #: templates/components/search/query_builder/sort/criteria.html.twig
 msgid "ASC"
@@ -465,11 +466,11 @@ msgstr ""
 #: templates/components/search/query_builder/sort/main.html.twig
 #: templates/components/search/controls.html.twig
 msgid "Sort"
-msgstr ""
+msgstr "النوع"
 
 #: templates/components/search/query_builder/sort/main.html.twig
 msgid "Reset sort"
-msgstr ""
+msgstr "إعادة تعيين الفرز"
 
 #: templates/components/search/query_builder/metacriteria.html.twig
 msgid "Delete a global rule"
@@ -494,7 +495,7 @@ msgstr ""
 
 #: templates/components/search/query_builder/main.html.twig
 msgid "group"
-msgstr ""
+msgstr "مجموعة"
 
 #: templates/components/search/query_builder/main.html.twig
 #: templates/pages/setup/crontask/crontask.html.twig
@@ -508,19 +509,19 @@ msgstr ""
 
 #: templates/components/search/criteria_filter_actions.html.twig
 msgid "Filter saved"
-msgstr ""
+msgstr "تم حفظ الفرز"
 
 #: templates/components/search/criteria_filter_actions.html.twig
 msgid "Unable to save filter"
-msgstr ""
+msgstr "غير قادر على حفظ الفرز"
 
 #: templates/components/search/criteria_filter_actions.html.twig
 msgid "Failed to delete filter"
-msgstr ""
+msgstr "فشل حذف الفرز"
 
 #: templates/components/search/table.html.twig
 msgid "Check all as"
-msgstr ""
+msgstr "تحقق من كل شي"
 
 #. TRANS: %1$s is a type name - %2$s is a name
 #: templates/components/search/table.html.twig
@@ -619,7 +620,7 @@ msgstr ""
 
 #: templates/components/search/controls.html.twig
 msgid "Show saved searches"
-msgstr ""
+msgstr "إظهار عمليات البحث المحفوظة"
 
 #: templates/components/search/controls.html.twig
 #: templates/components/illustration/icon_picker_modal.html.twig
@@ -631,11 +632,11 @@ msgstr "بحث"
 
 #: templates/components/search/controls.html.twig
 msgid "Show as table"
-msgstr ""
+msgstr "عرض كجدول"
 
 #: templates/components/search/controls.html.twig
 msgid "Show as map"
-msgstr ""
+msgstr "عرض كخريطة"
 
 #: templates/components/search/controls.html.twig
 msgid "Toggle browse"
@@ -1757,7 +1758,7 @@ msgstr "الحالة العامة للموافقة"
 
 #: templates/components/itilobject/validation.html.twig
 msgid "Approvals"
-msgstr ""
+msgstr "موافقات"
 
 #: templates/components/itilobject/validation.html.twig
 #: phpunit/functional/RuleTest.php:355 phpunit/functional/RuleTest.php:361
@@ -2475,7 +2476,7 @@ msgstr ""
 #: templates/pages/tools/kb/comment_form.html.twig
 msgctxt "button"
 msgid "Edit"
-msgstr ""
+msgstr "تحرير"
 
 #: templates/components/itilobject/timeline/sub_documents.html.twig
 #: templates/components/itilobject/timeline/form_document_item.html.twig

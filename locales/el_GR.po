@@ -5,10 +5,10 @@
 # 
 # Translators:
 # Nikolaos Karanikolas <karanik@gmail.com>, 2022
-# greek translator <stergios.vradelis@dramahospital.gr>, 2025
-# DOMBRE Julien <moyo@indepnet.net>, 2025
 # John Boudouris <johnboudouris@gmail.com>, 2025
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2025
+# DOMBRE Julien <moyo@indepnet.net>, 2025
+# greek translator <stergios.vradelis@dramahospital.gr>, 2025
 # 
 #, fuzzy
 msgid ""
@@ -17,7 +17,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-06-13 14:42+0200\n"
 "PO-Revision-Date: 2022-09-16 06:53+0000\n"
-"Last-Translator: alexandre delaunay <delaunay.alexandre@gmail.com>, 2025\n"
+"Last-Translator: greek translator <stergios.vradelis@dramahospital.gr>, 2025\n"
 "Language-Team: Greek (Greece) (https://app.transifex.com/glpi/teams/1637/el_GR/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1733,7 +1733,7 @@ msgstr "Γενική κατάσταση τεκμηριώσεων"
 
 #: templates/components/itilobject/validation.html.twig
 msgid "Approvals"
-msgstr ""
+msgstr "Εγκρίσεις"
 
 #: templates/components/itilobject/validation.html.twig
 #: phpunit/functional/RuleTest.php:355 phpunit/functional/RuleTest.php:361
@@ -7079,7 +7079,7 @@ msgstr ""
 
 #: templates/pages/admin/form/form_destination_actions.html.twig
 msgid "Duplicate"
-msgstr ""
+msgstr "Διπλότυπο"
 
 #: templates/pages/admin/form/form_destination_actions.html.twig
 msgid "Configure creation conditions"
@@ -15314,11 +15314,11 @@ msgstr ""
 
 #: src/NotificationTargetChange.php:345 src/NotificationTargetTicket.php:723
 msgid "An approval request has been submitted"
-msgstr ""
+msgstr "Έχει υποβληθεί μια αίτηση έγκρισης"
 
 #: src/NotificationTargetChange.php:347 src/NotificationTargetTicket.php:725
 msgid "An answer to an approval request was produced"
-msgstr ""
+msgstr "Έχει παραχθεί απάντηση για μια αίτηση έγκρισης"
 
 #: src/CommonDropdown.php:61 src/Glpi/Event.php:173
 #: src/Glpi/Asset/CustomFieldType/DropdownType.php:47

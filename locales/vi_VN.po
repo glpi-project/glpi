@@ -6,8 +6,9 @@
 # Translators:
 # Minh Trí Nguyễn, 2022
 # ltkhanh <ltkhanh@bigdolphin.com.vn>, 2025
-# Cédric Anne, 2025
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2025
+# DOMBRE Julien <moyo@indepnet.net>, 2025
+# Cédric Anne, 2025
 # 
 #, fuzzy
 msgid ""
@@ -16,7 +17,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-06-13 14:42+0200\n"
 "PO-Revision-Date: 2022-09-16 06:53+0000\n"
-"Last-Translator: alexandre delaunay <delaunay.alexandre@gmail.com>, 2025\n"
+"Last-Translator: Cédric Anne, 2025\n"
 "Language-Team: Vietnamese (Viet Nam) (https://app.transifex.com/glpi/teams/1637/vi_VN/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1726,7 +1727,7 @@ msgstr "Trạng thái xác nhận toàn cục"
 
 #: templates/components/itilobject/validation.html.twig
 msgid "Approvals"
-msgstr ""
+msgstr "Các phê chuẩn"
 
 #: templates/components/itilobject/validation.html.twig
 #: phpunit/functional/RuleTest.php:355 phpunit/functional/RuleTest.php:361
@@ -7030,7 +7031,7 @@ msgstr ""
 
 #: templates/pages/admin/form/form_destination_actions.html.twig
 msgid "Duplicate"
-msgstr ""
+msgstr "Nhân bản"
 
 #: templates/pages/admin/form/form_destination_actions.html.twig
 msgid "Configure creation conditions"
@@ -15191,11 +15192,11 @@ msgstr ""
 
 #: src/NotificationTargetChange.php:345 src/NotificationTargetTicket.php:723
 msgid "An approval request has been submitted"
-msgstr ""
+msgstr "Yêu cầu xác nhận đã được gởi"
 
 #: src/NotificationTargetChange.php:347 src/NotificationTargetTicket.php:725
 msgid "An answer to an approval request was produced"
-msgstr ""
+msgstr "Đã có trả lời cho yêu xầu xác nhận"
 
 #: src/CommonDropdown.php:61 src/Glpi/Event.php:173
 #: src/Glpi/Asset/CustomFieldType/DropdownType.php:47

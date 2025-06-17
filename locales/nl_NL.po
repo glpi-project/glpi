@@ -11,7 +11,6 @@
 # Roy Hoenen, 2024
 # Chris Gralike, 2025
 # Eric Vervoordeldonk <eric.vervoordeldonk@gmail.com>, 2025
-# DOMBRE Julien <moyo@indepnet.net>, 2025
 # Frederik Van Helleputte <transifex.com@goorix.be>, 2025
 # iwan van de weijer <i_van_de_weijer@hotmail.com>, 2025
 # Derek V. Giroulle <derek.v.giroulle@skynet.be>, 2025
@@ -19,6 +18,7 @@
 # S. ypie, 2025
 # Steven <Nevets82@gmail.com>, 2025
 # -- --, 2025
+# DOMBRE Julien <moyo@indepnet.net>, 2025
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2025
 # 
 #, fuzzy
@@ -1743,7 +1743,7 @@ msgstr "Globale goedkeuringsstatus"
 
 #: templates/components/itilobject/validation.html.twig
 msgid "Approvals"
-msgstr ""
+msgstr "goedkeuringen"
 
 #: templates/components/itilobject/validation.html.twig
 #: phpunit/functional/RuleTest.php:355 phpunit/functional/RuleTest.php:361
@@ -7097,7 +7097,7 @@ msgstr ""
 
 #: templates/pages/admin/form/form_destination_actions.html.twig
 msgid "Duplicate"
-msgstr ""
+msgstr "Dupliceren"
 
 #: templates/pages/admin/form/form_destination_actions.html.twig
 msgid "Configure creation conditions"
@@ -15347,11 +15347,11 @@ msgstr ""
 
 #: src/NotificationTargetChange.php:345 src/NotificationTargetTicket.php:723
 msgid "An approval request has been submitted"
-msgstr ""
+msgstr "Een validatie aanvraag werd ingediend"
 
 #: src/NotificationTargetChange.php:347 src/NotificationTargetTicket.php:725
 msgid "An answer to an approval request was produced"
-msgstr ""
+msgstr "De aanvraag tot validatie werd beantwoord"
 
 #: src/CommonDropdown.php:61 src/Glpi/Event.php:173
 #: src/Glpi/Asset/CustomFieldType/DropdownType.php:47

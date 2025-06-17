@@ -11,11 +11,11 @@
 # Alexey Telezhenko, 2024
 # Ігор Козаченко, 2025
 # Дмитро Майборода <layymer@gmail.com>, 2025
-# DOMBRE Julien <moyo@indepnet.net>, 2025
 # Vladimir Prodan, 2025
 # khvalera <khvalera@ukr.net>, 2025
-# alexandre delaunay <delaunay.alexandre@gmail.com>, 2025
 # Andriy Smilyanets <smile.andriy@gmail.com>, 2025
+# alexandre delaunay <delaunay.alexandre@gmail.com>, 2025
+# DOMBRE Julien <moyo@indepnet.net>, 2025
 # 
 #, fuzzy
 msgid ""
@@ -24,7 +24,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2025-06-13 14:42+0200\n"
 "PO-Revision-Date: 2022-09-16 06:53+0000\n"
-"Last-Translator: Andriy Smilyanets <smile.andriy@gmail.com>, 2025\n"
+"Last-Translator: DOMBRE Julien <moyo@indepnet.net>, 2025\n"
 "Language-Team: Ukrainian (Ukraine) (https://app.transifex.com/glpi/teams/1637/uk_UA/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -1751,7 +1751,7 @@ msgstr "Загальний статус схвалення"
 
 #: templates/components/itilobject/validation.html.twig
 msgid "Approvals"
-msgstr ""
+msgstr "Затвердження"
 
 #: templates/components/itilobject/validation.html.twig
 #: phpunit/functional/RuleTest.php:355 phpunit/functional/RuleTest.php:361
@@ -7200,7 +7200,7 @@ msgstr ""
 
 #: templates/pages/admin/form/form_destination_actions.html.twig
 msgid "Duplicate"
-msgstr ""
+msgstr "Дублювати"
 
 #: templates/pages/admin/form/form_destination_actions.html.twig
 msgid "Configure creation conditions"
@@ -15737,11 +15737,11 @@ msgstr ""
 
 #: src/NotificationTargetChange.php:345 src/NotificationTargetTicket.php:723
 msgid "An approval request has been submitted"
-msgstr ""
+msgstr "Запит на затвердження було подано"
 
 #: src/NotificationTargetChange.php:347 src/NotificationTargetTicket.php:725
 msgid "An answer to an approval request was produced"
-msgstr ""
+msgstr "Відповідь на запит затвердження отримано"
 
 #: src/CommonDropdown.php:61 src/Glpi/Event.php:173
 #: src/Glpi/Asset/CustomFieldType/DropdownType.php:47

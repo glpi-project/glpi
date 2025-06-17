@@ -6,12 +6,12 @@
 # Translators:
 # peachberry <gtucr7gpw.4g2@gmail.com>, 2023
 # in dow <in_dow@hotmail.com>, 2024
-# DOMBRE Julien <moyo@indepnet.net>, 2024
 # Trans City, 2025
 # Koshikawa Yasunori <y-koshikawa@skyhobbit.co.jp>, 2025
-# Cédric Anne, 2025
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2025
 # 青海K, 2025
+# DOMBRE Julien <moyo@indepnet.net>, 2025
+# Cédric Anne, 2025
 # INOUE Daisuke, 2025
 # 
 #, fuzzy
@@ -1733,7 +1733,7 @@ msgstr "全体の承認状況"
 
 #: templates/components/itilobject/validation.html.twig
 msgid "Approvals"
-msgstr ""
+msgstr "承認"
 
 #: templates/components/itilobject/validation.html.twig
 #: phpunit/functional/RuleTest.php:355 phpunit/functional/RuleTest.php:361
@@ -2232,7 +2232,7 @@ msgstr "承認要求"
 
 #: templates/components/itilobject/validationstep.html.twig
 msgid "Minimum approval required (%)"
-msgstr ""
+msgstr "必要承認率 (%)"
 
 #: templates/components/itilobject/timeline/pending_reasons.html.twig
 msgid "Automatic follow-up"
@@ -2636,7 +2636,7 @@ msgstr[0] "テンプレート"
 #: src/ValidationStep.php:44
 msgid "Approval step"
 msgid_plural "Approval step"
-msgstr[0] ""
+msgstr[0] "承認ステップ"
 
 #: templates/components/itilobject/timeline/form_validation.html.twig
 #: src/NotificationTargetChange.php:327 src/NotificationTargetTicket.php:676
@@ -6578,7 +6578,7 @@ msgstr "設定検証"
 #: templates/pages/admin/form/conditional_visibility_dropdown.html.twig
 #: templates/pages/admin/form/form_destination_actions.html.twig
 msgid "Conditions count"
-msgstr ""
+msgstr "条件数"
 
 #: templates/pages/admin/form/conditional_validation_dropdown.html.twig
 msgid "Conditional validation"
@@ -6734,7 +6734,7 @@ msgstr "このフォームで新たなアイテムは作成されません。"
 
 #: templates/pages/admin/form/form_destination.html.twig
 msgid "Form destinations"
-msgstr ""
+msgstr "フォームのあて先"
 
 #: templates/pages/admin/form/form_destination.html.twig
 msgid "Form destination name"
@@ -6795,35 +6795,35 @@ msgstr "コメントの説明"
 
 #: templates/pages/admin/form/question_type/item_dropdown/advanced_configuration.html.twig
 msgid "Request categories"
-msgstr ""
+msgstr "要求カテゴリー"
 
 #: templates/pages/admin/form/question_type/item_dropdown/advanced_configuration.html.twig
 msgid "Incident categories"
-msgstr ""
+msgstr "インシデント カテゴリー"
 
 #: templates/pages/admin/form/question_type/item_dropdown/advanced_configuration.html.twig
 msgid "Change categories"
-msgstr ""
+msgstr "変更カテゴリー"
 
 #: templates/pages/admin/form/question_type/item_dropdown/advanced_configuration.html.twig
 msgid "Problem categories"
-msgstr ""
+msgstr "問題カテゴリー"
 
 #: templates/pages/admin/form/question_type/item_dropdown/advanced_configuration.html.twig
 msgid "Filter ticket categories"
-msgstr ""
+msgstr "カテゴリーでチケットをフィルター"
 
 #: templates/pages/admin/form/question_type/item_dropdown/advanced_configuration.html.twig
 msgid "Subtree root"
-msgstr ""
+msgstr "サブツリーの最上位"
 
 #: templates/pages/admin/form/question_type/item_dropdown/advanced_configuration.html.twig
 msgid "Limit subtree depth"
-msgstr ""
+msgstr "サブツリーの深さ制限"
 
 #: templates/pages/admin/form/question_type/base_advanced_configuration.html.twig
 msgid "Advanced configuration"
-msgstr ""
+msgstr "詳細設定"
 
 #: templates/pages/admin/form/form_horizontal_block.html.twig
 msgid "Horizontal blocks layout"
@@ -7027,7 +7027,7 @@ msgstr "アイテムの更新"
 
 #: templates/pages/admin/form/form_destination_actions.html.twig
 msgid "Duplicate"
-msgstr ""
+msgstr "複製"
 
 #: templates/pages/admin/form/form_destination_actions.html.twig
 msgid "Configure creation conditions"
@@ -7581,7 +7581,7 @@ msgstr "終了日"
 
 #: templates/pages/admin/user.substitute.html.twig
 msgid "Approval substitutes"
-msgstr ""
+msgstr "承認者の代理人"
 
 #: templates/pages/admin/user.substitute.html.twig
 msgid ""
@@ -10437,7 +10437,7 @@ msgstr "無題のセクション"
 #: templates/pages/form_renderer.html.twig
 #, php-format
 msgid "%s description"
-msgstr ""
+msgstr "%s の説明"
 
 #: templates/pages/form_renderer.html.twig
 msgid "Submit"
@@ -13536,7 +13536,7 @@ msgstr "関連付け"
 #: src/TicketValidationStep.php:42
 msgid "Ticket approval step"
 msgid_plural "Ticket approval steps"
-msgstr[0] ""
+msgstr[0] "チケット承認ステップ"
 
 #: src/Lock.php:62
 msgid "Lock"
@@ -13870,7 +13870,7 @@ msgstr "関連アイテムの選択は必須"
 #: src/ChangeValidationStep.php:42
 msgid "Change Approval step"
 msgid_plural "Change Approval steps"
-msgstr[0] ""
+msgstr[0] "変更承認ステップ"
 
 #: src/Group_User.php:218 src/Group_User.php:501 src/Group_User.php:599
 #: src/Database.php:242 src/Database.php:333
@@ -15157,7 +15157,7 @@ msgstr "変更要求の解決"
 #: src/NotificationTargetChange.php:64 src/NotificationTargetTicket.php:142
 #: src/CommonITILObject.php:7803
 msgid "Approval request answer"
-msgstr ""
+msgstr "承認要求への回答"
 
 #: src/NotificationTargetChange.php:65
 msgid "Closure of a change"
@@ -15196,11 +15196,11 @@ msgstr "承認対象"
 
 #: src/NotificationTargetChange.php:345 src/NotificationTargetTicket.php:723
 msgid "An approval request has been submitted"
-msgstr ""
+msgstr "有効化のリクエストは送られました。"
 
 #: src/NotificationTargetChange.php:347 src/NotificationTargetTicket.php:725
 msgid "An answer to an approval request was produced"
-msgstr ""
+msgstr "有効化要求への回答が実行されました"
 
 #: src/CommonDropdown.php:61 src/Glpi/Event.php:173
 #: src/Glpi/Asset/CustomFieldType/DropdownType.php:47
@@ -15217,7 +15217,7 @@ msgstr "製品番号"
 
 #: src/CommonDropdown.php:393
 msgid "Protected item cannot be deleted."
-msgstr ""
+msgstr "保護アイテムは削除できません。"
 
 #: src/CommonDropdown.php:438
 msgid "Product number"
@@ -16546,7 +16546,7 @@ msgstr[0] "アイテムの変更"
 #: src/ITILValidationTemplate_Target.php:50
 msgid "Approval template target"
 msgid_plural "Approval template targets"
-msgstr[0] ""
+msgstr[0] "承認テンプレートの対象"
 
 #: src/DevicePowerSupply.php:43
 msgid "Power supply"
@@ -18040,7 +18040,7 @@ msgstr "GLPI が要求する ChaCha20-Poly1305 暗号を有効にする。libsod
 msgid ""
 "Required for email sending using SSL/TLS, handling of encrypted "
 "communication with inventory agents and OAuth 2.0 authentication."
-msgstr ""
+msgstr "SSL/TLS でのメール送信、またインベントリー エージェントととの暗号化通信と OAuth 2.0 認証に必要です。"
 
 #: src/Glpi/System/RequirementsManager.php:148
 msgid "Permissions for GLPI data directories"
@@ -18382,7 +18382,7 @@ msgstr "承認要求の表示"
 
 #: src/Glpi/Helpdesk/DefaultDataManager.php:120
 msgid "View all tickets waiting for your approval."
-msgstr ""
+msgstr "あなたの承認を待っている、すべてのチケットを表示します。"
 
 #: src/Glpi/Helpdesk/DefaultDataManager.php:135
 msgid "Report an issue"
@@ -20043,7 +20043,7 @@ msgstr ""
 
 #: src/Glpi/Console/Database/UpdateCommand.php:233
 msgid "Upddate failed."
-msgstr ""
+msgstr "更新に失敗。"
 
 #: src/Glpi/Console/Database/UpdateCommand.php:240
 #, php-format
@@ -20367,7 +20367,7 @@ msgstr "表示言語（デフォルトは GLPI の言語設定、または \"en_
 
 #: src/Glpi/Console/Application.php:201
 msgid "Allow the console to be executed by the root user"
-msgstr ""
+msgstr "コンソールでの root ユーザーでの実行を許可する"
 
 #: src/Glpi/Console/Application.php:223
 #, php-format
@@ -21999,7 +21999,7 @@ msgstr "対応遅れチケット"
 
 #: src/Glpi/Dashboard/Provider.php:329 src/Glpi/Dashboard/FakeProvider.php:195
 msgid "Tickets waiting for approval"
-msgstr ""
+msgstr "承認待ちチケット"
 
 #: src/Glpi/Dashboard/Provider.php:374 src/Glpi/Dashboard/FakeProvider.php:196
 msgid "Incoming tickets"
@@ -22076,7 +22076,7 @@ msgstr "担当者"
 #: src/Glpi/Dashboard/Provider.php:1685
 #: src/Glpi/Dashboard/FakeProvider.php:158
 msgid "To approve"
-msgstr ""
+msgstr "承認待ち"
 
 #: src/Glpi/Dashboard/Provider.php:1690
 #: src/Glpi/Dashboard/FakeProvider.php:163
@@ -22355,7 +22355,7 @@ msgstr "テンプレートを選択..."
 
 #: src/Glpi/Form/Destination/CommonITILField/ValidationFieldStrategy.php:49
 msgid "No approval"
-msgstr ""
+msgstr "承認なし"
 
 #: src/Glpi/Form/Destination/CommonITILField/ValidationFieldStrategy.php:50
 #: src/Glpi/Form/Destination/CommonITILField/ITILActorFieldStrategy.php:63
@@ -22661,11 +22661,11 @@ msgstr "常に作成"
 
 #: src/Glpi/Form/Condition/CreationStrategy.php:50
 msgid "Created if..."
-msgstr ""
+msgstr "作成条件"
 
 #: src/Glpi/Form/Condition/CreationStrategy.php:51
 msgid "Created unless..."
-msgstr ""
+msgstr "不作成条件"
 
 #: src/Glpi/Form/Condition/ValidationStrategy.php:49
 msgid "No validation"
@@ -23629,7 +23629,7 @@ msgstr "解決は却下されました"
 
 #: src/NotificationTargetTicket.php:143
 msgid "Approval reminder"
-msgstr ""
+msgstr "承認通知"
 
 #: src/NotificationTargetTicket.php:144
 msgid "Closing of the ticket"
@@ -23911,7 +23911,7 @@ msgstr "対応中チケット"
 
 #: src/Ticket.php:4259
 msgid "Your tickets to approve"
-msgstr ""
+msgstr "承認待ちのあなたのチケット"
 
 #: src/Ticket.php:4277
 msgid "Your tickets having rejected approval status"
@@ -25073,21 +25073,21 @@ msgstr "%s 項目は必須です"
 #: phpunit/functional/ValidationStepTest.php:142
 #, php-format
 msgid "The %s field is mandatory and must be beetween 0 and 100."
-msgstr ""
+msgstr "%s 項目は必須で 0 ～ 100 の間にしてください。"
 
 #: src/ValidationStep.php:140
 msgid "Use as default"
-msgstr ""
+msgstr "標準に設定"
 
 #: src/ValidationStep.php:146
 msgid ""
 "This is the default approval step, it cannot be changed. Update another step"
 " to make it the default one."
-msgstr ""
+msgstr "これは標準の承認ステップで、変更できません。別のステップを更新し、それを標準にしてください。"
 
 #: src/ValidationStep.php:152
 msgid "Minimal required approval percent"
-msgstr ""
+msgstr "最小必要承認率"
 
 #: src/NetworkAlias.php:54
 msgid "Network alias"
@@ -25570,7 +25570,7 @@ msgstr[0] "正規の代理人"
 
 #: src/ValidatorSubstitute.php:156
 msgid "Cannot change the approval delegator"
-msgstr ""
+msgstr "承認の代理人を変更できません"
 
 #: src/ValidatorSubstitute.php:175
 msgid "You cannot change substitutes for this user."
@@ -25622,7 +25622,7 @@ msgstr "要求を作成"
 
 #: src/TicketValidation.php:109
 msgid "Create an approval request for a request"
-msgstr ""
+msgstr "要求に対する承認要求を作成"
 
 #: src/TicketValidation.php:112
 msgid "Create for incident"
@@ -25630,15 +25630,15 @@ msgstr "インシデントの作成"
 
 #: src/TicketValidation.php:113
 msgid "Create an approval request for an incident"
-msgstr ""
+msgstr "インシデントに対する承認要求を作成"
 
 #: src/TicketValidation.php:116
 msgid "Approve a request"
-msgstr ""
+msgstr "要求を承認"
 
 #: src/TicketValidation.php:118
 msgid "Approve an incident"
-msgstr ""
+msgstr "インシデントを承認"
 
 #: src/ProjectType.php:45
 msgid "Project type"
@@ -26215,11 +26215,11 @@ msgstr "新しいアクションの追加"
 #: src/ITILValidationTemplate.php:54
 msgid "Approval template"
 msgid_plural "Approval templates"
-msgstr[0] ""
+msgstr[0] "承認テンプレート"
 
 #: src/ITILValidationTemplate.php:61
 msgid "Invalid approval step"
-msgstr ""
+msgstr "無効な承認ステップ"
 
 #: src/Certificate.php:72
 msgid "Certificate"
@@ -27524,7 +27524,7 @@ msgstr "ドキュメント"
 #: src/CommonITILObject.php:7458
 msgctxt "button"
 msgid "Ask for approval"
-msgstr ""
+msgstr "承認を求める"
 
 #: src/CommonITILObject.php:7895
 #, php-format
@@ -28217,7 +28217,7 @@ msgstr "進行中の自分の変更要求"
 
 #: src/Change.php:1284
 msgid "Your changes to approve"
-msgstr ""
+msgstr "承認待ちのあなたの変更"
 
 #: src/Change.php:1656
 msgid "No change found."
@@ -29084,11 +29084,11 @@ msgstr "グループ ユーザー"
 
 #: phpunit/functional/RuleTest.php:366
 msgid "Set approval request step"
-msgstr ""
+msgstr "承認要求ステップをセット"
 
 #: phpunit/functional/RuleTest.php:370
 msgid "Set approval threshold (in percentage)"
-msgstr ""
+msgstr "承認要求しきい値を設定（%で）"
 
 #: phpunit/functional/RuleTest.php:373
 msgid "Approval request to requester group manager"
