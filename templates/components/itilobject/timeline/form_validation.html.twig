@@ -348,7 +348,6 @@
                // Validator field
                if (data.validatortype !== undefined) {
                   // set validator type
-                  $("#dropdown__validatortype_{{ rand }}").trigger('setValue', "0");
                   $("#dropdown__validatortype_{{ rand }}").trigger('setValue', data.validatortype);
 
                   if (data.groups_id !== undefined && data.groups_id !== null) {
