@@ -44,7 +44,7 @@ final class IllustrationManagerTest extends GLPITestCase
     {
         yield [
             'filter' => 'Service',
-            'expected' => ['request-service'],
+            'expected' => ['helpdesk', 'request-service'],
         ];
         yield [
             'filter' => 'backup And restoration',
@@ -52,7 +52,22 @@ final class IllustrationManagerTest extends GLPITestCase
         ];
     }
 
+    public static function searchIconsUsingFilterProviderWithTags(): iterable
+    {
+        yield [
+            'filter' => 'software',
+            'expected' => [
+                'application',
+                'license',
+                'software-deployment',
+                'update-1',
+                'update-2',
+            ],
+        ];
+    }
+
     #[DataProvider('searchIconsUsingFilterProvider')]
+    #[DataProvider('searchIconsUsingFilterProviderWithTags')]
     public function testSearchIconsIdsUsingFilter(
         string $filter,
         array $expected,
@@ -131,6 +146,8 @@ final class IllustrationManagerTest extends GLPITestCase
             "Monitoring",
             "Make a reservation",
             "New user 3",
+            "planet",
+            "cellphone",
         ];
         foreach ($to_check as $string) {
             $this->assertStringContainsString('_sx("Icon", "' . $string . '")', $content);
