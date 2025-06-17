@@ -2252,7 +2252,6 @@ class AuthLDAPTest extends DbTestCase
         $gu = new Group_User();
         $gus = $gu->find([
             'users_id' => $users_id,
-            'groups_id' => $group_id,
             'is_dynamic' => 1,
         ]);
         $this->assertCount(2, $gus);
