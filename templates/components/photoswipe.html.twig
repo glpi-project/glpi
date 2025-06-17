@@ -111,8 +111,8 @@
             dataSource: {{ imgs|json_encode|raw }},
             index: $(this).closest('figure').parent().index(),
 
-            close: {{ controls is defined ? controls.close|json_encode() : false }},
-            zoom: {{ controls is defined ? controls.zoom|json_encode() : false }},
+            close: {{ controls is defined ? controls.close|json_encode() : 'false' }},
+            zoom: {{ controls is defined ? controls.zoom|json_encode() : 'false' }},
 
             arrowNextTitle: __('Next (arrow right)'),
             arrowPrevTitle: __('Previous (arrow left)'),
