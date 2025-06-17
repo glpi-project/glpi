@@ -443,7 +443,7 @@ final class LegacyItemtypeRouteListenerTest extends TestCase
             'path_info' => '/plugins/tester/front/mypsr4dropdown.php',
             'class'     => \GlpiPlugin\Tester\MyPsr4Dropdown::class,
         ];
-                yield [
+        yield [
             'path_info' => '/plugins/tester/front/computer.php',
             'class'     => \GlpiPlugin\Tester\Computer::class,
         ];
