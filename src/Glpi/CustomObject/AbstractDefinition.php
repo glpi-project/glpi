@@ -115,6 +115,20 @@ abstract class AbstractDefinition extends CommonDBTM
     }
 
     /**
+     * @phpstan-return ConcreteClass
+     */
+    public function getCustomObjectClassInstance(): CommonDBTM
+    {
+        $classname = $this->getCustomObjectClassName();
+
+        if (!is_a($classname, CommonDBTM::class, true)) {
+            throw new \LogicException();
+        }
+
+        return new $classname();
+    }
+
+    /**
      * Get the rightname for the custom objects of this type.
      * @return string
      */
@@ -126,8 +140,7 @@ abstract class AbstractDefinition extends CommonDBTM
      */
     protected function getPossibleCustomObjectRights(): array
     {
-        $class = $this->getCustomObjectClassName();
-        return (new $class())->getRights();
+        return $this->getCustomObjectClassInstance()->getRights();
     }
 
     public static function getNameField()
@@ -570,6 +583,10 @@ abstract class AbstractDefinition extends CommonDBTM
      */
     final protected function purgeConcreteClassFromDb(string $concrete_classname): void
     {
+        if (!\is_a($concrete_classname, CommonDBTM::class, true)) {
+            throw new \LogicException();
+        }
+
         (new $concrete_classname())->deleteByCriteria(
             [static::getForeignKeyField() => $this->getID()],
             force: true,

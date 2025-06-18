@@ -813,7 +813,7 @@ class Config extends CommonDBTM
 
         $system_info_objs = [];
         foreach ($CFG_GLPI["systeminformations_types"] as $type) {
-            $system_info_objs[] = new $type();
+            $system_info_objs[] = getItemForItemtype($type);
         }
 
         Session::loadLanguage($oldlang);

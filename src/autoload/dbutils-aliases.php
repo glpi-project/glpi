@@ -105,6 +105,15 @@ function getItemTypeForTable($table)
 }
 
 /**
+ * Return an item instance for the corresponding table.
+ */
+function getItemForTable(string $table): ?CommonDBTM
+{
+    $dbu = new DbUtils();
+    return $dbu->getItemForTable($table);
+}
+
+/**
  * Return ItemType for a foreign key
  *
  * @param string $fkname
@@ -116,6 +125,15 @@ function getItemtypeForForeignKeyField($fkname)
 {
     $dbu = new DbUtils();
     return $dbu->getItemtypeForForeignKeyField($fkname);
+}
+
+/**
+ * Return an item instance for the corresponding foreign key field.
+ */
+function getItemForForeignKeyField(string $fkname): ?CommonDBTM
+{
+    $dbu = new DbUtils();
+    return $dbu->getItemForForeignKeyField($fkname);
 }
 
 /**

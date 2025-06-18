@@ -43,7 +43,7 @@ interface NotificationInterface
      *
      * @return boolean
      **/
-    public function sendNotification();
+    public function sendNotification($options = []);
 
 
     /**

@@ -157,6 +157,10 @@ class HasDevicesCapacity extends AbstractCapacity
         global $CFG_GLPI;
 
         foreach (Item_Devices::getDeviceTypes() as $item_device_class) {
+            if (!\is_a($item_device_class, Item_Devices::class, true)) {
+                continue;
+            }
+
             //Delete related items
             $item_device = new $item_device_class();
             $item_device->deleteByCriteria(['itemtype' => $classname], force: true, history: false);

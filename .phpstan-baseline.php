@@ -1550,18 +1550,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/CommonITILSatisfaction.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @var with type CommonDBTM is not subtype of native type string\\.$#',
-	'identifier' => 'varTag.nativeType',
-	'count' => 3,
-	'path' => __DIR__ . '/src/CommonITILSatisfaction.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^PHPDoc tag @var with type CommonITILObject is not subtype of native type string\\.$#',
-	'identifier' => 'varTag.nativeType',
-	'count' => 3,
-	'path' => __DIR__ . '/src/CommonITILSatisfaction.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Call to an undefined method Sabre\\\\VObject\\\\Document\\:\\:getBaseComponent\\(\\)\\.$#',
 	'identifier' => 'method.notFound',
 	'count' => 1,
@@ -2660,12 +2648,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Glpi/Api/API.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Api\\\\API\\:\\:deleteItems\\(\\) should return array\\<bool\\>\\|bool\\|void but returns list\\<array\\<mixed\\>\\>\\.$#',
-	'identifier' => 'return.type',
-	'count' => 2,
-	'path' => __DIR__ . '/src/Glpi/Api/API.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method Glpi\\\\Api\\\\API\\:\\:getActiveProfile\\(\\) should return int but returns array\\<string, mixed\\>\\.$#',
 	'identifier' => 'return.type',
 	'count' => 1,
@@ -2814,42 +2796,6 @@ $ignoreErrors[] = [
 	'identifier' => 'method.unused',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ITILController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to method getModelClass\\(\\) on an unknown class Glpi\\\\Api\\\\HL\\\\Controller\\\\CommonDBTM\\.$#',
-	'identifier' => 'class.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ManagementController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to method getTypeClass\\(\\) on an unknown class Glpi\\\\Api\\\\HL\\\\Controller\\\\CommonDBTM\\.$#',
-	'identifier' => 'class.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ManagementController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to method isEntityAssign\\(\\) on an unknown class Glpi\\\\Api\\\\HL\\\\Controller\\\\CommonDBTM\\.$#',
-	'identifier' => 'class.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ManagementController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to method isField\\(\\) on an unknown class Glpi\\\\Api\\\\HL\\\\Controller\\\\CommonDBTM\\.$#',
-	'identifier' => 'class.notFound',
-	'count' => 9,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ManagementController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Call to method maybeDeleted\\(\\) on an unknown class Glpi\\\\Api\\\\HL\\\\Controller\\\\CommonDBTM\\.$#',
-	'identifier' => 'class.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ManagementController.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Api\\\\HL\\\\Controller\\\\ManagementController\\:\\:getManagementTypes\\(\\) has invalid return type Glpi\\\\Api\\\\HL\\\\Controller\\\\CommonDBTM\\.$#',
-	'identifier' => 'class.notFound',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/HL/Controller/ManagementController.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Offset \'label\' does not exist on string\\.$#',
@@ -3244,12 +3190,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Function unlink is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\unlink;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
 	'identifier' => 'theCodingMachineSafe.function',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Asset/Asset.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Asset\\\\Asset\\:\\:getById\\(\\) should return static\\(Glpi\\\\Asset\\\\Asset\\)\\|false but returns object\\.$#',
-	'identifier' => 'return.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Asset/Asset.php',
 ];
@@ -4110,12 +4050,6 @@ $ignoreErrors[] = [
 	'identifier' => 'notIdentical.alwaysTrue',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Debug/ProfilerSection.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Glpi\\\\Dropdown\\\\Dropdown\\:\\:getById\\(\\) should return static\\(Glpi\\\\Dropdown\\\\Dropdown\\)\\|false but returns object\\.$#',
-	'identifier' => 'return.type',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Dropdown/Dropdown.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',

@@ -93,7 +93,7 @@ switch ($_SERVER['REQUEST_METHOD']) {
                 }
 
                 // Prepare graph
-                $item = new $itemtype();
+                $item = getItemForItemtype($itemtype);
                 $item->getFromDB($items_id);
                 $graph = Impact::buildGraph($item);
                 $params = Impact::prepareParams($item);

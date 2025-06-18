@@ -191,9 +191,7 @@ JAVASCRIPT;
         /** @var \DBmysql $DB */
         global $DB;
 
-        /** @var class-string<CommonDBTM> $cat_itemtype */
-        $cat_itemtype = static::getCategoryItemType($itemtype);
-        $cat_item     = new $cat_itemtype();
+        $cat_item = static::getCategoryItem($itemtype);
 
         $params['export_all'] = true;
 
@@ -210,9 +208,9 @@ JAVASCRIPT;
 
         $id_criteria = new QueryExpression($itemtype::getTableField('id') . ' IN ( SELECT * FROM (' . $sql_id . ') AS id_criteria )');
 
-        $cat_table = $cat_itemtype::getTable();
-        $cat_fk    = $cat_itemtype::getForeignKeyField();
-        $cat_join = $itemtype . '_' . $cat_itemtype;
+        $cat_table = $cat_item::getTable();
+        $cat_fk    = $cat_item::getForeignKeyField();
+        $cat_join = $itemtype . '_' . $cat_item::class;
 
         if (class_exists($cat_join)) {
             $cat_criteria = [1];
@@ -249,7 +247,7 @@ JAVASCRIPT;
                 'LEFT JOIN' => $join,
                 'WHERE'  => [
                     $cat_join::getTableField($cat_fk) => new QueryExpression(
-                        $DB->quoteName($cat_itemtype::getTableField('id'))
+                        $DB->quoteName($cat_item::getTableField('id'))
                     ),
                     $id_criteria,
                 ],
@@ -257,18 +255,18 @@ JAVASCRIPT;
             'items_count'
         );
 
-        $select[] = $cat_itemtype::getTableField('id');
-        $select[] = $cat_itemtype::getTableField('name');
+        $select[] = $cat_item::getTableField('id');
+        $select[] = $cat_item::getTableField('name');
         if ($cat_item instanceof CommonTreeDropdown) {
-            $select[] = $cat_itemtype::getTableField($cat_fk);
+            $select[] = $cat_item::getTableField($cat_fk);
         }
         $select[] = $items_subquery;
 
         if ($cat_item instanceof CommonTreeDropdown) {
-            $order[] = $cat_itemtype::getTableField('level') . ' DESC';
-            $order[] = $cat_itemtype::getTableField('name');
+            $order[] = $cat_item::getTableField('level') . ' DESC';
+            $order[] = $cat_item::getTableField('name');
         } else {
-            $order[] = $cat_itemtype::getTableField('name') . ' DESC';
+            $order[] = $cat_item::getTableField('name') . ' DESC';
         }
 
         $cat_iterator = $DB->request([
@@ -283,7 +281,7 @@ JAVASCRIPT;
             if ($category instanceof CommonDropdown && $category->maybeTranslated()) {
                 $tname = DropdownTranslation::getTranslatedValue(
                     $category['id'],
-                    $cat_itemtype
+                    $cat_item::class
                 );
                 if (!empty($tname)) {
                     $category['name'] = $tname;
@@ -298,7 +296,7 @@ JAVASCRIPT;
         // Without category
         $join[$cat_table] = [
             'ON' => [
-                $cat_join::getTable() => $cat_itemtype::getForeignKeyField(),
+                $cat_join::getTable() => $cat_item::getForeignKeyField(),
                 $cat_table => 'id',
             ],
         ];
@@ -308,7 +306,7 @@ JAVASCRIPT;
                 'FROM'   => $itemtype::getTable(),
                 'LEFT JOIN' => $join,
                 'WHERE'  => [
-                    $cat_itemtype::getTableField('id') => null,
+                    $cat_item::getTableField('id') => null,
                     $id_criteria,
                 ],
             ]
@@ -365,16 +363,21 @@ JAVASCRIPT;
     }
 
     /**
-     * Return category itemtype for given itemtype.
+     * Return category item for given itemtype.
      *
-     * @param string $itemtype
-     *
-     * @return string|null
+     * @param class-string<\CommonDBTM> $itemtype
      */
-    public static function getCategoryItemType(string $itemtype): ?string
+    public static function getCategoryItem(string $itemtype): ?CommonDBTM
     {
-        return is_a($itemtype, CommonITILObject::class, true)
-            ? ITILCategory::class
-            : $itemtype . 'Category';
+        if (\is_a($itemtype, CommonITILObject::class, true)) {
+            return new ITILCategory();
+        }
+
+        $expected_class = $itemtype . 'Category';
+        if (is_a($expected_class, CommonDBTM::class, true)) {
+            return new $expected_class();
+        }
+
+        return null;
     }
 }

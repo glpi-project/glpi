@@ -594,7 +594,12 @@ class Notification extends CommonDBTM implements FilterableInterface
     public static function send($options)
     {
         $classname = Notification_NotificationTemplate::getModeClass($options['mode']);
-        $notif = new $classname(); //not a CommonGLPI, cannot use getItemForItemtype
+
+        if (!is_a($classname, NotificationInterface::class, true)) {
+            throw new \LogicException(sprintf('Invalid `%s` class.', $classname));
+        }
+
+        $notif = new $classname();
         $notif->sendNotification($options);
     }
 

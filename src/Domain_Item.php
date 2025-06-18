@@ -131,8 +131,8 @@ class Domain_Item extends CommonDBRelation
     public function getFromDBbyDomainsAndItem($domains_id, $items_id, $itemtype)
     {
         $criteria = ['domains_id' => $domains_id];
-        $item = new $itemtype();
-        if ($item instanceof DomainRelation) {
+
+        if (is_a($itemtype, DomainRelation::class, true)) {
             $criteria += ['domainrelations_id' => $items_id];
         } else {
             $criteria += [

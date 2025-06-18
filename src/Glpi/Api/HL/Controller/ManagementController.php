@@ -38,6 +38,7 @@ namespace Glpi\Api\HL\Controller;
 use AutoUpdateSystem;
 use Budget;
 use Cluster;
+use CommonDBTM;
 use Contact;
 use Contract;
 use Database;
@@ -148,6 +149,10 @@ final class ManagementController extends AbstractController
         $management_types = self::getManagementTypes(false);
 
         foreach ($management_types as $m_class => $m_data) {
+            if (!\is_a($m_class, CommonDBTM::class, true)) {
+                throw new \LogicException();
+            }
+
             $m_name = $m_data['schema_name'];
             $schemas[$m_name] = [
                 'x-version-introduced' => $m_data['version_introduced'],

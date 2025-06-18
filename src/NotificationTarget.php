@@ -363,7 +363,7 @@ class NotificationTarget extends CommonDBChild
         $name = self::getInstanceClass($item->getType());
 
         $entity = 0;
-        if (class_exists($name)) {
+        if (is_a($name, NotificationTarget::class, true)) {
             //Entity ID exists in the options array
             if (isset($options['entities_id'])) {
                 $entity = $options['entities_id'];

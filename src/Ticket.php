@@ -34,6 +34,7 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\ContentTemplates\Parameters\CommonITILObjectParameters;
 use Glpi\ContentTemplates\Parameters\TicketParameters;
 use Glpi\ContentTemplates\ParametersPreset;
 use Glpi\ContentTemplates\TemplateManager;
@@ -6142,9 +6143,9 @@ JAVASCRIPT;
         return Item_Ticket::class;
     }
 
-    public static function getContentTemplatesParametersClass(): string
+    public static function getContentTemplatesParametersClassInstance(): CommonITILObjectParameters
     {
-        return TicketParameters::class;
+        return new TicketParameters();
     }
 
     public function processRules(int $condition, array &$input, int $entid = -1): void

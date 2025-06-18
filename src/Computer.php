@@ -248,7 +248,7 @@ class Computer extends CommonDBTM
                         ],
                     ]
                 );
-                $item      = new $type();
+                $item = getItemForItemtype($type);
                 foreach ($items_result as $data) {
                     $tID = $data['items_id_peripheral'];
                     $item->getFromDB($tID);
@@ -275,7 +275,7 @@ class Computer extends CommonDBTM
             if (count($changes) > 0) {
                 // Propagates the changes to linked devices
                 foreach (Item_Devices::getDeviceTypes() as $device) {
-                    $item = new $device();
+                    $item = getItemForItemtype($device);
                     $devices_result = $DB->request(
                         [
                             'SELECT' => ['id'],

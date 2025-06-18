@@ -67,6 +67,9 @@ class GenericAjaxCrudController extends AbstractController
 
         // Validate and instanciate item from supplied itemtype
         $itemtype = $input['itemtype'] ?? "";
+        if (!\is_string($itemtype) || !\is_a($itemtype, CommonDBTM::class, true)) {
+            return $this->errorReponse(400, __("Invalid itemtype"));
+        }
         if (!$this->isClassAllowed($itemtype)) {
             return $this->errorReponse(403, __("Forbidden itemtype"));
         }

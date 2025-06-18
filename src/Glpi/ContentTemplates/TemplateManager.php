@@ -104,8 +104,7 @@ class TemplateManager
         CommonITILObject $itil_item,
         string $template
     ): ?string {
-        $parameters_class = $itil_item->getContentTemplatesParametersClass();
-        $parameters = new $parameters_class();
+        $parameters = $itil_item->getContentTemplatesParametersClassInstance();
 
         try {
             $html = TemplateManager::render(

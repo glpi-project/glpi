@@ -402,7 +402,7 @@ final class Search
         // Handle entity and other visibility restrictions
         $entity_restrict = [];
         if (!$this->union_search_mode) {
-            $itemtype = $this->schema['x-itemtype']; //should not that use self::getItemtypeFromSchema()?
+            $itemtype = $this->schema['x-itemtype']; //should not that use self::getItemFromSchema()?
             /** @var CommonDBTM $item */
             $item = getItemForItemtype($itemtype);
             if ($item instanceof ExtraVisibilityCriteria) {
@@ -1278,9 +1278,8 @@ final class Search
     /**
      * Get the related itemtype for the given schema.
      * @param array $schema
-     * @return class-string<CommonDBTM>
      */
-    private static function getItemtypeFromSchema(array $schema): string
+    private static function getItemFromSchema(array $schema): CommonDBTM
     {
         $itemtype = $schema['x-itemtype'] ?? ($schema['x-table'] ? getItemTypeForTable($schema['x-table']) : null);
         if ($itemtype === null) {
@@ -1289,7 +1288,7 @@ final class Search
         if (!is_subclass_of($itemtype, CommonDBTM::class)) {
             throw new \RuntimeException('Invalid itemtype');
         }
-        return $itemtype;
+        return new $itemtype();
     }
 
     /**
@@ -1385,14 +1384,12 @@ final class Search
      */
     public static function createBySchema(array $schema, array $request_params, array $get_route, array $extra_get_route_params = []): Response
     {
-        $itemtype = self::getItemtypeFromSchema($schema);
         if (!isset($request_params['entity']) && isset($_SESSION['glpiactive_entity'])) {
             $request_params['entity'] = $_SESSION['glpiactive_entity'];
         }
         $input = self::getInputParamsBySchema($schema, $request_params);
 
-        /** @var CommonDBTM $item */
-        $item = new $itemtype();
+        $item = self::getItemFromSchema($schema);
         if (!$item->can($item->getID(), CREATE, $input)) {
             return AbstractController::getAccessDeniedErrorResponse();
         }
@@ -1425,7 +1422,6 @@ final class Search
     public static function updateBySchema(array $schema, array $request_attrs, array $request_params, string $field = 'id'): Response
     {
         $items_id = $field === 'id' ? $request_attrs['id'] : self::getIDForOtherUniqueFieldBySchema($schema, $field, $request_attrs[$field]);
-        $itemtype = self::getItemtypeFromSchema($schema);
         // Ignore entity updates. This needs to be done through the Transfer process
         // TODO This should probably be handled in a more generic way (support other fields that can be used during creation but not updates)
         if (array_key_exists('entity', $request_attrs)) {
@@ -1433,8 +1429,8 @@ final class Search
         }
         $input = self::getInputParamsBySchema($schema, $request_params);
         $input['id'] = $items_id;
-        /** @var CommonDBTM $item */
-        $item = new $itemtype();
+
+        $item = self::getItemFromSchema($schema);
         if (!$item->can($items_id, UPDATE, $input)) {
             return AbstractController::getAccessDeniedErrorResponse();
         }
@@ -1460,9 +1456,7 @@ final class Search
     public static function deleteBySchema(array $schema, array $request_attrs, array $request_params, string $field = 'id'): Response
     {
         $items_id = $field === 'id' ? $request_attrs['id'] : self::getIDForOtherUniqueFieldBySchema($schema, $field, $request_attrs[$field]);
-        $itemtype = self::getItemtypeFromSchema($schema);
-        /** @var CommonDBTM $item */
-        $item = new $itemtype();
+        $item = self::getItemFromSchema($schema);
         $force = $request_params['force'] ?? false;
         $input = ['id' => (int) $items_id];
         $purge = !$item->maybeDeleted() || $force;

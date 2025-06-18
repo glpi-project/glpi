@@ -39,6 +39,7 @@ use Dropdown;
 use Entity;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\CustomFieldType\TextType;
+use Glpi\CustomObject\AbstractDefinition;
 use Glpi\CustomObject\CustomObjectTrait;
 use Group;
 use Group_Item;
@@ -94,9 +95,9 @@ abstract class Asset extends CommonDBTM
         return $definition;
     }
 
-    public static function getDefinitionClass(): string
+    public static function getDefinitionClassInstance(): AbstractDefinition
     {
-        return AssetDefinition::class;
+        return new AssetDefinition();
     }
 
     public static function getSectorizedDetails(): array

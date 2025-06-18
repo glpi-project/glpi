@@ -34,6 +34,7 @@
 
 namespace Glpi\Dropdown;
 
+use Glpi\CustomObject\AbstractDefinition;
 use Glpi\CustomObject\AbstractDefinitionManager;
 
 /**
@@ -71,9 +72,9 @@ final class DropdownDefinitionManager extends AbstractDefinitionManager
         self::$instance = null;
     }
 
-    public static function getDefinitionClass(): string
+    public static function getDefinitionClassInstance(): AbstractDefinition
     {
-        return DropdownDefinition::class;
+        return new DropdownDefinition();
     }
 
     public function getReservedSystemNamesPattern(): string
@@ -97,14 +98,14 @@ final class DropdownDefinitionManager extends AbstractDefinitionManager
 
     public function autoloadClass(string $classname): void
     {
-        $definition_class = self::getDefinitionClass();
-        $ns = $definition_class::getCustomObjectNamespace() . '\\';
+        $definition_object = self::getDefinitionClassInstance();
+        $ns = $definition_object::getCustomObjectNamespace() . '\\';
 
         if (!\str_starts_with($classname, $ns)) {
             return;
         }
 
-        $pattern = '/^' . preg_quote($ns, '/') . '(' . $definition_class::SYSTEM_NAME_PATTERN . ')$/';
+        $pattern = '/^' . preg_quote($ns, '/') . '(' . $definition_object::SYSTEM_NAME_PATTERN . ')$/';
 
         if (preg_match($pattern, $classname) === 1) {
             $system_name = preg_replace($pattern, '$1', $classname);

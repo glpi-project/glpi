@@ -36,6 +36,7 @@ namespace Glpi\Dropdown;
 
 use CommonTreeDropdown;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\CustomObject\AbstractDefinition;
 use Glpi\CustomObject\CustomObjectTrait;
 
 abstract class Dropdown extends CommonTreeDropdown
@@ -67,13 +68,11 @@ abstract class Dropdown extends CommonTreeDropdown
     }
 
     /**
-     * Get the definition class.
-     *
-     * @return string
+     * Get the definition class instance.
      */
-    public static function getDefinitionClass(): string
+    public static function getDefinitionClassInstance(): AbstractDefinition
     {
-        return DropdownDefinition::class;
+        return new DropdownDefinition();
     }
 
     public function prepareInputForAdd($input)

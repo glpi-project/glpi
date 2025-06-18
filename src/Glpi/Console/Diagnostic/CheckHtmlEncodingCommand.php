@@ -182,7 +182,7 @@ final class CheckHtmlEncodingCommand extends AbstractCommand
         foreach ($this->invalid_items as $itemtype => $items) {
             foreach ($items as $item_id => $fields) {
                 // Get the item to save
-                $item = new $itemtype();
+                $item = \getItemForItemtype($itemtype);
                 $item->getFromDB($item_id);
 
                 // read the fields to save
@@ -223,8 +223,7 @@ final class CheckHtmlEncodingCommand extends AbstractCommand
     private function fixItems(): void
     {
         foreach ($this->invalid_items as $itemtype => $items) {
-            /* @var \CommonDBTM $item */
-            $item = new $itemtype();
+            $item = \getItemForItemtype($itemtype);
 
             $this->outputMessage(
                 '<comment>' . sprintf(__('Fixing %s...'), $item::getTypeName(Session::getPluralNumber())) . '</comment>',

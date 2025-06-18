@@ -35,6 +35,7 @@
 
 namespace Glpi\Inventory\MainAsset;
 
+use CommonDBTM;
 use Glpi\Inventory\Conf;
 use Glpi\Inventory\Request;
 use NetworkPortInstantiation;
@@ -186,7 +187,7 @@ class Unmanaged extends MainAsset
                     $entities_id
                 );
                 //manage converted object
-                if (!empty($result)) {
+                if (!empty($result) && is_a($result['itemtype'], CommonDBTM::class, true)) {
                     $converted_object = new $result['itemtype']();
                     if ($converted_object->getFromDB($result['id'])) {
                         $this->item = $converted_object;

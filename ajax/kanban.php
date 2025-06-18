@@ -228,13 +228,12 @@ if (($_POST['action'] ?? null) === 'update') {
 } elseif (($_POST['action'] ?? null) === 'create_column') {
     $checkParams(['column_field', 'items_id', 'column_name']);
     $column_field = $_POST['column_field'];
-    $column_itemtype = getItemtypeForForeignKeyField($column_field);
-    if (!$column_itemtype::canCreate() || !$column_itemtype::canView()) {
+    $column_item = getItemForForeignKeyField($column_field);
+    if (!$column_item::canCreate() || !$column_item::canView()) {
         // Missing rights
         throw new AccessDeniedHttpException();
     }
     $params = $_POST['params'] ?? [];
-    $column_item = new $column_itemtype();
     $column_item->add([
         'name'   => $_POST['column_name'],
     ] + $params);

@@ -386,6 +386,7 @@ The present file will list all changes made to the project; according to the
 - `CommonITILActor::showSupplierNotificationForm()`
 - `CommonITILObject::$userentity_oncreate` property.
 - `CommonITILObject::getAssignName()`
+- `CommonITILObject::getContentTemplatesParametersClass()`
 - `CommonITILObject::isValidator()`
 - `CommonITILObject::showActorAddFormOnCreate()`
 - `CommonITILValidation::alreadyExists()`
@@ -552,6 +553,7 @@ The present file will list all changes made to the project; according to the
 - `RSSFeed::showDiscoveredFeeds()`
 - `Rule::$can_sort` property.
 - `Rule::$orderby` property.
+- `Rule::getCollectionClassName()`
 - `Rule::showDebug()`
 - `Rule::showMinimalActionForm()`
 - `Rule::showMinimalCriteriaForm()`

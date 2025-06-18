@@ -466,9 +466,10 @@ class RuleImportAsset extends Rule
             foreach ($input['itemtype'] as $k => $v) {
                 if (!is_a($v, CommonDBTM::class, true)) {
                     unset($input['itemtype'][$k]);
+                    continue;
                 }
+                $itemtypeselected[] = $v;
             }
-            $itemtypeselected = array_merge($itemtypeselected, $input['itemtype']);
         } elseif (
             isset($input['itemtype'])
             && (!empty($input['itemtype']))
@@ -508,10 +509,8 @@ class RuleImportAsset extends Rule
             ];
 
             // do not reconcile if it's a template
-            if (is_a($item, CommonDBTM::class, true)) {
-                if ($item->maybeTemplate()) {
-                    $it_criteria['WHERE'][] = ['is_template' =>  0];
-                }
+            if ($item->maybeTemplate()) {
+                $it_criteria['WHERE'][] = ['is_template' =>  0];
             }
 
             if ($this->link_criteria_port) {

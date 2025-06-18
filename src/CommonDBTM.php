@@ -1946,7 +1946,7 @@ class CommonDBTM extends CommonGLPI
 
         if (count(static::$forward_entity_to)) {
             foreach (static::$forward_entity_to as $type) {
-                $item  = new $type();
+                $item  = getItemForItemtype($type);
                 $query = [
                     'SELECT' => ['id'],
                     'FROM'   => $item->getTable(),
@@ -4013,7 +4013,7 @@ class CommonDBTM extends CommonGLPI
             return $options;
         }
 
-        if (defined('TU_USER') && $itemtype != null && $itemtype != AllAssets::getType()) {
+        if (defined('TU_USER') && $itemtype != null && is_a($itemtype, CommonDBTM::class, true)) {
             $item = new $itemtype();
             $all_options = $item->searchOptions();
         }
@@ -6218,48 +6218,48 @@ TWIG, $twig_params);
      */
     public function hasItemtypeOrModelPictures(array $picture_fields = ['picture_front', 'picture_rear', 'pictures']): bool
     {
-        $itemtype = static::class;
-        $modeltype = $itemtype . "Model";
-        $fk = getForeignKeyFieldForItemType($modeltype);
-        $has_model = class_exists($modeltype) && isset($this->fields[$fk]) && $this->fields[$fk] > 0;
-        if ($has_model) {
-            /** @var CommonDBTM $model */
-            $model = new $modeltype();
-        }
-
-        $has_pictures = false;
-
         foreach ($picture_fields as $picture_field) {
             if ($this->isField($picture_field)) {
                 if ($picture_field === 'pictures') {
                     $urls = importArrayFromDB($this->fields[$picture_field]);
                     if (!empty($urls)) {
-                        $has_pictures = true;
-                        break;
+                        return true;
                     }
                 } elseif (!empty($this->fields[$picture_field])) {
-                    $has_pictures = true;
-                    break;
+                    return true;
                 }
             }
         }
-        if (!$has_pictures && $has_model && $model->getFromDB(($this->fields[$fk]))) {
-            foreach ($picture_fields as $picture_field) {
-                if ($model->isField($picture_field)) {
-                    if ($picture_field === 'pictures') {
-                        $urls = importArrayFromDB($model->fields[$picture_field]);
-                        if (!empty($urls)) {
-                            $has_pictures = true;
-                            break;
-                        }
-                    } elseif (!empty($model->fields[$picture_field])) {
-                        $has_pictures = true;
-                        break;
+
+        $model_class = $this->getModelClass();
+        if (!is_a($model_class, CommonDBTM::class, true)) {
+            return false;
+        }
+
+        $model = new $model_class();
+        $model_fkey = $model_class::getForeignKeyField();
+        if (
+            !isset($this->fields[$model_fkey])
+            || $this->fields[$model_fkey] <= 0
+            || !$model->getFromDB(($this->fields[$model_fkey]))
+        ) {
+            return false;
+        }
+
+        foreach ($picture_fields as $picture_field) {
+            if ($model->isField($picture_field)) {
+                if ($picture_field === 'pictures') {
+                    $urls = importArrayFromDB($model->fields[$picture_field]);
+                    if (!empty($urls)) {
+                        return true;
                     }
+                } elseif (!empty($model->fields[$picture_field])) {
+                    return true;
                 }
             }
         }
-        return $has_pictures;
+
+        return false;
     }
 
     public function getItemtypeOrModelPicture(string $picture_field = 'picture_front', array $params = []): array
@@ -6283,15 +6283,14 @@ TWIG, $twig_params);
             }
             $clearable = static::canUpdate();
         } else {
-            $modeltype = $itemtype . "Model";
-            if (class_exists($modeltype)) {
-                /** @var CommonDBTM $model */
-                $model = new $modeltype();
+            $model_class = $this->getModelClass();
+            if (is_a($model_class, CommonDBTM::class, true)) {
+                $model = new $model_class();
                 if (!$model->isField($picture_field)) {
                     return [];
                 }
 
-                $fk = getForeignKeyFieldForItemType($modeltype);
+                $fk = $model::getForeignKeyField();
                 if ($model->getFromDB(($this->fields[$fk]) ?? 0)) {
                     if ($picture_field === 'pictures') {
                         $urls = importArrayFromDB($model->fields[$picture_field]);

@@ -34,6 +34,7 @@
 
 namespace Glpi\Migration;
 
+use CommonDropdown;
 use Domain_Item;
 use DropdownTranslation;
 use FieldUnicity;
@@ -610,6 +611,10 @@ class GenericobjectPluginMigration extends AbstractPluginMigration
             $this->progress_indicator?->setProgressBarMessage(
                 sprintf(__('Importing %s...'), $dropdown_class::getTypeName())
             );
+
+            if (!is_a($dropdown_class, CommonDropdown::class, true)) {
+                throw new \LogicException(sprintf('Unexpected `%s` class.', $dropdown_class));
+            }
 
             $dropdown_iterator = $this->db->request(['FROM' => $this->getExpectedTableForPluginClassName($plugin_itemtype)]);
 

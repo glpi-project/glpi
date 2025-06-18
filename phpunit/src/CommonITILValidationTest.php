@@ -624,7 +624,7 @@ abstract class CommonITILValidationTest extends DbTestCase
 
         /** @var class-string<\CommonITILValidation> $validation_class */
         $validation_class = $this->getValidationClassname();
-        $itilobject = new ($validation_class::getItilObjectItemType())();
+        $itilobject = $validation_class::getItilObjectItemInstance();
         $itil_id = $itilobject->add([
             'name' => __FUNCTION__,
             'content' => __FUNCTION__,

@@ -37,6 +37,8 @@ namespace tests\units;
 use DbTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
 use ReflectionClass;
+use RuleCollection;
+use RuleTicketCollection;
 
 /* Test for inc/rule.class.php */
 
@@ -162,13 +164,13 @@ class RuleTest extends DbTestCase
         $this->assertSame(__('Business rules for tickets'), $rule->getTitle());
     }
 
-    public function testGetCollectionClassName()
+    public function testGetCollectionClassInstance()
     {
         $rule = new \Rule();
-        $this->assertSame('RuleCollection', $rule->getCollectionClassName());
+        $this->assertInstanceOf(RuleCollection::class, $rule->getCollectionClassInstance());
 
         $rule = new \RuleTicket();
-        $this->assertSame('RuleTicketCollection', $rule->getCollectionClassName());
+        $this->assertInstanceOf(RuleTicketCollection::class, $rule->getCollectionClassInstance());
     }
 
     public function testGetSpecificMassiveActions()

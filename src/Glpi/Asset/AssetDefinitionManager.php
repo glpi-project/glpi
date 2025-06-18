@@ -147,9 +147,9 @@ final class AssetDefinitionManager extends AbstractDefinitionManager
         self::$instance = null;
     }
 
-    public static function getDefinitionClass(): string
+    public static function getDefinitionClassInstance(): AbstractDefinition
     {
-        return AssetDefinition::class;
+        return new AssetDefinition();
     }
 
     public function getReservedSystemNamesPattern(): string
@@ -244,14 +244,14 @@ final class AssetDefinitionManager extends AbstractDefinitionManager
      */
     public function autoloadClass(string $classname): void
     {
-        $definition_class = self::getDefinitionClass();
-        $ns = $definition_class::getCustomObjectNamespace() . '\\';
+        $definition_object = self::getDefinitionClassInstance();
+        $ns = $definition_object::getCustomObjectNamespace() . '\\';
 
         if (!\str_starts_with($classname, $ns)) {
             return;
         }
 
-        $system_name_pattern = $definition_class::SYSTEM_NAME_PATTERN;
+        $system_name_pattern = $definition_object::SYSTEM_NAME_PATTERN;
 
         $patterns = [
             '/^' . preg_quote($ns, '/') . 'RuleDictionary(' . $system_name_pattern . ')ModelCollection$/' => 'loadConcreteModelDictionaryCollectionClass',

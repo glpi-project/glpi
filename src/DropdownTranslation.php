@@ -249,11 +249,11 @@ class DropdownTranslation extends CommonDBChild
         /** @var \DBmysql $DB */
         global $DB;
 
-        if (!is_a($input['itemtype'], CommonTreeDropdown::class, true)) {
+        $itemtype = $input['itemtype'];
+
+        if (!is_a($itemtype, CommonTreeDropdown::class, true)) {
             return; // `completename` is used only for tree dropdowns
         }
-        /** @var class-string<CommonTreeDropdown> $itemtype */
-        $itemtype = $input['itemtype'];
 
         //If there's already a completename for this language, get it's ID, otherwise 0
         $completenames_id = self::getTranslationID(

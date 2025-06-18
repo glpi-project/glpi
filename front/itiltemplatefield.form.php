@@ -54,6 +54,10 @@ if (!isset($fieldtype)) {
 }
 
 $item_class = $itiltype . 'Template' . $fieldtype . 'Field';
+if (!is_a($item_class, ITILTemplateField::class, true)) {
+    throw new BadRequestHttpException();
+}
+
 $item = new $item_class();
 
 if ($fieldtype == 'Predefined') {

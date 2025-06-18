@@ -54,7 +54,7 @@ if (isset($_POST['itemtype'])) {
         if (isset($_POST["unlock"])) {
             foreach ($actions as $type) {
                 if (isset($_POST[$type]) && count($_POST[$type])) {
-                    $item = new $type();
+                    $item = getItemForItemtype($type);
                     foreach (array_keys($_POST[$type]) as $key) {
                         if (!$item->can($key, UPDATE)) {
                             Session::addMessageAfterRedirect(
@@ -79,7 +79,7 @@ if (isset($_POST['itemtype'])) {
         } elseif (isset($_POST["purge"])) {
             foreach ($actions as $type) {
                 if (isset($_POST[$type]) && count($_POST[$type])) {
-                    $item = new $type();
+                    $item = getItemForItemtype($type);
                     foreach (array_keys($_POST[$type]) as $key) {
                         if (!$item->can($key, PURGE)) {
                             Session::addMessageAfterRedirect(

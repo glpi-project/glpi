@@ -130,7 +130,11 @@ final class TilesManager
         string $tile_class,
         array $params
     ): int {
-        if (!$item->acceptTiles()) {
+        if (
+            !$item->acceptTiles()
+            || !\is_a($tile_class, CommonDBTM::class, true)
+            || !\is_a($tile_class, TileInterface::class, true)
+        ) {
             throw new InvalidArgumentException();
         }
 

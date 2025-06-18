@@ -33,8 +33,9 @@
  * ---------------------------------------------------------------------
  */
 
-use Glpi\DBAL\QueryExpression;
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\ContentTemplates\Parameters\CommonITILObjectParameters;
+use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 use Glpi\DBAL\QuerySubQuery;
 use Glpi\DBAL\QueryUnion;
@@ -665,7 +666,7 @@ abstract class CommonITILObject extends CommonDBTM
         if ($options['_canupdate']) {
             //compute related item object (Ticket has his own showForm)
             $item_link = static::getItemLinkClass();
-            $item_commonitilobject = new $item_link();
+            $item_commonitilobject = getItemForItemtype($item_link);
         }
 
         $mention_options = UserMention::getMentionOptions($this);
@@ -1163,7 +1164,7 @@ abstract class CommonITILObject extends CommonDBTM
 
         $validation_requests = $validation->find(
             [
-                getForeignKeyFieldForItemType(static::class) => $this->getID(),
+                static::getForeignKeyField() => $this->getID(),
                 $validation->getTargetCriteriaForUser($users_id, $search_in_groups),
             ]
         );
@@ -9443,7 +9444,7 @@ abstract class CommonITILObject extends CommonDBTM
     }
 
 
-    protected function getActorObjectForItem(string $itemtype): CommonITILActor
+    final public function getActorObjectForItem(string $itemtype): CommonITILActor
     {
         $actor_class = match ($itemtype) {
             User::class => $this->userlinkclass,
@@ -9651,10 +9652,9 @@ abstract class CommonITILObject extends CommonDBTM
     }
 
     /**
-     * Parameter class to be used for this item (user templates)
-     * @return string class name
+     * Parameter class instance to be used for this item (user templates)
      */
-    abstract public static function getContentTemplatesParametersClass(): string;
+    abstract public static function getContentTemplatesParametersClassInstance(): CommonITILObjectParameters;
 
     public static function getDataToDisplayOnKanban($ID, $criteria = [])
     {
@@ -10759,14 +10759,14 @@ abstract class CommonITILObject extends CommonDBTM
     }
 
     /**
-     * Returns the {@link CommonITILSatisfaction} class for the current itemtype
-     * @return class-string<CommonITILSatisfaction>|null
+     * Returns the {@link CommonITILSatisfaction} class instance for the current itemtype
+     * @return CommonITILSatisfaction|null
      */
-    public static function getSatisfactionClass(): ?string
+    public static function getSatisfactionClassInstance(): ?CommonITILSatisfaction
     {
         $classname = static::class . 'Satisfaction';
         if (class_exists($classname) && is_a($classname, CommonITILSatisfaction::class, true)) {
-            return $classname;
+            return new $classname();
         }
         return null;
     }
@@ -10780,13 +10780,12 @@ abstract class CommonITILObject extends CommonDBTM
      */
     final protected static function showSatisfactionTabContent(CommonITILObject $item): void
     {
-        $satisfaction_class = static::getSatisfactionClass();
+        $satisfaction = static::getSatisfactionClassInstance();
 
-        if ($satisfaction_class === null || !is_a($satisfaction_class, CommonITILSatisfaction::class, true)) {
+        if ($satisfaction === null) {
             return;
         }
 
-        $satisfaction = new $satisfaction_class();
         if (
             in_array($item->fields['status'], static::getClosedStatusArray())
             && $satisfaction->getFromDB($item->getID())
@@ -10807,13 +10806,11 @@ abstract class CommonITILObject extends CommonDBTM
      */
     final protected function handleSatisfactionSurveyOnUpdate(): void
     {
-        $satisfaction_class = $this->getSatisfactionClass();
+        $satisfaction = static::getSatisfactionClassInstance();
 
-        if ($satisfaction_class === null || !is_a($satisfaction_class, CommonITILSatisfaction::class, true)) {
+        if ($satisfaction === null) {
             return;
         }
-
-        $satisfaction = new $satisfaction_class();
 
         // Get suffix for entity config fields. For backwards compatibility, ticket values have no suffix.
         $config_suffix = $this->getType() === 'Ticket' ? '' : ('_' . strtolower($this->getType()));
@@ -11029,14 +11026,11 @@ abstract class CommonITILObject extends CommonDBTM
         return 'new';
     }
 
-    /**
-     * @return class-string<RuleCommonITILObjectCollection>
-     */
-    public static function getRuleCollectionClass(): string
+    public static function getRuleCollectionClassInstance(int $entity_id): RuleCommonITILObjectCollection
     {
         $expected = 'Rule' . static::getType() . 'Collection';
-        if (class_exists($expected)) {
-            return $expected;
+        if (is_a($expected, RuleCommonITILObjectCollection::class, true)) {
+            return new $expected($entity_id);
         }
         throw new \RuntimeException(
             sprintf(
@@ -11132,8 +11126,7 @@ abstract class CommonITILObject extends CommonDBTM
 
         $this->fillInputForBusinessRules($input);
 
-        $collection_class = static::getRuleCollectionClass();
-        $rules = new $collection_class($entid);
+        $rules = static::getRuleCollectionClassInstance((int) $entid);
         $rule = $rules->getRuleClass();
 
         $unchanged = [];

@@ -54,7 +54,7 @@ if (array_key_exists('id', $_REQUEST) && !Asset::isNewId($_REQUEST['id'])) {
     $classname  = array_key_exists('class', $_GET) && $definition->getFromDBBySystemName((string) $_GET['class'])
         ? $definition->getAssetClassName()
         : null;
-    $asset      = $classname !== null && class_exists($classname)
+    $asset      = $classname !== null && is_a($classname, Asset::class, true)
         ? new $classname()
         : null;
 }

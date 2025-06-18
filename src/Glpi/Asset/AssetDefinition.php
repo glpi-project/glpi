@@ -485,6 +485,17 @@ TWIG, $twig_params);
         return $this->getAssetClassName($with_namespace) . 'Model';
     }
 
+    public function getAssetModelClassInstance(): AssetModel
+    {
+        $classname = $this->getAssetModelClassName();
+
+        if (!\is_a($classname, AssetModel::class, true)) {
+            throw new \LogicException();
+        }
+
+        return new $classname();
+    }
+
     /**
      * Get the definition's concrete asset type class name.
      *
@@ -495,6 +506,17 @@ TWIG, $twig_params);
     public function getAssetTypeClassName(bool $with_namespace = true): string
     {
         return $this->getAssetClassName($with_namespace) . 'Type';
+    }
+
+    public function getAssetTypeClassInstance(): AssetType
+    {
+        $classname = $this->getAssetTypeClassName();
+
+        if (!\is_a($classname, AssetType::class, true)) {
+            throw new \LogicException();
+        }
+
+        return new $classname();
     }
 
     /**

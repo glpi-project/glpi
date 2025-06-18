@@ -1847,8 +1847,8 @@ abstract class CommonDBRelation extends CommonDBConnexity
             $where_id   = static::$items_id_1;
         }
 
-        $link = new $link_type();
-        $link_table = getTableForItemType($link_type);
+        $link = getItemForItemtype($link_type);
+        $link_table = $link::getTable();
 
         $params = [
             'SELECT'    => [static::getTable() . '.id AS linkid', $link_table . '.*'],

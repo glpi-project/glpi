@@ -626,7 +626,7 @@ class Inventory
     {
         //map existing keys in inventory format to their respective Inventory\Asset class if needed.
         foreach ($this->data as $key => &$value) {
-            $assettype = false;
+            $assettype = null;
 
             switch ($key) {
                 case 'accesslog': //not used
@@ -739,14 +739,14 @@ class Inventory
                     if (method_exists($this, 'processExtraInventoryData')) {
                         $assettype = $this->processExtraInventoryData($key);
                     }
-                    if ($assettype === false) {
+                    if (!\is_string($value) || !is_a($assettype, InventoryAsset::class, true)) {
                         //unhandled
                         throw new \RuntimeException("Unhandled schema entry $key");
                     }
                     break;
             }
 
-            if ($assettype !== false) {
+            if ($assettype !== null) {
                 //handle if asset type has been found.
                 $asset = new $assettype($this->item, (array) $value);
                 $asset->setMainAsset($this->mainasset);

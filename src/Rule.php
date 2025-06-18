@@ -593,22 +593,19 @@ class Rule extends CommonDBTM
         return __('Rules management');
     }
 
-    /**
-     * @since 0.84
-     *
-     * @return class-string<RuleCollection>
-     **/
-    public function getCollectionClassName()
+    public function getCollectionClassInstance(): RuleCollection
     {
         $parent = static::class;
         do {
             $collection_class = $parent . 'Collection';
             $parent = get_parent_class($parent);
         } while ($parent !== CommonDBTM::class && $parent !== false && !class_exists($collection_class));
+
         if (!is_a($collection_class, RuleCollection::class, true)) {
-            throw new \LogicException(sprintf('Unable to find collection class for `%s`.', static::getType()));
+            throw new \LogicException(sprintf('Unable to find collection class for `%s`.', static::class));
         }
-        return $collection_class;
+
+        return new $collection_class();
     }
 
     public function getSpecificMassiveActions($checkitem = null)
@@ -2051,8 +2048,7 @@ JS
                 return;
             }
             $rule = new $rule_class();
-            $collection_class = $rule->getCollectionClassName();
-            $collection = new $collection_class();
+            $collection = $rule->getCollectionClassInstance();
             $collection->moveRule($this->fields['id'], 0, $this->input['_ranking'], $new_rule);
             $this->getFromDB($this->fields['id']);
         }
@@ -2847,9 +2843,7 @@ JS
     public function getActions()
     {
         $actions = [];
-        $collection_class = $this->getCollectionClassName();
-        /** @var RuleCollection $collection */
-        $collection = new $collection_class();
+        $collection = $this->getCollectionClassInstance();
         if (!$collection->stop_on_first_match) {
             $actions['_stop_rules_processing'] = [
                 'name' => __('Skip remaining rules'),

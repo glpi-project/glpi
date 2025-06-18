@@ -360,6 +360,21 @@ final class DbUtils
     }
 
     /**
+     * Return an item instance for the corresponding table.
+     */
+    public function getItemForTable(string $table): ?CommonDBTM
+    {
+        $itemtype = $this->getItemTypeForTable($table);
+
+        if ($itemtype === null) {
+            return null;
+        }
+
+        $item = $this->getItemForItemtype($itemtype);
+        return $item ?: null;
+    }
+
+    /**
      * Try to fix itemtype case.
      * PSR-4 loading requires classnames to be used with their correct case.
      *
@@ -532,6 +547,10 @@ final class DbUtils
             return false;
         }
 
+        if (!is_a($classname, CommonGLPI::class, true)) {
+            return false;
+        }
+
         $item_class = new ReflectionClass($classname);
         if ($item_class->isAbstract()) {
             trigger_error(
@@ -617,8 +636,7 @@ final class DbUtils
     {
 
         /// TODO clean it / maybe include when review of SQL requests
-        $itemtype = $this->getItemTypeForTable($table);
-        $item     = new $itemtype();
+        $item = $this->getItemForTable($table);
 
         $criteria = $this->getEntitiesRestrictCriteria($table, '', '', $item->maybeRecursive());
         $criteria = array_merge($condition, $criteria);
@@ -640,8 +658,7 @@ final class DbUtils
     {
 
         /// TODO clean it / maybe include when review of SQL requests
-        $itemtype = $this->getItemTypeForTable($table);
-        $item     = new $itemtype();
+        $item = $this->getItemForTable($table);
 
         if ($recursive) {
             $recursive = $item->maybeRecursive();
@@ -2294,5 +2311,20 @@ final class DbUtils
     {
         $table = $this->getTableNameForForeignKeyField($fkname);
         return $this->getItemTypeForTable($table);
+    }
+
+    /**
+     * Return an item instance for the corresponding foreign key field.
+     */
+    public function getItemForForeignKeyField(string $fkname): ?CommonDBTM
+    {
+        $itemtype = $this->getItemtypeForForeignKeyField($fkname);
+
+        if ($itemtype === null) {
+            return null;
+        }
+
+        $item = $this->getItemForItemtype($itemtype);
+        return $item ?: null;
     }
 }
