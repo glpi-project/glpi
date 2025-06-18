@@ -44,7 +44,7 @@ use Glpi\Toolbox\Sanitizer;
 
 /* Test for inc/authldap.class.php */
 
-class AuthLDAPTest extends DbTestCase
+class AuthLdapTest extends DbTestCase
 {
     /**
      * @var \AuthLDAP
