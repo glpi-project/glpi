@@ -562,4 +562,62 @@ describe('Service catalog page', () => {
             cy.findAllByRole('link').eq(2).findByRole('heading').contains(`A form ${time}`).should('exist');
         });
     });
+
+    it('deleted forms are not displayed in the service catalog', () => {
+        cy.changeProfile('Super-Admin');
+
+        const form_name = `Test form for service_catalog_page.cy.js ${(new Date()).getTime()}`;
+        cy.createFormWithAPI({
+            'name': form_name,
+            'is_active': true,
+        }).as('form_id');
+
+        cy.changeProfile('Self-Service', true);
+        cy.visit('/ServiceCatalog');
+
+        cy.findByPlaceholderText('Search for forms...').as('filter_input');
+        cy.get('@filter_input').type(form_name);
+
+        // Validate that the form is displayed.
+        cy.findByRole('region', {'name': form_name}).as('forms');
+
+        cy.changeProfile('Super-Admin');
+        cy.get('@form_id').then(form_id => {
+            // Visit the form to ensure it exists
+            cy.visit(`front/form/form.form.php?id=${form_id}`);
+        });
+
+        // Delete the form
+        cy.findByRole('button', {'name': 'Put in trashbin'}).click();
+        cy.findByRole('alert').should('contain.text', 'Item successfully deleted');
+
+        // Go back to the service catalog
+        cy.changeProfile('Self-Service', true);
+        cy.visit('/ServiceCatalog');
+        cy.findByPlaceholderText('Search for forms...').as('filter_input');
+        cy.get('@filter_input').type(form_name);
+
+        // Validate that the form is not displayed
+        cy.findByRole('region', {'name': form_name}).should('not.exist');
+        cy.findByRole('region', {'name': 'Forms'}).contains('No forms found').should('exist');
+
+        // Purge the form
+        cy.changeProfile('Super-Admin');
+        cy.get('@form_id').then(form_id => {
+            // Visit the form to ensure it exists
+            cy.visit(`front/form/form.form.php?id=${form_id}`);
+        });
+        cy.findByRole('button', {'name': 'Delete permanently'}).click();
+        cy.findByRole('alert').should('contain.text', 'Item successfully purged');
+
+        // Go back to the self-service page
+        cy.changeProfile('Self-Service');
+        cy.visit('/ServiceCatalog');
+        cy.findByPlaceholderText('Search for forms...').as('filter_input');
+        cy.get('@filter_input').type(form_name);
+
+        // Validate that the form is still not displayed
+        cy.findByRole('region', {'name': form_name}).should('not.exist');
+        cy.findByRole('region', {'name': 'Forms'}).contains('No forms found').should('exist');
+    });
 });

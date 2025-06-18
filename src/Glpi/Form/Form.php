@@ -57,6 +57,7 @@ use Glpi\Form\Condition\ConditionableVisibilityInterface;
 use Glpi\Form\Condition\ConditionableVisibilityTrait;
 use Glpi\Form\QuestionType\QuestionTypesManager;
 use Glpi\Form\ServiceCatalog\ServiceCatalogLeafInterface;
+use Glpi\Helpdesk\Tile\FormTile;
 use Glpi\UI\IllustrationManager;
 use Glpi\ItemTranslation\Context\TranslationHandler;
 use Glpi\ItemTranslation\Context\ProvideTranslationsInterface;
@@ -382,6 +383,7 @@ final class Form extends CommonDBTM implements
                 Section::class,
                 FormDestination::class,
                 FormAccessControl::class,
+                FormTile::class,
             ]
         );
     }

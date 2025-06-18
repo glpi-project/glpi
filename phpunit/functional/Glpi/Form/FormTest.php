@@ -52,6 +52,7 @@ use Glpi\Form\QuestionType\QuestionTypeEmail;
 use Glpi\Form\QuestionType\QuestionTypeShortText;
 use Glpi\Form\QuestionType\QuestionTypesManager;
 use Glpi\Form\Section;
+use Glpi\Helpdesk\Tile\FormTile;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
 use Log;
@@ -447,6 +448,7 @@ class FormTest extends DbTestCase
         $comments = countElementsInTable(Comment::getTable());
         $destinations = countElementsInTable(FormDestination::getTable());
         $access_controls = countElementsInTable(FormAccessControl::getTable());
+        $form_tiles = countElementsInTable(FormTile::getTable());
 
         // Test subject that we are going to delete
         $form_to_be_deleted = $this->createForm(
@@ -466,8 +468,16 @@ class FormTest extends DbTestCase
                 ->addAccessControl(DirectAccess::class, new DirectAccessConfig())
         );
 
+        // Add a tile to the form, it should be deleted with the form
+        $this->createItem(
+            FormTile::class,
+            [
+                Form::getForeignKeyField() => $form_to_be_deleted->getID(),
+            ]
+        );
+
         // Control subject that we are going to keep, its data shouldn't be deleted
-        $this->createForm(
+        $form_to_keep = $this->createForm(
             (new FormBuilder())
                 ->addSection('Section 1')
                 ->addQuestion('Question 1', QuestionTypeShortText::class)
@@ -477,6 +487,14 @@ class FormTest extends DbTestCase
                 ->addAccessControl(DirectAccess::class, new DirectAccessConfig())
         );
 
+        // Add a tile to the form, it should be kept with the form
+        $this->createItem(
+            FormTile::class,
+            [
+                Form::getForeignKeyField() => $form_to_keep->getID(),
+            ]
+        );
+
         // Count items before deletion
         $this->assertEquals(2 + $forms, countElementsInTable(Form::getTable()));
         $this->assertEquals(6 + $questions, countElementsInTable(Question::getTable()));
@@ -484,6 +502,7 @@ class FormTest extends DbTestCase
         $this->assertEquals(3 + $comments, countElementsInTable(Comment::getTable()));
         $this->assertEquals(4 + $destinations, countElementsInTable(FormDestination::getTable())); // +1 mandatory for each form
         $this->assertEquals(3 + $access_controls, countElementsInTable(FormAccessControl::getTable()));
+        $this->assertEquals(2 + $form_tiles, countElementsInTable(FormTile::getTable()));
 
         // Delete item
         $this->deleteItem(
@@ -499,6 +518,7 @@ class FormTest extends DbTestCase
         $this->assertEquals(1 + $comments, countElementsInTable(Comment::getTable()));
         $this->assertEquals(2 + $destinations, countElementsInTable(FormDestination::getTable()));
         $this->assertEquals(1 + $access_controls, countElementsInTable(FormAccessControl::getTable()));
+        $this->assertEquals(1 + $form_tiles, countElementsInTable(FormTile::getTable()));
     }
 
     /**
