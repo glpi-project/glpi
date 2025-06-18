@@ -276,10 +276,7 @@ class APIRest extends API
             switch ($this->verb) {
                 default:
                 case "GET": // retrieve item(s)
-                    if (
-                        $id > 0
-                        || ($id !== false && $id == 0 && $itemtype == "Entity")
-                    ) {
+                    if ($id !== false) {
                         $response = $this->getItem($itemtype, $id, $this->parameters);
                         if (isset($response['date_mod'])) {
                             $datemod = strtotime($response['date_mod']);

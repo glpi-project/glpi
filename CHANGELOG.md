@@ -11,6 +11,7 @@ The present file will list all changes made to the project; according to the
 - Only unsolved/unclosed tickets will be shown in the dropdown when performing the "Merge as Followup" action.
 - Domain records must be attached to a domain. Existing unattached records will remain but will require a domain if edited.
 - Inactive suppliers are hidden in assigned technician dropdown results. This does not affect items already assigned to inactive suppliers.
+- Requesting an item with ID 0 (except for entities) from the API will now return a 404 instead of listing all items of the itemtype.
 
 ### Deprecated
 
