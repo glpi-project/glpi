@@ -1157,7 +1157,6 @@ class Ticket extends CommonITILObject
      *
      * @return void
      **@since 9.1
-     * @todo why not switch to private visibility ?
      */
     public function manageOlaLevel($olas_id)
     {
@@ -2719,6 +2718,7 @@ JAVASCRIPT;
         ];
 
         // OLA TTO due time (+ Progress // @todoseb progress à implémenter )
+        // @todoseb documenter le trick commencer sur items_ola pour y finir
         $tab[] = [
             'id' => '186',
             'table' => 'glpi_items_olas',
@@ -2731,8 +2731,7 @@ JAVASCRIPT;
                 'jointype' => 'child',
                 'linkfield' => 'olas_id',
                 'condition' => [
-                    'NEWTABLE.items_id' => new QueryExpression('glpi_items_olas.items_id'),
-                    'NEWTABLE.itemtype' => new QueryExpression('glpi_items_olas.itemtype'),
+                    'NEWTABLE.id' => new QueryExpression('glpi_items_olas.id'),
                 ],
                 'beforejoin' => [
                     'table' => 'glpi_olas',
@@ -2750,11 +2749,12 @@ JAVASCRIPT;
             'forcegroupby' => true,
         ];
 
+        // OLA TTO exceeded
         $tab[] = [
-            'id'                 => '182',
+            'id'                 => '187',
             'table'              => 'glpi_items_olas',
             'field'              => 'is_late',
-            'name'               => __('Internal time to resolve exceeded'),
+            'name'               => __('Internal time to own exceeded (187)'), // @todoseb virer le 187
             'datatype'           => 'bool',
             'massiveaction'      => false,
             'computation'        => self::generateSLAOLAComputation('internal_time_to_own',  'glpi_items_olas'),
@@ -2762,8 +2762,7 @@ JAVASCRIPT;
                 'jointype' => 'child',
                 'linkfield' => 'olas_id',
                 'condition' => [
-                    'NEWTABLE.items_id' => new QueryExpression('glpi_items_olas.items_id'),
-                    'NEWTABLE.itemtype' => new QueryExpression('glpi_items_olas.itemtype'),
+                    'NEWTABLE.id' => new QueryExpression('glpi_items_olas.id'),
                 ],
                 'beforejoin' => [
                     'table' => 'glpi_olas',
@@ -2786,7 +2785,7 @@ JAVASCRIPT;
             'id'                 => '191',
             'table'              => 'glpi_olas',
             'field'              => 'name',
-            'name'               => __('OLA') . ' ' . __('Internal time to resolve'),
+            'name'               => __('Internal time to resolve'). ' - (191)' . __('name'), // @todoseb virer le 191
             'massiveaction'      => false,
             'datatype'           => 'dropdown',
             'joinparams'         => [
@@ -2801,12 +2800,76 @@ JAVASCRIPT;
             'forcegroupby'       => true,
         ];
 
+        // OLA TTR due time (+ Progress // @todoseb progress à implémenter )
+        $tab[] = [
+            'id' => '180',
+            'table' => 'glpi_items_olas',
+            'field' => 'due_time',
+            'datatype' => 'datetime',
+            'name' => __('Internal time to resolve'). ' - (180) ' . __('due time'), // @todoseb virer le 180
+            'massiveaction' => false,
+            'nosearch'           => true,
+            'additionalfields'   => ['TABLE.status'],
+            'joinparams' => [
+                'jointype' => 'child',
+                'linkfield' => 'olas_id',
+                'condition' => [
+                    'NEWTABLE.id' => new QueryExpression('glpi_items_olas.id'),
+                ],
+                'beforejoin' => [
+                    'table' => 'glpi_olas',
+                    'joinparams' => [
+                        'condition' => ['NEWTABLE.type' => SLM::TTR,],
+                        'beforejoin' => [
+                            'table' => 'glpi_items_olas',
+                            'joinparams' => [
+                                'jointype' => 'itemtype_item',
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+            'forcegroupby' => true,
+        ];
+
+        // OLA TTR exceeded
+        $tab[] = [
+            'id'                 => '182',
+            'table'              => 'glpi_items_olas',
+            'field'              => 'is_late',
+            'name'               => __('Internal time to resolve exceeded (182)'), // @todoseb virer le 182
+            'datatype'           => 'bool',
+            'massiveaction'      => false,
+            'computation'        => self::generateSLAOLAComputation('internal_time_to_resolve',  'glpi_items_olas'), // @todoseb dégager le second param si nom de table forcé dans fct
+            'joinparams' => [
+                'jointype' => 'child',
+                'linkfield' => 'olas_id',
+                'condition' => [
+                    'NEWTABLE.id' => new QueryExpression('glpi_items_olas.id'),
+                ],
+                'beforejoin' => [
+                    'table' => 'glpi_olas',
+                    'joinparams' => [
+                        'condition' => ['NEWTABLE.type' => SLM::TTR,],
+                        'jointype' => 'default',
+                        'beforejoin' => [
+                            'table' => 'glpi_items_olas',
+                            'joinparams' => [
+                                'jointype' => 'itemtype_item',
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+            'forcegroupby'       => true,
+        ];
+
         // Ola levels
         $tab[] = [
             'id'                 => '192',
             'table'              => 'glpi_olalevels',
             'field'              => 'name',
-            'name'               => __('OLA') . ' ' . _n('Escalation level', 'Escalation levels', 1),
+            'name'               => _n('Escalation level', 'Escalation levels', 1),
             'massiveaction'      => false,
             'datatype'           => 'dropdown',
             'joinparams'         => [
@@ -3167,7 +3230,6 @@ JAVASCRIPT;
         }
         return parent::getSpecificValueToSelect($field, $name, $values, $options);
     }
-
 
     /**
      * Dropdown of ticket type
