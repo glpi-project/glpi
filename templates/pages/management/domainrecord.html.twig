@@ -35,7 +35,7 @@
 {% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
 
 {% block form_fields %}
-    {% if _request['_in_modal'] %}
+    {% if _request['_in_modal']|default(false) %}
         {{ inputs.hidden('_in_modal', 1) }}
     {% endif %}
     {% if domains_id is defined %}
