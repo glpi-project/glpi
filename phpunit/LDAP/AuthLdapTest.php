@@ -2232,7 +2232,7 @@ class AuthLdapTest extends DbTestCase
         $group2_id = $this->createItem(Group::class, ["name" => "testgroup2"])->getID();
         $this->assertGreaterThan(0, $group2_id);
 
-        $group3_id = $this->createItem(Group::class, ["name" => "testgroup3", "ldap_field" => "uid", "ldap_value" => "brazil6"])->getID();
+        $group3_id = $this->createItem(Group::class, ["name" => "testgroup3", "ldap_field" => "login", "ldap_value" => "brazil6"])->getID();
         $this->assertGreaterThan(0, $group3_id);
 
         // Add groups with a rule
