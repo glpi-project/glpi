@@ -5044,19 +5044,33 @@ abstract class CommonITILObject extends CommonDBTM
         switch ($type) {
             // OLA TTO/TTR uses the same logic, we rely on item_ola datas
             case 'internal_time_to_own':
+                $ola_type_to_filter = SLM::TTR;
+                // no break
             case 'internal_time_to_resolve':
+                $ola_type_to_filter ??= SLM::TTO;
                 // force table value to glpi_items_olas, it can't be something else
                 $table = 'glpi_items_olas';
 
                 $itil_table = self::getTable();
 
                 // QueryFunction::max is used to match a late ola amongst associated OLAs
+                //                throw new \Exception('Voir la sub query au dessous QuerySubQuery()');
                 return QueryFunction::max(
                     QueryFunction::if(
                         // An OLA is considered late if:
                         condition: [
                             // its due time is defined
-                            'NOT' => ["{$table}.due_time" => null],
+                            'NOT' => [
+                                'OR' => [
+                                    "{$table}.due_time" => null,
+                                    "{$table}.olas_id" => new QuerySubQuery(
+                                        [
+                                            'SELECT' => 'id',
+                                            'FROM' => 'glpi_olas',
+                                            'WHERE' => ['type' => $ola_type_to_filter],
+                                        ]
+                                    ),],
+                            ],
                             // + ticket status is not WAITING
                             "{$itil_table}.status" => ['<>', self::WAITING],
                             // + one of the following conditions:
