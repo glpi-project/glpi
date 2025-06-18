@@ -41,12 +41,14 @@ use Glpi\Form\Destination\FormDestinationTicket;
 use Glpi\Form\Form;
 use Glpi\Form\Migration\FormMigration;
 use Glpi\Migration\PluginMigrationResult;
+use Glpi\PHPUnit\Tests\Glpi\SLMTrait;
 use Glpi\Tests\FormTesterTrait;
 use PHPUnit\Framework\Attributes\DataProvider;
 
 abstract class AbstractDestinationFieldTest extends DbTestCase
 {
     use FormTesterTrait;
+    use SLMTrait;
 
     public static function setUpBeforeClass(): void
     {
@@ -86,6 +88,8 @@ abstract class AbstractDestinationFieldTest extends DbTestCase
          * @var \DBmysql $DB
          */
         global $DB;
+
+        $this->createSLM(['name' => 'Test SLM']);
 
         if (!empty($fields_to_set)) {
             // Compute some values
