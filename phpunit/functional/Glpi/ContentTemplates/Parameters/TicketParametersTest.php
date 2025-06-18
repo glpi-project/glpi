@@ -35,11 +35,14 @@
 namespace tests\units\Glpi\ContentTemplates\Parameters;
 
 use Glpi\ContentTemplates\Parameters\TicketParameters;
+use Glpi\PHPUnit\Tests\Glpi\SLMTrait;
 
 include_once __DIR__ . '/../../../../abstracts/AbstractParameters.php';
 
 class TicketParametersTest extends AbstractParameters
 {
+    use SLMTrait;
+
     public function testGetValues(): void
     {
         // Arrange
@@ -76,6 +79,7 @@ class TicketParametersTest extends AbstractParameters
         ]);
         $slas_id_tto = getItemByTypeName('SLA', 'sla_tto_testGetValue', true);
         $slas_id_ttr = getItemByTypeName('SLA', 'sla_ttr_testGetValue', true);
+        $slms = $this->createSLM();
 
         $this->createItems(\OLA::class, [
             [
@@ -85,6 +89,7 @@ class TicketParametersTest extends AbstractParameters
                 'number_time'     => 15,
                 'definition_time' => 'minute',
                 'groups_id'       => $ola_group_id,
+                'slms_id'        => $slms->getID(),
             ],
             [
                 'name'            => 'ola_ttr_testGetValue',
@@ -93,6 +98,7 @@ class TicketParametersTest extends AbstractParameters
                 'number_time'     => 4,
                 'definition_time' => 'hour',
                 'groups_id'       => $ola_group_id,
+                'slms_id'        => $slms->getID(),
             ],
             [
                 'name'            => 'ola_ttr_testGetValue_2',
@@ -101,6 +107,7 @@ class TicketParametersTest extends AbstractParameters
                 'number_time'     => 6,
                 'definition_time' => 'hour',
                 'groups_id'       => $ola_group_id,
+                'slms_id'        => $slms->getID(),
             ],
         ]);
         $olas_id_tto = getItemByTypeName('OLA', 'ola_tto_testGetValue', true);
