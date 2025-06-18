@@ -46,7 +46,7 @@
 {% do call('Ajax::updateItemOnSelectEvent', [
     'dropdown_itemtype' ~ rand,
     'show_items_id_field',
-    CFG_GLPI.root_doc ~ '/ajax/cable.php',
+    path('/ajax/cable.php'),
     {
         itemtype: '__VALUE__',
         dom_rand: rand,
