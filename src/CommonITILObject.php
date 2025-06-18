@@ -4998,12 +4998,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface
     /**
      * Generate an 'if' QueryExpression condition to match ticket with exceeded OLA/SLA TTO/TTR
      *
-     * Ticket with status WAITING will not be matched.
-     * Ticket with null fields will not be matched.
-     *
-     * For TTO fields, the ticket takeintoaccountdate is used to determine if the TTO is exceeded.
-     *
-     * internal_time_to_own & internal_time_to_resolve are removed from ticket but can still be used here.
+     * internal_time_to_own & internal_time_to_resolve fields are removed from ticket but can still be used here.
      *
      * @param string $type ticket field to match ('time_to_own', 'internal_time_to_own', 'time_to_resolve', 'internal_time_to_resolve')
      * @param string $table
@@ -5015,19 +5010,24 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface
         global $DB;
 
         switch ($type) {
+            // OLA TTO/TTR uses the same logic, we rely on item_ola datas
             case 'internal_time_to_own':
+            case 'internal_time_to_resolve':
+                // force table value to glpi_items_olas, it can't be something else
+                $table = 'glpi_items_olas';
 
                 $itil_table = self::getTable();
 
-                // QueryFunction::max is used to match a late ola if many exists.
+                // QueryFunction::max is used to match a late ola amongst associated OLAs
                 return QueryFunction::max(
                     QueryFunction::if(
+                        // An OLA is considered late if:
                         condition: [
-                            // due time is defined
+                            // its due time is defined
                             'NOT' => ["{$table}.due_time" => null],
-                            // ticket status is not WAITING
+                            // + ticket status is not WAITING
                             "{$itil_table}.status" => ['<>', self::WAITING],
-                            // one of the following conditions is true:
+                            // + one of the following conditions:
                             'OR' => [
                                 // ola achieved : end_time > due_time
                                 [
