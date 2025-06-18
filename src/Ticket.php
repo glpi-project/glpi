@@ -2558,46 +2558,15 @@ JAVASCRIPT;
         //            'additionalfields'   => ['date', 'status', 'takeintoaccount_delay_stat', 'takeintoaccountdate'],
         //        ];
 
-        // OLA TTO due time
-        $tab[] = [
-            'id' => '190',
-            'name' => __('OLA') . ' ' . __('Internal time to own'),
-            'massiveaction' => false,
-            'datatype' => 'dropdown',
-            'table' => 'glpi_items_olas',
-            'field' => 'due_time',
-            'joinparams' => [
-                'jointype' => 'child',
-                'linkfield' => 'olas_id',
-                'condition' => [
-                    'NEWTABLE.items_id' => new QueryExpression('glpi_items_olas.items_id'),
-                    'NEWTABLE.itemtype' => new QueryExpression('glpi_items_olas.itemtype'),
-                ],
-                'beforejoin' => [
-                    'table' => 'glpi_olas',
-                    'joinparams' => [
-                        'condition' => ['NEWTABLE.type' => SLM::TTO,],
-                        'beforejoin' => [
-                            'table' => 'glpi_items_olas',
-                            'joinparams' => [
-                                'jointype' => 'itemtype_item',
-                            ],
-                        ],
-                    ],
-                ],
-            ],
-            'forcegroupby' => true,
-        ];
-
-        $tab[] = [ // @todoseb trouver solution ou dégager
-            'id'                 => '187',
-            'table'              => 'glpi_tickets',
-            'field'              => 'is_late',
-            'name'               => __('Internal time to own exceeded'),
-            'datatype'           => 'bool',
-            'massiveaction'      => false,
-            'computation'        => self::generateSLAOLAComputation('internal_time_to_own'),
-        ];
+                //        $tab[] = [ // @todoseb trouver solution ou dégager
+        //            'id'                 => '187',
+        //            'table'              => 'glpi_tickets',
+        //            'field'              => 'is_late',
+        //            'name'               => __('Internal time to own exceeded'),
+        //            'datatype'           => 'bool',
+        //            'massiveaction'      => false,
+        //            'computation'        => self::generateSLAOLAComputation('internal_time_to_own'),
+        //        ];
 
         $max_date = new QueryExpression('99999999');
         $tab[] = [
@@ -2694,6 +2663,7 @@ JAVASCRIPT;
 
         $tab = array_merge($tab, $this->getSearchOptionsActors());
 
+        // --- SLA
         $tab[] = [
             'id'                 => 'sla',
             'name'               => __('SLA'),
@@ -2745,6 +2715,7 @@ JAVASCRIPT;
             'forcegroupby'       => true,
         ];
 
+        // --- OLA
         $tab[] = [
             'id'                 => 'ola',
             'name'               => __('OLA'),
@@ -2764,6 +2735,69 @@ JAVASCRIPT;
                     'table'              => 'glpi_items_olas',
                     'joinparams'         => [
                         'jointype'           => 'itemtype_item',
+                    ],
+                ],
+            ],
+            'forcegroupby'       => true,
+        ];
+
+        // OLA TTO due time (+ Progress // @todoseb progress à implémenter )
+        $tab[] = [
+            'id' => '186',
+            'table' => 'glpi_items_olas',
+            'field' => 'due_time',
+            'name' => __('Internal time to own'). ' - (186) ' . __('due time'), // @todoseb virer le 186
+            'massiveaction' => false,
+            'nosearch'           => true,
+            'additionalfields'   => ['TABLE.status'],
+            'joinparams' => [
+                'jointype' => 'child',
+                'linkfield' => 'olas_id',
+                'condition' => [
+                    'NEWTABLE.items_id' => new QueryExpression('glpi_items_olas.items_id'),
+                    'NEWTABLE.itemtype' => new QueryExpression('glpi_items_olas.itemtype'),
+                ],
+                'beforejoin' => [
+                    'table' => 'glpi_olas',
+                    'joinparams' => [
+                        'condition' => ['NEWTABLE.type' => SLM::TTO,],
+                        'beforejoin' => [
+                            'table' => 'glpi_items_olas',
+                            'joinparams' => [
+                                'jointype' => 'itemtype_item',
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+            'forcegroupby' => true,
+        ];
+
+        $tab[] = [
+            'id'                 => '182',
+            'table'              => 'glpi_items_olas',
+            'field'              => 'is_late',
+            'name'               => __('Internal time to resolve exceeded'),
+            'datatype'           => 'bool',
+            'massiveaction'      => false,
+            'computation'        => self::generateSLAOLAComputation('internal_time_to_own',  'glpi_items_olas'),
+            'joinparams' => [
+                'jointype' => 'child',
+                'linkfield' => 'olas_id',
+                'condition' => [
+                    'NEWTABLE.items_id' => new QueryExpression('glpi_items_olas.items_id'),
+                    'NEWTABLE.itemtype' => new QueryExpression('glpi_items_olas.itemtype'),
+                ],
+                'beforejoin' => [
+                    'table' => 'glpi_olas',
+                    'joinparams' => [
+                        'condition' => ['NEWTABLE.type' => SLM::TTO,],
+                        'beforejoin' => [
+                            'table' => 'glpi_items_olas',
+                            'joinparams' => [
+                                'jointype' => 'itemtype_item',
+                            ],
+                        ],
                     ],
                 ],
             ],
