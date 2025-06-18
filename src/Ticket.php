@@ -2557,16 +2557,6 @@ JAVASCRIPT;
         //            'additionalfields'   => ['date', 'status', 'takeintoaccount_delay_stat', 'takeintoaccountdate'],
         //        ];
 
-                //        $tab[] = [ // @todoseb trouver solution ou dégager
-        //            'id'                 => '187',
-        //            'table'              => 'glpi_tickets',
-        //            'field'              => 'is_late',
-        //            'name'               => __('Internal time to own exceeded'),
-        //            'datatype'           => 'bool',
-        //            'massiveaction'      => false,
-        //            'computation'        => self::generateSLAOLAComputation('internal_time_to_own'),
-        //        ];
-
         $max_date = new QueryExpression('99999999');
         $tab[] = [
             'id'                 => '188',
