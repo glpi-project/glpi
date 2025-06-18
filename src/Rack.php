@@ -887,9 +887,8 @@ JAVASCRIPT;
             }
             $units = 1;
             $depth = 1;
-            $model_class = $item->getModelClass();
-            $model = new $model_class(); //class type is checkd from getModelClass, should be safe
-            $modelsfield = $model_class::getForeignKeyField();
+            $model = $item->getModelClassInstance();
+            $modelsfield = $model::getForeignKeyField();
             if ($item->fields[$modelsfield] != 0) {
                 if ($model->getFromDB($item->fields[$modelsfield])) {
                     $units = $model->fields['required_units'];

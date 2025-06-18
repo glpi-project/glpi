@@ -392,12 +392,10 @@ TWIG, $twig_params);
                     if (!($item = getItemForItemtype($main_itemtype))) {
                         continue;
                     }
-                    $itemtype = $main_itemtype;
                     $linkname_extra = "";
                     if (($item instanceof ITILFollowup || $item instanceof ITILSolution) && is_a($data['itemtype'], CommonDBTM::class, true)) {
                         $linkname_extra = "(" . $item::getTypeName(1) . ")";
-                        $itemtype = $data['itemtype'];
-                        $item = new $itemtype();
+                        $item = new $data['itemtype']();
                         $item->getFromDB($data['items_id']);
                         $data['id'] = $item->fields['id'];
                         $data['entity'] = $item->fields['entities_id'];
@@ -406,8 +404,7 @@ TWIG, $twig_params);
                         || $item instanceof CommonITILValidation
                     ) {
                         $linkname_extra = "(" . CommonITILTask::getTypeName(1) . ")";
-                        $itemtype = $item::getItilObjectItemType();
-                        $item = new $itemtype();
+                        $item = $item::getItilObjectItemInstance();
                         $item->getFromDB($data[$item::getForeignKeyField()]);
                         $data['id'] = $item->fields['id'];
                         $data['entity'] = $item->fields['entities_id'];
@@ -417,7 +414,7 @@ TWIG, $twig_params);
                         $data["name"] = sprintf(__('%1$s: %2$s'), $item::getTypeName(1), $data["id"]);
                     }
 
-                    if ($itemtype === SoftwareLicense::class) {
+                    if ($item instanceof SoftwareLicense) {
                         $soft = new Software();
                         $soft->getFromDB($data['softwares_id']);
                         $data["name"] = sprintf(
@@ -439,13 +436,13 @@ TWIG, $twig_params);
                         $linkname = sprintf(__('%1$s (%2$s)'), $linkname, $data["id"]);
                     }
                     if ($item instanceof Item_Devices) {
-                        $tmpitem = new $item::$itemtype_2();
+                        $tmpitem = getItemForItemtype($item::$itemtype_2);
                         if ($tmpitem->getFromDB($data[$item::$items_id_2])) {
                             $linkname = $tmpitem->getLink();
                         }
                     }
 
-                    $link     = $itemtype::getFormURLWithID($data['id']);
+                    $link = $item::getFormURLWithID($data['id']);
                     $name = '<a href="' . htmlescape($link) . '">' . htmlescape($linkname) . ' ' . htmlescape($linkname_extra) . "</a>";
 
                     $entity_name = '-';

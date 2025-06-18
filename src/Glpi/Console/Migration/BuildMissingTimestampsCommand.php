@@ -35,7 +35,6 @@
 
 namespace Glpi\Console\Migration;
 
-use CommonDBTM;
 use Glpi\Console\AbstractCommand;
 use Log;
 use Symfony\Component\Console\Input\InputInterface;
@@ -75,14 +74,13 @@ class BuildMissingTimestampsCommand extends AbstractCommand
 
         foreach ($tables_iterator as $table_info) {
             $table    = $table_info['TABLE_NAME'];
-            $itemtype = getItemTypeForTable($table);
+            $item     = getItemForTable($table);
+            $itemtype = $item::class;
             $column   = $table_info['COLUMN_NAME'];
 
-            if ($itemtype === null) {
+            if ($item === null) {
                 continue;
             }
-            /* @var CommonDBTM $item */
-            $item = new $itemtype();
 
             if (!$item->dohistory) {
                 continue; // Skip items that does not have an history

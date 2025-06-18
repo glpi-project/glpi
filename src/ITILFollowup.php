@@ -381,18 +381,19 @@ class ITILFollowup extends CommonDBChild
 
     public function prepareInputForAdd($input)
     {
-        if (!is_a($input['itemtype'], CommonDBTM::class, true)) {
+        $parent_item = isset($input['itemtype']) ? getItemForItemtype($input['itemtype']) : null;
+        if (
+            $parent_item === null
+            || !array_key_exists('items_id', $input)
+            || $parent_item->getFromDB((int) $input['items_id']) === false
+        ) {
             return false;
         }
 
         //Handle template
         if (isset($input['_itilfollowuptemplates_id'])) {
             $template = new ITILFollowupTemplate();
-            $parent_item = new $input['itemtype']();
-            if (
-                !$template->getFromDB($input['_itilfollowuptemplates_id'])
-                || !$parent_item->getFromDB($input['items_id'])
-            ) {
+            if (!$template->getFromDB($input['_itilfollowuptemplates_id'])) {
                 return false;
             }
             $input = array_replace(
@@ -416,8 +417,6 @@ class ITILFollowup extends CommonDBChild
             }
         }
 
-        $input["_job"] = new $input['itemtype'](); //itemtype is checked, should be safe
-
         if (
             empty($input['content'])
             && !isset($input['add_close'])
@@ -430,9 +429,8 @@ class ITILFollowup extends CommonDBChild
             );
             return false;
         }
-        if (!$input["_job"]->getFromDB($input["items_id"])) {
-            return false;
-        }
+
+        $input["_job"] = $parent_item;
 
         $input['_close'] = 0;
 

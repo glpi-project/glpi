@@ -117,8 +117,7 @@ abstract class AssetType extends CommonType
         }
 
         // Instanciate concrete class
-        $asset_type_class = $definition->getAssetTypeClassName(true);
-        $asset_type = new $asset_type_class();
+        $asset_type = $definition->getAssetTypeClassInstance();
         if (!$asset_type->getFromDB($id)) {
             return false;
         }

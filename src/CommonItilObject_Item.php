@@ -60,7 +60,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
 
     public function canCreateItem(): bool
     {
-        $obj = new static::$itemtype_1();
+        $obj = getItemForTable(static::$itemtype_1);
 
         if ($obj->canUpdateItem()) {
             return true;
@@ -88,7 +88,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
     public function post_addItem()
     {
         $this->updateItemTCO();
-        $obj = new static::$itemtype_1();
+        $obj = getItemForTable(static::$itemtype_1);
         $input  = [
             'id'            => $this->fields[static::$items_id_1],
             'date_mod'      => $_SESSION["glpi_currenttime"],
@@ -108,7 +108,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
     public function post_purgeItem()
     {
         $this->updateItemTCO();
-        $obj = new static::$itemtype_1();
+        $obj = getItemForItemtype(static::$itemtype_1);
         $input = [
             'id'            => $this->fields[static::$items_id_1],
             'date_mod'      => $_SESSION["glpi_currenttime"],
@@ -159,7 +159,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
         ) {
             $itil->fields['_locations_id_of_item'] = $item->fields['locations_id'];
 
-            $rules = new ($itil::getRuleCollectionClass())($itil->getEntityID());
+            $rules = $itil::getRuleCollectionClassInstance((int) $itil->getEntityID());
             $itil->fields = $rules->processAllRules(
                 $itil->fields,
                 $itil->fields,
@@ -242,8 +242,8 @@ abstract class CommonItilObject_Item extends CommonDBRelation
             'opt'                => [],
         ];
 
-        $class_template = get_class($obj) . "Template";
-        if (class_exists($class_template)) {
+        $class_template = $obj::class . "Template";
+        if (is_a($class_template, ITILTemplate::class, true)) {
             $class_template_lower = '_' . strtolower($class_template);
             // Get ITIL object template
             $tt = new $class_template($class_template);
@@ -401,7 +401,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
 
         if ($canedit && !$is_closed) {
             $requester_id   = 0;
-            $userlink_class = new ($obj->userlinkclass)();
+            $userlink_class = $obj->getActorObjectForItem(User::class);
             $obj_actors     = $userlink_class->getActors($obj->fields['id']);
             if (
                 isset($obj_actors[CommonITILActor::REQUESTER])
@@ -608,7 +608,7 @@ TWIG, $twig_params);
         global $DB;
 
         /** @var CommonITILObject $itil */
-        $itil = new static::$itemtype_1();
+        $itil = getItemForItemtype(static::$itemtype_1);
         $link_class_prop = strtolower($item::class) . 'linkclass';
         if (!isset($itil->{$link_class_prop})) {
             return 0;
@@ -1783,7 +1783,7 @@ TWIG, $twig_params);
 
         if (($options['id'] ?? 0) > 0) {
             // Get requester
-            $class  = new $object->userlinkclass();
+            $class  = getItemForItemtype($object->userlinkclass);
             $actors = $class->getActors($options['id']);
             if (
                 isset($actors[CommonITILActor::REQUESTER])

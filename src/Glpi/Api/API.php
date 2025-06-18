@@ -50,6 +50,7 @@ use Config;
 use Contract;
 use Document;
 use Dropdown;
+use Glpi\Api\Deprecated\DeprecatedInterface;
 use Glpi\Api\HL\Router;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Asset\Asset_PeripheralAsset;
@@ -614,8 +615,8 @@ abstract class API
         ];
         $params = array_merge($default, $params);
 
-        $item = new $itemtype();
-        if (!$item->getFromDB($id)) {
+        $item = \getItemForItemtype($itemtype);
+        if ($item === false || !$item->getFromDB($id)) {
             $this->messageNotfoundError();
         }
         if (!$item->can($id, READ)) {
@@ -751,8 +752,8 @@ abstract class API
         ) {
             $fields['_connections'] = [];
             foreach ($CFG_GLPI["directconnect_types"] as $connect_type) {
-                $connect_item = new $connect_type();
-                if ($connect_item->canView()) {
+                $connect_item = \getItemForItemtype($connect_type);
+                if ($connect_item !== false && $connect_item->canView()) {
                     $connect_table  = getTableForItemType($connect_type);
                     $relation_table = Asset_PeripheralAsset::getTable();
                     $iterator = $DB->request([
@@ -1104,12 +1105,16 @@ abstract class API
         ];
         $params = array_merge($default, $params);
 
+        $item = \getItemForItemtype($itemtype);
+        if ($item === false) {
+            $this->messageNotfoundError();
+        }
+
         if (!$itemtype::canView()) {
             $this->messageRightError();
         }
 
         $found = [];
-        $item = new $itemtype();
         $item->getEmpty();
         $table = getTableForItemType($itemtype);
 
@@ -1172,8 +1177,8 @@ abstract class API
             $fk_child = getForeignKeyFieldForItemType($itemtype);
 
             // check parent rights
-            $parent_item = new $this->parameters['parent_itemtype']();
-            if (!$parent_item->getFromDB($this->parameters['parent_id'])) {
+            $parent_item = \getItemForItemtype($this->parameters['parent_itemtype']);
+            if ($parent_item === false || !$parent_item->getFromDB($this->parameters['parent_id'])) {
                 $this->messageNotfoundError();
             }
             if (!$parent_item->can($this->parameters['parent_id'], READ)) {
@@ -1859,7 +1864,7 @@ abstract class API
             $index        = 0;
             foreach ($input as $object) {
                 // Use a new instance each time to avoid side effects with data from a previous item (See #14490)
-                $item     = new $itemtype();
+                $item        = \getItemForItemtype($itemtype);
                 $object      = $this->inputObjectToArray($object);
                 $current_res = [];
 
@@ -1991,7 +1996,7 @@ abstract class API
             $index        = 0;
             foreach ($input as $object) {
                 // Use a new instance each time to avoid side effects with data from a previous item (See #14490)
-                $item     = new $itemtype();
+                $item        = \getItemForItemtype($itemtype);
                 $current_res = [];
                 if (isset($object->id)) {
                     if (!$item->getFromDB($object->id)) {
@@ -2087,7 +2092,7 @@ abstract class API
      *    - 'history' : boolean, default true, false to disable saving of deletion in global history.
      *                  Optional.
      *
-     * @return boolean|boolean[]|void success status, or void when error response is send in case of error
+     * @return array|void success status, or void when error response is send in case of error
      */
     protected function deleteItems($itemtype, $params = [])
     {
@@ -2098,7 +2103,6 @@ abstract class API
         ];
         $params   = array_merge($default, $params);
         $input    = $params['input'];
-        $item     = new $itemtype();
 
         if (is_object($input)) {
             $input = [$input];
@@ -2118,6 +2122,8 @@ abstract class API
             $failed = 0;
             foreach ($input as $object) {
                 if (isset($object->id)) {
+                    $item = \getItemForItemtype($itemtype);
+
                     if (!$item->getFromDB($object->id)) {
                         $failed++;
                         $idCollection[] = [$object->id => false, 'message' => __("Item not found")];
@@ -3155,6 +3161,11 @@ TWIG, ['md' => (new MarkdownRenderer())->render($documentation)]);
         if ($deprecated) {
             // Keep a reference to deprecated item
             $class = "Glpi\Api\Deprecated\\$itemtype";
+
+            if (!is_a($class, DeprecatedInterface::class, true)) {
+                throw new \LogicException();
+            }
+
             $this->deprecated_item = new $class();
 
             // Get correct itemtype
@@ -3196,7 +3207,7 @@ TWIG, ['md' => (new MarkdownRenderer())->render($documentation)]);
                 $is_deleted
             );
         } else {
-            $item = new $itemtype();
+            $item = \getItemForItemtype($itemtype);
             if (!$item->getFromDB($id)) {
                 // Id was supplied but item can't be loaded -> error
                 return $this->returnError(

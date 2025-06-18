@@ -50,13 +50,13 @@ abstract class CommonITILSatisfaction extends DbTestCase
         return substr(strrchr($test_class, '\\'), 1);
     }
 
-    public function testGetItemtype()
+    public function testGetItemInstance()
     {
         /** @var \CommonITILSatisfaction $tested_class */
         $tested_class = $this->getTestedClass();
-        $itemtype = $tested_class::getItemtype();
+        $item = $tested_class::getItemInstance();
         // Verify the itemtype is a subclass of CommonITILObject
-        $this->assertTrue(is_a($itemtype, \CommonITILObject::class, true));
+        $this->assertInstanceOf(\CommonITILObject::class, $item);
     }
 
     public function testGetSurveyUrl()
@@ -65,8 +65,8 @@ abstract class CommonITILSatisfaction extends DbTestCase
 
         /** @var \CommonITILSatisfaction $tested_class */
         $tested_class = $this->getTestedClass();
-        $itemtype = $tested_class::getItemtype();
-        $item = new $itemtype();
+        $item = $tested_class::getItemInstance();
+        $itemtype = $item::class;
         $tag_prefix = strtoupper($item::getType());
         $items_id = $item->add([
             'name'        => __FUNCTION__,
@@ -107,10 +107,9 @@ abstract class CommonITILSatisfaction extends DbTestCase
     public function testGetLogTypeID()
     {
         $tested_class = $this->getTestedClass();
-        $itilobject_type = $tested_class::getItemtype();
 
         // Create an ITIL object
-        $item = new $itilobject_type();
+        $item = $tested_class::getItemInstance();
         $items_id = $item->add([
             'name'        => __FUNCTION__,
             'content'     => __FUNCTION__,
@@ -126,7 +125,7 @@ abstract class CommonITILSatisfaction extends DbTestCase
             'name'        => __FUNCTION__,
             'content'     => __FUNCTION__,
             'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
-            $itilobject_type::getForeignKeyField()  => $items_id,
+            $item::getForeignKeyField() => $items_id,
             'type'        => \CommonITILSatisfaction::TYPE_INTERNAL,
             'date'        => $_SESSION['glpi_currenttime'],
         ]);
@@ -135,7 +134,7 @@ abstract class CommonITILSatisfaction extends DbTestCase
         $log_type = $satisfaction->getLogTypeID();
         $this->assertIsArray($log_type);
         $this->assertCount(2, $log_type);
-        $this->assertEquals($itilobject_type, $log_type[0]);
+        $this->assertEquals($item::class, $log_type[0]);
 
         $this->assertEquals($items_id, $log_type[1]);
     }
@@ -143,11 +142,10 @@ abstract class CommonITILSatisfaction extends DbTestCase
     public function testDateAnsweredSetOnAnswer()
     {
         $tested_class = $this->getTestedClass();
-        $itilobject_type = $tested_class::getItemtype();
 
         // Create an ITIL object
         /** @var \CommonITILObject|Team $item */
-        $item = new $itilobject_type();
+        $item = $tested_class::getItemInstance();
         $items_id = $item->add([
             'name'        => __FUNCTION__,
             'content'     => __FUNCTION__,
@@ -168,7 +166,7 @@ abstract class CommonITILSatisfaction extends DbTestCase
             'name'        => __FUNCTION__,
             'content'     => __FUNCTION__,
             'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
-            $itilobject_type::getForeignKeyField()  => $items_id,
+            $item::getForeignKeyField()  => $items_id,
             'type'        => \CommonITILSatisfaction::TYPE_INTERNAL,
             'date'        => $_SESSION['glpi_currenttime'],
         ]);
@@ -178,7 +176,7 @@ abstract class CommonITILSatisfaction extends DbTestCase
         $this->login();
 
         $this->assertTrue($satisfaction->update([
-            $itilobject_type::getForeignKeyField() => $items_id, // These items don't use `id` as the index field...
+            $item::getForeignKeyField() => $items_id, // These items don't use `id` as the index field...
             'satisfaction' => 5,
         ]));
 

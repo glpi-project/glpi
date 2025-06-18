@@ -798,7 +798,7 @@ class Domain extends CommonDBTM
 
         // Only allowed types
         foreach ($types as $key => $type) {
-            if (!class_exists($type)) {
+            if (!is_a($type, CommonDBTM::class, true)) {
                 continue;
             }
 

@@ -34,6 +34,7 @@
  */
 
 use Glpi\Application\View\TemplateRenderer;
+use Glpi\ContentTemplates\Parameters\CommonITILObjectParameters;
 use Glpi\ContentTemplates\Parameters\ProblemParameters;
 use Glpi\RichText\RichText;
 
@@ -1533,8 +1534,8 @@ class Problem extends CommonITILObject
         return Item_Problem::class;
     }
 
-    public static function getContentTemplatesParametersClass(): string
+    public static function getContentTemplatesParametersClassInstance(): CommonITILObjectParameters
     {
-        return ProblemParameters::class;
+        return new ProblemParameters();
     }
 }

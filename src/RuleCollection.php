@@ -1204,8 +1204,7 @@ TWIG, $twig_params);
                             $crit
                         )
                     ) {
-                        $itemtype = getItemTypeForTable($available_criteria[$crit]['table']);
-                        $item     = new $itemtype();
+                        $item = getItemForTable($available_criteria[$crit]['table']);
                         if ($item instanceof CommonTreeDropdown) {
                             $found = $item->find(['completename' => $criteria['pattern']]);
                         } else {
@@ -1216,7 +1215,7 @@ TWIG, $twig_params);
                             $refused_rule['reasons']['criteria'][] = [
                                 'id' => $k_crit,
                                 'name' => $tmprule->getCriteriaName($criteria["criteria"]),
-                                'label' => RuleCriteria::getConditionByID($criteria["condition"], $itemtype, $criteria["criteria"]),
+                                'label' => RuleCriteria::getConditionByID($criteria["condition"], $item::class, $criteria["criteria"]),
                                 'pattern' => $criteria["pattern"],
                             ];
                         } else {
@@ -1256,8 +1255,7 @@ TWIG, $twig_params);
                             continue;
                         }
 
-                        $itemtype = getItemTypeForTable($available_actions[$act]['table']);
-                        $item     = new $itemtype();
+                        $item = getItemForTable($available_actions[$act]['table']);
                         if ($item instanceof CommonTreeDropdown) {
                             $found = $item->find(['completename' => $action['value']]);
                         } else {

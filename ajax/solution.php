@@ -51,22 +51,8 @@ if ($solutiontemplates_id === null) {
     return;
 }
 
-// We can't render the twig template at this state for some cases (e.g. massive
-// actions: we don't have one but multiple items so it net possible to parse the
-// values yet).
-$apply_twig = true;
-
-// Mandatory parameter: items_id
 $parents_id = $_POST['items_id'] ?? 0;
-if ($parents_id == 0) {
-    $apply_twig  = false;
-}
-
-// Mandatory parameter: itemtype
 $parents_itemtype = $_POST['itemtype'] ?? '';
-if (empty($parents_itemtype) || !is_subclass_of($parents_itemtype, CommonITILObject::class)) {
-    $apply_twig  = false;
-}
 
 // Load solution template
 $template = new SolutionTemplate();
@@ -74,7 +60,7 @@ if (!$template->getFromDB($solutiontemplates_id)) {
     throw new BadRequestHttpException("Unable to load template: $solutiontemplates_id");
 }
 
-if ($apply_twig) {
+if ($parents_id > 0 && !empty($parents_itemtype) && is_a($parents_itemtype, CommonITILObject::class, true)) {
     // Load parent item
     $parent = new $parents_itemtype();
     if (!$parent->getFromDB($parents_id)) {
@@ -84,6 +70,10 @@ if ($apply_twig) {
     // Render template content using twig
     $template->fields['content'] = $template->getRenderedContent($parent);
 } else {
+    // We can't render the twig template at this state for some cases (e.g. massive
+    // actions: we don't have one but multiple items so it net possible to parse the
+    // values yet).
+
     $content = DropdownTranslation::getTranslatedValue(
         $template->getID(),
         $template->getType(),

@@ -154,7 +154,7 @@ final class UserMention
             }
 
             // Retrieve current actors list
-            $userlink = new $main_item->userlinkclass();
+            $userlink = $main_item->getActorObjectForItem(User::class);
             $current_actors_ids = [];
             $current_actors = $userlink->getActors($main_item->fields['id']);
             foreach ($current_actors as $actors) {
@@ -292,7 +292,7 @@ final class UserMention
         $items_id = $item->getID();
 
         //get actors from item
-        $userlink = new $item->userlinkclass();
+        $userlink = $item->getActorObjectForItem(User::class);
         $actors = $userlink->getActors($items_id);
 
         $data['users'] = [];

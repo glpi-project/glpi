@@ -118,8 +118,7 @@ abstract class AssetModel extends \CommonDCModelDropdown
         }
 
         // Instanciate concrete class
-        $asset_model_class = $definition->getAssetModelClassName(true);
-        $asset_model = new $asset_model_class();
+        $asset_model = $definition->getAssetModelClassInstance();
         if (!$asset_model->getFromDB($id)) {
             return false;
         }

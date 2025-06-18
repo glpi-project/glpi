@@ -74,12 +74,12 @@ class GenericAjaxCrudControllerTest extends DbTestCase
         ];
         yield [
             'input' => ['id' => $invalid_id],
-            'expected_status' => 403,
+            'expected_status' => 400,
             'expected_body'   => [
                 'messages' => [
                     'info'    => [],
                     'warning' => [],
-                    'error'   => ["Forbidden itemtype"],
+                    'error'   => ["Invalid itemtype"],
                 ],
             ],
         ];

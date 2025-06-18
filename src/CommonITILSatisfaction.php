@@ -65,14 +65,15 @@ abstract class CommonITILSatisfaction extends CommonDBTM
         return 'ti ti-star';
     }
 
-    /**
-     * Get the itemtype this satisfaction is for
-     * @return string
-     */
-    public static function getItemtype(): string
+    public static function getItemInstance(): CommonITILObject
     {
-        // Return itemtype extracted from current class name (Remove 'Satisfaction' suffix)
-        return preg_replace('/Satisfaction$/', '', static::class);
+        $class = preg_replace('/Satisfaction$/', '', static::class);
+
+        if (!is_a($class, CommonITILObject::class, true)) {
+            throw new \LogicException();
+        }
+
+        return new $class();
     }
 
     /**
@@ -80,21 +81,19 @@ abstract class CommonITILSatisfaction extends CommonDBTM
      **/
     public static function getIndexName()
     {
-        return static::getItemtype()::getForeignKeyField();
+        return static::getItemInstance()::getForeignKeyField();
     }
 
     public function getLogTypeID()
     {
-        /** @var CommonITILObject $itemtype */
-        $itemtype = static::getItemtype();
-        return [$itemtype, $this->fields[$itemtype::getForeignKeyField()]];
+        $item = static::getItemInstance();
+        return [$item::class, $this->fields[$item::getForeignKeyField()]];
     }
 
     public static function canUpdate(): bool
     {
-        /** @var CommonITILObject $itemtype */
-        $itemtype = static::getItemtype();
-        return (Session::haveRight($itemtype::$rightname, READ));
+        $item = static::getItemInstance();
+        return (Session::haveRight($item::$rightname, READ));
     }
 
     /**
@@ -104,10 +103,8 @@ abstract class CommonITILSatisfaction extends CommonDBTM
      **/
     public function canUpdateItem(): bool
     {
-        /** @var CommonITILObject $itemtype */
-        $itemtype = static::getItemtype();
-        $item = new $itemtype();
-        if (!$item->getFromDB($this->fields[$itemtype::getForeignKeyField()])) {
+        $item = static::getItemInstance();
+        if (!$item->getFromDB($this->fields[$item::getForeignKeyField()])) {
             return false;
         }
 
@@ -121,7 +118,7 @@ abstract class CommonITILSatisfaction extends CommonDBTM
 
         if (
             $item->isUser(CommonITILActor::REQUESTER, Session::getLoginUserID())
-            || ($item->fields["users_id_recipient"] === Session::getLoginUserID() && Session::haveRight($itemtype::$rightname, $itemtype::SURVEY))
+            || ($item->fields["users_id_recipient"] === Session::getLoginUserID() && Session::haveRight($item::$rightname, $item::SURVEY))
             || (isset($_SESSION["glpigroups"])
                 && $item->haveAGroup(CommonITILActor::REQUESTER, $_SESSION["glpigroups"]))
         ) {
@@ -178,8 +175,8 @@ abstract class CommonITILSatisfaction extends CommonDBTM
         if (array_key_exists('satisfaction', $input) || array_key_exists('comment', $input)) {
             $satisfaction = array_key_exists('satisfaction', $input) ? $input['satisfaction'] : $this->fields['satisfaction'];
             $comment      = array_key_exists('comment', $input) ? $input['comment'] : $this->fields['comment'];
-            $itemtype     = $this->getItemtype();
-            $entities_id  = $this->getItemEntity($itemtype, $this->fields[getForeignKeyFieldForItemType($this->getItemtype())]);
+            $itemtype     = static::getItemInstance()::class;
+            $entities_id  = $this->getItemEntity($itemtype, $this->fields[$itemtype::getForeignKeyField()]);
 
             $config_suffix = $itemtype === 'Ticket' ? '' : ('_' . strtolower($itemtype));
             $inquest_mandatory_comment = Entity::getUsedConfig('inquest_config' . $config_suffix, $entities_id, 'inquest_mandatory_comment' . $config_suffix);
@@ -194,8 +191,7 @@ abstract class CommonITILSatisfaction extends CommonDBTM
         }
 
         if (array_key_exists('satisfaction', $input) && $input['satisfaction'] >= 0) {
-            $itemtype = static::getItemtype();
-            $item = new $itemtype();
+            $item = static::getItemInstance();
             $fkey = static::getIndexName();
             if ($item->getFromDB($input[$fkey] ?? $this->fields[$fkey])) {
                 $max_rate = Entity::getUsedConfig(
@@ -216,10 +212,8 @@ abstract class CommonITILSatisfaction extends CommonDBTM
         global $CFG_GLPI;
 
         if (!isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"]) {
-            /** @var CommonDBTM $itemtype */
-            $itemtype = static::getItemtype();
-            $item = new $itemtype();
-            if ($item->getFromDB($this->fields[$itemtype::getForeignKeyField()])) {
+            $item = static::getItemInstance();
+            if ($item->getFromDB($this->fields[$item::getForeignKeyField()])) {
                 NotificationEvent::raiseEvent("satisfaction", $item, [], $this);
             }
         }
@@ -237,10 +231,8 @@ abstract class CommonITILSatisfaction extends CommonDBTM
                 fn($field) => in_array($field, ['satisfaction', 'comment'])
             );
 
-            /** @var CommonDBTM $itemtype */
-            $itemtype = static::getItemtype();
-            $item = new $itemtype();
-            if (count($answer_updates) > 1 && $item->getFromDB($this->fields[$itemtype::getForeignKeyField()])) {
+            $item = static::getItemInstance();
+            if (count($answer_updates) > 1 && $item->getFromDB($this->fields[$item::getForeignKeyField()])) {
                 NotificationEvent::raiseEvent("replysatisfaction", $item, [], $this);
             }
         }
@@ -349,9 +341,8 @@ abstract class CommonITILSatisfaction extends CommonDBTM
             return '';
         }
 
-        /** @var CommonDBTM $itemtype */
-        $itemtype = static::getItemtype();
-        return $itemtype::getFormURLWithID($satisfaction->fields[$itemtype::getForeignKeyField()]) . '&forcetab=' . $itemtype::getType() . '$3';
+        $item = static::getItemInstance();
+        return $item::getFormURLWithID($satisfaction->fields[$item::getForeignKeyField()]) . '&forcetab=' . $item::class . '$3';
     }
 
     public static function rawSearchOptionsToAdd()

@@ -77,7 +77,7 @@ abstract class CommonITILObject_CommonITILObject extends CommonDBRelation
                 // Allow reclassifying LINK_TO as DUPLICATE_WITH, but otherwise, no duplicates allowed
                 if ($link['items_id'] === $input[static::$items_id_1] || $link['items_id'] === $input[static::$items_id_2]) {
                     if ((int) $link['link'] === self::LINK_TO && (int) $input['link'] === self::DUPLICATE_WITH) {
-                        $link_item = new $link['link_class']();
+                        $link_item = getItemForItemtype($link['link_class']);
                         $link_item->delete(['id' => $link['id']]);
                         return $input;
                     }
@@ -185,9 +185,7 @@ abstract class CommonITILObject_CommonITILObject extends CommonDBRelation
 
                     $link_class = self::getLinkClass($input['itemtype_1'], $input['itemtype_2']);
 
-                    if ($link_class !== null) {
-                        /* @var CommonDBRelation $link_class */
-                        /* @var CommonDBRelation $link */
+                    if (is_a($link_class, CommonDBRelation::class, true)) {
                         $condition = [];
                         $link = new $link_class();
                         if ($link_class::$itemtype_1 == $link_class::$itemtype_2) {
@@ -262,8 +260,8 @@ abstract class CommonITILObject_CommonITILObject extends CommonDBRelation
     private function updateParentItems(): void
     {
 
-        $item_1 = new static::$itemtype_1();
-        $item_2 = new static::$itemtype_2();
+        $item_1 = getItemForItemtype(static::$itemtype_1);
+        $item_2 = getItemForItemtype(static::$itemtype_2);
 
         if (
             $item_1->getFromDB($this->fields[static::$items_id_1])

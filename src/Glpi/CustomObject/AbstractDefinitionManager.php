@@ -49,10 +49,9 @@ abstract class AbstractDefinitionManager
     abstract public static function getInstance(): self;
 
     /**
-     * @return class-string<AbstractDefinition>
-     * @phpstan-return class-string<ConcreteDefinition>
+     * @phpstan-return ConcreteDefinition
      */
-    abstract public static function getDefinitionClass(): string;
+    abstract public static function getDefinitionClassInstance(): AbstractDefinition;
 
     /**
      * Returns the regex pattern of reserved system names
@@ -143,10 +142,10 @@ abstract class AbstractDefinitionManager
      */
     final public function getDefinitions(bool $only_active = false): array
     {
-        $definition_class = static::getDefinitionClass();
+        $definition_object = static::getDefinitionClassInstance();
 
         if ($this->definitions_data === null) {
-            $this->definitions_data = getAllDataFromTable($definition_class::getTable());
+            $this->definitions_data = getAllDataFromTable($definition_object::getTable());
         }
 
         $definitions = [];
@@ -156,7 +155,7 @@ abstract class AbstractDefinitionManager
             }
 
             $system_name = $definition_data['system_name'];
-            $definition = new $definition_class();
+            $definition = new $definition_object();
             $definition->getFromResultSet($definition_data);
             $definitions[$system_name] = $definition;
         }

@@ -306,9 +306,8 @@ class Stencil extends CommonDBChild implements ZonableModelPicture
             $pictures[] = $item->getItemtypeOrModelPicture($picture_field)[0]['src'];
         }
 
-        $model_class   = $item->getModelClass();
         $model_fk      = $item->getModelForeignKeyField();
-        $model         = new $model_class();
+        $model         = $item->getModelClassInstance();
         $model->getFromDB($item->fields[$model_fk]);
         $model_stencil = self::getStencilFromItem($model);
 

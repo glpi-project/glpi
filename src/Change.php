@@ -35,6 +35,7 @@
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\ContentTemplates\Parameters\ChangeParameters;
+use Glpi\ContentTemplates\Parameters\CommonITILObjectParameters;
 use Glpi\RichText\RichText;
 
 /**
@@ -1033,9 +1034,9 @@ class Change extends CommonITILObject
         }
     }
 
-    public static function getContentTemplatesParametersClass(): string
+    public static function getContentTemplatesParametersClassInstance(): CommonITILObjectParameters
     {
-        return ChangeParameters::class;
+        return new ChangeParameters();
     }
 
     /**

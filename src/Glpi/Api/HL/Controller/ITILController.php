@@ -252,8 +252,8 @@ final class ITILController extends AbstractController
                 'items' => [
                     'x-mapped-from' => 'id',
                     'x-mapper' => function ($v) use ($itil_type) {
-                        $item = new $itil_type();
-                        if ($item->getFromDB($v)) {
+                        $item = $itil_type::getById($v);
+                        if ($item) {
                             return self::getCleanTeam($item);
                         }
                         return [];

@@ -36,6 +36,7 @@
 namespace Glpi\Inventory\Asset;
 
 use AutoUpdateSystem;
+use CommonDBTM;
 use Glpi\Asset\Asset_PeripheralAsset;
 use Glpi\Inventory\Conf;
 use RuleDictionnaryPrinterCollection;
@@ -107,7 +108,9 @@ class Printer extends InventoryAsset
             $lclass = 'Item_' . $this->item->getType();
         } elseif (in_array($this->item->getType(), Asset_PeripheralAsset::getPeripheralHostItemtypes(), true)) {
             $lclass = Asset_PeripheralAsset::class;
-        } else {
+        }
+
+        if (!\is_a($lclass, CommonDBTM::class, true)) {
             throw new \RuntimeException('Unable to find linked item object name for ' . $this->item->getType());
         }
 

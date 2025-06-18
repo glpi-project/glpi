@@ -195,15 +195,14 @@ abstract class AbstractRightsDropdown
     {
         return array_map(function ($value) {
             $data = explode("-", $value);
-            $itemtype = getItemtypeForForeignKeyField($data[0]);
             $items_id = $data[1];
-            $item = new $itemtype();
+            $item = getItemForForeignKeyField($data[0]);
 
             if ($items_id == self::ALL_USERS) {
-                return $itemtype::getTypeName(1) . " - " . __("All users");
+                return $item::getTypeName(1) . " - " . __("All users");
             }
 
-            return $itemtype::getTypeName(1) . " - " . Dropdown::getDropdownName(
+            return $item::getTypeName(1) . " - " . Dropdown::getDropdownName(
                 $item->getTable(),
                 $items_id
             );

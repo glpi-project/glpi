@@ -1405,7 +1405,7 @@ class RacksPluginToCoreCommand extends AbstractCommand
             $itemtype = $mapping['itemtype'];
         }
 
-        if (!class_exists($itemtype)) {
+        if (!\is_a($itemtype, CommonDBTM::class, true)) {
             return null;
         }
 

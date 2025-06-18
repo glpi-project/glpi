@@ -356,6 +356,10 @@ abstract class AbstractPluginMigration
      */
     final protected function copyItems(string $itemtype, array $where, array $replacements, bool $disable_unicity_check = false): void
     {
+        if (!\is_a($itemtype, CommonDBTM::class, true)) {
+            throw new \InvalidArgumentException(sprintf('`%s` is not a valid `%s` class.', $itemtype, CommonDBTM::class));
+        }
+
         $options = [];
         if ($disable_unicity_check) {
             $options['disable_unicity_check'] = true;

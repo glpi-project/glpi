@@ -411,9 +411,12 @@ TWIG, $twig_params);
         $used    = [];
         foreach ($types_iterator as $type_row) {
             $itemtype = $type_row['itemtype'];
-            if (!($item = getItemForItemtype($itemtype))) {
+            if (!is_a($itemtype, CommonDBTM::class, true)) {
                 continue;
             }
+
+            $item = new $itemtype();
+
             if ($item::canView()) {
                 $itemtable = getTableForItemType($itemtype);
                 $itemtype_2 = null;
@@ -432,7 +435,7 @@ TWIG, $twig_params);
                     ],
                 ];
 
-                if ($item instanceof Item_Devices) {
+                if (is_a($itemtype, Item_Devices::class, true)) {
                     $itemtype_2 = $itemtype::$itemtype_2;
                     $itemtable_2 = $itemtype_2::getTable();
                     $namefield = 'name_device';
@@ -457,7 +460,7 @@ TWIG, $twig_params);
                     ];
                 }
 
-                if ($item instanceof Item_Devices) {
+                if (is_a($itemtype, Item_Devices::class, true)) {
                     $id_2 = $itemtype_2::getIndexName();
                     $fid_2 = $itemtype::$items_id_2;
 
@@ -569,7 +572,7 @@ TWIG, $twig_params);
                     'row_class' => isset($objdata['is_deleted']) && $objdata['is_deleted'] ? 'table-danger' : '',
                     'type'     => $itemtype::getTypeName(1),
                 ];
-                $item = new $itemtype();
+                $item = getItemForItemtype($itemtype);
                 $item->getFromResultSet($objdata);
                 $entry['name'] = $item->getLink();
 

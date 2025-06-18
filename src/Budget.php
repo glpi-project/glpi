@@ -309,7 +309,6 @@ class Budget extends CommonDropdown
         foreach ($iterator as $row) {
             $itemtypes[] = $row['itemtype'];
         }
-        $itemtypes = array_filter($itemtypes, static fn($itemtype) => is_a($itemtype, CommonDBTM::class, true) && $itemtype::canView());
         $infocom_itemtypes = [];
         $other_cost_tables = [
             'Contract' => ContractCost::getTable(),
@@ -319,6 +318,14 @@ class Budget extends CommonDropdown
             'Project' => ProjectCost::getTable(),
         ];
         foreach ($itemtypes as $itemtype) {
+            if (in_array($itemtype, $infocom_itemtypes)) {
+                continue; // prevent duplicates
+            }
+
+            if (!is_a($itemtype, CommonDBTM::class, true) || !$itemtype::canView()) {
+                continue;
+            }
+
             if (!in_array($itemtype, ['Contract', 'Ticket', 'Problem', 'Change', 'Project'], true)) {
                 $infocom_itemtypes[] = $itemtype;
             }

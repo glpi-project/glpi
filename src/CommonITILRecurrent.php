@@ -578,12 +578,24 @@ abstract class CommonITILRecurrent extends CommonDropdown
     public function createItem(array $linked_items = [], ?CommonITILObject &$created_item = null)
     {
         $result = false;
+
         $concrete_class = static::getConcreteClass();
+        if (!is_a($concrete_class, CommonITILObject::class, true)) {
+            throw new \LogicException();
+        }
+
         $template_class = static::getTemplateClass();
+        if (!is_a($template_class, ITILTemplate::class, true)) {
+            throw new \LogicException();
+        }
+
         $fields_class = static::getPredefinedFieldsClass();
+        if (!is_a($fields_class, ITILTemplatePredefinedField::class, true)) {
+            throw new \LogicException();
+        }
+
         $tmpl_fk = $template_class::getForeignKeyField();
 
-        /** @var ITILTemplate */
         $template = new $template_class();
 
         // Create item based on specified template and entity information
@@ -592,7 +604,6 @@ abstract class CommonITILRecurrent extends CommonDropdown
             $input = $concrete_class::getDefaultValues($this->fields['entities_id']);
 
             // Apply itiltemplates predefined values
-            /** @var ITILTemplatePredefinedField */
             $fields = new $fields_class();
             $predefined = $fields->getPredefinedFields($this->fields[$tmpl_fk], true);
             $input = $this->handlePredefinedFields($predefined, $input);
@@ -605,7 +616,6 @@ abstract class CommonITILRecurrent extends CommonDropdown
             $input['entities_id'] = $this->fields['entities_id'];
             $input['_auto_import'] = true;
 
-            /** @var CommonITILObject $item */
             $item = new $concrete_class();
 
             if ($items_id = $item->add($input)) {
@@ -616,11 +626,10 @@ abstract class CommonITILRecurrent extends CommonDropdown
                     $items_id
                 );
                 // add item if any
-                if (count($linked_items) > 0 && ($item_link_class = $concrete_class::getItemLinkClass()) !== null) {
+                if (count($linked_items) > 0) {
                     foreach ($linked_items as $linked_itemtype => $linked_items_ids) {
                         foreach ($linked_items_ids as $linked_item_id) {
-                            /* @var CommonItilObject_Item $item_link */
-                            $item_link = new $item_link_class();
+                            $item_link = getItemForItemtype($concrete_class::getItemLinkClass());
                             $item_link->add(
                                 [
                                     $item->getForeignKeyField() => $items_id,

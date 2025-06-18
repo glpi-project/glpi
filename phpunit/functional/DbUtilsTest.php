@@ -241,6 +241,33 @@ class DbUtilsTest extends DbTestCase
         }
     }
 
+    #[DataProvider('dataTableType')]
+    public function testGetItemForTable($table, $type, $is_valid_type)
+    {
+        require_once __DIR__ . '/../../tests/fixtures/another_test.php';
+        require_once __DIR__ . '/../../tests/fixtures/pluginbarabstractstuff.php';
+        require_once __DIR__ . '/../../tests/fixtures/pluginbarfoo.php';
+        require_once __DIR__ . '/../../tests/fixtures/pluginfoobar.php';
+        require_once __DIR__ . '/../../tests/fixtures/pluginfooservice.php';
+        require_once __DIR__ . '/../../tests/fixtures/pluginfoo_search_item_filter.php';
+        require_once __DIR__ . '/../../tests/fixtures/pluginfoo_item_filter.php';
+        require_once __DIR__ . '/../../tests/fixtures/pluginfoo_search_a_b_c_d_e_f_g_bar.php';
+        require_once __DIR__ . '/../../tests/fixtures/test_a_b.php';
+
+        $instance = new \DbUtils();
+        if ($is_valid_type) {
+            $this->assertInstanceOf($type, $instance->getItemForTable($table));
+        } else {
+            $this->assertNull($instance->getItemForTable($table));
+        }
+
+        if ($is_valid_type) {
+            $this->assertInstanceOf($type, getItemForTable($table));
+        } else {
+            $this->assertNull(getItemForTable($table));
+        }
+    }
+
     public static function getItemForItemtypeProvider(): iterable
     {
         foreach (self::dataTableType() as $test_case) {
@@ -311,6 +338,68 @@ class DbUtilsTest extends DbTestCase
             'Cannot instanciate "GlpiPlugin\Bar\AbstractStuff" as it is an abstract class.',
             LogLevel::WARNING
         );
+    }
+
+    public static function itemtypeForeignKeyFieldProvider()
+    {
+        yield [
+            'key'       => 'computers_id',
+            'itemtype'  => \Computer::class,
+        ];
+        yield [
+            'key'       => 'appliances_items_id',
+            'itemtype'  => \Appliance_Item::class,
+        ];
+        yield [
+            'key'       => 'dashboards_dashboards_id',
+            'itemtype'  => \Glpi\Dashboard\Dashboard::class,
+        ];
+        yield [
+            'key'       => 'plugin_tester_assets_foos_id',
+            'itemtype'  => \GlpiPlugin\Tester\Asset\Foo::class,
+        ];
+        yield [
+            'key'       => 'plugin_tester_mypseudopsr4classes_id',
+            'itemtype'  => \PluginTesterMyPseudoPsr4Class::class,
+        ];
+        yield [
+            'key'       => 'invalid_id',
+            'itemtype'  => null,
+        ];
+    }
+
+    #[DataProvider('itemtypeForeignKeyFieldProvider')]
+    public function testGetItemtypeForForeignKeyField(string $key, ?string $itemtype)
+    {
+        $instance = new \DbUtils();
+        if ($itemtype !== null) {
+            $this->assertSame($itemtype, $instance->getItemtypeForForeignKeyField($key));
+        } else {
+            $this->assertNull($instance->getItemtypeForForeignKeyField($key));
+        }
+
+        if ($itemtype !== null) {
+            $this->assertSame($itemtype, $instance->getItemtypeForForeignKeyField($key));
+        } else {
+            $this->assertNull($instance->getItemtypeForForeignKeyField($key));
+        }
+    }
+
+    #[DataProvider('itemtypeForeignKeyFieldProvider')]
+    public function testGetItemForForeignKeyField(string $key, ?string $itemtype)
+    {
+        $instance = new \DbUtils();
+        if ($itemtype !== null) {
+            $this->assertInstanceOf($itemtype, $instance->getItemForForeignKeyField($key));
+        } else {
+            $this->assertNull($instance->getItemForForeignKeyField($key));
+        }
+
+        if ($itemtype !== null) {
+            $this->assertInstanceOf($itemtype, $instance->getItemForForeignKeyField($key));
+        } else {
+            $this->assertNull($instance->getItemForForeignKeyField($key));
+        }
     }
 
     public static function dataPlural()

@@ -47,13 +47,13 @@ class VirtualMachine extends InventoryAsset
     use InventoryNetworkPort;
 
     private $conf;
-    private $vms = [];
     private $allports = [];
-    private $vmcomponents = [
-        'storages'  => 'Drive',
-        'drives'    => 'Volume',
-        'cpus'      => 'Processor',
-        'memories'  => 'Memory',
+
+    private const VMCOMPONENTS = [
+        'storages'  => Drive::class,
+        'drives'    => Volume::class,
+        'cpus'      => Processor::class,
+        'memories'  => Memory::class,
     ];
 
     public function prepare(): array
@@ -392,9 +392,8 @@ class VirtualMachine extends InventoryAsset
 
                 //manage extra components created form hosts information
                 if ($this->conf->vm_components) {
-                    foreach ($this->vmcomponents as $key => $assetitem) {
+                    foreach (self::VMCOMPONENTS as $key => $assettype) {
                         if (property_exists($vm, $key)) {
-                            $assettype = '\Glpi\Inventory\Asset\\' . $assetitem;
                             $asset = new $assettype($computervm, $vm->$key);
                             if ($asset->checkConf($this->conf)) {
                                 $asset->setAgent($this->getAgent());

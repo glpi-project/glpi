@@ -51,8 +51,7 @@ $actor_id  = (int) $_REQUEST[$actor_key];
 
 // check if user is allowed to see the item (only if not current connected user)
 if ($actor_id != Session::getLoginUserID()) {
-    $itemtype = getItemtypeForForeignKeyField($actor_key);
-    $item     = new $itemtype();
+    $item = getItemForForeignKeyField($actor_key);
     if (!$item->getFromDB($actor_id) || !$item->canView()) {
         // Unable to get item or no rights to see the item
         return;

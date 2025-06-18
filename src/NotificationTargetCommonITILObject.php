@@ -1774,9 +1774,8 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
             }
 
             /** @var CommonITILObject $item */
-            $inquest_type = $item::getSatisfactionClass();
-            if ($inquest_type !== null) {
-                $inquest = new $inquest_type(); //type is checked from getSatisfactionClass(); should be safe
+            $inquest = $item::getSatisfactionClassInstance();
+            if ($inquest !== null) {
                 $data['##satisfaction.type##'] = '';
                 $data['##satisfaction.datebegin##'] = '';
                 $data['##satisfaction.dateanswered##'] = '';
@@ -2384,8 +2383,8 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
             ]);
         }
 
-        $inquest_type = $this->obj::getSatisfactionClass();
-        if ($inquest_type !== null) {
+        $inquest = $this->obj::getSatisfactionClassInstance();
+        if ($inquest !== null) {
             $tags = ['satisfaction.datebegin' => __('Creation date of the satisfaction survey'),
                 'satisfaction.dateanswered' => __('Response date to the satisfaction survey'),
                 'satisfaction.satisfaction' => __('Satisfaction'),

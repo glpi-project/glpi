@@ -41,14 +41,14 @@ if (($_POST['action'] ?? null) === 'change_task_state') {
     header("Content-Type: application/json; charset=UTF-8");
 
     if (
-        !isset($_POST['tasks_id'], $_POST['parenttype']) || ($parent = getItemForItemtype($_POST['parenttype'])) === false
+        !isset($_POST['tasks_id'], $_POST['parenttype'])
+        || ($parent = getItemForItemtype($_POST['parenttype'])) === false
+        || !is_a($parent, CommonITILObject::class, true)
     ) {
         return;
     }
 
-    $taskClass = $parent::getType() . "Task";
-    /** @var CommonITILTask $task */
-    $task = new $taskClass();
+    $task = $parent::getTaskClassInstance();
     if (!$task->getFromDB((int) $_POST['tasks_id']) || !$task->canUpdateItem()) {
         throw new AccessDeniedHttpException();
     }

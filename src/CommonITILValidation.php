@@ -72,6 +72,17 @@ abstract class CommonITILValidation extends CommonDBChild
         return str_replace('Validation', '', static::class);
     }
 
+    public static function getItilObjectItemInstance(): CommonITILObject
+    {
+        $class = static::getItilObjectItemType();
+
+        if (!is_a($class, CommonITILObject::class, true)) {
+            throw new \LogicException();
+        }
+
+        return new $class();
+    }
+
     /**
      * @return class-string<\ITIL_ValidationStep>|null
      */
@@ -83,6 +94,13 @@ abstract class CommonITILValidation extends CommonDBChild
         }
 
         return null;
+    }
+
+    public static function getValidationStepInstance(): ?ITIL_ValidationStep
+    {
+        $class = self::getValidationStepClassName();
+
+        return $class ? getItemForItemtype($class) : null;
     }
 
     public static function getCreateRights()
@@ -1024,7 +1042,7 @@ abstract class CommonITILValidation extends CommonDBChild
         foreach ($validation_steps_iterator as $validation_step_data) {
             $validation_step_id = $validation_step_data['id'];
 
-            $validation_step = new $validation_steps_classname();
+            $validation_step = static::getValidationStepInstance();
             $validation_step->getFromDB($validation_step_id);
 
             $step_name          = Dropdown::getDropdownName(ValidationStep::getTable(), $validation_step_data['validationsteps_id']);

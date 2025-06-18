@@ -186,27 +186,21 @@ class ITILSolution extends CommonDBChild
             $input['users_id'] = Session::getLoginUserID();
         }
 
-        if (isset($input['itemtype']) && !is_a($input['itemtype'], CommonDBTM::class, true)) {
+        $parent_item = isset($input['itemtype']) ? getItemForItemtype($input['itemtype']) : null;
+        if (
+            $parent_item === null
+            || !array_key_exists('items_id', $input)
+            || $parent_item->getFromDB((int) $input['items_id']) === false
+        ) {
             return false;
         }
-        $parent_item = new $input['itemtype'](); //itemtype is checked, should be safe
 
-        if (
-            $this->item == null
-            || (isset($input['itemtype']) && isset($input['items_id']))
-        ) {
-            if ($this->item = getItemForItemtype($input['itemtype'])) {
-                $this->item->getFromDB($input['items_id']);
-            }
-        }
+        $this->item = $parent_item;
 
         // Handle template
         if (isset($input['_solutiontemplates_id'])) {
             $template = new SolutionTemplate();
-            if (
-                !$template->getFromDB($input['_solutiontemplates_id'])
-                || !$parent_item->getFromDB($input['items_id'])
-            ) {
+            if (!$template->getFromDB($input['_solutiontemplates_id'])) {
                 return false;
             }
             $input = array_replace(

@@ -319,7 +319,7 @@ abstract class CommonITILCost extends CommonDBChild
     public function initBasedOnPrevious()
     {
 
-        $item = new static::$itemtype();
+        $item = getItemForItemtype(static::$itemtype);
         if (
             !isset($this->fields[static::$items_id])
             || !$item->getFromDB($this->fields[static::$items_id])
@@ -427,7 +427,7 @@ abstract class CommonITILCost extends CommonDBChild
             $items_id = $options['parent']->fields["id"];
         }
 
-        $item = new static::$itemtype();
+        $item = getItemForItemtype(static::$itemtype);
         if (!$item->getFromDB($items_id)) {
             return false;
         }

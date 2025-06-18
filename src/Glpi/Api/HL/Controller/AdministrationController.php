@@ -35,6 +35,7 @@
 
 namespace Glpi\Api\HL\Controller;
 
+use CommonDBTM;
 use Entity;
 use Glpi\Api\HL\Doc as Doc;
 use Glpi\Api\HL\Middleware\ResultFormatterMiddleware;
@@ -734,6 +735,9 @@ final class AdministrationController extends AbstractController
         // Create a union schema with all relevant item types
         $schema = Doc\Schema::getUnionSchemaForItemtypes(
             itemtypes: array_filter($CFG_GLPI['assignable_types'], static function ($t) use ($is_managed) {
+                if (!\is_a($t, CommonDBTM::class, true)) {
+                    return false; // Ignore invalid classes
+                }
                 return (new $t())->isField($is_managed ? 'users_id_tech' : 'users_id');
             }),
             api_version: $api_version

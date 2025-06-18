@@ -43,6 +43,8 @@ use Glpi\Api\HL\Search;
 use Glpi\Http\JSONResponse;
 use Glpi\Http\Request;
 use Glpi\Http\Response;
+use Rule;
+use RuleCollection;
 
 #[Route(path: '/Rule', tags: ['Rule'], requirements: [
     'collection' => [self::class, 'getRuleCollections'],
@@ -275,6 +277,10 @@ final class RuleController extends AbstractController
         $collections = $CFG_GLPI['rulecollections_types'];
         $visible_collections = [];
         foreach ($collections as $collection) {
+            if (!\is_a($collection, RuleCollection::class, true)) {
+                continue; // Ignore invalid classes
+            }
+
             /** @var \RuleCollection $instance */
             $instance = new $collection();
             if ($instance->canList()) {
@@ -349,6 +355,10 @@ final class RuleController extends AbstractController
         $collections = $CFG_GLPI['rulecollections_types'];
         $visible_collections = [];
         foreach ($collections as $collection) {
+            if (!\is_a($collection, RuleCollection::class, true)) {
+                continue; // Ignore invalid classes
+            }
+
             /** @var \RuleCollection $instance */
             $instance = new $collection();
             if ($instance->canList()) {
@@ -381,13 +391,11 @@ final class RuleController extends AbstractController
         if ($response = $this->checkCollectionAccess($request, READ)) {
             return $response;
         }
-        /** @var class-string<\Rule> $rule_subtype */
-        $rule_subtype = 'Rule' . $request->getAttribute('collection');
-        $rule = new $rule_subtype();
+        $rule = $this->getRuleInstanceFromRequest($request);
         $possible_criteria = $rule->getCriterias();
         $conditions = [];
         foreach ($possible_criteria as $k => $v) {
-            $to_add = \RuleCriteria::getConditions($rule_subtype, $k);
+            $to_add = \RuleCriteria::getConditions($rule::class, $k);
             foreach ($to_add as $i => &$j) {
                 $j = [
                     'id' => $i,
@@ -419,9 +427,7 @@ final class RuleController extends AbstractController
         if ($response = $this->checkCollectionAccess($request, READ)) {
             return $response;
         }
-        /** @var class-string<\Rule> $rule_subtype */
-        $rule_subtype = 'Rule' . $request->getAttribute('collection');
-        $rule = new $rule_subtype();
+        $rule = $this->getRuleInstanceFromRequest($request);
         $possible_criteria = $rule->getCriterias();
         $result = [];
         foreach ($possible_criteria as $k => $v) {
@@ -449,9 +455,7 @@ final class RuleController extends AbstractController
         if ($response = $this->checkCollectionAccess($request, READ)) {
             return $response;
         }
-        /** @var class-string<\Rule> $rule_subtype */
-        $rule_subtype = 'Rule' . $request->getAttribute('collection');
-        $rule = new $rule_subtype();
+        $rule = $this->getRuleInstanceFromRequest($request);
         $fields = $rule->getActions();
         $types = \RuleAction::getActions();
         $result = [];
@@ -487,9 +491,7 @@ final class RuleController extends AbstractController
         if ($response = $this->checkCollectionAccess($request, READ)) {
             return $response;
         }
-        /** @var class-string<\Rule> $rule_subtype */
-        $rule_subtype = 'Rule' . $request->getAttribute('collection');
-        $rule = new $rule_subtype();
+        $rule = $this->getRuleInstanceFromRequest($request);
         $possible_actions = $rule->getActions();
         $result = [];
         foreach ($possible_actions as $k => $v) {
@@ -879,5 +881,16 @@ final class RuleController extends AbstractController
         }
 
         return Search::deleteBySchema($this->getKnownSchema('RuleAction', $this->getAPIVersion($request)), $request->getAttributes(), $request->getParameters());
+    }
+
+    private function getRuleInstanceFromRequest(Request $request): Rule
+    {
+        $expected_class = 'Rule' . $request->getAttribute('collection');
+
+        if (!\is_a($expected_class, Rule::class, true)) {
+            throw new \LogicException();
+        }
+
+        return new $expected_class();
     }
 }

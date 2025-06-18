@@ -92,16 +92,16 @@ trait CustomObjectTrait
             return false;
         }
 
-        $base_class       = static::class;
-        $definition_class = self::getDefinitionClass();
+        $base_class        = static::class;
+        $definition_object = self::getDefinitionClassInstance();
 
         // Load the asset definition corresponding to given asset ID
         $definition_request = [
             'INNER JOIN' => [
                 $base_class::getTable() => [
                     'ON'  => [
-                        $base_class::getTable()       => $definition_class::getForeignKeyField(),
-                        $definition_class::getTable() => $definition_class::getIndexName(),
+                        $base_class::getTable()       => $definition_object::getForeignKeyField(),
+                        $definition_object::getTable() => $definition_object::getIndexName(),
                     ],
                 ],
             ],
@@ -110,14 +110,18 @@ trait CustomObjectTrait
             ],
         ];
 
-        $definition = new $definition_class();
+        $definition = new $definition_object();
         if (!$definition->getFromDBByRequest($definition_request)) {
             return false;
         }
 
         // Instanciate concrete class
-        $concrete_class = $definition->getCustomObjectClassName();
-        $instance = new $concrete_class();
+        $instance = $definition->getCustomObjectClassInstance();
+
+        if (!is_a($instance, static::class, true)) {
+            throw new \LogicException(); // To make PHPStan happy
+        }
+
         if (!$instance->getFromDB($id)) {
             return false;
         }

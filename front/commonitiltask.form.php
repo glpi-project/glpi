@@ -56,10 +56,11 @@ if (!$task->canView()) {
     throw new AccessDeniedHttpException();
 }
 
-$itemtype = $task::getItilObjectItemType();
-$fk       = getForeignKeyFieldForItemType($itemtype);
+$track = $task::getItilObjectItemInstance();
 
-$track = new $itemtype();
+$itemtype = $track::class;
+$fk       = $track::getForeignKeyField();
+
 $track->getFromDB($task->getField($fk));
 
 $redirect = null;
