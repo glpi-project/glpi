@@ -2232,7 +2232,7 @@ class AuthLdapTest extends DbTestCase
         $group2_id = $this->createItem(Group::class, ["name" => "testgroup2"])->getID();
         $this->assertGreaterThan(0, $group2_id);
 
-        $group3_id = $this->createItem(Group::class, ["name" => "testgroup3", "ldap_field" => "login", "ldap_value" => "brazil6"])->getID();
+        $group3_id = $this->createItem(Group::class, ["name" => "testgroup3", "ldap_field" => "uid", "ldap_value" => "brazil6"])->getID();
         $this->assertGreaterThan(0, $group3_id);
 
         // Add groups with a rule
@@ -2248,6 +2248,9 @@ class AuthLdapTest extends DbTestCase
         $users_id = \User::getIdByName('brazil6');
         $this->assertGreaterThan(0, $users_id);
 
+        $this->assertTrue(\Group_User::isUserInGroup($users_id, $group_id));
+        $this->assertTrue(\Group_User::isUserInGroup($users_id, $group3_id));
+
         // Check group
         $gu = new Group_User();
         $gus = $gu->find([
@@ -2255,9 +2258,6 @@ class AuthLdapTest extends DbTestCase
             'is_dynamic' => 1,
         ]);
         $this->assertCount(2, $gus);
-
-        $this->assertTrue(\Group_User::isUserInGroup($users_id, $group_id));
-        $this->assertTrue(\Group_User::isUserInGroup($users_id, $group3_id));
 
         // update criteria
         $this->updateItem(\RuleAction::class, $act_id, [
