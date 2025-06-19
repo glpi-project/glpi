@@ -45,7 +45,7 @@ describe('Form category', () => {
         cy.findByRole('button', { name: 'Select an illustration' }).click();
         cy.findByRole('dialog').as('modal');
         cy.get('@modal').should('have.attr', 'data-cy-shown', 'true');
-        cy.get('@modal').findByRole('img', { name: 'Car' }).click();
+        cy.get('@modal').findByRole('img', { name: 'Cartridge' }).click();
 
         // Create and go to the new category
         cy.findByRole('button', { name: 'Add' }).click();
@@ -56,7 +56,7 @@ describe('Form category', () => {
         cy.findByLabelText('Description')
             .should('have.value', '<p>This is a test category</p>')
             .awaitTinyMCE().should('have.text', 'This is a test category');
-        cy.findByRole('img', { name: 'Car' }).should('be.visible');
+        cy.findByRole('img', { name: 'Cartridge' }).should('be.visible');
     });
 
     it('can open illustration picker, show forms attached to the category and go back to illustration picker', () => {
@@ -76,9 +76,9 @@ describe('Form category', () => {
         cy.findByRole('button', { name: 'Select an illustration' }).click();
         cy.findByRole('dialog').as('modal');
         cy.get('@modal').should('have.attr', 'data-cy-shown', 'true');
-        cy.get('@modal').findByRole('img', { name: 'Car' }).click();
+        cy.get('@modal').findByRole('img', { name: 'Cartridge' }).click();
         cy.get('@modal').should('not.exist');
-        cy.findByRole('img', { name: 'Car' }).should('be.visible');
+        cy.findByRole('img', { name: 'Cartridge' }).should('be.visible');
 
         // Go to forms tab
         cy.findByRole('tab', { name: 'Forms 1' }).click();
@@ -88,8 +88,8 @@ describe('Form category', () => {
         cy.findByRole('tab', { name: 'Service catalog category' }).click();
         cy.findByRole('button', { name: 'Select an illustration' }).click();
         cy.get('@modal').should('have.attr', 'data-cy-shown', 'true');
-        cy.get('@modal').findByRole('img', { name: 'Car' }).click();
+        cy.get('@modal').findByRole('img', { name: 'Cartridge' }).click();
         cy.get('@modal').should('not.exist');
-        cy.findByRole('img', { name: 'Car' }).should('be.visible');
+        cy.findByRole('img', { name: 'Cartridge' }).should('be.visible');
     });
 });
