@@ -2233,26 +2233,6 @@ class DBmysql
     }
 
     /**
-     * Is MySQL?
-     *
-     * @return bool
-     */
-    public function isMysql(): bool
-    {
-        return strpos(strtolower($this->getVersionComment()), 'mysql') !== false;
-    }
-
-    /**
-     * Is MariaDB?
-     *
-     * @return bool
-     */
-    public function isMariaDb(): bool
-    {
-        return strpos(strtolower($this->getVersionComment()), 'mariadb') !== false;
-    }
-
-    /**
      * Check if the database supports new replica terminology (MySQL 8.4+ or MariaDB 10.5.2+).
      *
      * @param bool $mysql Check if MySQL is supported (default: true)
@@ -2262,10 +2242,13 @@ class DBmysql
      */
     private function supportsNewReplicaTerminology(bool $mysql = true, bool $mariadb = true): bool
     {
+        $version = $this->getVersion();
+        $version_comment = strtolower($this->getVersionComment());
+
         return (
-            $mysql && $this->isMysql() && version_compare($this->getVersion(), '8.4', '>=')
+            $mysql && strpos($version_comment, 'mysql') !== false && version_compare($version, '8.4', '>=')
         ) || (
-            $mariadb && $this->isMariaDb() && version_compare($this->getVersion(), '10.5.2', '>=')
+            $mariadb && strpos($version_comment, 'mariadb') !== false && version_compare($version, '10.5.2', '>=')
         );
     }
 
