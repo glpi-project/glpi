@@ -6595,6 +6595,7 @@ HTML;
                 foreach ($groups as $group) {
                     if (!isset($_SESSION['_ldap_groups']) || !in_array($group['groups_id'], $_SESSION['_ldap_groups'])) {
                         $group_user->delete($group);
+                        unset($_SESSION["_ldap_groups"]);
                     }
                 }
             }
