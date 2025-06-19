@@ -688,7 +688,7 @@ class DisplayPreference extends CommonDBTM
         switch ($item->getType()) {
             case 'Preference':
                 if (Session::haveRight(self::$rightname, self::PERSONAL)) {
-                    return __('Personal View');
+                    return self::createTabEntry(text: __('Personal View'), icon: 'ti ti-columns-3');
                 }
                 break;
 
