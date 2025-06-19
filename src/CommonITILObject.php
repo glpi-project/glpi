@@ -5018,7 +5018,6 @@ abstract class CommonITILObject extends CommonDBTM
                 $itil_table = self::getTable();
 
                 // QueryFunction::max is used to match a late ola amongst associated OLAs
-                //                throw new \Exception('Voir la sub query au dessous QuerySubQuery()');
                 return QueryFunction::max(
                     QueryFunction::if(
                         // An OLA is considered late if:
@@ -5027,6 +5026,7 @@ abstract class CommonITILObject extends CommonDBTM
                             'NOT' => [
                                 'OR' => [
                                     "{$table}.due_time" => null,
+                                    // remove OLA of other type, fitering in Ticket::rawSearchOptions() is not working, because it does a left join, not an inner join.
                                     "{$table}.olas_id" => new QuerySubQuery(
                                         [
                                             'SELECT' => 'id',

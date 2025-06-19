@@ -1174,7 +1174,7 @@ class Ticket extends CommonITILObject
         if ($olalevels_id && $ola->getFromDB($olas_id)) {
             //            $ola->clearInvalidLevels($this->fields['id']);
             // dégagé car supprime les niveaux des autres olas
-            // @todo peut-être remettre ce nettoyage en filtrant par ola
+            // @todoseb peut-être remettre ce nettoyage en filtrant par ola
             // mais à priori c'est inutile car on deleteLevelsToDo avant l'appel de manageOlaLevel (sauf dans /home/seb/dev/glpi_main/src/CommonITILObject.php) mais ça va dégager
             $calendars_id = Entity::getUsedConfig(
                 'calendars_strategy',
@@ -2699,7 +2699,7 @@ JAVASCRIPT;
             'id'                 => '190',
             'table'              => 'glpi_olas',
             'field'              => 'name',
-            'name'               =>  __('Internal time to own').' - (190) ' . __('name'), // @todoseb virer le 190
+            'name'               =>  __('Internal time to own') . ' - (190) ' . __('name'), // @todoseb virer le 190
             'massiveaction'      => false,
             'datatype'           => 'dropdown',
             'joinparams'         => [
@@ -2714,16 +2714,16 @@ JAVASCRIPT;
             'forcegroupby'       => true,
         ];
 
-        // OLA TTO due time (+ Progress // @todoseb progress à implémenter )
-        // @todoseb documenter le trick commencer sur items_ola pour y finir
+        // OLA TTO due time (+ Progress)
+        // because filtering on items_olas is required, by type, we need to use a beforejoin
         $tab[] = [
             'id' => '186',
             'table' => 'glpi_items_olas',
             'field' => 'due_time',
-            'name' => __('Internal time to own'). ' - (186) ' . __('due time'), // @todoseb virer le 186 
+            'name' => __('Internal time to own') . ' - (186) ' . __('due time'), // @todoseb virer le 186
             'massiveaction' => false,
             'nosearch'           => true,
-            'additionalfields'   => ['TABLE.status'],
+            'additionalfields'   => ['TABLE.status', 'TABLE.takeintoaccount_delay_stat', 'TABLE.date', 'waiting_time'],
             'joinparams' => [
                 'jointype' => 'child',
                 'linkfield' => 'olas_id',
@@ -2744,6 +2744,7 @@ JAVASCRIPT;
                 ],
             ],
             'forcegroupby' => true,
+            'customdata' => ['ola_type' => SLM::TTO],
         ];
 
         // OLA TTO exceeded
@@ -2754,7 +2755,7 @@ JAVASCRIPT;
             'name'               => __('Internal time to own exceeded (187)'), // @todoseb virer le 187
             'datatype'           => 'bool',
             'massiveaction'      => false,
-            'computation'        => self::generateSLAOLAComputation('internal_time_to_own',  'glpi_items_olas'),
+            'computation'        => self::generateSLAOLAComputation('internal_time_to_own', 'glpi_items_olas'),
             'joinparams' => [
                 'jointype' => 'child',
                 'linkfield' => 'olas_id',
@@ -2782,7 +2783,7 @@ JAVASCRIPT;
             'id'                 => '191',
             'table'              => 'glpi_olas',
             'field'              => 'name',
-            'name'               => __('Internal time to resolve'). ' - (191)' . __('name'), // @todoseb virer le 191
+            'name'               => __('Internal time to resolve') . ' - (191)' . __('name'), // @todoseb virer le 191
             'massiveaction'      => false,
             'datatype'           => 'dropdown',
             'joinparams'         => [
@@ -2797,16 +2798,16 @@ JAVASCRIPT;
             'forcegroupby'       => true,
         ];
 
-        // OLA TTR due time (+ Progress // @todoseb progress à implémenter )
+        // OLA TTR due time (+ Progress)
         $tab[] = [
             'id' => '180',
             'table' => 'glpi_items_olas',
             'field' => 'due_time',
             'datatype' => 'datetime',
-            'name' => __('Internal time to resolve'). ' - (180) ' . __('due time'), // @todoseb virer le 180
+            'name' => __('Internal time to resolve') . ' - (180) ' . __('due time'), // @todoseb virer le 180
             'massiveaction' => false,
             'nosearch'           => true,
-            'additionalfields'   => ['TABLE.status'],
+            'additionalfields'   => ['TABLE.status', 'TABLE.name'],
             'joinparams' => [
                 'jointype' => 'child',
                 'linkfield' => 'olas_id',
@@ -2827,6 +2828,7 @@ JAVASCRIPT;
                 ],
             ],
             'forcegroupby' => true,
+            'customdata' => ['ola_type' => SLM::TTR],
         ];
 
         // OLA TTR exceeded
