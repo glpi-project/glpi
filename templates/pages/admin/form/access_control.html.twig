@@ -65,8 +65,6 @@
 
                 <section
                     class="mb-5"
-                    style="{{ access_control.fields.is_active == false ? "opacity: 0.5" : "" }}"
-                    {# Disabled item are showed with a lower opacity #}
                     data-glpi-toggle-control-target
                     data-glpi-access-control-form
                     aria-label="{{ strategy.getLabel() }}"
@@ -121,13 +119,6 @@
 </div>
 
 <script>
-    // Toggle disabled state
-    $("[data-glpi-toggle-control]").on("change", function() {
-        $(this).closest("[data-glpi-toggle-control-target]")
-            .css("opacity", this.checked ? 1 : 0.5)
-        ;
-    });
-
     // Toggle state if any input is modified
     $("section[data-glpi-access-control-form] :input").on("change", function(e) {
         // Do not trigger on this is_active checkbox itself

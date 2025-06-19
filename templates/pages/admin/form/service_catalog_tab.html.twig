@@ -34,9 +34,7 @@
 
 <form method="POST" action="{{ item.getFormURL() }}" data-submit-once>
     <div class="py-2 px-3 container-narrow ms-0">
-        <section data-service-catalog-config
-            style="{{ item.isField('show_in_service_catalog') and item.fields.show_in_service_catalog ? "opacity: 0.5" : "" }}"
-        >
+        <section data-service-catalog-config>
             <h2 class="d-flex align-items-center">
                 <i class="{{ icon }} me-2"></i>
                 {{ __("Service catalog configuration") }}
@@ -45,8 +43,6 @@
                         <input type="hidden" value="0" name="show_in_service_catalog">
                         <input aria-label="{{ __(" Active") }}" class="form-check-input" type="checkbox"
                             name="show_in_service_catalog" value="1"
-                            onchange="$('[data-service-catalog-config]').css('opacity', this.checked ? 1 : 0.5)"
-                            {{ item.fields.show_in_service_catalog == true ? "checked" : "" }}
                         >
                     </label>
                 {% endif %}
