@@ -7,13 +7,7 @@ on:
 
 jobs:
   trigger-docker-releases:
-    permissions:
-      contents: "write"
-      pull-requests: "write"
     name: "Trigger Docker releases"
-    runs-on: "ubuntu-latest"
-    steps:
-      - name: "Checkout"
-        uses: "glpi-project/docker-images/.github/workflows/glpi.yml@main"
-        with:
-            glpi-version: "${{ github.event.release.tag_name }}"
+    uses: "glpi-project/docker-images/.github/workflows/glpi.yml@main"
+    with:
+        glpi-version: "${{ github.event.release.tag_name }}"
