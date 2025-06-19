@@ -445,7 +445,7 @@ class AnswersHandlerTest extends DbTestCase
         $answer_set = $handler->saveAnswers($form, $answers, $users_id);
 
         foreach ($expected_set as $field => $expected_value) {
-            $this->assertEquals($expected_value, $answer_set->fields[$field]);
+            $this->assertEqualsCanonicalizing($expected_value, $answer_set->fields[$field]);
         }
 
         // The `createDestinations` part of the `saveAnswers` method is tested
