@@ -1,4 +1,4 @@
-name: "Trigger Docker releases when a new GitHub release is published"
+name: "Trigger Docker releases"
 
 on:
   release:
