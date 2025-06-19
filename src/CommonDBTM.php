@@ -6785,14 +6785,11 @@ TWIG, $twig_params);
 
     /**
      * Return the action to execute after a generic form action has been done.
-     *
-     * @param string $form_action
-     * @return string|null
      */
-    public static function getPostFormAction(string $form_action): ?string
+    public static function getPostFormAction(string $form_action, bool $action_success): ?string
     {
         return match ($form_action) {
-            'add' => 'backcreated',
+            'add' => $action_success ? 'backcreated' : 'back',
             'update' => 'back',
             'delete', 'restore', 'purge' => 'list',
             'unglobalize' => 'form',

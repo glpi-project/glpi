@@ -939,7 +939,7 @@ class Infocom extends CommonDBChild
         Html::popFooter();
     }
 
-    public static function getPostFormAction(string $form_action): ?string
+    public static function getPostFormAction(string $form_action, bool $action_success): ?string
     {
         // Always return to the previous page
         return 'back';
