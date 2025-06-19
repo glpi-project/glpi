@@ -82,6 +82,7 @@ The present file will list all changes made to the project; according to the
 - Searching project tasks in the legacy API is no longer restricted to only tasks the user is assigned to.
 - Renamed `From email header` and `To email header` criteria in the mails receiver rules to `From email address` and `To email address` respectively.
 - Replaced text mentions of "Validations" with "Approvals" to unify the terminology used.
+- User passwords are no longer wiped when the authentication source/server doesn't actually change during "Change of the authentication method" action.
 
 ### Deprecated
 - Survey URL tags `TICKETCATEGORY_ID` and `TICKETCATEGORY_NAME` are deprecated and replaced by `ITILCATEGORY_ID` and `ITILCATEGORY_NAME` respectively.
@@ -241,6 +242,7 @@ The present file will list all changes made to the project; according to the
 - The `$store_path` parameter has been removed from the `Dropdown::dropdownIcons()` method.
 - The `PLUGINS_DIRECTORIES` constant has been renamed to `GLPI_PLUGINS_DIRECTORIES`.
 - Most of the `Profile::show*()` methods have been made private.
+- `server` parameter of `User::changeAuthMethod()` now defaults to '0' instead of '-1' which was an invalid value when using unsigned integers.
 
 #### Deprecated
 - Usage of the `/marketplace` path for plugins URLs. All plugins URLs should now start with `/plugins`.

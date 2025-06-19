@@ -2300,4 +2300,70 @@ class UserTest extends \DbTestCase
         $result = $DB->request($query)->current();
         $this->assertSame($expected, $result['name']);
     }
+
+    public function testChangeAuthMethod()
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        $this->login();
+        $user = $this->createItem(User::class, [
+            'name' => 'testChangeAuthMethod',
+            'password' => 'testChangeAuthMethod123',
+            'password2' => 'testChangeAuthMethod123',
+        ], ['password', 'password2']);
+        $this->assertTrue(User::changeAuthMethod([$user->getID()], \Auth::DB_GLPI));
+        // Password should not be empty since the auth method isn't different
+        $it = $DB->request([
+            'SELECT' => ['password', 'authtype', 'auths_id'],
+            'FROM'   => User::getTable(),
+            'WHERE'  => ['id' => $user->getID()],
+        ])->current();
+        $this->assertNotEmpty($it['password']);
+        $this->assertEquals(\Auth::DB_GLPI, $it['authtype']);
+        $this->assertEquals(0, $it['auths_id']);
+
+        $this->assertTrue(User::changeAuthMethod([$user->getID()], \Auth::LDAP, 1));
+        // Password should be empty
+        $it = $DB->request([
+            'SELECT' => ['password', 'authtype', 'auths_id'],
+            'FROM'   => User::getTable(),
+            'WHERE'  => ['id' => $user->getID()],
+        ])->current();
+        $this->assertEmpty($it['password']);
+        $this->assertEquals(\Auth::LDAP, $it['authtype']);
+        $this->assertEquals(1, $it['auths_id']);
+
+        $this->assertTrue($DB->update(
+            User::getTable(),
+            ['password' => 'testChangeAuthMethod123'],
+            ['id' => $user->getID()]
+        ));
+        $this->assertTrue(User::changeAuthMethod([$user->getID()], \Auth::LDAP, 2));
+        // Changing servers of the same type should also empty the password
+        $it = $DB->request([
+            'SELECT' => ['password', 'authtype', 'auths_id'],
+            'FROM'   => User::getTable(),
+            'WHERE'  => ['id' => $user->getID()],
+        ])->current();
+        $this->assertEmpty($it['password']);
+        $this->assertEquals(\Auth::LDAP, $it['authtype']);
+        $this->assertEquals(2, $it['auths_id']);
+
+        // Check with same LDAP server again to ensure password preservation isn't just for DB_GLPI, even though the other core auth types don't store passwords in the DB
+        $this->assertTrue($DB->update(
+            User::getTable(),
+            ['password' => 'testChangeAuthMethod123'],
+            ['id' => $user->getID()]
+        ));
+        $this->assertTrue(User::changeAuthMethod([$user->getID()], \Auth::LDAP, 2));
+        $it = $DB->request([
+            'SELECT' => ['password', 'authtype', 'auths_id'],
+            'FROM'   => User::getTable(),
+            'WHERE'  => ['id' => $user->getID()],
+        ])->current();
+        $this->assertNotEmpty($it['password']);
+        $this->assertEquals(\Auth::LDAP, $it['authtype']);
+        $this->assertEquals(2, $it['auths_id']);
+    }
 }

@@ -4467,7 +4467,7 @@ HTML;
      *
      * @return boolean
      */
-    public static function changeAuthMethod(array $IDs = [], $authtype = 1, $server = -1)
+    public static function changeAuthMethod(array $IDs = [], $authtype = 1, $server = 0)
     {
         /** @var \DBmysql $DB */
         global $DB;
@@ -4490,6 +4490,10 @@ HTML;
                 ],
                 [
                     'id' => $IDs,
+                    'OR' => [
+                        'authtype' => ['<>', $authtype],
+                        'auths_id' => ['<>', $server],
+                    ],
                 ]
             );
             if ($result) {
