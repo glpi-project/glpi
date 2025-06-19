@@ -118,7 +118,7 @@ abstract class SLMField extends AbstractConfigField implements DestinationFieldC
             return $input;
         }
 
-        $input[$slm::getFieldNames($this->getType())[1]] = $slm_id;
+        $input[$slm::getFieldNames($this->getType())[1]] = $slm_id; // @todoseb usage de getFieldNames()
 
         return $input;
     }
