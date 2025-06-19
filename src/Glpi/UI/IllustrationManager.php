@@ -272,8 +272,9 @@ final class IllustrationManager
     {
         $twig = TemplateRenderer::getInstance();
         $size = $this->computeSize($size);
+        $url = !empty($icon_id) ? "/UI/Illustration/CustomIllustration/$icon_id" : null;
         return $twig->render('components/illustration/custom_icon.html.twig', [
-            'url'    => "/UI/Illustration/CustomIllustration/$icon_id",
+            'url'    => $url,
             'height' => $size,
             'width'  => $size,
         ]);
@@ -299,8 +300,9 @@ final class IllustrationManager
         ?int $width = null,
     ): string {
         $twig = TemplateRenderer::getInstance();
+        $url = !empty($icon_id) ? "/UI/Illustration/CustomScene/$icon_id" : null;
         return $twig->render('components/illustration/custom_icon.html.twig', [
-            'url'    => "/UI/Illustration/CustomScene/$icon_id",
+            'url'    => $url,
             'height' => $this->computeSize($height),
             'width'  => $this->computeSize($width),
         ]);
