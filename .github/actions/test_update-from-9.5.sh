@@ -9,13 +9,16 @@ bin/console database:configure \
   --reconfigure --db-name=glpitest-9.5 --db-host=db --db-user=root --db-password="" \
   --strict-configuration
 
+# Force delete old oauth keys to test they are regenerated
+rm -f ./tests/config/oauth.pem ./tests/config/oauth.pub
+
 # Execute update
 ## First run should do the migration (with no warnings/errors).
 bin/console database:update --skip-db-checks --ansi --no-interaction --allow-unstable | tee $LOG_FILE
 if [[ -n $(grep "Error\|Warning\|No migration needed." $LOG_FILE) ]];
   then echo "bin/console database:update command FAILED" && exit 1;
 fi
-## Second run should do nothing.
+# Second run should do nothing.
 bin/console database:update --skip-db-checks --ansi --no-interaction --allow-unstable | tee $LOG_FILE
 if [[ -z $(grep "No migration needed." $LOG_FILE) ]];
   then echo "bin/console database:update command FAILED" && exit 1;
@@ -96,6 +99,11 @@ bin/console database:configure \
   --no-interaction --ansi \
   --reconfigure --db-name=glpi --db-host=db --db-user=root --db-password="" \
   --strict-configuration
+
+# Check the OAuth keys are generated
+if [ ! -f ./tests/config/oauth.pem ] || [ ! -f ./tests/config/oauth.pub ]; then
+  echo "OAuth keys are missing" && exit 1;
+fi
 
 mkdir -p ./tests/files/_cache
 tests/bin/test-updated-data --host=db --user=root --fresh-db=glpi --updated-db=glpitest-9.5 --ansi --no-interaction | tee $LOG_FILE
