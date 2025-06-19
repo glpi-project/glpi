@@ -6597,6 +6597,9 @@ HTML;
                         $group_user->delete($group);
                     }
                 }
+                if (!isset($_SESSION['_ldap_groups'])) {
+                    unset($_SESSION['_ldap_groups']);
+                }
             }
             return;
         }
