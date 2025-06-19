@@ -74,8 +74,8 @@ describe('Illustration picker', () => {
         ];
         const icons_from_second_page = [
             'Browse help articles',
-            'Car',
             'Area chart',
+            'Search chart',
         ];
 
         // We are on the first page by default.
