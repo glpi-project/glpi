@@ -31,9 +31,7 @@
  #}
 
 <img
-    {% if url and url|length %}
-        src="{{ path(url) }}"
-    {% endif %}
+    src="{{ path(url) }}"
     width="{{ width }}"
     height="{{ height }}"
 />
