@@ -329,6 +329,7 @@ class NetworkPortInstantiation extends CommonDBChild
             'device_attributes' => $device_attributes,
             'device_names'      => $device_names,
             'alert'             => $alert,
+            'item'              => $this,
         ];
         // language=Twig
         echo TemplateRenderer::getInstance()->renderFromStringTemplate(<<<TWIG
