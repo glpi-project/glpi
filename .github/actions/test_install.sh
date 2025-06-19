@@ -23,6 +23,11 @@ bin/console database:check_schema_integrity --ansi --no-interaction --strict
 bin/console tools:check_database_keys --ansi --no-interaction --detect-useless-keys
 bin/console tools:check_database_schema_consistency --ansi --no-interaction
 
+# Check the OAuth keys are generated
+if [ ! -f ./tests/config/oauth.pem ] || [ ! -f ./tests/config/oauth.pub ]; then
+  echo "OAuth keys are missing" && exit 1;
+fi
+
 # Execute update
 ## Should do nothing.
 bin/console database:update --ansi --no-interaction | tee $LOG_FILE
