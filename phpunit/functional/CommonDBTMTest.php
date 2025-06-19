@@ -34,6 +34,7 @@
 
 namespace tests\units;
 
+use CommonDBTM;
 use DbTestCase;
 use Computer;
 use Document;
@@ -1908,4 +1909,65 @@ class CommonDBTMTest extends DbTestCase
         $this->checkInput($item, $item->getID(), $update_input);
     }
 
+
+    /**
+     * Provider for self::testGetSpecificMassiveActions().
+     */
+    public static function getSpecificMassiveActionsProvider()
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+        // Test presence of "Add transfer list" action
+        foreach (get_declared_classes() as $class) {
+            if (
+                is_subclass_of($class, \CommonDBTM::class)
+                && !(new \ReflectionClass($class))->isAbstract()
+            ) {
+                $data = [
+                    'itemtype' => $class,
+                    'rights'   => [
+                        'transfer' => READ,
+                    ],
+                    'expected' => [],
+                    'unexpected' => [
+                        \MassiveAction::class . \MassiveAction::CLASS_ACTION_SEPARATOR . 'add_transfer_list',
+                    ],
+                ];
+                if (
+                    $DB->fieldExists($class::getTable(), 'entities_id')
+                    && $class != \User::class
+                    && $class != \Rule::class
+                ) {
+                    $data['expected'] = [\MassiveAction::class . \MassiveAction::CLASS_ACTION_SEPARATOR . 'add_transfer_list'];
+                    $data['unexpected'] = [];
+                }
+                yield $data;
+            }
+        }
+    }
+
+    /**
+     * Test CommonDBTM getSpecificMassiveActions() method.
+     *
+     * @dataProvider getSpecificMassiveActionsProvider
+     */
+    public function testGetSpecificMassiveActions(
+        string $itemtype,
+        array $rights,
+        array $expected,
+        array $unexpected
+    ): void {
+        $this->login();
+        foreach ($rights as $rightname => $right) {
+            $_SESSION['glpiactiveprofile'][$rightname] = $right;
+        }
+        $item = new $itemtype();
+        $actions = $item->getSpecificMassiveActions();
+        foreach ($expected as $expected_action) {
+            $this->assertArrayHasKey($expected_action, $actions);
+        }
+        foreach ($unexpected as $unexpected_action) {
+            $this->assertArrayNotHasKey($unexpected_action, $actions);
+        }
+    }
 }
