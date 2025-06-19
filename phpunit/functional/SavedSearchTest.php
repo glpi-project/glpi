@@ -275,6 +275,7 @@ class SavedSearchTest extends DbTestCase
         // Assert: validate the available actions
         $this->assertEquals([
             'Delete permanently',
+            'Add to transfer list',
             'Unset as default',
             'Change count method',
             'Change visibility',

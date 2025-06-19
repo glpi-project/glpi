@@ -4113,7 +4113,7 @@ class CommonDBTM extends CommonGLPI
         }
 
         if (static::canUpdate()) {
-            if ($DB->fieldExists(static::getTable(), 'entities_id')) {
+            if ($DB->fieldExists(static::getTable(), 'entities_id') && !$this instanceof User) {
                 MassiveAction::getAddTransferList($actions);
             }
 
