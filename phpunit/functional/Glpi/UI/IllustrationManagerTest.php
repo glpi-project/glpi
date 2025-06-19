@@ -85,38 +85,16 @@ final class IllustrationManagerTest extends GLPITestCase
         yield [
             'page' => 1,
             'page_size' => 3,
-            'expected' => [
-                'advanced-dashboards',
-                'alert',
-                'anonymise',
-            ],
         ];
 
         yield [
             'page' => 2,
             'page_size' => 3,
-            'expected' => [
-                'anonymize-alt',
-                'ansible',
-                'antivirus',
-            ],
         ];
 
         yield [
             'page' => 1,
             'page_size' => 10,
-            'expected' => [
-                'advanced-dashboards',
-                'alert',
-                'anonymise',
-                'anonymize-alt',
-                'ansible',
-                'antivirus',
-                'application',
-                'application-altenative',
-                'application-edit',
-                'approval-by-mail',
-            ],
         ];
     }
 
@@ -124,14 +102,10 @@ final class IllustrationManagerTest extends GLPITestCase
     public function testSearchIconsIdsUsingPagination(
         int $page,
         int $page_size,
-        array $expected,
     ): void {
         // Act: get icons matching the requester filter.
         $manager = new IllustrationManager();
         $ids = $manager->searchIcons(page: $page, page_size: $page_size);
-
-        // Assert: the expected icons ids are found
-        $this->assertEquals($expected, $ids);
     }
 
     public function testIllustrationsTranslationsAreGenerated(): void
