@@ -1681,6 +1681,22 @@ class DBmysql
     }
 
     /**
+     * Get database raw version and server name
+     *
+     * @return array<string, string>
+     */
+    public function getVersionAndServer(): array
+    {
+        $version_string = $this->getVersion();
+        $server  = preg_match('/-MariaDB/', $version_string) ? 'MariaDB' : 'MySQL';
+        $version = preg_replace('/^((\d+\.?)+).*$/', '$1', $version_string);
+        return [
+            'version' => $version,
+            'server' => $server,
+        ];
+    }
+
+    /**
      * Starts a transaction
      *
      * @return boolean
@@ -2218,50 +2234,23 @@ class DBmysql
     }
 
     /**
-     * Get version comment from database.
-     *
-     * @return string
-     * @throws \RuntimeException When unable to determine version comment
-     */
-    private function getVersionComment(): string
-    {
-        $variables = $this->getGlobalVariables(['version_comment']);
-        if (!isset($variables['version_comment'])) {
-            throw new \RuntimeException('Unable to determine version comment');
-        }
-        return $variables['version_comment'];
-    }
-
-    /**
-     * Check if the database supports new replica terminology (MySQL 8.4+ or MariaDB 10.5.2+).
-     *
-     * @param bool $mysql Check if MySQL is supported (default: true)
-     * @param bool $mariadb Check if MariaDB is supported (default: true)
-     *
-     * @return bool
-     */
-    private function supportsNewReplicaTerminology(bool $mysql = true, bool $mariadb = true): bool
-    {
-        $version = $this->getVersion();
-        $version_comment = strtolower($this->getVersionComment());
-
-        return (
-            $mysql && strpos($version_comment, 'mysql') !== false && version_compare($version, '8.4', '>=')
-        ) || (
-            $mariadb && strpos($version_comment, 'mariadb') !== false && version_compare($version, '10.5.2', '>=')
-        );
-    }
-
-    /**
      * Get binary log status query, in regard of the MySQL/MariaDB version.
      *
      * @return string
      */
     public function getBinaryLogStatusQuery(): string
     {
-        return $this->supportsNewReplicaTerminology()
-            ? "SHOW BINARY LOG STATUS"
-            : "SHOW MASTER STATUS";
+        $info = $this->getVersionAndServer();
+
+        if ($info['server'] === 'MySQL' && version_compare($info['version'], '8.4', '>=')) {
+            return "SHOW BINARY LOG STATUS";
+        }
+
+        if ($info['server'] === 'MariaDB' && version_compare($info['version'], '10.5.2', '>=')) {
+            return "SHOW BINLOG STATUS";
+        }
+
+        return "SHOW MASTER STATUS";
     }
 
     /**
@@ -2271,9 +2260,13 @@ class DBmysql
      */
     public function getReplicaStatusQuery(): string
     {
-        return $this->supportsNewReplicaTerminology()
-            ? "SHOW REPLICA STATUS"
-            : "SHOW SLAVE STATUS";
+        $info = $this->getVersionAndServer();
+
+        if ($info['server'] === 'MySQL' && version_compare($info['version'], '8.4', '>=')) {
+            return "SHOW REPLICA STATUS";
+        }
+
+        return "SHOW SLAVE STATUS";
     }
 
     /**
@@ -2283,7 +2276,9 @@ class DBmysql
      */
     public function getReplicaStatusVars(): array
     {
-        if ($this->supportsNewReplicaTerminology(true, false)) {
+        $info = $this->getVersionAndServer();
+
+        if ($info['server'] === 'MySQL' && version_compare($info['version'], '8.4', '>=')) {
             return [
                 'io_running'            => 'Replica_IO_Running',
                 'sql_running'           => 'Replica_SQL_Running',
