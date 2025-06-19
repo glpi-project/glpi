@@ -44,7 +44,6 @@ class Preference extends CommonGLPI
         return __('Settings');
     }
 
-
     public function defineTabs($options = [])
     {
 
@@ -64,7 +63,7 @@ class Preference extends CommonGLPI
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-        return __('Two-factor authentication (2FA)');
+        return self::createTabEntry(text: __('Two-factor authentication (2FA)'), icon: 'ti ti-shield-lock');
     }
 
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)

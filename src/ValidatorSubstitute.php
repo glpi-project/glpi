@@ -54,6 +54,11 @@ final class ValidatorSubstitute extends CommonDBTM
         return '';
     }
 
+    public static function getIcon()
+    {
+        return 'ti ti-replace-user';
+    }
+
     public static function displayTabContentForItem(CommonGLPI $item, $tabnum = 1, $withtemplate = 0)
     {
         switch ($item->getType()) {

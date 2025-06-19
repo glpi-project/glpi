@@ -938,7 +938,7 @@ class Config extends CommonDBTM
 
         switch (get_class($item)) {
             case Preference::class:
-                return __('Personalization');
+                return self::createTabEntry(text: __('Personalization'), icon: 'ti ti-adjustments');
 
             case User::class:
                 if (
