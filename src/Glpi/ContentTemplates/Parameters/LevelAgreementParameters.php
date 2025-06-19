@@ -54,6 +54,7 @@ abstract class LevelAgreementParameters extends AbstractParameters
             new AttributeParameter("type", _n('Type', 'Types', 1)),
             new AttributeParameter("duration", __('Duration')),
             new AttributeParameter("unit", __('Duration unit')),
+            // @todoseb ajouter le group ici
         ];
     }
 
