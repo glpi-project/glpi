@@ -8584,7 +8584,11 @@ abstract class CommonITILObject extends CommonDBTM
             if (!$bypass_rights) {
                 $private_task_crit = [];
                 if (!Session::haveRight($task_class::$rightname, CommonITILTask::SEEPRIVATE)) {
-                    $private_task_crit = ['is_private' => 0, 'users_id' => Session::getLoginUserID()];
+                    $private_task_crit = [
+                        'is_private' => 0,
+                        'users_id' => Session::getLoginUserID(),
+                        'users_id_tech' => Session::getLoginUserID(),
+                    ];
                 }
                 if (Session::haveRight($task_class::$rightname, CommonITILTask::SEEPRIVATEGROUPS) && !empty($_SESSION["glpigroups"])) {
                     $private_task_crit['groups_id_tech'] = $_SESSION["glpigroups"];

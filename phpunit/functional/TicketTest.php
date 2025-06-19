@@ -7380,6 +7380,17 @@ HTML,
             ]
         );
 
+        $task6 = $this->createItem(
+            \TicketTask::class,
+            [
+                'tickets_id'    => $ticket->getID(),
+                'content'       => 'private task assign to tech user',
+                'is_private'    => 1,
+                'users_id_tech' => $tech_user_id,
+                'date_creation' => date('Y-m-d H:i:s', strtotime('+20s', $now)), // to ensure result order is correct
+            ]
+        );
+
         $document = $this->createTxtDocument();
 
         $this->createItems(
@@ -7410,6 +7421,11 @@ HTML,
                     'items_id'       => $task5->getID(),
                     'itemtype'       => \TicketTask::class,
                 ],
+                [
+                    'documents_id'   => $document->getID(),
+                    'items_id'       => $task6->getID(),
+                    'itemtype'       => \TicketTask::class,
+                ],
             ]
         );
 
@@ -7429,6 +7445,7 @@ HTML,
                 'private task assigned to normal user',
                 'private task of normal user',
                 'private task of tech user',
+                'private task assign to tech user',
                 'public task',
             ],
         ];
@@ -7446,6 +7463,7 @@ HTML,
             ],
             'expected_tasks'     => [
                 'private task of tech user',
+                'private task assign to tech user',
                 'public task',
             ],
         ];
@@ -7502,6 +7520,7 @@ HTML,
                     'private task assigned to normal user',
                     'private task of normal user',
                     'private task of tech user',
+                    'private task assign to tech user',
                     'public task',
                 ],
             ];
@@ -7572,8 +7591,9 @@ HTML,
             foreach ($timeline as $entry) {
                 if (
                     $entry['type'] === \TicketTask::class &&
-                    isset($entry['item']['object']['fields']['name']) &&
-                    $entry['item']['object']['fields']['name'] !== 'private task assigned to normal user') {
+                    isset($entry['item']['content']) &&
+                    $entry['item']['content'] !== 'private task assigned to normal user'
+                ) {
                     $this->assertArrayHasKey('documents', $entry);
                 }
             }
