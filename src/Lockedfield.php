@@ -108,7 +108,7 @@ class Lockedfield extends CommonDBTM
         return false;
     }
 
-    public static function getPostFormAction(string $form_action): ?string
+    public static function getPostFormAction(string $form_action, bool $action_success): ?string
     {
         // Always return to the locked fields list page
         return 'list';

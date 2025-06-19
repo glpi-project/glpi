@@ -163,7 +163,7 @@ class GenericFormController extends AbstractController
             );
         }
 
-        $post_action = $object::getPostFormAction($form_action);
+        $post_action = $object::getPostFormAction($form_action, $action_result);
 
         return match ($post_action) {
             'backcreated' => $_SESSION['glpibackcreated']
