@@ -1918,10 +1918,14 @@ class CommonDBTMTest extends DbTestCase
         /** @var \DBmysql $DB */
         global $DB;
         // Test presence of "Add transfer list" action
-        foreach (get_declared_classes() as $class) {
+        foreach ((new static())->getClasses() as $class) {
             if (
                 is_subclass_of($class, \CommonDBTM::class)
+                && !is_subclass_of($class, \CommonDBConnexity::class)
+                && !is_subclass_of($class, \Rule::class)
+                && $class != \Rule::class
                 && !(new \ReflectionClass($class))->isAbstract()
+                && $DB->tableExists($class::getTable())
             ) {
                 $data = [
                     'itemtype' => $class,
@@ -1936,7 +1940,6 @@ class CommonDBTMTest extends DbTestCase
                 if (
                     $DB->fieldExists($class::getTable(), 'entities_id')
                     && $class != \User::class
-                    && $class != \Rule::class
                 ) {
                     $data['expected'] = [\MassiveAction::class . \MassiveAction::CLASS_ACTION_SEPARATOR . 'add_transfer_list'];
                     $data['unexpected'] = [];

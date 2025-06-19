@@ -203,7 +203,8 @@ class Unmanaged extends CommonDBTM
 
     public function getSpecificMassiveActions($checkitem = null)
     {
-        $actions = [];
+        $actions = parent::getSpecificMassiveActions($checkitem);
+
         if (self::canUpdate()) {
             $actions['Unmanaged' . MassiveAction::CLASS_ACTION_SEPARATOR . 'convert']    = __('Convert');
         }
