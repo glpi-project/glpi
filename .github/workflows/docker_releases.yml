@@ -1,0 +1,19 @@
+name: "Trigger Docker releases when a new GitHub release is published"
+
+on:
+  release:
+    types:
+      - "published"
+
+jobs:
+  trigger-docker-releases:
+    permissions:
+      contents: "write" # needed to create a new branch and push commits
+      pull-requests: "write" # needed to create a pull request
+    name: "Trigger Docker releases"
+    runs-on: "ubuntu-latest"
+    steps:
+      - name: "Checkout"
+        uses: "glpi-project/docker-images/.github/workflows/glpi.yml@main"
+        with:
+            glpi-version: "${{ github.event.release.tag_name }}"
