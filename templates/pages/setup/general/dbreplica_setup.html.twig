@@ -66,7 +66,7 @@
     <span>{{ __('Replication status') }}</span>
 </div>
 
-{% set primary_ok      = replication_status['primary']['file'] %}
+{% set primary_ok      = replication_status['primary']['file'] ?? false %}
 {% set primary_unknown = replication_status['primary']['error'] is defined and replication_status['primary']['error'] is not null %}
 
 <div class="row ps-2 mb-3">
@@ -130,11 +130,12 @@
    <div class="col-7">
         {% for replica_num, replica_data in replication_status['replica'] %}
 
-        {# Replica is OK when both IO and SQL are running and seconds_behind_master is 0 #}
-        {% set replica_ok = replica_data['slave_io_running'] == 'Yes' and replica_data['slave_sql_running'] == 'Yes' and replica_data['seconds_behind_master'] == 0 %}
+            {# Replica is unknown when there is an error (connection, missing grants, ...) #}
+            {% set replica_unkown = replica_data['error'] is defined and replica_data['error'] is not null %}
 
-        {# Replica is unknown when there is an error (connection, missing grants, ...) #}
-        {% set replica_unkown = replica_data['error'] is defined and replica_data['error'] is not null %}
+
+            {# Replica is OK when both IO and SQL are running and seconds_behind_master is 0 #}
+            {% set replica_ok = not replica_unkown and replica_data['slave_io_running'] == 'Yes' and replica_data['slave_sql_running'] == 'Yes' and replica_data['seconds_behind_master'] == 0 %}
 
         <div class="accordion mb-2"
              id="accordion-replica{{ replica_num }}">
@@ -204,7 +205,7 @@
                             </li>
                             <li>
                                 <span class="text-secondary">{{ __('Binary log GTID:') }}</span>
-                                {{ replica_data['gtid_slave_pos'] }}
+                                {{ replica_data['gtid_slave_pos'] ?? '' }}
                             </li>
                             <li>
                                 <span class="text-secondary">{{ __('IO running:') }}</span>
