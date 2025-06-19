@@ -2216,4 +2216,110 @@ class DBmysql
         }
         return $values;
     }
+
+    /**
+     * Get version comment from database.
+     *
+     * @return string
+     * @throws \RuntimeException When unable to determine version comment
+     */
+    private function getVersionComment(): string
+    {
+        $variables = $this->getGlobalVariables(['version_comment']);
+        if (!isset($variables['version_comment'])) {
+            throw new \RuntimeException('Unable to determine version comment');
+        }
+        return $variables['version_comment'];
+    }
+
+    /**
+     * Is MySQL?
+     *
+     * @return bool
+     */
+    public function isMysql(): bool
+    {
+        return strpos(strtolower($this->getVersionComment()), 'mysql') !== false;
+    }
+
+    /**
+     * Is MariaDB?
+     *
+     * @return bool
+     */
+    public function isMariaDb(): bool
+    {
+        return strpos(strtolower($this->getVersionComment()), 'mariadb') !== false;
+    }
+
+    /**
+     * Check if the database supports new replica terminology (MySQL 8.4+ or MariaDB 10.5.2+).
+     *
+     * @param bool $mysql Check if MySQL is supported (default: true)
+     * @param bool $mariadb Check if MariaDB is supported (default: true)
+     *
+     * @return bool
+     */
+    private function supportsNewReplicaTerminology(bool $mysql = true, bool $mariadb = true): bool
+    {
+        return (
+            $mysql && $this->isMysql() && version_compare($this->getVersion(), '8.4', '>=')
+        ) || (
+            $mariadb && $this->isMariaDb() && version_compare($this->getVersion(), '10.5.2', '>=')
+        );
+    }
+
+    /**
+     * Get binary log status query, in regard of the MySQL/MariaDB version.
+     *
+     * @return string
+     */
+    public function getBinaryLogStatusQuery(): string
+    {
+        return $this->supportsNewReplicaTerminology()
+            ? "SHOW BINARY LOG STATUS"
+            : "SHOW MASTER STATUS";
+    }
+
+    /**
+     * Get replica status query, in regard of the MySQL/MariaDB version.
+     *
+     * @return string
+     */
+    public function getReplicaStatusQuery(): string
+    {
+        return $this->supportsNewReplicaTerminology()
+            ? "SHOW REPLICA STATUS"
+            : "SHOW SLAVE STATUS";
+    }
+
+    /**
+     * Get replica status variables, in regard of the MySQL/MariaDB version.
+     *
+     * @return array<string, string>
+     */
+    public function getReplicaStatusVars(): array
+    {
+        if ($this->supportsNewReplicaTerminology(true, false)) {
+            return [
+                'io_running'            => 'Replica_IO_Running',
+                'sql_running'           => 'Replica_SQL_Running',
+                'source_log_file'       => 'Source_Log_File',
+                'source_log_pos'        => 'Read_Source_Log_Pos',
+                'seconds_behind_source' => 'Seconds_Behind_Source',
+                'last_io_error'         => 'Last_IO_Error',
+                'last_sql_error'        => 'Last_SQL_Error',
+            ];
+        }
+
+        return [
+            'io_running'            => 'Slave_IO_Running',
+            'sql_running'           => 'Slave_SQL_Running',
+            'source_log_file'       => 'Master_Log_File',
+            'source_log_pos'        => 'Read_Master_Log_Pos',
+            'seconds_behind_source' => 'Seconds_Behind_Master',
+            'last_io_error'         => 'Last_IO_Error',
+            'last_sql_error'        => 'Last_SQL_Error',
+        ];
+    }
 }
