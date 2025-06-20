@@ -5072,6 +5072,7 @@ abstract class CommonITILObject extends CommonDBTM
                                     ),],
                             ],
                             // + ticket status is not WAITING
+                            // @todoseb ajouter le status SOLVED + CLOSED ? étrange de donner un ticket comme en retard alors qu'il est clos/résolu.
                             "{$itil_table}.status" => ['<>', self::WAITING],
                             // + one of the following conditions:
                             'OR' => [
