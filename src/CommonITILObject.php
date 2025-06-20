@@ -7172,6 +7172,7 @@ abstract class CommonITILObject extends CommonDBTM
                     $itemtype::getForeignKeyField() => $item->getID(),
                 ]);
                 $linked_items = array_filter($linked_items, static fn($val) => !empty($val["itemtype"]) && $val["items_id"] > 0);
+                $entry['associated_elements'] = '';
                 foreach ($linked_items as $val) {
                     if (!isset($asset_cache[$val['itemtype']][$val['items_id']])) {
                         $object = getItemForItemtype($val["itemtype"]);
