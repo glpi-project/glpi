@@ -40,7 +40,7 @@
             <span class="log_entry_toggle_placeholder"></span>
         {% endif %}
         <label class="log_long_text" for="more_{{ log['id'] }}">
-            <a class="log_datetime badge bg-secondary me-1" href="#{{ log['id'] }}">
+            <a class="log_datetime badge bg-secondary text-secondary-fg me-1" href="#{{ log['id'] }}">
                 {{ log['datetime']|formatted_datetime }}
             </a>
             {{- log['text']|trim -}}
