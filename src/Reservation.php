@@ -497,8 +497,11 @@ JAVASCRIPT;
 
     public static function getEvents(array $params): array
     {
-        /** @var \DBmysql $DB */
-        global $DB;
+        /**
+         * @var \DBmysql $DB
+         * @var array $CFG_GLPI
+         */
+        global $DB, $CFG_GLPI;
 
         $defaults = [
             'start'               => '',
@@ -589,7 +592,7 @@ JAVASCRIPT;
                 'itemtype'    => $data['itemtype'],
                 'items_id'    => $data['items_id'],
                 'color'       => Toolbox::getColorForString($name),
-                'ajaxurl'     => self::getFormURLWithID($data['id']),
+                'ajaxurl'     => $CFG_GLPI['root_doc'] . '/ajax/reservations.php?action=add_edit_reservation_fromselect&id=' . $data['id'],
                 'editable'    => $editable, // "editable" is used by fullcalendar, but is not accessible
                 '_editable'   => $editable, // "_editable" will be used by custom event handlers
             ];
@@ -703,7 +706,7 @@ JAVASCRIPT;
         } else {
             $resa->getEmpty();
             $options = Planning::cleanDates($options);
-            $resa->fields["begin"] = date("Y-m-d H:i:s", strtotime($options['begin']));
+            $resa->fields["begin"] = !empty($options['begin']) ? date("Y-m-d H:i:s", strtotime($options['begin'])) : date('Y-m-d H:00:00');
             if (!isset($options['end'])) {
                 $resa->fields["end"] = date("Y-m-d H:00:00", strtotime($resa->fields["begin"]) + HOUR_TIMESTAMP);
             } else {
