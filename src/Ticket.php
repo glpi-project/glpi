@@ -2522,6 +2522,8 @@ JAVASCRIPT;
             'computation'        => self::generateSLAOLAComputation('time_to_own'),
         ];
 
+        // Minimal OLA/SLA TTO/TTR due time
+        // @todo label is wrong, nothing to do with escalation level, and nothing to do with future (can give date in the past)
         $max_date = new QueryExpression('99999999');
         $tab[] = [
             'id'                 => '188',
@@ -2532,31 +2534,29 @@ JAVASCRIPT;
             'usehaving'          => true,
             'maybefuture'        => true,
             'massiveaction'      => false,
-            // Get least value from TTO/TTR fields:
+            // Get the minimal date
+            // SLA
             // - use TTO fields only if ticket not already taken into account,
             // - use TTR fields only if ticket not already solved,
+            // OLA
+            // - no check, we rely on field value.
+            //
             // - replace NULL or not kept values with 99999999 to be sure that they will not be returned by the LEAST function,
             // - replace 99999999 by empty string to keep only valid values.
-            'computation'        => QueryFunction::replace(
+            'computation' => QueryFunction::replace(
                 expression: QueryFunction::least([
                     QueryFunction::if(
                         condition: ['TABLE.takeintoaccount_delay_stat' => ['<=', 0]],
                         true_expression: QueryFunction::coalesce(['TABLE.time_to_own', $max_date]),
                         false_expression: $max_date
                     ),
-                    QueryFunction::if(
-                        condition: ['TABLE.takeintoaccount_delay_stat' => ['<=', 0]],
-                        true_expression: QueryFunction::coalesce(['TABLE.internal_time_to_own', $max_date]), // @todoseb trouver solution ou dégager, avec un MAX comme generateSLAOLAComputation() - est-ce qu'on a encore besoin ou la table est clean maintenant ? + ne pas se base sur takeintoaccount_delay_stat
-                        false_expression: $max_date
-                    ),
+                    QueryFunction::coalesce([
+                        new QueryExpression((new QuerySubQuery(['FROM' => Item_Ola::getTable(), 'SELECT' => QueryFunction::min('due_time')]))->getQuery())
+                        , $max_date
+                    ]),
                     QueryFunction::if(
                         condition: ['TABLE.solvedate' => null],
                         true_expression: QueryFunction::coalesce(['TABLE.time_to_resolve', $max_date]),
-                        false_expression: $max_date
-                    ),
-                    QueryFunction::if(
-                        condition: ['TABLE.solvedate' => null],
-                        true_expression: QueryFunction::coalesce(['TABLE.internal_time_to_resolve', $max_date]), // @todoseb trouver solution ou dégager, avec un MAX comme generateSLAOLAComputation() - est-ce qu'on a encore besoin ou la table est clean maintenant ? + ne pas se base sur takeintoaccount_delay_stat
                         false_expression: $max_date
                     ),
                 ]),
