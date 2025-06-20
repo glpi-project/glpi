@@ -555,7 +555,7 @@ class Config extends CommonDBTM
         TemplateRenderer::getInstance()->display('pages/setup/general/dbreplica_setup.html.twig', [
             'config'             => $CFG_GLPI,
             'canedit'            => static::canUpdate(),
-            'primary_dbhost'     => $DB->dbhost,
+            'source_dbhost'      => $DB->dbhost,
             'replica_config'     => $replica_config,
             'replication_status' => $replication_status,
             'replication_delay'  => $replication_delay,

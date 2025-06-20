@@ -555,33 +555,32 @@ class DBConnection extends CommonDBTM
 
         $data = [];
 
-        // Get master status
+        // Get source status
         include_once(GLPI_CONFIG_DIR . "/config_db.php");
         $db_main = new DB();
         if ($db_main->connected) {
             $global_vars = $db_main->getGlobalVariables([
                 'server_id',
                 'read_only',
-                'gtid_binlog_pos',
                 'version',
             ]);
             foreach ($global_vars as $var_name => $var_value) {
-                $data['primary'][strtolower($var_name)] = $var_value;
+                $data['source'][strtolower($var_name)] = $var_value;
             }
 
-            $result = $db_main->doQuery("SHOW MASTER STATUS");
+            $result = $db_main->doQuery($db_main->getBinaryLogStatusQuery());
             if ($result && $db_main->numrows($result)) {
                 foreach (['File', 'Position'] as $var_name) {
-                    $data['primary'][strtolower($var_name)] = $db_main->result($result, 0, $var_name);
+                    $data['source'][strtolower($var_name)] = $db_main->result($result, 0, $var_name);
                 }
             } else {
-                $data['primary']['error'] = $db_main->error();
+                $data['source']['error'] = $db_main->error();
             }
         } else {
-            $data['primary']['error'] = $db_main->error();
+            $data['source']['error'] = $db_main->error();
         }
 
-        // Get slave status
+        // Get replica status
         include_once(GLPI_CONFIG_DIR . "/config_db_slave.php");
         $db_replica_config = new DBSlave();
 
@@ -590,30 +589,21 @@ class DBConnection extends CommonDBTM
             $data['replica'][$num]['host'] = $host;
             $db_replica = new DBSlave($num);
             if ($db_replica->connected) {
-                $global_vars = $db_main->getGlobalVariables([
+                $global_vars = $db_replica->getGlobalVariables([
                     'server_id',
                     'read_only',
-                    'gtid_slave_pos',
                     'version',
                 ]);
                 foreach ($global_vars as $var_name => $var_value) {
                     $data['replica'][$num][strtolower($var_name)] = $var_value;
                 }
 
-                $result = $db_replica->doQuery("SHOW SLAVE STATUS");
+                $result = $db_replica->doQuery($db_replica->getReplicaStatusQuery());
                 if ($result && $db_replica->numrows($result)) {
-                    $replica_vars = [
-                        'Slave_IO_Running',
-                        'Slave_SQL_Running',
-                        'Master_Log_File',
-                        'Read_Master_Log_Pos',
-                        'Seconds_Behind_Master',
-                        'Last_IO_Error',
-                        'Last_SQL_Error',
-                    ];
+                    $replica_vars = $db_replica->getReplicaStatusVars();
 
-                    foreach ($replica_vars as $var_name) {
-                        $data['replica'][$num][strtolower($var_name)] = $db_replica->result($result, 0, $var_name);
+                    foreach ($replica_vars as $var_name => $var_key) {
+                        $data['replica'][$num][$var_name] = $db_replica->result($result, 0, $var_key);
                     }
                 } else {
                     $data['replica'][$num]['error'] = $db_replica->error();

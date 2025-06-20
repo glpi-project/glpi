@@ -66,23 +66,23 @@
     <span>{{ __('Replication status') }}</span>
 </div>
 
-{% set primary_ok      = replication_status['primary']['file'] %}
-{% set primary_unknown = replication_status['primary']['error'] is defined and replication_status['primary']['error'] is not null %}
+{% set source_ok      = replication_status['source'] is defined and replication_status['source']['file'] is defined %}
+{% set source_unknown = replication_status['source'] is defined and replication_status['source']['error'] is defined and replication_status['source']['error'] is not null %}
 
 <div class="row ps-2 mb-3">
    <div class="col-5">
-        <div class="accordion" id="accordion-primary">
+        <div class="accordion" id="accordion-source">
             <div class="accordion-item">
-                <div class="accordion-header" id="heading-primary">
-                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-primary" aria-expanded="false" aria-controls="collapse-primary">
+                <div class="accordion-header" id="heading-source">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-source" aria-expanded="false" aria-controls="collapse-source">
                     <h3>
-                        <span class="status status-{{ primary_ok ? 'green' : primary_unknown ? 'muted' : 'red' }}">
+                        <span class="status status-{{ source_ok ? 'green' : source_unknown ? 'muted' : 'red' }}">
                             <span class="status-dot status-dot-animated"></span>
-                            {{ primary_ok ? _x('status', 'Up') : primary_unknown ? _x('status', 'Unknown') : _x('status', 'Down') }}
+                            {{ source_ok ? _x('status', 'Up') : source_unknown ? _x('status', 'Unknown') : _x('status', 'Down') }}
                         </span>
-                        <span class="mx-2">{{ __('Primary') }} ({{ primary_dbhost }})</span>
-                        {% if not primary_unknown %}
-                            {% if replication_status['primary']['read_only'] == 'OFF' %}
+                        <span class="mx-2">{{ __('Source') }} ({{ source_dbhost }})</span>
+                        {% if not source_unknown %}
+                            {% if replication_status['source']['read_only'] == 'OFF' %}
                                 <span class="badge badge-outline text-green">{{ __('Writable') }}</span>
                             {% else %}
                                 <span class="badge badge-outline text-blue">{{ __('Read-Only') }}</span>
@@ -91,34 +91,30 @@
                     </h3>
                     </button>
                 </div>
-                <div id="collapse-primary" class="accordion-collapse collapse" aria-labelledby="heading-primary" data-bs-parent="#accordion-primary">
+                <div id="collapse-source" class="accordion-collapse collapse" aria-labelledby="heading-source" data-bs-parent="#accordion-source">
                     <div class="accordion-body">
-                    {% if primary_unknown %}
+                    {% if source_unknown %}
                         <div class="alert alert-danger" role="alert">
                             <span class="text-secondary">{{ __('MySQL server returned an error:') }}</span>
-                            <p class="mt-2">{{ replication_status['primary']['error'] }}</p>
+                            <p class="mt-2">{{ replication_status['source']['error'] }}</p>
                         </div>
                     {% else %}
                         <ul class="p-0 list-unstyled space-y-3">
                             <li>
                                 <span class="text-secondary">{{ __('Server ID:') }}</span>
-                                {{ replication_status['primary']['server_id'] }}
+                                {{ replication_status['source']['server_id']|default('') }}
                             </li>
                             <li>
                                 <span class="text-secondary">{{ __('Binary log file:') }}</span>
-                                {{ replication_status['primary']['file'] }}
+                                {{ replication_status['source']['file']|default('') }}
                             </li>
                             <li>
                                 <span class="text-secondary">{{ __('Binary log position:') }}</span>
-                                {{ replication_status['primary']['position'] }}
-                            </li>
-                            <li>
-                                <span class="text-secondary">{{ __('Binary log GTID:') }}</span>
-                                {{ replication_status['primary']['gtid_binlog_pos'] }}
+                                {{ replication_status['source']['position']|default('') }}
                             </li>
                             <li>
                                 <span class="text-secondary">{{ __('Server version:') }}</span>
-                                {{ replication_status['primary']['version'] }}
+                                {{ replication_status['source']['version']|default('') }}
                             </li>
                         </ul>
                     {% endif %}
@@ -130,11 +126,12 @@
    <div class="col-7">
         {% for replica_num, replica_data in replication_status['replica'] %}
 
-        {# Replica is OK when both IO and SQL are running and seconds_behind_master is 0 #}
-        {% set replica_ok = replica_data['slave_io_running'] == 'Yes' and replica_data['slave_sql_running'] == 'Yes' and replica_data['seconds_behind_master'] == 0 %}
+            {# Replica is unknown when there is an error (connection, missing grants, ...) #}
+            {% set replica_unkown = replica_data['error'] is defined and replica_data['error'] is not null %}
 
-        {# Replica is unknown when there is an error (connection, missing grants, ...) #}
-        {% set replica_unkown = replica_data['error'] is defined and replica_data['error'] is not null %}
+
+            {# Replica is OK when both IO and SQL are running and seconds_behind_source is 0 #}
+            {% set replica_ok = not replica_unkown and replica_data['io_running'] == 'Yes' and replica_data['sql_running'] == 'Yes' and replica_data['seconds_behind_source'] == 0 %}
 
         <div class="accordion mb-2"
              id="accordion-replica{{ replica_num }}">
@@ -171,65 +168,71 @@
                         <ul class="p-0 list-unstyled space-y-3">
                             <li>
                                 <span class="text-secondary">{{ __('Server ID:') }}</span>
-                                {{ replica_data['server_id'] }}
+                                {{ replica_data['server_id']|default(__('Undefined')) }}
                             </li>
                             <li>
-                                <span class="text-secondary">{{ __('Primary binary log file:') }}</span>
-                                {{ replica_data['master_log_file'] }}
+                                <span class="text-secondary">{{ __('Source binary log file:') }}</span>
+                                {{ replica_data['source_log_file']|default(__('Undefined')) }}
                             </li>
                             <li>
-                                <span class="text-secondary">{{ __('Primary binary log position:') }}</span>
-                                {{ replica_data['read_master_log_pos'] }}
+                                <span class="text-secondary">{{ __('Source binary log position:') }}</span>
+                                {{ replica_data['source_log_pos']|default(__('Undefined')) }}
                             </li>
                             <li>
-                                <span class="text-secondary">{{ __('Seconds behind primary:') }}</span>
-                                {% if replica_data['seconds_behind_master'] is defined and replica_data['seconds_behind_master'] is not null %}
-                                    <span class="badge bg-{{ replica_data['seconds_behind_master'] > 0 ? 'red' : 'green' }}-lt">{{ replica_data['seconds_behind_master'] }}</span>
+                                <span class="text-secondary">{{ __('Seconds behind source:') }}</span>
+                                {% if replica_data['seconds_behind_source'] is defined and replica_data['seconds_behind_source'] is not null %}
+                                    <span class="badge bg-{{ replica_data['seconds_behind_source'] > 0 ? 'red' : 'green' }}-lt">{{ replica_data['seconds_behind_source'] }}</span>
                                 {% else %}
                                     <span class="badge bg-red-lt">{{ __('Undefined') }}</span>
                                 {% endif %}
                             </li>
                             <li>
                                 <span class="text-secondary" id="glpi_delay_{{ replica_num }}">{{ __('GLPI history delay:') }}</span>
-                                {% if replication_delay[replica_num] > 0 %}
-                                    <span class="badge bg-red-lt">{{ replication_delay[replica_num]|formatted_duration }}</span>
-                                {% elseif replication_delay[replica_num] == 0 %}
-                                    <span class="badge bg-green-lt">{{ __('None') }}</span>
+                                {% if replication_delay[replica_num] is defined %}
+                                    {% if replication_delay[replica_num] > 0 %}
+                                        <span class="badge bg-red-lt">{{ replication_delay[replica_num]|formatted_duration }}</span>
+                                    {% elseif replication_delay[replica_num] == 0 %}
+                                        <span class="badge bg-green-lt">{{ __('None') }}</span>
+                                    {% else %}
+                                        <span class="badge bg-red-lt">{{ __('Undefined') }}</span>
+                                    {% endif %}
                                 {% else %}
                                     <span class="badge bg-red-lt">{{ __('Undefined') }}</span>
                                 {% endif %}
                                 {% do call('Html::showToolTip', [
-                                    __('This indicates the delay between the primary and the replica for GLPI history (table: glpi_logs, column: date_mod).')
+                                    __('This indicates the delay between the source and the replica for GLPI history (table: glpi_logs, column: date_mod).')
                                 ]) %}
                             </li>
                             <li>
-                                <span class="text-secondary">{{ __('Binary log GTID:') }}</span>
-                                {{ replica_data['gtid_slave_pos'] }}
+                                <span class="text-secondary">{{ __('IO running:') }}</span>
+                                <span class="badge bg-{{ replica_data['io_running'] == 'Yes' ? 'green' : 'red' }}-lt">
+                                {{ replica_data['io_running']|default(__('Undefined')) }}
+                                </span>
                             </li>
                             <li>
-                                <span class="text-secondary">{{ __('IO running:') }}</span>
-                                <span class="badge bg-{{ replica_data['slave_io_running'] == 'Yes' ? 'green' : 'red' }}-lt">
-                                {{ replica_data['slave_io_running'] }}
-                                </span>
-                            <li>
                                 <span class="text-secondary">{{ __('SQL running:') }}</span>
-                                <span class="badge bg-{{ replica_data['slave_sql_running'] == 'Yes' ? 'green' : 'red' }}-lt">
-                                {{ replica_data['slave_sql_running'] }}
+                                <span class="badge bg-{{ replica_data['sql_running'] == 'Yes' ? 'green' : 'red' }}-lt">
+                                {{ replica_data['sql_running']|default(__('Undefined')) }}
                                 </span>
+                            </li>
                             <li>
                                 <span class="text-secondary">{{ __('Server version:') }}</span>
-                                {{ replica_data['version'] }}
+                                {{ replica_data['version']|default(__('Undefined')) }}
                             </li>
                         </ul>
 
-                        {# Display errors if slave_io_running or slave_sql_running are not running #}
-                        {% set display_alert = (replica_data['slave_io_running'] != 'Yes' or replica_data['slave_sql_running'] != 'Yes') and (replica_data['last_io_error']|length or replica_data['last_sql_error']|length) %}
+                        {# Display errors if io_running or sql_running are not running #}
+                        {% set display_alert = (replica_data['io_running'] != 'Yes' or replica_data['sql_running'] != 'Yes') and (replica_data['last_io_error']|length or replica_data['last_sql_error']|length) %}
                         {% if display_alert %}
                             <div class="alert alert-danger" role="alert">
                                 <span class="text-secondary">{{ __('MySQL server returned an error:') }}</span>
                                 <p class="mt-2">
-                                    {{ replica_data['last_io_error'] }}
-                                    {{ replica_data['last_sql_error'] }}
+                                    {% if replica_data['last_io_error'] is defined and replica_data['last_io_error'] is not empty %}
+                                        <strong>{{ __('IO Error:') }}</strong> {{ replica_data['last_io_error'] }}<br>
+                                    {% endif %}
+                                    {% if replica_data['last_sql_error'] is defined and replica_data['last_sql_error'] is not empty %}
+                                        <strong>{{ __('SQL Error:') }}</strong> {{ replica_data['last_sql_error'] }}
+                                    {% endif %}
                                 </p>
                             </div>
                         {% endif %}
