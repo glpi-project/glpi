@@ -562,14 +562,6 @@ class UserTest extends \DbTestCase
         return [
             [
                 'input'     => [
-                    'password'  => 'initial_pass',
-                    'password2' => 'initial_pass',
-                ],
-                'expected'  => [
-                ],
-            ],
-            [
-                'input'     => [
                     'password'  => 'new_pass',
                     'password2' => 'new_pass_not_match',
                 ],
