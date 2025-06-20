@@ -41,7 +41,7 @@
             <button type="button" class="btn-link"><i class="ti ti-x"></i></button>
          </h5>
          <h6 class="card-subtitle">
-            {% if item_fields.is_milestone %}
+            {% if item_fields.is_milestone ?? false %}
                <i class="ti ti-directions-filled me-2"></i>{{ __('Milestone') }}
             {% endif %}
          </h6>
@@ -52,7 +52,7 @@
                "itemtype": itemtype,
                "items_id": items_id
             }, true) %}
-            {% if content is not empty and content['content']|trim is not empty %}
+            {% if content is not empty and (content['content'] ?? '')|trim is not empty %}
                {{ content['content']|raw }}
                <hr>
             {% endif %}
