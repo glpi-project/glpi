@@ -38,7 +38,7 @@
     {% if not id %}
         {{ inputs.hidden('users_id', item.fields['users_id']) }}
     {% endif %}
-    {% if params['from_planning_edit_ajax'] %}
+    {% if params['from_planning_edit_ajax'] ?? false %}
         {{ inputs.hidden('from_planning_edit_ajax', 1) }}
     {% endif %}
 
