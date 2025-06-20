@@ -40,6 +40,7 @@ use Glpi\Error\ErrorDisplayHandler\CliDisplayHandler;
 use Glpi\Error\ErrorDisplayHandler\HtmlErrorDisplayHandler;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
+use Psr\Log\NullLogger;
 use Symfony\Component\ErrorHandler\ErrorHandler as BaseErrorHandler;
 
 /**
@@ -85,7 +86,7 @@ final class ErrorHandler extends BaseErrorHandler
 
     private static LoggerInterface $currentLogger;
 
-    public function __construct(LoggerInterface $logger)
+    public function __construct(?LoggerInterface $logger = null)
     {
         $env = Environment::get();
         parent::__construct(debug: $env->shouldEnableExtraDevAndDebugTools());
@@ -95,6 +96,7 @@ final class ErrorHandler extends BaseErrorHandler
         $this->screamAt(self::FATAL_ERRORS, true); // Never silent fatal errors
         $this->throwAt(self::FATAL_ERRORS, true); // Convert fatal errors to exceptions
 
+        $logger ??= new NullLogger();
         $this->setDefaultLogger($logger, self::ERROR_LEVEL_MAP);
 
         self::$currentLogger = $logger;
