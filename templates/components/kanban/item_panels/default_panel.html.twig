@@ -52,7 +52,7 @@
                "itemtype": itemtype,
                "items_id": items_id
             }, true) %}
-            {% if content is not empty and content['content']|trim is not empty %}
+            {% if content is not empty and (content['content'] ?? '')|trim is not empty %}
                {{ content['content']|raw }}
                <hr>
             {% endif %}

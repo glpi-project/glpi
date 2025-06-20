@@ -79,7 +79,7 @@
     }) }}
 
     {% set calendar_field %}
-        {% if params['from_planning_ajax'] %}
+        {% if params['from_planning_ajax'] is defined %}
             {{ inputs.hidden('plan[begin]', params['begin']) }}
             {{ inputs.hidden('plan[end]', params['end']) }}
             {{ __('From %1$s to %2$s')|format(params['begin']|formatted_datetime, params['end']|formatted_datetime) }}
