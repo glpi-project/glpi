@@ -1446,6 +1446,7 @@ class User extends CommonDBTM
                 if (count($authtype)) {
                     // Clean groups
                     $this->input["_groups"] = array_unique($this->input["_groups"]);
+                    $_SESSION["_ldap_groups"] = $this->input["_groups"];
 
                     // Delete not available groups like to LDAP
                     $iterator = $DB->request([
@@ -6583,6 +6584,7 @@ HTML;
      */
     public function applyGroupsRules()
     {
+
         if (!isset($this->input["_ldap_rules"]['groups_id'])) {
             if (isset($this->input["_ldap_rules"]) && isset($this->input['id'])) {
                 $group_user = new Group_User();
@@ -6591,7 +6593,10 @@ HTML;
                     'is_dynamic' => true,
                 ]);
                 foreach ($groups as $group) {
-                    $group_user->delete($group);
+                    if (!isset($_SESSION['_ldap_groups']) || !in_array($group['groups_id'], $_SESSION['_ldap_groups'])) {
+                        $group_user->delete($group);
+                        unset($_SESSION["_ldap_groups"]);
+                    }
                 }
             }
             return;

@@ -44,7 +44,7 @@ use Glpi\Toolbox\Sanitizer;
 
 /* Test for inc/authldap.class.php */
 
-class AuthLDAPTest extends DbTestCase
+class AuthLdapTest extends DbTestCase
 {
     /**
      * @var \AuthLDAP
@@ -2223,6 +2223,9 @@ class AuthLDAPTest extends DbTestCase
         $group2_id = $this->createItem(Group::class, ["name" => "testgroup2"])->getID();
         $this->assertGreaterThan(0, $group2_id);
 
+        $group3_id = $this->createItem(Group::class, ["name" => "testgroup3", "ldap_field" => "uid", "ldap_value" => "brazil6"])->getID();
+        $this->assertGreaterThan(0, $group3_id);
+
         // Add groups with a rule
         $act_id = $this->createItem(\RuleAction::class, [
             'rules_id'    => $rules_id,
@@ -2236,14 +2239,16 @@ class AuthLDAPTest extends DbTestCase
         $users_id = \User::getIdByName('brazil6');
         $this->assertGreaterThan(0, $users_id);
 
+        $this->assertTrue(\Group_User::isUserInGroup($users_id, $group_id));
+        $this->assertTrue(\Group_User::isUserInGroup($users_id, $group3_id));
+
         // Check group
         $gu = new Group_User();
         $gus = $gu->find([
             'users_id' => $users_id,
-            'groups_id' => $group_id,
             'is_dynamic' => 1,
         ]);
-        $this->assertCount(1, $gus);
+        $this->assertCount(2, $gus);
 
         // update criteria
         $this->updateItem(\RuleAction::class, $act_id, [
@@ -2258,6 +2263,7 @@ class AuthLDAPTest extends DbTestCase
         // Check the dynamic group is deleted without losing the manual groups
         $this->assertFalse(\Group_User::isUserInGroup($users_id, $group_id));
         $this->assertTrue(\Group_User::isUserInGroup($users_id, $group2_id));
+        $this->assertTrue(\Group_User::isUserInGroup($users_id, $group3_id));
 
         // Create 2 manual groups
         $mgroup_id = $this->createItem(Group::class, ["name" => "manualgroup1"])->getID();
