@@ -2498,17 +2498,6 @@ JAVASCRIPT;
             'computation'        => self::generateSLAOLAComputation('time_to_own'),
         ];
 
-        //        $tab[] = [ // @todoseb trouver solution ou dégager
-        //            'id'                 => '185',
-        //            'table'              => $this->getTable(),
-        //            'field'              => 'internal_time_to_own',
-        //            'name'               => __('Internal time to own'),
-        //            'datatype'           => 'datetime',
-        //            'maybefuture'        => true,
-        //            'massiveaction'      => false,
-        //            'additionalfields'   => ['date', 'status', 'takeintoaccount_delay_stat', 'takeintoaccountdate'],
-        //        ];
-
         $max_date = new QueryExpression('99999999');
         $tab[] = [
             'id'                 => '188',
@@ -2533,7 +2522,7 @@ JAVASCRIPT;
                     ),
                     QueryFunction::if(
                         condition: ['TABLE.takeintoaccount_delay_stat' => ['<=', 0]],
-                        true_expression: QueryFunction::coalesce(['TABLE.internal_time_to_own', $max_date]),
+                        true_expression: QueryFunction::coalesce(['TABLE.internal_time_to_own', $max_date]), // @todoseb trouver solution ou dégager, avec un MAX comme generateSLAOLAComputation() - est-ce qu'on a encore besoin ou la table est clean maintenant ? + ne pas se base sur takeintoaccount_delay_stat
                         false_expression: $max_date
                     ),
                     QueryFunction::if(
@@ -2543,7 +2532,7 @@ JAVASCRIPT;
                     ),
                     QueryFunction::if(
                         condition: ['TABLE.solvedate' => null],
-                        true_expression: QueryFunction::coalesce(['TABLE.internal_time_to_resolve', $max_date]), // @todoseb trouver solution ou dégager
+                        true_expression: QueryFunction::coalesce(['TABLE.internal_time_to_resolve', $max_date]), // @todoseb trouver solution ou dégager, avec un MAX comme generateSLAOLAComputation() - est-ce qu'on a encore besoin ou la table est clean maintenant ? + ne pas se base sur takeintoaccount_delay_stat
                         false_expression: $max_date
                     ),
                 ]),
@@ -2668,6 +2657,7 @@ JAVASCRIPT;
             'table'              => 'glpi_olas',
             'field'              => 'name',
             'name'               => __('OLA') . ' ' . __('Internal time to own'),
+            'name'               =>  __('time to own') . ' - ' . __('name'),
             'massiveaction'      => false,
             'datatype'           => 'dropdown',
             'joinparams'         => [
@@ -2688,10 +2678,10 @@ JAVASCRIPT;
             'id' => '186',
             'table' => 'glpi_items_olas',
             'field' => 'due_time',
-            'name' => __('Internal time to own') . ' - (186) ' . __('due time'), // @todoseb virer le 186
+            'name' => __('time to own') . ' - ' . __('due time + progress'),
             'massiveaction' => false,
             'nosearch'           => true,
-            'additionalfields'   => ['TABLE.status', 'TABLE.takeintoaccount_delay_stat', 'TABLE.date', 'waiting_time'],
+            'additionalfields' => ['TABLE.status', 'TABLE.takeintoaccount_delay_stat', 'TABLE.date', 'olas_id', 'waiting_time', 'end_time'],
             'joinparams' => [
                 'jointype' => 'child',
                 'linkfield' => 'olas_id',
@@ -2712,7 +2702,6 @@ JAVASCRIPT;
                 ],
             ],
             'forcegroupby' => true,
-            'customdata' => ['ola_type' => SLM::TTO],
         ];
 
         // OLA TTO exceeded
@@ -2720,7 +2709,7 @@ JAVASCRIPT;
             'id'                 => '187',
             'table'              => 'glpi_items_olas',
             'field'              => 'is_late',
-            'name'               => __('Internal time to own exceeded (187)'), // @todoseb virer le 187
+            'name'               => __('Internal time to own exceeded'),
             'datatype'           => 'bool',
             'massiveaction'      => false,
             'computation'        => self::generateSLAOLAComputation('internal_time_to_own', 'glpi_items_olas'),
@@ -2744,6 +2733,7 @@ JAVASCRIPT;
                 ],
             ],
             'forcegroupby'       => true,
+            'usehaving' => true, // needed because of generateSLAOLAComputation() use a group function (max).
         ];
 
         // associated OLA TTR names
@@ -2751,7 +2741,7 @@ JAVASCRIPT;
             'id'                 => '191',
             'table'              => 'glpi_olas',
             'field'              => 'name',
-            'name'               => __('Internal time to resolve') . ' - (191)' . __('name'), // @todoseb virer le 191
+            'name'               => __('Internal time to resolve') . ' - ' . __('name'),
             'massiveaction'      => false,
             'datatype'           => 'dropdown',
             'joinparams'         => [
@@ -2768,14 +2758,14 @@ JAVASCRIPT;
 
         // OLA TTR due time (+ Progress)
         $tab[] = [
-            'id' => '180',
+            'id' => '181',
             'table' => 'glpi_items_olas',
             'field' => 'due_time',
             'datatype' => 'datetime',
-            'name' => __('Internal time to resolve') . ' - (180) ' . __('due time'), // @todoseb virer le 180
-            'massiveaction' => false,
+            'name' => __('Internal time to resolve') . ' - ' . __('due time + progress'),
+            'massiveaction'      => false,
             'nosearch'           => true,
-            'additionalfields'   => ['TABLE.status', 'TABLE.name'],
+            'additionalfields' => ['TABLE.status', 'TABLE.takeintoaccount_delay_stat', 'TABLE.date', 'olas_id', 'waiting_time', 'end_time'],
             'joinparams' => [
                 'jointype' => 'child',
                 'linkfield' => 'olas_id',
@@ -2796,7 +2786,6 @@ JAVASCRIPT;
                 ],
             ],
             'forcegroupby' => true,
-            'customdata' => ['ola_type' => SLM::TTR],
         ];
 
         // OLA TTR exceeded
@@ -2804,10 +2793,10 @@ JAVASCRIPT;
             'id'                 => '182',
             'table'              => 'glpi_items_olas',
             'field'              => 'is_late',
-            'name'               => __('Internal time to resolve exceeded (182)'), // @todoseb virer le 182
+            'name'               => __('Internal time to resolve exceeded'),
             'datatype'           => 'bool',
             'massiveaction'      => false,
-            'computation'        => self::generateSLAOLAComputation('internal_time_to_resolve',  'glpi_items_olas'), // @todoseb dégager le second param si nom de table forcé dans fct
+            'computation'        => self::generateSLAOLAComputation('internal_time_to_resolve', 'glpi_items_olas'),
             'joinparams' => [
                 'jointype' => 'child',
                 'linkfield' => 'olas_id',
@@ -2829,6 +2818,7 @@ JAVASCRIPT;
                 ],
             ],
             'forcegroupby'       => true,
+            'usehaving' => true, // needed because of generateSLAOLAComputation() use a group function (max).
         ];
 
         // Ola levels
@@ -6367,7 +6357,7 @@ JAVASCRIPT;
 
                 $_data['items_olas_id'] = $_data['linkid'];
                 $_data['olas_id'] = $_data['id'];
-                unset($_data['id']); // @todoseb revoir le front qui va être cassé à cause de l'id qui a sauté (probablement)
+                unset($_data['id']);
 
                 // additionnal datas
                 $_data['class'] = OLA::class; // SLA::class
@@ -6556,7 +6546,7 @@ JAVASCRIPT;
 
         foreach ($ola_removed_inputs as $ola_removed_input) {
             if (isset($input[$ola_removed_input])) {
-                throw new \RuntimeException('Input field "' . $ola_removed_input . '" is not used anymore, Ola are only associated now, use ["// @todoseb à compléter"] please update your code.');
+                throw new \RuntimeException('Input field "' . $ola_removed_input . '" is not used anymore, Ola are only associated now, use "_olas_id" please update your code. see Ticket.php docbloc.');
             }
         }
     }
