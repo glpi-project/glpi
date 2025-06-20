@@ -401,13 +401,15 @@ abstract class CommonItilObject_Item extends CommonDBRelation
 
         if ($canedit && !$is_closed) {
             $requester_id   = 0;
-            $userlink_class = $obj->getActorObjectForItem(User::class);
-            $obj_actors     = $userlink_class->getActors($obj->fields['id']);
-            if (
-                isset($obj_actors[CommonITILActor::REQUESTER])
-                && (count($obj_actors[CommonITILActor::REQUESTER]) === 1)
-            ) {
-                $requester_id = reset($obj_actors[CommonITILActor::REQUESTER])['users_id'];
+            if ($obj instanceof CommonITILObject) {
+                $userlink_class = $obj->getActorObjectForItem(User::class);
+                $obj_actors = $userlink_class->getActors($obj->fields['id']);
+                if (
+                    isset($obj_actors[CommonITILActor::REQUESTER])
+                    && (count($obj_actors[CommonITILActor::REQUESTER]) === 1)
+                ) {
+                    $requester_id = reset($obj_actors[CommonITILActor::REQUESTER])['users_id'];
+                }
             }
 
             $twig_params = [
