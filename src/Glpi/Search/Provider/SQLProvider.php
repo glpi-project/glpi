@@ -5561,8 +5561,8 @@ final class SQLProvider implements SearchProviderInterface
                 case "glpi_changes.time_to_resolve":
                 case "glpi_tickets.time_to_own":
                     // Due date + progress
-                    if (in_array($orig_id, [151, 158, 181, 186])) {
-                        $out = Html::convDateTime($data[$ID][0]['name']);
+                    if (in_array($orig_id, [151, 158, 181])) {
+                        $out = \Html::convDateTime($data[$ID][0]['name']);
 
                         $color = null;
                         if (
@@ -5726,30 +5726,30 @@ final class SQLProvider implements SearchProviderInterface
                 case "glpi_items_olas.due_time":
                     $out = '';
                     // Due date + progress
-                    if (in_array($orig_id, [/*151, 158, 181, 180,*/ 186])) { // @todoseb traité que le 186, ajouter le 180 et voir si les autres sont utiles
-                        $ola_type = $so['customdata']['ola_type'] ?? SLM::TTO;
+                    if (in_array($orig_id, [181, 186])) {
 
                         // remove 'count' from data
                         $data_items = array_filter($data[$ID], fn($key) => is_numeric($key), ARRAY_FILTER_USE_KEY);
                         foreach ($data_items as $data_item) {
-
-                            // not handling an item -> return;
-                            // @todo this should probably be check at the beginning of the function
-                            if (!isset($data_item['id'])) {
-                                return '';
-                            }
-
                             // data used :
                             // - name -> due_time (see below)
                             // - status (ticket status)
                             // - takeintoaccount_delay_stat
-                            // - waiting_time
                             // - date (ticket creation date)
+                            // - olas_id
+                            // - waiting_time
+                            // - end_time
                             $ticket_status = $data_item['status'] ?? null;
                             $due_time = $data_item['name'] ?? null;
-                            $takeintoaccount_delay_stat = $data_item['name'] ?? null;
-                            $waiting_time = $data_item['waiting_time'] ?? null;
                             $ticket_creation_date = $data_item['date'] ?? null;
+                            $waiting_time = $data_item['waiting_time'] ?? null;
+                            $ola_end_time = $data_item['end_time'] ?? null;
+                            $olas_id = $data_item['olas_id'] ?? null;
+
+                            $ola = new OLA();
+                            $ola->getFromDB($olas_id);
+                            $ola_name = $ola->fields['name'];
+                            $ola_type = $ola->fields['type']; // won't change between loops
 
                             // no due time set, nothing to display
                             if (is_null($due_time)) {
@@ -5768,7 +5768,7 @@ final class SQLProvider implements SearchProviderInterface
                                 ($ticket_status == \Ticket::SOLVED)
                                 || ($ticket_status == \Ticket::CLOSED)
                             ) {
-                                $out .= \Html::convDateTime($due_time);
+                                $out .= $ola_name . ' : ' . \Html::convDateTime($due_time) . '</br>';
                                 continue;
                             }
 
@@ -5777,20 +5777,20 @@ final class SQLProvider implements SearchProviderInterface
                                 $color = '#AAAAAA';
                             }
 
-                            // For TTO with $takeintoaccount_delay_stat > 0 : just display the date
-                            // @todoseb logique à changé maintenant, ça dépend si le groupe en change du ticket est assigné... mais peut-être que takeintoaccount_delay_stat est maintenant défini comme il faut ... à vérifier
-                            if ($ola_type == \SLM::TTO && $takeintoaccount_delay_stat > 0) {
-                                $out .= \Html::convDateTime($due_time);
+                            // no need to check $takeintoaccount_delay_stat, we rely on items_ola end_time
+                            // // @todoseb on affiche la barre de progression alors qu'on a un endtime défini sur les TTR - faire vérifier cette spécficité / vérifier sur stable
+                            if ($ola_type == \SLM::TTO && $ola_end_time) {
+                                $out .= $ola_name . ' : ' . \Html::convDateTime($due_time) . '</br>';
                                 continue;
                             }
 
                             // time calculations to build the progress bar
-                            // @review : I removed the computatiion using Calendar, it avoids to instantiate the Olas and theirs calendars.
-                            $delay_since_ticket_creation = strtotime(date('Y-m-d H:i:s')) - strtotime($ticket_creation_date);
-                            $delay_to_achieve_ola = strtotime($due_time) - strtotime($ticket_creation_date);
+                            $delay_between_ticket_creation_and_now = $ola->getActiveTimeBetween($ticket_creation_date, date('Y-m-d H:i:s'));
+                            $delay_between_ticket_creation_and_ola_due_time = $ola->getActiveTimeBetween($ticket_creation_date, $due_time);
 
-                            if (($delay_to_achieve_ola - $waiting_time) != 0) {
-                                $percentage_done = round((100 * ($delay_since_ticket_creation - $waiting_time)) / ($delay_to_achieve_ola - $waiting_time));
+
+                            if (($delay_between_ticket_creation_and_ola_due_time - $waiting_time) != 0) {
+                                $percentage_done = round((100 * ($delay_between_ticket_creation_and_now - $waiting_time)) / ($delay_between_ticket_creation_and_ola_due_time - $waiting_time));
                             } else {
                                 // Total time is null : no active time
                                 $percentage_done = 100;
@@ -5798,17 +5798,15 @@ final class SQLProvider implements SearchProviderInterface
                             if ($percentage_done > 100) {
                                 $percentage_done = 100;
                             }
-                            $percentage_text = $percentage_done;
-
                             // ? waiting time n'est plus pris en compte pour determiner la couleur de la barre de progression ? // @todoseb
                             switch ($_SESSION['glpiduedatewarning_unit']) {
                                 case 'hour':
                                     $less_warn_limit = $_SESSION['glpiduedatewarning_less'] * HOUR_TIMESTAMP;
-                                    $less_warn = ($delay_to_achieve_ola - $delay_since_ticket_creation);
+                                    $less_warn = ($delay_between_ticket_creation_and_ola_due_time - $delay_between_ticket_creation_and_now);
                                     break;
                                 case 'day':
                                     $less_warn_limit = $_SESSION['glpiduedatewarning_less'] * DAY_TIMESTAMP;
-                                    $less_warn = ($delay_to_achieve_ola - $delay_since_ticket_creation);
+                                    $less_warn = ($delay_between_ticket_creation_and_ola_due_time - $delay_between_ticket_creation_and_now);
                                     break;
                                 case '%':
                                 default:
@@ -5824,10 +5822,10 @@ final class SQLProvider implements SearchProviderInterface
                                 $less_crit = (100 - $percentage_done);
                             } elseif ($_SESSION['glpiduedatecritical_unit'] == 'hour') {
                                 $less_crit_limit = $_SESSION['glpiduedatecritical_less'] * HOUR_TIMESTAMP;
-                                $less_crit = ($delay_to_achieve_ola - $delay_since_ticket_creation);
+                                $less_crit = ($delay_between_ticket_creation_and_ola_due_time - $delay_between_ticket_creation_and_now);
                             } elseif ($_SESSION['glpiduedatecritical_unit'] == 'day') {
                                 $less_crit_limit = $_SESSION['glpiduedatecritical_less'] * DAY_TIMESTAMP;
-                                $less_crit = ($delay_to_achieve_ola - $delay_since_ticket_creation);
+                                $less_crit = ($delay_between_ticket_creation_and_ola_due_time - $delay_between_ticket_creation_and_now);
                             }
 
                             if ($color === null) {
@@ -5840,9 +5838,9 @@ final class SQLProvider implements SearchProviderInterface
                             }
 
                             $progressbar_data = [
-                                'text' => \Html::convDateTime($due_time),
+                                'text' => $ola_name . ' : ' . \Html::convDateTime($due_time),
                                 'percent' => $percentage_done,
-                                'percent_text' => $percentage_text,
+                                'percent_text' => (string) $percentage_done,
                                 'color' => $color,
                             ];
 
