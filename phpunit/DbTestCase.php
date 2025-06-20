@@ -641,4 +641,52 @@ class DbTestCase extends \GLPITestCase
 
         return $definition;
     }
+
+    /**
+     * Recursively compare two arrays without considering order at any level
+     *
+     * This method checks that both arrays have the same number of elements
+     * and that each element in the expected array is found in the actual array,
+     * regardless of the order of elements.
+     *
+     * @param array $expected The expected array
+     * @param array $actual The actual array to compare against
+     */
+    protected function assertArraysEqualRecursive($expected, $actual): void
+    {
+        $this->assertEquals(count($expected), count($actual), 'Arrays must have the same number of elements');
+
+        foreach ($expected as $expectedItem) {
+            $found = false;
+            foreach ($actual as $actualItem) {
+                if ($this->arraysEqualRecursive($expectedItem, $actualItem)) {
+                    $found = true;
+                    break;
+                }
+            }
+            $this->assertTrue($found, 'Expected item not found in actual array: ' . json_encode($expectedItem));
+        }
+    }
+
+    /**
+     * Recursively compare two values without considering array order
+     */
+    private function arraysEqualRecursive($a, $b): bool
+    {
+        if (is_array($a) && is_array($b)) {
+            if (count($a) !== count($b)) {
+                return false;
+            }
+            foreach ($a as $key => $value) {
+                if (!array_key_exists($key, $b)) {
+                    return false;
+                }
+                if (!$this->arraysEqualRecursive($value, $b[$key])) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        return $a === $b;
+    }
 }

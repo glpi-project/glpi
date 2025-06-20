@@ -175,7 +175,7 @@ if (!$DB->tableExists('glpi_forms_answerssets')) {
             `date_creation` timestamp NULL DEFAULT NULL,
             `date_mod` timestamp NULL DEFAULT NULL,
             `index` int NOT NULL DEFAULT '0',
-            `answers` text COMMENT 'JSON - Answers for each questions of the parent form',
+            `answers` json COMMENT 'JSON - Answers for each questions of the parent form',
             PRIMARY KEY (`id`),
             KEY `name` (`name`),
             KEY `date_creation` (`date_creation`),
@@ -376,6 +376,14 @@ if (!$DB->fieldExists('glpi_forms_questions', 'validation_conditions')) {
         ]
     );
 }
+
+// Change the type of the 'answers' field in glpi_forms_answerssets
+$migration->changeField(
+    'glpi_forms_answerssets',
+    'answers',
+    'answers',
+    "json COMMENT 'JSON - Answers for each questions of the parent form'",
+);
 
 // Add rights for the forms object
 $migration->addRight("form", ALLSTANDARDRIGHT, ['config' => UPDATE]);
