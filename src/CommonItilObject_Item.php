@@ -399,7 +399,7 @@ abstract class CommonItilObject_Item extends CommonDBRelation
                 )
             );
 
-        if ($canedit && !$is_closed) {
+        if ($canedit && !$is_closed && $obj instanceof CommonITILObject) {
             $requester_id   = 0;
             $userlink_class = $obj->getActorObjectForItem(User::class);
             $obj_actors     = $userlink_class->getActors($obj->fields['id']);
