@@ -7523,6 +7523,36 @@ HTML,
                 ],
             ];
         }
+
+        $profile_right->getFromDBByCrit([
+            'profiles_id' => $tprofile_id,
+            'name'        => 'task',
+        ]);
+
+        $this->updateItem(
+            \ProfileRight::class,
+            $profile_right->getID(),
+            [
+                'rights' => \CommonITILTask::SEEPUBLIC,
+            ]
+        );
+
+        // tech will only see own private tasks and all private followups
+        yield [
+            'login'              => 'tech',
+            'pass'               => 'tech',
+            'ticket_id'          => $ticket->getID(),
+            'options'            => [],
+            'expected_followups' => [
+                'private followup of normal user',
+                'private followup of tech user',
+                'public followup',
+            ],
+            'expected_tasks'     => [
+                'private task of tech user',
+                'public task',
+            ],
+        ];
     }
 
     public function testGetTimelineItems(): void
