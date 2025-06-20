@@ -9,5 +9,6 @@ jobs:
   trigger-docker-releases:
     name: "Trigger Docker releases"
     uses: "glpi-project/docker-images/.github/workflows/glpi.yml@main"
+    secrets: inherit
     with:
         glpi-version: "${{ github.event.release.tag_name }}"
