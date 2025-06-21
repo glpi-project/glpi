@@ -60,7 +60,7 @@ class FormCreatorPluginToCoreCommand extends AbstractPluginMigrationCommand
         return new FormMigration(
             $this->db,
             FormAccessControlManager::getInstance(),
-            $this->input->getOption('specific-forms')
+            $this->input->getOption('form-id')
         );
     }
 
