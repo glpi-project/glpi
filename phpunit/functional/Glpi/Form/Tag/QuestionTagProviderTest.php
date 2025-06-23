@@ -59,12 +59,12 @@ final class QuestionTagProviderTest extends DbTestCase
             new Tag(
                 label: 'Question: First name',
                 value: $this->getQuestionId($form, 'First name'),
-                provider: \Glpi\Form\Tag\QuestionTagProvider::class,
+                provider: new \Glpi\Form\Tag\QuestionTagProvider(),
             ),
             new Tag(
                 label: 'Question: Last name',
                 value: $this->getQuestionId($form, 'Last name'),
-                provider: \Glpi\Form\Tag\QuestionTagProvider::class,
+                provider: new \Glpi\Form\Tag\QuestionTagProvider(),
             ),
         ]);
     }

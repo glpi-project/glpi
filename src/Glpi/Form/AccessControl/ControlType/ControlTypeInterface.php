@@ -60,11 +60,11 @@ interface ControlTypeInterface
     public function getIcon(): string;
 
     /**
-     * Get the free json config config class name for this object.
+     * Get a new instance of the config object for this control type.
      *
-     * @return string Class name which implements JsonFieldInterface
+     * @return JsonFieldInterface
      */
-    public function getConfigClass(): string;
+    public function getConfig(): JsonFieldInterface;
 
     /**
      * Get the warnings for the given form.

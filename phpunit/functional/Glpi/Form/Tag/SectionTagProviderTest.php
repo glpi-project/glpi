@@ -59,12 +59,12 @@ final class SectionTagProviderTest extends DbTestCase
             new Tag(
                 label: 'Section: Personal information',
                 value: $this->getSectionId($form, 'Personal information'),
-                provider: SectionTagProvider::class,
+                provider: new SectionTagProvider(),
             ),
             new Tag(
                 label: 'Section: Professional information',
                 value: $this->getSectionId($form, 'Professional information'),
-                provider: SectionTagProvider::class,
+                provider: new SectionTagProvider(),
             ),
         ]);
     }

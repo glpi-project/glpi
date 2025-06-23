@@ -47,6 +47,7 @@ use Glpi\Form\Question;
 use Glpi\Form\QuestionType\QuestionTypeItem;
 use Glpi\Form\Migration\DestinationFieldConverterInterface;
 use Glpi\Form\Migration\FormMigration;
+use Glpi\Form\QuestionType\AbstractQuestionTypeActors;
 use Group;
 use InvalidArgumentException;
 use Override;
@@ -55,12 +56,13 @@ use User;
 
 abstract class ITILActorField extends AbstractConfigField implements DestinationFieldConverterInterface
 {
-    abstract public function getAllowedQuestionType(): string;
+    abstract public function getAllowedQuestionType(): AbstractQuestionTypeActors;
     abstract public function getActorType(): string;
 
     public function getAllowedActorTypes(): array
     {
-        return (new ($this->getAllowedQuestionType())())->getAllowedActorTypes();
+        $question_type = $this->getAllowedQuestionType();
+        return $question_type->getAllowedActorTypes();
     }
 
     #[Override]
@@ -244,11 +246,14 @@ abstract class ITILActorField extends AbstractConfigField implements Destination
                 }
             }
 
-            return new ($this->getConfigClass())(
-                strategies: $strategies,
-                specific_itilactors_ids: $specific_itilactors_ids,
-                specific_question_ids: $specific_question_ids
-            );
+            return $this->getConfig($form, [$this->getKey() => [
+                ITILActorFieldConfig::STRATEGIES => array_map(
+                    fn(ITILActorFieldStrategy $strategy) => $strategy->value,
+                    $strategies
+                ),
+                ITILActorFieldConfig::SPECIFIC_ITILACTORS_IDS => $specific_itilactors_ids,
+                ITILActorFieldConfig::SPECIFIC_QUESTION_IDS   => $specific_question_ids,
+            ]]);
         }
 
         return $this->getDefaultConfig($form);
@@ -266,7 +271,7 @@ abstract class ITILActorField extends AbstractConfigField implements Destination
     private function getITILActorQuestionsValuesForDropdown(Form $form): array
     {
         return array_reduce(
-            $form->getQuestionsByType($this->getAllowedQuestionType()),
+            $form->getQuestionsByType($this->getAllowedQuestionType()::class),
             function ($carry, $question) {
                 $carry[$question->getId()] = $question->fields['name'];
                 return $carry;

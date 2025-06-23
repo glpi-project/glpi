@@ -67,17 +67,17 @@ class DirectAccessTest extends \DBTestCase
         $this->assertNotEmpty($direct_access->getIcon());
     }
 
-    public function testGetConfigClass(): void
+    public function testGetConfig(): void
     {
         $direct_access = new DirectAccess();
 
         // Not much to test here, just ensure the method run without errors
-        $class = $direct_access->getConfigClass();
+        $class = $direct_access->getConfig();
         $this->assertNotEmpty($class);
 
         // Ensure the class exists and is valid
         $is_valid =
-            is_a($class, JsonFieldInterface::class, true)
+            is_a($class, JsonFieldInterface::class)
             && !(new \ReflectionClass($class))->isAbstract()
         ;
         $this->assertTrue($is_valid);

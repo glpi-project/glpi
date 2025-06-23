@@ -59,12 +59,12 @@ final class CommentTitleTagProviderTest extends DbTestCase
             new Tag(
                 label: 'Comment title: First comment title',
                 value: $this->getCommentId($form, 'First comment title'),
-                provider: CommentTitleTagProvider::class,
+                provider: new CommentTitleTagProvider(),
             ),
             new Tag(
                 label: 'Comment title: Second comment title',
                 value: $this->getCommentId($form, 'Second comment title'),
-                provider: CommentTitleTagProvider::class,
+                provider: new CommentTitleTagProvider(),
             ),
         ]);
     }

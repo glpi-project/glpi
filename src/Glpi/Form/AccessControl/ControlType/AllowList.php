@@ -66,9 +66,9 @@ final class AllowList implements ControlTypeInterface
     }
 
     #[Override]
-    public function getConfigClass(): string
+    public function getConfig(): JsonFieldInterface
     {
-        return AllowListConfig::class;
+        return new AllowListConfig();
     }
 
     #[Override]

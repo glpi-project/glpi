@@ -34,15 +34,16 @@
 
 namespace Glpi\Form\Destination;
 
+use CommonITILObject;
 use Override;
 use Problem;
 
 final class FormDestinationProblem extends AbstractCommonITILFormDestination
 {
     #[Override]
-    public function getTargetItemtype(): string
+    public function getTarget(): CommonITILObject
     {
-        return Problem::class;
+        return new Problem();
     }
 
     #[Override]

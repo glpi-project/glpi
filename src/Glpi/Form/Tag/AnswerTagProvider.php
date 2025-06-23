@@ -85,7 +85,7 @@ final class AnswerTagProvider implements TagProviderInterface
         return new Tag(
             label: sprintf(__('Answer: %s'), $question->fields['name']),
             value: $question->getId(),
-            provider: self::class,
+            provider: $this,
         );
     }
 }

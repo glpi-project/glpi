@@ -370,7 +370,7 @@ HTML,
         $tag = new Tag(
             label: __("My label"),
             value: 5, // Fake id
-            provider: AnswerTagProvider::class,
+            provider: new AnswerTagProvider(),
         );
         yield 'Html content of form tags should not be modified' => [
             'content' => $tag->html,

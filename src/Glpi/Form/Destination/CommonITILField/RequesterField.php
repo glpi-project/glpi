@@ -35,6 +35,7 @@
 namespace Glpi\Form\Destination\CommonITILField;
 
 use Glpi\Form\Form;
+use Glpi\Form\QuestionType\AbstractQuestionTypeActors;
 use Glpi\Form\QuestionType\QuestionTypeRequester;
 use Override;
 use Session;
@@ -42,9 +43,9 @@ use Session;
 final class RequesterField extends ITILActorField
 {
     #[Override]
-    public function getAllowedQuestionType(): string
+    public function getAllowedQuestionType(): AbstractQuestionTypeActors
     {
-        return QuestionTypeRequester::class;
+        return new QuestionTypeRequester();
     }
 
     #[Override]

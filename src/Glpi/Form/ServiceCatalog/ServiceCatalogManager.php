@@ -227,7 +227,7 @@ final class ServiceCatalogManager
      */
     private function sortItems(array $items, SortStrategyEnum $strategy): array
     {
-        $strategy = $strategy->getConcreteStrategy();
+        $strategy = $strategy->getStrategy();
         return $strategy->sort($items);
     }
 }

@@ -44,7 +44,7 @@ enum SLMFieldStrategy: string
     {
         return match ($this) {
             self::FROM_TEMPLATE     => __("From template"),
-            self::SPECIFIC_VALUE    => sprintf(__("Specific %s"), $field->getSLMClass()),
+            self::SPECIFIC_VALUE    => sprintf(__("Specific %s"), $field->getSLM()->getTypeName(1)),
         };
     }
 

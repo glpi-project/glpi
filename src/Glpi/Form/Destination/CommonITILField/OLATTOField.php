@@ -35,6 +35,7 @@
 
 namespace Glpi\Form\Destination\CommonITILField;
 
+use LevelAgreement;
 use OLA;
 use Override;
 use SLM;
@@ -54,9 +55,9 @@ final class OLATTOField extends SLMField
     }
 
     #[Override]
-    public function getSLMClass(): string
+    public function getSLM(): LevelAgreement
     {
-        return OLA::class;
+        return new OLA();
     }
 
     #[Override]

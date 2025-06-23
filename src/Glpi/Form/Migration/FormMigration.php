@@ -961,6 +961,10 @@ class FormMigration extends AbstractPluginMigration
         string $destinationClass,
         string $targetTable
     ): void {
+        if (is_a($destinationClass, AbstractCommonITILFormDestination::class, true) === false) {
+            throw new LogicException("Invalid destination class {$destinationClass}");
+        }
+
         foreach ($raw_targets as $raw_target) {
             $form_id = $this->getMappedItemTarget(
                 'PluginFormcreatorForm',
@@ -1049,6 +1053,10 @@ class FormMigration extends AbstractPluginMigration
         string $targetTable,
         string $fcDestinationClass
     ): void {
+        if (is_a($destinationClass, AbstractCommonITILFormDestination::class, true) === false) {
+            throw new LogicException("Invalid destination class {$destinationClass}");
+        }
+
         $targets_actors     = [];
         $raw_targets_actors = $this->db->request([
             'SELECT' => [

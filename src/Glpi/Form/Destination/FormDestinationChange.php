@@ -35,14 +35,15 @@
 namespace Glpi\Form\Destination;
 
 use Change;
+use CommonITILObject;
 use Override;
 
 final class FormDestinationChange extends AbstractCommonITILFormDestination
 {
     #[Override]
-    public function getTargetItemtype(): string
+    public function getTarget(): CommonITILObject
     {
-        return Change::class;
+        return new Change();
     }
 
     #[Override]

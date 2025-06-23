@@ -53,7 +53,7 @@ final class FormTagProviderTest extends DbTestCase
             new Tag(
                 label: 'Form name: Test form',
                 value: $form->getId(),
-                provider: FormTagProvider::class,
+                provider: new FormTagProvider(),
             ),
         ]);
     }
@@ -65,7 +65,7 @@ final class FormTagProviderTest extends DbTestCase
             new Tag(
                 label: 'Form name: My form',
                 value: $form->getId(),
-                provider: FormTagProvider::class,
+                provider: new FormTagProvider(),
             ),
         ]);
     }
