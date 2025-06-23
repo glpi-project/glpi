@@ -45,7 +45,7 @@
       {{ call_plugin_hook(constant('Glpi\\Plugin\\Hooks::PRE_ITEM_FORM'), {'item': item, 'options': params ?? []}) }}
 
       <div class="card-body d-flex flex-wrap">
-         <div class="col-12 col-xxl-{{ (item_has_pictures ?? false) ? '9' : '12' }} flex-column">
+         <div class="col-12 col-xxl-12 flex-column">
             <div class="d-flex flex-row flex-wrap flex-xl-nowrap">
                <div class="row flex-row align-items-start flex-grow-1">
                   <div class="row flex-row">
