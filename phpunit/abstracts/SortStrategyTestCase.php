@@ -96,7 +96,7 @@ abstract class SortStrategyTestCase extends \DbTestCase
         $items = self::$manager->getItems($item_request)['items'];
 
         // Sort the items using the strategy
-        $sortedItems = $this->getSortStrategyEnum()->getConcreteStrategy()
+        $sortedItems = $this->getSortStrategyEnum()->getStrategy()
             ->sort($items);
 
         // Verify the sorting against the expected order

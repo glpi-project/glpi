@@ -107,10 +107,9 @@ final class FormActorsDropdown extends AbstractRightsDropdown
     protected static function getValueNames(array $values): array
     {
         return array_map(function ($value) {
-            $data = explode("-", $value);
-            $itemtype = getItemtypeForForeignKeyField($data[0]);
+            $data     = explode("-", $value);
+            $item     = getItemForForeignKeyField($data[0]);
             $items_id = $data[1];
-            $item = new $itemtype();
 
             return Dropdown::getDropdownName(
                 $item->getTable(),

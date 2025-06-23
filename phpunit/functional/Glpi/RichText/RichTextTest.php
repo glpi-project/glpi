@@ -116,13 +116,13 @@ HTML,
 </head>
 <body>
   <h1>Test</h1>
-  
+
   <style>
     body {
       color: red;
     }
   </style>
-  
+
   <p>Hello world!</p>
   <script>$(function(){ dosomething(); });</script>
 </body>
@@ -130,7 +130,7 @@ HTML,
             'encode_output_entities' => false,
             'expected_result'        => <<<HTML
   <h1>Test</h1>
-  
+
   <p>Hello world!</p>
 HTML,
         ];
@@ -243,12 +243,12 @@ HTML,
   <div>
     <label>e-mail:</label><br />
     <label>password:</label>
-    
+
     OK
-    
+
         Opt 1
         Opt 2
-    
+
     Some textarea content
   </div>
 
@@ -281,9 +281,9 @@ HTML,
 
 <h1>Comments and CDATA should be removed</h1>
 <p>
-  
+
   Legit text
-  
+
 </p>
 <p>Uppercase tag will be normalized to lowercase tag</p>
 
@@ -370,7 +370,7 @@ HTML,
         $tag = new Tag(
             label: __("My label"),
             value: 5, // Fake id
-            provider: AnswerTagProvider::class,
+            provider: new AnswerTagProvider(),
         );
         yield 'Html content of form tags should not be modified' => [
             'content' => $tag->html,
@@ -542,7 +542,7 @@ Text in a paragraph
  	* el 1
  	* el 2
 
- [an image] [{$CFG_GLPI['url_base']}/front/computer.form.php?id=150] Should I yell FOR THE IMPORTANT WORDS? 
+ [an image] [{$CFG_GLPI['url_base']}/front/computer.form.php?id=150] Should I yell FOR THE IMPORTANT WORDS?
 PLAINTEXT,
         ];
 
@@ -562,7 +562,7 @@ Text in a paragraph
  	* el 1
  	* el 2
 
- [an image] Should I yell FOR THE IMPORTANT WORDS? 
+ [an image] Should I yell FOR THE IMPORTANT WORDS?
 PLAINTEXT,
         ];
 
@@ -582,7 +582,7 @@ Text in a paragraph
  	* el 1
  	* el 2
 
- [an image] Should I yell for the important words? 
+ [an image] Should I yell for the important words?
 PLAINTEXT,
         ];
     }

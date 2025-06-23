@@ -321,7 +321,7 @@ final class Question extends CommonDBChild implements BlockInterface, Conditiona
         // We need to instantiate the question type to format and validate attributes
         if (
             isset($input['type'])
-            && class_exists($input['type'])
+            && is_a($input['type'], QuestionTypeInterface::class, true)
         ) {
             $question_type = new $input['type']();
         }

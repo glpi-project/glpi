@@ -78,7 +78,7 @@ final class CommentTitleTagProvider implements TagProviderInterface
         return new Tag(
             label: sprintf(__('Comment title: %s'), $comment->fields['name']),
             value: $comment->getId(),
-            provider: self::class,
+            provider: $this,
         );
     }
 }

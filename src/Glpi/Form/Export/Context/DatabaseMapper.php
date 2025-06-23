@@ -157,8 +157,7 @@ final class DatabaseMapper
             throw new InvalidArgumentException();
         }
 
-        /** @var CommonDBTM $item */
-        $item = new $itemtype();
+        $item = getItemForItemtype($itemtype);
         $query = [
             'FROM' => $item::getTable(),
         ];

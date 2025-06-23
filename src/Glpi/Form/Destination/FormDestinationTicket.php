@@ -34,6 +34,7 @@
 
 namespace Glpi\Form\Destination;
 
+use CommonITILObject;
 use Glpi\Form\Destination\CommonITILField\RequestTypeField;
 use Glpi\Form\Destination\CommonITILField\SLATTOField;
 use Glpi\Form\Destination\CommonITILField\SLATTRField;
@@ -46,9 +47,9 @@ use Ticket;
 final class FormDestinationTicket extends AbstractCommonITILFormDestination
 {
     #[Override]
-    public function getTargetItemtype(): string
+    public function getTarget(): CommonITILObject
     {
-        return Ticket::class;
+        return new Ticket();
     }
 
     #[Override]

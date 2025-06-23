@@ -46,11 +46,12 @@ use Glpi\Form\Form;
 use Glpi\Form\Migration\DestinationFieldConverterInterface;
 use Glpi\Form\Migration\FormMigration;
 use InvalidArgumentException;
+use LevelAgreement;
 use Override;
 
 abstract class SLMField extends AbstractConfigField implements DestinationFieldConverterInterface
 {
-    abstract public function getSLMClass(): string;
+    abstract public function getSLM(): LevelAgreement;
     abstract public function getType(): int;
     /** @return class-string<SLMFieldConfig> */
     abstract public function getConfigClass(): string;
@@ -69,7 +70,7 @@ abstract class SLMField extends AbstractConfigField implements DestinationFieldC
             throw new InvalidArgumentException("Unexpected config class");
         }
 
-        $slm = new ($this->getSLMClass())();
+        $slm = $this->getSLM();
         $twig = TemplateRenderer::getInstance();
         return $twig->render('pages/admin/form/itil_config_fields/slm.html.twig', [
             // Possible configuration constant that will be used to to hide/show additional fields
@@ -80,11 +81,11 @@ abstract class SLMField extends AbstractConfigField implements DestinationFieldC
 
             // Specific additional config for SPECIFIC_ANSWER strategy
             'specific_value_extra_field' => [
-                'slm_class' => $this->getSLMClass(),
-                'empty_label'     => sprintf(__("Select a %s..."), $slm->getTypeName()),
-                'value'           => $config->getSpecificSLMID() ?? 0,
-                'input_name'      => $input_name . "[" . SLMFieldConfig::SLM_ID . "]",
-                'type'            => $this->getType(),
+                'slm_class'   => $this->getSLM()::class,
+                'empty_label' => sprintf(__("Select a %s..."), $slm->getTypeName()),
+                'value'       => $config->getSpecificSLMID() ?? 0,
+                'input_name'  => $input_name . "[" . SLMFieldConfig::SLM_ID . "]",
+                'type'        => $this->getType(),
             ],
         ]);
     }
@@ -106,38 +107,37 @@ abstract class SLMField extends AbstractConfigField implements DestinationFieldC
         $slm_id = $strategy->getSLMID($config);
 
         // Do not edit input if invalid value was found
-        $slm_class = $this->getSLMClass();
-        if (!$slm_class::getById($slm_id)) {
+        $slm = $this->getSLM();
+        if (!$slm::getById($slm_id)) {
             return $input;
         }
 
-        $input[$slm_class::getFieldNames($this->getType())[1]] = $slm_id;
+        $input[$slm::getFieldNames($this->getType())[1]] = $slm_id;
 
         return $input;
     }
 
     #[Override]
-    public function getDefaultConfig(Form $form): SLMFieldConfig
+    public function getDefaultConfig(Form $form): JsonFieldInterface
     {
-        return new ($this->getConfigClass())(
-            SLMFieldStrategy::FROM_TEMPLATE
-        );
+        return $this->getConfig($form, [$this->getKey() => [
+            SLMFieldConfig::STRATEGY => SLMFieldStrategy::FROM_TEMPLATE->value,
+        ]]);
     }
 
     #[Override]
     public function convertFieldConfig(FormMigration $migration, Form $form, array $rawData): JsonFieldInterface
     {
-        $config_class = $this->getConfigClass();
         switch ($rawData['sla_rule']) {
             case 1: // PluginFormcreatorAbstractItilTarget::SLA_RULE_NONE
-                return new $config_class(
-                    strategy: SLMFieldStrategy::FROM_TEMPLATE
-                );
+                return $this->getConfig($form, [$this->getKey() => [
+                    SLMFieldConfig::STRATEGY => SLMFieldStrategy::FROM_TEMPLATE->value,
+                ]]);
             case 2: // PluginFormcreatorAbstractItilTarget::SLA_RULE_SPECIFIC
-                return new $config_class(
-                    strategy: SLMFieldStrategy::SPECIFIC_VALUE,
-                    specific_slm_id: $rawData[$this->getFieldNameToConvertSpecificSLMID()]
-                );
+                return $this->getConfig($form, [$this->getKey() => [
+                    SLMFieldConfig::STRATEGY => SLMFieldStrategy::SPECIFIC_VALUE->value,
+                    SLMFieldConfig::SLM_ID => $rawData[$this->getFieldNameToConvertSpecificSLMID()] ?? null,
+                ]]);
         }
 
         return $this->getDefaultConfig($form);
@@ -172,8 +172,7 @@ abstract class SLMField extends AbstractConfigField implements DestinationFieldC
         }
 
         // Try to load service level
-        $slm_type = $this->getSLMClass();
-        $slm = $slm_type::getById($slm_id);
+        $slm = $this->getSLM()::getById($slm_id);
         if (!$slm) {
             return $fallback;
         }
@@ -181,7 +180,7 @@ abstract class SLMField extends AbstractConfigField implements DestinationFieldC
         // Insert service level name and requirement
         $name = $slm->getName();
         $config[SLMFieldConfig::SLM_ID] = $name;
-        $requirement = new DataRequirementSpecification($slm_type, $name);
+        $requirement = new DataRequirementSpecification($this->getSLM()::class, $name);
 
         return new DynamicExportDataField($config, [$requirement]);
     }
@@ -202,9 +201,9 @@ abstract class SLMField extends AbstractConfigField implements DestinationFieldC
         }
 
         // Insert id
-        $slm_type = (new static())->getSLMClass();
+        $slm = (new static())->getSLM();
         $config[SLMFieldConfig::SLM_ID] = $mapper->getItemId(
-            $slm_type,
+            $slm::class,
             $config[SLMFieldConfig::SLM_ID],
         );
 

@@ -63,6 +63,11 @@ abstract class ITILTemplate extends CommonDropdown
     public $readonly   = [];
     /// Related ITIL type
 
+    /**
+     * Predefined field instance to use to set the concrete items's data
+     */
+    abstract public static function getPredefinedFields(): ITILTemplatePredefinedField;
+
 
     /**
      * Retrieve an item from the database with additional datas

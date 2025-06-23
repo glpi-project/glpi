@@ -47,18 +47,18 @@ final readonly class Tag
     public function __construct(
         string $label,
         string $value,
-        string $provider,
+        TagProviderInterface $provider,
     ) {
         $this->label = $label;
 
-        $color = (new $provider())->getTagColor();
+        $color = $provider->getTagColor();
 
         // Build HTML representation of the tag.
         $properties = [
             "contenteditable"        => "false",
             "data-form-tag"          => "true",
             "data-form-tag-value"    => $value,
-            "data-form-tag-provider" => $provider,
+            "data-form-tag-provider" => $provider::class,
             "class"                  => "border-$color border-start border-3 bg-dark-lt",
         ];
         $properties = implode(" ", array_map(

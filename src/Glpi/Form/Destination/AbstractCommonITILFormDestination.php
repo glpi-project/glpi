@@ -60,8 +60,7 @@ use Ticket;
 
 abstract class AbstractCommonITILFormDestination implements FormDestinationInterface
 {
-    /** @return class-string<\CommonITILObject>   */
-    abstract public function getTargetItemtype(): string;
+    abstract public function getTarget(): CommonITILObject;
 
     final public function __construct() {}
 
@@ -93,13 +92,13 @@ abstract class AbstractCommonITILFormDestination implements FormDestinationInter
     #[Override]
     final public function getLabel(): string
     {
-        return $this->getTargetItemtype()::getTypeName(1);
+        return $this->getTarget()::getTypeName(1);
     }
 
     #[Override]
     final public function getIcon(): string
     {
-        return $this->getTargetItemtype()::getIcon();
+        return $this->getTarget()::getIcon();
     }
 
     #[Override]
@@ -109,7 +108,7 @@ abstract class AbstractCommonITILFormDestination implements FormDestinationInter
         array $config,
     ): array {
         $typename        = $this->getLabel();
-        $itemtype        = $this->getTargetItemtype();
+        $itil_object        = $this->getTarget();
         $fields_to_apply = $this->getConfigurableFields();
 
         // Mandatory values, we must preset defaults values as it can't be
@@ -120,7 +119,7 @@ abstract class AbstractCommonITILFormDestination implements FormDestinationInter
         ];
 
         // Template field must be computed before applying predefined fields
-        $target_itemtype = $this->getTargetItemtype();
+        $target_itemtype = $this->getTarget();
         $template_class = (new $target_itemtype())->getTemplateClass();
         $template_field = new TemplateField($template_class);
         $input = $template_field->applyConfiguratedValueToInputUsingAnswers(
@@ -159,13 +158,6 @@ abstract class AbstractCommonITILFormDestination implements FormDestinationInter
         $input = $this->setFilesInput($input, $answers_set);
 
         // Create commonitil object
-        $itil_object = new $itemtype();
-
-        if (!($itil_object instanceof CommonITILObject)) {
-            throw new \RuntimeException(
-                "The target itemtype must be an instance of CommonITILObject"
-            );
-        }
         if (!$itil_object->add($input)) {
             throw new \Exception(
                 "Failed to create $typename: " . json_encode($input)
@@ -175,8 +167,7 @@ abstract class AbstractCommonITILFormDestination implements FormDestinationInter
         // If requested, link the form directly to the commonitil object
         // This allow users to see it an an associated item and known where the
         // commonitil object come from
-        $link_class = $itil_object::getItemLinkClass();
-        $link = new $link_class();
+        $link = getItemForItemtype($itil_object::getItemLinkClass());
         $input = [
             $itil_object->getForeignKeyField() => $itil_object->getID(),
             'itemtype'                         => $form::class,
@@ -240,8 +231,7 @@ abstract class AbstractCommonITILFormDestination implements FormDestinationInter
      */
     protected function defineConfigurableFields(): array
     {
-        $target_itemtype = $this->getTargetItemtype();
-        $template_class = (new $target_itemtype())->getTemplateClass();
+        $template_class = $this->getTarget()->getTemplateClass();
 
         return [
             new TitleField(),
@@ -334,7 +324,7 @@ abstract class AbstractCommonITILFormDestination implements FormDestinationInter
 
     private function applyPredefinedTemplateFields(array $input): array
     {
-        $itemtype = $this->getTargetItemtype();
+        $itemtype = $this->getTarget();
 
         /** @var \CommonITILObject $itil */
         $itil = new $itemtype();
@@ -351,11 +341,7 @@ abstract class AbstractCommonITILFormDestination implements FormDestinationInter
             $input[$template_foreign_key] = $template->getID();
         }
 
-        $predefined_fields_class = $itemtype . "TemplatePredefinedField";
-
-        /** @var \ITILTemplatePredefinedField $predefined_fields */
-        $predefined_fields = new $predefined_fields_class();
-
+        $predefined_fields = $itemtype->getTemplateClass()::getPredefinedFields();
         $fields = $predefined_fields->getPredefinedFields($template->fields['id']);
         foreach ($fields as $field => $value) {
             $input[$field] = $value;
