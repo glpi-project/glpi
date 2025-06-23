@@ -6584,7 +6584,6 @@ HTML;
      */
     public function applyGroupsRules()
     {
-
         if (!isset($this->input["_ldap_rules"]['groups_id'])) {
             if (isset($this->input["_ldap_rules"]) && isset($this->input['id'])) {
                 $group_user = new Group_User();
