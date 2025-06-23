@@ -47,7 +47,6 @@ use Glpi\Form\Form;
 use Glpi\Form\QuestionType\QuestionTypeShortText;
 use Glpi\Tests\FormBuilder;
 use Glpi\Tests\FormTesterTrait;
-use ReflectionClass;
 
 abstract class AbstractCommonITILFormDestinationType extends DbTestCase
 {
@@ -64,7 +63,7 @@ abstract class AbstractCommonITILFormDestinationType extends DbTestCase
     {
         $this->login();
         $answers_handler = AnswersHandler::getInstance();
-        $itemtype = $this->getTestedInstance()->getTargetItemtype();
+        $target = $this->getTestedInstance()->getTarget();
 
         $title_field = new TitleField();
         $content_field = new ContentField();
@@ -86,14 +85,14 @@ abstract class AbstractCommonITILFormDestinationType extends DbTestCase
         );
 
         // There are no tickets in the database named after this form
-        $itil_items = (new $itemtype())->find(['name' => 'My title']);
+        $itil_items = $target->find(['name' => 'My title']);
         $this->assertCount(0, $itil_items);
 
         // Submit form, a single itil item should be created
         $answers = $answers_handler->saveAnswers($form, [
             $this->getQuestionId($form, "Name") => "My name",
         ], \Session::getLoginUserID());
-        $itil_items = (new $itemtype())->find(['name' => 'My title']);
+        $itil_items = $target->find(['name' => 'My title']);
         $this->assertCount(1, $itil_items);
 
         // Check fields
@@ -104,9 +103,8 @@ abstract class AbstractCommonITILFormDestinationType extends DbTestCase
     final public function testGetTargetItemtype(): void
     {
         // Ensure the type defined in the child class is a valid CommonDBTM class
-        $type = $this->getTestedInstance()->getTargetItemtype();
-        $is_valid_class = is_a($type, CommonDBTM::class, true)
-            && !(new ReflectionClass($type))->isAbstract();
+        $target = $this->getTestedInstance()->getTarget();
+        $is_valid_class = is_a($target, CommonDBTM::class);
 
         $this->assertTrue($is_valid_class);
     }

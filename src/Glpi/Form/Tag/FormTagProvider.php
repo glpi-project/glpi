@@ -72,7 +72,7 @@ final class FormTagProvider implements TagProviderInterface
         return new Tag(
             label: sprintf(__('Form name: %s'), $form->fields['name']),
             value: $form->getId(),
-            provider: self::class,
+            provider: $this,
         );
     }
 }

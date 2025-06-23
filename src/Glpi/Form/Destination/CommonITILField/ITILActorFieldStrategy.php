@@ -254,7 +254,7 @@ enum ITILActorFieldStrategy: string
         AnswersSet $answers_set,
     ): ?array {
         $valid_answers = $answers_set->getAnswersByType(
-            $itil_actor_field->getAllowedQuestionType()
+            $itil_actor_field->getAllowedQuestionType()::class
         );
 
         if (count($valid_answers) == 0) {

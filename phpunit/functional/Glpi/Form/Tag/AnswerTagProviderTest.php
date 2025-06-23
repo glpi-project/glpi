@@ -61,12 +61,12 @@ final class AnswerTagProviderTest extends DbTestCase
             new Tag(
                 label: 'Answer: First name',
                 value: $this->getQuestionId($form, 'First name'),
-                provider: AnswerTagProvider::class,
+                provider: new AnswerTagProvider(),
             ),
             new Tag(
                 label: 'Answer: Last name',
                 value: $this->getQuestionId($form, 'Last name'),
-                provider: AnswerTagProvider::class,
+                provider: new AnswerTagProvider(),
             ),
         ]);
     }

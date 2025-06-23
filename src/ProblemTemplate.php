@@ -42,6 +42,12 @@ class ProblemTemplate extends ITILTemplate
 {
     use Glpi\Features\Clonable;
 
+    #[Override]
+    public static function getPredefinedFields(): ITILTemplatePredefinedField
+    {
+        return new ProblemTemplatePredefinedField();
+    }
+
     public static function getTypeName($nb = 0)
     {
         return _n('Problem template', 'Problem templates', $nb);

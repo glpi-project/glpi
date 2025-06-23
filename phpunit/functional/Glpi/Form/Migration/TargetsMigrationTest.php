@@ -337,13 +337,23 @@ final class TargetsMigrationTest extends DbTestCase
         $form = getItemByTypeName(Form::class, $form_name);
         $destinations = $form->getDestinations();
         foreach ($destinations as $destination) {
+            /** @var AbstractCommonITILFormDestination $itil_destination */
             $itil_destination = $destination->getConcreteDestinationItem();
 
             // Find the matching expected destination
             $expected_destination = current(array_filter(
                 $expected_destinations,
-                fn($expected_destination) => (new $expected_destination['itemtype']())->getTargetItemtype() === $itil_destination->getTargetItemtype()
-                    && $expected_destination['name'] === $destination->fields['name']
+                function ($expected_destination) use ($itil_destination, $destination) {
+                    if ((new $expected_destination['itemtype']())->getTarget()::class !== $itil_destination->getTarget()::class) {
+                        return false;
+                    }
+
+                    if ($expected_destination['name'] !== $destination->fields['name']) {
+                        return false;
+                    }
+
+                    return true;
+                }
             ));
             $this->assertNotFalse($expected_destination);
 

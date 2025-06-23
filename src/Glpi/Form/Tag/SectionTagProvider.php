@@ -78,7 +78,7 @@ final class SectionTagProvider implements TagProviderInterface
         return new Tag(
             label: sprintf(__('Section: %s'), $section->fields['name']),
             value: $section->getId(),
-            provider: self::class,
+            provider: $this,
         );
     }
 }

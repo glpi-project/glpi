@@ -68,9 +68,9 @@ final class DayOfTheWeekPolicy implements ControlTypeInterface
     }
 
     #[Override]
-    public function getConfigClass(): string
+    public function getConfig(): JsonFieldInterface
     {
-        return DayOfTheWeekPolicyConfig::class;
+        return new DayOfTheWeekPolicyConfig();
     }
 
     #[Override]

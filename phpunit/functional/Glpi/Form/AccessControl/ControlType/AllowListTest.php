@@ -66,17 +66,17 @@ class AllowListTest extends \DbTestCase
         $this->assertNotEmpty($allow_list->getIcon());
     }
 
-    public function testGetConfigClass(): void
+    public function testGetConfig(): void
     {
         $allow_list = new AllowList();
 
         // Not much to test here, just ensure the method run without errors
-        $class = $allow_list->getConfigClass();
+        $class = $allow_list->getConfig();
         $this->assertNotEmpty($class);
 
         // Ensure the class exists and is valid
         $is_valid =
-            is_a($class, JsonFieldInterface::class, true)
+            is_a($class, JsonFieldInterface::class)
             && !(new \ReflectionClass($class))->isAbstract()
         ;
         $this->assertTrue($is_valid);

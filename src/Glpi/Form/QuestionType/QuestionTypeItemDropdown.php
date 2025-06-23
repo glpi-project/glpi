@@ -249,6 +249,7 @@ final class QuestionTypeItemDropdown extends QuestionTypeItem
     {
         $params   = [];
         $itemtype = $this->getDefaultValueItemtype($question);
+        $item     = getItemForItemtype($itemtype);
         if ($question === null || $itemtype === null) {
             return $params;
         }
@@ -281,7 +282,7 @@ final class QuestionTypeItemDropdown extends QuestionTypeItem
             }
         }
 
-        if ((new $itemtype())->maybeActive()) {
+        if ($item->maybeActive()) {
             // Ensure only active items are shown
             $params[$itemtype::getTableField('is_active')] = 1;
         }
@@ -295,7 +296,7 @@ final class QuestionTypeItemDropdown extends QuestionTypeItem
             );
 
             $params[$itemtype::getTableField('id')] = $sons;
-            $root_item = new $itemtype();
+            $root_item = $item;
             if ($root_item->getFromDB($root_items_id)) {
                 $root_item_level = $root_item->fields['level'];
             }

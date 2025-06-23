@@ -61,9 +61,9 @@ final class DirectAccess implements ControlTypeInterface
     }
 
     #[Override]
-    public function getConfigClass(): string
+    public function getConfig(): JsonFieldInterface
     {
-        return DirectAccessConfig::class;
+        return new DirectAccessConfig();
     }
 
     #[Override]

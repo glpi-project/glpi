@@ -42,6 +42,12 @@ class ChangeTemplate extends ITILTemplate
 {
     use Glpi\Features\Clonable;
 
+    #[Override]
+    public static function getPredefinedFields(): ITILTemplatePredefinedField
+    {
+        return new ChangeTemplatePredefinedField();
+    }
+
     public static function getTypeName($nb = 0)
     {
         return _n('Change template', 'Change templates', $nb);

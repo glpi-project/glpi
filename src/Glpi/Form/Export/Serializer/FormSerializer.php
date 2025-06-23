@@ -716,11 +716,7 @@ final class FormSerializer extends AbstractFormSerializer
 
             // Load strategy
             $strategy_class = $policy_spec->strategy;
-            if (!$policy->isValidStrategy($strategy_class)) {
-                $message = "Invalid access policy: {$strategy_class}";
-                throw new RuntimeException($message);
-            }
-            $strategy = new $strategy_class();
+            $strategy = $policy->createStrategy($strategy_class);
 
             // Prepare basic input
             $input = [

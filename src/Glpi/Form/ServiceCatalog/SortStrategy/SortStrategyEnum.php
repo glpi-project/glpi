@@ -41,24 +41,15 @@ enum SortStrategyEnum: string
     case POPULARITY           = 'popularity';
 
     /**
-     * Get the strategy class for this enum value
-     */
-    public function getStrategyClass(): string
-    {
-        return match ($this) {
-            self::ALPHABETICAL => AlphabeticalSort::class,
-            self::REVERSE_ALPHABETICAL => ReverseAlphabeticalSort::class,
-            self::POPULARITY => PopularitySort::class,
-        };
-    }
-
-    /**
      * Create a new instance of the strategy
      */
-    public function getConcreteStrategy(): SortStrategyInterface
+    public function getStrategy(): SortStrategyInterface
     {
-        $class = $this->getStrategyClass();
-        return new $class();
+        return match ($this) {
+            self::ALPHABETICAL => new AlphabeticalSort(),
+            self::REVERSE_ALPHABETICAL => new ReverseAlphabeticalSort(),
+            self::POPULARITY => new PopularitySort(),
+        };
     }
 
     /**
@@ -79,7 +70,7 @@ enum SortStrategyEnum: string
         $strategies = [];
 
         foreach (SortStrategyEnum::cases() as $case) {
-            $strategies[$case->value] = $case->getConcreteStrategy();
+            $strategies[$case->value] = $case->getStrategy();
         }
 
         return $strategies;
