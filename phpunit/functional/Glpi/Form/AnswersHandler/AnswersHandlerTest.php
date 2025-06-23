@@ -445,7 +445,14 @@ class AnswersHandlerTest extends DbTestCase
         $answer_set = $handler->saveAnswers($form, $answers, $users_id);
 
         foreach ($expected_set as $field => $expected_value) {
-            $this->assertEquals($expected_value, $answer_set->fields[$field]);
+            if ($field === 'answers') {
+                $this->assertArraysEqualRecursive(
+                    json_decode($expected_value, true),
+                    json_decode($answer_set->fields[$field], true),
+                );
+            } else {
+                $this->assertEquals($expected_value, $answer_set->fields[$field]);
+            }
         }
 
         // The `createDestinations` part of the `saveAnswers` method is tested
