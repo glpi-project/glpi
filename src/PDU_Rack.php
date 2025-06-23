@@ -91,11 +91,11 @@ class PDU_Rack extends CommonDBRelation
 
         //check for requirements
         if ($this->isNewItem()) {
-            if (!isset($input['pdus_id'])) {
+            if (empty($input['pdus_id'])) {
                 $error_detected[] = __('A pdu is required');
             }
 
-            if (!isset($input['racks_id'])) {
+            if (empty($input['racks_id'])) {
                 $error_detected[] = __('A rack is required');
             }
 
