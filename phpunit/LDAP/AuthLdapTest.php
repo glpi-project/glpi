@@ -184,6 +184,14 @@ class AuthLDAPTest extends DbTestCase
         $result = $ldap->prepareInputForUpdate($input);
         $this->assertArrayNotHasKey('rootdn_passwd', $result);
 
+        //test protocal removal
+        $input['host'] = 'ldap://myhost';
+        $result = $ldap->prepareInputForUpdate($input);
+        $this->assertIsArray($result);
+        $this->assertSame('myhost', $result['host']);
+        $this->hasSessionMessages(INFO, ['Protocol should not be part of the host, it has been removed.']);
+        unset($input['host']);
+
         //Field name finishing with _field : set the value in lower case
         $input['_login_field'] = 'TEST';
         $result         = $ldap->prepareInputForUpdate($input);

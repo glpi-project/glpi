@@ -267,6 +267,7 @@ class AuthLDAP extends CommonDBTM
 
     public function prepareInputForUpdate($input)
     {
+        $this->checkHost($input);
 
         if (isset($input["rootdn_passwd"])) {
             if (empty($input["rootdn_passwd"])) {
@@ -4264,6 +4265,7 @@ class AuthLDAP extends CommonDBTM
 
     public function prepareInputForAdd($input)
     {
+        $this->checkHost($input);
 
         //If it's the first ldap directory then set it as the default directory
         if (!self::getNumberOfServers()) {
@@ -4792,6 +4794,20 @@ class AuthLDAP extends CommonDBTM
         }
 
         return $users;
+    }
+
+    private function checkHost(array &$input): void
+    {
+        if (!empty($input['host'])) {
+            // Remove protocol from host
+            $host = preg_replace('@^ldaps?://@', '', $input['host']);
+            if ($host !== $input['host']) {
+                $input['host'] = $host;
+                Session::addMessageAfterRedirect(
+                    __('Protocol should not be part of the host, it has been removed.')
+                );
+            }
+        }
     }
 
     public function checkFilesExist(&$input)
