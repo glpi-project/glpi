@@ -188,20 +188,6 @@ elseif (isset($_POST['update'])) {
     );
 
     Html::redirect(Ticket::getFormURLWithID($_POST["id"]));
-} elseif (isset($_POST['ola_delete'])) {
-    $ticket->check($_POST["id"], UPDATE);
-
-    $ticket->deleteLevelAgreement("OLA", $_POST["la_id"], $_POST['type'], $_POST['delete_date']);
-    Event::log(
-        $_POST["id"],
-        "ticket",
-        4,
-        "tracking",
-        //TRANS: %s is the user login
-        sprintf(__('%s updates an item'), $_SESSION["glpiname"])
-    );
-
-    Html::redirect(Ticket::getFormURLWithID($_POST["id"]));
 } elseif (isset($_POST['addme_as_actor'])) {
     $id = (int) $_POST['id'];
     $ticket->check($id, READ);
