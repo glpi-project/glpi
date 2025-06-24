@@ -3093,7 +3093,7 @@ class AuthLDAP extends CommonDBTM
         //do not use ldaps; tls connection is made later using ldap_start_tls
         $ldapuri = sprintf(
             'ldap://%s:%s',
-            $host,
+            preg_replace('@ldaps?://@', '', $host),
             (int) $port
         );
         $ds = @ldap_connect($ldapuri);
