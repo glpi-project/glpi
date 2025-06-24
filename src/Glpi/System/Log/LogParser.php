@@ -250,11 +250,10 @@ final class LogParser extends CommonGLPI
     {
         $filepath = str_replace('\\', '/', $filepath);
 
-        if (preg_match('/\/..\//', $filepath) === 1) {
+        $fullpath = \Safe\realpath($this->directory . '/' . $filepath);
+        if ($fullpath === false || !str_starts_with($fullpath, $this->directory)) {
             return null; // Security check
         }
-
-        $fullpath = $this->directory . '/' . $filepath;
 
         return file_exists($fullpath) && !is_dir($fullpath) ? $fullpath : null;
     }
