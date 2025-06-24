@@ -107,6 +107,7 @@
         "atoum/atoum": "^4.3",
         "friendsofphp/php-cs-fixer": "^3.75",
         "friendsoftwig/twigcs": "^6.5",
+        "glpi-project/phpstan-glpi": "^1.0",
         "glpi-project/tools": "^0.7",
         "mikey179/vfsstream": "^1.6",
         "nikic/php-parser": "^5.5",
