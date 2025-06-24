@@ -232,24 +232,26 @@ Handle only linked ola, not ola ttr and tto defined using datetime fields
     </tr>
     </thead>
     <tbody>
-{% for ola in item.getOlasData() %}
-    <tr>
+{% for ola in item.getOlasDataFromField() %}
+    {% set _rand = random() %}
+
+
+    <tr id="ola_row_{{ _rand }}">
         {% if ola.type == constant('SLM::TTO') %}
 {#            {% set display_datetime_field  = field_options.fields_template is not defined or not field_options.fields_template.isHiddenField('time_to_own') %}#}
             {# @todo voir comment gérer ce choix d'afficher ou pas selon une config #}
 {#            {% set display_associatedsla_field = field_options.fields_template is not defined or not field_options.fields_template.isHiddenField('slas_id_tto') %}#}
 {#            {% set _fieldname = 'time_to_own' %}#}
-            {% set can_assign_sla_ola = canupdate and has_profile_right('slm', constant('SLM::RIGHT_ASSIGN')) and not field_options.fields_template.isReadonlyField('olas_id_tto') %}
+            {% set can_assign_sla_ola = canupdate and has_profile_right('slm', constant('SLM::RIGHT_ASSIGN')) and not field_options.fields_template.isReadonlyField('_olas_id') %}
             {% set _label = __('TTO') %}
         {% elseif ola.type == constant('SLM::TTR') %}
 {#            {% set display_datetime_field  = field_options.fields_template is not defined or not field_options.fields_template.isHiddenField('time_to_resolve') %}#}
 {#            {% set display_associatedsla_field  = field_options.fields_template is not defined or not field_options.fields_template.isHiddenField('slas_id_ttr') %}#}
 {#            {% set _fieldname = 'time_to_resolve' %}#}
-            {% set can_assign_sla_ola = canupdate and has_profile_right('slm', constant('SLM::RIGHT_ASSIGN')) and not field_options.fields_template.isReadonlyField('olas_id_ttr') %}
+            {% set can_assign_sla_ola = canupdate and has_profile_right('slm', constant('SLM::RIGHT_ASSIGN')) and not field_options.fields_template.isReadonlyField('_olas_id') %}
             {% set _label = __('TTR') %}
         {% endif %}
 {#        {% set _value = item.fields[_fieldname] %}#}
-        {% set _rand = random() %}
 
         {# @todo supprimer forcage de debug #}
         {% set display_datetime_field      = true %}

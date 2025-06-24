@@ -3496,6 +3496,7 @@ JAVASCRIPT;
             'time_to_own'               => 'NULL',
             'slas_id_tto'               => 0,
             'slas_id_ttr'               => 0,
+            '_olas_id'                  => [],
             '_add_validation'           => 0,
             '_validation_targets'       => [],
             'type'                      => $type,
@@ -3627,6 +3628,7 @@ JAVASCRIPT;
                 //Allow overriding the default values
                 $options['_skip_promoted_fields'] = true;
             }
+            $options['_olas_id'] = []; // $this->setPredefinedFields() needs it
         }
 
         // Default check
@@ -3694,6 +3696,7 @@ JAVASCRIPT;
         );
 
         // override current fields in options with template fields and return the array of these predefined fields
+        $this->fields['_olas_id'] = array_column($this->getOlasData(), 'olas_id');
         $predefined_fields = $this->setPredefinedFields($tt, $options, self::getDefaultValues());
 
         // check right used for this ticket
@@ -6435,9 +6438,52 @@ JAVASCRIPT;
             //                $this->associatedOlas = $ola_data;
             return $ola_data;
         }
-        //        }
+    }
 
-        //        return $this->associatedOlas;
+    /**
+     * Olas data from form input
+     *
+     * Function rely on $this->fields['_olas_id'] field
+     *
+     * @return array
+     *
+     * @used-by templates/components/itilobject/service_levels.html.twig
+     */
+    public function getOlasDataFromField()
+    {
+        $data = [];
+        $olas_ids = $this->fields['_olas_id'] ?? [];
+
+        $_ola = new OLA();
+        foreach ($olas_ids as $olas_id) {
+
+            if (!$_ola->getFromDB($olas_id)) {
+                throw new \LogicException("OLA #$olas_id not found");
+            }
+
+            $_data = $_ola->fields;
+            // item_ola empty data
+            $_data['itemtype'] = self::class;
+            $_data['items_id'] = $this->getID();
+            $_data['olas_id'] = $_data['id'];
+            $_data['start_time'] = 0;
+            $_data['due_time'] = 0;
+            $_data['end_time'] = 0;
+            $_data['waiting_time'] = 0;
+            $_data['items_olas_id'] = 0;
+            $_data['olalevel_date'] = 0; // @todoseb va dégager
+            unset($_data['id']);
+
+            // additionnal datas
+            $_data['class'] = OLA::class; // SLA::class
+            $_data['item'] = $this; // object, not just fields, functions used in template
+            $_data['nextaction'] = $_ola->getNextActionForTicket($this, $_data['type']);
+            $_data['level'] = $_ola->getLevelFromAction($_data['nextaction']);
+
+            $data[] = $_data;
+        }
+
+        return $data;
     }
 
     public function getOlasTTOData(): array
