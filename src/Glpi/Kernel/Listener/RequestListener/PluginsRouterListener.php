@@ -141,7 +141,7 @@ final readonly class PluginsRouterListener implements EventSubscriberInterface
 
         try {
             // Try to instantiate without any parameters
-            $object = new $class();
+            $object = new $class(); // @phpstan-ignore glpi.forbidDynamicInstantiation (Any class is valid here)
         } catch (\Error) {
             // Try to load the service from the DI container
             $object = $this->plugin_container->get($class);
