@@ -39,7 +39,6 @@ use Symfony\Bundle\FrameworkBundle\Routing\AttributeRouteControllerLoader;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Config\Loader\Loader;
 use Symfony\Component\Routing\Loader\AttributeDirectoryLoader;
-use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouteCollection;
 
 class PluginRoutesLoader extends Loader
@@ -64,19 +63,13 @@ class PluginRoutesLoader extends Loader
             );
             $plugin_routes = $loader->load($plugin_path, 'attribute');
 
-            if (!$plugin_routes) {
+            if ($plugin_routes->count() === 0) {
                 // No route found in the plugin
                 continue;
             }
 
-            foreach ($plugin_routes as $route) {
-                /** @var Route $route */
-                $prefix = '/plugins/' . $plugin_key . '/';
-                if (!\str_starts_with($route->getPath(), $prefix)) {
-                    $route->setPath($prefix . \ltrim($route->getPath(), '/'));
-                }
-            }
-
+            $plugin_routes->addPrefix(sprintf('/plugins/%s/', $plugin_key));
+            $plugin_routes->addNamePrefix(sprintf('@%s:', $plugin_key));
             $routes->addCollection($plugin_routes);
         }
 

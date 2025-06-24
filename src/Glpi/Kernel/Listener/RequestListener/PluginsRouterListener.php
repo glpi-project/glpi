@@ -139,20 +139,7 @@ final readonly class PluginsRouterListener implements EventSubscriberInterface
             ));
         }
 
-        try {
-            // Try to instantiate without any parameters
-            $object = new $class(); // @phpstan-ignore glpi.forbidDynamicInstantiation (Any class is valid here)
-        } catch (\Error) {
-            // Try to load the service from the DI container
-            $object = $this->plugin_container->get($class);
-        }
-
-        if (!\is_callable($object)) {
-            return \sprintf(
-                'Controller class `%s` cannot be called without a method name. You need to implement the `__invoke()` method, or add your route parameters on a public method with the `Route` attribute.',
-                $class
-            );
-        }
+        $object = $this->plugin_container->get($class);
 
         return $method ? [$object, $method] : $object;
     }
