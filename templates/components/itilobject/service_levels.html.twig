@@ -285,7 +285,7 @@ Handle only linked ola, not ola ttr and tto defined using datetime fields
 {# --- Macros --- #}
 
 
-{# la param should match format provided by \Ticket::getAssociatedSlas() #}
+{# la param should match format provided by \Ticket::getOlaData() #}
 {% macro linkedOlaField(la, options = {}) %}
     {% set options = {
         'can_assign': false,
