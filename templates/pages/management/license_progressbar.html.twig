@@ -46,7 +46,7 @@
             'progress' : null,
             'icon' : 'ti ti-infinity',
             'color': 'bg-light',
-            'remaining': 0,
+            'remaining': false,
             'overflow': false,
         },
         'full': {
@@ -60,8 +60,8 @@
             'progress' : 100,
             'icon' : 'ti ti-alert-triangle text-danger',
             'color' : 'bg-danger',
-            'remaining': 0,
-            'overflow': true,
+            'remaining': false,
+            'overflow': (remaining|abs)|number_format,
         }
     } %}
 
@@ -83,14 +83,16 @@
                 <span class="text-nowrap me-4">{{ _x('adjective', 'Assigned') }}</span>
                 <span class="text-nowrap">{{ licences_assigned }}</span>
             </div>
-            <div class="d-flex justify-content-between">
-                <span class="text-nowrap me-4">{{ _x('adjective', 'Remaining') }}</span>
-                <span class="text-nowrap">{{ selected_context.remaining }}</span>
-            </div>
-            {% if selected_context.overflow %}
+            {% if selected_context.remaining is not same as(false) %}
+                <div class="d-flex justify-content-between">
+                    <span class="text-nowrap me-4">{{ _x('adjective', 'Remaining') }}</span>
+                    <span class="text-nowrap">{{ selected_context.remaining }}</span>
+                </div>
+            {% endif %}
+            {% if selected_context.overflow is not same as(false) %}
                 <div class="d-flex justify-content-between text-danger">
                     <span class="text-nowrap me-4">{{ _x('adjective', 'Over') }}</span>
-                    <span class="text-nowrap">{{ (remaining|abs)|number_format }}</span>
+                    <span class="text-nowrap">{{ selected_context.overflow }}</span>
                 </div>
             {% endif %}
         </div>
