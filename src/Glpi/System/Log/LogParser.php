@@ -236,7 +236,7 @@ final class LogParser extends CommonGLPI
             return false;
         }
 
-        return unlink($fullpath);
+        return unlink($fullpath); //@phpstan-ignore theCodingMachineSafe.function (false is expected)
     }
 
     /**
@@ -250,7 +250,7 @@ final class LogParser extends CommonGLPI
     {
         $filepath = str_replace('\\', '/', $filepath);
 
-        $fullpath = \Safe\realpath($this->directory . '/' . $filepath);
+        $fullpath = realpath($this->directory . '/' . $filepath); //@phpstan-ignore theCodingMachineSafe.function (false is explicitly tested)
         if ($fullpath === false || !str_starts_with($fullpath, $this->directory)) {
             return null; // Security check
         }
