@@ -99,7 +99,7 @@ class SLMTest extends DbTestCase
             'type'            => \SLM::TTO,
             'number_time'     => 4,
             'definition_time' => 'day',
-            'is_recursive'    => true,
+            'entities_id'   => getItemByTypeName('Entity', '_test_root_entity', true),
         ];
         $sla_ttr_input['type'] = \SLM::TTR;
         $sla_ttr_input['name'] = "SLA TTR";
@@ -132,6 +132,7 @@ class SLMTest extends DbTestCase
             'is_active'      => 1,
             'match'          => 'AND',
             'slas_id'        => $sla1_id,
+            'entities_id'   => getItemByTypeName('Entity', '_test_root_entity', true),
         ];
         $slal2_in['slas_id'] = $sla2_id;
         unset($olal1_in['slas_id'], $olal2_in['slas_id']);
@@ -251,8 +252,8 @@ class SLMTest extends DbTestCase
         $this->assertEquals($sla1_id, (int) $ticket->getField('slas_id_tto'));
         $this->assertEquals($sla2_id, (int) $ticket->getField('slas_id_ttr'));
 
-        $id_ttr_data = $ticket->getOlasTTRData()[0]['olas_id'];
-        $id_tto_data = $ticket->getOlasTTOData()[0]['olas_id'];
+        $id_ttr_data = $ticket->getOlasTTRData()[0]['olas_id'] ?? throw new \Exception('Ola TTR not found');
+        $id_tto_data = $ticket->getOlasTTOData()[0]['olas_id'] ?? throw new \Exception('Ola TTO not found');
         $this->assertEquals($ola_tto_id, (int) $id_tto_data);
         $this->assertEquals($ola_ttr_id, (int) $id_ttr_data);
         $this->assertEquals(19, strlen($ticket->getField('time_to_resolve')));
@@ -342,7 +343,7 @@ class SLMTest extends DbTestCase
             'type'            => \SLM::TTO,
             'number_time'     => 4,
             'definition_time' => 'month',
-            'is_recursive'    => true, // @todo reviewer : j'ai dû ajouté ce param - on doit tenir maintenant tenir compte de l'entité alors que le code n'en tenait pas compte avant - usage de getConnexityItem()
+            'entities_id'   => getItemByTypeName('Entity', '_test_root_entity', true),
         ];
         $sla2_in['type'] = \SLM::TTR;
         $sla2_in['name'] = "SLA TTR";
@@ -591,8 +592,8 @@ class SLMTest extends DbTestCase
                 'type'            => \SLM::TTR,
                 'number_time'     => 4,
                 'definition_time' => 'hour',
-                'is_recursive'    => 1,
                 'groups_id'      => getItemByTypeName('Group', '_test_group_1', true),
+                'entities_id'   => getItemByTypeName('Entity', '_test_root_entity', true),
             ]
         );
         $this->assertGreaterThan(0, $ola_id);
@@ -672,8 +673,8 @@ class SLMTest extends DbTestCase
                 'number_time'        => 4,
                 'definition_time'    => 'month',
                 'end_of_working_day' => false,
-                'is_recursive'       => 1,
                 'groups_id'          => getItemByTypeName('Group', '_test_group_1', true),
+                'entities_id'       => getItemByTypeName('Entity', '_test_root_entity', true),
             ]
         );
         $this->assertGreaterThan(0, $ola_ttr_id);
@@ -687,8 +688,8 @@ class SLMTest extends DbTestCase
                 'number_time'        => 3,
                 'definition_time'    => 'month',
                 'end_of_working_day' => false,
-                'is_recursive'       => 1,
                 'groups_id'          => getItemByTypeName('Group', '_test_group_1', true),
+                'entities_id'       => getItemByTypeName('Entity', '_test_root_entity', true),
             ]
         );
         $this->assertGreaterThan(0, $ola_tto_id);
@@ -1458,8 +1459,8 @@ class SLMTest extends DbTestCase
             [
                 'name'    => __FUNCTION__,
                 'slms_id' => $slm->getID(),
-                'is_recursive' => 1,
                 'groups_id'          => getItemByTypeName('Group', '_test_group_1', true),
+                'entities_id'       => getItemByTypeName('Entity', '_test_root_entity', true),
             ] + $la_params
         );
 
@@ -1755,7 +1756,6 @@ class SLMTest extends DbTestCase
         $slm = $this->createItem(\SLM::class, [
             'name'                => 'SLM',
             'entities_id'         => $entity,
-            'is_recursive'        => true,
             'use_ticket_calendar' => false,
             'calendars_id'        => $calendar,
         ]);
@@ -1767,7 +1767,6 @@ class SLMTest extends DbTestCase
                 [
                     'name'                => "OLA $la_type 1",
                     'entities_id'         => $entity,
-                    'is_recursive'        => true,
                     'type'                => $la_type,
                     'number_time'         => 4,
                     'calendars_id'        => $calendar,
@@ -1780,7 +1779,6 @@ class SLMTest extends DbTestCase
                 [
                     'name'                => "OLA $la_type 2",
                     'entities_id'         => $entity,
-                    'is_recursive'        => true,
                     'type'                => $la_type,
                     'number_time'         => 2,
                     'calendars_id'        => $calendar,
