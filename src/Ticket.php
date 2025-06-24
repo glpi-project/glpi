@@ -2680,19 +2680,20 @@ JAVASCRIPT;
             'id'                 => '190',
             'table'              => 'glpi_olas',
             'field'              => 'name',
-            'name'               =>  __('time to own') . ' - ' . __('name'),
+            'name'               =>  __('OLA') . ' ' . __('time to own'),
             'massiveaction'      => false,
             'datatype'           => 'dropdown',
             'joinparams'         => [
                 'condition'          => ['NEWTABLE.type' => SLM::TTO],
                 'beforejoin'         => [
-                    'table'              => 'glpi_items_olas',
+                    'table'              => 'glpi_items_olas', // @todoseb getTable()
                     'joinparams'         => [
                         'jointype'           => 'itemtype_item',
                     ],
                 ],
             ],
             'forcegroupby'       => true,
+            'condition'          => ['type' => SLM::TTO], // @todoseb n'est pas documenté : sert pour le dropdown dans le filtrage
         ];
 
         // OLA TTO due time (+ Progress)
@@ -2701,7 +2702,7 @@ JAVASCRIPT;
             'id' => '186',
             'table' => 'glpi_items_olas',
             'field' => 'due_time',
-            'name' => __('time to own') . ' - ' . __('due time + progress'),
+            'name' => __('OLA') . ' ' . __('time to own') . ' - ' . __('due time + progress'),
             'massiveaction' => false,
             'nosearch'           => true,
             'additionalfields' => ['TABLE.status', 'TABLE.takeintoaccount_delay_stat', 'TABLE.date', 'olas_id', 'waiting_time', 'end_time'],
@@ -2732,7 +2733,7 @@ JAVASCRIPT;
             'id'                 => '187',
             'table'              => 'glpi_items_olas',
             'field'              => 'is_late',
-            'name'               => __('Internal time to own exceeded'),
+            'name'               => __('OLA') . ' ' . __('Internal time to own exceeded'),
             'datatype'           => 'bool',
             'massiveaction'      => false,
             'computation'        => self::generateSLAOLAComputation('internal_time_to_own', 'glpi_items_olas'),
@@ -2764,7 +2765,7 @@ JAVASCRIPT;
             'id'                 => '191',
             'table'              => 'glpi_olas',
             'field'              => 'name',
-            'name'               => __('Internal time to resolve') . ' - ' . __('name'),
+            'name'               => __('OLA') . ' ' . __('Internal time to resolve'),
             'massiveaction'      => false,
             'datatype'           => 'dropdown',
             'joinparams'         => [
@@ -2777,6 +2778,7 @@ JAVASCRIPT;
                 ],
             ],
             'forcegroupby'       => true,
+            'condition'          => ['type' => SLM::TTR],
         ];
 
         // OLA TTR due time (+ Progress)
@@ -2785,7 +2787,7 @@ JAVASCRIPT;
             'table' => 'glpi_items_olas',
             'field' => 'due_time',
             'datatype' => 'datetime',
-            'name' => __('Internal time to resolve') . ' - ' . __('due time + progress'),
+            'name' => __('OLA') . ' ' . __('Internal time to resolve') . ' - ' . __('due time + progress'),
             'massiveaction'      => false,
             'nosearch'           => true,
             'additionalfields' => ['TABLE.status', 'TABLE.takeintoaccount_delay_stat', 'TABLE.date', 'olas_id', 'waiting_time', 'end_time'],
@@ -2816,7 +2818,7 @@ JAVASCRIPT;
             'id'                 => '182',
             'table'              => 'glpi_items_olas',
             'field'              => 'is_late',
-            'name'               => __('Internal time to resolve exceeded'),
+            'name'               => __('OLA') . ' ' . __('Internal time to resolve exceeded'),
             'datatype'           => 'bool',
             'massiveaction'      => false,
             'computation'        => self::generateSLAOLAComputation('internal_time_to_resolve', 'glpi_items_olas'),
@@ -2849,7 +2851,7 @@ JAVASCRIPT;
             'id'                 => '192',
             'table'              => 'glpi_olalevels',
             'field'              => 'name',
-            'name'               => _n('Escalation level', 'Escalation levels', 1),
+            'name'               => __('OLA') . ' ' . _n('Escalation level', 'Escalation levels', 1),
             'massiveaction'      => false,
             'datatype'           => 'dropdown',
             'joinparams'         => [
