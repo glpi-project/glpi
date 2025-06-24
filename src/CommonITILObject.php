@@ -714,6 +714,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface
                 'priority',
                 'time_to_resolve',
                 'entities_id',
+                '_olas_id',
             ];
             foreach ($fields as $field) {
                 if (!isset($options['_saved'][$field])) {

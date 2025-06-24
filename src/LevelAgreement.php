@@ -165,7 +165,7 @@ abstract class LevelAgreement extends CommonDBChild
 
         // show form
         // choose a default group if not set
-        $groups_id = $this->fields["groups_id"] ?: 0;
+        $groups_id = $this->fields["groups_id"] ?? 0;
         if (0 === $groups_id) {
             $_group = new Group();
             $groups_ids = $_group->find(['is_assign' => 1]);

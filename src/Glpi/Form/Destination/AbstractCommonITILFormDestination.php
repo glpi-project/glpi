@@ -371,6 +371,7 @@ abstract class AbstractCommonITILFormDestination implements FormDestinationInter
         foreach ($fields as $field => $value) {
             $input[$field] = $value;
         }
+        $input['_la_update'] = true; // This is required to update the SLM field in the ticket
 
         return $input;
     }
