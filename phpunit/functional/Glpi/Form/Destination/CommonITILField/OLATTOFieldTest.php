@@ -62,19 +62,8 @@ final class OLATTOFieldTest extends AbstractDestinationFieldTest
             entities_id: $_SESSION["glpiactive_entity"]
         );
 
-        $slm = $this->createSLM();
+        ['ola' => $created_ola_tto] = $this->createOLA();
 
-        $created_ola_tto = $this->createItem(
-            OLA::class,
-            [
-                'name'            => 'OLATTO',
-                'type'            => SLM::TTO,
-                'number_time'     => 1,
-                'definition_time' => 'hour',
-                'groups_id' => getItemByTypeName(\Group::class, '_test_group_1', true),
-                'slms_id' => $slm->getID(),
-            ]
-        );
         $this->createItem(
             TicketTemplatePredefinedField::class,
             [
@@ -96,15 +85,7 @@ final class OLATTOFieldTest extends AbstractDestinationFieldTest
     public function testSpecificOLATTO(): void
     {
         $this->login();
-        $created_ola_tto = $this->createItem(
-            OLA::class,
-            [
-                'name'            => 'OLATTO',
-                'type'            => SLM::TTO,
-                'number_time'     => 1,
-                'definition_time' => 'hour',
-            ]
-        );
+        ['ola' => $created_ola_tto] = $this->createOLA();
 
         $this->checkOLATTOFieldConfiguration(
             form: $this->createAndGetFormWithTicketDestination(),
@@ -123,24 +104,9 @@ final class OLATTOFieldTest extends AbstractDestinationFieldTest
             entities_id: $_SESSION["glpiactive_entity"]
         );
 
-        $created_ola_tto = $this->createItem(
-            OLA::class,
-            [
-                'name'            => 'OLATTO',
-                'type'            => SLM::TTO,
-                'number_time'     => 1,
-                'definition_time' => 'hour',
-            ]
-        );
-        $created_ola_tto_for_template = $this->createItem(
-            OLA::class,
-            [
-                'name'            => 'OLATTO',
-                'type'            => SLM::TTO,
-                'number_time'     => 1,
-                'definition_time' => 'hour',
-            ]
-        );
+        ['ola' => $created_ola_tto] = $this->createOLA();
+        ['ola' => $created_ola_tto_for_template] = $this->createOLA();
+
         $this->createItem(
             TicketTemplatePredefinedField::class,
             [

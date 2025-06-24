@@ -42,7 +42,7 @@ use OLA;
 use Override;
 use SLM;
 
-final class OLATTOField extends SLMField
+final class OLATTOField extends OLAField
 {
     #[Override]
     public function getLabel(): string
@@ -78,34 +78,6 @@ final class OLATTOField extends SLMField
     protected function getFieldNameToConvertSpecificSLMID(): string
     {
         return 'ola_question_tto';
-    }
-
-    #[Override]
-    public function applyConfiguratedValueToInputUsingAnswers(
-        JsonFieldInterface $config,
-        array $input,
-        AnswersSet $answers_set
-    ): array {
-        if (!$config instanceof SLMFieldConfig) {
-            throw new \InvalidArgumentException("Unexpected config class");
-        }
-
-        // Only one strategy is allowed
-        $strategy = current($config->getStrategies());
-
-        // Compute value according to strategy
-        $slm_id = $strategy->getSLMID($config);
-
-        // Do not edit input if invalid value was found
-        $slm_class = $this->getSLMClass();
-        if (!$slm_class::getById($slm_id)) {
-            return $input;
-        }
-
-        $input['_olas_id'] = [$slm_id];
-        $input['_la_update'] = true; // This is required to update the SLM field in the ticket
-
-        return $input;
     }
 
 }
