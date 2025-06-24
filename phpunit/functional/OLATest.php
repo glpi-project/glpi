@@ -416,13 +416,13 @@ class OLATest extends DbTestCase
         $ola_name = 'OLA ' . uniqid();
         $result = $DB->insert('glpi_olas', [
             'name' => $ola_name,
-            'is_recursive' => 1,
             'type' => SLM::TTR,
             'comment' => 'OLA comment ' . time(),
             'number_time' => 90,
             'definition_time' => 'minute',
             'slms_id' => $slm->getID(),
             'groups_id' => 0,
+            'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
         ]);
         assert(false !== $result, 'failed to insert OLA without group association');
         $ola = getItemByTypeName(\OLA::class, $ola_name);
