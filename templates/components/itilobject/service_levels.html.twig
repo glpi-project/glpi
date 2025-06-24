@@ -146,10 +146,6 @@ Handle only linked ola, not ola ttr and tto defined using datetime fields
             {% endif %}
             {% set _rand = random() %}
 
-            {# @todo cleanup supprimer forcage de debug #}
-            {% set display_datetime_field      = true %}
-            {% set display_associatedsla_field = true %}
-
             <td class="right pe-2 align-middle border-0">{{ _label }}</td>
             <td class="d-flex ms-n2 border-0 py-0">
                 {# state flag #}
@@ -220,7 +216,8 @@ Handle only linked ola, not ola ttr and tto defined using datetime fields
     </tbody>
 
 {# --------- OLA display ---------- #}
-    <thead>
+    {% set display_associatedsla_field = field_options.fields_template is not defined or not field_options.fields_template.isHiddenField('_olas_id') %}
+    <thead class="{% if not display_associatedsla_field %}d-none{% endif %}">
     <tr class="">
         <th class="visually-hidden"></th>
         <th class="border-0 fs-4">
@@ -231,47 +228,33 @@ Handle only linked ola, not ola ttr and tto defined using datetime fields
         </th>
     </tr>
     </thead>
-    <tbody>
-{% for ola in item.getOlasDataFromField() %}
-    {% set _rand = random() %}
+    <tbody class="{% if not display_associatedsla_field %}d-none{% endif %}">
+        {% for ola in item.getOlasDataFromField() %}
+            {% set _rand = random() %}
 
+            <tr id="ola_row_{{ _rand }}">
+                {% set can_assign_sla_ola = canupdate and has_profile_right('slm', constant('SLM::RIGHT_ASSIGN')) and not field_options.fields_template.isReadonlyField('_olas_id') %}
 
-    <tr id="ola_row_{{ _rand }}">
-        {% if ola.type == constant('SLM::TTO') %}
-{#            {% set display_datetime_field  = field_options.fields_template is not defined or not field_options.fields_template.isHiddenField('time_to_own') %}#}
-            {# @todo voir comment gérer ce choix d'afficher ou pas selon une config #}
-{#            {% set display_associatedsla_field = field_options.fields_template is not defined or not field_options.fields_template.isHiddenField('slas_id_tto') %}#}
-{#            {% set _fieldname = 'time_to_own' %}#}
-            {% set can_assign_sla_ola = canupdate and has_profile_right('slm', constant('SLM::RIGHT_ASSIGN')) and not field_options.fields_template.isReadonlyField('_olas_id') %}
-            {% set _label = __('TTO') %}
-        {% elseif ola.type == constant('SLM::TTR') %}
-{#            {% set display_datetime_field  = field_options.fields_template is not defined or not field_options.fields_template.isHiddenField('time_to_resolve') %}#}
-{#            {% set display_associatedsla_field  = field_options.fields_template is not defined or not field_options.fields_template.isHiddenField('slas_id_ttr') %}#}
-{#            {% set _fieldname = 'time_to_resolve' %}#}
-            {% set can_assign_sla_ola = canupdate and has_profile_right('slm', constant('SLM::RIGHT_ASSIGN')) and not field_options.fields_template.isReadonlyField('_olas_id') %}
-            {% set _label = __('TTR') %}
-        {% endif %}
-{#        {% set _value = item.fields[_fieldname] %}#}
+                {% if ola.type == constant('SLM::TTO') %}
+                    {% set _label = __('TTO') %}
+                {% elseif ola.type == constant('SLM::TTR') %}
+                    {% set _label = __('TTR') %}
+                {% endif %}
 
-        {# @todo supprimer forcage de debug #}
-        {% set display_datetime_field      = true %}
-        {% set display_associatedsla_field = true %}
-
-        <td class="right pe-2 align-middle border-0">{{ _label }}</td>
-        <td class="d-flex ms-n2 border-0 py-0">
-            {{ _self.linkedOlaField(
-                ola,
-                field_options|merge({
-                    'can_assign': can_assign_sla_ola,
-                    'rand': _rand,
-                    'new_item': item.isNewItem(),
-                    'display_datetime_field': display_datetime_field,
-                    'display_associatedsla_field': display_associatedsla_field
-                })
-            ) }}
-        </td>
-    </tr>
-{% endfor %}
+                <td class="right pe-2 align-middle border-0">{{ _label }}</td>
+                <td class="d-flex ms-n2 border-0 py-0">
+                    {{ _self.linkedOlaField(
+                        ola,
+                        field_options|merge({
+                            'can_assign': can_assign_sla_ola and display_associatedsla_field,
+                            'rand': _rand,
+                            'new_item': item.isNewItem(),
+                        })
+                    ) }}
+                </td>
+            </tr>
+        {% endfor %}
+    {# table row to display dropdown to choose OLA to associate with #}
     <tr>
         <td>&nbsp;</td>
         {# id used by OlaAddButton() - display ajax fetched dropdown #}
@@ -291,21 +274,18 @@ Handle only linked ola, not ola ttr and tto defined using datetime fields
         'can_assign': false,
         'is_expanded': false,
         'new_item': false,
-        'display_datetime_field': false,
-        'display_associatedsla_field': false,
         'rand': 'please_pass_a_rand'
     }|merge(options) %}
 
     {% set assign_la_id = 'assign_la_' ~ options.rand %}
 
     <div class="{{ options.new_item ? '' : 'collapsed' }} w-100 mt-1" id="dropdown_{{ assign_la_id }}">
-        {% if options.display_datetime_field %}
+        {% if la.due_time is defined %}
             <span class="text-muted">
                       {{ la.due_time|formatted_datetime }}
              </span>
         {% endif %}
 
-        {% if options.display_associatedsla_field %}
             <span class="level_name badge itil-badge bg-body border-info ms-1 flex-column flex-sm-row">
                 <span class="d-flex align-items-center">
                      <i class="ti ti-stopwatch slt me-1"></i>
@@ -348,7 +328,6 @@ Handle only linked ola, not ola ttr and tto defined using datetime fields
                     $('#delete_button_{{ assign_la_id }}').tooltip('hide')
                 }
             </script>
-        {% endif %}
 
         {# hidden input field to preserve olas on update #}
         <input type="hidden"   name="_olas_id[]" value="{{ la.olas_id }}" />
