@@ -2552,8 +2552,7 @@ JAVASCRIPT;
                         false_expression: $max_date
                     ),
                     QueryFunction::coalesce([
-                        new QueryExpression((new QuerySubQuery(['FROM' => Item_Ola::getTable(), 'SELECT' => QueryFunction::min('due_time')]))->getQuery())
-                        , $max_date
+                        new QueryExpression((new QuerySubQuery(['FROM' => Item_Ola::getTable(), 'SELECT' => QueryFunction::min('due_time')]))->getQuery()), $max_date,
                     ]),
                     QueryFunction::if(
                         condition: ['TABLE.solvedate' => null],
@@ -6345,8 +6344,9 @@ JAVASCRIPT;
     }
 
     /**
-     * Ticket Olas data
+     * Ticket Olas data from database
      *
+     * Get currently associated Ola from database
      * Data from ola + item_ola + custom data
      *
      * @return array<array{olas_id: int, items_olas_id: int, name: string, entities_id: int, is_recursive: bool, type: int, comment: string, number_time: int, use_ticket_calendar: bool, calendars_id: int, date_mod: string, definition_time: string, end_of_working_day: string, date_creation: string, slms_id: int, due_time: string, class: string, item: Ticket, nextaction: false|OlaLevel_Ticket|SlaLevel_Ticket, level: false|\LevelAgreementLevel}>
@@ -6362,18 +6362,18 @@ JAVASCRIPT;
             $ola_data = [];
             $items_ola = new Item_Ola();
             //            $items_ola->getFromDBByCrit(['itemtype' => static::class, 'items_id' => $this->getID()]
-            $olas = iterator_to_array(Item_Ola::getListForItem($this));
+            $item_olas = iterator_to_array(Item_Ola::getListForItem($this));
 
             // merge data from ola dans items_ola
-            foreach ($olas as $ola) {
+            foreach ($item_olas as $item_ola) {
                 $_ola = new OLA();
-
-                $_data = $ola;
+                $_data = $item_ola;
+                // Ola must exist
                 if (!$items_ola->getFromDB($_data['linkid'])) {
                     throw new LogicException('Associated referenced OLA not found'); // probably never happend
                 }
-                $_data += $items_ola->fields;
 
+                $_data += $items_ola->fields;
                 $_data['items_olas_id'] = $_data['linkid'];
                 $_data['olas_id'] = $_data['id'];
                 unset($_data['id']);
@@ -6387,7 +6387,6 @@ JAVASCRIPT;
                 $ola_data[] = $_data;
             }
 
-            //                $this->associatedOlas = $ola_data;
             return $ola_data;
         }
     }
@@ -6522,10 +6521,10 @@ JAVASCRIPT;
         }
 
         // add new olas
-        $added_olas_ids = array_unique(array_diff($request_olas_ids, $current_olas_ids));
+        $toadd_olas_ids = array_unique(array_diff($request_olas_ids, $current_olas_ids));
         OLA::deleteLevelsToDo($this); // @todoseb déplacer plus bas
         $items_ola = new Item_Ola();
-        foreach ($added_olas_ids as $olas_id) {
+        foreach ($toadd_olas_ids as $olas_id) {
             // insert in association table items_ola
             if (
                 !$items_ola->add([
