@@ -3090,7 +3090,13 @@ class AuthLDAP extends CommonDBTM
         bool $silent_bind_errors = false
     ) {
 
-        $ds = @ldap_connect($host, intval($port));
+        //do not use ldaps; tls connection is made later using ldap_start_tls
+        $ldapuri = sprintf(
+            'ldap://%s:%s',
+            $host,
+            (int) $port
+        );
+        $ds = @ldap_connect($ldapuri);
 
         if ($ds === false) {
             trigger_error(
