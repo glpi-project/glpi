@@ -65,5 +65,6 @@ return RectorConfig::configure()
         CodeQuality\Empty_\SimplifyEmptyCheckOnEmptyArrayRector::class,
         CodeQuality\Expression\InlineIfToExplicitIfRector::class,
         CodeQuality\Expression\TernaryFalseExpressionToIfRector::class,
+        CodeQuality\For_\ForRepeatedCountToOwnVariableRector::class,
     ])
 ;
