@@ -5233,7 +5233,8 @@ final class SQLProvider implements SearchProviderInterface
                                     && isset($data[$ID][$k][2])
                                 ) {
                                     $split = explode(Search::LONGSEP, $data[$ID][$k][2]);
-                                    for ($l = 0; $l < count($split); $l++) {
+                                    $counter = count($split);
+                                    for ($l = 0; $l < $counter; $l++) {
                                         $split2 = explode(" ", $split[$l]);
                                         if ((count($split2) == 2) && ($split2[0] == 0) && !empty($split2[1])) {
                                             if ($count_display) {
