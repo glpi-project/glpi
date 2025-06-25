@@ -616,9 +616,6 @@ class SLMTest extends DbTestCase
         $ticket = $this->updateItem(Ticket::class, $ticket->getID(), ['_la_update' => true, '_olas_id' => [(int) $ola_id]]);
         $_SESSION['glpi_currenttime'] = $currenttime_bak;
         $this->assertTrue($ticket->getFromDB($ticket_id));
-        $this->assertEquals($ola_id, (int) $ticket->fields['olas_id_ttr']);
-        $this->assertEquals($update_time, strtotime($ticket->fields['ola_ttr_begin_date']), 'OLA begin date should be time of assignment of OLA to the ticket');
-        $this->assertEquals($tomorrow_1pm, $ticket->fields['internal_time_to_resolve']);
 
         $ola_ttr = $ticket->getOlasTTRData()[0];
         $this->assertEquals($ola_id, (int) $ola_ttr['olas_id']);
@@ -2336,48 +2333,6 @@ class SLMTest extends DbTestCase
     // - when levelAgreement is an TTO and takeintoaccount_delay_stat is > 0
 
     /**
-     * Ola begin date values business logic test
-     *
-     * ola begin date fields (ola_tto_begin_date, ola_ttr_begin_date) logic is as follows:
-     *  - ola is set on ticket creation : ola begin date is set ticket.date field
-     *  - ola is set on ticket update   : ola begin date is set to the current time
-     */
-    public function testOlaBeginDate(): void
-    {
-        $this->login();
-
-        // on creation, the OLA begin date is set to the ticket date
-        $provided_date = '2025-05-26 10:00:00';
-        foreach ([SLM::TTR, SLM::TTO] as $type) {
-            ['ola' => $ola] = $this->createOLA(ola_type: $type);
-            [$olas_id_fk, $olas_begin_field] = match ($type) {
-                SLM::TTO => ['olas_id_tto', 'ola_tto_begin_date'],
-                SLM::TTR => ['olas_id_ttr', 'ola_ttr_begin_date'],
-            };
-            // create ticket with OLA set on creation + provided date
-            $ticket = $this->createTicket(['date' => $provided_date, $olas_id_fk => $ola->getID()]);
-
-            $this->assertEquals($provided_date, $ticket->fields[$olas_begin_field]);
-        }
-
-        // on update, the OLA begin date is set to the current time
-        $now = $this->setCurrentTime('2022-05-26 09:00:00');
-        $provided_date = '2022-05-01 10:00:00';
-        foreach ([SLM::TTR, SLM::TTO] as $type) {
-            ['ola' => $ola] = $this->createOLA(ola_type: $type);
-            [$olas_id_fk, $olas_begin_field] = match ($type) {
-                SLM::TTO => ['olas_id_tto', 'ola_tto_begin_date'],
-                SLM::TTR => ['olas_id_ttr', 'ola_ttr_begin_date'],
-            };
-            // create ticket with OLA set on creation + provided date
-            $ticket = $this->createTicket(['date' => $provided_date]);
-            $ticket = $this->updateItem($ticket::class, $ticket->getID(), [$olas_id_fk => $ola->getID(),]);
-
-            $this->assertEquals($now->format('Y-m-d H:i:s'), $ticket->fields[$olas_begin_field]);
-        }
-    }
-
-    /**
      * Check recalculating the SLA when the SLA is changed to an SLA with a different calendar
      *
      * @todoseb même test for OLA
@@ -2511,8 +2466,6 @@ class SLMTest extends DbTestCase
 
         $la_type = \SLM::TTR;
         [$la_date_field, $la_fk_field] = $sla->getFieldNames($la_type);
-        $la_type = SLM::TTR;
-        [$la_date_field, $la_fk_field] = $la->getFieldNames($la_type);
 
         // Check that the correct LA is assigned to the ticket
         $expected_la = getItemByTypeName(\SLA::class, "\SLA $la_type", true);
