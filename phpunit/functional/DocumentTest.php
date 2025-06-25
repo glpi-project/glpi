@@ -99,7 +99,7 @@ class DocumentTest extends DbTestCase
         );
 
         $this->assertEquals(count($itemtypes_doc), count($itemtypes));
-        foreach($itemtypes as $itemtype) {
+        foreach ($itemtypes as $itemtype) {
             $this->assertContains($itemtype, $itemtypes_doc);
         }
     }

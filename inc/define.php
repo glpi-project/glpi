@@ -222,7 +222,7 @@ $CFG_GLPI["document_types"]               = ['Budget', 'CartridgeItem', 'Change'
     'SoftwareLicense', 'Supplier', 'Ticket','User',
     'Certificate', 'Cluster', 'ITILFollowup', 'ITILSolution',
     'ChangeTask', 'ProblemTask', 'TicketTask', 'Appliance',
-    'DatabaseInstance', 'Rack'
+    'DatabaseInstance', 'Rack',
 ];
 
 $CFG_GLPI["consumables_types"]            = ['Group', 'User'];
