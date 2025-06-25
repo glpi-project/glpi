@@ -801,7 +801,7 @@ class Toolbox
         ];
         foreach ($bytes as $val) {
             if ($size > 1024) {
-                $size = $size / 1024;
+                $size /= 1024;
             } else {
                 break;
             }

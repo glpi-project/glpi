@@ -1324,7 +1324,7 @@ class RacksPluginToCoreCommand extends AbstractCommand
                     $old_item['plugin_racks_racks_id']
                 );
 
-                $item_input = $item_input + [
+                $item_input += [
                     'racks_id'    => null !== $rack ? $rack->fields['id'] : 0,
                     'position'    => $position,
                     'hpos'        => 0,

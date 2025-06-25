@@ -756,7 +756,7 @@ TWIG, $avatar_params) . $username;
 
         $where = ['users_id' => (int) $user_ID];
         if (count($sqlfilter) > 0) {
-            $where = $where + $sqlfilter;
+            $where += $sqlfilter;
         }
 
         $iterator = $DB->request([

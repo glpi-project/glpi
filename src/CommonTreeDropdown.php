@@ -927,7 +927,7 @@ TWIG, $twig_params);
                 ],
             ];
             if ($this->isEntityAssign()) {
-                $criteria['WHERE'] = $criteria['WHERE'] + getEntitiesRestrictCriteria(
+                $criteria['WHERE'] += getEntitiesRestrictCriteria(
                     $this->getTable(),
                     '',
                     $input['entities_id'],
@@ -952,7 +952,7 @@ TWIG, $twig_params);
                 ],
             ];
             if ($this->isEntityAssign()) {
-                $criteria['WHERE'] = $criteria['WHERE'] + getEntitiesRestrictCriteria(
+                $criteria['WHERE'] += getEntitiesRestrictCriteria(
                     $this->getTable(),
                     '',
                     $input['entities_id'],

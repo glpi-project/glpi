@@ -132,7 +132,7 @@ class Item_Process extends CommonDBChild
 
         $processes = [];
         foreach ($filtered_data as $process) {
-            $process['virtualmemory'] = $process['virtualmemory'] * 1024;
+            $process['virtualmemory'] *= 1024;
             $processes[$process['id']] = $process;
         }
 

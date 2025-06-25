@@ -699,7 +699,7 @@ class Stat extends CommonGLPI
                             $max_rate = 5;
                         }
                         // Scale satisfaction accordingly
-                        $avgsatisfaction = $avgsatisfaction * ($max_rate / 5);
+                        $avgsatisfaction *= $max_rate / 5;
                         $avgsatisfaction = TicketSatisfaction::displaySatisfaction($avgsatisfaction, 0);
                     }
                 } else {

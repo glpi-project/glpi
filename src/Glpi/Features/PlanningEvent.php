@@ -655,7 +655,7 @@ trait PlanningEvent
         }
 
         if (count($events_toadd)) {
-            $events = $events + $events_toadd;
+            $events += $events_toadd;
         }
 
         return $events;
