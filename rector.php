@@ -33,9 +33,9 @@
  */
 
 use Rector\Caching\ValueObject\Storage\FileCacheStorage;
+use Rector\CodeQuality\Rector as CodeQuality;
 use Rector\Config\RectorConfig;
 use Rector\ValueObject\PhpVersion;
-use Rector\CodeQuality\Rector as CodeQuality;
 
 return RectorConfig::configure()
     ->withPaths([
@@ -83,5 +83,6 @@ return RectorConfig::configure()
         CodeQuality\Identical\BooleanNotIdenticalToNotIdenticalRector::class,
         CodeQuality\Identical\SimplifyArraySearchRector::class,
         CodeQuality\Identical\SimplifyConditionsRector::class,
+        CodeQuality\Identical\StrlenZeroToIdenticalEmptyStringRector::class,
     ])
 ;
