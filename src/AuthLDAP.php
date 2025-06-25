@@ -3093,7 +3093,7 @@ class AuthLDAP extends CommonDBTM
         $ldapuri = sprintf(
             '%s://%s:%s',
             parse_url($host, PHP_URL_SCHEME) ?: 'ldap',
-            preg_replace('@ldaps?://@', '', $host),
+            preg_replace('@^ldaps?://@', '', $host),
             (int) $port
         );
         $ds = @ldap_connect($ldapuri);
