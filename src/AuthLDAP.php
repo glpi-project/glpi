@@ -267,6 +267,7 @@ class AuthLDAP extends CommonDBTM
 
     public function prepareInputForUpdate($input)
     {
+
         if (isset($input["rootdn_passwd"])) {
             if (empty($input["rootdn_passwd"])) {
                 unset($input["rootdn_passwd"]);
@@ -3088,7 +3089,7 @@ class AuthLDAP extends CommonDBTM
         $timeout = 0,
         bool $silent_bind_errors = false
     ) {
-        //Use an LDP connection string
+        //Use an LDAP connection string
         $ldapuri = sprintf(
             '%s://%s:%s',
             parse_url($host, PHP_URL_SCHEME) ?: 'ldap',
@@ -4263,6 +4264,7 @@ class AuthLDAP extends CommonDBTM
 
     public function prepareInputForAdd($input)
     {
+
         //If it's the first ldap directory then set it as the default directory
         if (!self::getNumberOfServers()) {
             $input['is_default'] = 1;
