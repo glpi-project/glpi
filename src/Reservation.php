@@ -1159,10 +1159,10 @@ JAVASCRIPT;
 
         $action_prefix = 'Reservation' . MassiveAction::CLASS_ACTION_SEPARATOR;
         if (in_array($itemtype, $CFG_GLPI["reservation_types"], true)) {
-            $actions[$action_prefix . 'enable'] = __s('Authorize reservations');
-            $actions[$action_prefix . 'disable'] = __s('Prohibit reservations');
-            $actions[$action_prefix . 'available'] = __s('Make available for reservations');
-            $actions[$action_prefix . 'unavailable'] = __s('Make unavailable for reservations');
+            $actions[$action_prefix . 'enable'] = "<i class='" . self::getIcon() . "'></i>" . __s('Authorize reservations');
+            $actions[$action_prefix . 'disable'] = "<i class='ti ti-calendar-off'></i>" . __s('Prohibit reservations');
+            $actions[$action_prefix . 'available'] = "<i class='" . self::getIcon() . "'></i>" . __s('Make available for reservations');
+            $actions[$action_prefix . 'unavailable'] = "<i class='ti ti-calendar-off'></i>" . __s('Make unavailable for reservations');
         }
     }
 

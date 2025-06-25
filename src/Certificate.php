@@ -575,9 +575,9 @@ class Certificate extends CommonDBTM
         if (Session::getCurrentInterface() == 'central') {
             if (self::canUpdate()) {
                 $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'install']
-                 = _sx('button', 'Associate certificate');
+                 =  "<i class='" . self::getIcon() . "'></i>" . _sx('button', 'Associate certificate');
                 $actions[__CLASS__ . MassiveAction::CLASS_ACTION_SEPARATOR . 'uninstall']
-                 = _sx('button', 'Dissociate certificate');
+                 = "<i class='" . self::getIcon() . "-off'></i>" . _sx('button', 'Dissociate certificate');
             }
         }
         return $actions;

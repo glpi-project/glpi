@@ -505,8 +505,8 @@ class Appliance extends CommonDBTM
 
         if ($isadmin) {
             $prefix                    = 'Appliance_Item' . MassiveAction::CLASS_ACTION_SEPARATOR;
-            $actions[$prefix . 'add']    = _sx('button', 'Add an item');
-            $actions[$prefix . 'remove'] = _sx('button', 'Remove an item');
+            $actions[$prefix . 'add']    = "<i class='ti ti-package'></i>" . _sx('button', 'Add an item');
+            $actions[$prefix . 'remove'] = "<i class='ti ti-package-off'></i>" . _sx('button', 'Remove an item');
         }
 
         KnowbaseItem_Item::getMassiveActionsForItemtype($actions, __CLASS__, 0, $checkitem);

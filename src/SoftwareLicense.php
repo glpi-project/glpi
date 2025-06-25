@@ -922,7 +922,7 @@ class SoftwareLicense extends CommonTreeDropdown
         $actions = parent::getSpecificMassiveActions($checkitem);
         if (static::canUpdate()) {
             $prefix                       = 'Item_SoftwareLicense' . MassiveAction::CLASS_ACTION_SEPARATOR;
-            $actions[$prefix . 'add_item']  = _sx('button', 'Add an item');
+            $actions[$prefix . 'add_item']  = "<i class='ti ti-package'></i>" . _sx('button', 'Add an item');
         }
 
         return $actions;
