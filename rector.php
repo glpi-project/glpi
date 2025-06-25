@@ -60,5 +60,6 @@ return RectorConfig::configure()
         CodeQuality\Assign\CombinedAssignRector::class,
         CodeQuality\BooleanAnd\RemoveUselessIsObjectCheckRector::class,
         CodeQuality\BooleanAnd\SimplifyEmptyArrayCheckRector::class,
+        CodeQuality\BooleanNot\ReplaceMultipleBooleanNotRector::class,
     ])
 ;
