@@ -81,5 +81,6 @@ return RectorConfig::configure()
         CodeQuality\FuncCall\SimplifyStrposLowerRector::class,
         CodeQuality\FuncCall\UnwrapSprintfOneArgumentRector::class,
         CodeQuality\Identical\BooleanNotIdenticalToNotIdenticalRector::class,
+        CodeQuality\Identical\SimplifyArraySearchRector::class,
     ])
 ;
