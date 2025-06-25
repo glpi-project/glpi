@@ -97,5 +97,6 @@ return RectorConfig::configure()
         CodeQuality\LogicalAnd\AndAssignsToSeparateLinesRector::class,
         CodeQuality\LogicalAnd\LogicalToBooleanRector::class,
         CodeQuality\NotEqual\CommonNotEqualRector::class,
+        CodeQuality\Ternary\UnnecessaryTernaryExpressionRector::class,
     ])
 ;

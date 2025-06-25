@@ -72,7 +72,7 @@ if (isset($_GET['id'])) {
 
 $_SESSION['glpilisturl'][PDU_Rack::getType()] = $rack->getSearchURL();
 
-$ajax = isset($_REQUEST['ajax']) ? true : false;
+$ajax = isset($_REQUEST['ajax']);
 
 if ($ajax) {
     $pra->display($params);
