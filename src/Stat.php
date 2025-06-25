@@ -37,8 +37,6 @@ use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryFunction;
 use Glpi\Plugin\Hooks;
 use Glpi\Search\Output\Csv;
-use Glpi\Search\Output\HTMLSearchOutput;
-use Glpi\Search\Output\Pdf;
 use Glpi\Search\SearchEngine;
 use Glpi\Stat\StatData;
 use Glpi\Application\View\TemplateRenderer;
@@ -435,7 +433,7 @@ class Stat extends CommonGLPI
         // Set display type for export if define
         $output_type = $_GET["display_type"] ?? Search::HTML_OUTPUT;
         $output = SearchEngine::getOutputForLegacyKey($output_type);
-        $is_html_output = is_a($output, HTMLSearchOutput::class);
+        $is_html_output = $output instanceof \Glpi\Search\Output\HTMLSearchOutput;
         $html_output = '';
 
         if ($numrows === 0 && $is_html_output) {
@@ -727,9 +725,9 @@ class Stat extends CommonGLPI
 
                 $timedisplay = $nb_solved > 0 ? array_sum($data) / $nb_solved : 0;
 
-                if ($is_html_output || is_a($output, Pdf::class)) {
+                if ($is_html_output || $output instanceof \Glpi\Search\Output\Pdf) {
                     $timedisplay = Html::timestampToString($timedisplay, 0, false);
-                } elseif (is_a($output, Csv::class)) {
+                } elseif ($output instanceof \Glpi\Search\Output\Csv) {
                     $timedisplay = Html::timestampToCsvString($timedisplay);
                 }
                 if ($is_html_output) {
@@ -762,9 +760,9 @@ class Stat extends CommonGLPI
             } else {
                 $timedisplay = 0;
             }
-            if ($is_html_output || is_a($output, Pdf::class)) {
+            if ($is_html_output || $output instanceof \Glpi\Search\Output\Pdf) {
                 $timedisplay = Html::timestampToString($timedisplay, 0, false);
-            } elseif (is_a($output, Csv::class)) {
+            } elseif ($output instanceof \Glpi\Search\Output\Csv) {
                 $timedisplay = Html::timestampToCsvString($timedisplay);
             }
             if ($is_html_output) {
@@ -796,9 +794,9 @@ class Stat extends CommonGLPI
             } else {
                 $timedisplay = 0;
             }
-            if ($is_html_output || is_a($output, Pdf::class)) {
+            if ($is_html_output || $output instanceof \Glpi\Search\Output\Pdf) {
                 $timedisplay = Html::timestampToString($timedisplay, 0, false);
-            } elseif (is_a($output, Csv::class)) {
+            } elseif ($output instanceof \Glpi\Search\Output\Csv) {
                 $timedisplay = Html::timestampToCsvString($timedisplay);
             }
             if ($is_html_output) {
@@ -848,9 +846,9 @@ class Stat extends CommonGLPI
                 $timedisplay = 0;
             }
 
-            if ($is_html_output || is_a($output, Pdf::class)) {
+            if ($is_html_output || $output instanceof \Glpi\Search\Output\Pdf) {
                 $timedisplay = Html::timestampToString($timedisplay, 0, false);
-            } elseif (is_a($output, Csv::class)) {
+            } elseif ($output instanceof \Glpi\Search\Output\Csv) {
                 $timedisplay = Html::timestampToCsvString($timedisplay);
             }
             if ($is_html_output) {
@@ -865,9 +863,9 @@ class Stat extends CommonGLPI
             // The total actiontime to resolve
             $timedisplay = $total_actiontime;
 
-            if ($is_html_output || is_a($output, Pdf::class)) {
+            if ($is_html_output || $output instanceof \Glpi\Search\Output\Pdf) {
                 $timedisplay = Html::timestampToString($timedisplay, 0, false);
-            } elseif (is_a($output, Csv::class)) {
+            } elseif ($output instanceof \Glpi\Search\Output\Csv) {
                 $timedisplay = Html::timestampToCsvString($timedisplay);
             }
             if ($is_html_output) {
@@ -1614,7 +1612,7 @@ class Stat extends CommonGLPI
 
         $output_type = $_GET["display_type"] ?? Search::HTML_OUTPUT;
         $output = SearchEngine::getOutputForLegacyKey($output_type);
-        $is_html_output = is_a($output, HTMLSearchOutput::class);
+        $is_html_output = $output instanceof \Glpi\Search\Output\HTMLSearchOutput;
 
         if (empty($date2)) {
             $date2 = date("Y-m-d");

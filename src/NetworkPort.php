@@ -1289,7 +1289,7 @@ class NetworkPort extends CommonDBChild
     private function getAssetLink(CommonDBTM $asset): string
     {
 
-        if (is_a($asset, NetworkPort::class)) {
+        if ($asset instanceof \NetworkPort) {
             $link = $asset->getLink();
         } else {
             $link = sprintf(
