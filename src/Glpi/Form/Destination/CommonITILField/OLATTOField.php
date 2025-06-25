@@ -36,8 +36,6 @@
 namespace Glpi\Form\Destination\CommonITILField;
 
 use LevelAgreement;
-use Glpi\DBAL\JsonFieldInterface;
-use Glpi\Form\AnswersSet;
 use OLA;
 use Override;
 use SLM;

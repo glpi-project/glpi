@@ -24,13 +24,12 @@ abstract class SLAField extends SLMField
         $slm_id = $strategy->getSLMID($config);
 
         // Do not edit input if invalid value was found
-        /** @var class-string<\SLA> $slm_class */
-        $slm_class = $this->getSLMClass();
-        if (!$slm_class::getById($slm_id)) {
+        $slm = $this->getSLM();
+        if (!$slm::getById($slm_id)) {
             return $input;
         }
 
-        $input[$slm_class::getFieldNames($this->getType())[1]] = $slm_id;
+        $input[$slm::getFieldNames($this->getType())[1]] = $slm_id;
 
         return $input;
     }

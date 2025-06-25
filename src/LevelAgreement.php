@@ -217,11 +217,12 @@ abstract class LevelAgreement extends CommonDBChild
                     'display_emptychoice' => false,
                     'condition' => ['is_assign' => 1],
                     // @todoseb rendre le choix obligatoire, pas réussi
-//                    'specific_tags' => [
-//                        'required' => 'required',
-//                    ],
-//                    'required' => true,
-                ]);
+                    //                    'specific_tags' => [
+                    //                        'required' => 'required',
+                    //                    ],
+                    //                    'required' => true,
+                ]
+            );
             echo "</td>";
             echo "</tr>";
         }
