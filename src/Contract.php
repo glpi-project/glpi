@@ -1423,7 +1423,7 @@ class Contract extends CommonDBTM
         }
 
         if (
-            !($p['entity'] < 0)
+            $p['entity'] >= 0
             && $p['entity_sons']
         ) {
             if (is_array($p['entity'])) {

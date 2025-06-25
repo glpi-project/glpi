@@ -237,7 +237,7 @@ class Dropdown
 
         // Manage entity_sons
         if (
-            !($params['entity'] < 0)
+            $params['entity'] >= 0
             && $params['entity_sons']
         ) {
             if (is_array($params['entity'])) {
@@ -3039,7 +3039,7 @@ HTML;
                     $recur = false;
                 }
 
-                if (isset($post["entity_restrict"]) && !($post["entity_restrict"] < 0)) {
+                if (isset($post["entity_restrict"]) && $post["entity_restrict"] >= 0) {
                     $where += getEntitiesRestrictCriteria(
                         $table,
                         '',
@@ -3365,7 +3365,7 @@ HTML;
             if ($item->isEntityAssign()) {
                 $multi = $item->maybeRecursive();
 
-                if (isset($post["entity_restrict"]) && !($post["entity_restrict"] < 0)) {
+                if (isset($post["entity_restrict"]) && $post["entity_restrict"] >= 0) {
                     $where += getEntitiesRestrictCriteria(
                         $table,
                         "entities_id",
@@ -3812,7 +3812,7 @@ HTML;
 
         $multi = $item->maybeRecursive();
 
-        if (isset($post["entity_restrict"]) && !($post["entity_restrict"] < 0)) {
+        if (isset($post["entity_restrict"]) && $post["entity_restrict"] >= 0) {
             $where += getEntitiesRestrictCriteria($table, '', $post["entity_restrict"], $multi);
             if (is_array($post["entity_restrict"]) && (count($post["entity_restrict"]) > 1)) {
                 $multi = true;

@@ -253,7 +253,7 @@ class User extends CommonDBTM
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
-        return !($CFG_GLPI['system_user'] == $items_id);
+        return $CFG_GLPI['system_user'] != $items_id;
     }
 
 
@@ -4233,7 +4233,7 @@ HTML;
 
         $output = '';
 
-        if (!($p['entity'] < 0) && $p['entity_sons']) {
+        if ($p['entity'] >= 0 && $p['entity_sons']) {
             if (is_array($p['entity'])) {
                 $output .= "entity_sons options is not available with array of entity";
             } else {
