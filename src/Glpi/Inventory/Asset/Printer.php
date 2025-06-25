@@ -197,7 +197,7 @@ class Printer extends InventoryAsset
             }
 
             // Delete printers links in DB
-            foreach ($db_printers as $idtmp => $data) {
+            foreach (array_keys($db_printers) as $idtmp) {
                 (new $lclass())->delete(['id' => $idtmp], true);
             }
         }

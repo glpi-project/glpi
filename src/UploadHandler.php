@@ -1332,7 +1332,7 @@ class UploadHandler
             if (is_array($upload['tmp_name'])) {
                 // param_name is an array identifier like "files[]",
                 // $upload is a multi-dimensional array:
-                foreach ($upload['tmp_name'] as $index => $value) {
+                foreach (array_keys($upload['tmp_name']) as $index) {
                     $files[] = $this->handle_file_upload(
                         $upload['tmp_name'][$index],
                         $file_name ? $file_name : $upload['name'][$index],

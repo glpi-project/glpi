@@ -818,7 +818,7 @@ TWIG, $twig_params);
                 $alert             = new Alert();
                 $input["itemtype"] = 'Reservation';
                 $input["type"]     = Alert::END;
-                foreach ($items as $resaid => $item) {
+                foreach (array_keys($items) as $resaid) {
                     $input["items_id"] = $resaid;
                     $alert->add($input);
                     unset($alert->fields['id']);

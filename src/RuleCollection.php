@@ -1799,7 +1799,7 @@ TWIG, $twig_params);
         $actions = $rule->getAllActions();
 
         // If output array contains keys begining with _ : drop it
-        foreach ($output as $criteria => $value) {
+        foreach (array_keys($output) as $criteria) {
             if ($criteria[0] === '_' && !isset($actions[$criteria])) {
                 unset($output[$criteria]);
             }

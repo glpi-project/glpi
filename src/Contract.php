@@ -1348,7 +1348,7 @@ class Contract extends CommonDBTM
                             'itemtype' => __CLASS__,
                             'type'     => $type,
                         ];
-                        foreach ($contracts as $id => $contract) {
+                        foreach (array_keys($contracts) as $id) {
                             $input["items_id"] = $id;
 
                             $alert->add($input);

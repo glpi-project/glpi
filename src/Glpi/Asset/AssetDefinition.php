@@ -762,7 +762,7 @@ TWIG, $twig_params);
 
         $default = [];
         $order = 0;
-        foreach ($all_fields as $key => $label) {
+        foreach (array_keys($all_fields) as $key) {
             $default[] = [
                 'key'   => $key,
                 'order' => $order,

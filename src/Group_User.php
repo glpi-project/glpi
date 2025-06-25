@@ -717,9 +717,7 @@ class Group_User extends CommonDBRelation
             // We will also count implicits members from parents groups
             $parents_members = self::getParentsMembers($item, '');
 
-            foreach ($parents_members as $parent) {
-                $members[] = $parent;
-            }
+            $members = $parents_members;
             //TODO The results from this don't seem correct
             //$members = self::clearDuplicatedGroupData($members);
 
