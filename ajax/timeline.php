@@ -35,6 +35,7 @@
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Exception\Http\AccessDeniedHttpException;
+use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\RichText\UserMention;
 
 if (($_POST['action'] ?? null) === 'change_task_state') {
@@ -72,22 +73,15 @@ if (($_POST['action'] ?? null) === 'change_task_state') {
 } elseif (($_REQUEST['action'] ?? null) === 'viewsubitem') {
     header("Content-Type: text/html; charset=UTF-8");
     Html::header_nocache();
-    if (!isset($_REQUEST['type'])) {
-        return;
-    }
-    if (!isset($_REQUEST['parenttype'])) {
-        return;
+    if (!isset($_REQUEST['type'], $_REQUEST['parenttype'])) {
+        throw new BadRequestHttpException();
     }
 
     $item = getItemForItemtype($_REQUEST['type']);
     $parent = getItemForItemtype($_REQUEST['parenttype']);
 
     if (!$parent instanceof CommonITILObject) {
-        trigger_error(
-            sprintf('%s is not a valid item type.', $_REQUEST['parenttype']),
-            E_USER_WARNING
-        );
-        return;
+        throw new BadRequestHttpException();
     }
 
     $twig = TemplateRenderer::getInstance();
@@ -128,8 +122,7 @@ if (($_POST['action'] ?? null) === 'change_task_state') {
         return;
     }
     if ($template === null) {
-        echo __s('Access denied');
-        return;
+        throw new AccessDeniedHttpException();
     }
     $twig->display("components/itilobject/timeline/{$template}.html.twig", $params);
 }
