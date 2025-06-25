@@ -3040,7 +3040,7 @@ HTML;
                 }
 
                 if (isset($post["entity_restrict"]) && !($post["entity_restrict"] < 0)) {
-                    $where = $where + getEntitiesRestrictCriteria(
+                    $where += getEntitiesRestrictCriteria(
                         $table,
                         '',
                         $post["entity_restrict"],
@@ -3053,7 +3053,7 @@ HTML;
                 } else {
                     // If private item do not use entity
                     if (!$item->maybePrivate()) {
-                        $where = $where + getEntitiesRestrictCriteria($table, '', '', $recur);
+                        $where += getEntitiesRestrictCriteria($table, '', '', $recur);
 
                         if (count($_SESSION['glpiactiveentities']) > 1) {
                             $multi = true;
@@ -3366,7 +3366,7 @@ HTML;
                 $multi = $item->maybeRecursive();
 
                 if (isset($post["entity_restrict"]) && !($post["entity_restrict"] < 0)) {
-                    $where = $where + getEntitiesRestrictCriteria(
+                    $where += getEntitiesRestrictCriteria(
                         $table,
                         "entities_id",
                         $post["entity_restrict"],
@@ -3379,7 +3379,7 @@ HTML;
                 } else {
                     // Do not use entity if may be private
                     if (!$item->maybePrivate()) {
-                        $where = $where + getEntitiesRestrictCriteria($table, '', '', $multi);
+                        $where += getEntitiesRestrictCriteria($table, '', '', $multi);
 
                         if (count($_SESSION['glpiactiveentities']) > 1) {
                             $multi = true;
@@ -3813,12 +3813,12 @@ HTML;
         $multi = $item->maybeRecursive();
 
         if (isset($post["entity_restrict"]) && !($post["entity_restrict"] < 0)) {
-            $where = $where + getEntitiesRestrictCriteria($table, '', $post["entity_restrict"], $multi);
+            $where += getEntitiesRestrictCriteria($table, '', $post["entity_restrict"], $multi);
             if (is_array($post["entity_restrict"]) && (count($post["entity_restrict"]) > 1)) {
                 $multi = true;
             }
         } else {
-            $where = $where + getEntitiesRestrictCriteria($table, '', $_SESSION['glpiactiveentities'], $multi);
+            $where += getEntitiesRestrictCriteria($table, '', $_SESSION['glpiactiveentities'], $multi);
             if (count($_SESSION['glpiactiveentities']) > 1) {
                 $multi = true;
             }
@@ -4049,7 +4049,7 @@ HTML;
 
             // allow opening ticket on recursive object (printer, software, ...)
             $recursive = $item->maybeRecursive();
-            $where     = $where + getEntitiesRestrictCriteria($post['table'], '', $entity, $recursive);
+            $where += getEntitiesRestrictCriteria($post['table'], '', $entity, $recursive);
         }
 
         if (!isset($post['page'])) {

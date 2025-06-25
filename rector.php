@@ -35,6 +35,7 @@
 use Rector\Caching\ValueObject\Storage\FileCacheStorage;
 use Rector\Config\RectorConfig;
 use Rector\ValueObject\PhpVersion;
+use Rector\CodeQuality\Rector as CodeQuality;
 
 return RectorConfig::configure()
     ->withPaths([
@@ -56,5 +57,6 @@ return RectorConfig::configure()
     ->withParallel(timeoutSeconds: 300)
     // FIXME apply it in another PR, it generates a huge diff ->withImportNames()
     ->withRules([
+        CodeQuality\Assign\CombinedAssignRector::class,
     ])
 ;

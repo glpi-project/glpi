@@ -2474,7 +2474,7 @@ final class SQLProvider implements SearchProviderInterface
         if ($meta) {
             $addmetanum = self::getMetaTableUniqueSuffix($new_table, $meta_type);
             $AS         = " AS `$nt$addmetanum`";
-            $nt         = $nt . $addmetanum;
+            $nt .= $addmetanum;
         }
 
         // Do not take into account standard linkfield
@@ -5056,7 +5056,7 @@ final class SQLProvider implements SearchProviderInterface
             $val = rtrim(preg_replace('/\$$/', '', $val));
         } else {
             // Add % wildcard after searched string if not ending by a `$`
-            $val = $val . '%';
+            $val .= '%';
         }
 
         return $val;

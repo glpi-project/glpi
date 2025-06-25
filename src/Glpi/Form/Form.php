@@ -556,7 +556,7 @@ final class Form extends CommonDBTM implements
         foreach ($this->getSections() as $section) {
             // Its important to use the "+" operator here and not array_merge
             // because the keys must be preserved
-            $questions = $questions + $section->getQuestions();
+            $questions += $section->getQuestions();
         }
         return $questions;
     }
@@ -572,7 +572,7 @@ final class Form extends CommonDBTM implements
         foreach ($this->getSections() as $section) {
             // Its important to use the "+" operator here and not array_merge
             // because the keys must be preserved
-            $comments = $comments + $section->getFormComments();
+            $comments += $section->getFormComments();
         }
         return $comments;
     }

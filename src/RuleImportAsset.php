@@ -983,7 +983,7 @@ class RuleImportAsset extends Rule
                                 if ($class) {
                                     $class->rulepassed($items_id, $itemtype, $rules_id, $this->criterias_results['found_port']);
                                 } else {
-                                    $inputrulelog = $inputrulelog + [
+                                    $inputrulelog += [
                                         'items_id'  => $items_id,
                                         'itemtype'  => $itemtype,
                                     ];

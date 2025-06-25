@@ -840,11 +840,11 @@ class Item_Devices extends CommonDBRelation
                         ],
                     ],
                 ];
-                $criteria['WHERE'] = $criteria['WHERE'] + getEntitiesRestrictCriteria(getTableForItemType($peer_type));
+                $criteria['WHERE'] += getEntitiesRestrictCriteria(getTableForItemType($peer_type));
             } else {
                 //peer_type not defined is related to Item_DeviceXXX without associated assets
                 //so restrict entity criteria to current Item_DeviceXXX
-                $criteria['WHERE'] = $criteria['WHERE'] + getEntitiesRestrictCriteria($ctable);
+                $criteria['WHERE'] += getEntitiesRestrictCriteria($ctable);
             }
         } else {
             $fk = $this->getDeviceForeignKey();
