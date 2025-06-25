@@ -98,7 +98,12 @@ final class GraphQLGenerator
             try {
                 $type_str .= "  $field_name: {$field->getType()}\n";
             } catch (\Throwable $e) {
-                trigger_error("Error writing field $field_name for type $type_name: {$e->getMessage()}", E_USER_WARNING);
+                /** @var \Psr\Log\LoggerInterface $PHPLOGGER */
+                global $PHPLOGGER;
+                $PHPLOGGER->error(
+                    "Error writing field $field_name for type $type_name: {$e->getMessage()}",
+                    ['exception' => $e]
+                );
             }
         }
         $type_str .= "}\n";

@@ -67,10 +67,11 @@ try {
     }
 } catch (\Throwable $e) {
     // Log error
-    trigger_error(
-        // Insert POST data into logs to ease debugging
+    /** @var \Psr\Log\LoggerInterface $PHPLOGGER */
+    global $PHPLOGGER;
+    $PHPLOGGER->error(
         $e->getMessage() . ": " . json_encode($_POST),
-        E_USER_WARNING
+        ['exception' => $e]
     );
 
     Session::addMessageAfterRedirect(

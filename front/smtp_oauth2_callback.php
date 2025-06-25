@@ -119,10 +119,13 @@ if (
                 );
             }
         } catch (\Throwable $e) {
-            trigger_error(
+            /** @var \Psr\Log\LoggerInterface $PHPLOGGER */
+            global $PHPLOGGER;
+            $PHPLOGGER->error(
                 sprintf('Error during authorization code fetching: %s', $e->getMessage()),
-                E_USER_WARNING
+                ['exception' => $e]
             );
+
             Session::addMessageAfterRedirect(
                 htmlescape(sprintf(_x('oauth', 'Unable to fetch authorization code. Error is: %s'), $e->getMessage())),
                 false,

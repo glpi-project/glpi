@@ -358,14 +358,17 @@ class Plugin extends CommonDBTM
                         try {
                             $init_function();
                         } catch (\Throwable $e) {
-                            trigger_error(
+                            /** @var \Psr\Log\LoggerInterface $PHPLOGGER */
+                            global $PHPLOGGER;
+                            $PHPLOGGER->error(
                                 sprintf(
                                     'Error while loading plugin %s: %s',
                                     $plugin_key,
                                     $e->getMessage()
                                 ),
-                                E_USER_WARNING
+                                ['exception' => $e]
                             );
+
                             // Plugin has errored, so it should be disabled if it isn't already
                             $plugin = new self();
                             if ($plugin->isActivated($plugin_key)) {
