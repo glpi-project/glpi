@@ -5006,6 +5006,15 @@ JAVASCRIPT;
             ],
         ];
 
+        $criteria['LEFT JOIN']['glpi_items_olas'] = [
+            'ON' => [
+                self::getTable() => 'id',
+                'glpi_items_olas' => 'items_id',
+                ['AND' => ['glpi_items_olas.itemtype' => ['=', Ticket::class]],
+                ],
+            ],
+        ];
+
         return $criteria;
     }
 
@@ -6271,12 +6280,7 @@ JAVASCRIPT;
                 break;
 
             case OLA::class:
-                $restrict[] = [
-                    'OR' => [
-                        'olas_id_tto'  => $item->getID(),
-                        'olas_id_ttr'  => $item->getID(),
-                    ],
-                ];
+                $restrict['glpi_items_olas.olas_id'] = $item->getID();
                 break;
 
             case Supplier::class:
