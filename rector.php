@@ -84,5 +84,14 @@ return RectorConfig::configure()
         CodeQuality\Identical\SimplifyArraySearchRector::class,
         CodeQuality\Identical\SimplifyConditionsRector::class,
         CodeQuality\Identical\StrlenZeroToIdenticalEmptyStringRector::class,
+        // FIXME apply it in another PR, it generates a huge diff CodeQuality\If_\CombineIfRector::class,
+        CodeQuality\If_\CompleteMissingIfElseBracketRector::class,
+        // FIXME apply it in another PR, it generates a huge diff CodeQuality\If_\ConsecutiveNullCompareReturnsToNullCoalesceQueueRector::class,
+        // FIXME apply it in another PR, it generates a huge diff CodeQuality\If_\ExplicitBoolCompareRector::class,
+        // FIXME apply it in another PR, it generates a huge diff CodeQuality\If_\ShortenElseIfRector::class,
+        // FIXME apply it in another PR, it generates a huge diff CodeQuality\If_\SimplifyIfElseToTernaryRector::class,
+        // FIXME apply it in another PR, it generates a huge diff CodeQuality\If_\SimplifyIfNotNullReturnRector::class,
+        // FIXME apply it in another PR, it generates a huge diff CodeQuality\If_\SimplifyIfNullableReturnRector::class,
+        // FIXME apply it in another PR, it generates a huge diff CodeQuality\If_\SimplifyIfReturnBoolRector::class,
     ])
 ;
