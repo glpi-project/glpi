@@ -439,7 +439,7 @@ class OLATest extends DbTestCase
     }
 
     /**
-     * - start_time is set using ticket 'date' field (which is the current time when not specified))
+     * - start_time is set using ticket 'date' field (which is the current time when not specified)
      * - due_time is set at the moment the Ola is assigned to the ticket
      * - endtime is set not set
      * - waiting_time is not set
