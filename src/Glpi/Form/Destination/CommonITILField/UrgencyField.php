@@ -125,7 +125,7 @@ final class UrgencyField extends AbstractConfigField implements DestinationField
 
         // Do not edit input if invalid value was found
         $valid_values = array_keys($this->getUrgencyLevels());
-        if (array_search($urgency, $valid_values) === false) {
+        if (!in_array($urgency, $valid_values)) {
             return $input;
         }
 
