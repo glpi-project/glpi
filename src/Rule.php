@@ -3236,12 +3236,21 @@ JS
                     return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::class);
 
                 case SLA::class:
-                    // @todoseb reimplement me
-                    //                case OLA::class:
                     if ($_SESSION['glpishow_count_on_tabs']) {
                         $nb = countElementsInTable(
                             'glpi_ruleactions',
                             ['field' => $item::getFieldNames($item->fields['type'])[1],
+                                'value' => $item->getID(),
+                            ]
+                        );
+                    }
+                    return self::createTabEntry(self::getTypeName($nb), $nb, $item::class);
+
+                case OLA::class:
+                    if ($_SESSION['glpishow_count_on_tabs']) {
+                        $nb = countElementsInTable(
+                            'glpi_ruleactions',
+                            [   'field' => 'olas_id',
                                 'value' => $item->getID(),
                             ]
                         );

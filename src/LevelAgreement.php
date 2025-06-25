@@ -488,13 +488,12 @@ TWIG, $twig_params);
     {
         global $DB;
 
-        if ($this instanceof OLA) {
-            // @todoseb re implement me - a implémenter dans OLA
-            return;
-        }
+        $field      = match (static::class) {
+            SLA::class => static::getFieldNames($this->fields['type'])[1],
+            OLA::class => 'olas_id',
+            default => throw new \RuntimeException('Unexpected LevelAgreement class : ' . static::class),
+        };
 
-        // @todoseb à déplacer dans SLA
-        $fk      = static::getFieldNames($this->fields['type'])[1]; // remove getFieldNames() - faux positif
         $rule    = new RuleTicket();
         $canedit = self::canUpdate();
 
@@ -503,7 +502,7 @@ TWIG, $twig_params);
             'DISTINCT'        => true,
             'FROM'            => 'glpi_ruleactions',
             'WHERE'           => [
-                'field' => $fk,
+                'field' => $field,
                 'value' => $this->getID(),
             ],
         ]));
