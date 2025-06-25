@@ -985,12 +985,12 @@ class UploadHandler
 
     protected function is_valid_image_file($file_path)
     {
-        return !!$this->imagetype($file_path);
+        return (bool) $this->imagetype($file_path);
     }
 
     protected function has_image_file_extension($file_path)
     {
-        return !!preg_match('/\.(gif|jpe?g|png)$/i', $file_path);
+        return (bool) preg_match('/\.(gif|jpe?g|png)$/i', $file_path);
     }
 
     protected function handle_image_file($file_path, $file)
