@@ -75,7 +75,7 @@ class SLA extends LevelAgreement
                 $toadd['date']           = $date;
                 $toadd[$pre . 'levels_id'] = $levels_id;
                 $toadd['tickets_id']     = $ticket->fields["id"];
-                $levelticket             = new static::$levelticketclass();
+                $levelticket             = getItemForItemtype(static::$levelticketclass);
                 $levelticket->add($toadd);
             }
         }
@@ -96,7 +96,7 @@ class SLA extends LevelAgreement
         $ticketfield = static::$prefix . "levels_id_ttr";
 
         if ($ticket->fields[$ticketfield] > 0) {
-            $levelticket = new static::$levelticketclass();
+            $levelticket = getItemForItemtype(static::$levelticketclass);
             $iterator = $DB->request([
                 'SELECT' => 'id',
                 'FROM'   => $levelticket::getTable(),
@@ -137,7 +137,7 @@ class SLA extends LevelAgreement
 
         // Clean levels
         $fk        = getForeignKeyFieldForItemType(static::class);
-        $level     = new static::$levelclass();
+        $level     = getItemForItemtype(static::$levelclass);
         $level->deleteByCriteria([$fk => $this->getID()]);
 
         // Update tickets : clean SLA
