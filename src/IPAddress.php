@@ -698,7 +698,7 @@ class IPAddress extends CommonDBChild
                     break;
 
                 case 3: // Only '::' allows three empty singletons ('::x::' = four empty singletons)
-                    if (!($start_with_empty and $end_with_empty)) {
+                    if (!($start_with_empty && $end_with_empty)) {
                         return false;
                     }
                     // Middle value must be '' otherwise EXTREMITY CHECKS returned an error

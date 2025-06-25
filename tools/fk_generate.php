@@ -91,7 +91,7 @@ foreach ($query as $table => $constraints) {
     }
 
     echo $q . "<br><br>";
-    $DB->query($q) or die($q . " " . $DB->error());
+    $DB->query($q) || die($q . " " . $DB->error());
 }
 
 $DB->query("SET FOREIGN_KEY_CHECKS = 1;");
