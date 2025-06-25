@@ -73,5 +73,6 @@ return RectorConfig::configure()
         CodeQuality\FuncCall\ChangeArrayPushToArrayAssignRector::class,
         CodeQuality\FuncCall\CompactToVariablesRector::class,
         CodeQuality\FuncCall\InlineIsAInstanceOfRector::class,
+        CodeQuality\FuncCall\IsAWithStringWithThirdArgumentRector::class,
     ])
 ;
