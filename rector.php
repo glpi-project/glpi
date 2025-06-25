@@ -96,5 +96,6 @@ return RectorConfig::configure()
         CodeQuality\Include_\AbsolutizeRequireAndIncludePathRector::class,
         CodeQuality\LogicalAnd\AndAssignsToSeparateLinesRector::class,
         CodeQuality\LogicalAnd\LogicalToBooleanRector::class,
+        CodeQuality\NotEqual\CommonNotEqualRector::class,
     ])
 ;
