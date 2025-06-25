@@ -3088,10 +3088,10 @@ class AuthLDAP extends CommonDBTM
         $timeout = 0,
         bool $silent_bind_errors = false
     ) {
-
-        //do not use ldaps; tls connection is made later using ldap_start_tls
+        //Use an LDP connection string
         $ldapuri = sprintf(
-            'ldap://%s:%s',
+            '%s://%s:%s',
+            parse_url($host, PHP_URL_SCHEME) ?: 'ldap',
             preg_replace('@ldaps?://@', '', $host),
             (int) $port
         );
