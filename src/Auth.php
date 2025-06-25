@@ -584,12 +584,12 @@ class Auth extends CommonGLPI
 
                 $login        = $login_string;
                 $pos          = strpos($login_string, "\\");
-                if (!$pos === false) {
+                if ($pos !== false) {
                     $login = substr($login_string, $pos + 1);
                 }
                 if ($CFG_GLPI['existing_auth_server_field_clean_domain']) {
                     $pos = strpos($login, "@");
-                    if (!$pos === false) {
+                    if ($pos !== false) {
                         $login = substr($login, 0, $pos);
                     }
                 }
