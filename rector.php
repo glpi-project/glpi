@@ -64,5 +64,6 @@ return RectorConfig::configure()
         CodeQuality\Catch_\ThrowWithPreviousExceptionRector::class,
         CodeQuality\Empty_\SimplifyEmptyCheckOnEmptyArrayRector::class,
         CodeQuality\Expression\InlineIfToExplicitIfRector::class,
+        CodeQuality\Expression\TernaryFalseExpressionToIfRector::class,
     ])
 ;
