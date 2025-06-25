@@ -74,5 +74,11 @@ return RectorConfig::configure()
         CodeQuality\FuncCall\CompactToVariablesRector::class,
         CodeQuality\FuncCall\InlineIsAInstanceOfRector::class,
         CodeQuality\FuncCall\IsAWithStringWithThirdArgumentRector::class,
+        CodeQuality\FuncCall\RemoveSoleValueSprintfRector::class,
+        CodeQuality\FuncCall\SetTypeToCastRector::class,
+        CodeQuality\FuncCall\SimplifyFuncGetArgsCountRector::class,
+        CodeQuality\FuncCall\SimplifyInArrayValuesRector::class,
+        CodeQuality\FuncCall\SimplifyStrposLowerRector::class,
+        CodeQuality\FuncCall\UnwrapSprintfOneArgumentRector::class,
     ])
 ;

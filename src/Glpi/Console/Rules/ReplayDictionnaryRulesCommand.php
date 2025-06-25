@@ -100,7 +100,7 @@ class ReplayDictionnaryRulesCommand extends AbstractCommand
             || !($rulecollection instanceof \RuleCollection)
         ) {
             throw new \Symfony\Component\Console\Exception\InvalidArgumentException(
-                sprintf(__('Invalid "dictionary" value.'))
+                __('Invalid "dictionary" value.')
             );
         }
 
