@@ -252,7 +252,7 @@ final class LogParser extends CommonGLPI
         if ($logs_dir_path === false) {
             return null;
         }
-        
+
         $fullpath = realpath($logs_dir_path . '/' . $filepath); //@phpstan-ignore theCodingMachineSafe.function (false is explicitly tested)
         if ($fullpath === false || !str_starts_with($fullpath, $logs_dir_path)) {
             return null; // Security check
