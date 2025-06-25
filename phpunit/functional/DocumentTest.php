@@ -82,11 +82,26 @@ class DocumentTest extends DbTestCase
 
     public function testGetItemtypesThatCanHave()
     {
+        /** @var array $CFG_GLPI */
+        global $CFG_GLPI;
+
         $doc = new \Document();
-        $this->assertGreaterThan(
-            50,
-            count($doc->getItemtypesThatCanHave())
+        $itemtypes_doc = $doc->getItemtypesThatCanHave();
+
+        $item_device_types = [];
+        foreach ($CFG_GLPI['device_types'] as $device_type) {
+            $item_device_types[] = $device_type::getItem_DeviceType();
+        }
+        $itemtypes = array_merge(
+            $CFG_GLPI['document_types'],
+            $CFG_GLPI['device_types'],
+            $item_device_types,
         );
+
+        $this->assertEquals(count($itemtypes_doc), count($itemtypes));
+        foreach($itemtypes as $itemtype) {
+            $this->assertContains($itemtype, $itemtypes_doc);
+        }
     }
 
     public function testDefineTabs()
