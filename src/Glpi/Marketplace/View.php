@@ -926,7 +926,7 @@ HTML;
             }
         }
 
-        if (strlen($description) === 0) {
+        if ((string) $description === '') {
             $description = $fallback;
         }
 

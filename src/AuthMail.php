@@ -57,7 +57,7 @@ class AuthMail extends CommonDBTM
 
     public function prepareInputForUpdate($input)
     {
-        if (array_key_exists('name', $input) && strlen($input['name']) === 0) {
+        if (array_key_exists('name', $input) && (string) $input['name'] === '') {
             Session::addMessageAfterRedirect(sprintf(__s('The %s field is mandatory'), 'name'), false, ERROR);
 
             return false;

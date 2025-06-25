@@ -1748,7 +1748,7 @@ class User extends CommonDBTM
 
                     $params = ['id' => $id];
 
-                    if (strlen($email) === 0) {
+                    if ($email === '') {
                         // Empty email, delete it
                         $deleted = $useremail->delete($params);
                         $userUpdated = $userUpdated || $deleted;
