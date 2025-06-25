@@ -3089,8 +3089,14 @@ class AuthLDAP extends CommonDBTM
         $timeout = 0,
         bool $silent_bind_errors = false
     ) {
-
-        $ds = @ldap_connect($host, intval($port));
+        //Use an LDAP connection string
+        $ldapuri = sprintf(
+            '%s://%s:%s',
+            parse_url($host, PHP_URL_SCHEME) ?: 'ldap',
+            preg_replace('@^ldaps?://@', '', $host),
+            (int) $port
+        );
+        $ds = @ldap_connect($ldapuri);
 
         if ($ds === false) {
             trigger_error(
