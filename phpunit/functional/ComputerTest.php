@@ -38,7 +38,6 @@ use DbTestCase;
 use Entity;
 use Glpi\Asset\Asset_PeripheralAsset;
 use PHPUnit\Framework\Attributes\DataProvider;
-use Psr\Log\LogLevel;
 
 /* Test for inc/computer.class.php */
 
@@ -408,11 +407,11 @@ class ComputerTest extends DbTestCase
         $this->assertTrue($comp->getFromDBByCrit(['name' => '_test_pc01']));
         $this->assertSame('_test_pc01', $comp->getField('name'));
 
-        $this->assertFalse($comp->getFromDBByCrit(['name' => ['LIKE', '_test%']]));
-        $this->hasPhpLogRecordThatContains(
-            'getFromDBByCrit expects to get one result, 9 found in query "SELECT `id` FROM `glpi_computers` WHERE `name` LIKE \'_test%\'".',
-            LogLevel::WARNING
+
+        $this->expectExceptionMessage(
+            '`Computer::getFromDBByCrit()` expects to get one result, 9 found in query "SELECT `id` FROM `glpi_computers` WHERE `name` LIKE \'_test%\'".'
         );
+        $comp->getFromDBByCrit(['name' => ['LIKE', '_test%']]);
     }
 
     public function testClone()

@@ -128,9 +128,13 @@ class Dashboard extends \CommonDBTM
             $this->post_getFromDB();
             return true;
         } elseif (count($iterator) > 1) {
-            trigger_error(
-                sprintf('getFromDB expects to get one result, %1$s found!', count($iterator)),
-                E_USER_WARNING
+            throw new \RuntimeException(
+                sprintf(
+                    '`%1$s::getFromDB()` expects to get one result, %2$s found in query "%3$s".',
+                    static::class,
+                    count($iterator),
+                    $iterator->getSql()
+                )
             );
         }
 

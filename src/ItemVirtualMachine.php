@@ -419,13 +419,13 @@ class ItemVirtualMachine extends CommonDBChild
             $result = $iterator->current();
             return $result['id'];
         } elseif (count($iterator) > 1) {
-            trigger_error(
+            throw new \RuntimeException(
                 sprintf(
-                    'findVirtualMachine expects to get one result, %1$s found in query "%2$s".',
+                    '`%1$s::findVirtualMachine()` expects to get one result, %2$s found in query "%3$s".',
+                    static::class,
                     count($iterator),
                     $iterator->getSql()
-                ),
-                E_USER_WARNING
+                )
             );
         }
 

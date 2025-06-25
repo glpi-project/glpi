@@ -146,16 +146,13 @@ class CommonDBTMTest extends DbTestCase
         $this->assertFalse($instance->isNewItem());
 
         $instance = new \Computer();
-        $result = $instance->getFromDbByRequest([
+
+        $this->expectExceptionMessage(
+            '`Computer::getFromDBByRequest()` expects to get one result, 2 found in query "SELECT `glpi_computers`.* FROM `glpi_computers` WHERE `contact` = \'johndoe\'".'
+        );
+        $instance->getFromDbByRequest([
             'WHERE' => ['contact' => 'johndoe'],
         ]);
-        $this->hasPhpLogRecordThatContains(
-            'getFromDBByRequest expects to get one result, 2 found in query "SELECT `glpi_computers`.* FROM `glpi_computers` WHERE `contact` = \'johndoe\'".',
-            LogLevel::WARNING
-        );
-        $this->assertFalse($result);
-        // the instance must not be populated
-        $this->assertTrue($instance->isNewItem());
     }
 
     public function testGetFromResultSet()
