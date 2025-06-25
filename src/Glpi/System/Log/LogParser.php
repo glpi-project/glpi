@@ -236,7 +236,7 @@ final class LogParser extends CommonGLPI
             return false;
         }
 
-        return unlink($fullpath);
+        return unlink($fullpath); //@phpstan-ignore theCodingMachineSafe.function (false is expected)
     }
 
     /**
@@ -248,13 +248,15 @@ final class LogParser extends CommonGLPI
      */
     public function getFullPath(string $filepath): ?string
     {
-        $filepath = str_replace('\\', '/', $filepath);
-
-        if (preg_match('/\/..\//', $filepath) === 1) {
-            return null; // Security check
+        $logs_dir_path = realpath($this->directory); //@phpstan-ignore theCodingMachineSafe.function (false is explicitly tested)
+        if ($logs_dir_path === false) {
+            return null;
         }
 
-        $fullpath = $this->directory . '/' . $filepath;
+        $fullpath = realpath($logs_dir_path . '/' . $filepath); //@phpstan-ignore theCodingMachineSafe.function (false is explicitly tested)
+        if ($fullpath === false || !str_starts_with($fullpath, $logs_dir_path)) {
+            return null; // Security check
+        }
 
         return file_exists($fullpath) && !is_dir($fullpath) ? $fullpath : null;
     }
