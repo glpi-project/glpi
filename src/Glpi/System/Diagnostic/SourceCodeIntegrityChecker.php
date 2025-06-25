@@ -114,7 +114,7 @@ class SourceCodeIntegrityChecker
         try {
             $content = \json_decode($manifest, associative: true, flags: JSON_THROW_ON_ERROR);
         } catch (\Throwable $e) {
-            throw new \RuntimeException('The source code file manifest is invalid.', previous: $e);
+            throw new \RuntimeException('The source code file manifest is invalid.', $e->getCode(), previous: $e);
         }
         if (!isset($content['algorithm'], $content['files']) || !is_string($content['algorithm']) || !is_array($content['files'])) {
             throw new \RuntimeException('The source code file manifest is invalid.');
