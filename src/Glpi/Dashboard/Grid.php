@@ -1370,7 +1370,7 @@ HTML;
                 'widgettype' => ['hBars', 'stackedHBars'],
                 'itemtype'   => "\\Ticket",
                 'group'      => __('Assistance'),
-                'label'      => sprintf(__("Number of tickets by SLA status and technician")),
+                'label'      => __("Number of tickets by SLA status and technician"),
                 'provider'   => "Glpi\\Dashboard\\Provider::nbTicketsByAgreementStatusAndTechnician",
                 'filters'    => Filter::getAppliableFilters(Ticket::getTable()),
             ];
@@ -1379,7 +1379,7 @@ HTML;
                 'widgettype' => ['hBars', 'stackedHBars'],
                 'itemtype'   => "\\Ticket",
                 'group'      => __('Assistance'),
-                'label'      => sprintf(__("Number of tickets by SLA status and technician group")),
+                'label'      => __("Number of tickets by SLA status and technician group"),
                 'provider'   => "Glpi\\Dashboard\\Provider::nbTicketsByAgreementStatusAndTechnicianGroup",
                 'filters'    => Filter::getAppliableFilters(Ticket::getTable()),
             ];

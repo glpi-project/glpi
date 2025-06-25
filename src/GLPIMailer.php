@@ -345,7 +345,7 @@ class GLPIMailer
                 $header = $this->email->getHeaders()->get('From');
                 if ($header === null || count($header->getAddresses()) === 0) {
                     trigger_error(
-                        sprintf('Unable to define "FromName" property when "From" property is not defined.'),
+                        'Unable to define "FromName" property when "From" property is not defined.',
                         E_USER_WARNING
                     );
                 } else {
