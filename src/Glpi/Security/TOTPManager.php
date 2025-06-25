@@ -209,7 +209,13 @@ final class TOTPManager
                 return $config;
             }
         } catch (\SodiumException $e) {
-            trigger_error("Unreadable TOTP secret for user ID {$users_id}: " . $e->getMessage(), E_USER_WARNING);
+            /** @var \Psr\Log\LoggerInterface $PHPLOGGER */
+            global $PHPLOGGER;
+            $PHPLOGGER->error(
+                "Unreadable TOTP secret for user ID {$users_id}: " . $e->getMessage(),
+                ['exception' => $e]
+            );
+
             return null;
         }
     }

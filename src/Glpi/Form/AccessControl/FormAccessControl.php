@@ -203,10 +203,13 @@ final class FormAccessControl extends CommonDBChild
                 $strategy = $this->createStrategy($strategy_class);
                 $input['_config'] = $strategy->getConfig();
             } catch (InvalidArgumentException $e) {
-                trigger_error(
+                /** @var \Psr\Log\LoggerInterface $PHPLOGGER */
+                global $PHPLOGGER;
+                $PHPLOGGER->error(
                     "Invalid access control strategy: $strategy_class",
-                    E_USER_WARNING
+                    ['exception' => $e]
                 );
+
                 return false;
             }
         }

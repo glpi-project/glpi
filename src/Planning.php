@@ -1899,10 +1899,13 @@ TWIG, $twig_params);
             try {
                 $vcalendar = Reader::read($calendar_data);
             } catch (\Sabre\VObject\ParseException $exception) {
-                trigger_error(
+                /** @var \Psr\Log\LoggerInterface $PHPLOGGER */
+                global $PHPLOGGER;
+                $PHPLOGGER->error(
                     sprintf('Unable to parse calendar data from URL "%s"', $planning_params['url']),
-                    E_USER_WARNING
+                    ['exception' => $exception]
                 );
+
                 continue;
             }
             if (!$vcalendar instanceof VCalendar) {

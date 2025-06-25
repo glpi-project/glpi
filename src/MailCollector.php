@@ -1727,14 +1727,15 @@ class MailCollector extends CommonDBTM
                 $this->storage->moveMessage($this->storage->getNumberByUniqueId($uid), $name);
                 return true;
             } catch (\Throwable $e) {
-                // raise an error and fallback to delete
-                trigger_error(
+                /** @var \Psr\Log\LoggerInterface $PHPLOGGER */
+                global $PHPLOGGER;
+                $PHPLOGGER->error(
                     sprintf(
-                        //TRANS: %1$s is the name of the folder, %2$s is the name of the receiver
-                        __('Invalid configuration for %1$s folder in receiver %2$s'),
+                        'Invalid configuration for %1$s folder in receiver %2$s',
                         $folder,
                         $this->getName()
-                    )
+                    ),
+                    ['exception' => $e]
                 );
             }
         }

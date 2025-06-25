@@ -182,9 +182,12 @@ final class AnswersHandler
                 return $answers_set;
             } catch (\Throwable $e) {
                 $DB->rollback();
-                trigger_error(
+
+                /** @var \Psr\Log\LoggerInterface $PHPLOGGER */
+                global $PHPLOGGER;
+                $PHPLOGGER->error(
                     "Failed to save answers: " . $e->getMessage(),
-                    E_USER_WARNING
+                    ['exception' => $e]
                 );
 
                 // Propagate the exception
