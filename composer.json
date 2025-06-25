@@ -117,6 +117,7 @@
         "phpstan/phpstan": "^2.1",
         "phpstan/phpstan-deprecation-rules": "^2.0",
         "phpunit/phpunit": "^11.5",
+        "rector/rector": "^2.1",
         "shipmonk/composer-dependency-analyser": "^1.8",
         "symfony/browser-kit": "^6.4",
         "symfony/http-client": "^6.4",
