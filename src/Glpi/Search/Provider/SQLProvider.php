@@ -5568,10 +5568,7 @@ final class SQLProvider implements SearchProviderInterface
                             $data[$ID][0]['status'] == CommonITILObject::WAITING
                         ) {
                             // No due date in waiting status for TTRs
-                            if (
-                                $table . '.' . $field == "glpi_tickets.time_to_resolve"
-                                || $table . '.' . $field == "glpi_tickets.internal_time_to_resolve"
-                            ) {
+                            if ($table . '.' . $field == "glpi_tickets.time_to_resolve") {
                                 return '';
                             } else {
                                 $color = '#AAAAAA';
@@ -5721,7 +5718,7 @@ final class SQLProvider implements SearchProviderInterface
                     }
                     break;
 
-                // OLA TTO / OLA TTR
+                    // OLA TTO / OLA TTR
                 case "glpi_items_olas.due_time":
                     $out = '';
                     // Due date + progress
