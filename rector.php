@@ -93,5 +93,6 @@ return RectorConfig::configure()
         // FIXME apply it in another PR, it generates a huge diff CodeQuality\If_\SimplifyIfNotNullReturnRector::class,
         // FIXME apply it in another PR, it generates a huge diff CodeQuality\If_\SimplifyIfNullableReturnRector::class,
         // FIXME apply it in another PR, it generates a huge diff CodeQuality\If_\SimplifyIfReturnBoolRector::class,
+        CodeQuality\Include_\AbsolutizeRequireAndIncludePathRector::class,
     ])
 ;
