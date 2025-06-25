@@ -1940,7 +1940,7 @@ class CommonDBTM extends CommonGLPI
         /** @var \DBmysql $DB */
         global $DB;
 
-        if (!isset($this->fields['id']) || !($this->fields['id'] >= 0)) {
+        if (!isset($this->fields['id']) || $this->fields['id'] < 0) {
             return false;
         }
 
