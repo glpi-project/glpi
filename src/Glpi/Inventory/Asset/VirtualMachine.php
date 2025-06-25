@@ -162,7 +162,7 @@ class VirtualMachine extends InventoryAsset
                         }
                     }
 
-                    if (property_exists($net_val, 'ipaddress') and !property_exists($net_val, 'ip')) {
+                    if (property_exists($net_val, 'ipaddress') && !property_exists($net_val, 'ip')) {
                         $net_val->ip = [$net_val->ipaddress];
                     }
 
