@@ -58,5 +58,6 @@ return RectorConfig::configure()
     // FIXME apply it in another PR, it generates a huge diff ->withImportNames()
     ->withRules([
         CodeQuality\Assign\CombinedAssignRector::class,
+        CodeQuality\BooleanAnd\RemoveUselessIsObjectCheckRector::class,
     ])
 ;
