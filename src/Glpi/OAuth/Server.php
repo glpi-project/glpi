@@ -257,14 +257,14 @@ final class Server
         try {
             $key = openssl_pkey_new($config);
         } catch (OpensslException $e) {
-            throw new RuntimeException("Unable to generate keys: " . $e->getMessage());
+            throw new RuntimeException("Unable to generate keys: " . $e->getMessage(), $e->getCode(), $e);
         }
 
         // Export private key to file
         try {
             openssl_pkey_export_to_file($key, self::PRIVATE_KEY_PATH);
         } catch (OpensslException $e) {
-            throw new RuntimeException("Unable to export private key: " . $e->getMessage());
+            throw new RuntimeException("Unable to export private key: " . $e->getMessage(), $e->getCode(), $e);
         }
 
         // Get public key
@@ -278,7 +278,7 @@ final class Server
         try {
             $written_bytes = file_put_contents(self::PUBLIC_KEY_PATH, $pubkey['key']);
         } catch (FilesystemException $e) {
-            throw new RuntimeException("Unable to export public key: " . $e->getMessage());
+            throw new RuntimeException("Unable to export public key: " . $e->getMessage(), $e->getCode(), $e);
         }
         if ($written_bytes !== strlen($pubkey['key'])) {
             throw new RuntimeException('Unable to export public key');
@@ -289,7 +289,7 @@ final class Server
             chmod(self::PRIVATE_KEY_PATH, 0o660);
             chmod(self::PUBLIC_KEY_PATH, 0o660);
         } catch (FilesystemException $e) {
-            throw new RuntimeException('Unable to set permissions on the generated keys');
+            throw new RuntimeException('Unable to set permissions on the generated keys', $e->getCode(), $e);
         }
     }
 
