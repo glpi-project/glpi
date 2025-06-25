@@ -833,7 +833,7 @@ final class ITILController extends AbstractController
      */
     private function getITILTimelineItems(CommonITILObject $item, Request $request, array $subitem_types = []): ?array
     {
-        $subitem_types = empty($subitem_types) ? ['Followup', 'Task', 'Document', 'Solution', 'Validation'] : $subitem_types;
+        $subitem_types = $subitem_types === [] ? ['Followup', 'Task', 'Document', 'Solution', 'Validation'] : $subitem_types;
         $results = [];
         foreach ($subitem_types as $subitem_type) {
             $filters = $this->getTimelineItemFilters($item, $request, $subitem_type);

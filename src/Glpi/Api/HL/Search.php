@@ -573,7 +573,7 @@ final class Search
      */
     private function criteriaHasJoinFilter(array $where): bool
     {
-        if (empty($where)) {
+        if ($where === []) {
             return false;
         }
 
@@ -981,7 +981,7 @@ final class Search
                     }, explode(chr(0x1D), $record_ids));
                     $ids_to_fetch = array_diff($ids_to_fetch, array_keys($fetched_records[$table] ?? []));
 
-                    if (empty($ids_to_fetch)) {
+                    if ($ids_to_fetch === []) {
                         // Every record needed for this row has already been fetched.
                         continue;
                     }

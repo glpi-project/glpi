@@ -1178,7 +1178,7 @@ TWIG, $twig_params);
                     $expr = "(MATCH(" . $DB->quoteName('glpi_knowbaseitems.name') . ", " . $DB->quoteName('glpi_knowbaseitems.answer') . ")
                            AGAINST(" . $DB->quote($search_wilcard) . " IN BOOLEAN MODE)";
 
-                    if (!empty($addscore)) {
+                    if ($addscore !== []) {
                         foreach ($addscore as $addscore_field) {
                             $expr .= " + MATCH(" . $DB->quoteName($addscore_field) . ")
                                         AGAINST(" . $DB->quote($search_wilcard) . " IN BOOLEAN MODE)";
@@ -1195,7 +1195,7 @@ TWIG, $twig_params);
                         ),
                     ];
 
-                    if (!empty($addscore)) {
+                    if ($addscore !== []) {
                         foreach ($addscore as $addscore_field) {
                             $ors[] = [
                                 'NOT' => [$addscore_field => null],

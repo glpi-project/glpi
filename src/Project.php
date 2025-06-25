@@ -2395,7 +2395,7 @@ TWIG, $twig_params);
         }
 
         // If no project are found, do not display anything
-        if (empty($projects_id)) {
+        if ($projects_id === []) {
             return;
         }
 

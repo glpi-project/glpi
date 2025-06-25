@@ -1158,7 +1158,7 @@ class NotificationTarget extends CommonDBChild
             }
         }
 
-        if (!empty($id)) {
+        if ($id !== []) {
             //Look for the user by his id
             $criteria = $this->getDistinctUserCriteria() + $this->getProfileJoinCriteria();
             $criteria['FROM'] = User::getTable();
@@ -1402,7 +1402,7 @@ class NotificationTarget extends CommonDBChild
                 'notifications_id' => $this->data['notifications_id'],
             ],
         ]));
-        if (empty($exclusions)) {
+        if ($exclusions === []) {
             // No exclusion, no need to filter
             return $target_list;
         }
@@ -1412,7 +1412,7 @@ class NotificationTarget extends CommonDBChild
                 $user_ids[] = $target['users_id'];
             }
         }
-        if (empty($user_ids)) {
+        if ($user_ids === []) {
             // Cannot filter targets without a user id
             return $target_list;
         }

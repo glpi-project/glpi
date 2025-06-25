@@ -739,7 +739,7 @@ class Session
                 // Stack of children to load
                 $children_to_load = [$data["groups_id"]];
 
-                while (!empty($children_to_load)) {
+                while ($children_to_load !== []) {
                     $next_child_to_load = array_pop($children_to_load);
 
                     // Note: we can't use getSonsOf here because some groups in the

@@ -56,7 +56,7 @@ final class QuestionTypeUserDevice extends AbstractQuestionType implements UsedA
             isset($input['is_multiple_devices'])
             && count($input) === 1
             && filter_var($input['is_multiple_devices'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) !== null
-        ) || empty($input);
+        ) || $input === [];
     }
 
     /**

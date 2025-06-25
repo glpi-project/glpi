@@ -62,5 +62,6 @@ return RectorConfig::configure()
         CodeQuality\BooleanAnd\SimplifyEmptyArrayCheckRector::class,
         CodeQuality\BooleanNot\ReplaceMultipleBooleanNotRector::class,
         CodeQuality\Catch_\ThrowWithPreviousExceptionRector::class,
+        CodeQuality\Empty_\SimplifyEmptyCheckOnEmptyArrayRector::class,
     ])
 ;

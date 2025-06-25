@@ -269,7 +269,7 @@ class FormMigration extends AbstractPluginMigration
     {
         $criteria = [];
 
-        if (!empty($this->specificFormsIds)) {
+        if ($this->specificFormsIds !== []) {
             $criteria[] = [
                 'glpi_plugin_formcreator_forms.id' => $this->specificFormsIds,
             ];
@@ -717,7 +717,7 @@ class FormMigration extends AbstractPluginMigration
             }
 
             // Update corresponding records
-            if (!empty($sections_ranks)) {
+            if ($sections_ranks !== []) {
                 $this->db->update(
                     $table,
                     ['horizontal_rank' => null],
@@ -1158,7 +1158,7 @@ class FormMigration extends AbstractPluginMigration
             );
 
             // Skip if no translations found
-            if (empty($translations)) {
+            if ($translations === []) {
                 continue;
             }
 

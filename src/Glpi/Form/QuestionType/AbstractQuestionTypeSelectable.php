@@ -153,7 +153,7 @@ TWIG;
     public function validateExtraDataInput(array $input): bool
     {
         // The input can not be empty, always have at least one option : the last one can be empty
-        if (empty($input) || !isset($input['options'])) {
+        if ($input === [] || !isset($input['options'])) {
             return false;
         }
 
@@ -218,7 +218,7 @@ TWIG;
     {
         $handlers = [];
         $options = $this->getOptions($question);
-        if (!empty($options)) {
+        if ($options !== []) {
             $handlers = array_map(
                 fn($uuid, $option) => new TranslationHandler(
                     item: $question,

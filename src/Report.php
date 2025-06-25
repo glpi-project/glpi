@@ -1070,7 +1070,7 @@ TWIG, $twig_params);
      */
     public static function showYearlyAssetsReport(array $itemtypes, array $years): void
     {
-        if (empty($itemtypes)) {
+        if ($itemtypes === []) {
             self::showYearlyAssetsReportCriteria(false);
             return;
         }
@@ -1349,7 +1349,7 @@ TWIG, $twig_params);
      */
     public static function showContractAssetsReport(array $itemtypes, array $years): void
     {
-        if (empty($itemtypes)) {
+        if ($itemtypes === []) {
             self::showContractAssetsReportCriteria(false);
             return;
         }

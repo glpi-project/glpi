@@ -3497,7 +3497,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
         $param['canedit']       = true;
         $param['default_class'] = '';
 
-        if (empty($rights)) {
+        if ($rights === []) {
             return mt_rand();
         }
 

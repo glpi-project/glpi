@@ -66,7 +66,7 @@ final class AssociatedItemsFieldConfig implements
             fn(string $strategy) => AssociatedItemsFieldStrategy::tryFrom($strategy),
             $data[self::STRATEGIES] ?? []
         );
-        if (empty($strategies)) {
+        if ($strategies === []) {
             $strategies = [AssociatedItemsFieldStrategy::ALL_VALID_ANSWERS];
         }
 

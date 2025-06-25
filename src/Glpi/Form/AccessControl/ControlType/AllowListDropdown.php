@@ -108,12 +108,12 @@ final class AllowListDropdown extends AbstractRightsDropdown
             $condition['OR'] = [];
 
             // Filter by user
-            if (!empty($users)) {
+            if ($users !== []) {
                 $condition['OR'][] = ['id' => array_values($users)];
             }
 
             // Filter by group
-            if (!empty($groups)) {
+            if ($groups !== []) {
                 $condition['OR'][] = [
                     'id' => new QuerySubQuery([
                         'SELECT' => 'users_id',
@@ -124,7 +124,7 @@ final class AllowListDropdown extends AbstractRightsDropdown
             }
 
             // Filter by profile
-            if (!empty($profiles)) {
+            if ($profiles !== []) {
                 $condition['OR'][] = [
                     'id' => new QuerySubQuery([
                         'SELECT' => 'users_id',

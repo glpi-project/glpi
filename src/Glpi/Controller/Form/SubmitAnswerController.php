@@ -104,7 +104,7 @@ final class SubmitAnswerController extends AbstractController
         );
         $answers    = $provider->getAnswers($post);
         $files      = $provider->getFiles($post, $answers);
-        if (empty($answers)) {
+        if ($answers === []) {
             throw new BadRequestHttpException();
         }
 

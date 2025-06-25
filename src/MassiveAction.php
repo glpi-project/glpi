@@ -174,7 +174,7 @@ class MassiveAction
 
         $this->from_single_item = $GET['_from_single_item'] ?? false;
 
-        if (!empty($POST)) {
+        if ($POST !== []) {
             if (!isset($POST['is_deleted'])) {
                 $POST['is_deleted'] = 0;
             }

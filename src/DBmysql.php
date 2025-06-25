@@ -1135,7 +1135,7 @@ class DBmysql
 
         // Retrieve all tables if cache is empty but enabled, in order to fill cache
         // with all known tables
-        $retrieve_all = !$this->cache_disabled && empty($this->table_cache);
+        $retrieve_all = !$this->cache_disabled && $this->table_cache === [];
 
         $result = $this->listTables($retrieve_all ? 'glpi\_%' : $tablename);
         $found_tables = [];

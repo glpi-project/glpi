@@ -360,7 +360,7 @@ class NotificationTemplate extends CommonDBTM
 
                     //Manage FIRST & LAST statement
                     $foreachvalues = $data[$tag_infos];
-                    if (!empty($foreachvalues)) {
+                    if ($foreachvalues !== []) {
                         if (isset($out[1][$id]) && ($out[1][$id] != '')) {
                             if ($out[1][$id] == 'FIRST') {
                                 $foreachvalues = array_reverse($foreachvalues);

@@ -413,7 +413,7 @@ class ConsumableItem extends CommonDBTM
                     }
                 }
 
-                if (!empty($items)) {
+                if ($items !== []) {
                     $options = [
                         'entities_id' => $entity,
                         'items'       => $items,

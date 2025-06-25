@@ -352,7 +352,7 @@ final class Question extends CommonDBChild implements BlockInterface, Conditiona
                 $extra_data = $question_type->prepareExtraData($extra_data);
 
                 // Save extra data as JSON
-                if (!empty($extra_data)) {
+                if ($extra_data !== []) {
                     $input['extra_data'] = json_encode($extra_data);
                 }
             }

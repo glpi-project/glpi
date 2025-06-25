@@ -433,7 +433,7 @@ class CommandLoader implements CommandLoaderInterface
             $this->getRelativePath($basedir, $file->getPathname())
         );
 
-        if (empty($prefixes)) {
+        if ($prefixes === []) {
             $prefixes = [''];
         }
         foreach ($prefixes as $prefix) {

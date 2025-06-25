@@ -336,7 +336,7 @@ class Stencil extends CommonDBChild implements ZonableModelPicture
         $pictures = [];
         foreach ($this->getPicturesFields() as $picture_field) {
             $picture = $item->getItemtypeOrModelPicture($picture_field);
-            if (!empty($picture) && isset($picture[0]['src'])) {
+            if ($picture !== [] && isset($picture[0]['src'])) {
                 $pictures[] = $picture[0]['src'];
             }
         }

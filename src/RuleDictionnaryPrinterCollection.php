@@ -265,7 +265,7 @@ class RuleDictionnaryPrinterCollection extends RuleCollection
         $input["name"]         = $p['name'];
         $input["manufacturer"] = $p['manufacturer'];
 
-        if (empty($res_rule)) {
+        if ($res_rule === []) {
             $res_rule = $this->processAllRules($input, [], []);
         }
 

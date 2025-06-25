@@ -453,7 +453,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
             } elseif ($value == self::SCENE_CUSTOM) {
                 // A custom file was submitted
                 $files = $input["_$field"] ?? [];
-                if (!is_array($files) || empty($files)) {
+                if (!is_array($files) || $files === []) {
                     // Unexpected format or no files were submitted, do not
                     // modify the saved value.
                     $input[$field] = null;

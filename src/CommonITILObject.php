@@ -7588,7 +7588,7 @@ abstract class CommonITILObject extends CommonDBTM
                 ];
 
                 $groupsuser = Group_User::getUserGroups($current_user_id);
-                if (!empty($groupsuser)) {
+                if ($groupsuser !== []) {
                     foreach ($groupsuser as $groupuser) {
                         $groups_ids[] = $groupuser['id'];
                     }
@@ -10058,7 +10058,7 @@ abstract class CommonITILObject extends CommonDBTM
         });
 
         $categories = [];
-        if (!empty($category_ids)) {
+        if ($category_ids !== []) {
             /** @var \DBmysql $DB */
             global $DB;
 
@@ -11085,7 +11085,7 @@ abstract class CommonITILObject extends CommonDBTM
                     $tmp_input = [$tmp_input];
                 }
                 $added_actors = array_diff($tmp_input, array_column($actors, $field));
-                if (empty($added_actors) && empty($deleted_actors)) {
+                if ($added_actors === [] && $deleted_actors === []) {
                     $unchanged[] = $input_key;
                 }
                 foreach ($actors as $actor) {
