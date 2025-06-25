@@ -73,7 +73,7 @@ class OLA extends LevelAgreement
 
         // Clean levels
         $ola_fk = getForeignKeyFieldForItemType(static::class);
-        $level = new static::$levelclass();
+        $level = getItemForItemtype(static::$levelclass);
         $level->deleteByCriteria([$ola_fk => $this->getID()]);
 
         // Clean levels todo
@@ -144,7 +144,7 @@ class OLA extends LevelAgreement
             $toadd['date'] = $date;
             $toadd[$pre . 'levels_id'] = $levels_id;
             $toadd['tickets_id'] = $ticket->fields["id"];
-            $levelticket = new static::$levelticketclass();
+            $levelticket = getItemForItemtype(static::$levelticketclass);
             $levelticket->add($toadd);
         }
     }
@@ -165,7 +165,7 @@ class OLA extends LevelAgreement
         // but the function is likely always called if the ticket has an OLA TTR
         // so it's performed all the time
         // on this version I remove the check, all levels todo are deleted, whatever OLA type is.
-        $levelticket = new static::$levelticketclass();
+        $levelticket = getItemForItemtype(static::$levelticketclass);
         $iterator = $DB->request([
             'SELECT' => 'id',
             'FROM' => $levelticket::getTable(),

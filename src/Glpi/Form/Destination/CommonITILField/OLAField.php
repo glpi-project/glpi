@@ -24,9 +24,8 @@ abstract class OLAField extends SLMField
         $slm_id = $strategy->getSLMID($config);
 
         // Do not edit input if invalid value was found
-        /** @var class-string<\OLA> $slm_class */
-        $slm_class = $this->getSLMClass();
-        if (!$slm_class::getById($slm_id)) {
+        $slm = $this->getSLM();
+        if (!$slm::getById($slm_id)) {
             return $input;
         }
 
