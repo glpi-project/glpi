@@ -349,7 +349,7 @@ abstract class MainAsset extends InventoryAsset
             }
         }
 
-        if (!empty($_inventory_users)) {
+        if ($_inventory_users !== []) {
             $val->_inventory_users = $_inventory_users;
         }
     }

@@ -301,7 +301,7 @@ TWIG, $twig_params);
         $input["manufacturer"] = $manufacturer;
         $input["entities_id"]  = $entity;
 
-        if (empty($res_rule)) {
+        if ($res_rule === []) {
             $res_rule = $this->processAllRules($input, [], []);
         }
         $soft = new Software();

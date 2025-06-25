@@ -140,7 +140,7 @@ class NotificationTargetKnowbaseItem extends NotificationTarget
                 '##target.itemtype##'        => $target->getType(),
             ];
         }
-        if (!empty($listofcategories)) {
+        if ($listofcategories !== []) {
             $this->data['##knowbaseitem.categories##']      = implode(', ', $listofcategories);
         } else {
             $this->data['##knowbaseitem.categories##']      = '';

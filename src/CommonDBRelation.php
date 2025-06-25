@@ -1920,7 +1920,7 @@ abstract class CommonDBRelation extends CommonDBConnexity
         if ($limit > 0) {
             $params['LIMIT'] = $limit;
         }
-        if (!empty($order)) {
+        if ($order !== []) {
             $params['ORDER'] = $order;
         }
         return $DB->request($params);

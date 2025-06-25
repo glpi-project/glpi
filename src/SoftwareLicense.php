@@ -808,7 +808,7 @@ class SoftwareLicense extends CommonTreeDropdown
                 $items[$license['id']] = $license;
             }
 
-            if (!empty($items)) {
+            if ($items !== []) {
                 $alert                  = new Alert();
                 $options['entities_id'] = $entity;
                 $options['licenses']    = $items;

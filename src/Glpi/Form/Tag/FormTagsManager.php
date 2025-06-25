@@ -61,14 +61,14 @@ final class FormTagsManager
 
                 // Extract value.
                 preg_match('/data-form-tag-value="([^"]+)"/', $tag, $value_match);
-                if (empty($value_match)) {
+                if ($value_match === []) {
                     return "";
                 }
 
                 // Extract provider.
                 preg_match('/data-form-tag-provider="([^"]+)"/', $tag, $provider_match);
                 if (
-                    empty($provider_match)
+                    $provider_match === []
                     || !is_a(
                         $provider_match[1],
                         TagProviderInterface::class,

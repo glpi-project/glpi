@@ -57,7 +57,7 @@ class QuerySubQuery extends AbstractQuery
         global $DB;
 
         parent::__construct($alias);
-        if (empty($crit)) {
+        if ($crit === []) {
             throw new \RuntimeException('Cannot build an empty subquery');
         }
 

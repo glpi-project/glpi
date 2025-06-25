@@ -923,7 +923,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
         $schema = self::getAPISchemaBySupportedItemtype($itemtype);
         $props = Schema::flattenProperties($schema['properties'], 'item.');
         $parent_schema = self::getParentItemSchema($itemtype);
-        $parent_props = !empty($parent_schema) ? Schema::flattenProperties($parent_schema['properties'], 'parent_item.') : [];
+        $parent_props = $parent_schema !== [] ? Schema::flattenProperties($parent_schema['properties'], 'parent_item.') : [];
 
         $response_schema = [
             [

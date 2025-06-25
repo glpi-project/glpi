@@ -484,7 +484,7 @@ TWIG, ['message' => __('An action related to an approval exists, but there is no
                         );
 
                         // Keep weird legacy default value that will not match anything
-                        if (empty($regex_values)) {
+                        if ($regex_values === []) {
                             $regex_values[] = $action->fields["value"];
                         }
 

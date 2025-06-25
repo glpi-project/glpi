@@ -479,7 +479,7 @@ trait PlanningEvent
             } else {
                 $ngrouppriv = [$itemtype::getTableField('groups_id') => $whogroup];
             }
-            if (!empty($nreadpriv)) {
+            if ($nreadpriv !== []) {
                 $nreadpriv['OR'] = [$nreadpriv, $ngrouppriv];
             } else {
                 $nreadpriv = $ngrouppriv;

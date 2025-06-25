@@ -111,7 +111,7 @@ final class ValidateAnswerController extends AbstractController
         $provider = new EndUserInputNameProvider();
 
         $answers = $provider->getAnswers($post);
-        if (empty($answers)) {
+        if ($answers === []) {
             throw new BadRequestHttpException();
         }
 

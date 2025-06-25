@@ -126,7 +126,7 @@ abstract class AbstractQuestionTypeActors extends AbstractQuestionType implement
             isset($input['is_multiple_actors'])
             && count($input) === 1
             && filter_var($input['is_multiple_actors'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) !== null
-        ) || empty($input);
+        ) || $input === [];
     }
 
     #[Override]

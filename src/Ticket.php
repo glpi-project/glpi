@@ -5176,7 +5176,7 @@ JAVASCRIPT;
                 $tickets[] = $tick;
             }
 
-            if (!empty($tickets)) {
+            if ($tickets !== []) {
                 if (
                     NotificationEvent::raiseEvent(
                         'alertnotclosed',

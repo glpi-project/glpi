@@ -117,7 +117,7 @@ final class UserDevicesConditionHandler implements ConditionHandlerInterface
                 ),
                 false
             ),
-            ValueOperator::ALL_ITEMS_OF_ITEMTYPE => !empty($actual_itemtypes) && array_reduce(
+            ValueOperator::ALL_ITEMS_OF_ITEMTYPE => $actual_itemtypes !== [] && array_reduce(
                 $actual_itemtypes,
                 fn(bool $carry, string $actual_itemtype) => $carry && in_array(
                     $actual_itemtype,

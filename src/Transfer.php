@@ -377,7 +377,7 @@ final class Transfer extends CommonDBTM
             $DC_CONNECT[] = 'Printer';
         }
 
-        if (empty($DC_CONNECT)) {
+        if ($DC_CONNECT === []) {
             return;
         }
 
@@ -3350,7 +3350,7 @@ final class Transfer extends CommonDBTM
                             ],
                         ];
                         $exclusions = [...($this->needtobe_transfer['Supplier'] ?? []), ...($this->noneedtobe_transfer['Supplier'] ?? [])];
-                        if (!empty($exclusions)) {
+                        if ($exclusions !== []) {
                             $scriteria['WHERE']['NOT'] = ['suppliers_id' => $exclusions];
                         }
 

@@ -1121,7 +1121,7 @@ class User extends CommonDBTM
 
                         $input['password_last_update'] = $_SESSION["glpi_currenttime"];
                     } else {
-                        if (empty($password_errors)) {
+                        if ($password_errors === []) {
                             $password_errors = [__('An error occurred during password update')];
                         }
                         if (PHP_SAPI == 'cli') {
@@ -1190,7 +1190,7 @@ class User extends CommonDBTM
                     }
                     unset($input[$input_key]);
                 }
-                if (!empty($ignored_fields)) {
+                if ($ignored_fields !== []) {
                     Session::addMessageAfterRedirect(
                         sprintf(
                             __('You are not allowed to update the following fields: %s'),
@@ -4485,7 +4485,7 @@ HTML;
         }
 
         if (
-            !empty($IDs)
+            $IDs !== []
             && in_array($authtype, [Auth::DB_GLPI, Auth::LDAP, Auth::MAIL, Auth::EXTERNAL])
         ) {
             $result = $DB->update(

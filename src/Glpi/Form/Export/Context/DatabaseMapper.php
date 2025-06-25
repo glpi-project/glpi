@@ -53,7 +53,7 @@ final class DatabaseMapper
 
     public function __construct(array $entities_restrictions)
     {
-        if (empty($entities_restrictions)) {
+        if ($entities_restrictions === []) {
             throw new InvalidArgumentException("Must specify at least one entity");
         }
 

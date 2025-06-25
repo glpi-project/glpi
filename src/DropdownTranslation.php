@@ -505,7 +505,7 @@ TWIG, $twig_params);
         }
 
         $used = [];
-        if (!empty($options)) {
+        if ($options !== []) {
             $iterator = $DB->request([
                 'SELECT' => ['field'],
                 'FROM'   => self::getTable(),

@@ -353,7 +353,7 @@ abstract class AbstractCommonITILFormDestination implements FormDestinationInter
     private function setFilesInput(array $input, AnswersSet $answers_set): array
     {
         $files = $answers_set->getSubmittedFiles();
-        if (empty($files) || empty($files['filename'])) {
+        if ($files === [] || empty($files['filename'])) {
             return $input;
         }
 
