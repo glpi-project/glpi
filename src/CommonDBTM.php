@@ -4679,7 +4679,7 @@ class CommonDBTM extends CommonGLPI
                                 $message_text = $this->getUnicityErrorMessage($message, $fields, $doubles);
                                 if ($p['unicity_error_message']) {
                                     if (!$fields['action_refuse']) {
-                                        $show_other_messages = ($fields['action_refuse'] ? true : false);
+                                        $show_other_messages = ((bool) $fields['action_refuse']);
                                     } else {
                                         $show_other_messages = true;
                                     }

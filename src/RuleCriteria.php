@@ -502,7 +502,7 @@ class RuleCriteria extends CommonDBChild
                         if ($ip != '') {
                             $ip = ip2long($ip);
                             if (($ip & $mask) == $subnet) {
-                                return ($condition == Rule::PATTERN_CIDR) ? true : false;
+                                return $condition == Rule::PATTERN_CIDR;
                             }
                         }
                     }
