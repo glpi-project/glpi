@@ -8678,12 +8678,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Webhook.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Variable \\$controller in PHPDoc tag @var does not match any variable in the foreach loop\\: \\$itemtypes, \\$supported_itemtype, \\$type_data$#',
-	'identifier' => 'varTag.differentVariable',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Webhook.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Variable \\$list_itemtype in PHPDoc tag @var does not match assigned variable \\$recursive_search\\.$#',
 	'identifier' => 'varTag.differentVariable',
 	'count' => 1,

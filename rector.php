@@ -66,5 +66,9 @@ return RectorConfig::configure()
         CodeQuality\Expression\InlineIfToExplicitIfRector::class,
         CodeQuality\Expression\TernaryFalseExpressionToIfRector::class,
         CodeQuality\For_\ForRepeatedCountToOwnVariableRector::class,
+        CodeQuality\Foreach_\ForeachItemsAssignToEmptyArrayToAssignRector::class,
+        CodeQuality\Foreach_\ForeachToInArrayRector::class,
+        CodeQuality\Foreach_\SimplifyForeachToCoalescingRector::class,
+        CodeQuality\Foreach_\UnusedForeachValueToArrayKeysRector::class,
     ])
 ;

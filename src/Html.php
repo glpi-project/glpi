@@ -5532,7 +5532,7 @@ HTML;
 
         // count checked
         $nb_cb_per_col = [];
-        foreach ($columns as $col_name => $column) {
+        foreach (array_keys($columns) as $col_name) {
             $nb_cb_per_col[$col_name] = [
                 'total'   => 0,
                 'checked' => 0,
@@ -5551,7 +5551,7 @@ HTML;
                     'checked' => 0,
                 ];
 
-                foreach ($columns as $col_name => $column) {
+                foreach (array_keys($columns) as $col_name) {
                     if (array_key_exists($col_name, $row['columns'])) {
                         $content = $row['columns'][$col_name];
                         if (

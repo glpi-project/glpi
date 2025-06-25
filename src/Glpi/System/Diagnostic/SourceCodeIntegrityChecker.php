@@ -188,13 +188,13 @@ class SourceCodeIntegrityChecker
         }
         // Summary where the key is the file and the value is the status. Ignore OK files
         $summary = [];
-        foreach ($altered as $file => $hash) {
+        foreach (array_keys($altered) as $file) {
             $summary[$file] = self::STATUS_ALTERED;
         }
-        foreach ($added as $file => $hash) {
+        foreach (array_keys($added) as $file) {
             $summary[$file] = self::STATUS_ADDED;
         }
-        foreach ($missing as $file => $hash) {
+        foreach (array_keys($missing) as $file) {
             $summary[$file] = self::STATUS_MISSING;
         }
 

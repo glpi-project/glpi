@@ -2182,7 +2182,7 @@ HTML;
         }
 
         // Generate array values
-        foreach ($values as $i => $val) {
+        foreach (array_keys($values) as $i) {
             if ($params['inhours']) {
                 $day  = 0;
                 $hour = floor($i / HOUR_TIMESTAMP);

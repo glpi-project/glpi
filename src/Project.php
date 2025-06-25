@@ -1948,7 +1948,7 @@ TWIG, $twig_params);
             $columns[$item['projectstates_id']]['items'][] = $card;
         }
 
-        foreach ($columns as $column_id => $column) {
+        foreach (array_keys($columns) as $column_id) {
             if ($column_id !== 0 && !in_array($column_id, $column_ids)) {
                 unset($columns[$column_id]);
             }

@@ -764,7 +764,7 @@ class Consumable extends CommonDBChild
             'give_to' => __('In stock'),
             'total'   => 0,
         ];
-        foreach ($types as $id_type => $type) {
+        foreach (array_keys($types) as $id_type) {
             if (!isset($new[$id_type])) {
                 $new[$id_type] = 0;
             }
@@ -786,7 +786,7 @@ class Consumable extends CommonDBChild
                 'total'   => 0,
             ];
 
-            foreach ($types as $id_type => $type) {
+            foreach (array_keys($types) as $id_type) {
                 if (!isset($val[$id_type])) {
                     $val[$id_type] = 0;
                 }
@@ -797,7 +797,7 @@ class Consumable extends CommonDBChild
         }
 
         $footer = [__('Total')];
-        foreach ($types as $id_type => $type) {
+        foreach (array_keys($types) as $id_type) {
             $footer[] = array_sum(array_column($entries, $id_type));
         }
         $footer[] = array_sum(array_column($entries, 'total'));

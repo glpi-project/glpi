@@ -3389,7 +3389,7 @@ abstract class CommonITILObject extends CommonDBTM
             }
             $active_priorities = array_unique($active_priorities);
             if (count($active_priorities) > 0) {
-                foreach ($values as $priority => $name) {
+                foreach (array_keys($values) as $priority) {
                     if (!in_array($priority, $active_priorities)) {
                         if ($p['withmajor'] && $priority == 6) {
                             continue;
@@ -8687,7 +8687,7 @@ abstract class CommonITILObject extends CommonDBTM
      */
     protected function hasImpactTab()
     {
-        foreach ($this->getLinkedItems() as $itemtype => $items) {
+        foreach (array_keys($this->getLinkedItems()) as $itemtype) {
             $class = $itemtype;
             if (Impact::isEnabled($class) && Session::getCurrentInterface() === "central") {
                 return true;

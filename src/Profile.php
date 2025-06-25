@@ -1321,7 +1321,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
                 'columns'    => [],
             ];
 
-            foreach ($statuses as $index_2 => $status_2) {
+            foreach (array_keys($statuses) as $index_2) {
                 $content = ['checked' => true];
                 if (isset($this->fields[$db_field][$index_1][$index_2])) {
                     $content['checked'] = $this->fields[$db_field][$index_1][$index_2];
@@ -3138,7 +3138,7 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
         $param['display'] = true;
         $param['size']    = count($values);
         $tabselect = [];
-        foreach ($values as $k => $v) {
+        foreach (array_keys($values) as $k) {
             if ((int) $current & $k) {
                 $tabselect[] = $k;
             }

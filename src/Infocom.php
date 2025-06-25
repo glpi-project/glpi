@@ -770,7 +770,7 @@ class Infocom extends CommonDBChild
                     'itemtype' => 'Infocom',
                     'type'     => Alert::END,
                 ];
-                foreach ($not_deleted_items as $id => $item) {
+                foreach (array_keys($not_deleted_items) as $id) {
                     $input["items_id"] = $id;
                     $alert->add($input);
                     unset($alert->fields['id']);
@@ -787,7 +787,7 @@ class Infocom extends CommonDBChild
             }
 
             $alert = new Alert();
-            foreach ($deleted_expired_items as $id => $item) {
+            foreach (array_keys($deleted_expired_items) as $id) {
                 $alert->add([
                     'itemtype' => 'Infocom',
                     'type'     => Alert::END,

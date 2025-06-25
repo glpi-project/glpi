@@ -127,7 +127,7 @@ final class StatusChecker
                     'status' => self::STATUS_OK,
                 ],
             ];
-            foreach ($services as $name => $service_check_method) {
+            foreach (array_keys($services) as $name) {
                 $service_status = self::getServiceStatus($name, $public_only);
                 $status[$name] = $service_status;
             }
@@ -179,7 +179,7 @@ final class StatusChecker
                     $status['replicas']['status'] = self::STATUS_OK;
                 }
 
-                foreach ($hosts as $num => $name) {
+                foreach (array_keys($hosts) as $num) {
                     $diff = DBConnection::getReplicateDelay($num);
                     if (abs($diff) > 1000000000) {
                         $status['replicas']['servers'][$num] = [
