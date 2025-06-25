@@ -131,12 +131,12 @@ final class SearchEngine
             }
 
             if ($key === 'itil_types') {
-                if (is_a($item, \CommonITILTask::class) || is_a($item, \CommonITILValidation::class)) {
+                if ($item instanceof \CommonITILTask || $item instanceof \CommonITILValidation) {
                     $linked[] = $item::getItilObjectItemType();
                 } else {
                     $timeline_types = [\ITILFollowup::class, \ITILSolution::class];
                     foreach ($timeline_types as $timeline_type) {
-                        if (is_a($item, $timeline_type)) {
+                        if ($item instanceof $timeline_type) {
                             $linked = [...$linked, ...$values];
                         }
                     }
