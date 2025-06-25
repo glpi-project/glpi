@@ -2667,6 +2667,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface, T
                     SLA::deleteLevelsToDo($this);
                 }
 
+            if (is_a($this, Ticket::class)) {
             OLA::deleteLevelsToDo($this);
             }
         }
