@@ -70,5 +70,6 @@ return RectorConfig::configure()
         CodeQuality\Foreach_\ForeachToInArrayRector::class,
         CodeQuality\Foreach_\SimplifyForeachToCoalescingRector::class,
         CodeQuality\Foreach_\UnusedForeachValueToArrayKeysRector::class,
+        CodeQuality\FuncCall\ChangeArrayPushToArrayAssignRector::class,
     ])
 ;
