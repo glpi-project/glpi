@@ -988,7 +988,9 @@ class Ticket extends CommonITILObject
             }
         }
 
-        //must be handled here for tickets. @see CommonITILObject::prepareInputForUpdate()
+        // Mandatory fields must be handled here for tickets. @see CommonITILObject::prepareInputForUpdate()
+        // html form _olas_id field is an array, when empty it's not passed in request, so it's set here to be handled in handleTemplateFields()
+        $input['_olas_id'] = array_key_exists('_olas_id', $input) ? $input['_olas_id'] : [];
         $input = $this->handleTemplateFields($input);
         if ($input === false) {
             return false;
@@ -2725,7 +2727,7 @@ JAVASCRIPT;
             'id'                 => '187',
             'table'              => 'glpi_items_olas',
             'field'              => 'is_late',
-            'name'               => __('OLA') . ' ' . __('Internal time to own exceeded'),
+            'name'               => __('OLA') . ' ' . __('time to own exceeded'),
             'datatype'           => 'bool',
             'massiveaction'      => false,
             'computation'        => self::generateSLAOLAComputation('internal_time_to_own', 'glpi_items_olas'),
@@ -2757,7 +2759,7 @@ JAVASCRIPT;
             'id'                 => '191',
             'table'              => 'glpi_olas',
             'field'              => 'name',
-            'name'               => __('OLA') . ' ' . __('Internal time to resolve'),
+            'name'               => __('OLA') . ' ' . __('time to resolve'),
             'massiveaction'      => false,
             'datatype'           => 'dropdown',
             'joinparams'         => [
@@ -2779,7 +2781,7 @@ JAVASCRIPT;
             'table' => 'glpi_items_olas',
             'field' => 'due_time',
             'datatype' => 'datetime',
-            'name' => __('OLA') . ' ' . __('Internal time to resolve') . ' - ' . __('due time + progress'),
+            'name' => __('OLA') . ' ' . __('time to resolve') . ' - ' . __('due time + progress'),
             'massiveaction'      => false,
             'nosearch'           => true,
             'additionalfields' => ['TABLE.status', 'TABLE.takeintoaccount_delay_stat', 'TABLE.date', 'olas_id', 'waiting_time', 'end_time'],
@@ -2810,7 +2812,7 @@ JAVASCRIPT;
             'id'                 => '182',
             'table'              => 'glpi_items_olas',
             'field'              => 'is_late',
-            'name'               => __('OLA') . ' ' . __('Internal time to resolve exceeded'),
+            'name'               => __('OLA') . ' ' . __('time to resolve exceeded'),
             'datatype'           => 'bool',
             'massiveaction'      => false,
             'computation'        => self::generateSLAOLAComputation('internal_time_to_resolve', 'glpi_items_olas'),
