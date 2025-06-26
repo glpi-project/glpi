@@ -616,14 +616,14 @@ class OLATest extends DbTestCase
         $this->login();
 
         // arrange create ticket with OLA at 09:00:00, status WAITING
-        $this->setCurrentTime('09:00:00');
+        $this->setCurrentTime('09:00:00', '2025-06-26');
         ['ola' => $ola ] = $this->createOLA(ola_type: SLM::TTO);
         $ticket = $this->createTicket(['_la_update' => true, '_olas_id' => [$ola->getID()], 'status' => \CommonITILObject::WAITING]);
         assert(\CommonITILObject::WAITING === (int) $ticket->fields['status']);
         $initial_due_time = $ticket->getOlasData()[0]['due_time'];
 
         // act : wait one hour and change status to trigger due_time recomputing
-        $this->setCurrentTime('10:00:00');
+        $this->setCurrentTime('10:00:00', '2025-06-26');
         $this->updateItem($ticket::class, $ticket->getID(), ['status' => \CommonITILObject::ASSIGNED]);
         $new_due_time = $ticket->getOlasData()[0]['due_time'];
 
@@ -638,13 +638,13 @@ class OLATest extends DbTestCase
     {
         // arrange
         $this->login();
-        $this->setCurrentTime('10:04:00');
+        $this->setCurrentTime('10:04:00', '2025-06-26');
         ['ola' => $ola ] = $this->createOLA(ola_type: SLM::TTO);
 
         // act - create ticket, set status to waiting, wait 20 minutes, switch ticket to assigned
         $ticket = $this->createTicket(['_la_update' => true, '_olas_id' => [$ola->getID()], 'status' => \CommonITILObject::WAITING]);
         assert($ticket->fields['status'] === CommonITILObject::WAITING);
-        $this->setCurrentTime('10:24:00');
+        $this->setCurrentTime('10:24:00', '2025-06-26');
         $this->updateItem(\Ticket::class, $ticket->getID(), ['status' => CommonITILObject::ASSIGNED]);
 
         $ola_data = $ticket->getOlasData()[0];
@@ -783,14 +783,14 @@ class OLATest extends DbTestCase
         $this->login();
 
         // arrange create ticket with OLA at 09:00:00, status WAITING
-        $this->setCurrentTime('09:00:00');
+        $this->setCurrentTime('09:00:00', '2025-06-26');
         ['ola' => $ola ] = $this->createOLA(ola_type: SLM::TTR);
         $ticket = $this->createTicket(['_la_update' => true, '_olas_id' => [$ola->getID()], 'status' => \CommonITILObject::WAITING]);
         assert(\CommonITILObject::WAITING === (int) $ticket->fields['status']);
         $initial_due_time = $ticket->getOlasData()[0]['due_time'];
 
         // act : wait one hour and change status to trigger due_time recomputing
-        $this->setCurrentTime('10:00:00');
+        $this->setCurrentTime('10:00:00', '2025-06-26');
         $this->updateItem($ticket::class, $ticket->getID(), ['status' => \CommonITILObject::ASSIGNED]);
         $new_due_time = $ticket->getOlasData()[0]['due_time'];
 
@@ -804,11 +804,11 @@ class OLATest extends DbTestCase
     public function testOlaTTRWaitingTimeIsIncrementedWhileTicketStatusIsWaiting()
     {
         $this->login();
-        $this->setCurrentTime('10:04:00');
+        $this->setCurrentTime('10:04:00', '2025-06-26');
         ['ola' => $ola ] = $this->createOLA(ola_type: SLM::TTR);
         $ticket = $this->createTicket(['_la_update' => true, '_olas_id' => [$ola->getID()], 'status' => \CommonITILObject::WAITING]);
         assert($ticket->fields['status'] === CommonITILObject::WAITING);
-        $this->setCurrentTime('10:24:00');
+        $this->setCurrentTime('10:24:00', '2025-06-26');
         $this->updateItem(\Ticket::class, $ticket->getID(), ['status' => CommonITILObject::ASSIGNED]);
 
         $ola_data = $ticket->getOlasData()[0];
