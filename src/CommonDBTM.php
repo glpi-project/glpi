@@ -346,13 +346,13 @@ class CommonDBTM extends CommonGLPI
             $this->post_getFromDB();
             return true;
         } elseif (count($iterator) > 1) {
-            trigger_error(
+            throw new \RuntimeException(
                 sprintf(
-                    'getFromDB expects to get one result, %1$s found in query "%2$s".',
+                    '`%1$s::getFromDB()` expects to get one result, %2$s found in query "%3$s".',
+                    static::class,
                     count($iterator),
                     $iterator->getSql()
-                ),
-                E_USER_WARNING
+                )
             );
         }
 
@@ -423,13 +423,13 @@ class CommonDBTM extends CommonGLPI
             $row = $iter->current();
             return $this->getFromDB($row[static::getIndexName()]);
         } elseif (count($iter) > 1) {
-            trigger_error(
+            throw new \RuntimeException(
                 sprintf(
-                    'getFromDBByCrit expects to get one result, %1$s found in query "%2$s".',
+                    '`%1$s::getFromDBByCrit()` expects to get one result, %2$s found in query "%3$s".',
+                    static::class,
                     count($iter),
                     $iter->getSql()
-                ),
-                E_USER_WARNING
+                )
             );
         }
         return false;
@@ -468,13 +468,13 @@ class CommonDBTM extends CommonGLPI
             $this->post_getFromDB();
             return true;
         } elseif (count($iterator) > 1) {
-            trigger_error(
+            throw new \RuntimeException(
                 sprintf(
-                    'getFromDBByRequest expects to get one result, %1$s found in query "%2$s".',
+                    '`%1$s::getFromDBByRequest()` expects to get one result, %2$s found in query "%3$s".',
+                    static::class,
                     count($iterator),
                     $iterator->getSql()
-                ),
-                E_USER_WARNING
+                )
             );
         }
         return false;
