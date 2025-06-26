@@ -35,7 +35,6 @@
 use Glpi\Console\AbstractCommand;
 use Glpi\Form\AccessControl\ControlType\AllowList;
 use Glpi\Form\AccessControl\ControlType\AllowListConfig;
-use Glpi\Form\AccessControl\FormAccessControl;
 use Glpi\Form\Form;
 use Glpi\UI\IllustrationManager;
 use Symfony\Component\Console\Command\Command;
@@ -55,7 +54,7 @@ final class GenerateFormForeachIllustrationsCommand extends AbstractCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $manager = new IllustrationManager();
-        $illustrations = $manager->getAllIllustrationsNames();
+        $illustrations = $manager->getAllIconsIds();
 
         foreach ($illustrations as $illustration) {
             if ($this->demoFormExistsForIllustration($illustration)) {
@@ -81,23 +80,13 @@ final class GenerateFormForeachIllustrationsCommand extends AbstractCommand
 
     private function createDemoFormForIllustration(string $illustration): void
     {
-        $form_id = (new Form())->add([
+        (new Form())->add([
             'name'         => $this->normalizeIllustrationName($illustration),
             'description'  => "Demo form for the '$illustration' illustration.",
             'illustration' => $illustration,
             'entities_id'  => 0,
             'is_recursive' => true,
             'is_active'    => true,
-        ]);
-
-        $form_access_control = new FormAccessControl();
-        $form_access_control->add([
-            Form::getForeignKeyField() => $form_id,
-            'strategy' => AllowList::class,
-            '_config'   => new AllowListConfig(
-                user_ids: [AbstractRightsDropdown::ALL_USERS]
-            ),
-            'is_active' => 1,
         ]);
     }
 
