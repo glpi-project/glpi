@@ -555,7 +555,7 @@ class SLMTest extends DbTestCase
     {
         $this->login();
 
-        $currenttime_bak = $_SESSION['glpi_currenttime'];
+        $currenttime_bak = \Session::getCurrentTime();
         $tomorrow_1pm = date('Y-m-d H:i:s', strtotime('tomorrow 1pm'));
         $tomorrow_2pm = date('Y-m-d H:i:s', strtotime('tomorrow 2pm'));
 
@@ -610,11 +610,11 @@ class SLMTest extends DbTestCase
 
         // Assign TTR OLA
         $update_time = strtotime('+10s'); // to check ola start time is related to the moment the ola is added
-        $_SESSION['glpi_currenttime'] = date('Y-m-d H:i:s', $update_time);
+        $this->setCurrentTime( date('Y-m-d H:i:s', $update_time));
 
         // add an OLA
         $ticket = $this->updateItem(Ticket::class, $ticket->getID(), ['_la_update' => true, '_olas_id' => [(int) $ola_id]]);
-        $_SESSION['glpi_currenttime'] = $currenttime_bak;
+        $this->setCurrentTime($currenttime_bak);
         $this->assertTrue($ticket->getFromDB($ticket_id));
 
         $ola_ttr = $ticket->getOlasTTRData()[0];
@@ -632,9 +632,9 @@ class SLMTest extends DbTestCase
                 ]
             )
         );
-        $_SESSION['glpi_currenttime'] = date('Y-m-d H:i:s', strtotime('tomorrow 10am'));
+        $this->setCurrentTime(date('Y-m-d H:i:s', strtotime('tomorrow 10am')));
         $ticket = $this->updateItem($ticket::class, $ticket->getID(), ['status' => \CommonITILObject::ASSIGNED]);
-        $_SESSION['glpi_currenttime'] = $currenttime_bak;
+        $this->setCurrentTime($currenttime_bak);
         // find ola and check due_time (former ticket::internal_time_to_resolve)
         $ola_data = $ticket->getOlasTTRData()[0];
         $this->assertEquals($tomorrow_2pm, $ola_data['due_time']);
@@ -650,7 +650,7 @@ class SLMTest extends DbTestCase
         // --- arrange
         $this->login();
 
-        $currenttime_bak = $_SESSION['glpi_currenttime'];
+        $currenttime_bak = \Session::getCurrentTime();
 
         // Create SLM with TTR/TTO OLA/SLA
         $slm = new SLM();
@@ -790,7 +790,7 @@ class SLMTest extends DbTestCase
         $this->assertEmpty($fetched_ola_data);
 
         // Assign TTR/TTO OLA/SLA
-        $_SESSION['glpi_currenttime'] = date('Y-m-d H:i:s', strtotime('+10s'));
+        $this->setCurrentTime(date('Y-m-d H:i:s', strtotime('+10s')));
         $updated = $ticket->update(
             [
                 'id' => $ticket_id,
@@ -801,7 +801,7 @@ class SLMTest extends DbTestCase
                 'date_mod'    => date('Y-m-d H:i:s', strtotime($ticket->fields['date']) + 1),
             ]
         );
-        $_SESSION['glpi_currenttime'] = $currenttime_bak;
+        $this->setCurrentTime($currenttime_bak);
 
         $this->assertTrue($updated);
         $this->assertTrue($ticket->getFromDB($ticket_id));
@@ -933,7 +933,7 @@ class SLMTest extends DbTestCase
 
         // --- act
         // Create a ticket 1 hour ago without any SLA
-        $date_1_hour_ago = date('Y-m-d H:i:s', strtotime('-1 hour', strtotime($_SESSION['glpi_currenttime'])));
+        $date_1_hour_ago = date('Y-m-d H:i:s', strtotime('-1 hour', strtotime(\Session::getCurrentTime())));
         $ticket = $this->createItem("Ticket", [
             "name"        => "Test ticket",
             "content"     => "Test ticket",
@@ -942,7 +942,7 @@ class SLMTest extends DbTestCase
         ]);
 
         // Add SLA and OLA to the ticket
-        $now = $_SESSION['glpi_currenttime']; // Keep track of when the OLA where set
+        $now = \Session::getCurrentTime(); // Keep track of when the OLA where set
         $this->updateItem("Ticket", $ticket->getID(), [
             "slas_id_tto" => $sla_tto->getID(),
             "slas_id_ttr" => $sla_ttr->getID(),
@@ -1370,7 +1370,7 @@ class SLMTest extends DbTestCase
         ]);
 
         // Create a ticket
-        $_SESSION['glpi_currenttime'] = $begin_date;
+        $this->setCurrentTime($begin_date);
 
         [$la_date_field, $la_fk_field] = $la->getFieldNames($la->fields['type']);
         $ticket = $this->createItem(
@@ -1385,11 +1385,11 @@ class SLMTest extends DbTestCase
         // --- act
         // Apply pauses
         foreach ($pauses as $pause) {
-            $_SESSION['glpi_currenttime'] = $pause['from'];
-            $this->updateItem(Ticket::class, $ticket->getID(), ['status' => Ticket::WAITING]);
+            $this->setCurrentTime($pause['from']);
+            $this->updateItem(\Ticket::class, $ticket->getID(), ['status' => Ticket::WAITING]);
 
-            $_SESSION['glpi_currenttime'] = $pause['to'];
-            $this->updateItem(Ticket::class, $ticket->getID(), ['status' => Ticket::ASSIGNED]);
+            $this->setCurrentTime($pause['to']);
+            $this->updateItem(\Ticket::class, $ticket->getID(), ['status' => Ticket::ASSIGNED]);
         }
 
         // Reload ticket
@@ -1473,7 +1473,7 @@ class SLMTest extends DbTestCase
         ]);
 
         // Create a ticket
-        $_SESSION['glpi_currenttime'] = $begin_date;
+        $this->setCurrentTime($begin_date);
 
         $ticket = $this->createItem(
             \Ticket::class,
@@ -1488,10 +1488,10 @@ class SLMTest extends DbTestCase
         // --- act
         // Apply pauses
         foreach ($pauses as $pause) {
-            $_SESSION['glpi_currenttime'] = $pause['from'];
+            $this->setCurrentTime($pause['from']);
             $this->updateItem(\Ticket::class, $ticket->getID(), ['status' => \Ticket::WAITING]);
 
-            $_SESSION['glpi_currenttime'] = $pause['to'];
+            $this->setCurrentTime($pause['to']);
             $this->updateItem(\Ticket::class, $ticket->getID(), ['status' => \Ticket::ASSIGNED]);
         }
 
@@ -1533,7 +1533,7 @@ class SLMTest extends DbTestCase
         // OLA change are recomputed from the current date so we need to set
         // glpi_currenttime to get predictable results
         $calendar = getItemByTypeName('Calendar', 'Default', true);
-        $_SESSION['glpi_currenttime'] = '2034-08-16 13:00:00';
+        $this->setCurrentTime('2034-08-16 13:00:00');
 
         // Create test SLM
         $slm = $this->createItem(SLM::class, [
@@ -1746,9 +1746,7 @@ class SLMTest extends DbTestCase
         // OLA change are recomputed from the current date so we need to set
         // glpi_currenttime to get predictable results
         $calendar = getItemByTypeName('Calendar', 'Default', true);
-        $_SESSION['glpi_currenttime'] = '2034-08-16 13:00:00';
-
-        // @todoseb utiliser setCurrentTime() pour définir la date courante
+        $this->setCurrentTime('13:00:00', '2034-08-16');
 
         // Create test SLM
         $slm = $this->createItem(\SLM::class, [
@@ -2345,7 +2343,7 @@ class SLMTest extends DbTestCase
 
         // OLA change are recomputed from the current date so we need to set
         // glpi_currenttime to get predictable results
-        $_SESSION['glpi_currenttime'] = '2034-08-16 13:00:00';
+        $this->setCurrentTime('13:00:00', '2034-08-16');
 
         // Create a calendar with working hours from 8 a.m. to 7 p.m. Monday to Friday
         $calendar = $this->createItem(\Calendar::class, ['name' => __FUNCTION__ . ' 1']);
@@ -2453,7 +2451,7 @@ class SLMTest extends DbTestCase
         $this->updateItem(Ticket::class, $ticket->getID(), [
             'status' => Ticket::WAITING,
         ]);
-        $_SESSION['glpi_currenttime'] = '2034-08-16 13:10:00';
+        $this->setCurrentTime('13:10:00', '2034-08-16');
         $this->updateItem(Ticket::class, $ticket->getID(), [
             'status' => Ticket::INCOMING,
         ]);
