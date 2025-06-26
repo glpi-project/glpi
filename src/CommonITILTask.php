@@ -613,14 +613,12 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
         $donotif = !isset($this->input['_disablenotif']) && $CFG_GLPI["use_notifications"];
 
         if (isset($this->fields["begin"]) && !empty($this->fields["begin"])) {
-            if ($this->fields["users_id_tech"] !== 0) {
-                Planning::checkAlreadyPlanned(
-                    $this->fields["users_id_tech"],
-                    $this->fields["begin"],
-                    $this->fields["end"],
-                    [$this->getType() => [$this->fields["id"]]]
-                );
-            }
+            Planning::checkAlreadyPlanned(
+                $this->fields["users_id_tech"],
+                $this->fields["begin"],
+                $this->fields["end"],
+                [$this->getType() => [$this->fields["id"]]]
+            );
 
             $calendars_id = Entity::getUsedConfig(
                 'calendars_strategy',
