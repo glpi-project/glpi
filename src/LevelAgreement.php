@@ -466,7 +466,7 @@ TWIG, $twig_params);
 
         // ola have a groups_id field, not sla
         if ($la->isField('groups_id')) {
-            $twig_params['columns']['group'] = __('Group');
+            $twig_params['columns']['group'] = Group::getTypeName(1);
         }
 
         TemplateRenderer::getInstance()->display('components/datatable.html.twig', $twig_params);
