@@ -385,6 +385,10 @@ JAVASCRIPT;
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
 
+        if ($users_id === 0) {
+            return false;
+        }
+
         $planned = false;
         $message = '';
 
