@@ -210,7 +210,7 @@ export class TeamBadgeProvider {
         initials = initials.toUpperCase();
 
         if (!this.display_initials || initials.length === 0) {
-            return this.generateOtherBadge(team_member, 'fa-user');
+            return this.generateOtherBadge(team_member, 'ti ti-user');
         }
 
         const canvas = this.getBadgeCanvas(this.getBadgeColor(team_member));
@@ -232,7 +232,7 @@ export class TeamBadgeProvider {
         const name = team_member['name'].replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 
         return `
-            <span class="badge badge-pill" style="background-color: ${bg_color}; font-size: ${(this.team_image_size / 2)}px; height: 26px">
+            <span class="badge badge-pill" style="background-color: ${bg_color}; font-size: ${(this.team_image_size / 2)}px; height: 26px; padding: 0.25em;">
                 <i class='${icon}' title="${name}" data-bs-toggle='tooltip' data-bs-placement='top'></i>
             </span>
         `;
