@@ -1545,6 +1545,7 @@
             display: inline-block;
             margin-right: 5px;
             vertical-align: middle;
+            background-color: var(--status-color);
         }
     }
 
