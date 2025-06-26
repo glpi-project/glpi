@@ -46,10 +46,7 @@ Session::checkRight("reservation", ReservationItem::RESERVEANITEM);
 
 $rr = new Reservation();
 
-if (isset($_REQUEST['ajax'])) {
-    Html::header_nocache();
-    Html::popHeader(__('Simplified interface'));
-} elseif (Session::getCurrentInterface() == "helpdesk") {
+if (Session::getCurrentInterface() == "helpdesk") {
     Html::helpHeader(__('Simplified interface'));
 } else {
     Html::header(Reservation::getTypeName(Session::getPluralNumber()), '', "tools", "reservationitem");
@@ -108,9 +105,7 @@ if (isset($_POST["update"])) {
     }
 }
 
-if (isset($_REQUEST['ajax'])) {
-    Html::popFooter();
-} elseif (Session::getCurrentInterface() == "helpdesk") {
+if (Session::getCurrentInterface() == "helpdesk") {
     Html::helpFooter();
 } else {
     Html::footer();
