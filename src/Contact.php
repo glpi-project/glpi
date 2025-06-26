@@ -229,7 +229,7 @@ HTML;
 
         if ($isadmin) {
             $actions['Contact_Supplier' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add']
-               = _sx('button', 'Add a supplier');
+               = "<i class='" . Supplier::getIcon() . "'></i>" . _sx('button', 'Add a supplier');
         }
 
         return $actions;

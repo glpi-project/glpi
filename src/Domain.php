@@ -441,9 +441,9 @@ class Domain extends CommonDBTM
 
         if ($_SESSION['glpiactiveprofile']['interface'] == 'central') {
             if ($isadmin) {
-                $actions['Domain' . MassiveAction::CLASS_ACTION_SEPARATOR . 'install']   = _sx('button', 'Associate');
-                $actions['Domain' . MassiveAction::CLASS_ACTION_SEPARATOR . 'uninstall'] = _sx('button', 'Dissociate');
-                $actions['Domain' . MassiveAction::CLASS_ACTION_SEPARATOR . 'duplicate']  = _sx('button', 'Duplicate');
+                $actions['Domain' . MassiveAction::CLASS_ACTION_SEPARATOR . 'install']   = "<i class='ti ti-link'></i>" . _sx('button', 'Associate');
+                $actions['Domain' . MassiveAction::CLASS_ACTION_SEPARATOR . 'uninstall'] = "<i class='ti ti-link-off'></i>" . _sx('button', 'Dissociate');
+                $actions['Domain' . MassiveAction::CLASS_ACTION_SEPARATOR . 'duplicate']  = "<i class='ti ti-copy'></i>" . _sx('button', 'Duplicate');
             }
         }
         return $actions;

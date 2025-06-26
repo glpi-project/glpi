@@ -406,10 +406,10 @@ class Contract extends CommonDBTM
 
         if ($isadmin) {
             $prefix                    = 'Contract_Item' . MassiveAction::CLASS_ACTION_SEPARATOR;
-            $actions[$prefix . 'add']    = _sx('button', 'Add an item');
-            $actions[$prefix . 'remove'] = _sx('button', 'Remove an item');
+            $actions[$prefix . 'add']    = "<i class='ti ti-package'></i>" . _sx('button', 'Add an item');
+            $actions[$prefix . 'remove'] = "<i class='ti ti-package-off'></i>" . _sx('button', 'Remove an item');
             $actions['Contract_Supplier' . MassiveAction::CLASS_ACTION_SEPARATOR . 'add']
-               = _sx('button', 'Add a supplier');
+               = "<i class='" . Supplier::getIcon() . "'></i>" . _sx('button', 'Add a supplier');
         }
 
         return $actions;
