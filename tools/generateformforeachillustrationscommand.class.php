@@ -33,8 +33,6 @@
  */
 
 use Glpi\Console\AbstractCommand;
-use Glpi\Form\AccessControl\ControlType\AllowList;
-use Glpi\Form\AccessControl\ControlType\AllowListConfig;
 use Glpi\Form\Form;
 use Glpi\UI\IllustrationManager;
 use Symfony\Component\Console\Command\Command;
