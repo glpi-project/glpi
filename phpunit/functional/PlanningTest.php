@@ -325,4 +325,114 @@ class PlanningTest extends \DbTestCase
         $this->assertEquals(__FUNCTION__ . '_not_allday', $events[2]['title']);
         $this->assertFalse($events[2]['allDay'] ?? false);
     }
+
+    public function testCheckAlreadyPlannedProvider()
+    {
+        $tech    = getItemByTypeName('User', 'tech');
+        $normal  = getItemByTypeName('User', 'glpi');
+        $glpi    = getItemByTypeName('User', 'glpi');
+
+        $begin_task = '2025-05-13 00:00:00';
+        $end_task   = '2025-05-13 01:00:00';
+
+        $ticket = $this->createItem(\Ticket::class, [
+            'name' => 'Ticket Test planned',
+            'content' => 'Ticket content',
+            'entities_id' => 0,
+        ]);
+
+        $task = $this->createItem(\TicketTask::class, [
+                'tickets_id'    => $ticket->getID(),
+                'users_id'      => $normal->getID(),
+                'users_id_tech' => $tech->getID(),
+                'date'          => '2025-05-13 00:00:00',
+                'content'       => 'TicketTask content',
+                'actiontime'    => 1 * HOUR_TIMESTAMP,
+                'begin'         => $begin_task,
+                'end'           => $end_task,
+                'state'         => 1,
+            ],
+        );
+
+        // test with no user assigned to a task
+        yield [
+            'params' => [
+                'users_id' => 0,
+                'begin'    => '2025-05-13 00:00:00',
+                'end'      => '2025-05-13 01:00:00',
+                'except'   => [],
+            ],
+            'is_busy' => false,
+        ];
+
+        // test with no tech user who is assigned to a task outside the period of $task
+        yield [
+            'params' => [
+                'users_id' => $tech->getID(),
+                'begin'    => '2025-05-13 02:00:00',
+                'end'      => '2025-05-13 03:00:00',
+                'except'   => [],
+            ],
+            'is_busy' => false,
+        ];
+
+        // test with the user glpi who is not assigned to any task
+        yield [
+            'params' => [
+                'users_id' => $glpi->getID(),
+                'begin'    => '2025-05-13 02:00:00',
+                'end'      => '2025-05-13 03:00:00',
+                'except'   => [],
+            ],
+            'is_busy' => false,
+        ];
+
+        // test with the user glpi who is assigned to a task in the same period as $task
+        yield [
+            'params' => [
+                'users_id' => $glpi->getID(),
+                'begin'    => $begin_task,
+                'end'      => $end_task,
+                'except'   => [],
+            ],
+            'is_busy' => false,
+        ];
+
+        // test with the tech user who is assigned to a task in the same period as $task
+        yield [
+            'params' => [
+                'users_id' => $tech->getID(),
+                'begin'    => $begin_task,
+                'end'      => $end_task,
+                'except'   => [],
+            ],
+            'is_busy' => true,
+        ];
+
+        // test with the tech user who has just been assigned to the task $task
+        yield [
+            'params' => [
+                'users_id' => $tech->getID(),
+                'begin'    => $begin_task,
+                'end'      => $end_task,
+                'except'   => [
+                    \TicketTask::class => [
+                        $task->getID(),
+                    ]
+                ],
+            ],
+            'is_busy' => false,
+        ];
+    }
+
+    /**
+     * @dataProvider testCheckAlreadyPlannedProvider
+     */
+    public function testCheckAlreadyPlanned(array $params, bool $is_busy)
+    {
+        $this->login('glpi', 'glpi');
+
+        $this->assertEquals(\Planning::checkAlreadyPlanned(...$params), $is_busy);
+        unset($_SESSION['MESSAGE_AFTER_REDIRECT'][WARNING]);
+    }
 }
