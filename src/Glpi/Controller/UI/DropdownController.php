@@ -50,15 +50,12 @@ class DropdownController extends AbstractController
         $itemtype = $request->query->getString('itemtype');
         $fieldName = $request->query->getString('fieldname');
         $selectedValue = $request->query->getInt('value', 0);
-        //        $label = $request->query->getString('label');
-        //        $options = json_decode($request->query->getString('options')); // @todoseb safecheck
 
         return $this->render('components/dropdown/dropdown.html.twig', [
             'itemtype'  => $itemtype,
             'fieldname' => $fieldName,
             'selected_value' => $selectedValue,
-            //            'label' => $label,
-            // @todoseb option à peut-être options non nécessaires
+            // @todoseb fix rendering - options est écrasé dans le template
             'options' => [
                 'full_width' => true,
                 'no_label' => true,

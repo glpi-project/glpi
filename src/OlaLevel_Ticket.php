@@ -243,6 +243,7 @@ class OlaLevel_Ticket extends CommonDBTM
         }
 
         // No execution for tto if ticket has been taken into account
+        // @todoseb changer ce comportement
         if ($olaType == SLM::TTO && $ticket->fields['takeintoaccount_delay_stat'] > 0) {
             $olalevelticket->delete(['id' => $data['id']]);
 

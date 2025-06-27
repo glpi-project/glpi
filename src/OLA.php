@@ -40,6 +40,9 @@
 class OLA extends LevelAgreement
 {
     protected static $prefix = 'ola';
+    protected static $levelclass = 'OlaLevel';
+    protected static $levelticketclass = 'OlaLevel_Ticket';
+    protected static $forward_entity_to = ['OlaLevel'];
 
     public function prepareInputForAdd($input)
     {
@@ -82,11 +85,6 @@ class OLA extends LevelAgreement
 
         Rule::cleanForItemAction($this);
     }
-
-    //    protected static $prefixticket = 'internal_'; // @todoseb plus utilisé, doit pouvoir dégager, à maintenir pour compatibilité ascendante ?
-    protected static $levelclass = 'OlaLevel';
-    protected static $levelticketclass = 'OlaLevel_Ticket';
-    protected static $forward_entity_to = ['OlaLevel'];
 
     /**
      * Get table fields
@@ -263,7 +261,6 @@ class OLA extends LevelAgreement
 
     private function canGroupBeAssociated(int $groups_id): bool
     {
-        // @todoseb maybe not the correct way to check ?
         return (new Group())->getFromDBByCrit(['id' => $groups_id, 'is_assign' => 1]);
     }
 }
