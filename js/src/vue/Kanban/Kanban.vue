@@ -1296,34 +1296,35 @@
         all_kanbans.value = kanbans;
         kanban_switcher.value = props.item.items_id <= 0 ? -1 : props.item.items_id;
     });
-    filter_input = new SearchInput($(`#${props.element_id} input[name="filter"]`), {
-        allowed_tags: props.supported_filters,
-        on_result_change: (e, result) => {
-            filters.value = {
-                _text: ''
-            };
-            filters.value._text = result.getFullPhrase();
-            result.getTaggedTerms().forEach(t => filters.value[t.tag] = {
-                term: t.term || '',
-                exclusion: t.exclusion || false,
-                prefix: t.prefix
-            });
-        },
-        tokenizer_options: {
-            custom_prefixes: {
-                '#': { // Regex prefix
-                    label: __('Regex'),
-                    token_color: '#00800080'
-                }
-            }
-        }
-    });
-    refreshSearchTokenizer();
-    refreshSortables();
+
     await refresh(true);
     backgroundRefresh();
     onMounted(() => {
         initMutationObserver();
+        filter_input = new SearchInput($(`#${props.element_id} input[name="filter"]`), {
+            allowed_tags: props.supported_filters,
+            on_result_change: (e, result) => {
+                filters.value = {
+                    _text: ''
+                };
+                filters.value._text = result.getFullPhrase();
+                result.getTaggedTerms().forEach(t => filters.value[t.tag] = {
+                    term: t.term || '',
+                    exclusion: t.exclusion || false,
+                    prefix: t.prefix
+                });
+            },
+            tokenizer_options: {
+                custom_prefixes: {
+                    '#': { // Regex prefix
+                        label: __('Regex'),
+                        token_color: '#00800080'
+                    }
+                }
+            }
+        });
+        refreshSearchTokenizer();
+        refreshSortables();
         emit('kanban:post_init');
     });
 </script>
