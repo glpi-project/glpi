@@ -6376,52 +6376,19 @@ JAVASCRIPT;
      * Get currently associated Ola from database
      * Data from ola + item_ola + custom data
      *
-     * @return array<array{olas_id: int, items_olas_id: int, name: string, entities_id: int, is_recursive: bool, type: int, comment: string, number_time: int, use_ticket_calendar: bool, calendars_id: int, date_mod: string, definition_time: string, end_of_working_day: string, date_creation: string, slms_id: int, due_time: string, class: string, item: Ticket, nextaction: false|OlaLevel_Ticket|SlaLevel_Ticket, level: false|\LevelAgreementLevel}>
+     * @return array
     */
     public function getOlasData(): array
     {
-        // @todoseb fix cache invalidation ($this->associatedOlas) before using it
-        //        if (!isset($this->associatedOlas)) {
-        if ($this->isNewItem()) {
-            //                $this->associatedOlas = [];
-            return [];
-        } else {
-            $ola_data = [];
-            $items_ola = new Item_Ola();
-            //            $items_ola->getFromDBByCrit(['itemtype' => static::class, 'items_id' => $this->getID()]
-            $item_olas = iterator_to_array(Item_Ola::getListForItem($this));
-
-            // merge data from ola dans items_ola
-            foreach ($item_olas as $item_ola) {
-                $_ola = new OLA();
-                $_data = $item_ola;
-                // Ola must exist
-                if (!$items_ola->getFromDB($_data['linkid'])) {
-                    throw new LogicException('Associated referenced OLA not found'); // probably never happend
-                }
-
-                $_data += $items_ola->fields;
-                $_data['items_olas_id'] = $_data['linkid'];
-                $_data['olas_id'] = $_data['id'];
-                unset($_data['id']);
-
-                // additionnal datas
-                $_data['class'] = OLA::class; // SLA::class
-                $_data['item'] = $this; // object, not just fields, functions used in template
-                $_data['nextaction'] = $_ola->getNextActionForTicket($this, $_data['type']);
-                $_data['level'] = $_ola->getLevelFromAction($_data['nextaction']);
-
-                $ola_data[] = $_data;
-            }
-
-            return $ola_data;
-        }
+        return $this->isNewItem()
+            ? []
+            : (new Item_Ola())->getDataFromDBForTicket($this);
     }
 
     /**
      * Olas data from form input
      *
-     * Function rely on $this->fields['_olas_id'] field
+     * Unlike getOlasData(), it rely on $this->fields['_olas_id'] field because the field could be filled by a template.
      *
      * @return array
      *
@@ -6429,39 +6396,7 @@ JAVASCRIPT;
      */
     public function getOlasDataFromField()
     {
-        $data = [];
-        $olas_ids = $this->fields['_olas_id'] ?? [];
-
-        $_ola = new OLA();
-        foreach ($olas_ids as $olas_id) {
-
-            if (!$_ola->getFromDB($olas_id)) {
-                throw new \LogicException("OLA #$olas_id not found");
-            }
-
-            $_data = $_ola->fields;
-            // item_ola empty data
-            $_data['itemtype'] = self::class;
-            $_data['items_id'] = $this->getID();
-            $_data['olas_id'] = $_data['id'];
-            $_data['start_time'] = 0;
-            $_data['due_time'] = 0;
-            $_data['end_time'] = 0;
-            $_data['waiting_time'] = 0;
-            $_data['items_olas_id'] = 0;
-            $_data['olalevel_date'] = 0; // @todoseb va dégager
-            unset($_data['id']);
-
-            // additionnal datas
-            $_data['class'] = OLA::class; // SLA::class
-            $_data['item'] = $this; // object, not just fields, functions used in template
-            $_data['nextaction'] = $_ola->getNextActionForTicket($this, $_data['type']);
-            $_data['level'] = $_ola->getLevelFromAction($_data['nextaction']);
-
-            $data[] = $_data;
-        }
-
-        return $data;
+        return (new Item_Ola())->getDataFromOlasIdsForTicket($this, $this->fields['_olas_id'] ?? []);
     }
 
     public function getOlasTTOData(): array

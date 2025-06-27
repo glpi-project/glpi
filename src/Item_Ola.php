@@ -185,4 +185,103 @@ class Item_Ola extends CommonDBRelation
             $users_of_dedicated_group
         ));
     }
+
+    /**
+     * Get data from Item_Ola + linked OLA for a Ticket
+     *
+     * @param \Ticket $ticket
+     *
+     * @return array<array{olas_id: int, items_olas_id: int, name: string, entities_id: int, is_recursive: bool, type: int, comment: string, number_time: int, use_ticket_calendar: bool, calendars_id: int, date_mod: string, definition_time: string, end_of_working_day: string, date_creation: string, slms_id: int, due_time: string, class: string, item: Ticket, nextaction: false|OlaLevel_Ticket|SlaLevel_Ticket, level: false|\LevelAgreementLevel}>
+     */
+    public function getDataFromDBForTicket(Ticket $ticket): array
+    {
+        /** array ola + item_ola datas */
+        $merged_data = [];
+        // each $item_ola_data row contains linked OLA fields + items_olas_id in 'linkid' field
+        $olas_data = iterator_to_array(self::getListForItem($ticket));
+
+        // merge data from ola dans items_ola
+        foreach ($olas_data as $ola_data) {
+            $merged_data[] = $this->fillItemOlaData($ola_data, $ticket);
+        }
+
+        return $merged_data;
+    }
+
+
+    /**
+     * @param \Ticket $ticket
+     * @param array<int> $olas_ids
+     * @return array
+     */
+    public function getDataFromOlasIdsForTicket(Ticket $ticket, array $olas_ids): array
+    {
+        /** array ola + item_ola datas */
+        $merged_data = [];
+        $ola = new OLA();
+
+        // get ola data from DB - each $item_ola_data row contains linked OLA fields + items_olas_id in 'linkid' field
+        $olas_in_db_data = array_values(iterator_to_array(self::getListForItem($ticket)));
+
+        // complete with olas not associated to ticket - not yet in items_ola
+        $fetched_olas_ids = array_column($olas_in_db_data, 'id');
+        $olas_not_yet_fetched = array_diff(array_values($olas_ids), $fetched_olas_ids);
+        $olas_missing_data = empty($olas_not_yet_fetched) ? [] : $ola->find(['id' => $olas_not_yet_fetched]);
+
+        $olas_data = array_merge($olas_in_db_data, $olas_missing_data);
+
+        // merge data from ola dans items_ola
+        foreach ($olas_data as $ola_data) {
+            $merged_data[] = $this->fillItemOlaData($ola_data, $ticket);
+        }
+
+        return $merged_data;
+    }
+
+    /**
+     * @param array $ola_data fields from ola + possibly 'linkid' field representing items_olas_id
+     * @param \Ticket $ticket
+     *
+     * If 'linkid' is set, it will be used to populate the data from Item_Ola otherwise it will be filled with default values.
+     *
+     * @return array{olas_id: int, items_olas_id: int, name: string, entities_id: int, is_recursive: bool, type: int, comment: string, number_time: int, use_ticket_calendar: bool, calendars_id: int, date_mod: string, definition_time: string, end_of_working_day: string, date_creation: string, slms_id: int, due_time: string, class: string, item: Ticket, nextaction: false|OlaLevel_Ticket|SlaLevel_Ticket, level: false|\LevelAgreementLevel}
+     */
+    private function fillItemOlaData(array $ola_data, Ticket $ticket): array
+    {
+        $_ola = new OLA();
+        // start with the ola data
+        $_merged_data = $ola_data;
+
+        // data defaults for item_ola
+        $_merged_data['itemtype'] = $ticket::class;
+        $_merged_data['items_id'] = $ticket->getID();
+        $_merged_data['olas_id'] = $_merged_data['id'];
+        $_merged_data['start_time'] = 0;
+        $_merged_data['due_time'] = 0;
+        $_merged_data['end_time'] = 0;
+        $_merged_data['waiting_time'] = 0;
+        $_merged_data['items_olas_id'] = 0;
+        $_merged_data['olalevel_date'] = 0; // @todoseb va dégager possiblement
+        // add data for template
+        $_merged_data['class'] = OLA::class;
+        $_merged_data['item'] = $ticket; // object, not just fields, functions used in template
+        $_merged_data['nextaction'] = $_ola->getNextActionForTicket($ticket, $_merged_data['type']);
+        $_merged_data['level'] = $_ola->getLevelFromAction($_merged_data['nextaction']);
+
+        // if linkid is set (items_olas exists), use it to populate the data
+        if (isset($ola_data['linkid'])) {
+            $instance = new static();
+            $instance->getFromDB($_merged_data['linkid']); // @todoseb lever exception si pas trouvé
+            $_merged_data = array_merge($_merged_data, $instance->fields);
+            $_merged_data['items_olas_id'] = $ola_data['linkid'];
+            $_merged_data['olas_id'] = $ola_data['id'];
+        }
+
+        if (isset($_merged_data['id'])) {
+            unset($_merged_data['id']); // removed to avoid confusion with items_olas_id in template, both olas_id and items_olas_id are defined above
+        }
+
+        return $_merged_data;
+    }
+
 }
