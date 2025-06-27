@@ -317,9 +317,9 @@ class Provider
                 $query_criteria['WHERE'][] = [
                     'OR' => [
                         CommonITILObject::generateSLAOLAComputation('time_to_resolve', 'glpi_tickets'),
-                        CommonITILObject::generateSLAOLAComputation('internal_time_to_resolve', 'glpi_tickets'),
+                        CommonITILObject::generateSLAOLAComputation('internal_time_to_resolve', 'glpi_tickets'),// @todoseb trouver solution pour la recherche de tickets en retard
                         CommonITILObject::generateSLAOLAComputation('time_to_own', 'glpi_tickets'),
-                        CommonITILObject::generateSLAOLAComputation('internal_time_to_own', 'glpi_tickets'),
+                        CommonITILObject::generateSLAOLAComputation('internal_time_to_own', 'glpi_tickets'), // @todoseb trouver solution pour la recherche de tickets en retard
                     ],
                 ];
                 break;

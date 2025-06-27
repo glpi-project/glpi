@@ -70,12 +70,13 @@ trait SLMTrait
             OLA::class,
             $data + [
                 'name' => 'OLA ' . time(),
-                'is_recursive' => 1,
+                'entities_id' => getItemByTypeName('Entity', '_test_root_entity', true),
                 'type' => $ola_type,
                 'comment' => 'OLA comment ' . time(),
                 'number_time' => $amount,
                 'definition_time' => $unit,
                 'slms_id' => $slm->getID(),
+                'groups_id' => $group->getID(),
             ]
         );
 

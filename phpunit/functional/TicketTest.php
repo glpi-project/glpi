@@ -1615,17 +1615,9 @@ class TicketTest extends DbTestCase
         $matches = iterator_to_array($crawler->filter("#itil-data input[name=time_to_own]:not([disabled])"));
         $this->assertCount(($timeOwnResolve === true ? 1 : 0), $matches, "Time to own editable $caller");
 
-        // Internal time to own, editable
-        $matches = iterator_to_array($crawler->filter("#itil-data input[name=internal_time_to_own]:not([disabled])"));
-        $this->assertCount(($timeOwnResolve === true ? 1 : 0), $matches, "Internal time to own editable $caller");
-
         // Time to resolve, editable
         $matches = iterator_to_array($crawler->filter("#itil-data input[name=time_to_resolve]:not([disabled])"));
         $this->assertCount(($timeOwnResolve === true ? 1 : 0), $matches, "Time to resolve $caller");
-
-        // Internal time to resolve, editable
-        $matches = iterator_to_array($crawler->filter("#itil-data input[name=internal_time_to_resolve]:not([disabled])"));
-        $this->assertCount(($timeOwnResolve === true ? 1 : 0), $matches, "Internal time to resolve $caller");
 
         //Type
         $matches = iterator_to_array($crawler->filter("#itil-data select[name=type]:not([disabled])"));
@@ -3075,11 +3067,6 @@ class TicketTest extends DbTestCase
         $this->assertEquals('NULL', $input['time_to_own']);
         $this->assertEquals(0, (int) $input['slas_id_tto']);
         $this->assertEquals(0, (int) $input['slas_id_ttr']);
-
-        $this->assertEquals('NULL', $input['internal_time_to_resolve']);
-        $this->assertEquals('NULL', $input['internal_time_to_own']);
-        $this->assertEquals(0, (int) $input['olas_id_tto']);
-        $this->assertEquals(0, (int) $input['olas_id_ttr']);
 
         $this->assertEquals(0, (int) $input['_add_validation']);
 

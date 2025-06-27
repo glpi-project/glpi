@@ -79,6 +79,7 @@ abstract class LevelAgreement extends CommonDBChild
      * @param integer $subtype of OLA/SLA, can be SLM::TTO or SLM::TTR
      *
      * @return array of 'date' and 'sla' field names
+     * // @todoseb déplacer dans SLA et OLA ou rendre abstract
      */
     public static function getFieldNames($subtype)
     {
@@ -160,6 +161,20 @@ abstract class LevelAgreement extends CommonDBChild
             $this->check(-1, CREATE, $options);
         }
 
+        // show form
+        // choose a default group if not set
+        $groups_id = $this->fields["groups_id"] ?? 0;
+        if (0 === $groups_id) {
+            $_group = new Group();
+            $groups_ids = $_group->find(['is_assign' => 1]);
+            if (count($groups_ids) > 0) {
+                $grp = array_pop($groups_ids);
+                $groups_id = $grp['id'];
+                unset($grp);
+            }
+            unset($_group);
+        }
+
         $this->showFormHeader($options);
         echo "<tr class='tab_bg_1'>";
         echo "<td>" . __s('Name') . "</td>";
@@ -191,6 +206,27 @@ abstract class LevelAgreement extends CommonDBChild
         echo "</td>";
         echo "</tr>";
 
+        // group
+        if ($this->isField('groups_id')) {
+            echo "<tr class='tab_bg_1'><td>" . _sn('Group', 'Groups', 1) . "</td>";
+            echo "<td>";
+            Group::dropdown(
+                [
+                    'value' => $groups_id,
+                    'display_emptychoice' => false,
+                    'condition' => ['is_assign' => 1],
+                    // @todoseb rendre le choix obligatoire, pas réussi
+                    //                    'specific_tags' => [
+                    //                        'required' => 'required',
+                    //                    ],
+                    //                    'required' => true,
+                ]
+            );
+            echo "</td>";
+            echo "</tr>";
+        }
+
+        // maximum time
         echo "<tr class='tab_bg_1'><td>" . __s('Maximum time') . "</td>";
         echo "<td>";
         Dropdown::showNumber("number_time", ['value' => $this->fields["number_time"],
@@ -378,7 +414,8 @@ TWIG, $twig_params);
             } elseif ($calendar->getFromDB($slm->fields['calendars_id'])) {
                 $link = $calendar->getLink();
             }
-            $entries[] = [
+
+            $entry = [
                 'itemtype' => static::class,
                 'id'       => $val['id'],
                 'row_class' => 'cursor-pointer',
@@ -390,9 +427,19 @@ TWIG, $twig_params);
                 ]),
                 'calendar' => $link,
             ];
+
+            // ola have a groups_id field, not sla
+            if ($la->isField('groups_id')) {
+                $group = new Group();
+                $group->getFromDB($la->fields['groups_id']);
+                $group_name = $group->getName();
+                $entry['group'] = $group_name;
+            }
+
+            $entries[] = $entry;
         }
 
-        TemplateRenderer::getInstance()->display('components/datatable.html.twig', [
+        $twig_params = [
             'datatable_id' => 'levelagreement' . $instID,
             'is_tab' => true,
             'nofilter' => true,
@@ -415,7 +462,16 @@ TWIG, $twig_params);
                 'num_displayed' => count($entries),
                 'container'     => 'mass' . static::class . mt_rand(),
             ],
-        ]);
+        ];
+
+        // ola have a groups_id field, not sla
+        if ($la->isField('groups_id')) {
+            $twig_params['columns']['group'] = Group::getTypeName(1);
+        }
+
+        TemplateRenderer::getInstance()->display('components/datatable.html.twig', $twig_params);
+
+        return true;
     }
 
     /**
@@ -427,7 +483,12 @@ TWIG, $twig_params);
         /** @var \DBmysql $DB */
         global $DB;
 
-        $fk      = static::getFieldNames($this->fields['type'])[1];
+        $field      = match (static::class) {
+            SLA::class => static::getFieldNames($this->fields['type'])[1],
+            OLA::class => 'olas_id',
+            default => throw new \RuntimeException('Unexpected LevelAgreement class : ' . static::class),
+        };
+
         $rule    = new RuleTicket();
         $canedit = self::canUpdate();
 
@@ -436,7 +497,7 @@ TWIG, $twig_params);
             'DISTINCT'        => true,
             'FROM'            => 'glpi_ruleactions',
             'WHERE'           => [
-                'field' => $fk,
+                'field' => $field,
                 'value' => $this->getID(),
             ],
         ]));
@@ -517,6 +578,7 @@ TWIG, $twig_params);
      * @param int $type
      * @return false|iterable
      * @used-by templates/components/itilobject/service_levels.html.twig
+     * @todo deprécier, n'est plus utilisé
      */
     public function getDataForTicket($tickets_id, $type)
     {
@@ -902,68 +964,7 @@ TWIG, $twig_params);
     }
 
     /**
-     * Add a level to do for a ticket
-     *
-     * Add an entry in slalevels_tickets | olalevels_tickets table
-     * The level is set by $levels_id parameter or the current level set in slalevels_id_ttr | olalevels_id_ttr (if set)
-     *
-     * @param Ticket  $ticket Ticket object
-     * @param integer $levels_id SlaLevel or OlaLevel ID
-     *
-     * @return void
-     **/
-    public function addLevelToDo(Ticket $ticket, $levels_id = 0)
-    {
-        $pre = static::$prefix;
-
-        if (!$levels_id && isset($ticket->fields[$pre . 'levels_id_ttr'])) {
-            $levels_id = $ticket->fields[$pre . "levels_id_ttr"];
-        }
-
-        if ($levels_id) {
-            $toadd = [];
-
-            // Compute start date
-            if ($pre === "ola") {
-                // OLA have their own start date which is set when the OLA is added to the ticket
-                if (
-                    (int) $this->fields['type'] === SLM::TTO
-                    && $ticket->fields['ola_tto_begin_date'] !== null
-                ) {
-                    $date_field = "ola_tto_begin_date";
-                } elseif (
-                    (int) $this->fields['type'] === SLM::TTR
-                    && $ticket->fields['ola_ttr_begin_date'] !== null
-                ) {
-                    $date_field = "ola_ttr_begin_date";
-                } else {
-                    // Fall back to default date in case the specific date fields
-                    // are not set (which may be the case for tickets created
-                    // before their addition)
-                    $date_field = 'date';
-                }
-            } else {
-                // SLA are based on the ticket opening date
-                $date_field = 'date';
-            }
-
-            $date = $this->computeExecutionDate(
-                $ticket->fields[$date_field],
-                $levels_id,
-                $ticket->fields[$pre . '_waiting_duration']
-            );
-            if ($date !== null) {
-                $toadd['date']           = $date;
-                $toadd[$pre . 'levels_id'] = $levels_id;
-                $toadd['tickets_id']     = $ticket->fields["id"];
-                $levelticket             = getItemForItemtype(static::$levelticketclass);
-                $levelticket->add($toadd);
-            }
-        }
-    }
-
-    /**
-     * remove a level to do for a ticket
+     * Remove all levels to do for a ticket
      *
      * @param Ticket $ticket object
      *
@@ -988,34 +989,6 @@ TWIG, $twig_params);
                 $levelticket->delete(['id' => $data['id']]);
             }
         }
-    }
-
-    public function cleanDBonPurge()
-    {
-        /** @var \DBmysql $DB */
-        global $DB;
-
-        // Clean levels
-        $fk        = getForeignKeyFieldForItemType(static::class);
-        $level     = getItemForItemtype(static::$levelclass);
-        $level->deleteByCriteria([$fk => $this->getID()]);
-
-        // Update tickets : clean SLA/OLA
-        [, $laField] = static::getFieldNames($this->fields['type']);
-        $iterator =  $DB->request([
-            'SELECT' => 'id',
-            'FROM'   => 'glpi_tickets',
-            'WHERE'  => [$laField => $this->fields['id']],
-        ]);
-
-        if (count($iterator)) {
-            $ticket = new Ticket();
-            foreach ($iterator as $data) {
-                $ticket->deleteLevelAgreement(static::class, $data['id'], $this->fields['type']);
-            }
-        }
-
-        Rule::cleanForItemAction($this);
     }
 
     public function post_clone($source, $history)
@@ -1051,7 +1024,7 @@ TWIG, $twig_params);
     }
 
     /**
-     * Remove level of previously assigned level agreements for a given ticket
+     * Remove levels todo of the current level agreement for a given ticket
      *
      * @param int $tickets_id
      *
@@ -1061,6 +1034,7 @@ TWIG, $twig_params);
     {
         // CLear levels of others LA of the same type
         // e.g. if a new LA TTR was assigned, clear levels from others (= previous) LA TTR
+        // @todoseb       throw new \Exception('à reimplementer pour OLA ou à ne plus appeller carrément ?');
         $level_ticket_class = $this->getLevelTicketClass();
         $level_ticket = getItemForItemtype($level_ticket_class);
         $level_class = $this->getLevelClass();
