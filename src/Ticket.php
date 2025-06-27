@@ -459,7 +459,7 @@ class Ticket extends CommonITILObject
      * @param bool    $delete_date (default false)
      *
      * @return bool
-     **@since 9.2
+     * @since 9.2
      *
      */
     public function deleteLevelAgreement($laType, $la_id, $subtype, $delete_date = false)
@@ -1174,10 +1174,6 @@ class Ticket extends CommonITILObject
 
         $ola = new OLA();
         if ($olalevels_id && $ola->getFromDB($olas_id)) {
-            //            $ola->clearInvalidLevels($this->fields['id']);
-            // dégagé car supprime les niveaux des autres olas
-            // @todoseb peut-être remettre ce nettoyage en filtrant par ola
-            // mais à priori c'est inutile car on deleteLevelsToDo avant l'appel de manageOlaLevel (sauf dans /home/seb/dev/glpi_main/src/CommonITILObject.php) mais ça va dégager
             $calendars_id = Entity::getUsedConfig(
                 'calendars_strategy',
                 $this->fields['entities_id'],
@@ -2761,7 +2757,7 @@ JAVASCRIPT;
             'name'               => __('OLA') . ' ' . __('time to own exceeded'),
             'datatype'           => 'bool',
             'massiveaction'      => false,
-            'computation'        => self::generateSLAOLAComputation('internal_time_to_own', 'glpi_items_olas'),
+            'computation'        => self::generateSLAOLAComputation('internal_time_to_own'),
             'joinparams' => [
                 'jointype' => 'child',
                 'linkfield' => 'olas_id',
@@ -2877,7 +2873,7 @@ JAVASCRIPT;
             'name'               => __('OLA') . ' ' . __('time to resolve exceeded'),
             'datatype'           => 'bool',
             'massiveaction'      => false,
-            'computation'        => self::generateSLAOLAComputation('internal_time_to_resolve', 'glpi_items_olas'),
+            'computation'        => self::generateSLAOLAComputation('internal_time_to_resolve'),
             'joinparams' => [
                 'jointype' => 'child',
                 'linkfield' => 'olas_id',
@@ -5500,7 +5496,7 @@ JAVASCRIPT;
             $date_takeintoaccount = $date_creation + $this->fields['takeintoaccount_delay_stat'];
         }
         $time_to_own              = strtotime($this->fields['time_to_own'] ?? '');
-        // @todo internal_time_to_resolve & internal_time_to_own are removed from ticket.
+        // @todo stats|dates sur ola internal_time_to_resolve & internal_time_to_own are removed from ticket.
         // a ticket can have multiple ola.
         // what should we do with this ? remove the field, add multiples data ?
         // $internal_time_to_own     = strtotime($this->fields['internal_time_to_own'] ?? '');
@@ -6550,7 +6546,6 @@ JAVASCRIPT;
 
         // add new olas
         $toadd_olas_ids = array_unique(array_diff($request_olas_ids, $current_olas_ids));
-        OLA::deleteLevelsToDo($this); // @todoseb déplacer plus bas
         $items_ola = new Item_Ola();
         foreach ($toadd_olas_ids as $olas_id) {
             // insert in association table items_ola
@@ -6565,9 +6560,9 @@ JAVASCRIPT;
             ) {
                 throw new \Exception("Failed to associate OLA #$olas_id to ticket #{$this->getID()}");
             }
-            // @todoseb peut-être relancer le compute de l'ola
         }
 
+        OLA::deleteLevelsToDo($this);
         $current_olas_ids = array_column($this->getOlasData(), 'olas_id');
         foreach ($current_olas_ids as $olas_id) {
             $this->manageOlaLevel($olas_id);
@@ -6588,10 +6583,9 @@ JAVASCRIPT;
     }
 
     /**
-     * Modify input for Ola to allow backword compatibility
+     * Modify input for Ola to allow backward compatibility
      *
      * olas_id_tto, olas_id_ttr fields are not used anymore
-     * tickets are still linked to OLA, using item_ola table
      */
     private function transformOlasInputForBackwardCompatibility(array $input): array
     {

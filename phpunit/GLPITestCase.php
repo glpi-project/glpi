@@ -521,15 +521,15 @@ class GLPITestCase extends TestCase
         $time_regexp = '([01]?[0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])';
         $day_regexp = '\d{4}-\d{2}-\d{2}';
 
-        if(preg_match("/^$day_regexp $time_regexp\$/", $time)) {
+        if (preg_match("/^$day_regexp $time_regexp\$/", $time)) {
             [$day, $time] = explode(' ', $time, 2);
         }
 
         // assert time format is H:i:s
-        assert(1 === preg_match('/^'.$time_regexp.'$/', $time));
+        assert(1 === preg_match('/^' . $time_regexp . '$/', $time));
 
         // assert day format is Y-m-d
-        assert(is_null($day) || 1 === preg_match('/^'.$day_regexp.'$/', $day));
+        assert(is_null($day) || 1 === preg_match('/^' . $day_regexp . '$/', $day));
         $day ??= \Session::getCurrentDate();
 
         // set session time

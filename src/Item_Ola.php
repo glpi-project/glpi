@@ -41,10 +41,6 @@ class Item_Ola extends CommonDBRelation
     public static $itemtype_2 = OLA::class;
     public static $items_id_2 = 'olas_id';
 
-    //    public static $rightname = 'device'; // @todoseb
-    //      public static $checkItem_1_Rights = self::DONT_CHECK_ITEM_RIGHTS;  // @todoseb voir implications
-    //      public static $checkItem_2_Rights = self::DONT_CHECK_ITEM_RIGHTS;  // @todoseb voir implications
-
     /**
      * Prepare the input for add
      *
@@ -275,6 +271,7 @@ class Item_Ola extends CommonDBRelation
         if (isset($ola_data['linkid'])) {
             $instance = new static();
             $instance->getFromDB($_merged_data['linkid']); // @todoseb lever exception si pas trouvé
+
             $_merged_data = array_merge($_merged_data, $instance->fields);
             $_merged_data['items_olas_id'] = $ola_data['linkid'];
             $_merged_data['olas_id'] = $ola_data['id'];
