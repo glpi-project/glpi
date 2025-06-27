@@ -54,7 +54,7 @@ $date_fields = [
     'date',
     'due_date',
     'time_to_own',
-]; // @todoseb à clean ?
+];
 
 foreach ($date_fields as $date_field) {
     //handle not clean dates...
@@ -93,7 +93,6 @@ elseif (isset($_POST['update'])) {
     }
     $ticket->update($_POST);
 
-    // @todo should be handled in ticket::post_update probably, unless this changes are required before (?)
     if (isset($_POST['kb_linked_id'])) {
         //if solution should be linked to selected KB entry
         $params = [
@@ -111,7 +110,6 @@ elseif (isset($_POST['update'])) {
         }
     }
 
-    // @todo ain't log done in CommonDBTM::update ?
     Event::log(
         $_POST["id"],
         "ticket",
@@ -130,7 +128,7 @@ elseif (isset($_POST['update'])) {
         Html::redirect(Ticket::getFormURLWithID($_POST["id"]) . $toadd);
     }
 
-    // @todo doesn't rigth check works ?
+    // in case user can update the ticket but not read it, redirect to the ticket list
     Session::addMessageAfterRedirect(
         __s('You have been redirected because you no longer have access to this ticket'),
         true,
@@ -290,6 +288,6 @@ else {
         Html::footer();
     } else {
         $menus = ["helpdesk", "ticket"];
-        Ticket::displayFullPageForItem(0, $menus, $_REQUEST); // @todoseb voir l'affichage du form dans ce cas
+        Ticket::displayFullPageForItem(0, $menus, $_REQUEST);
     }
 }
