@@ -608,7 +608,7 @@ class SLMTest extends DbTestCase
 
         // Assign TTR OLA
         $update_time = strtotime('+10s'); // to check ola start time is related to the moment the ola is added
-        $this->setCurrentTime( date('Y-m-d H:i:s', $update_time));
+        $this->setCurrentTime(date('Y-m-d H:i:s', $update_time));
 
         // add an OLA
         $ticket = $this->updateItem(Ticket::class, $ticket->getID(), ['_la_update' => true, '_olas_id' => [(int) $ola_id]]);

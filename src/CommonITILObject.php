@@ -2470,27 +2470,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface
             }
         }
 
-        // check internal_time_to_resolve (OLA)
-        // remove internat_time_to_resolve from updates if it's lower than ticket 'date'
-        // @todoseb logique a reprendre ou faire un recalcul de tto/ttr
-        //        if (
-        //            (in_array("date", $this->updates) || in_array("internal_time_to_resolve", $this->updates))
-        //            && !is_null($this->fields["internal_time_to_resolve"])
-        //        ) { // Date set
-        //            if ($this->fields["internal_time_to_resolve"] < $this->fields["date"]) {
-        //                Session::addMessageAfterRedirect(__s('Invalid dates. Update cancelled.'), false, ERROR);
-        //
-        //                if (($key = array_search('date', $this->updates)) !== false) {
-        //                    unset($this->updates[$key]);
-        //                    unset($this->oldvalues['date']);
-        //                }
-        //                if (($key = array_search('internal_time_to_resolve', $this->updates)) !== false) {
-        //                    unset($this->updates[$key]);
-        //                    unset($this->oldvalues['internal_time_to_resolve']);
-        //                }
-        //            }
-        //        }
-
         // Unset closedate if before solvedate
         // unset 'date' and unset 'closedate' if closedate is before 'date'
         if (
@@ -2559,7 +2538,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface
         // - and
         //      - status is switching from any 'solved' status to any 'closed' status
         //      - or status is switching from any 'closed' status to any 'not solved' status
-        // @todo this can probably be simplified
         if (
             !is_null($this->fields['begin_waiting_date'])
             && ($key = array_search('status', $this->updates)) !== false
@@ -2580,7 +2558,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface
             // Compute ticket waiting time use calendar if exists
             $calendar     = new Calendar();
             $calendars_id = $this->getCalendar();
-            $delay_time   = 0; // working time since begin_waiting_date // @todoseb cleanup
 
             // Compute ticket waiting time use calendar if exists
             // Using calendar
@@ -2941,16 +2918,6 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface
                                     ) {
                                         unset($mandatory_missing[$dateField]);
                                     }
-
-                                    // @todoseb a réimplementer - gestion des champs obligatoires selon template
-                                    //                                    [$dateField, $olaField] = OLA::getFieldNames($slmType);
-                                    //                                    if (
-                                    //                                        ($key == $dateField)
-                                    //                                        && isset($input[$olaField]) && ($input[$olaField] > 0)
-                                    //                                        && isset($mandatory_missing[$dateField])
-                                    //                                    ) {
-                                    //                                        unset($mandatory_missing[$dateField]);
-                                    //                                    }
                                 }
                             }
 
@@ -5044,7 +5011,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface
                                     ),],
                             ],
                             // + ticket status is not WAITING
-                            // @todoseb ajouter le status SOLVED + CLOSED ? étrange de donner un ticket comme en retard alors qu'il est clos/résolu.
+                            // @todoseb ajouter le status SOLVED + CLOSED ? étrange de donner un ticket comme en retard alors qu'il est clos/résolu. - a traiter post changement sql
                             "{$itil_table}.status" => ['<>', self::WAITING],
                             // + one of the following conditions:
                             'OR' => [
@@ -8306,7 +8273,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface
     /**
      * Get template field name
      *
-     * @param string $type Type, if any
+     * @param string|true $type Type, if any
      *
      * @return string
      */

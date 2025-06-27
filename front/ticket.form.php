@@ -129,6 +129,8 @@ elseif (isset($_POST['update'])) {
         }
         Html::redirect(Ticket::getFormURLWithID($_POST["id"]) . $toadd);
     }
+
+    // in case user can update the ticket but not read it, redirect to the ticket list
     Session::addMessageAfterRedirect(
         __s('You have been redirected because you no longer have access to this ticket'),
         true,
