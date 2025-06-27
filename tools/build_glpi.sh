@@ -66,8 +66,8 @@ echo "Minifying javascripts..."
 find $WORKING_DIR/public \( -iname "*.js" ! -iname "*.min.js" \) \
     -exec sh -c 'echo "> {}" && '"$WORKING_DIR"'/node_modules/.bin/terser {} --mangle --output $(dirname {})/$(basename {} ".js").min.js' \;
 
-echo "Compiling SCSS..."
-$WORKING_DIR/bin/console build:compile_scss
+echo "Compiling SCSS... "
+php -d memory_limit=512M $WORKING_DIR/bin/console build:compile_scss
 
 echo "Removing dev files and directories..."
 # Remove PHP dev dependencies that are not anymore used

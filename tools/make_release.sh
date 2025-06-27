@@ -108,7 +108,7 @@ then
     fi
 fi
 
-echo "Building application..."
+echo "Building application in " $WORKING_DIR " ... "
 $WORKING_DIR/glpi/tools/build_glpi.sh
 
 echo "Creating tarball..."
