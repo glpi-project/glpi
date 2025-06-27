@@ -208,7 +208,7 @@ abstract class ITIL_ValidationStep extends CommonDBChild
         $validation_steps_status = static::getValidationStepsStatus($itil);
 
         // No validation for the ticket -> NONE
-        if (empty($validation_steps_status)) {
+        if ($validation_steps_status === []) {
             return CommonITILValidation::NONE;
         }
         // One validation step is REFUSED -> REFUSED

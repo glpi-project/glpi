@@ -446,22 +446,21 @@ abstract class CommonITILValidation extends CommonDBChild
         // Don't allow changing internal entity fields or change the item it is attached to
         $forbid_fields = ['entities_id', static::$items_id, 'is_recursive'];
         // The following fields shouldn't be changed by anyone after the approval is created
-        array_push(
-            $forbid_fields,
-            'itils_validationsteps_id',
-            'users_id',
-            'itemtype_target',
-            'items_id_target',
-            'submission_date'
-        );
+        $forbid_fields[] = 'itils_validationsteps_id';
+        $forbid_fields[] = 'users_id';
+        $forbid_fields[] = 'itemtype_target';
+        $forbid_fields[] = 'items_id_target';
+        $forbid_fields[] = 'submission_date';
 
         if (!$can_answer) {
-            array_push($forbid_fields, 'status', 'comment_validation', 'validation_date');
+            $forbid_fields[] = 'status';
+            $forbid_fields[] = 'comment_validation';
+            $forbid_fields[] = 'validation_date';
         }
 
         if ($this->fields["status"] !== self::WAITING) {
             // Cannot change the approval request comment after it has been answered
-            array_push($forbid_fields, 'comment_submission');
+            $forbid_fields[] = 'comment_submission';
         }
 
         foreach ($forbid_fields as $key) {

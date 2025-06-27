@@ -131,12 +131,12 @@ final class SearchEngine
             }
 
             if ($key === 'itil_types') {
-                if (is_a($item, \CommonITILTask::class) || is_a($item, \CommonITILValidation::class)) {
+                if ($item instanceof \CommonITILTask || $item instanceof \CommonITILValidation) {
                     $linked[] = $item::getItilObjectItemType();
                 } else {
                     $timeline_types = [\ITILFollowup::class, \ITILSolution::class];
                     foreach ($timeline_types as $timeline_type) {
-                        if (is_a($item, $timeline_type)) {
+                        if ($item instanceof $timeline_type) {
                             $linked = [...$linked, ...$values];
                         }
                     }
@@ -409,7 +409,7 @@ final class SearchEngine
             $displaypref = \DisplayPreference::getForTypeUser($itemtype, \Session::getLoginUserID(), \Session::getCurrentInterface());
             if (count($displaypref)) {
                 foreach ($displaypref as $val) {
-                    array_push($data['toview'], $val);
+                    $data['toview'][] = $val;
                 }
             }
         } else {
@@ -435,7 +435,7 @@ final class SearchEngine
                                 && (!isset($criterion['meta'])
                                     || !$criterion['meta'])
                             ) {
-                                array_push($data['toview'], $criterion['field']);
+                                $data['toview'][] = $criterion['field'];
                             } elseif ($criterion['field'] == 'all') {
                                 $data['search']['all_search'] = true;
                             } elseif ($criterion['field'] == 'view') {
@@ -491,7 +491,7 @@ final class SearchEngine
         if ($forcetoview) {
             foreach ($data['toview'] as $val) {
                 if (!in_array($val, $data['tocompute'])) {
-                    array_push($data['tocompute'], $val);
+                    $data['tocompute'][] = $val;
                 }
             }
         }

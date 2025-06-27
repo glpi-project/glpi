@@ -195,7 +195,7 @@ class Impact extends CommonGLPI
             }
 
             // No valid linked item were found, tab shouldn't be visible
-            if (empty($items_data)) {
+            if ($items_data === []) {
                 return false;
             }
 

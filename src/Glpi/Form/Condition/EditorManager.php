@@ -61,7 +61,7 @@ final class EditorManager
     public function getDefinedConditions(): array
     {
         $conditions = $this->form_data->getConditionsData();
-        if (empty($conditions)) {
+        if ($conditions === []) {
             $conditions[] = new ConditionData(
                 item_uuid: '',
                 item_type: '',

@@ -253,7 +253,7 @@ class User extends CommonDBTM
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
-        return !($CFG_GLPI['system_user'] == $items_id);
+        return $CFG_GLPI['system_user'] != $items_id;
     }
 
 
@@ -1121,7 +1121,7 @@ class User extends CommonDBTM
 
                         $input['password_last_update'] = $_SESSION["glpi_currenttime"];
                     } else {
-                        if (empty($password_errors)) {
+                        if ($password_errors === []) {
                             $password_errors = [__('An error occurred during password update')];
                         }
                         if (PHP_SAPI == 'cli') {
@@ -1190,7 +1190,7 @@ class User extends CommonDBTM
                     }
                     unset($input[$input_key]);
                 }
-                if (!empty($ignored_fields)) {
+                if ($ignored_fields !== []) {
                     Session::addMessageAfterRedirect(
                         sprintf(
                             __('You are not allowed to update the following fields: %s'),
@@ -1748,7 +1748,7 @@ class User extends CommonDBTM
 
                     $params = ['id' => $id];
 
-                    if (strlen($email) === 0) {
+                    if ($email === '') {
                         // Empty email, delete it
                         $deleted = $useremail->delete($params);
                         $userUpdated = $userUpdated || $deleted;
@@ -4233,7 +4233,7 @@ HTML;
 
         $output = '';
 
-        if (!($p['entity'] < 0) && $p['entity_sons']) {
+        if ($p['entity'] >= 0 && $p['entity_sons']) {
             if (is_array($p['entity'])) {
                 $output .= "entity_sons options is not available with array of entity";
             } else {
@@ -4485,7 +4485,7 @@ HTML;
         }
 
         if (
-            !empty($IDs)
+            $IDs !== []
             && in_array($authtype, [Auth::DB_GLPI, Auth::LDAP, Auth::MAIL, Auth::EXTERNAL])
         ) {
             $result = $DB->update(

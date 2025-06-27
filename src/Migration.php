@@ -1145,7 +1145,7 @@ class Migration
         /** @var \DBmysql $DB */
         global $DB;
 
-        if (empty($values)) {
+        if ($values === []) {
             return $this;
         }
 

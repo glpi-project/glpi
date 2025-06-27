@@ -212,7 +212,7 @@ class Monitor extends InventoryAsset
             }
 
             // Delete monitors links in DB
-            foreach ($db_monitors as $idtmp => $monits_id) {
+            foreach (array_keys($db_monitors) as $idtmp) {
                 (new Asset_PeripheralAsset())->delete(['id' => $idtmp], true);
             }
 

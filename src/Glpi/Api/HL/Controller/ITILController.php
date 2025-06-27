@@ -833,7 +833,7 @@ final class ITILController extends AbstractController
      */
     private function getITILTimelineItems(CommonITILObject $item, Request $request, array $subitem_types = []): ?array
     {
-        $subitem_types = empty($subitem_types) ? ['Followup', 'Task', 'Document', 'Solution', 'Validation'] : $subitem_types;
+        $subitem_types = $subitem_types === [] ? ['Followup', 'Task', 'Document', 'Solution', 'Validation'] : $subitem_types;
         $results = [];
         foreach ($subitem_types as $subitem_type) {
             $filters = $this->getTimelineItemFilters($item, $request, $subitem_type);
@@ -1258,7 +1258,7 @@ final class ITILController extends AbstractController
         $parameters = $request->getParameters();
         $required_fields = $this->getRequiredTimelineItemFields($item, $request, $subitem_type);
         // Required fields are used to link to the parent item. We cannot let them be changed
-        foreach ($required_fields as $field => $value) {
+        foreach (array_keys($required_fields) as $field) {
             unset($parameters[$field]);
         }
         $attributes = $request->getAttributes();
@@ -1294,7 +1294,7 @@ final class ITILController extends AbstractController
         $parameters = $request->getParameters();
         $required_fields = $this->getRequiredTimelineItemFields($item, $request, 'Task');
         // Required fields are used to link to the parent item. We cannot let them be changed
-        foreach ($required_fields as $field => $value) {
+        foreach (array_keys($required_fields) as $field) {
             unset($parameters[$field]);
         }
         $attributes = $request->getAttributes();
@@ -1331,7 +1331,7 @@ final class ITILController extends AbstractController
         $parameters = $request->getParameters();
         $required_fields = $this->getRequiredTimelineItemFields($item, $request, 'Validation');
         // Required fields are used to link to the parent item. We cannot let them be changed
-        foreach ($required_fields as $field => $value) {
+        foreach (array_keys($required_fields) as $field) {
             unset($parameters[$field]);
         }
         $attributes = $request->getAttributes();

@@ -527,7 +527,7 @@ class Software extends InventoryAsset
         }
 
         // Perform the update if there are fields to update
-        if (!empty($fields_to_update)) {
+        if ($fields_to_update !== []) {
             $fields_to_update['id'] = $soft_id;
             $software_to_update = new GSoftware();
             $software_to_update->update($fields_to_update, 0);

@@ -154,7 +154,7 @@ enum AssociatedItemsFieldStrategy: string
         }
 
         $values = array_filter($values, fn($value) => $this->isValidAnswer($value));
-        if (empty($values)) {
+        if ($values === []) {
             return null;
         }
 
@@ -179,7 +179,7 @@ enum AssociatedItemsFieldStrategy: string
             $values = [$values];
         }
 
-        if (empty($values)) {
+        if ($values === []) {
             return null;
         }
 

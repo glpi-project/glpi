@@ -62,7 +62,7 @@ abstract class AbstractQuestionType implements QuestionTypeInterface
     #[Override]
     public function validateExtraDataInput(array $input): bool
     {
-        return empty($input); // No extra data by default
+        return $input === []; // No extra data by default
     }
 
     #[Override]
@@ -143,7 +143,7 @@ abstract class AbstractQuestionType implements QuestionTypeInterface
     public function getExtraDataConfig(array $serialized_data): ?JsonFieldInterface
     {
         $config_class = $this->getExtraDataConfigClass();
-        if ($config_class === null || empty($serialized_data)) {
+        if ($config_class === null || $serialized_data === []) {
             return null;
         }
 
@@ -160,7 +160,7 @@ abstract class AbstractQuestionType implements QuestionTypeInterface
     public function getDefaultValueConfig(array $serialized_data): ?JsonFieldInterface
     {
         $config_class = $this->getDefaultValueConfigClass();
-        if ($config_class === null || empty($serialized_data)) {
+        if ($config_class === null || $serialized_data === []) {
             return null;
         }
 

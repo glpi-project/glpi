@@ -119,7 +119,7 @@ class PhpExtension extends AbstractExtension
      */
     public function isInstanceof($value, $classname): bool
     {
-        return is_object($value) && $value instanceof $classname;
+        return $value instanceof $classname;
     }
 
     /**

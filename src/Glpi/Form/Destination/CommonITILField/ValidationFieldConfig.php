@@ -65,7 +65,7 @@ final class ValidationFieldConfig implements
             fn(string $strategy) => ValidationFieldStrategy::tryFrom($strategy),
             $data[self::STRATEGIES] ?? []
         );
-        if (empty($strategies)) {
+        if ($strategies === []) {
             $strategies = [ValidationFieldStrategy::NO_VALIDATION];
         }
 

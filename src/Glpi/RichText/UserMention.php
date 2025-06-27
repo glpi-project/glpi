@@ -107,7 +107,7 @@ final class UserMention
         // Keep only newly mentioned actors
         $mentionned_actors_ids = array_diff($mentionned_actors_ids, $previously_mentionned_actors_ids);
 
-        if (empty($mentionned_actors_ids)) {
+        if ($mentionned_actors_ids === []) {
             return;
         }
 

@@ -166,7 +166,7 @@ class DatabaseInstance extends InventoryAsset
 
                     //cleanup associated databases
                     if (count($existing_databases)) {
-                        foreach ($existing_databases as $dbkey => $existing_database) {
+                        foreach (array_keys($existing_databases) as $dbkey) {
                             $odatabase->delete(['id' => $dbkey]);
                         }
                     }

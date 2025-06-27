@@ -280,7 +280,7 @@ class Profile_User extends CommonDBRelation
         } elseif ($sort !== '') {
             $sort_params = [$sort . ' ' . ($order === 'DESC' ? 'DESC' : 'ASC')];
         }
-        if (empty($sort_params)) {
+        if ($sort_params === []) {
             $sort_params = [
                 "$utable.name ASC",
                 "$utable.realname ASC",
@@ -463,7 +463,7 @@ TWIG, $avatar_params) . $username;
         } elseif ($sort !== '') {
             $sort_params = [$sort . ' ' . ($order === 'DESC' ? 'DESC' : 'ASC')];
         }
-        if (empty($sort_params)) {
+        if ($sort_params === []) {
             $sort_params = ["$etable.completename ASC"];
         }
 
@@ -756,7 +756,7 @@ TWIG, $avatar_params) . $username;
 
         $where = ['users_id' => (int) $user_ID];
         if (count($sqlfilter) > 0) {
-            $where = $where + $sqlfilter;
+            $where += $sqlfilter;
         }
 
         $iterator = $DB->request([

@@ -419,8 +419,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
                             unset($supported[$controller][$category][$i]);
                         }
                     } elseif ($controller === ITILController::class) {
-                        /** @phpstan-var class-string<ITILController> $controller */
-                        foreach ($itemtypes as $supported_itemtype => $type_data) {
+                        foreach (array_keys($itemtypes) as $supported_itemtype) {
                             $supported[$controller][$category][$supported_itemtype]['name'] = $controller::getFriendlyNameForSubtype($supported_itemtype);
                         }
                     }
@@ -923,7 +922,7 @@ class Webhook extends CommonDBTM implements FilterableInterface
         $schema = self::getAPISchemaBySupportedItemtype($itemtype);
         $props = Schema::flattenProperties($schema['properties'], 'item.');
         $parent_schema = self::getParentItemSchema($itemtype);
-        $parent_props = !empty($parent_schema) ? Schema::flattenProperties($parent_schema['properties'], 'parent_item.') : [];
+        $parent_props = $parent_schema !== [] ? Schema::flattenProperties($parent_schema['properties'], 'parent_item.') : [];
 
         $response_schema = [
             [

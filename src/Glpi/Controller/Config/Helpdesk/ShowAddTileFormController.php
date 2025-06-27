@@ -54,7 +54,7 @@ final class ShowAddTileFormController extends AbstractTileController
                 $possible_tiles[] = $tile_type;
             }
         }
-        if (empty($possible_tiles)) {
+        if ($possible_tiles === []) {
             throw new AccessDeniedHttpException();
         }
 

@@ -70,7 +70,7 @@ class HTMLTableSuperHeader extends HTMLTableHeader
         while ($first > 1) {
             $reste = $first % $second;
             if ($reste === 0) {
-                $result = $result / $second;
+                $result /= $second;
                 break;  // leave when LCM is found
             }
             $first = $second;

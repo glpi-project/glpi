@@ -102,7 +102,7 @@ final class EditorController extends AbstractController
         $default_value_operator = current(array_keys($this->editor_manager->getValueOperatorForValidationDropdownValues(
             $question_uuid
         )));
-        if (empty($conditions)) {
+        if ($conditions === []) {
             $conditions[] = new ConditionData(
                 item_uuid: $question_uuid,
                 item_type: Type::QUESTION->value,

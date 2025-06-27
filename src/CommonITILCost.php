@@ -406,7 +406,7 @@ abstract class CommonITILCost extends CommonDBChild
      **/
     public function showForm($ID, array $options = [])
     {
-        if (!($ID > 0) && !isset($options['parent']) || !($options['parent'] instanceof CommonDBTM)) {
+        if ($ID <= 0 && !isset($options['parent']) || !($options['parent'] instanceof CommonDBTM)) {
             // parent is mandatory in new item form
             trigger_error('Parent item must be defined in `$options["parent"]`.', E_USER_WARNING);
             return false;

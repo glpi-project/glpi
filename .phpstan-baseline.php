@@ -1394,12 +1394,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/CommonDBTM.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Ternary operator condition is always false\\.$#',
-	'identifier' => 'ternary.alwaysFalse',
-	'count' => 1,
-	'path' => __DIR__ . '/src/CommonDBTM.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Method CommonDBVisible\\:\\:showVisibility\\(\\) with return type void returns true but should not return anything\\.$#',
 	'identifier' => 'return.void',
 	'count' => 1,
@@ -1970,18 +1964,17 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/DBmysql.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Function preg_split is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_split;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
-	'identifier' => 'theCodingMachineSafe.function',
-	'count' => 2,
-	'path' => __DIR__ . '/src/DBmysql.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Function preg_replace is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
 	'identifier' => 'theCodingMachineSafe.function',
 	'count' => 1,
 	'path' => __DIR__ . '/src/DBmysql.php',
 ];
-
+$ignoreErrors[] = [
+	'message' => '#^Function preg_split is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_split;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
+	'identifier' => 'theCodingMachineSafe.function',
+	'count' => 2,
+	'path' => __DIR__ . '/src/DBmysql.php',
+];
 $ignoreErrors[] = [
 	'message' => '#^Function preg_replace is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_replace;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
 	'identifier' => 'theCodingMachineSafe.function',
@@ -8681,12 +8674,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Right side of && is always true\\.$#',
 	'identifier' => 'booleanAnd.rightAlwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Webhook.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Variable \\$controller in PHPDoc tag @var does not match any variable in the foreach loop\\: \\$itemtypes, \\$supported_itemtype, \\$type_data$#',
-	'identifier' => 'varTag.differentVariable',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Webhook.php',
 ];

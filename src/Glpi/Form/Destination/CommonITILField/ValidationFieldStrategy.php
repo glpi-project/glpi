@@ -88,7 +88,7 @@ enum ValidationFieldStrategy: string
         array $question_ids,
         AnswersSet $answers_set,
     ): ?array {
-        if (empty($question_ids)) {
+        if ($question_ids === []) {
             return null;
         }
 
@@ -130,7 +130,7 @@ enum ValidationFieldStrategy: string
     private function getActorsFromSpecificActors(
         array $specific_actors,
     ): ?array {
-        if (empty($specific_actors)) {
+        if ($specific_actors === []) {
             return null;
         }
 

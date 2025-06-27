@@ -64,7 +64,7 @@ final class GraphQLGenerator
 
         // Write Query
         $schema_str .= "type Query {\n";
-        foreach ($this->types as $type_name => $type) {
+        foreach (array_keys($this->types) as $type_name) {
             if (str_starts_with($type_name, '_')) {
                 continue;
             }

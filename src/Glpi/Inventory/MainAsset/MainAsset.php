@@ -349,7 +349,7 @@ abstract class MainAsset extends InventoryAsset
             }
         }
 
-        if (!empty($_inventory_users)) {
+        if ($_inventory_users !== []) {
             $val->_inventory_users = $_inventory_users;
         }
     }
@@ -598,7 +598,7 @@ abstract class MainAsset extends InventoryAsset
             $rule->getCollectionPart();
             $datarules = $rule->processAllRules($input, [], ['class' => $this]);
 
-            if (isset($datarules['_no_rule_matches']) and ($datarules['_no_rule_matches'] == '1')) {
+            if (isset($datarules['_no_rule_matches']) && $datarules['_no_rule_matches'] == '1') {
                 //no rule matched, this is a new one
                 $this->rulepassed(0, $this->item->getType(), null);
             } elseif (!isset($datarules['found_inventories'])) {

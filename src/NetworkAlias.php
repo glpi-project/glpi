@@ -96,7 +96,7 @@ class NetworkAlias extends FQDNLabel
         $this->displayRecursiveItems($recursiveItems, 'Type');
         echo "&nbsp;:</td><td>";
 
-        if (!($ID > 0)) {
+        if ($ID <= 0) {
             echo "<input type='hidden' name='networknames_id' value='" .
                $this->fields["networknames_id"] . "'>";
         }

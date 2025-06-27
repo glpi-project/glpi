@@ -65,7 +65,7 @@ final class TilesManager
 
         // If no tiles are found in the profile, look for tiles in the current
         // entity and its parents (until we reach the root entity).
-        if (empty($tiles)) {
+        if ($tiles === []) {
             $entity = Entity::getById($session_info->getCurrentEntityId());
             $tiles = $this->getTilesForEntityRecursive($entity);
         }
@@ -85,7 +85,7 @@ final class TilesManager
         $tiles = $this->getTilesForItem($entity);
 
         // Stop recursion when a tile is found or if we reached the root entity.
-        if (!empty($tiles) || $entity->getID() === 0) {
+        if ($tiles !== [] || $entity->getID() === 0) {
             return $tiles;
         }
 
