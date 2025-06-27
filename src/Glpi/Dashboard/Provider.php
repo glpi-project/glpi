@@ -333,7 +333,7 @@ class Provider
                         ],
                         'WHERE' => ['glpi_tickets_subquery.id' => new QueryExpression('glpi_tickets.id') ],
                     ]
-            );
+                );
 
                 $ola_tto_late_criteria = new QuerySubQuery(
                     [

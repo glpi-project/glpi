@@ -53,7 +53,6 @@ abstract class LevelAgreement extends CommonDBChild
     public static $items_id = 'slms_id';
 
     protected static $prefix            = '';
-    protected static $prefixticket      = '';
     /** @var ''|class-string<LevelAgreementLevel> */
     protected static $levelclass        = '';
     /** @var string|class-string<CommonDBTM> */
@@ -81,7 +80,6 @@ abstract class LevelAgreement extends CommonDBChild
      * @param integer $subtype of OLA/SLA, can be SLM::TTO or SLM::TTR
      *
      * @return array of 'date' and 'sla' field names
-     * // @todoseb déplacer dans SLA et OLA ou rendre abstract
      */
     public static function getFieldNames($subtype)
     {
@@ -90,12 +88,12 @@ abstract class LevelAgreement extends CommonDBChild
 
         switch ($subtype) {
             case SLM::TTO:
-                $dateField = static::$prefixticket . 'time_to_own';
+                $dateField = 'time_to_own';
                 $laField   = static::$prefix . 's_id_tto';
                 break;
 
             case SLM::TTR:
-                $dateField = static::$prefixticket . 'time_to_resolve';
+                $dateField = 'time_to_resolve';
                 $laField   = static::$prefix . 's_id_ttr';
                 break;
         }

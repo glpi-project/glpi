@@ -6071,10 +6071,9 @@ final class SQLProvider implements SearchProviderInterface
                             }
 
                             // no need to check $takeintoaccount_delay_stat, we rely on items_ola end_time
-                            // // @todoseb on affiche la barre de progression alors qu'on a un endtime défini sur les TTR - faire vérifier cette spécficité / vérifier sur stable
                             if (
-                                ($ola_type == \SLM::TTO && $ola_end_time) // OLA TTO with end_time (due time + progress bar)
-                                || (in_array($orig_id, [180, 185])) // just due time (no progress bar)
+                                ($ola_type == \SLM::TTO && $ola_end_time)
+                                || (in_array($orig_id, [180, 185]))
                             ) {
                                 $out .= $ola_name . ' : ' . htmlescape(\Html::convDateTime($due_time)) . '</br>';
                                 continue;
@@ -6094,7 +6093,6 @@ final class SQLProvider implements SearchProviderInterface
                             if ($percentage_done > 100) {
                                 $percentage_done = 100;
                             }
-                            // ? waiting time n'est plus pris en compte pour determiner la couleur de la barre de progression ? // @todoseb
                             switch ($_SESSION['glpiduedatewarning_unit']) {
                                 case 'hour':
                                     $less_warn_limit = $_SESSION['glpiduedatewarning_less'] * HOUR_TIMESTAMP;
