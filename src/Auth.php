@@ -903,6 +903,7 @@ class Auth extends CommonGLPI
                 ) {
                     // Case of using external auth and no LDAP servers, so get data from external auth
                     $this->user->getFromSSO();
+                    $this->user_present = $this->user->getFromDBbyName($this->user->fields['name']);
                 } else {
                     if ($this->user->fields['authtype'] === self::LDAP) {
                         if (!$ldapservers_status) {
@@ -1030,6 +1031,7 @@ class Auth extends CommonGLPI
         if ($mfa_pre_auth) {
             $this->user = new User();
             $this->user->fields = $mfa_pre_auth['user'];
+            $this->user_present = $mfa_pre_auth['user_present'];
             $this->auth_type = $mfa_pre_auth['auth_type'];
             $this->extauth = $mfa_pre_auth['extauth'];
             $remember_me = $mfa_pre_auth['remember_me'];
@@ -1064,6 +1066,7 @@ class Auth extends CommonGLPI
                                 'auth_type' => $this->auth_type,
                                 'extauth' => $this->extauth,
                                 'remember_me' => $remember_me,
+                                'user_present' => $this->user_present,
                             ];
 
                             $redirect_params = [
@@ -1089,6 +1092,7 @@ class Auth extends CommonGLPI
                                 'auth_type' => $this->auth_type,
                                 'extauth' => $this->extauth,
                                 'remember_me' => $remember_me,
+                                'user_present' => $this->user_present,
                             ];
                             Html::redirect($CFG_GLPI["root_doc"] . '/?mfa_setup=1');
                         }
