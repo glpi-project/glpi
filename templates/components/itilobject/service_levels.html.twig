@@ -84,10 +84,6 @@ Handle only linked ola, not ola ttr and tto defined using datetime fields
             {% set display_associatedsla_field = field_options.fields_template is not defined or not field_options.fields_template.isHiddenField('slas_id_tto') %}
             {% set can_assign_sla_ola = canupdate and has_profile_right('slm', constant('SLM::RIGHT_ASSIGN')) and not field_options.fields_template.isReadonlyField('slas_id_tto') %}
 
-            {# @todo cleanup debug - force display #}
-            {% set display_datetime_field  = true %}
-            {% set display_associatedsla_field = true %}
-
 {#            {% set _fieldname = 'time_to_own' %}#}
             <td class="right pe-2 align-middle border-0">{{ __('TTO') }}</td>
             <td class="d-flex ms-n2 border-0 py-0">
@@ -173,11 +169,7 @@ Handle only linked ola, not ola ttr and tto defined using datetime fields
             {% set display_datetime_field  = field_options.fields_template is not defined or not field_options.fields_template.isHiddenField('time_to_resolve') %}
             {% set display_associatedsla_field = field_options.fields_template is not defined or not field_options.fields_template.isHiddenField('slas_id_ttr') %}
             {% set can_assign_sla_ola = canupdate and has_profile_right('slm', constant('SLM::RIGHT_ASSIGN')) and not field_options.fields_template.isReadonlyField('slas_id_ttr') %}
-            {# @todo cleanup - debug - force display #}
-            {% set display_datetime_field  = true %}
-            {% set display_associatedsla_field = true %}
 
-{#            {% set _fieldname = 'time_to_resolve' %}#}
             <td class="right pe-2 align-middle border-0">{{ __('TTR') }}</td>
             <td class="d-flex ms-n2 border-0 py-0">
 
@@ -445,10 +437,6 @@ Handle only linked ola, not ola ttr and tto defined using datetime fields
             </script>
         {% endif %}
     </div>
-
-    {# <span>Nouveau design à implémenter Ola field à implementer</span> #}
-    {# tto/ttr type #}
-    {#    {{ la.type }} #}
 
     {# icon #}
     {# static #}
