@@ -111,13 +111,12 @@
    {% set validity_msg = null %}
    {% if item_type == 'SoftwareLicense' %}
       {% set validity_msg %}
-         {% if item.fields['is_valid'] %}
-            <span class="green">{{ _x('adjective', 'Valid') }}</span>
-         {% elseif not item.fields['is_valid'] and item.fields['allow_overquota'] %}
-            <span class="green">{{ _x('adjective', 'Valid (Over Quota)') }}</span>
-         {% else %}
-            <span class="red">{{ _x('adjective', 'Invalid') }}</span>
-         {% endif %}
+         <div class="d-flex justify-content-around pt-2">
+            {{ include('pages/management/license_progressbar.html.twig', {
+               total: item.fields['number'],
+               licences_assigned: licences_assigned,
+            }, with_context: false) }}
+         </div>
       {% endset %}
    {% endif %}
    {{ fields.dropdownNumberField('number', item.fields['number'], _x('quantity', 'Number'), {

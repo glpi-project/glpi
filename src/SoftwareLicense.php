@@ -270,6 +270,7 @@ class SoftwareLicense extends CommonTreeDropdown
         TemplateRenderer::getInstance()->display('pages/management/softwarelicense.html.twig', [
             'item'   => $this,
             'params' => $options,
+            'licences_assigned' => Item_SoftwareLicense::countForLicense($this->getID()),
         ]);
 
         return true;
@@ -577,6 +578,18 @@ class SoftwareLicense extends CommonTreeDropdown
                 ')',
             'computationgroupby' => true,
             'computationtype' => 'count',
+        ];
+
+        $tab[] = [
+            'id'                 => '164',
+            'table'              => Item_SoftwareLicense::getTable(),
+            'field'              => 'id',
+            'linkfield'          => 'id',
+            'name'               => _x('quantity', 'Affected items'),
+            'datatype'           => 'specific',
+            'massiveaction'      => false,
+            'nosearch'           => true,
+            'nosort'             => true,
         ];
 
         // add objectlock search options

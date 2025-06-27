@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\Application\View\TemplateRenderer;
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryUnion;
 
@@ -111,6 +112,29 @@ class Item_SoftwareLicense extends CommonDBRelation
         ];
 
         return $tab;
+    }
+
+    public static function getSpecificValueToDisplay($field, $values, array $options = [])
+    {
+        if (!is_array($values)) {
+            $values = [$field => $values];
+        }
+
+        switch ($options['searchopt']['id']) {
+            case '164':
+                $softlicense = new SoftwareLicense();
+                $softlicense->getFromDB($options['raw_data']['id']);
+                $assign_item = self::countForLicense($options['raw_data']['id']);
+                return TemplateRenderer::getInstance()->render(
+                    'pages/management/license_progressbar.html.twig',
+                    [
+                        'total' => $softlicense->fields['number'],
+                        'licences_assigned' => $assign_item,
+                    ]
+                );
+        }
+
+        return parent::getSpecificValueToDisplay($field, $values, $options);
     }
 
     public static function showMassiveActionsSubForm(MassiveAction $ma)
@@ -1144,7 +1168,8 @@ JAVASCRIPT;
                             _n('Affected item', 'Affected items', Session::getPluralNumber()),
                             $nb,
                             $item::class,
-                            'ti ti-package'
+                            'ti ti-package',
+                            $item->fields['number'] > 0 ? $item->fields['number'] : null,
                         ),
                     ];
                 }

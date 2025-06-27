@@ -1,0 +1,130 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2025 Teclib' and contributors.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+<div class="position-relative w-100 d-flex">
+
+    {% set remaining = total - licences_assigned %}
+    {% set is_unlimited = total == -1 %}
+    {% set license_contexts = {
+        'valid': {
+            'progress' : (100 * licences_assigned / total)|round(2),
+            'icon' : 'ti ti-circle-check text-success',
+            'color': 'bg-success',
+            'remaining': remaining|number_format,
+            'overflow': false,
+        },
+        'unlimited': {
+            'progress' : null,
+            'icon' : 'ti ti-infinity',
+            'color': 'bg-light',
+            'remaining': false,
+            'overflow': false,
+        },
+        'full': {
+            'progress' : 100,
+            'icon' : 'ti ti-alert-triangle text-danger',
+            'color' : 'bg-danger',
+            'remaining': 0,
+            'overflow': false,
+        },
+        'overflow': {
+            'progress' : 100,
+            'icon' : 'ti ti-alert-triangle text-danger',
+            'color' : 'bg-danger',
+            'remaining': false,
+            'overflow': (remaining|abs)|number_format,
+        }
+    } %}
+
+    {% if is_unlimited %}
+        {% set selected_context_type = 'unlimited' %}
+    {% elseif remaining > 0 %}
+        {% set selected_context_type = 'valid' %}
+    {% elseif remaining == 0 %}
+        {% set selected_context_type = 'full' %}
+    {% else %}
+        {% set selected_context_type = 'overflow' %}
+    {% endif %}
+
+    {% set selected_context = license_contexts[selected_context_type] %}
+
+    {% set progress_popover %}
+        <div class="d-flex flex-column">
+            <div class="d-flex justify-content-between">
+                <span class="text-nowrap me-4">{{ _x('adjective', 'Assigned') }}</span>
+                <span class="text-nowrap">{{ licences_assigned }}</span>
+            </div>
+            {% if selected_context.remaining is not same as(false) %}
+                <div class="d-flex justify-content-between">
+                    <span class="text-nowrap me-4">{{ _x('adjective', 'Remaining') }}</span>
+                    <span class="text-nowrap">{{ selected_context.remaining }}</span>
+                </div>
+            {% endif %}
+            {% if selected_context.overflow is not same as(false) %}
+                <div class="d-flex justify-content-between text-danger">
+                    <span class="text-nowrap me-4">{{ _x('adjective', 'Over') }}</span>
+                    <span class="text-nowrap">{{ selected_context.overflow }}</span>
+                </div>
+            {% endif %}
+        </div>
+    {% endset %}
+
+    <div
+        class="progress me-2" style="height: 20px;"
+        data-bs-toggle="popover"
+        data-bs-html="true"
+        data-bs-placement="bottom"
+        data-bs-trigger="hover focus"
+        data-bs-content='{{ progress_popover }}'
+    >
+        {% if not selected_context.progress == null %}
+            <div class="progress-bar progress-bar-striped {{ selected_context.color }}"
+                role="progressbar"
+                style="width: {{ selected_context.progress }}%;"
+                aria-valuenow="{{ selected_context.progress }}"
+                aria-valuemin="0"
+                aria-valuemax="100">
+            </div>
+        {% endif %}
+    </div>
+
+    <i class="{{ selected_context.icon }}"></i>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
+            popoverTriggerList.map(function (popoverTriggerEl) {
+                return new bootstrap.Popover(popoverTriggerEl);
+            });
+        });
+    </script>
+</div>
