@@ -161,12 +161,6 @@ $ignoreErrors[] = [
 	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
 	'identifier' => 'theCodingMachineSafe.function',
 	'count' => 1,
-	'path' => __DIR__ . '/ajax/marketplace.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Function json_encode is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\json_encode;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
-	'identifier' => 'theCodingMachineSafe.function',
-	'count' => 1,
 	'path' => __DIR__ . '/ajax/notificationmailingsettings.php',
 ];
 $ignoreErrors[] = [

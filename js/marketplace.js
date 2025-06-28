@@ -85,7 +85,7 @@ $(document).ready(function() {
             // The plugin execution must be suspended first to ensure that its `setup.php` file is not loaded before
             // its new version is downloaded.
             $.post(ajax_url, {
-                'action': 'suspend_plugin',
+                'action': 'suspend_plugin_execution',
                 'key': plugin_key
             }).done(function() {
                 executeAction();
