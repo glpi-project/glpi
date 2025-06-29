@@ -159,4 +159,8 @@
     .avatar {
         color: var(--tblr-dark);
     }
+
+    .list-group {
+        --tblr-list-group-action-active-bg: rgb(var(--tblr-secondary-rgb), 0.5);
+    }
 }
