@@ -35,7 +35,14 @@ describe('Log viewer', () => {
         cy.login();
         cy.changeProfile('Super-Admin');
     });
-    it('Accessibility', () => {
+    it('List Accessibility', () => {
+        cy.visit('/front/logs.php');
+        cy.get('#page > .container').within(() => {
+            cy.get('.list-group .list-group-item').should('have.length.greaterThan', 0);
+            cy.injectAndCheckA11y();
+        });
+    });
+    it('Viewer Accessibility', () => {
         cy.visit('/front/logviewer.php?filepath=php-errors.log');
         cy.get('.log_entry').should('have.length.greaterThan', 0);
         cy.get('.log-entries').injectAndCheckA11y();

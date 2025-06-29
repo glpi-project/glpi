@@ -40,9 +40,21 @@
             white-space: pre-wrap;
             scroll-margin-top: 5em;
 
-            &:target {
-                animation: shakeX;
-                animation-duration: 2s;
+            @media not (prefers-reduced-motion: reduce) {
+                &:target {
+                    animation: shakeX;
+                    animation-duration: 2s;
+                }
+            }
+            @media (prefers-reduced-motion: reduce) {
+                &:target {
+                    animation: fadeIn;
+                    animation-duration: 2s;
+                }
+            }
+
+            &:hover {
+                background: rgba($color: #000, $alpha: 10%);
             }
 
             .log_datetime {
@@ -62,54 +74,13 @@
                 /* stylelint-disable-next-line property-no-vendor-prefix -- no equivalent without prefix, and exists in all browsers */
                 -webkit-box-orient: vertical;
                 overflow: hidden;
-                cursor: row-resize;
                 padding: 1em 0.5em 0.18em;
                 box-sizing: border-box;
                 font-family: var(--tblr-font-monospace);
                 font-size: 0.8rem;
-                border-bottom: 1px solid var(--tblr-border-color);
 
-                &:hover {
-                    background: rgba($color: #000, $alpha: 10%);
-                }
-            }
-
-            .log_entry_toggle_lbl {
-                position: relative;
-                width: 15px;
-                height: 20px;
-
-                &::after {
-                    font-family: tabler-icons, sans-serif !important;
-                    content: "\eb5f";
-                    position: absolute;
-                    left: 0;
-                    top: 0.8em;
-                }
-            }
-
-            .log_entry_toggle_placeholder {
-                width: 15px;
-                height: 20px;
-
-                & ~ .log_long_text {
-                    cursor: default;
-                }
-            }
-
-            .log_entry_toggle {
-                display: none;
-
-                &:checked {
-                    & ~ .log_long_text {
-                        -webkit-line-clamp: unset;
-                    }
-
-                    & ~ .log_entry_toggle_lbl {
-                        &::after {
-                            content: "\eb5d";
-                        }
-                    }
+                &.expanded {
+                    -webkit-line-clamp: unset;
                 }
             }
         }
