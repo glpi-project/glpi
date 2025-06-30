@@ -220,7 +220,7 @@ EOL,
 
         $checker = new SourceCodeIntegrityChecker($root_dir);
 
-        $this->expectExceptionObject(new \RuntimeException(sprintf('`%s/ajax` does not exist in the filesystem.', $root_dir)));
+        $this->expectExceptionMessage(sprintf('`%s/ajax` does not exist in the filesystem.', $root_dir));
         $checker->generateManifest('CRC32c');
     }
 
@@ -231,7 +231,7 @@ EOL,
 
         $checker = new SourceCodeIntegrityChecker($root_dir);
 
-        $this->expectExceptionObject(new \RuntimeException('Error while trying to read the source code file manifest.'));
+        $this->expectExceptionMessage('Error while trying to read the source code file manifest.');
         $checker->getSummary();
     }
 
@@ -244,7 +244,7 @@ EOL,
 
         $checker = new SourceCodeIntegrityChecker($root_dir);
 
-        $this->expectExceptionObject(new \RuntimeException('The source code file manifest is invalid.'));
+        $this->expectExceptionMessage('The source code file manifest is invalid.');
         $checker->getSummary();
     }
 }
