@@ -47,6 +47,7 @@ use Glpi\Form\Question;
 use Glpi\Form\QuestionType\QuestionTypeItem;
 use Glpi\Form\Migration\DestinationFieldConverterInterface;
 use Glpi\Form\Migration\FormMigration;
+use Glpi\Form\QuestionType\AbstractQuestionType;
 use Glpi\Form\QuestionType\AbstractQuestionTypeActors;
 use Group;
 use InvalidArgumentException;
@@ -56,13 +57,21 @@ use User;
 
 abstract class ITILActorField extends AbstractConfigField implements DestinationFieldConverterInterface
 {
-    abstract public function getAllowedQuestionType(): AbstractQuestionTypeActors;
+    /** @return AbstractQuestionType[] */
+    abstract public function getAllowedQuestionType(): array;
     abstract public function getActorType(): string;
 
     public function getAllowedActorTypes(): array
     {
-        $question_type = $this->getAllowedQuestionType();
-        return $question_type->getAllowedActorTypes();
+        $question_type = array_filter(
+            $this->getAllowedQuestionType(),
+            fn(AbstractQuestionType $type) => $type instanceof AbstractQuestionTypeActors
+        );
+
+        return array_merge(...array_map(
+            fn(AbstractQuestionTypeActors $type) => $type->getAllowedActorTypes(),
+            $question_type
+        ));
     }
 
     #[Override]
@@ -271,7 +280,7 @@ abstract class ITILActorField extends AbstractConfigField implements Destination
     private function getITILActorQuestionsValuesForDropdown(Form $form): array
     {
         return array_reduce(
-            $form->getQuestionsByType($this->getAllowedQuestionType()::class),
+            $form->getQuestionsByTypes(array_map('get_class', $this->getAllowedQuestionType())),
             function ($carry, $question) {
                 $carry[$question->getId()] = $question->fields['name'];
                 return $carry;

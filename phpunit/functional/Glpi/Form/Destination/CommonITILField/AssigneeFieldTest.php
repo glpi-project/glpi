@@ -44,6 +44,7 @@ use Glpi\Form\Destination\CommonITILField\ITILActorFieldConfig;
 use Glpi\Form\Form;
 use Glpi\Form\QuestionType\QuestionTypeActorsExtraDataConfig;
 use Glpi\Form\QuestionType\QuestionTypeAssignee;
+use Glpi\Form\QuestionType\QuestionTypeEmail;
 use Glpi\Tests\FormBuilder;
 use Group;
 use Override;
@@ -77,7 +78,7 @@ final class AssigneeFieldTest extends AbstractActorFieldTest
             form: $form,
             config: $from_template_config,
             answers: [],
-            expected_actors_ids: []
+            expected_actors: []
         );
 
         $user = $this->createItem(User::class, ['name' => 'testAssigneeFromTemplate User']);
@@ -97,7 +98,7 @@ final class AssigneeFieldTest extends AbstractActorFieldTest
             form: $form,
             config: $from_template_config,
             answers: [],
-            expected_actors_ids: [$user->getID()]
+            expected_actors: [['items_id' => $user->getID()]]
         );
 
         // Set the group as default assignee using predefined fields
@@ -110,7 +111,7 @@ final class AssigneeFieldTest extends AbstractActorFieldTest
             form: $form,
             config: $from_template_config,
             answers: [],
-            expected_actors_ids: [$user->getID(), $group->getID()]
+            expected_actors: [['items_id' => $user->getID()], ['items_id' => $group->getID()]]
         );
 
         // Set the supplier as default assignee using predefined fields
@@ -123,7 +124,7 @@ final class AssigneeFieldTest extends AbstractActorFieldTest
             form: $form,
             config: $from_template_config,
             answers: [],
-            expected_actors_ids: [$user->getID(), $group->getID(), $supplier->getID()]
+            expected_actors: [['items_id' => $user->getID()], ['items_id' => $group->getID()], ['items_id' => $supplier->getID()]]
         );
     }
 
@@ -139,7 +140,7 @@ final class AssigneeFieldTest extends AbstractActorFieldTest
             form: $form,
             config: $form_filler_config,
             answers: [],
-            expected_actors_ids: []
+            expected_actors: []
         );
 
         $auth = $this->login();
@@ -147,7 +148,7 @@ final class AssigneeFieldTest extends AbstractActorFieldTest
             form: $form,
             config: $form_filler_config,
             answers: [],
-            expected_actors_ids: [$auth->getUser()->getID()]
+            expected_actors: [['items_id' => $auth->getUser()->getID()]]
         );
     }
 
@@ -167,7 +168,7 @@ final class AssigneeFieldTest extends AbstractActorFieldTest
             form: $form,
             config: $form_filler_supervisor_config,
             answers: [],
-            expected_actors_ids: []
+            expected_actors: []
         );
 
         // No supervisor set
@@ -176,7 +177,7 @@ final class AssigneeFieldTest extends AbstractActorFieldTest
             form: $form,
             config: $form_filler_supervisor_config,
             answers: [],
-            expected_actors_ids: []
+            expected_actors: []
         );
 
         $this->updateItem(User::class, Session::getLoginUserID(), ['users_id_supervisor' => $supervisor->getID()]);
@@ -186,7 +187,7 @@ final class AssigneeFieldTest extends AbstractActorFieldTest
             form: $form,
             config: $form_filler_supervisor_config,
             answers: [],
-            expected_actors_ids: [$supervisor->getID()]
+            expected_actors: [['items_id' => $supervisor->getID()]]
         );
     }
 
@@ -213,7 +214,7 @@ final class AssigneeFieldTest extends AbstractActorFieldTest
                 ]
             ),
             answers: [],
-            expected_actors_ids: [$user->getID()]
+            expected_actors: [['items_id' => $user->getID()]]
         );
 
         // Specific value: User and Group
@@ -227,7 +228,7 @@ final class AssigneeFieldTest extends AbstractActorFieldTest
                 ]
             ),
             answers: [],
-            expected_actors_ids: [$user->getID(), $group->getID()]
+            expected_actors: [['items_id' => $user->getID()], ['items_id' => $group->getID()]]
         );
 
         // Specific value: User, Group and Supplier
@@ -242,7 +243,7 @@ final class AssigneeFieldTest extends AbstractActorFieldTest
                 ]
             ),
             answers: [],
-            expected_actors_ids: [$user->getID(), $group->getID(), $supplier->getID()]
+            expected_actors: [['items_id' => $user->getID()], ['items_id' => $group->getID()], ['items_id' => $supplier->getID()]]
         );
     }
 
@@ -267,27 +268,31 @@ final class AssigneeFieldTest extends AbstractActorFieldTest
             'entities_id' => $this->getTestRootEntity(true),
         ]);
 
-        // Using answer from first question
+        $answers = [
+            "Assignee 1" => [
+                User::getForeignKeyField() . '-' . $user1->getID(),
+            ],
+            "Assignee 2" => [
+                User::getForeignKeyField() . '-' . $user2->getID(),
+                Group::getForeignKeyField() . '-' . $group->getID(),
+                Supplier::getForeignKeyField() . '-' . $supplier->getID(),
+            ],
+            "Assignee email 1" => 'test1@test.test',
+            "Assignee email 2" => 'test2@test.test',
+        ];
+
+        // Using answer from first assignee question
         $this->sendFormAndAssertTicketActors(
             form: $form,
             config: new AssigneeFieldConfig(
                 strategies: [ITILActorFieldStrategy::SPECIFIC_ANSWERS],
                 specific_question_ids: [$this->getQuestionId($form, "Assignee 1")]
             ),
-            answers: [
-                "Assignee 1" => [
-                    User::getForeignKeyField() . '-' . $user1->getID(),
-                ],
-                "Assignee 2" => [
-                    User::getForeignKeyField() . '-' . $user2->getID(),
-                    Group::getForeignKeyField() . '-' . $group->getID(),
-                    Supplier::getForeignKeyField() . '-' . $supplier->getID(),
-                ],
-            ],
-            expected_actors_ids: [$user1->getID()]
+            answers: $answers,
+            expected_actors: [['items_id' => $user1->getID()]]
         );
 
-        // Using answer from first and second question
+        // Using answer from first and second assignee questions
         $this->sendFormAndAssertTicketActors(
             form: $form,
             config: new AssigneeFieldConfig(
@@ -297,17 +302,59 @@ final class AssigneeFieldTest extends AbstractActorFieldTest
                     $this->getQuestionId($form, "Assignee 2"),
                 ]
             ),
-            answers: [
-                "Assignee 1" => [
-                    User::getForeignKeyField() . '-' . $user1->getID(),
-                ],
-                "Assignee 2" => [
-                    User::getForeignKeyField() . '-' . $user2->getID(),
-                    Group::getForeignKeyField() . '-' . $group->getID(),
-                    Supplier::getForeignKeyField() . '-' . $supplier->getID(),
-                ],
-            ],
-            expected_actors_ids: [$user1->getID(), $user2->getID(), $group->getID(), $supplier->getID()]
+            answers: $answers,
+            expected_actors: [['items_id' => $user1->getID()], ['items_id' => $user2->getID()], ['items_id' => $group->getID()], ['items_id' => $supplier->getID()]]
+        );
+
+        // Using answer from first email question
+        $this->sendFormAndAssertTicketActors(
+            form: $form,
+            config: new AssigneeFieldConfig(
+                strategies: [ITILActorFieldStrategy::SPECIFIC_ANSWERS],
+                specific_question_ids: [$this->getQuestionId($form, "Assignee email 1")]
+            ),
+            answers: $answers,
+            expected_actors: [['items_id' => 0, 'alternative_email' => 'test1@test.test']]
+        );
+
+        // Using answer from first and second email questions
+        $this->sendFormAndAssertTicketActors(
+            form: $form,
+            config: new AssigneeFieldConfig(
+                strategies: [ITILActorFieldStrategy::SPECIFIC_ANSWERS],
+                specific_question_ids: [
+                    $this->getQuestionId($form, "Assignee email 1"),
+                    $this->getQuestionId($form, "Assignee email 2"),
+                ]
+            ),
+            answers: $answers,
+            expected_actors: [
+                ['items_id' => 0, 'alternative_email' => 'test1@test.test'],
+                ['items_id' => 0, 'alternative_email' => 'test2@test.test'],
+            ]
+        );
+
+        // Using answers from both assignee and email questions
+        $this->sendFormAndAssertTicketActors(
+            form: $form,
+            config: new AssigneeFieldConfig(
+                strategies: [ITILActorFieldStrategy::SPECIFIC_ANSWERS],
+                specific_question_ids: [
+                    $this->getQuestionId($form, "Assignee 1"),
+                    $this->getQuestionId($form, "Assignee 2"),
+                    $this->getQuestionId($form, "Assignee email 1"),
+                    $this->getQuestionId($form, "Assignee email 2"),
+                ]
+            ),
+            answers: $answers,
+            expected_actors: [
+                ['items_id' => $user1->getID()],
+                ['items_id' => $user2->getID()],
+                ['items_id' => 0, 'alternative_email' => 'test1@test.test'],
+                ['items_id' => 0, 'alternative_email' => 'test2@test.test'],
+                ['items_id' => $group->getID()],
+                ['items_id' => $supplier->getID()],
+            ]
         );
     }
 
@@ -335,7 +382,7 @@ final class AssigneeFieldTest extends AbstractActorFieldTest
             'entities_id' => $this->getTestRootEntity(true),
         ]);
 
-        // With multiple answers submitted
+        // With multiple assignee answers submitted
         $this->sendFormAndAssertTicketActors(
             form: $form,
             config: $last_valid_answer_config,
@@ -349,7 +396,37 @@ final class AssigneeFieldTest extends AbstractActorFieldTest
                     Supplier::getForeignKeyField() . '-' . $supplier->getID(),
                 ],
             ],
-            expected_actors_ids: [$user2->getID(), $group->getID(), $supplier->getID()]
+            expected_actors: [['items_id' => $user2->getID()], ['items_id' => $group->getID()], ['items_id' => $supplier->getID()]]
+        );
+
+        // With multiple email answers submitted
+        $this->sendFormAndAssertTicketActors(
+            form: $form,
+            config: $last_valid_answer_config,
+            answers: [
+                "Assignee email 1" => 'test1@test.test',
+                "Assignee email 2" => 'test2@test.test',
+            ],
+            expected_actors: [['items_id' => 0, 'alternative_email' => 'test2@test.test']]
+        );
+
+        // With multiple assignee and email answers submitted
+        $this->sendFormAndAssertTicketActors(
+            form: $form,
+            config: $last_valid_answer_config,
+            answers: [
+                "Assignee 1" => [
+                    User::getForeignKeyField() . '-' . $user1->getID(),
+                ],
+                "Assignee 2" => [
+                    User::getForeignKeyField() . '-' . $user2->getID(),
+                    Group::getForeignKeyField() . '-' . $group->getID(),
+                    Supplier::getForeignKeyField() . '-' . $supplier->getID(),
+                ],
+                "Assignee email 1" => 'test1@test.test',
+                "Assignee email 2" => 'test2@test.test',
+            ],
+            expected_actors: [['items_id' => 0, 'alternative_email' => 'test2@test.test']]
         );
 
         // Only first answer was submitted
@@ -361,7 +438,7 @@ final class AssigneeFieldTest extends AbstractActorFieldTest
                     User::getForeignKeyField() . '-' . $user1->getID(),
                 ],
             ],
-            expected_actors_ids: [$user1->getID()]
+            expected_actors: [['items_id' => $user1->getID()]]
         );
 
         // Only second answer was submitted
@@ -375,7 +452,27 @@ final class AssigneeFieldTest extends AbstractActorFieldTest
                     Supplier::getForeignKeyField() . '-' . $supplier->getID(),
                 ],
             ],
-            expected_actors_ids: [$user2->getID(), $group->getID(), $supplier->getID()]
+            expected_actors: [['items_id' => $user2->getID()], ['items_id' => $group->getID()], ['items_id' => $supplier->getID()]]
+        );
+
+        // Only first email question was submitted
+        $this->sendFormAndAssertTicketActors(
+            form: $form,
+            config: $last_valid_answer_config,
+            answers: [
+                "Assignee email 1" => 'test1@test.test',
+            ],
+            expected_actors: [['items_id' => 0, 'alternative_email' => 'test1@test.test']]
+        );
+
+        // Only second email question was submitted
+        $this->sendFormAndAssertTicketActors(
+            form: $form,
+            config: $last_valid_answer_config,
+            answers: [
+                "Assignee email 2" => 'test2@test.test',
+            ],
+            expected_actors: [['items_id' => 0, 'alternative_email' => 'test2@test.test']]
         );
 
         // No answers, fallback to default value
@@ -383,7 +480,7 @@ final class AssigneeFieldTest extends AbstractActorFieldTest
             form: $form,
             config: $last_valid_answer_config,
             answers: [],
-            expected_actors_ids: []
+            expected_actors: []
         );
 
         // Try again with a different template value
@@ -396,7 +493,7 @@ final class AssigneeFieldTest extends AbstractActorFieldTest
             form: $form,
             config: $last_valid_answer_config,
             answers: [],
-            expected_actors_ids: [$user1->getID()]
+            expected_actors: [['items_id' => $user1->getID()]]
         );
     }
 
@@ -433,7 +530,7 @@ final class AssigneeFieldTest extends AbstractActorFieldTest
                 ]
             ),
             answers: [],
-            expected_actors_ids: [$user1->getID(), $user2->getID(), $group->getID(), $supplier->getID()]
+            expected_actors: [['items_id' => $user1->getID()], ['items_id' => $user2->getID()], ['items_id' => $group->getID()], ['items_id' => $supplier->getID()]]
         );
     }
 
@@ -705,7 +802,7 @@ final class AssigneeFieldTest extends AbstractActorFieldTest
         Form $form,
         ITILActorFieldConfig $config,
         array $answers,
-        array $expected_actors_ids,
+        array $expected_actors,
     ): void {
         // Insert config
         $destinations = $form->getDestinations();
@@ -741,10 +838,15 @@ final class AssigneeFieldTest extends AbstractActorFieldTest
         $ticket = current($created_items);
 
         // Check actors
-        $this->assertEquals(
-            $expected_actors_ids,
-            array_map(fn(array $actor) => $actor['items_id'], $ticket->getActorsForType(CommonITILActor::ASSIGN))
-        );
+        $actors = $ticket->getActorsForType(CommonITILActor::ASSIGN);
+        foreach ($expected_actors as $expected_actor) {
+            $actor = array_shift($actors);
+            $this->assertArrayIsEqualToArrayOnlyConsideringListOfKeys(
+                $expected_actor,
+                $actor,
+                array_keys($expected_actor)
+            );
+        }
     }
 
     private function createAndGetFormWithMultipleActorsQuestions(): Form
@@ -757,6 +859,8 @@ final class AssigneeFieldTest extends AbstractActorFieldTest
             '',
             json_encode((new QuestionTypeActorsExtraDataConfig(true))->jsonSerialize())
         );
+        $builder->addQuestion("Assignee email 1", QuestionTypeEmail::class);
+        $builder->addQuestion("Assignee email 2", QuestionTypeEmail::class, );
         return $this->createForm($builder);
     }
 }

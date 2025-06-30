@@ -55,7 +55,7 @@ abstract class AbstractActorFieldTest extends AbstractDestinationFieldTest
         Form $form,
         ITILActorFieldConfig $config,
         array $answers,
-        array $expected_actors_ids
+        array $expected_actors,
     );
 
     abstract public function getFieldClass(): string;
@@ -95,7 +95,7 @@ abstract class AbstractActorFieldTest extends AbstractDestinationFieldTest
             form: $form,
             config: $config,
             answers: [],
-            expected_actors_ids: []
+            expected_actors: []
         );
 
         // Answer with first computer
@@ -108,7 +108,7 @@ abstract class AbstractActorFieldTest extends AbstractDestinationFieldTest
                     'items_id' => $computers[0]->getID(),
                 ],
             ],
-            expected_actors_ids: []
+            expected_actors: []
         );
 
         // Answer with second computer
@@ -121,7 +121,7 @@ abstract class AbstractActorFieldTest extends AbstractDestinationFieldTest
                     'items_id' => $computers[1]->getID(),
                 ],
             ],
-            expected_actors_ids: [$users[1]->getID()]
+            expected_actors: [['items_id' => $users[1]->getID()]]
         );
     }
 
@@ -160,7 +160,7 @@ abstract class AbstractActorFieldTest extends AbstractDestinationFieldTest
             form: $form,
             config: $config,
             answers: [],
-            expected_actors_ids: []
+            expected_actors: []
         );
 
         // Answer with first computer
@@ -173,7 +173,7 @@ abstract class AbstractActorFieldTest extends AbstractDestinationFieldTest
                     'items_id' => $computers[0]->getID(),
                 ],
             ],
-            expected_actors_ids: [$users[0]->getID()]
+            expected_actors: [['items_id' => $users[0]->getID()]]
         );
 
         // Answer with second computer
@@ -186,7 +186,7 @@ abstract class AbstractActorFieldTest extends AbstractDestinationFieldTest
                     'items_id' => $computers[1]->getID(),
                 ],
             ],
-            expected_actors_ids: []
+            expected_actors: []
         );
     }
 
@@ -225,7 +225,7 @@ abstract class AbstractActorFieldTest extends AbstractDestinationFieldTest
             form: $form,
             config: $config,
             answers: [],
-            expected_actors_ids: []
+            expected_actors: []
         );
 
         // Answer with first computer
@@ -238,7 +238,7 @@ abstract class AbstractActorFieldTest extends AbstractDestinationFieldTest
                     'items_id' => $computers[0]->getID(),
                 ],
             ],
-            expected_actors_ids: [$groups[0]->getID()]
+            expected_actors: [['items_id' => $groups[0]->getID()]]
         );
 
         // Answer with second computer
@@ -251,7 +251,7 @@ abstract class AbstractActorFieldTest extends AbstractDestinationFieldTest
                     'items_id' => $computers[1]->getID(),
                 ],
             ],
-            expected_actors_ids: []
+            expected_actors: []
         );
     }
 
@@ -290,7 +290,7 @@ abstract class AbstractActorFieldTest extends AbstractDestinationFieldTest
             form: $form,
             config: $config,
             answers: [],
-            expected_actors_ids: []
+            expected_actors: []
         );
 
         // Answer with first computer
@@ -303,7 +303,7 @@ abstract class AbstractActorFieldTest extends AbstractDestinationFieldTest
                     'items_id' => $computers[0]->getID(),
                 ],
             ],
-            expected_actors_ids: []
+            expected_actors: []
         );
 
         // Answer with second computer
@@ -316,7 +316,7 @@ abstract class AbstractActorFieldTest extends AbstractDestinationFieldTest
                     'items_id' => $computers[1]->getID(),
                 ],
             ],
-            expected_actors_ids: [$groups[1]->getID()]
+            expected_actors: [['items_id' => $groups[1]->getID()]]
         );
     }
 

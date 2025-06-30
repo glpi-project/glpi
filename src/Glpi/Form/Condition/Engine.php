@@ -40,6 +40,7 @@ use Glpi\Form\Form;
 use Glpi\Form\Question;
 use Glpi\Form\Section;
 use LogicException;
+use Session;
 
 final class Engine
 {
@@ -154,6 +155,17 @@ final class Engine
                 $conditions = $item->getConfiguredConditionsData();
                 $conditions_result = $this->computeConditions($conditions);
                 $result = $strategy->mustBeVisible($conditions_result);
+            }
+
+            if ($result === true && $item instanceof Question) {
+                // Questions can have a question type that does not allow its visibility to unauthenticated users.
+                // In this case we must consider that the question is not visible.
+                if (
+                    !$item->getQuestionType()->isAllowedForUnauthenticatedAccess()
+                    && !Session::isAuthenticated()
+                ) {
+                    $result = false;
+                }
             }
 
             // Cache the result

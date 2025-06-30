@@ -43,6 +43,7 @@ use Glpi\Form\Destination\CommonITILField\ITILActorFieldStrategy;
 use Glpi\Form\Destination\CommonITILField\ObserverField;
 use Glpi\Form\Form;
 use Glpi\Form\QuestionType\QuestionTypeActorsExtraDataConfig;
+use Glpi\Form\QuestionType\QuestionTypeEmail;
 use Glpi\Form\QuestionType\QuestionTypeObserver;
 use Glpi\Tests\FormBuilder;
 use Group;
@@ -76,7 +77,7 @@ final class ObserverFieldTest extends AbstractActorFieldTest
             form: $form,
             config: $from_template_config,
             answers: [],
-            expected_actors_ids: []
+            expected_actors: []
         );
 
         $user = $this->createItem(User::class, ['name' => 'testObserverFromTemplate User']);
@@ -92,7 +93,7 @@ final class ObserverFieldTest extends AbstractActorFieldTest
             form: $form,
             config: $from_template_config,
             answers: [],
-            expected_actors_ids: [$user->getID()]
+            expected_actors: [['items_id' => $user->getID()]]
         );
 
         // Set the group as default observer using predefined fields
@@ -105,7 +106,7 @@ final class ObserverFieldTest extends AbstractActorFieldTest
             form: $form,
             config: $from_template_config,
             answers: [],
-            expected_actors_ids: [$user->getID(), $group->getID()]
+            expected_actors: [['items_id' => $user->getID()], ['items_id' => $group->getID()]]
         );
     }
 
@@ -121,7 +122,7 @@ final class ObserverFieldTest extends AbstractActorFieldTest
             form: $form,
             config: $form_filler_config,
             answers: [],
-            expected_actors_ids: []
+            expected_actors: []
         );
 
         $auth = $this->login();
@@ -129,7 +130,7 @@ final class ObserverFieldTest extends AbstractActorFieldTest
             form: $form,
             config: $form_filler_config,
             answers: [],
-            expected_actors_ids: [$auth->getUser()->getID()]
+            expected_actors: [['items_id' => $auth->getUser()->getID()]]
         );
     }
 
@@ -153,7 +154,7 @@ final class ObserverFieldTest extends AbstractActorFieldTest
             form: $form,
             config: $form_filler_supervisor_config,
             answers: [],
-            expected_actors_ids: []
+            expected_actors: []
         );
 
         // No supervisor set
@@ -162,7 +163,7 @@ final class ObserverFieldTest extends AbstractActorFieldTest
             form: $form,
             config: $form_filler_supervisor_config,
             answers: [],
-            expected_actors_ids: []
+            expected_actors: []
         );
 
         // Supervisor set
@@ -171,7 +172,7 @@ final class ObserverFieldTest extends AbstractActorFieldTest
             form: $form,
             config: $form_filler_supervisor_config,
             answers: [],
-            expected_actors_ids: [$auth->getUser()->fields['users_id_supervisor']]
+            expected_actors: [['items_id' => $auth->getUser()->fields['users_id_supervisor']]]
         );
     }
 
@@ -195,7 +196,7 @@ final class ObserverFieldTest extends AbstractActorFieldTest
                 ]
             ),
             answers: [],
-            expected_actors_ids: [$user->getID()]
+            expected_actors: [['items_id' => $user->getID()]]
         );
 
         // Specific value: User and Group
@@ -209,7 +210,7 @@ final class ObserverFieldTest extends AbstractActorFieldTest
                 ]
             ),
             answers: [],
-            expected_actors_ids: [$user->getID(), $group->getID()]
+            expected_actors: [['items_id' => $user->getID()], ['items_id' => $group->getID()]]
         );
     }
 
@@ -221,26 +222,30 @@ final class ObserverFieldTest extends AbstractActorFieldTest
         $user2 = $this->createItem(User::class, ['name' => 'testLocationFromSpecificQuestions User 2']);
         $group = $this->createItem(Group::class, ['name' => 'testLocationFromSpecificQuestions Group']);
 
-        // Using answer from first question
+        $answers = [
+            "Observer 1" => [
+                User::getForeignKeyField() . '-' . $user1->getID(),
+            ],
+            "Observer 2" => [
+                User::getForeignKeyField() . '-' . $user2->getID(),
+                Group::getForeignKeyField() . '-' . $group->getID(),
+            ],
+            "Observer email 1" => 'test1@test.test',
+            "Observer email 2" => 'test2@test.test',
+        ];
+
+        // Using answer from first observer question
         $this->sendFormAndAssertTicketActors(
             form: $form,
             config: new ObserverFieldConfig(
                 strategies: [ITILActorFieldStrategy::SPECIFIC_ANSWERS],
                 specific_question_ids: [$this->getQuestionId($form, "Observer 1")]
             ),
-            answers: [
-                "Observer 1" => [
-                    User::getForeignKeyField() . '-' . $user1->getID(),
-                ],
-                "Observer 2" => [
-                    User::getForeignKeyField() . '-' . $user2->getID(),
-                    Group::getForeignKeyField() . '-' . $group->getID(),
-                ],
-            ],
-            expected_actors_ids: [$user1->getID()]
+            answers: $answers,
+            expected_actors: [['items_id' => $user1->getID()]]
         );
 
-        // Using answer from first and second question
+        // Using answer from first and second observer questions
         $this->sendFormAndAssertTicketActors(
             form: $form,
             config: new ObserverFieldConfig(
@@ -250,16 +255,58 @@ final class ObserverFieldTest extends AbstractActorFieldTest
                     $this->getQuestionId($form, "Observer 2"),
                 ]
             ),
-            answers: [
-                "Observer 1" => [
-                    User::getForeignKeyField() . '-' . $user1->getID(),
-                ],
-                "Observer 2" => [
-                    User::getForeignKeyField() . '-' . $user2->getID(),
-                    Group::getForeignKeyField() . '-' . $group->getID(),
-                ],
-            ],
-            expected_actors_ids: [$user1->getID(), $user2->getID(), $group->getID()]
+            answers: $answers,
+            expected_actors: [['items_id' => $user1->getID()], ['items_id' => $user2->getID()], ['items_id' => $group->getID()]]
+        );
+
+        // Using answer from first email question
+        $this->sendFormAndAssertTicketActors(
+            form: $form,
+            config: new ObserverFieldConfig(
+                strategies: [ITILActorFieldStrategy::SPECIFIC_ANSWERS],
+                specific_question_ids: [$this->getQuestionId($form, "Observer email 1")]
+            ),
+            answers: $answers,
+            expected_actors: [['items_id' => 0, 'alternative_email' => 'test1@test.test']]
+        );
+
+        // Using answer from first and second email questions
+        $this->sendFormAndAssertTicketActors(
+            form: $form,
+            config: new ObserverFieldConfig(
+                strategies: [ITILActorFieldStrategy::SPECIFIC_ANSWERS],
+                specific_question_ids: [
+                    $this->getQuestionId($form, "Observer email 1"),
+                    $this->getQuestionId($form, "Observer email 2"),
+                ]
+            ),
+            answers: $answers,
+            expected_actors: [
+                ['items_id' => 0, 'alternative_email' => 'test1@test.test'],
+                ['items_id' => 0, 'alternative_email' => 'test2@test.test'],
+            ]
+        );
+
+        // Using answers from both observer and email questions
+        $this->sendFormAndAssertTicketActors(
+            form: $form,
+            config: new ObserverFieldConfig(
+                strategies: [ITILActorFieldStrategy::SPECIFIC_ANSWERS],
+                specific_question_ids: [
+                    $this->getQuestionId($form, "Observer 1"),
+                    $this->getQuestionId($form, "Observer 2"),
+                    $this->getQuestionId($form, "Observer email 1"),
+                    $this->getQuestionId($form, "Observer email 2"),
+                ]
+            ),
+            answers: $answers,
+            expected_actors: [
+                ['items_id' => $user1->getID()],
+                ['items_id' => $user2->getID()],
+                ['items_id' => 0, 'alternative_email' => 'test1@test.test'],
+                ['items_id' => 0, 'alternative_email' => 'test2@test.test'],
+                ['items_id' => $group->getID()],
+            ]
         );
     }
 
@@ -274,7 +321,7 @@ final class ObserverFieldTest extends AbstractActorFieldTest
         $user2 = $this->createItem(User::class, ['name' => 'testLocationFromSpecificQuestions User 2']);
         $group = $this->createItem(Group::class, ['name' => 'testLocationFromSpecificQuestions Group']);
 
-        // With multiple answers submitted
+        // With multiple observer answers submitted
         $this->sendFormAndAssertTicketActors(
             form: $form,
             config: $last_valid_answer_config,
@@ -287,7 +334,36 @@ final class ObserverFieldTest extends AbstractActorFieldTest
                     Group::getForeignKeyField() . '-' . $group->getID(),
                 ],
             ],
-            expected_actors_ids: [$user2->getID(), $group->getID()]
+            expected_actors: [['items_id' => $user2->getID()], ['items_id' => $group->getID()]]
+        );
+
+        // With multiple email answers submitted
+        $this->sendFormAndAssertTicketActors(
+            form: $form,
+            config: $last_valid_answer_config,
+            answers: [
+                "Observer email 1" => 'test1@test.test',
+                "Observer email 2" => 'test2@test.test',
+            ],
+            expected_actors: [['items_id' => 0, 'alternative_email' => 'test2@test.test']]
+        );
+
+        // With multiple observer and email answers submitted
+        $this->sendFormAndAssertTicketActors(
+            form: $form,
+            config: $last_valid_answer_config,
+            answers: [
+                "Observer 1" => [
+                    User::getForeignKeyField() . '-' . $user1->getID(),
+                ],
+                "Observer 2" => [
+                    User::getForeignKeyField() . '-' . $user2->getID(),
+                    Group::getForeignKeyField() . '-' . $group->getID(),
+                ],
+                "Observer email 1" => 'test1@test.test',
+                "Observer email 2" => 'test2@test.test',
+            ],
+            expected_actors: [['items_id' => 0, 'alternative_email' => 'test2@test.test']]
         );
 
         // Only first answer was submitted
@@ -299,7 +375,7 @@ final class ObserverFieldTest extends AbstractActorFieldTest
                     User::getForeignKeyField() . '-' . $user1->getID(),
                 ],
             ],
-            expected_actors_ids: [$user1->getID()]
+            expected_actors: [['items_id' => $user1->getID()]]
         );
 
         // Only second answer was submitted
@@ -312,7 +388,27 @@ final class ObserverFieldTest extends AbstractActorFieldTest
                     Group::getForeignKeyField() . '-' . $group->getID(),
                 ],
             ],
-            expected_actors_ids: [$user2->getID(), $group->getID()]
+            expected_actors: [['items_id' => $user2->getID()], ['items_id' => $group->getID()]]
+        );
+
+        // Only first email question was submitted
+        $this->sendFormAndAssertTicketActors(
+            form: $form,
+            config: $last_valid_answer_config,
+            answers: [
+                "Observer email 1" => 'test1@test.test',
+            ],
+            expected_actors: [['items_id' => 0, 'alternative_email' => 'test1@test.test']]
+        );
+
+        // Only second email question was submitted
+        $this->sendFormAndAssertTicketActors(
+            form: $form,
+            config: $last_valid_answer_config,
+            answers: [
+                "Observer email 2" => 'test2@test.test',
+            ],
+            expected_actors: [['items_id' => 0, 'alternative_email' => 'test2@test.test']]
         );
 
         // No answers, fallback to default value
@@ -320,7 +416,7 @@ final class ObserverFieldTest extends AbstractActorFieldTest
             form: $form,
             config: $last_valid_answer_config,
             answers: [],
-            expected_actors_ids: []
+            expected_actors: []
         );
 
         // Try again with a different template value
@@ -333,7 +429,7 @@ final class ObserverFieldTest extends AbstractActorFieldTest
             form: $form,
             config: $last_valid_answer_config,
             answers: [],
-            expected_actors_ids: [$user1->getID()]
+            expected_actors: [['items_id' => $user1->getID()]]
         );
     }
 
@@ -365,7 +461,7 @@ final class ObserverFieldTest extends AbstractActorFieldTest
                 ]
             ),
             answers: [],
-            expected_actors_ids: [$user1->getID(), $user2->getID(), $group->getID()]
+            expected_actors: [['items_id' => $user1->getID()], ['items_id' => $user2->getID()], ['items_id' => $group->getID()]]
         );
     }
 
@@ -637,7 +733,7 @@ final class ObserverFieldTest extends AbstractActorFieldTest
         Form $form,
         ITILActorFieldConfig $config,
         array $answers,
-        array $expected_actors_ids,
+        array $expected_actors,
     ): void {
         // Insert config
         $destinations = $form->getDestinations();
@@ -673,10 +769,15 @@ final class ObserverFieldTest extends AbstractActorFieldTest
         $ticket = current($created_items);
 
         // Check actors
-        $this->assertEquals(
-            $expected_actors_ids,
-            array_map(fn(array $actor) => $actor['items_id'], $ticket->getActorsForType(CommonITILActor::OBSERVER))
-        );
+        $actors = $ticket->getActorsForType(CommonITILActor::OBSERVER);
+        foreach ($expected_actors as $expected_actor) {
+            $actor = array_shift($actors);
+            $this->assertArrayIsEqualToArrayOnlyConsideringListOfKeys(
+                $expected_actor,
+                $actor,
+                array_keys($expected_actor)
+            );
+        }
     }
 
     private function createAndGetFormWithMultipleActorsQuestions(): Form
@@ -689,6 +790,8 @@ final class ObserverFieldTest extends AbstractActorFieldTest
             '',
             json_encode((new QuestionTypeActorsExtraDataConfig(true))->jsonSerialize())
         );
+        $builder->addQuestion("Observer email 1", QuestionTypeEmail::class);
+        $builder->addQuestion("Observer email 2", QuestionTypeEmail::class, );
         return $this->createForm($builder);
     }
 }

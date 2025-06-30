@@ -50,6 +50,11 @@ describe('Requester configuration', () => {
             cy.getDropdownByLabelText('Question sub type').selectDropdownValue('Requesters');
             cy.getDropdownByLabelText("Select an actor...").selectDropdownValue(requester_name);
 
+            cy.findByRole('button', {'name': "Add a question"}).click();
+            cy.focused().type("My Email question");
+            cy.getDropdownByLabelText('Question type').selectDropdownValue('Short answer');
+            cy.getDropdownByLabelText('Question sub type').selectDropdownValue('Emails');
+
             // Create a Group
             cy.createWithAPI('Group', {
                 name: `Test Group - ${form_id}`,
@@ -140,19 +145,20 @@ describe('Requester configuration', () => {
         cy.get('@requesters_dropdown').selectDropdownValue('Answer from specific questions');
         cy.get('@config').getDropdownByLabelText('Select questions...').as('specific_answers_type_dropdown');
         cy.get('@specific_answers_type_dropdown').selectDropdownValue('My Requester question');
+        cy.get('@specific_answers_type_dropdown').selectDropdownValue('My Email question');
 
         cy.findByRole('button', { 'name': 'Update item' }).click();
         cy.checkAndCloseAlert('Item successfully updated');
         cy.openAccordionItem('Destination fields accordion', 'Actors');
         cy.get('@requesters_dropdown').should('have.text', 'Answer from specific questions');
-        cy.get('@specific_answers_type_dropdown').should('have.text', '×My Requester question');
+        cy.get('@specific_answers_type_dropdown').should('have.text', '×My Requester question×My Email question');
 
-        // Switch to "Answer to last "Requesters" question"
-        cy.get('@requesters_dropdown').selectDropdownValue('Answer to last "Requesters" question');
+        // Switch to "Answer to last "Requesters" or "Email" question"
+        cy.get('@requesters_dropdown').selectDropdownValue('Answer to last "Requesters" or "Email" question');
         cy.findByRole('button', { 'name': 'Update item' }).click();
         cy.checkAndCloseAlert('Item successfully updated');
         cy.openAccordionItem('Destination fields accordion', 'Actors');
-        cy.get('@requesters_dropdown').should('have.text', 'Answer to last "Requesters" question');
+        cy.get('@requesters_dropdown').should('have.text', 'Answer to last "Requesters" or "Email" question');
 
         // Switch to "User from GLPI object answer"
         cy.get('@requesters_dropdown').selectDropdownValue('User from GLPI object answer');

@@ -66,8 +66,11 @@ describe('Assignee configuration', () => {
             cy.getDropdownByLabelText('Question type').selectDropdownValue('Actors');
             cy.getDropdownByLabelText('Question sub type').selectDropdownValue('Assignees');
             cy.getDropdownByLabelText("Select an actor...").selectDropdownValue(assignee_name);
-            cy.findByRole('button', {'name': 'Save'}).click();
-            cy.checkAndCloseAlert('Item successfully updated');
+
+            cy.findByRole('button', {'name': "Add a question"}).click();
+            cy.focused().type("My Email question");
+            cy.getDropdownByLabelText('Question type').selectDropdownValue('Short answer');
+            cy.getDropdownByLabelText('Question sub type').selectDropdownValue('Emails');
 
             cy.findByRole('button', {'name': "Add a question"}).click();
             cy.focused().type("My Computer question");
@@ -136,19 +139,20 @@ describe('Assignee configuration', () => {
         cy.get('@assignees_dropdown').selectDropdownValue('Answer from specific questions');
         cy.get('@config').getDropdownByLabelText('Select questions...').as('specific_answers_type_dropdown');
         cy.get('@specific_answers_type_dropdown').selectDropdownValue('My Assignee question');
+        cy.get('@specific_answers_type_dropdown').selectDropdownValue('My Email question');
 
         cy.findByRole('button', { 'name': 'Update item' }).click();
         cy.checkAndCloseAlert('Item successfully updated');
         cy.openAccordionItem('Destination fields accordion', 'Actors');
         cy.get('@assignees_dropdown').should('have.text', 'Answer from specific questions');
-        cy.get('@specific_answers_type_dropdown').should('have.text', '×My Assignee question');
+        cy.get('@specific_answers_type_dropdown').should('have.text', '×My Assignee question×My Email question');
 
-        // Switch to "Answer to last "Assignees" question"
-        cy.get('@assignees_dropdown').selectDropdownValue('Answer to last "Assignees" question');
+        // Switch to "Answer to last "Assignees" or "Email" question"
+        cy.get('@assignees_dropdown').selectDropdownValue('Answer to last "Assignees" or "Email" question');
         cy.findByRole('button', { 'name': 'Update item' }).click();
         cy.checkAndCloseAlert('Item successfully updated');
         cy.openAccordionItem('Destination fields accordion', 'Actors');
-        cy.get('@assignees_dropdown').should('have.text', 'Answer to last "Assignees" question');
+        cy.get('@assignees_dropdown').should('have.text', 'Answer to last "Assignees" or "Email" question');
 
         // Switch to "Supervisor of the user who filled the form"
         cy.get('@assignees_dropdown').selectDropdownValue('Supervisor of the user who filled the form');
