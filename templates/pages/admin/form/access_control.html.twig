@@ -89,7 +89,7 @@
                             >
                         </label>
                     </h3>
-                    <div>
+                    <div class="access-control-config-form">
                         {# Render custom config form #}
                         {{ strategy.renderConfigForm(access_control)|raw }}
                     </div>
@@ -132,4 +132,8 @@
             .trigger("change")
         ;
     });
+
+    $('input[data-glpi-toggle-control]').on('change', (e) => {
+        $(e.currentTarget).closest('section').find('.access-control-config-form').toggle(e.currentTarget.checked);
+    }).trigger('change');
 </script>
