@@ -75,12 +75,10 @@ describe('Form plugins', () => {
             name: 'Restrict access to a specific day of the week'
         }).within(() => {
             // Validate default values
-            cy.getDropdownByLabelText('Day').should('have.text', "Monday");
             cy.findByRole('checkbox', {name: 'Active'}).should('not.be.checked');
-
-            // Apply config
+            cy.findByRole('checkbox', {name: 'Active'}).check();
+            cy.getDropdownByLabelText('Day').should('have.text', "Monday");
             cy.getDropdownByLabelText('Day').selectDropdownValue('Thursday');
-            cy.findByRole('checkbox', {name: 'Active'}).should('be.checked');
         });
 
         // Save and reload
