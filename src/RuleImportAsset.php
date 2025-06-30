@@ -1026,6 +1026,9 @@ class RuleImportAsset extends Rule
                         }
                         $output['found_inventories'] = [0, $back_class, $rules_id];
                         return $output;
+                    } elseif ($action->fields["value"] == self::RULE_ACTION_LINK_OR_NO_IMPORT) {
+                        // no import
+                        $output['action'] = self::LINK_RESULT_DENIED;
                     }
                 }
             }
