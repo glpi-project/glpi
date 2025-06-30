@@ -111,20 +111,4 @@ describe('Access Control', () => {
             });
         });
     });
-    it('activate policy when any input is modified', () => {
-        cy.findByRole('region', {
-            name: 'Allow direct access'
-        }).within(() => {
-            cy.findByRole('checkbox', {name: 'Active'})
-                .should('not.be.checked')
-            ;
-            cy.findByRole('checkbox', {name: 'Allow unauthenticated users ?'})
-                .should('not.be.checked')
-                .click()
-            ;
-            cy.findByRole('checkbox', {name: 'Active'})
-                .should('be.checked')
-            ;
-        });
-    });
 });

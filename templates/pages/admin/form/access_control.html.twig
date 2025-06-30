@@ -119,20 +119,6 @@
 </div>
 
 <script>
-    // Toggle state if any input is modified
-    $("section[data-glpi-access-control-form] :input").on("change", function(e) {
-        // Do not trigger on this is_active checkbox itself
-        if ($(this).data("glpi-toggle-control") !== undefined) {
-            return;
-        }
-
-        $(this).closest("section")
-            .find("[data-glpi-toggle-control]")
-            .prop("checked", true)
-            .trigger("change")
-        ;
-    });
-
     $('input[data-glpi-toggle-control]').on('change', (e) => {
         $(e.currentTarget).closest('section').find('.access-control-config-form').toggle(e.currentTarget.checked);
     }).trigger('change');

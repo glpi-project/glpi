@@ -43,6 +43,7 @@
                         <input type="hidden" value="0" name="show_in_service_catalog">
                         <input aria-label="{{ __(" Active") }}" class="form-check-input" type="checkbox"
                             name="show_in_service_catalog" value="1"
+                            {{ item.fields.show_in_service_catalog == true ? "checked" : "" }}
                         >
                     </label>
                 {% endif %}
