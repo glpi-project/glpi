@@ -29,6 +29,7 @@
         "ext-openssl": "*",
         "ext-session": "*",
         "ext-simplexml": "*",
+        "ext-tokenizer": "*",
         "ext-zlib": "*",
         "apereo/phpcas": "^1.6",
         "bacon/bacon-qr-code": "^3.0",
