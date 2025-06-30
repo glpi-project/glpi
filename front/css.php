@@ -38,9 +38,10 @@ require_once(__DIR__ . '/_check_webserver_config.php');
 use Glpi\Application\Environment;
 use Glpi\UI\ThemeManager;
 
-// Main CSS compilation requires about 70MB of memory.
+// Main CSS compilation requires about 120MB of memory.
 // Ensure to have enough memory to not reach memory limit.
-$max_memory = 96;
+// To be also defined in `src/Glpi/Console/Build/CompileScssCommand.php`.
+$max_memory = 192;
 if (Toolbox::getMemoryLimit() < ($max_memory * 1024 * 1024)) {
     ini_set('memory_limit', sprintf('%dM', $max_memory));
 }

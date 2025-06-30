@@ -42,6 +42,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Toolbox;
 
 class CompileScssCommand extends Command
 {
@@ -86,6 +87,14 @@ class CompileScssCommand extends Command
                     $compile_directory
                 )
             );
+        }
+
+        // Main CSS compilation requires about 120MB of memory.
+        // Ensure to have enough memory to not reach memory limit.
+        // To be also defined in `front/css.php`.
+        $max_memory = 192;
+        if (Toolbox::getMemoryLimit() < ($max_memory * 1024 * 1024)) {
+            ini_set('memory_limit', sprintf('%dM', $max_memory));
         }
     }
 
