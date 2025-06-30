@@ -41,6 +41,7 @@ use OperatingSystem;
 use OperatingSystemArchitecture;
 use OperatingSystemServicePack;
 use OperatingSystemVersion;
+use RuleImportAsset;
 use wapmorgan\UnifiedArchive\UnifiedArchive;
 
 /**
@@ -8853,5 +8854,81 @@ JSON;
         $inventory->setData($json);
         $inventory->doInventory();
         $this->assertTrue($computer->getFromDBByCrit(['name' => 'pc_with_additional_prop']));
+    }
+
+    public function testRuleActionLinkOrNoImport()
+    {
+        // Prevents PHP Warning: "Undefined array key 'action'" in MainAsset.php
+        // The warning is triggered when the RuleImportAsset action is set to RULE_ACTION_LINK_OR_NO_IMPORT
+        // and the 'action' key is not defined in the expected input array.
+
+        $computer = new \Computer();
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+        <REQUEST>
+        <CONTENT>
+          <HARDWARE>
+            <NAME>glpixps-caen</NAME>
+            <DESCRIPTION>TECLIB-CAEN</DESCRIPTION>
+            <UUID>3c284ba8-496e-4daf-80d4-5a3411e48a46 </UUID>
+          </HARDWARE>
+          <BIOS>
+            <MSN>54SDFLJ654SDF</MSN>
+          </BIOS>
+          <VERSIONCLIENT>GLPIAgent-Inventory_v2.4.1-2.fc28</VERSIONCLIENT>
+        </CONTENT>
+        <DEVICEID>glpixps.teclib.infra</DEVICEID>
+        <QUERY>INVENTORY</QUERY>
+        </REQUEST>";
+
+        $collection = new \RuleImportAssetCollection();
+        $rule = new \Rule();
+        $criteria = new \RuleCriteria();
+        $action = new \RuleAction();
+
+        $rules_id = $rule->add([
+            'name' => 'Link if possible, otherwise imports declined',
+            'is_active' => 1,
+            'entities_id' => 0,
+            'sub_type' => \RuleImportAsset::class,
+            'match' => \Rule::AND_MATCHING,
+            'condition' => 0,
+            'description' => '',
+        ]);
+        $this->assertGreaterThan(0, $rules_id);
+
+        $this->assertTrue($collection->moveRule($rules_id, 0, $collection::MOVE_BEFORE));
+
+        $this->assertGreaterThan(
+            0,
+            $criteria->add([
+                'rules_id' => $rules_id,
+                'criteria' => 'itemtype',
+                'condition' => \Rule::PATTERN_IS,
+                'pattern' => \Computer::class,
+            ])
+        );
+
+        $this->assertGreaterThan(
+            0,
+            $action->add([
+                'rules_id' => $rules_id,
+                'action_type' => 'assign',
+                'field' => '_inventory',
+                'value' => \RuleImportAsset::RULE_ACTION_LINK_OR_NO_IMPORT, //import denied
+            ])
+        );
+
+        // check that computer is not created
+        $inventory = $this->doInventory($xml_source, true);
+        $this->assertTrue($inventory->getItem()->isNewItem());
+
+        $this->assertFalse($computer->getFromDBByCrit([
+            'name' => 'glpixps-caen',
+        ]));
+
+        $this->assertTrue($rule->update([
+            'id' => $rules_id,
+            'is_active' => 0,
+        ]));
     }
 }
