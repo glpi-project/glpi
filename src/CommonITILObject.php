@@ -5011,10 +5011,11 @@ abstract class CommonITILObject extends CommonDBTM
         switch ($type) {
             // OLA TTO/TTR uses the same logic, we rely on item_ola datas
             case 'internal_time_to_own':
-                $ola_type_to_filter = SLM::TTR;
+                $ola_type_to_filter = SLM::TTO;
                 // no break
             case 'internal_time_to_resolve':
-                $ola_type_to_filter ??= SLM::TTO;
+                $ola_type_to_filter ??= SLM::TTR;
+
                 // force table value to glpi_items_olas, it can't be something else
                 $table = 'glpi_items_olas';
 
