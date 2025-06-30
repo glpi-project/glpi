@@ -191,7 +191,7 @@ class Item_Ola extends CommonDBRelation
      *
      * @param \Ticket $ticket
      *
-     * @return array<array{olas_id: int, items_olas_id: int, name: string, entities_id: int, is_recursive: bool, type: int, comment: string, number_time: int, use_ticket_calendar: bool, calendars_id: int, date_mod: string, definition_time: string, end_of_working_day: string, date_creation: string, slms_id: int, due_time: string, class: string, item: Ticket, nextaction: false|OlaLevel_Ticket|SlaLevel_Ticket, level: false|\LevelAgreementLevel}>
+     * @return array<array> @see self::fillItemOlaData()
      */
     public function getDataFromDBForTicket(Ticket $ticket): array
     {
@@ -244,18 +244,21 @@ class Item_Ola extends CommonDBRelation
      *
      * If 'linkid' is set, it will be used to populate the data from Item_Ola otherwise it will be filled with default values.
      *
-     * @return array{olas_id: int, items_olas_id: int, name: string, entities_id: int, is_recursive: bool, type: int, comment: string, number_time: int, use_ticket_calendar: bool, calendars_id: int, date_mod: string, definition_time: string, end_of_working_day: string, date_creation: string, slms_id: int, due_time: string, class: string, item: Ticket, nextaction: false|OlaLevel_Ticket|SlaLevel_Ticket, level: false|\LevelAgreementLevel}
+     * @return array{olas_id: int, items_olas_id: int, name: string, entities_id: int, is_recursive: bool, type: int, comment: string, number_time: int, use_ticket_calendar: bool, calendars_id: int, date_mod: string, definition_time: string, end_of_working_day: string, date_creation: string, slms_id: int, due_time: string, class: string, item: Ticket, nextaction: false|OlaLevel_Ticket|SlaLevel_Ticket, level: false|\LevelAgreementLevel, group_name: string}
      */
     private function fillItemOlaData(array $ola_data, Ticket $ticket): array
     {
         $_ola = new OLA();
+        $_group = new Group();
+        $_group->getFromDB($ola_data['groups_id']);
+        $group_name = $_group->getName();
         // start with the ola data
         $_merged_data = $ola_data;
 
         // data defaults for item_ola
         $_merged_data['itemtype'] = $ticket::class;
         $_merged_data['items_id'] = $ticket->getID();
-        $_merged_data['olas_id'] = $_merged_data['id'];
+        $_merged_data['olas_id'] = $ola_data['id'];
         $_merged_data['start_time'] = 0;
         $_merged_data['due_time'] = 0;
         $_merged_data['end_time'] = 0;
@@ -267,6 +270,7 @@ class Item_Ola extends CommonDBRelation
         $_merged_data['item'] = $ticket; // object, not just fields, functions used in template
         $_merged_data['nextaction'] = $_ola->getNextActionForTicket($ticket, $_merged_data['type']);
         $_merged_data['level'] = $_ola->getLevelFromAction($_merged_data['nextaction']);
+        $_merged_data['group_name'] = $group_name;
 
         // if linkid is set (items_olas exists), use it to populate the data
         if (isset($ola_data['linkid'])) {
