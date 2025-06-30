@@ -38,11 +38,15 @@ require_once(__DIR__ . '/_check_webserver_config.php');
 use Glpi\Application\Environment;
 use Glpi\UI\ThemeManager;
 
-// Main CSS compilation requires about 70MB of memory.
-// Ensure to have enough memory to not reach memory limit.
-$max_memory = 96;
-if (Toolbox::getMemoryLimit() < ($max_memory * 1024 * 1024)) {
-    ini_set('memory_limit', sprintf('%dM', $max_memory));
+use function Safe\ini_set;
+use function Safe\preg_match;
+
+if (preg_match('~^css/glpi(\.scss)?$~', $_GET['file'] ?? '') === 1) {
+    // Ensure to have enough memory to not reach memory limit.
+    $max_memory = Html::MAIN_SCSS_COMPILATION_REQUIRED_MEMORY;
+    if (Toolbox::getMemoryLimit() < ($max_memory * 1024 * 1024)) {
+        ini_set('memory_limit', sprintf('%dM', $max_memory));
+    }
 }
 
 // If a custom theme is requested, we need to get the real path of the theme

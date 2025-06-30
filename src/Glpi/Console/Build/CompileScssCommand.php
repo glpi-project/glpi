@@ -42,6 +42,9 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Toolbox;
+
+use function Safe\ini_set;
 
 class CompileScssCommand extends Command
 {
@@ -86,6 +89,12 @@ class CompileScssCommand extends Command
                     $compile_directory
                 )
             );
+        }
+
+        // Ensure to have enough memory to not reach memory limit.
+        $max_memory = Html::MAIN_SCSS_COMPILATION_REQUIRED_MEMORY;
+        if (Toolbox::getMemoryLimit() < ($max_memory * 1024 * 1024)) {
+            ini_set('memory_limit', sprintf('%dM', $max_memory));
         }
     }
 
