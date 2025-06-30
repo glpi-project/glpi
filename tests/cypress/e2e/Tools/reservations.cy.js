@@ -53,7 +53,7 @@ describe('Reservations', () => {
             cy.get('.fc-week .fc-day').first().click();
             cy.findByRole('dialog', {name: 'Add reservation'}).within(() => {
                 cy.contains('Reservable computer');
-                cy.getDropdownByLabelText('By').selectDropdownValue('e2e_tests');
+                cy.getDropdownByLabelText('By').selectDropdownValue('E2E Tests');
                 cy.findByRole('button', { name: 'Add' }).click();
             });
 
