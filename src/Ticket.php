@@ -1609,13 +1609,6 @@ class Ticket extends CommonITILObject
             if (isset($this->input[$slaField]) && ($this->input[$slaField] > 0)) {
                 $this->manageSlaLevel($this->input[$slaField]);
             }
-
-            //            [$dateField, $olaField] = OLA::getFieldNames($slmType);
-            //            if (isset($this->input[$olaField]) && ($this->input[$olaField] > 0)) {
-            //                // deprecated, see updateOLAs()
-            //                throw new \LogicException($olaField . ' is not handled. this Exception should never happend because of transformOlasInputForBackwardCompatibility()');
-            //                $this->manageOlaLevel($this->input[$olaField]);
-            //            }
         }
 
         $this->updateOlaAssociations(true);

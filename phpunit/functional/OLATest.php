@@ -81,7 +81,7 @@ use Ticket;
  *              - is not done when a user not in the dedicated group is assigned to the ticket : @see self::testOlaTtoIsNotCompleteWhenTicketIsAssignedToUserNotInDedicatedGroup()
  *
  *          - delay :
- *              - ola due time is not delayed if the ticket status is WAITING : @see self::testOlaTTODueTimeIsNotDelayedWhileTicketStatusIsWaiting() @todoseb maintenant plus subtile, doit être compté avant que le groupe assigné au ticket l'ai pris en charge.
+ *              - ola due time is not delayed if the ticket status is WAITING : @see self::testOlaTTODueTimeIsNotDelayedWhileTicketStatusIsWaiting()
  *              - ola waiting time is not incremented while the ticket is WAITING @see self::testOlaTTOWaitingTimeIsNotIncrementedWhileTicketStatusIsWaiting()
  *
  *          - ola can be associated by rule and form at the same time @see self::testOlaCanBeAssociatedByRulesAndByForm()
@@ -92,8 +92,8 @@ use Ticket;
  *              - on update : @see self::testInitialOlaTtrValuesOnUpdate()
  *
  *          - completion :
- *              - is done when the ticket is closed (end_time is set): @see self::testOlaTtrIsCompleteWhenTicketIsClosed() // @todoseb nom de test pas cohérent avec le test tto
- *              - is done when the ticket is solved : @see self::testOlaTtrIsCompleteWhenTicketIsSolved()
+ *              - is done when the ticket is closed (end_time is set): @see self::testOlaTtrIsCompleteWhenTicketStatusChanges()
+ *              - is done when the ticket is solved : @see self::testOlaTtrIsCompleteWhenTicketStatusChanges()
  *
  *          - delay :
  *              - ttr due time is delayed if the ticket status is WAITING : @see self::testOlaTtrDueTimeIsDelayedWhileTicketStatusIsWaiting
@@ -102,11 +102,6 @@ use Ticket;
  *
  *          - when completion is done, the associated group is removed from ticket assignees : not implemented, seems not relevant atm
  */
-
-// @todoseb test à la suppression d'un OLA ? comportement à adopter ? est déjà protégé ? -> a tester
-// @todoseb test à la modification d'un OLA ? : recalcul sur les dates d'échéance ?
-// @todoseb revoir les messages des assertions
-// @todoseb tests sur getSlasData() - ailleurs
 
 class OLATest extends DbTestCase
 {
@@ -151,7 +146,7 @@ class OLATest extends DbTestCase
 
         // assert
         $fetched_olas = array_column($ticket->getOlasData(), 'olas_id');
-        $this->assertEqualsCanonicalizing([$ola->getID()], $fetched_olas, 'Expected exactly 1 OLA associated with ticket, but found different results');
+        $this->assertEqualsCanonicalizing([$ola->getID()], $fetched_olas, 'Failed to associate with ticket on creation');
     }
 
     public function testAssociateSingleOlaOnUpdate(): void
@@ -167,7 +162,7 @@ class OLATest extends DbTestCase
 
         // assert
         $fetched_olas = array_column($ticket->getOlasData(), 'olas_id');
-        $this->assertEqualsCanonicalizing([$ola->getID()], $fetched_olas, 'Expected exactly 1 OLA associated with ticket, but found different results');
+        $this->assertEqualsCanonicalizing([$ola->getID()], $fetched_olas, 'Failed to associate with ticket on update');
     }
 
     public function testAssociateMultipleOlasOnCreation(): void
@@ -184,7 +179,7 @@ class OLATest extends DbTestCase
 
         // assert
         $fetched_olas = array_column($ticket->getOlasData(), 'olas_id');
-        $this->assertEqualsCanonicalizing($olas_ids, $fetched_olas, 'Expected OLAs associated with ticket don\'t match the expected IDs');
+        $this->assertEqualsCanonicalizing($olas_ids, $fetched_olas, 'Failed to associate multiple olas with ticket on creation');
     }
 
     public function testAssociateMultipleOlaOnUpdate(): void
@@ -203,7 +198,7 @@ class OLATest extends DbTestCase
 
         // assert
         $fetched_olas = array_column($ticket->getOlasData(), 'olas_id');
-        $this->assertEqualsCanonicalizing($olas_ids, $fetched_olas, 'Expected exactly 1 OLA associated with ticket, but found different results');
+        $this->assertEqualsCanonicalizing($olas_ids, $fetched_olas, 'Failed to associate multiple olas with ticket on creation');
     }
 
     public function testUpdateTicketWithoutOlaInputs(): void
@@ -219,7 +214,7 @@ class OLATest extends DbTestCase
 
         // assert
         $fetched_olas = array_column($ticket->getOlasData(), 'olas_id');
-        $this->assertEqualsCanonicalizing([$ola->getID()], $fetched_olas, 'Expected exactly 1 OLA associated with ticket, but found different results');
+        $this->assertEqualsCanonicalizing([$ola->getID()], $fetched_olas, 'Failed to keep OLA associated with ticket when no OLA inputs are specified on update');
     }
 
     public function testUpdateTicketOlas(): void
@@ -259,7 +254,7 @@ class OLATest extends DbTestCase
 
         // assert
         $fetched_olas = array_column($ticket->getOlasData(), 'olas_id');
-        $this->assertEqualsCanonicalizing([$ola->getID()], $fetched_olas, 'Expected exactly 1 OLA associated with ticket, but found different results');
+        $this->assertEqualsCanonicalizing([$ola->getID()], $fetched_olas, 'Unexpected OLA associated with ticket, duplicated OLA IDs should be ignored');
     }
 
     /**
@@ -280,7 +275,7 @@ class OLATest extends DbTestCase
 
         // assert
         $fetched_olas = array_column($ticket->getOlasData(), 'olas_id');
-        $this->assertEqualsCanonicalizing([$ola_tto->getID(), $ola_ttr->getID()], $fetched_olas, 'Unexpected OLA associated with ticket');
+        $this->assertEqualsCanonicalizing([$ola_tto->getID(), $ola_ttr->getID()], $fetched_olas, 'Unexpected OLA associated with ticket using old form params on creation');
     }
 
     public function testUpdateTicketWithOldFormParams(): void
@@ -301,7 +296,7 @@ class OLATest extends DbTestCase
 
         // assert
         $fetched_olas = array_column($ticket->getOlasData(), 'olas_id');
-        $this->assertEqualsCanonicalizing([$ola_tto->getID(), $ola_ttr->getID()], $fetched_olas, 'Unexpected OLA associated with ticket');
+        $this->assertEqualsCanonicalizing([$ola_tto->getID(), $ola_ttr->getID()], $fetched_olas, 'Unexpected OLA associated with ticket using old form params on update');
     }
 
     /**
@@ -364,7 +359,7 @@ class OLATest extends DbTestCase
 
         // assert
         $expected_add_return
-            ? $this->assertTrue($inserted)
+            ? $this->assertTrue($inserted, 'Failed to associate OLA with allowed group on add')
             : $this->hasSessionMessages(ERROR, ['The group #' . $test_group->getID() . ' is not allowed to be associated with an OLA. group.is_assign must be set to 1']);
     }
 
@@ -398,7 +393,7 @@ class OLATest extends DbTestCase
 
         // assert
         $expected_add_return
-            ? $this->assertTrue((bool) $update)
+            ? $this->assertTrue($update, 'Failed to associate OLA with allowed group on update')
             : $this->hasSessionMessages(ERROR, ['The group #' . $test_group->getID() . ' is not allowed to be associated with an OLA. group.is_assign must be set to 1']);
     }
 
@@ -434,8 +429,6 @@ class OLATest extends DbTestCase
         $fetched_olas = array_column($ticket->getOlasData(), 'olas_id');
         $this->assertEqualsCanonicalizing([$ola->getID()], $fetched_olas);
         $this->assertEmpty($ticket->getGroups(\CommonITILActor::class));
-
-        // @todoseb faire la même avec une rule
     }
 
     /**
@@ -468,7 +461,6 @@ class OLATest extends DbTestCase
         $this->assertEquals($ola_data['due_time'], $due_time_datetime->format('Y-m-d H:i:s'), 'Due time should be start_time + OLA_TTO_DELAY.');
 
         // end_time is not set
-        // @todoseb est actuellement null, zero c'est mieux ?
         $this->assertNull($ola_data['end_time'], 'End time should not be set when OLA is assigned to ticket.');
 
         // waiting_time is not set
@@ -669,7 +661,6 @@ class OLATest extends DbTestCase
         $this->createRule($builder);
 
         // act - create ticket with priority 4 and associate OLA
-        // @todoseb faire test supplémentaire car le param _la_update pourrait faire fonctionner la rule qui ne fonctionnerai pas autrement : en 2 étapes
         $ticket = $this->createTicket(['priority' => 4, '_la_update' => true, '_olas_id' => [$ola_by_form->getID()]]);
 
         // assert - check if the ticket has the 2 OLA associated
@@ -680,7 +671,6 @@ class OLATest extends DbTestCase
 
     public function testInitialOlaTtrValuesOnCreation(): void
     {
-        // @todoseb peut-être qu'on peut factoriser avec ola tto, de façon a pouvoir facilement les séparer plus tard, si ça ne nuit pas à la lisibilité, ou faire un appel à la même fonction
         $this->login();
         // arrange
         $ola_ttr = $this->createOLA(ola_type: \SLM::TTR)['ola'];
@@ -736,30 +726,9 @@ class OLATest extends DbTestCase
         $this->assertEquals(0, $ola_data['waiting_time'], 'Waiting time should not be set for TTO OLA.');
     }
 
-    public function testOlaTtrIsCompleteWhenTicketIsClosed(): void
-    {
-        $this->login();
-        // arrange
-        $ola_ttr = $this->createOLA(ola_type: \SLM::TTR)['ola'];
-        $this->setCurrentTime('14:12:00', '2025-06-13');
-        // create (assigned) ticket with OLA + assign ola group to ticket
-        $ticket = $this->createTicket(['_la_update' => true, '_olas_id' => [$ola_ttr->getID()], '_groups_id_assign' => $ola_ttr->fields['groups_id'], 'status' => \CommonITILObject::ASSIGNED]);
-
-        // act associate close the ticket 30 minutes later
-        $ticket_resolution_datetime = $this->setCurrentTime('14:42:00', '2025-06-13');
-        $ticket = $this->updateItem($ticket::class, $ticket->getID(), ['status' => \CommonITILObject::CLOSED]);
-
-        // assert
-        $ola_data = $ticket->getOlasData()[0];
-        // end_time is not set to
-        $this->assertEquals($ticket_resolution_datetime->format('Y-m-d H:i:s'), $ola_data['end_time'], 'Ola ttr end time should not set when ticket is closed.');
-    }
-
-    /**
-     * Same test as above but for solved status
-     * @todoseb refacto ?
-     */
-    public function testOlaTtrIsCompleteWhenTicketIsSolved(): void
+    #[TestWith([\CommonITILObject::SOLVED])]
+    #[TestWith([\CommonITILObject::CLOSED])]
+    public function testOlaTtrIsCompleteWhenTicketStatusChanges(int $ticket_status): void
     {
         $this->login();
         // arrange
@@ -775,7 +744,7 @@ class OLATest extends DbTestCase
         // assert
         $ola_data = $ticket->getOlasData()[0];
         // end_time is not set to
-        $this->assertEquals($ticket_resolution_datetime->format('Y-m-d H:i:s'), $ola_data['end_time'], 'Ola ttr end time should not set when ticket is solved.');
+        $this->assertEquals($ticket_resolution_datetime->format('Y-m-d H:i:s'), $ola_data['end_time'], 'Ola ttr end time should not set when ticket is solved/closed.');
     }
 
     public function testOlaTTRDueTimeIsDelayedWhileTicketStatusIsWaiting()
@@ -797,7 +766,7 @@ class OLATest extends DbTestCase
         $this->assertEquals(
             (new \DateTime($initial_due_time))->modify('+1 hour')->format('Y-m-d H:i:s'),
             $new_due_time,
-            'Le temps d\'échéance (due time) devrait être retardé d\'une heure après passage du ticket de WAITING à un autre statut'
+            'Due time should be delayed by one hour because of ticket waiting times'
         );
     }
 
