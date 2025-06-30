@@ -59,6 +59,12 @@ use Symfony\Component\HttpFoundation\Request;
 class Html
 {
     /**
+     * Memory required to compile the main GLPI scss file (`css/glpi.scss`).
+     * It currently requires 120 MB, but may increase a bit when the dependencies are updated.
+     */
+    public const MAIN_SCSS_COMPILATION_REQUIRED_MEMORY = 192 * 1024 * 1024;
+
+    /**
      * Recursivly execute html_entity_decode on an array
      *
      * @param string|array $value
