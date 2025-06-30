@@ -68,6 +68,7 @@ return $config
     ], [ErrorType::DEV_DEPENDENCY_IN_PROD])
 
     ->ignoreErrorsOnExtension('ext-bcmath', [ErrorType::UNUSED_DEPENDENCY]) // Required by tc-lib-barcode
+    ->ignoreErrorsOnExtension('ext-tokenizer', [ErrorType::UNUSED_DEPENDENCY]) // Required by symfony/routing
     ->ignoreErrorsOnPackages([
         'apereo/phpcas', // Not detected because the library doesn't have an autoloader
         'bacon/bacon-qr-code', // Used by TwoFactorAuth as suggested dependency
