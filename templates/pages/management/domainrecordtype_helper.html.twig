@@ -43,10 +43,10 @@
                         {% for field in fields %}
                             {% set input_attrs = {
                                 'placeholder': field['placeholder']|default(''),
-                                'data-quote-value': field['quote_value'] ? 'true' : 'false',
-                                'data-is-fqdn': field['is_fqdn'] ? 'true' : 'false',
+                                'data-quote-value': (field['quote_value'] ?? false) ? 'true' : 'false',
+                                'data-is-fqdn': (field['is_fqdn'] ?? false) ? 'true' : 'false',
                             } %}
-                            {% if not field['quote_value'] %}
+                            {% if not (field['quote_value'] ?? false) %}
                                 {# prevent usage of spaces in unquoted values #}
                                 {% set input_attrs = input_attrs|merge({
                                     'pattern': '[^\\s]+'
