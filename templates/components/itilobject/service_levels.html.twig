@@ -84,10 +84,6 @@ Handle only linked ola, not ola ttr and tto defined using datetime fields
             {% set display_associatedsla_field = field_options.fields_template is not defined or not field_options.fields_template.isHiddenField('slas_id_tto') %}
             {% set can_assign_sla_ola = canupdate and has_profile_right('slm', constant('SLM::RIGHT_ASSIGN')) and not field_options.fields_template.isReadonlyField('slas_id_tto') %}
 
-            {# @todo cleanup debug - force display #}
-            {% set display_datetime_field  = true %}
-            {% set display_associatedsla_field = true %}
-
 {#            {% set _fieldname = 'time_to_own' %}#}
             <td class="right pe-2 align-middle border-0">{{ __('TTO') }}</td>
             <td class="d-flex ms-n2 border-0 py-0">
@@ -173,11 +169,7 @@ Handle only linked ola, not ola ttr and tto defined using datetime fields
             {% set display_datetime_field  = field_options.fields_template is not defined or not field_options.fields_template.isHiddenField('time_to_resolve') %}
             {% set display_associatedsla_field = field_options.fields_template is not defined or not field_options.fields_template.isHiddenField('slas_id_ttr') %}
             {% set can_assign_sla_ola = canupdate and has_profile_right('slm', constant('SLM::RIGHT_ASSIGN')) and not field_options.fields_template.isReadonlyField('slas_id_ttr') %}
-            {# @todo cleanup - debug - force display #}
-            {% set display_datetime_field  = true %}
-            {% set display_associatedsla_field = true %}
 
-{#            {% set _fieldname = 'time_to_resolve' %}#}
             <td class="right pe-2 align-middle border-0">{{ __('TTR') }}</td>
             <td class="d-flex ms-n2 border-0 py-0">
 
@@ -281,8 +273,9 @@ Handle only linked ola, not ola ttr and tto defined using datetime fields
 
     <div class="{{ options.new_item ? '' : 'collapsed' }} w-100 mt-1" id="dropdown_{{ assign_la_id }}">
         {% if la.due_time is defined %}
+            {# flag + due time #}
             <span class="text-muted">
-                      {{ la.due_time|formatted_datetime }}
+                 <i class="ti ti-flag"></i> {{ la.due_time|formatted_datetime }}
              </span>
         {% endif %}
 
@@ -308,7 +301,17 @@ Handle only linked ola, not ola ttr and tto defined using datetime fields
                     </span>
                 {% endif %}
 
-                {# inserer le groupe assigné ici #}
+                {# ola group #}
+                <span class="badge bg-info-lt ms-0 ms-sm-1">
+                    <i class="ti ti-users me-1"
+                       title="{{ __('Ola group: %s')|format(_n('Group', 'Groups', 1), la.group_name) }}"
+                       data-bs-toggle="tooltip" data-bs-placement="top"></i>
+                    <span title="{{ __('%1$s: %2$s')|format(_n('Group', 'Groups', 1), la.group_name) }}"
+                          data-bs-toggle="tooltip" data-bs-placement="top">
+                       {{ la.group_name }}
+                    </span>
+                </span>
+
             </span>
 
             {# remove button - la association #}
@@ -332,40 +335,6 @@ Handle only linked ola, not ola ttr and tto defined using datetime fields
         {# hidden input field to preserve olas on update #}
         <input type="hidden"   name="_olas_id[]" value="{{ la.olas_id }}" />
     </div>
-
-    {# <span>Nouveau design à implémenter Ola field à implementer</span> #}
-    {# tto/ttr type #}
-    {#    {{ la.type }} #}
-
-    {# icon #}
-    {# static #}
-
-    {# flag #}
-    {# static #}
-
-    {# due_datetime #}
-    {#        {{ la.due_time|formatted_datetime }} #}
-
-    {# info bloc #}
-
-    {# slm/slt #}
-    {# @todo ajout du slt  #}
-    {# icon #}
-    {# name #}
-    {#            {{ la.slm.name }} #}
-
-    {# escalation #}
-
-    {# icon #}
-    {# name #}
-    {#            {{ la.escalation.name }} #}
-
-    {# group #}
-    {# icon #}
-    {# name #}
-    {#            {{ la.group.name }} #}
-
-    {# trash icon #}
 {% endmacro %}
 
 {# la param should match format provided by \Ticket::getAssociatedSlas() #}
@@ -445,40 +414,6 @@ Handle only linked ola, not ola ttr and tto defined using datetime fields
             </script>
         {% endif %}
     </div>
-
-    {# <span>Nouveau design à implémenter Ola field à implementer</span> #}
-    {# tto/ttr type #}
-    {#    {{ la.type }} #}
-
-    {# icon #}
-    {# static #}
-
-    {# flag #}
-    {# static #}
-
-    {# due_datetime #}
-    {#        {{ la.due_time|formatted_datetime }} #}
-
-    {# info bloc #}
-
-    {# slm/slt #}
-    {# @todo ajout du slt  #}
-    {# icon #}
-    {# name #}
-    {#            {{ la.slm.name }} #}
-
-    {# escalation #}
-
-    {# icon #}
-    {# name #}
-    {#            {{ la.escalation.name }} #}
-
-    {# group #}
-    {# icon #}
-    {# name #}
-    {#            {{ la.group.name }} #}
-
-    {# trash icon #}
 {% endmacro %}
 
 {% macro LinkedLaFieldEmpty(la, item, name, add_confirmation_message, type, options = {}) %}
@@ -570,10 +505,7 @@ Handle only linked ola, not ola ttr and tto defined using datetime fields
     {# display button #}
     <button class="btn btn-sm btn-ghost-secondary ms-1" type="button"
             id="{{ button_id }}"
-            {#            data-bs-toggle="modal"#}
-            {#            data-bs-target="#{{ assign_la_id }}"#}
             aria-expanded="false"
-            {#            aria-controls="{{ assign_la_id }}"#}
     >
         <i class="ti ti-plus slt pointer"
            title="{{ __('Add') }}"
