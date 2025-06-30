@@ -26,6 +26,7 @@ phpunit.xml
 /nbproject
 .composer.hash
 /**/*.min.css
+!/css/standalone/tinymce_empty_skin/*.min.css
 /css/lib/
 /**/*.min.js
 /node_modules/
