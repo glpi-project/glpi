@@ -230,7 +230,7 @@ class UpdateCommand extends AbstractCommand implements ConfigurationCommandInter
                 progress_indicator: $progress_indicator
             );
             if ($success === false) {
-                $output->writeln('<error>' . __('Upddate failed.') . '</error>', OutputInterface::VERBOSITY_QUIET);
+                $output->writeln('<error>' . __('Update failed.') . '</error>', OutputInterface::VERBOSITY_QUIET);
                 return self::ERROR_UPDATE_FAILED;
             }
         } catch (\Throwable $e) {
