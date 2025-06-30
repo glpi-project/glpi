@@ -205,7 +205,7 @@ class Item_Ola extends CommonDBRelation
             $merged_data[] = $this->fillItemOlaData($ola_data, $ticket);
         }
 
-        return $merged_data;
+        return  $this->sort($merged_data);
     }
 
 
@@ -235,7 +235,7 @@ class Item_Ola extends CommonDBRelation
             $merged_data[] = $this->fillItemOlaData($ola_data, $ticket);
         }
 
-        return $merged_data;
+        return $this->sort($merged_data);
     }
 
     /**
@@ -286,6 +286,26 @@ class Item_Ola extends CommonDBRelation
         }
 
         return $_merged_data;
+    }
+
+    /**
+     * Sort the merged data by group then type (tto, then ttr)
+     */
+    private function sort(array $merged_data): array
+    {
+        usort($merged_data, function ($line_1, $line_2) {
+            // group_name ordering
+            $groupComparison = strcmp($line_1['group_name'], $line_2['group_name']);
+            if ($groupComparison !== 0) {
+                return $groupComparison;
+            }
+
+            // type ordering (priorité à tto sur ttr)
+            $typePriority = [SLM::TTO => 1, SLM::TTR => 2];
+            return $typePriority[$line_1['type']] <=> $typePriority[$line_2['type']];
+        });
+
+        return $merged_data;
     }
 
 }
