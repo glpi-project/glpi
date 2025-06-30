@@ -179,7 +179,7 @@
     $(function () {
         $('button.expand-log-entry').on('click', (e) => {
             $(e.currentTarget).siblings('.log_long_text').toggleClass('expanded');
-            $(e.currentTarget).attr('title', $(e.currentTarget).siblings('.log_long_text').hasClass('expanded') ? '{{ __("Collapse") }}' : '{{ __("Expand") }}');
+            $(e.currentTarget).attr('title', $(e.currentTarget).siblings('.log_long_text').hasClass('expanded') ? '{{ __("Collapse")|e('js') }}' : '{{ __("Expand")|e('js') }}');
             $(e.currentTarget).find('i').toggleClass('ti-caret-right ti-caret-down');
         });
         $('div.log_long_text').on('click', (e) => {
