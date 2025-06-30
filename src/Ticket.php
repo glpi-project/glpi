@@ -2674,7 +2674,7 @@ JAVASCRIPT;
             'id'                 => '190',
             'table'              => 'glpi_olas',
             'field'              => 'name',
-            'name'               =>  __('OLA') . ' ' . __('time to own'),
+            'name'               =>  __('OLA') . ' - ' . __('time to own'),
             'massiveaction'      => false,
             'datatype'           => 'dropdown',
             'joinparams'         => [
@@ -2688,6 +2688,37 @@ JAVASCRIPT;
             ],
             'forcegroupby'       => true,
             'condition'          => ['type' => SLM::TTO], // @todoseb n'est pas documenté : sert pour le dropdown dans le filtrage
+        ];
+
+        // associated OLA TTO due time
+        $tab[] = [
+            'id' => '185',
+            'table' => 'glpi_items_olas',
+            'field' => 'due_time',
+            'name' => __('OLA') . ' ' . __('time to own') . ' - ' . __('due time'),
+            'datatype'           => 'datetime',
+            'massiveaction' => false,
+            'additionalfields' => ['TABLE.status', 'TABLE.takeintoaccount_delay_stat', 'TABLE.date', 'olas_id', 'waiting_time', 'end_time'],
+            'joinparams' => [
+                'jointype' => 'child',
+                'linkfield' => 'olas_id',
+                'condition' => [
+                    'NEWTABLE.id' => new QueryExpression('glpi_items_olas.id'),
+                ],
+                'beforejoin' => [
+                    'table' => 'glpi_olas',
+                    'joinparams' => [
+                        'condition' => ['NEWTABLE.type' => SLM::TTO,],
+                        'beforejoin' => [
+                            'table' => 'glpi_items_olas',
+                            'joinparams' => [
+                                'jointype' => 'itemtype_item',
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+            'forcegroupby' => true,
         ];
 
         // OLA TTO due time (+ Progress)
@@ -2773,6 +2804,37 @@ JAVASCRIPT;
             ],
             'forcegroupby'       => true,
             'condition'          => ['type' => SLM::TTR],
+        ];
+
+        // associated OLA TTR due time
+        $tab[] = [
+            'id'                 => '180',
+            'table'              => 'glpi_items_olas',
+            'field'              => 'due_time',
+            'name'               => __('OLA') . ' ' . __('time to resolve') . ' - ' . __('due time'),
+            'massiveaction'      => false,
+            'datatype'           => 'datetime',
+            'additionalfields' => ['TABLE.status', 'TABLE.takeintoaccount_delay_stat', 'TABLE.date', 'olas_id', 'waiting_time', 'end_time'],
+            'joinparams' => [
+                'jointype' => 'child',
+                'linkfield' => 'olas_id',
+                'condition' => [
+                    'NEWTABLE.id' => new QueryExpression('glpi_items_olas.id'),
+                ],
+                'beforejoin' => [
+                    'table' => 'glpi_olas',
+                    'joinparams' => [
+                        'condition' => ['NEWTABLE.type' => SLM::TTR,],
+                        'beforejoin' => [
+                            'table' => 'glpi_items_olas',
+                            'joinparams' => [
+                                'jointype' => 'itemtype_item',
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+            'forcegroupby'       => true,
         ];
 
         // OLA TTR due time (+ Progress)
