@@ -91,124 +91,125 @@
                 ></div>
                 <div class="card-body">
                     {# Header #}
-                    <div class="d-flex align-items-center">
-                        <div class="ms-auto"></div>
-
-                        {# Visibility dropdown #}
-                        {{ include('pages/admin/form/conditional_visibility_dropdown.html.twig', {
-                            'item': section,
-                            'type': "Glpi\\Form\\Section",
-                        }, with_context = false) }}
-
-                        {# Question count #}
-                        <span
-                            class="badge bg-secondary-lt"
-                            data-glpi-form-editor-section-block-badge
+                    <div class="d-flex">
+                        {# Section's description #}
+                        <div
+                            class="content-editable-tinymce me-auto"
+                            data-glpi-form-editor-section-description
                         >
-                            {% set count_blocks = (section ? section.getBlocks()|length : 1) %}
-                            {{ _n('%d element', '%d elements', count_blocks)|format(count_blocks) }}
-                        </span>
-
-                        {# Collapse section #}
-                        <i
-                            role="button"
-                            class="ti ti-selector ms-3 cursor-pointer"
-                            data-bs-toggle="tooltip"
-                            data-bs-placement="top"
-                            title="{{ __("Collapse section") }}"
-                            data-glpi-form-editor-on-click="collapse-section"
-                        ></i>
-
-                        {# Extra actions #}
-                        <div class="dropdown ms-3 cursor-pointer d-flex align-items-center">
-                            <i
-                                class="ti ti-dots-vertical show"
-                                data-bs-toggle="dropdown"
-                                aria-expanded="false"
-                                role="button"
-                                title="{{ __('More actions') }}"
-                            ></i>
-                            <ul class="dropdown-menu" data-bs-popper="none">
-                                <li>
-                                    <button
-                                        type="button"
-                                        class="dropdown-item"
-                                        data-glpi-form-editor-on-click="duplicate-section"
-                                    >
-                                        <i class="ti ti-copy me-2"></i>
-                                        <span>{{ __("Duplicate section") }}</span>
-                                    </button>
-                                </li>
-                                <li>
-                                    <button
-                                        type="button"
-                                        class="dropdown-item"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="[data-glpi-form-editor-move-section-modal]"
-                                        data-glpi-form-editor-on-click="build-move-section-modal-content"
-                                    >
-                                        <i class="ti ti-arrows-move-vertical me-2"></i>
-                                        <span>{{ __("Move section") }}</span>
-                                    </button>
-                                </li>
-                                <li>
-                                    <button
-                                        type="button"
-                                        class="dropdown-item {{ section_index == 1 ? "d-none" : "" }}"
-                                        aria-label="{{ __('Merge with previous section') }}"
-                                        data-glpi-form-editor-on-click="merge-with-previous-section"
-                                    >
-                                        <i class="ti ti-arrow-merge me-2"></i>
-                                        <span>{{ __("Merge with previous section") }}</span>
-                                    </button>
-                                </li>
-
-                                <li>
-                                    <button
-                                        type="button"
-                                        class="dropdown-item"
-                                        data-glpi-form-editor-on-click="delete-section"
-                                    >
-                                        <i class="ti ti-trash me-2"></i>
-                                        <span>{{ __("Delete section") }}</span>
-                                    </button>
-                                </li>
-
-                                <li>
-                                    <button
-                                        type="button"
-                                        class="dropdown-item"
-                                        data-glpi-form-editor-on-click="show-visibility-dropdown"
-                                    >
-                                        <i class="ti ti-eye-cog me-2"></i>
-                                        <span>{{ __("Configure visibility") }}</span>
-                                    </button>
-                                </li>
-                            </ul>
+                            {{ fields.textareaField(
+                                "description",
+                                section is not null ? section.fields.description : '',
+                                __('Header'),
+                                base_field_options|merge({
+                                    'enable_richtext': true,
+                                    'placeholder': __('Add a description to this section'),
+                                    'aria_label': __('Section description'),
+                                    'add_body_classes': ['content-editable-tinymce-editor', 'text-muted'],
+                                    'editor_height': "0",
+                                    'rows' : 1,
+                                    'toolbar_location': 'bottom',
+                                    'init': section is not null ? true : false,
+                                    'mb': 'mb-0',
+                                })
+                            ) }}
                         </div>
-                    </div>
+                        <div class="d-flex align-items-start">
+                            <div class="ms-auto"></div>
 
-                    {# Section's description #}
-                    <div
-                        class="content-editable-tinymce mt-3"
-                        data-glpi-form-editor-section-description
-                    >
-                        {{ fields.textareaField(
-                            "description",
-                            section is not null ? section.fields.description : '',
-                            __('Header'),
-                            base_field_options|merge({
-                                'enable_richtext': true,
-                                'placeholder': __('Add a description to this section'),
-                                'aria_label': __('Section description'),
-                                'add_body_classes': ['content-editable-tinymce-editor', 'text-muted'],
-                                'editor_height': "0",
-                                'rows' : 1,
-                                'toolbar_location': 'bottom',
-                                'init': section is not null ? true : false,
-                                'mb': 'mb-0',
-                            })
-                        ) }}
+                            {# Visibility dropdown #}
+                            {{ include('pages/admin/form/conditional_visibility_dropdown.html.twig', {
+                                'item': section,
+                                'type': "Glpi\\Form\\Section",
+                            }, with_context = false) }}
+
+                            {# Question count #}
+                            <span
+                                class="badge bg-secondary-lt"
+                                data-glpi-form-editor-section-block-badge
+                            >
+                                {% set count_blocks = (section ? section.getBlocks()|length : 1) %}
+                                {{ _n('%d element', '%d elements', count_blocks)|format(count_blocks) }}
+                            </span>
+
+                            {# Collapse section #}
+                            <i
+                                role="button"
+                                class="ti ti-selector ms-3 cursor-pointer"
+                                data-bs-toggle="tooltip"
+                                data-bs-placement="top"
+                                title="{{ __("Collapse section") }}"
+                                data-glpi-form-editor-on-click="collapse-section"
+                            ></i>
+
+                            {# Extra actions #}
+                            <div class="dropdown ms-3 cursor-pointer d-flex align-items-center">
+                                <i
+                                    class="ti ti-dots-vertical show"
+                                    data-bs-toggle="dropdown"
+                                    aria-expanded="false"
+                                    role="button"
+                                    title="{{ __('More actions') }}"
+                                ></i>
+                                <ul class="dropdown-menu" data-bs-popper="none">
+                                    <li>
+                                        <button
+                                            type="button"
+                                            class="dropdown-item"
+                                            data-glpi-form-editor-on-click="duplicate-section"
+                                        >
+                                            <i class="ti ti-copy me-2"></i>
+                                            <span>{{ __("Duplicate section") }}</span>
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <button
+                                            type="button"
+                                            class="dropdown-item"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="[data-glpi-form-editor-move-section-modal]"
+                                            data-glpi-form-editor-on-click="build-move-section-modal-content"
+                                        >
+                                            <i class="ti ti-arrows-move-vertical me-2"></i>
+                                            <span>{{ __("Move section") }}</span>
+                                        </button>
+                                    </li>
+                                    <li>
+                                        <button
+                                            type="button"
+                                            class="dropdown-item {{ section_index == 1 ? "d-none" : "" }}"
+                                            aria-label="{{ __('Merge with previous section') }}"
+                                            data-glpi-form-editor-on-click="merge-with-previous-section"
+                                        >
+                                            <i class="ti ti-arrow-merge me-2"></i>
+                                            <span>{{ __("Merge with previous section") }}</span>
+                                        </button>
+                                    </li>
+
+                                    <li>
+                                        <button
+                                            type="button"
+                                            class="dropdown-item"
+                                            data-glpi-form-editor-on-click="delete-section"
+                                        >
+                                            <i class="ti ti-trash me-2"></i>
+                                            <span>{{ __("Delete section") }}</span>
+                                        </button>
+                                    </li>
+
+                                    <li>
+                                        <button
+                                            type="button"
+                                            class="dropdown-item"
+                                            data-glpi-form-editor-on-click="show-visibility-dropdown"
+                                        >
+                                            <i class="ti ti-eye-cog me-2"></i>
+                                            <span>{{ __("Configure visibility") }}</span>
+                                        </button>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
                     </div>
 
                     <input
