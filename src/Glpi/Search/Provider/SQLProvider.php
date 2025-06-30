@@ -6035,7 +6035,13 @@ final class SQLProvider implements SearchProviderInterface
                             $olas_id = $data_item['olas_id'] ?? null;
 
                             $ola = new OLA();
-                            $ola->getFromDB($olas_id);
+                            if(!$olas_id) {
+                                // no item_olas associated
+                                continue;
+                            }
+                            if(!$ola->getFromDB($olas_id)) {
+                                throw new \Exception('Referenced OLA not found for item_olas ID: ' . $olas_id);
+                            }
                             $ola_name = $ola->fields['name'];
                             $ola_type = $ola->fields['type']; // won't change between loops
 
