@@ -5998,11 +5998,10 @@ final class SQLProvider implements SearchProviderInterface
                     }
                     break;
 
-                    // OLA TTO / OLA TTR
+                    // OLA TTO / OLA TTR - due time and due time + progress
                 case "glpi_items_olas.due_time":
                     $out = '';
-                    // Due date + progress
-                    if (in_array($orig_id, [181, 186])) {
+                    if (in_array($orig_id, [180, 181, 185, 186,])) {
 
                         // remove 'count' from data
                         $data_items = array_filter($data[$ID], fn($key) => is_numeric($key), ARRAY_FILTER_USE_KEY);
@@ -6023,11 +6022,11 @@ final class SQLProvider implements SearchProviderInterface
                             $olas_id = $data_item['olas_id'] ?? null;
 
                             $ola = new OLA();
-                            if(!$olas_id) {
+                            if (!$olas_id) {
                                 // no item_olas associated
                                 continue;
                             }
-                            if(!$ola->getFromDB($olas_id)) {
+                            if (!$ola->getFromDB($olas_id)) {
                                 throw new \Exception('Referenced OLA not found for item_olas ID: ' . $olas_id);
                             }
                             $ola_name = $ola->fields['name'];
@@ -6061,7 +6060,10 @@ final class SQLProvider implements SearchProviderInterface
 
                             // no need to check $takeintoaccount_delay_stat, we rely on items_ola end_time
                             // // @todoseb on affiche la barre de progression alors qu'on a un endtime défini sur les TTR - faire vérifier cette spécficité / vérifier sur stable
-                            if ($ola_type == \SLM::TTO && $ola_end_time) {
+                            if (
+                                ($ola_type == \SLM::TTO && $ola_end_time) // OLA TTO with end_time (due time + progress bar)
+                                || (in_array($orig_id, [180, 185])) // just due time (no progress bar)
+                            ) {
                                 $out .= $ola_name . ' : ' . \Html::convDateTime($due_time) . '</br>';
                                 continue;
                             }
