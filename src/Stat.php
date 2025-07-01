@@ -435,7 +435,7 @@ class Stat extends CommonGLPI
         // Set display type for export if define
         $output_type = $_GET["display_type"] ?? Search::HTML_OUTPUT;
         $output = SearchEngine::getOutputForLegacyKey($output_type);
-        $is_html_output = is_a($output, HTMLSearchOutput::class);
+        $is_html_output = $output instanceof HTMLSearchOutput;
         $html_output = '';
 
         if ($numrows === 0 && $is_html_output) {
@@ -699,7 +699,7 @@ class Stat extends CommonGLPI
                             $max_rate = 5;
                         }
                         // Scale satisfaction accordingly
-                        $avgsatisfaction = $avgsatisfaction * ($max_rate / 5);
+                        $avgsatisfaction *= $max_rate / 5;
                         $avgsatisfaction = TicketSatisfaction::displaySatisfaction($avgsatisfaction, 0);
                     }
                 } else {
@@ -727,9 +727,9 @@ class Stat extends CommonGLPI
 
                 $timedisplay = $nb_solved > 0 ? array_sum($data) / $nb_solved : 0;
 
-                if ($is_html_output || is_a($output, Pdf::class)) {
+                if ($is_html_output || $output instanceof Pdf) {
                     $timedisplay = Html::timestampToString($timedisplay, 0, false);
-                } elseif (is_a($output, Csv::class)) {
+                } elseif ($output instanceof Csv) {
                     $timedisplay = Html::timestampToCsvString($timedisplay);
                 }
                 if ($is_html_output) {
@@ -762,9 +762,9 @@ class Stat extends CommonGLPI
             } else {
                 $timedisplay = 0;
             }
-            if ($is_html_output || is_a($output, Pdf::class)) {
+            if ($is_html_output || $output instanceof Pdf) {
                 $timedisplay = Html::timestampToString($timedisplay, 0, false);
-            } elseif (is_a($output, Csv::class)) {
+            } elseif ($output instanceof Csv) {
                 $timedisplay = Html::timestampToCsvString($timedisplay);
             }
             if ($is_html_output) {
@@ -796,9 +796,9 @@ class Stat extends CommonGLPI
             } else {
                 $timedisplay = 0;
             }
-            if ($is_html_output || is_a($output, Pdf::class)) {
+            if ($is_html_output || $output instanceof Pdf) {
                 $timedisplay = Html::timestampToString($timedisplay, 0, false);
-            } elseif (is_a($output, Csv::class)) {
+            } elseif ($output instanceof Csv) {
                 $timedisplay = Html::timestampToCsvString($timedisplay);
             }
             if ($is_html_output) {
@@ -848,9 +848,9 @@ class Stat extends CommonGLPI
                 $timedisplay = 0;
             }
 
-            if ($is_html_output || is_a($output, Pdf::class)) {
+            if ($is_html_output || $output instanceof Pdf) {
                 $timedisplay = Html::timestampToString($timedisplay, 0, false);
-            } elseif (is_a($output, Csv::class)) {
+            } elseif ($output instanceof Csv) {
                 $timedisplay = Html::timestampToCsvString($timedisplay);
             }
             if ($is_html_output) {
@@ -865,9 +865,9 @@ class Stat extends CommonGLPI
             // The total actiontime to resolve
             $timedisplay = $total_actiontime;
 
-            if ($is_html_output || is_a($output, Pdf::class)) {
+            if ($is_html_output || $output instanceof Pdf) {
                 $timedisplay = Html::timestampToString($timedisplay, 0, false);
-            } elseif (is_a($output, Csv::class)) {
+            } elseif ($output instanceof Csv) {
                 $timedisplay = Html::timestampToCsvString($timedisplay);
             }
             if ($is_html_output) {
@@ -1614,7 +1614,7 @@ class Stat extends CommonGLPI
 
         $output_type = $_GET["display_type"] ?? Search::HTML_OUTPUT;
         $output = SearchEngine::getOutputForLegacyKey($output_type);
-        $is_html_output = is_a($output, HTMLSearchOutput::class);
+        $is_html_output = $output instanceof HTMLSearchOutput;
 
         if (empty($date2)) {
             $date2 = date("Y-m-d");
@@ -1874,7 +1874,7 @@ class Stat extends CommonGLPI
 
         foreach ($values as $reports) {
             if (is_array($reports)) {
-                foreach ($reports as $key => $name) {
+                foreach (array_keys($reports) as $key) {
                     if (stripos($_SERVER['REQUEST_URI'], $key) !== false) {
                         $selected = $key;
                     }

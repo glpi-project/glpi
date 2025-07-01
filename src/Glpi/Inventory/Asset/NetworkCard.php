@@ -262,7 +262,7 @@ class NetworkCard extends Device
                     ) {
                         // Old agent version have speed in b/s instead Mb/s
                         if ($val_port->speed > 100000) {
-                            $val_port->speed = $val_port->speed / 1000000;
+                            $val_port->speed /= 1000000;
                         }
                     } else {
                         $val_port->speed = 0;

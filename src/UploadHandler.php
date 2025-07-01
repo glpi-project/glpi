@@ -985,12 +985,12 @@ class UploadHandler
 
     protected function is_valid_image_file($file_path)
     {
-        return !!$this->imagetype($file_path);
+        return (bool) $this->imagetype($file_path);
     }
 
     protected function has_image_file_extension($file_path)
     {
-        return !!preg_match('/\.(gif|jpe?g|png)$/i', $file_path);
+        return (bool) preg_match('/\.(gif|jpe?g|png)$/i', $file_path);
     }
 
     protected function handle_image_file($file_path, $file)
@@ -1332,7 +1332,7 @@ class UploadHandler
             if (is_array($upload['tmp_name'])) {
                 // param_name is an array identifier like "files[]",
                 // $upload is a multi-dimensional array:
-                foreach ($upload['tmp_name'] as $index => $value) {
+                foreach (array_keys($upload['tmp_name']) as $index) {
                     $files[] = $this->handle_file_upload(
                         $upload['tmp_name'][$index],
                         $file_name ? $file_name : $upload['name'][$index],

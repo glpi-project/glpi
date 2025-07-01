@@ -61,7 +61,7 @@ class ThemeManager
      */
     public function getCoreThemes(): array
     {
-        if (empty($this->core_themes)) {
+        if ($this->core_themes === []) {
             $this->core_themes = [
                 new Theme('aerialgreen', 'Aerial Green', false, false),
                 new Theme('auror', 'Auror', false, false),
@@ -102,7 +102,7 @@ class ThemeManager
      */
     public function getCustomThemes(): array
     {
-        if (empty($this->custom_themes)) {
+        if ($this->custom_themes === []) {
             $custom_themes_dir = $this->getCustomThemesDirectory();
             $file_matches = [];
             // Cannot use GLOB_BRACE on some platforms (like the docker environment used for tests)

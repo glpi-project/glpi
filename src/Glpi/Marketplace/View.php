@@ -162,14 +162,11 @@ class View extends CommonGLPI
         $valid = false;
 
         if (!GLPINetwork::isServicesAvailable()) {
-            array_push(
-                $messages,
-                sprintf(__('%1$s services website seems not available from your network or offline'), 'GLPI Network'),
-                "<a href='" . $CFG_GLPI['root_doc'] . "/front/config.form.php?forcetab=Config$5'>"
-                    . __("Maybe you could setup a proxy")
-                    . "</a> "
-                    . __("or please check later")
-            );
+            $messages[] = sprintf(__('%1$s services website seems not available from your network or offline'), 'GLPI Network');
+            $messages[] = "<a href='" . $CFG_GLPI['root_doc'] . "/front/config.form.php?forcetab=Config$5'>"
+                . __("Maybe you could setup a proxy")
+                . "</a> "
+                . __("or please check later");
         } else {
             $registration_info = GLPINetwork::getRegistrationInformations();
             if (!$registration_info['is_valid']) {
@@ -177,23 +174,15 @@ class View extends CommonGLPI
 
                 $config_url = $CFG_GLPI['root_doc'] . "/front/config.form.php?forcetab=" .
                         urlencode('GLPINetwork$1');
-
-                array_push(
-                    $messages,
-                    sprintf(__('Your %1$s registration is not valid.'), 'GLPI Network'),
-                    __('A registration, at least a free one, is required to use marketplace!'),
-                    "<a href='" . GLPI_NETWORK_SERVICES . "'>" . sprintf(__('Register on %1$s'), 'GLPI Network') . "</a> "
-                        . __('and') . " "
-                        . "<a href='$config_url'>" . __("fill your registration key in setup.") . "</a>"
-                );
+                $messages[] = sprintf(__('Your %1$s registration is not valid.'), 'GLPI Network');
+                $messages[] = __('A registration, at least a free one, is required to use marketplace!');
+                $messages[] = "<a href='" . GLPI_NETWORK_SERVICES . "'>" . sprintf(__('Register on %1$s'), 'GLPI Network') . "</a> "
+                    . __('and') . " "
+                    . "<a href='$config_url'>" . __("fill your registration key in setup.") . "</a>";
             } elseif (!$registration_info['subscription']['is_running']) {
                 $valid = false;
-
-                array_push(
-                    $messages,
-                    sprintf(__('Your %1$s subscription has been terminated.'), 'GLPI Network'),
-                    "<a href='" . GLPI_NETWORK_SERVICES . "'>" . sprintf(__('Renew it on %1$s.'), 'GLPI Network') . "</a> "
-                );
+                $messages[] = sprintf(__('Your %1$s subscription has been terminated.'), 'GLPI Network');
+                $messages[] = "<a href='" . GLPI_NETWORK_SERVICES . "'>" . sprintf(__('Renew it on %1$s.'), 'GLPI Network') . "</a> ";
             } else {
                 $valid = true;
             }
@@ -937,7 +926,7 @@ HTML;
             }
         }
 
-        if (strlen($description) === 0) {
+        if ((string) $description === '') {
             $description = $fallback;
         }
 

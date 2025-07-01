@@ -482,7 +482,7 @@ class CartridgeItem extends CommonDBTM
                     }
                 }
 
-                if (!empty($items)) {
+                if ($items !== []) {
                     $options = [
                         'entities_id' => $entity,
                         'items'       => $items,

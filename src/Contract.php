@@ -1348,7 +1348,7 @@ class Contract extends CommonDBTM
                             'itemtype' => __CLASS__,
                             'type'     => $type,
                         ];
-                        foreach ($contracts as $id => $contract) {
+                        foreach (array_keys($contracts) as $id) {
                             $input["items_id"] = $id;
 
                             $alert->add($input);
@@ -1423,7 +1423,7 @@ class Contract extends CommonDBTM
         }
 
         if (
-            !($p['entity'] < 0)
+            $p['entity'] >= 0
             && $p['entity_sons']
         ) {
             if (is_array($p['entity'])) {

@@ -1599,7 +1599,7 @@ class Document extends CommonDBTM
     {
         // let's see if original image needs resize
         $img_infos  = getimagesize($path);
-        if (!($img_infos[0] > $width) && !($img_infos[1] > $height)) {
+        if ($img_infos[0] <= $width && $img_infos[1] <= $height) {
             // no resize needed, source image is smaller than requested width/height
             return $path;
         }

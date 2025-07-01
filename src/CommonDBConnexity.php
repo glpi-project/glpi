@@ -613,7 +613,7 @@ abstract class CommonDBConnexity extends CommonDBTM
 
         switch ($normalized_action) {
             case 'unaffect':
-                foreach ($itemtypes as $itemtype => $specificities) {
+                foreach (array_keys($itemtypes) as $itemtype) {
                     if (is_a($itemtype, 'CommonDBRelation', true)) {
                         $peer_field = "peer[$itemtype]";
                         if ((!$itemtype::$mustBeAttached_1) && (!$itemtype::$mustBeAttached_2)) {

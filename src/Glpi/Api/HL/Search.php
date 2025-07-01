@@ -268,7 +268,7 @@ final class Search
     {
         $select = [];
 
-        foreach ($this->flattened_properties as $prop_name => $prop) {
+        foreach (array_keys($this->flattened_properties) as $prop_name) {
             $s = $this->getSelectCriteriaForProperty($prop_name);
             if ($s !== null) {
                 $select[] = $s;
@@ -573,7 +573,7 @@ final class Search
      */
     private function criteriaHasJoinFilter(array $where): bool
     {
-        if (empty($where)) {
+        if ($where === []) {
             return false;
         }
 
@@ -581,7 +581,7 @@ final class Search
             if (is_array($where_value) && $this->criteriaHasJoinFilter($where_value)) {
                 return true;
             }
-            foreach ($this->joins as $join_alias => $join_definition) {
+            foreach (array_keys($this->joins) as $join_alias) {
                 if (str_starts_with((string) $where_field, $this->db_read::quoteName($join_alias) . '.')) {
                     return true;
                 }
@@ -664,7 +664,7 @@ final class Search
             $criteria['GROUPBY'] = ['_itemtype', '_.id'];
         } else {
             $criteria['SELECT'][] = '_.id';
-            foreach ($this->joins as $join_alias => $join) {
+            foreach (array_keys($this->joins) as $join_alias) {
                 $s = $this->getSelectCriteriaForProperty($this->getPrimaryKeyPropertyForJoin($join_alias), true);
                 if ($s !== null) {
                     $criteria['SELECT'][] = $s;
@@ -910,7 +910,7 @@ final class Search
         $array_joins = array_filter($this->joins, static function ($v) {
             return isset($v['parent_type']) && $v['parent_type'] === Doc\Schema::TYPE_ARRAY;
         }, ARRAY_FILTER_USE_BOTH);
-        foreach ($array_joins as $name => $join_def) {
+        foreach (array_keys($array_joins) as $name) {
             // Get all paths in the array that match the join name. Paths may or may not have number parts between the parts of the join name (separated by '.')
             $pattern = str_replace('.', '\.(?:\d+\.)?', $name);
             $paths = ArrayPathAccessor::getArrayPaths($record, "/^{$pattern}$/");
@@ -930,7 +930,7 @@ final class Search
         $obj_joins = array_filter($this->joins, function ($v, $k) {
             return isset($v['parent_type']) && $v['parent_type'] === Doc\Schema::TYPE_OBJECT && !isset($this->flattened_properties[$k]);
         }, ARRAY_FILTER_USE_BOTH);
-        foreach ($obj_joins as $name => $join_def) {
+        foreach (array_keys($obj_joins) as $name) {
             // Get all paths in the array that match the join name. Paths may or may not have number parts between the parts of the join name (separated by '.')
             $pattern = str_replace('.', '\.(?:\d+\.)?', $name);
             $paths = ArrayPathAccessor::getArrayPaths($record, "/^{$pattern}$/");
@@ -981,7 +981,7 @@ final class Search
                     }, explode(chr(0x1D), $record_ids));
                     $ids_to_fetch = array_diff($ids_to_fetch, array_keys($fetched_records[$table] ?? []));
 
-                    if (empty($ids_to_fetch)) {
+                    if ($ids_to_fetch === []) {
                         // Every record needed for this row has already been fetched.
                         continue;
                     }

@@ -63,7 +63,7 @@ class NotificationEventMailing extends NotificationEventAbstract
             $data[$field] = UserEmail::getDefaultForUser($data['users_id']);
         }
 
-        if (empty($data[$field]) or !NotificationMailing::isUserAddressValid($data[$field])) {
+        if (empty($data[$field]) || !NotificationMailing::isUserAddressValid($data[$field])) {
             $data[$field] = null;
         } else {
             $data[$field] = trim(Toolbox::strtolower($data[$field]));

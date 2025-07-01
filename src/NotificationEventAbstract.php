@@ -97,7 +97,7 @@ abstract class NotificationEventAbstract implements NotificationEventInterface
                             // as we work on a copy of the item object, no reload is required after
                             if (
                                 isset($users_infos['additionnaloption']['timezone'])
-                                && is_a($options['item'], CommonDBTM::class, true) // item may be a `CommonGLPI`
+                                && $options['item'] instanceof \CommonDBTM // item may be a `CommonGLPI`
                             ) {
                                 /** @var CommonDBTM $item */
                                 $DB->setTimezone($users_infos['additionnaloption']['timezone']);

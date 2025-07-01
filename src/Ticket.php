@@ -1502,7 +1502,7 @@ class Ticket extends CommonITILObject
                 $input[$field] = 0;
             }
         }
-        if (!isset($input['itemtype']) || !isset($input['items_id']) || !($input['items_id'] > 0)) {
+        if (!isset($input['itemtype']) || !isset($input['items_id']) || $input['items_id'] <= 0) {
             $input['itemtype'] = '';
         }
 
@@ -5176,7 +5176,7 @@ JAVASCRIPT;
                 $tickets[] = $tick;
             }
 
-            if (!empty($tickets)) {
+            if ($tickets !== []) {
                 if (
                     NotificationEvent::raiseEvent(
                         'alertnotclosed',

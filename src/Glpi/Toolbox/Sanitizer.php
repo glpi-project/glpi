@@ -497,7 +497,7 @@ class Sanitizer
                 $replace[] = $r;
             }
         }
-        if (empty($search)) {
+        if ($search === []) {
             // Value does not contains any potentially escaped chars.
             return $value;
         }

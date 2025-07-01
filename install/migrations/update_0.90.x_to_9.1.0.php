@@ -461,7 +461,7 @@ function update090xto910()
     }
 
     /************** Date mod/creation for itemtypes *************/
-    $migration->displayMessage(sprintf(__('date_mod and date_creation')));
+    $migration->displayMessage(__('date_mod and date_creation'));
     $type_tables = [
         'glpi_authldaps',
         'glpi_blacklists',

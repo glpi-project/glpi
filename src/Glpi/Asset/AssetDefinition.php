@@ -220,7 +220,7 @@ final class AssetDefinition extends AbstractDefinition
         $field_display = $this->getDecodedFieldsField();
         $field_match = array_filter($field_display, static fn($field) => $field['key'] === $field_key);
         $field_options = [];
-        if (!empty($field_match)) {
+        if ($field_match !== []) {
             $field_options = reset($field_match)['field_options'] ?? [];
         }
         // Merge field options with overrides
@@ -762,7 +762,7 @@ TWIG, $twig_params);
 
         $default = [];
         $order = 0;
-        foreach ($all_fields as $key => $label) {
+        foreach (array_keys($all_fields) as $key) {
             $default[] = [
                 'key'   => $key,
                 'order' => $order,

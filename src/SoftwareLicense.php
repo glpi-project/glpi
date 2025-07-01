@@ -808,7 +808,7 @@ class SoftwareLicense extends CommonTreeDropdown
                 $items[$license['id']] = $license;
             }
 
-            if (!empty($items)) {
+            if ($items !== []) {
                 $alert                  = new Alert();
                 $options['entities_id'] = $entity;
                 $options['licenses']    = $items;
@@ -831,7 +831,7 @@ class SoftwareLicense extends CommonTreeDropdown
                     $input["itemtype"] = 'SoftwareLicense';
 
                     // add alerts
-                    foreach ($items as $ID => $consumable) {
+                    foreach (array_keys($items) as $ID) {
                         $input["items_id"] = $ID;
                         $alert->add($input);
                         unset($alert->fields['id']);

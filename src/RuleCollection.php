@@ -1173,8 +1173,7 @@ TWIG, $twig_params);
             // process direct attributes
             foreach ($rule as &$val) {
                 if (
-                    is_array($val)
-                    && empty($val)
+                    $val === []
                 ) {
                     $val = "";
                 }
@@ -1190,7 +1189,7 @@ TWIG, $twig_params);
 
                 foreach ($rule['rulecriteria'] as $k_crit => $criteria) {
                     // Fix patterns decoded as empty arrays to prevent empty IN clauses in SQL generation.
-                    if (is_array($criteria['pattern']) && empty($criteria['pattern'])) {
+                    if ($criteria['pattern'] === []) {
                         $criteria['pattern'] = '';
                     }
 
@@ -1235,7 +1234,7 @@ TWIG, $twig_params);
 
                 foreach ($rule['ruleaction'] as $k_action => $action) {
                     // Fix values decoded as empty arrays to prevent empty IN clauses in SQL generation.
-                    if (is_array($action['value']) && empty($action['value'])) {
+                    if ($action['value'] === []) {
                         $action['value'] = '';
                     }
                     $available_actions = $tmprule->getActions();
@@ -1800,7 +1799,7 @@ TWIG, $twig_params);
         $actions = $rule->getAllActions();
 
         // If output array contains keys begining with _ : drop it
-        foreach ($output as $criteria => $value) {
+        foreach (array_keys($output) as $criteria) {
             if ($criteria[0] === '_' && !isset($actions[$criteria])) {
                 unset($output[$criteria]);
             }

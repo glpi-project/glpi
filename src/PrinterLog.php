@@ -149,7 +149,7 @@ class PrinterLog extends CommonDBChild
         $series = [];
         if (count($printers) > 1) {
             foreach ($printers as $printer) {
-                $series = $series + self::getMetrics(
+                $series += self::getMetrics(
                     $printer,
                     $user_filters,
                     $interval,

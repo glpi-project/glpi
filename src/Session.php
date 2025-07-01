@@ -448,7 +448,7 @@ class Session
                     if ($val['is_recursive']) {
                         $entities = getSonsOf("glpi_entities", $val['id']);
                         if (count($entities)) {
-                            foreach ($entities as $key2 => $val2) {
+                            foreach (array_keys($entities) as $key2) {
                                 $newentities[$key2] = $key2;
                             }
                         }
@@ -477,7 +477,7 @@ class Session
                 if ($is_recursive) {
                     $entities = getSonsOf("glpi_entities", $ID);
                     if (count($entities)) {
-                        foreach ($entities as $key2 => $val2) {
+                        foreach (array_keys($entities) as $key2) {
                             $newentities[$key2] = $key2;
                         }
                     }
@@ -739,7 +739,7 @@ class Session
                 // Stack of children to load
                 $children_to_load = [$data["groups_id"]];
 
-                while (!empty($children_to_load)) {
+                while ($children_to_load !== []) {
                     $next_child_to_load = array_pop($children_to_load);
 
                     // Note: we can't use getSonsOf here because some groups in the

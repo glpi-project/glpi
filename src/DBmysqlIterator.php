@@ -287,12 +287,12 @@ class DBmysqlIterator implements SeekableIterator, Countable
         }
 
         // JOIN
-        if (!empty($join)) {
+        if ($join !== []) {
             $this->sql .= $this->analyseJoins($join);
         }
 
         // WHERE criteria list
-        if (!empty($criteria)) {
+        if ($criteria !== []) {
             $this->sql .= " WHERE " . $this->analyseCrit($criteria);
             if ($where) {
                 trigger_error(

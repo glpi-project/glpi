@@ -229,7 +229,7 @@ final class ValidationField extends AbstractConfigField implements DestinationFi
                 $actor_parts = explode('-', $actor);
                 if (
                     count($actor_parts) !== 2
-                    || !in_array($actor_parts[0], array_values($available_actor_types))
+                    || !in_array($actor_parts[0], $available_actor_types)
                     || !is_numeric($actor_parts[1])
                 ) {
                     continue;

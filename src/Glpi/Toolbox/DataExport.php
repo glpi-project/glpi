@@ -66,7 +66,7 @@ class DataExport
             // Remove FontAwesome and Table icons that does not contains any text
             $icons_elements = $xpath->query('//*[contains(@class, "fa-") or contains(@class, "ti-")]');
             foreach ($icons_elements as $element) {
-                if (strlen(trim($element->textContent)) === 0) {
+                if (trim($element->textContent) === '') {
                     $element->parentNode->removeChild($element);
                 }
             }

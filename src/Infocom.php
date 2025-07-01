@@ -770,7 +770,7 @@ class Infocom extends CommonDBChild
                     'itemtype' => 'Infocom',
                     'type'     => Alert::END,
                 ];
-                foreach ($not_deleted_items as $id => $item) {
+                foreach (array_keys($not_deleted_items) as $id) {
                     $input["items_id"] = $id;
                     $alert->add($input);
                     unset($alert->fields['id']);
@@ -787,7 +787,7 @@ class Infocom extends CommonDBChild
             }
 
             $alert = new Alert();
-            foreach ($deleted_expired_items as $id => $item) {
+            foreach (array_keys($deleted_expired_items) as $id) {
                 $alert->add([
                     'itemtype' => 'Infocom',
                     'type'     => Alert::END,
@@ -1283,7 +1283,7 @@ JS;
                     //## calcul du prorata temporis en mois ##
                     // si l'annee fiscale debute au dela de l'annee courante
                     if ($date_m > $date_m2) {
-                        $date_m2 = $date_m2 + 12;
+                        $date_m2 += 12;
                     }
                     $ecartmois      = ($date_m2 - $date_m) + 1; // calcul ecart entre mois d'acquisition
                     // et debut annee fiscale

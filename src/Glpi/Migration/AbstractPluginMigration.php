@@ -197,7 +197,7 @@ abstract class AbstractPluginMigration
             'COUNT' => 'cpt',
         ];
 
-        if (!empty($conditions)) {
+        if ($conditions !== []) {
             $criteria['WHERE'] = $conditions;
         }
 

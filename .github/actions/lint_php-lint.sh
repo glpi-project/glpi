@@ -17,3 +17,8 @@ vendor/bin/phpstan analyze \
   --ansi \
   --memory-limit=1G \
   --no-interaction
+
+echo "Run rector"
+vendor/bin/rector process \
+  --dry-run \
+  --ansi

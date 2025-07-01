@@ -1940,7 +1940,7 @@ class CommonDBTM extends CommonGLPI
         /** @var \DBmysql $DB */
         global $DB;
 
-        if (!isset($this->fields['id']) || !($this->fields['id'] >= 0)) {
+        if (!isset($this->fields['id']) || $this->fields['id'] < 0) {
             return false;
         }
 
@@ -4389,7 +4389,7 @@ class CommonDBTM extends CommonGLPI
 
                         case 'mac':
                             preg_match("/([0-9a-fA-F]{1,2}([:-]|$)){6}$/", $value, $regs);
-                            if (empty($regs)) {
+                            if ($regs === []) {
                                 $unset = true;
                             }
                             // Define the MAC address to lower to reduce complexity of SQL queries
@@ -4402,7 +4402,7 @@ class CommonDBTM extends CommonGLPI
                             $pattern  = "/^([0-9]{4})-([0-9]{1,2})-([0-9]{1,2})";
                             $pattern .= "([_][01][0-9]|2[0-3]:[0-5][0-9]:[0-5]?[0-9])?/";
                             preg_match($pattern, $value, $regs);
-                            if (empty($regs)) {
+                            if ($regs === []) {
                                 $unset = true;
                             }
                             break;
@@ -4679,7 +4679,7 @@ class CommonDBTM extends CommonGLPI
                                 $message_text = $this->getUnicityErrorMessage($message, $fields, $doubles);
                                 if ($p['unicity_error_message']) {
                                     if (!$fields['action_refuse']) {
-                                        $show_other_messages = ($fields['action_refuse'] ? true : false);
+                                        $show_other_messages = ((bool) $fields['action_refuse']);
                                     } else {
                                         $show_other_messages = true;
                                     }

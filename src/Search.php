@@ -528,7 +528,7 @@ class Search
     public static function addOrderBy($itemtype, $sort_fields)
     {
         $order = SQLProvider::getOrderByCriteria($itemtype, $sort_fields);
-        if (empty($order)) {
+        if ($order === []) {
             return '';
         }
         return (new DBmysqlIterator(null))->handleOrderClause($order);

@@ -45,7 +45,7 @@ final class ObserverFieldConfig extends ITILActorFieldConfig
             fn(string $strategy) => ITILActorFieldStrategy::tryFrom($strategy),
             $data[self::STRATEGIES] ?? []
         );
-        if (empty($strategies)) {
+        if ($strategies === []) {
             $strategies = [ITILActorFieldStrategy::FROM_TEMPLATE];
         }
 

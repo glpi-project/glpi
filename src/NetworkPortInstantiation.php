@@ -687,7 +687,7 @@ TWIG, $twig_params);
         }
 
         // Manage entity_sons
-        if (!($p['entity'] < 0) && $p['entity_sons']) {
+        if ($p['entity'] >= 0 && $p['entity_sons']) {
             if (is_array($p['entity'])) {
                 echo "entity_sons options is not available with entity option as array";
             } else {

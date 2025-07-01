@@ -1686,7 +1686,7 @@ TWIG, $twig_params);
         }
 
         // If no project tasks are found, do not display anything
-        if (empty($projecttasks_id)) {
+        if ($projecttasks_id === []) {
             return;
         }
 

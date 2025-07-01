@@ -52,7 +52,7 @@ if (isset($_POST['add'])) {
 } elseif (isset($_POST["purge"])) {
     $translation->delete($_POST, true);
     Html::redirect(KnowbaseItem::getFormURLWithID($_POST['knowbaseitems_id']));
-} elseif (isset($_GET["id"]) and isset($_GET['to_rev'])) {
+} elseif (isset($_GET["id"]) && isset($_GET['to_rev'])) {
     $translation->check($_GET["id"], UPDATE);
     if ($translation->revertTo($_GET['to_rev'])) {
         Session::addMessageAfterRedirect(

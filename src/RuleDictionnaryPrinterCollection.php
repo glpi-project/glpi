@@ -54,7 +54,7 @@ class RuleDictionnaryPrinterCollection extends RuleCollection
     public function cleanTestOutputCriterias(array $output)
     {
         //If output array contains keys begining with _ : drop it
-        foreach ($output as $criteria => $value) {
+        foreach (array_keys($output) as $criteria) {
             if (($criteria[0] == '_') && ($criteria != '_ignore_import')) {
                 unset($output[$criteria]);
             }
@@ -265,7 +265,7 @@ class RuleDictionnaryPrinterCollection extends RuleCollection
         $input["name"]         = $p['name'];
         $input["manufacturer"] = $p['manufacturer'];
 
-        if (empty($res_rule)) {
+        if ($res_rule === []) {
             $res_rule = $this->processAllRules($input, [], []);
         }
 

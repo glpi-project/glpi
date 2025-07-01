@@ -119,7 +119,7 @@ final class RequestTypeField extends AbstractConfigField implements DestinationF
 
         // Do not edit input if invalid value was found
         $valid_values = [Ticket::INCIDENT_TYPE, Ticket::DEMAND_TYPE];
-        if (array_search($request_type, $valid_values) === false) {
+        if (!in_array($request_type, $valid_values)) {
             return $input;
         }
 

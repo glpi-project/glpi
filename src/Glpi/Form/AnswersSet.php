@@ -250,7 +250,7 @@ final class AnswersSet extends CommonDBChild
         // If no items were created, display one link to the answers themselves
         // TODO: delete this later as we will force at least one ticket to
         // be always created.
-        if (empty($links)) {
+        if ($links === []) {
             $links[] = $this->getLink();
         }
 

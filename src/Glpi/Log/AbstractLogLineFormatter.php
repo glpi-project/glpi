@@ -91,7 +91,7 @@ abstract class AbstractLogLineFormatter extends LineFormatter
 
     private function getTraceAsString(array $trace): string
     {
-        if (empty($trace)) {
+        if ($trace === []) {
             return '';
         }
 

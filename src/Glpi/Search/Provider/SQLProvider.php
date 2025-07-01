@@ -725,7 +725,7 @@ final class SQLProvider implements SearchProviderInterface
                             $user_criteria,
                         ],
                     ];
-                    if (!empty($group_criteria)) {
+                    if ($group_criteria !== []) {
                         $criteria['OR'][] = $group_criteria;
                     }
                 } elseif (Session::haveRight('project', Project::READMY)) {
@@ -748,7 +748,7 @@ final class SQLProvider implements SearchProviderInterface
                             'glpi_projects.users_id' => Session::getLoginUserID(),
                         ],
                     ];
-                    if (!empty($group_criteria)) {
+                    if ($group_criteria !== []) {
                         $criteria['OR'][] = $group_criteria;
                     }
                 }
@@ -1043,7 +1043,7 @@ final class SQLProvider implements SearchProviderInterface
                         ''
                     );
                 }
-                if (!empty($entity_restrictions)) {
+                if ($entity_restrictions !== []) {
                     $criteria[] = ['OR' => $entity_restrictions];
                 }
 
@@ -2474,7 +2474,7 @@ final class SQLProvider implements SearchProviderInterface
         if ($meta) {
             $addmetanum = self::getMetaTableUniqueSuffix($new_table, $meta_type);
             $AS         = " AS `$nt$addmetanum`";
-            $nt         = $nt . $addmetanum;
+            $nt .= $addmetanum;
         }
 
         // Do not take into account standard linkfield
@@ -2536,7 +2536,7 @@ final class SQLProvider implements SearchProviderInterface
 
         // Link with plugin tables: need to know left join structure
         if (
-            empty($specific_leftjoin_criteria)
+            $specific_leftjoin_criteria === []
             && preg_match("/^glpi_plugin_([a-z0-9]+)/", $new_table, $matches)
         ) {
             if (count($matches) == 2) {
@@ -2668,7 +2668,7 @@ final class SQLProvider implements SearchProviderInterface
                 $joinparams['jointype'] = 'standard';
             }
 
-            if (empty($specific_leftjoin_criteria)) {
+            if ($specific_leftjoin_criteria === []) {
                 switch ($joinparams['jointype']) {
                     case 'child':
                         $linkfield = $joinparams['linkfield'] ?? getForeignKeyFieldForTable($cleanrt);
@@ -5056,7 +5056,7 @@ final class SQLProvider implements SearchProviderInterface
             $val = rtrim(preg_replace('/\$$/', '', $val));
         } else {
             // Add % wildcard after searched string if not ending by a `$`
-            $val = $val . '%';
+            $val .= '%';
         }
 
         return $val;
@@ -5233,7 +5233,8 @@ final class SQLProvider implements SearchProviderInterface
                                     && isset($data[$ID][$k][2])
                                 ) {
                                     $split = explode(Search::LONGSEP, $data[$ID][$k][2]);
-                                    for ($l = 0; $l < count($split); $l++) {
+                                    $counter = count($split);
+                                    for ($l = 0; $l < $counter; $l++) {
                                         $split2 = explode(" ", $split[$l]);
                                         if ((count($split2) == 2) && ($split2[0] == 0) && !empty($split2[1])) {
                                             if ($count_display) {
@@ -5798,7 +5799,7 @@ final class SQLProvider implements SearchProviderInterface
                                 }
                             }
                         }
-                        if (!empty($items)) {
+                        if ($items !== []) {
                             return implode("<br>", $items);
                         }
                     }
@@ -5820,7 +5821,7 @@ final class SQLProvider implements SearchProviderInterface
                                 }
                             }
                         }
-                        if (!empty($itemtypes)) {
+                        if ($itemtypes !== []) {
                             return implode("<br>", $itemtypes);
                         }
                     }

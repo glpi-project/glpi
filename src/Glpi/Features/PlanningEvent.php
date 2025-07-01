@@ -479,7 +479,7 @@ trait PlanningEvent
             } else {
                 $ngrouppriv = [$itemtype::getTableField('groups_id') => $whogroup];
             }
-            if (!empty($nreadpriv)) {
+            if ($nreadpriv !== []) {
                 $nreadpriv['OR'] = [$nreadpriv, $ngrouppriv];
             } else {
                 $nreadpriv = $ngrouppriv;
@@ -655,7 +655,7 @@ trait PlanningEvent
         }
 
         if (count($events_toadd)) {
-            $events = $events + $events_toadd;
+            $events += $events_toadd;
         }
 
         return $events;

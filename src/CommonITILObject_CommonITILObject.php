@@ -547,7 +547,7 @@ abstract class CommonITILObject_CommonITILObject extends CommonDBRelation
                     unset($other_link_types[$key]);
                 }
                 // Count everything except SON_OF links using original parameters
-                if (!empty($other_link_types)) {
+                if ($other_link_types !== []) {
                     $count = static::countLinksByStatus($itemtype, $items_id, $status, $other_link_types);
                 }
 
@@ -568,11 +568,11 @@ abstract class CommonITILObject_CommonITILObject extends CommonDBRelation
             ];
         }
 
-        if (!empty($link_types)) {
+        if ($link_types !== []) {
             $where['links.link'] = $link_types;
         }
 
-        if (!empty($status)) {
+        if ($status !== []) {
             $where['items.status'] = $status;
         }
 
