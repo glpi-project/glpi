@@ -38,6 +38,8 @@ use CommonITILActor;
 use Contract;
 use DbTestCase;
 use Entity;
+use Glpi\Application\View\TemplateRenderer;
+use Glpi\Helpdesk\HomePageTabs;
 use ITILFollowup;
 use ITILSolution;
 use NotificationTarget;
@@ -45,6 +47,7 @@ use NotificationTargetTicket;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use Profile_User;
+use Symfony\Component\DomCrawler\Crawler;
 use Ticket;
 use Ticket_Contract;
 use Ticket_User;
@@ -1589,5 +1592,92 @@ class EntityTest extends DbTestCase
         // Assert: the specific file names should be found.
         $this->assertEquals($left_scene_id, 'custom:test-left.png');
         $this->assertEquals($right_scene_id, 'custom:test-right.png');
+    }
+
+    public static function customHelpdeskTitleIsAppliedProvider(): iterable
+    {
+        yield 'One entity without config' => [
+            'entities' => [
+                ['name' => 'entity_a', 'config' => ''],
+            ],
+            'entity' => 'entity_a',
+            'expected' => 'How can we help you?',
+        ];
+
+        yield 'Two entities without config' => [
+            'entities' => [
+                ['name' => 'entity_a', 'config' => ''],
+                ['name' => 'entity_aa', 'parent' => 'entity_a', 'config' => -2],
+            ],
+            'entity' => 'entity_aa',
+            'expected' => 'How can we help you?',
+        ];
+
+        yield 'Two entities with specific config on parent' => [
+            'entities' => [
+                ['name' => 'entity_a', 'config' => 'My value'],
+                ['name' => 'entity_aa', 'parent' => 'entity_a', 'config' => -2],
+            ],
+            'entity' => 'entity_aa',
+            'expected' => 'My value',
+        ];
+
+        yield 'Two entities with specific config on child' => [
+            'entities' => [
+                ['name' => 'entity_a', 'config' => 'My value'],
+                ['name' => 'entity_aa', 'parent' => 'entity_a', 'config' => 'My other value'],
+            ],
+            'entity' => 'entity_aa',
+            'expected' => 'My other value',
+        ];
+    }
+
+    #[DataProvider('customHelpdeskTitleIsAppliedProvider')]
+    public function testCustomHelpdeskTitleIsApplied(
+        array $entities,
+        string $entity,
+        string $expected,
+    ): void {
+        $this->login();
+
+        // Arrange: create requested entities
+        $root = $this->getTestRootEntity(only_id: true);
+        foreach ($entities as $to_create) {
+            if (isset($to_create['parent'])) {
+                $parent = getItemByTypeName(
+                    Entity::class,
+                    $to_create['parent'],
+                    onlyid: true,
+                );
+            } else {
+                $parent = $root;
+            }
+
+            $this->createItem(Entity::class, [
+                'name'                       => $to_create['name'],
+                'entities_id'                => $parent,
+                'custom_helpdesk_home_title' => $to_create['config'],
+            ]);
+        }
+
+        // Act: render home page
+        $_SERVER['REQUEST_URI'] = ""; // Needed to avoid warnings
+        $renderer = TemplateRenderer::getInstance();
+        $content = $renderer->render('pages/helpdesk/index.html.twig', [
+            // Important, entity to test
+            'entity' => getItemByTypeName(Entity::class, $entity),
+            // We don't case about these, set minimal required values
+            'title' => '',
+            'tiles' => [],
+            'tabs'  => new HomePageTabs(),
+            'password_alert' => null,
+        ]);
+
+        // Assert: compare the rendered title with the expected value
+        $title = (new Crawler($content))
+            ->filter('[data-testid=home-title]')
+            ->text()
+        ;
+        $this->assertEquals($expected, $title);
     }
 }

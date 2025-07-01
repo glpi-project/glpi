@@ -94,6 +94,11 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
     public const DEFAULT_LEFT_SCENE = "shelves";
     public const DEFAULT_RIGHT_SCENE = "desk";
 
+    // Const values used for the titles configuration dropdown
+    public const TITLE_INHERIT = "inherit";
+    public const TITLE_DEFAULT = "default";
+    public const TITLE_CUSTOM = "custom";
+
     // Array of "right required to update" => array of fields allowed
     // Missing field here couldn't be update (no right)
     private static $field_right = [
@@ -162,6 +167,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
             'suppliers_as_private', 'autopurge_delay', 'anonymize_support_agents', 'display_users_initials',
             'contracts_strategy_default', 'contracts_id_default', 'show_tickets_properties_on_helpdesk',
             'custom_helpdesk_home_scene_left', 'custom_helpdesk_home_scene_right',
+            'custom_helpdesk_home_title',
         ],
         // Configuration
         'config' => ['enable_custom_css', 'custom_css_code'],
@@ -426,6 +432,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
         }
 
         $input = $this->handleCustomScenesInputValues($input);
+        $input = $this->handleCustomTitleInputValues($input);
 
         return $input;
     }
@@ -465,6 +472,33 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
 
             if ($input[$field] === null) {
                 unset($input[$field]);
+            }
+        }
+
+        return $input;
+    }
+
+    private function handleCustomTitleInputValues(array $input): array
+    {
+        $value = $input['custom_helpdesk_home_title'] ?? null;
+        if ($value === null) {
+            return $input;
+        }
+
+        if ($value === self::TITLE_INHERIT) {
+            // Inherit parent value
+            $input['custom_helpdesk_home_title'] = self::CONFIG_PARENT;
+        } elseif ($value == self::TITLE_DEFAULT) {
+            // Reset default value (empty string)
+            $input['custom_helpdesk_home_title'] = "";
+        } elseif ($value == self::TITLE_CUSTOM) {
+            // A custom value was submitted
+            $value = $input['_custom_helpdesk_home_title'] ?? null;
+            if ($value === null) {
+                // Invalid data submtited, do not modify the saved value.
+                return $input;
+            } else {
+                $input['custom_helpdesk_home_title'] = $value;
             }
         }
 
@@ -3241,7 +3275,7 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
         }
 
         $twig->display(
-            'pages/admin/helpdesk_home_custom_scene_config.html.twig',
+            'pages/admin/helpdesk_home_config_for_entity.html.twig',
             ['entity' => $this],
         );
 
@@ -3280,6 +3314,45 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
 
         // Custom icons
         return IllustrationManager::CUSTOM_SCENE_PREFIX . $value;
+    }
+
+    public function getHelpdeskHomeTitleConfigForDropdown(): string
+    {
+        $config_value = $this->fields['custom_helpdesk_home_title'] ?? "";
+
+        if ($config_value == "") {
+            return self::TITLE_DEFAULT;
+        } elseif ($config_value == self::CONFIG_PARENT) {
+            return self::TITLE_INHERIT;
+        } else {
+            return self::TITLE_CUSTOM;
+        }
+    }
+
+    public function getHelpdeskHomeTitle(): string
+    {
+        $value = $this->fields['custom_helpdesk_home_title'] ?? '';
+
+        // Load from parent if needed
+        if ($value == self::CONFIG_PARENT) {
+            $value = self::getUsedConfig(
+                'custom_helpdesk_home_title',
+                $this->fields['entities_id']
+            );
+        }
+
+        if ($value === "") {
+            // Default value
+            return $this->getDefaultHelpdeskHomeTitle();
+        } else {
+            // Custom value
+            return $value;
+        }
+    }
+
+    public function getDefaultHelpdeskHomeTitle(): string
+    {
+        return __("How can we help you?");
     }
 
     #[Override]

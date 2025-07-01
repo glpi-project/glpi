@@ -471,6 +471,114 @@ describe(`Helpdesk home page configuration - entities specific`, () => {
         });
     });
 
+    it('can configure custom titles', () => {
+        cy.findByRole('heading', {name: "Custom titles"}).should('be.visible');
+
+        // Default state, inheritance should be selected
+        cy.getDropdownByLabelText("Main title").should(
+            "have.text",
+            "Inherited from parent entity"
+        );
+        validateRegionVisibilities({
+            "Default title preview"  : 'not.exist',
+            "Custom title value"     : 'not.exist',
+            "Inherited title preview": 'be.visible',
+        });
+        cy.findByRole('region', {name: "Inherited title preview"})
+            .find('input')
+            .should('have.value', "How can we help you?")
+        ;
+
+        // Switch to custom title
+        cy.getDropdownByLabelText("Main title")
+            .selectDropdownValue("Custom value")
+        ;
+        validateRegionVisibilities({
+            "Default title preview"  : 'not.exist',
+            "Custom title value"     : 'be.visible',
+            "Inherited title preview": 'not.exist',
+        });
+        cy.findByRole('region', {name: "Custom title value"})
+            .find('input')
+            .should('have.value', "How can we help you?")
+            .clear()
+        ;
+        cy.findByRole('region', {name: "Custom title value"})
+            .find('input')
+            .type("My custom title value")
+        ;
+        saveTitleSettings();
+        cy.getDropdownByLabelText("Main title").should(
+            "have.text",
+            "Custom value",
+        );
+        validateRegionVisibilities({
+            "Default title preview"  : 'not.exist',
+            "Custom title value"     : 'be.visible',
+            "Inherited title preview": 'not.exist',
+        });
+        cy.findByRole('region', {name: "Custom title value"})
+            .find('input')
+            .should('have.value', "My custom title value")
+        ;
+
+        // Use the default title
+        cy.getDropdownByLabelText("Main title")
+            .selectDropdownValue("Default value")
+        ;
+        validateRegionVisibilities({
+            "Default title preview"  : 'be.visible',
+            "Custom title value"     : 'not.exist',
+            "Inherited title preview": 'not.exist',
+        });
+        cy.findByRole('region', {name: "Default title preview"})
+            .find('input')
+            .should('have.value', "How can we help you?")
+        ;
+        saveTitleSettings();
+        cy.getDropdownByLabelText("Main title").should(
+            "have.text",
+            "Default value",
+        );
+        validateRegionVisibilities({
+            "Default title preview"  : 'be.visible',
+            "Custom title value"     : 'not.exist',
+            "Inherited title preview": 'not.exist',
+        });
+        cy.findByRole('region', {name: "Default title preview"})
+            .find('input')
+            .should('have.value', "How can we help you?")
+        ;
+
+        // Go back to inherited value
+        cy.getDropdownByLabelText("Main title")
+            .selectDropdownValue("Inherited from parent entity")
+        ;
+        validateRegionVisibilities({
+            "Default title preview"  : 'not.exist',
+            "Custom title value"     : 'not.exist',
+            "Inherited title preview": 'be.visible',
+        });
+        cy.findByRole('region', {name: "Inherited title preview"})
+            .find('input')
+            .should('have.value', "How can we help you?")
+        ;
+        saveTitleSettings();
+        cy.getDropdownByLabelText("Main title").should(
+            "have.text",
+            "Inherited from parent entity",
+        );
+        validateRegionVisibilities({
+            "Default title preview"  : 'not.exist',
+            "Custom title value"     : 'not.exist',
+            "Inherited title preview": 'be.visible',
+        });
+        cy.findByRole('region', {name: "Inherited title preview"})
+            .find('input')
+            .should('have.value', "How can we help you?")
+        ;
+    });
+
     it('tiles with deleted form are not displayed', () => {
         const uuid = Cypress._.random(0, 1e6);
 
@@ -569,6 +677,11 @@ function saveIllustrationSettings() {
     cy.document().its('body').within(() => {
         cy.findByRole('button', {name: "Save custom illustrations settings"}).click();
     });
+}
+
+function saveTitleSettings() {
+    cy.findByRole('button', {name: "Save custom titles settings"}).click();
+    cy.findByRole('alert').findByRole('button', {name: "Close"}).click();
 }
 
 function validateRegionVisibilities(regions) {

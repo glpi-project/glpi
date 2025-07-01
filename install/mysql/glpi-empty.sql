@@ -2848,6 +2848,7 @@ CREATE TABLE `glpi_entities` (
   `show_tickets_properties_on_helpdesk` int NOT NULL DEFAULT '-2',
   `custom_helpdesk_home_scene_left` varchar(255) NOT NULL DEFAULT '-2',
   `custom_helpdesk_home_scene_right` varchar(255) NOT NULL DEFAULT '-2',
+  `custom_helpdesk_home_title` varchar(255) NOT NULL DEFAULT '-2',
   PRIMARY KEY (`id`),
   UNIQUE KEY `unicity` (`entities_id`,`name`),
   KEY `name` (`name`),
