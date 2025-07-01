@@ -477,7 +477,6 @@ Handle only linked ola, not ola ttr and tto defined using datetime fields
     </script>
 {% endmacro %}
 
-{# @todo pas forcément utile, peut-être inliné #}
 {% macro DatetimeLaField(name, value, label, options = {}) %}
     {% set assign_la_id = 'assign_la_' ~ options.rand %}
     <div class="la_datefield">
@@ -493,11 +492,10 @@ Handle only linked ola, not ola ttr and tto defined using datetime fields
     </div>
 {% endmacro %}
 
-{# @todo document le param dropdown_dom_id est le id du template de dropdown#}
+{# dropdown_dom_id dom id of element where the dropdown will be rendered#}
 {% macro OlaAddButton(dropdown_placeholder_dom_id, options = {}) %}
     {% set options = {
         'rand': random(),
-        'is_expanded': false,
     }|merge(options) %}
     {% set rand = 'ola_add_' ~ options.rand ~ '_' %}
     {% set button_id = 'add_button_' ~ rand %}
@@ -534,5 +532,4 @@ Handle only linked ola, not ola ttr and tto defined using datetime fields
             }
         );
     </script>
-
 {% endmacro %}
