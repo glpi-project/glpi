@@ -18,7 +18,7 @@ services:
 
   db:
     container_name: "glpi-db"
-    image: "mariadb:11.4"
+    image: "mariadb:11.8"
     restart: "unless-stopped"
     volumes:
       - "db:/var/lib/mysql"

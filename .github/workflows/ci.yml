@@ -116,12 +116,12 @@ jobs:
             MATRIX='
               {
                 "include": [
-                  {"php-version": "8.4", "db-image": "mariadb:11.4"},
-                  {"php-version": "8.3", "db-image": "mariadb:11.4"},
-                  {"php-version": "8.2", "db-image": "mariadb:11.4"},
-                  {"php-version": "8.1", "db-image": "mariadb:11.4"},
-                  {"php-version": "8.0", "db-image": "mariadb:11.4"},
-                  {"php-version": "7.4", "db-image": "mariadb:11.4"},
+                  {"php-version": "8.4", "db-image": "mariadb:11.8"},
+                  {"php-version": "8.3", "db-image": "mariadb:11.8"},
+                  {"php-version": "8.2", "db-image": "mariadb:11.8"},
+                  {"php-version": "8.1", "db-image": "mariadb:11.8"},
+                  {"php-version": "8.0", "db-image": "mariadb:11.8"},
+                  {"php-version": "7.4", "db-image": "mariadb:11.8"},
                   {"php-version": "8.4", "db-image": "mariadb:10.2"},
                   {"php-version": "8.4", "db-image": "mysql:8.4"},
                   {"php-version": "8.4", "db-image": "mysql:5.7"},
@@ -134,7 +134,7 @@ jobs:
             MATRIX='
               {
                 "include": [
-                  {"php-version": "8.4", "db-image": "mariadb:11.4"},
+                  {"php-version": "8.4", "db-image": "mariadb:11.8"},
                   {"php-version": "8.4", "db-image": "mysql:8.4"}
                 ]
               }
