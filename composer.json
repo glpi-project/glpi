@@ -79,7 +79,7 @@
         "ext-xml": "*",
         "atoum/atoum": "^4.1",
         "atoum/stubs": "^2.6",
-        "friendsofphp/php-cs-fixer": "^3.75",
+        "friendsofphp/php-cs-fixer": "^3.76",
         "friendsoftwig/twigcs": "^6.1",
         "glpi-project/tools": "^0.7",
         "maglnet/composer-require-checker": "^3.5",
