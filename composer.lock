@@ -8301,16 +8301,16 @@
         },
         {
             "name": "tecnickcom/tc-lib-barcode",
-            "version": "2.4.7",
+            "version": "2.4.8",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tecnickcom/tc-lib-barcode.git",
-                "reference": "8c7536995461124e7daa1833f18a0d7b7d176e7c"
+                "reference": "f238ffd120d98a34df6573590e7ed02f766a91c4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tecnickcom/tc-lib-barcode/zipball/8c7536995461124e7daa1833f18a0d7b7d176e7c",
-                "reference": "8c7536995461124e7daa1833f18a0d7b7d176e7c",
+                "url": "https://api.github.com/repos/tecnickcom/tc-lib-barcode/zipball/f238ffd120d98a34df6573590e7ed02f766a91c4",
+                "reference": "f238ffd120d98a34df6573590e7ed02f766a91c4",
                 "shasum": ""
             },
             "require": {
@@ -8324,8 +8324,8 @@
             "require-dev": {
                 "pdepend/pdepend": "2.16.2",
                 "phpmd/phpmd": "2.15.0",
-                "phpunit/phpunit": "12.1.3 || 11.5.7 || 10.5.40",
-                "squizlabs/php_codesniffer": "3.12.2"
+                "phpunit/phpunit": "12.2.0 || 11.5.7 || 10.5.40",
+                "squizlabs/php_codesniffer": "3.13.0"
             },
             "type": "library",
             "autoload": {
@@ -8389,7 +8389,7 @@
             ],
             "support": {
                 "issues": "https://github.com/tecnickcom/tc-lib-barcode/issues",
-                "source": "https://github.com/tecnickcom/tc-lib-barcode/tree/2.4.7"
+                "source": "https://github.com/tecnickcom/tc-lib-barcode/tree/2.4.8"
             },
             "funding": [
                 {
@@ -8397,20 +8397,20 @@
                     "type": "custom"
                 }
             ],
-            "time": "2025-05-27T15:47:44+00:00"
+            "time": "2025-06-06T11:35:02+00:00"
         },
         {
             "name": "tecnickcom/tc-lib-color",
-            "version": "2.2.12",
+            "version": "2.2.13",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tecnickcom/tc-lib-color.git",
-                "reference": "4eb1a80f2e5603207aee0282e8dc3a1b22019ac5"
+                "reference": "85d1366fb33813aa521d30e3d7c7d7d82a8103a6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tecnickcom/tc-lib-color/zipball/4eb1a80f2e5603207aee0282e8dc3a1b22019ac5",
-                "reference": "4eb1a80f2e5603207aee0282e8dc3a1b22019ac5",
+                "url": "https://api.github.com/repos/tecnickcom/tc-lib-color/zipball/85d1366fb33813aa521d30e3d7c7d7d82a8103a6",
+                "reference": "85d1366fb33813aa521d30e3d7c7d7d82a8103a6",
                 "shasum": ""
             },
             "require": {
@@ -8420,8 +8420,8 @@
             "require-dev": {
                 "pdepend/pdepend": "2.16.2",
                 "phpmd/phpmd": "2.15.0",
-                "phpunit/phpunit": "12.1.3 || 11.5.7 || 10.5.40",
-                "squizlabs/php_codesniffer": "3.12.2"
+                "phpunit/phpunit": "12.2.0 || 11.5.7 || 10.5.40",
+                "squizlabs/php_codesniffer": "3.13.0"
             },
             "type": "library",
             "autoload": {
@@ -8458,7 +8458,7 @@
             ],
             "support": {
                 "issues": "https://github.com/tecnickcom/tc-lib-color/issues",
-                "source": "https://github.com/tecnickcom/tc-lib-color/tree/2.2.12"
+                "source": "https://github.com/tecnickcom/tc-lib-color/tree/2.2.13"
             },
             "funding": [
                 {
@@ -8466,7 +8466,7 @@
                     "type": "custom"
                 }
             ],
-            "time": "2025-05-27T15:44:55+00:00"
+            "time": "2025-06-06T11:33:19+00:00"
         },
         {
             "name": "tecnickcom/tcpdf",
@@ -13184,7 +13184,7 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {},
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
@@ -13216,5 +13216,5 @@
     "platform-overrides": {
         "php": "8.2.99"
     },
-    "plugin-api-version": "2.6.0"
+    "plugin-api-version": "2.3.0"
 }
