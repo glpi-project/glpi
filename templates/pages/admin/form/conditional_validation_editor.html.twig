@@ -127,7 +127,7 @@
                                     input_value: condition.getValue(),
                                     input_name: "_validation_conditions[" ~ loop.index0 ~ "][value]",
                                     input_label: __("Value"),
-                                }|merge(handler.getTemplateParameters()),
+                                }|merge(handler.getTemplateParameters(condition)),
                                 with_context = false
                             ) }}
                         {% endif %}

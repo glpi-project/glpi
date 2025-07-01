@@ -339,14 +339,19 @@ final class EditorManagerTest extends GLPITestCase
         yield 'Question' => [
             'uuid' => "1",
             'expected' => [
-                'equals'          => __('Is equal to'),
-                'not_equals'      => __('Is not equal to'),
-                'contains'        => __('Contains'),
-                'not_contains'    => __('Do not contains'),
-                'visible'         => __('Is visible'),
-                'not_visible'     => __('Is not visible'),
-                'match_regex'     => __("Match regular expression"),
-                'not_match_regex' => __("Do not match regular expression"),
+                'equals'                        => __('Is equal to'),
+                'not_equals'                    => __('Is not equal to'),
+                'contains'                      => __('Contains'),
+                'not_contains'                  => __('Do not contains'),
+                'visible'                       => __('Is visible'),
+                'not_visible'                   => __('Is not visible'),
+                'match_regex'                   => __("Match regular expression"),
+                'not_match_regex'               => __("Do not match regular expression"),
+                'length_greater_than'           => __('Length is greater than'),
+                'length_greater_than_or_equals' => __('Length is greater than or equals to'),
+                'length_less_than'              => __('Length is less than'),
+                'length_less_than_or_equals'    => __('Length is less than or equals to'),
+
             ],
         ];
 

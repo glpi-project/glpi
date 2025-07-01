@@ -1499,32 +1499,61 @@ class FormMigration extends AbstractPluginMigration
                 $input['horizontal_rank'] = $question->fields['horizontal_rank'];
             }
 
+            $question_type = $question->getQuestionType();
+            $raw_config = json_decode(json: $question->fields['extra_data'] ?? '', associative: true, flags: JSON_THROW_ON_ERROR);
+            $config = $raw_config ? $question_type->getExtraDataConfig($raw_config) : null;
+            $condition_handlers = $question_type->getConditionHandlers($config);
+            $supported_value_operators = array_filter(
+                array_merge(...array_map(
+                    fn(ConditionHandlerInterface $handler) => $handler->getSupportedValueOperators(),
+                    $condition_handlers
+                )),
+                fn(ValueOperator $operator): bool => $operator->canBeUsedForValidation()
+            );
+
             // Apply minimum range condition
-            if (is_numeric($raw_condition['range_min'])) {
+            if (is_numeric($raw_condition['range_min']) && !empty(array_intersect(
+                [ValueOperator::GREATER_THAN_OR_EQUALS->value, ValueOperator::LENGTH_GREATER_THAN_OR_EQUALS->value],
+                array_map(fn($vp) => $vp->value, $supported_value_operators)
+            ))) {
+                $value_operator = current(array_intersect(
+                    [ValueOperator::GREATER_THAN_OR_EQUALS->value, ValueOperator::LENGTH_GREATER_THAN_OR_EQUALS->value],
+                    array_map(fn($vp) => $vp->value, $supported_value_operators)
+                ));
                 $input['_validation_conditions'][] = [
                     'item'           => sprintf('question-%s', $question->getUUID()),
                     'value'          => $raw_condition['range_min'],
                     'item_type'      => 'question',
                     'item_uuid'      => $question->getUUID(),
-                    'value_operator' => ValueOperator::GREATER_THAN_OR_EQUALS->value,
+                    'value_operator' => $value_operator,
                     'logic_operator' => LogicOperator::AND->value,
                 ];
             }
 
             // Apply maximum range condition
-            if (is_numeric($raw_condition['range_max'])) {
+            if (is_numeric($raw_condition['range_max']) && !empty(array_intersect(
+                [ValueOperator::LESS_THAN_OR_EQUALS->value, ValueOperator::LENGTH_LESS_THAN_OR_EQUALS->value],
+                array_map(fn($vp) => $vp->value, $supported_value_operators)
+            ))) {
+                $value_operator = current(array_intersect(
+                    [ValueOperator::LESS_THAN_OR_EQUALS->value, ValueOperator::LENGTH_LESS_THAN_OR_EQUALS->value],
+                    array_map(fn($vp) => $vp->value, $supported_value_operators)
+                ));
                 $input['_validation_conditions'][] = [
                     'item'           => sprintf('question-%s', $question->getUUID()),
                     'value'          => $raw_condition['range_max'],
                     'item_type'      => 'question',
                     'item_uuid'      => $question->getUUID(),
-                    'value_operator' => ValueOperator::LESS_THAN_OR_EQUALS->value,
+                    'value_operator' => $value_operator,
                     'logic_operator' => LogicOperator::AND->value,
                 ];
             }
 
             // Apply regex validation condition
-            if (!empty($raw_condition['regex'])) {
+            if (!empty($raw_condition['regex']) && in_array(
+                ValueOperator::MATCH_REGEX,
+                $supported_value_operators
+            )) {
                 $input['_validation_conditions'][] = [
                     'item'           => sprintf('question-%s', $question->getUUID()),
                     'value'          => $raw_condition['regex'],
@@ -1535,13 +1564,15 @@ class FormMigration extends AbstractPluginMigration
                 ];
             }
 
-            $this->importItem(
-                Question::class,
-                $input,
-                [
-                    'id' => $question_id,
-                ]
-            );
+            if (isset($input['_validation_conditions'])) {
+                $this->importItem(
+                    Question::class,
+                    $input,
+                    [
+                        'id' => $question_id,
+                    ]
+                );
+            }
 
             $this->progress_indicator?->advance();
         }

@@ -34,6 +34,7 @@
 
 namespace Glpi\Form\Condition\ConditionHandler;
 
+use Glpi\Form\Condition\ConditionData;
 use Glpi\Form\Condition\ValueOperator;
 use Override;
 
@@ -49,6 +50,10 @@ class StringConditionHandler implements ConditionHandlerInterface
             ValueOperator::NOT_CONTAINS,
             ValueOperator::MATCH_REGEX,
             ValueOperator::NOT_MATCH_REGEX,
+            ValueOperator::LENGTH_GREATER_THAN,
+            ValueOperator::LENGTH_GREATER_THAN_OR_EQUALS,
+            ValueOperator::LENGTH_LESS_THAN,
+            ValueOperator::LENGTH_LESS_THAN_OR_EQUALS,
         ];
     }
 
@@ -59,9 +64,23 @@ class StringConditionHandler implements ConditionHandlerInterface
     }
 
     #[Override]
-    public function getTemplateParameters(): array
+    public function getTemplateParameters(ConditionData $condition): array
     {
-        return [];
+        switch ($condition->getValueOperator()) {
+            case ValueOperator::LENGTH_GREATER_THAN:
+            case ValueOperator::LENGTH_GREATER_THAN_OR_EQUALS:
+            case ValueOperator::LENGTH_LESS_THAN:
+            case ValueOperator::LENGTH_LESS_THAN_OR_EQUALS:
+                // For length operators, we want to display a number input.
+                return [
+                    'attributes' => [
+                        'type' => 'number',
+                        'step' => 'any',
+                    ],
+                ];
+            default:
+                return [];
+        }
     }
 
     #[Override]
@@ -87,6 +106,12 @@ class StringConditionHandler implements ConditionHandlerInterface
             // warnings using the "@" prefix.
             ValueOperator::MATCH_REGEX     => @preg_match($b, $a),
             ValueOperator::NOT_MATCH_REGEX => !@preg_match($b, $a),
+
+            // Length comparison operators
+            ValueOperator::LENGTH_GREATER_THAN           => strlen($a) > intval($b),
+            ValueOperator::LENGTH_GREATER_THAN_OR_EQUALS => strlen($a) >= intval($b),
+            ValueOperator::LENGTH_LESS_THAN              => strlen($a) < intval($b),
+            ValueOperator::LENGTH_LESS_THAN_OR_EQUALS    => strlen($a) <= intval($b),
 
             // Unsupported operators
             default => false,

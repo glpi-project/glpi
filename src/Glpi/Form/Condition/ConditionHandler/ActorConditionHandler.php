@@ -34,6 +34,7 @@
 
 namespace Glpi\Form\Condition\ConditionHandler;
 
+use Glpi\Form\Condition\ConditionData;
 use Glpi\Form\Condition\ValueOperator;
 use Glpi\Form\QuestionType\AbstractQuestionTypeActors;
 use Glpi\Form\QuestionType\QuestionTypeActorsExtraDataConfig;
@@ -61,7 +62,7 @@ class ActorConditionHandler implements ConditionHandlerInterface
     }
 
     #[Override]
-    public function getTemplateParameters(): array
+    public function getTemplateParameters(ConditionData $condition): array
     {
         return [
             'multiple'       => $this->extra_data_config->isMultipleActors(),
