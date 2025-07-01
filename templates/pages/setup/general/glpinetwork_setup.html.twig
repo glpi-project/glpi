@@ -98,7 +98,7 @@
 
     {{ fields.dropdownArrayField(
         'marketplace_replace_plugins',
-        config('marketplace_replace_plugins'),
+        config('marketplace_replace_plugins')|default(1),
         {
             '1': __('Ask before replacing'),
             '2': __('Replace plugins page with marketplace'),
