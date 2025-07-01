@@ -63,6 +63,8 @@ abstract class AbstractConditionHandler extends DbTestCase
         bool $expected_result,
         ?JsonFieldInterface $question_extra_data = null,
     ): void {
+        $this->login();
+
         // Arrange: create a form with a condition on which we will add a condition.
         $form = new FormBuilder();
         $form->addQuestion(
