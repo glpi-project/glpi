@@ -389,7 +389,7 @@ class ConfigTest extends DbTestCase
             ], [
                 'raw'       => '10.5.9-MariaDB',
                 'version'   => '10.5.9',
-                'compat'    => true,
+                'compat'    => false,
             ], [
                 'raw'       => '10.6.7-MariaDB-1:10.6.7-2ubuntu1.1',
                 'version'   => '10.6.7',

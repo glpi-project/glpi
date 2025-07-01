@@ -76,8 +76,8 @@ class DbConfigurationTest extends \GLPITestCase
                 ],
             ],
             [
-                // Default variables on MariaDB 10.5
-                'version'   => '10.5.8-MariaDB',
+                // Default variables on MariaDB 10.6
+                'version'   => '10.6.8-MariaDB',
                 'variables' => [
                     'innodb_page_size'    => 16384,
                 ],
@@ -87,8 +87,8 @@ class DbConfigurationTest extends \GLPITestCase
                 ],
             ],
             [
-                // Incompatible variables on MariaDB 10.5
-                'version'   => '10.5.8-MariaDB',
+                // Incompatible variables on MariaDB 10.6
+                'version'   => '10.6.8-MariaDB',
                 'variables' => [
                     'innodb_page_size'    => 4096,
                 ],
