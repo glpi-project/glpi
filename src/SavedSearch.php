@@ -90,6 +90,8 @@ class SavedSearch extends CommonDBTM implements ExtraVisibilityCriteria
 
     public function getSpecificMassiveActions($checkitem = null)
     {
+        $actions = parent::getSpecificMassiveActions($checkitem);
+
         $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'unset_default']
                      = "<i class='ti ti-star'></i>" . __s('Unset as default');
         $actions[self::class . MassiveAction::CLASS_ACTION_SEPARATOR . 'change_count_method']

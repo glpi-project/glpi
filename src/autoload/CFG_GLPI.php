@@ -164,7 +164,7 @@ $CFG_GLPI['document_types']               = [Budget::class, CartridgeItem::class
     SoftwareLicense::class, Supplier::class, Ticket::class, User::class,
     Certificate::class, Cluster::class, ITILFollowup::class, ITILSolution::class,
     ChangeTask::class, ProblemTask::class, TicketTask::class, Appliance::class,
-    DatabaseInstance::class,
+    DatabaseInstance::class, Rack::class,
 ];
 
 $CFG_GLPI['consumables_types']            = [Group::class, User::class];

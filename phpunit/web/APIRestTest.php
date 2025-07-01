@@ -3356,4 +3356,28 @@ class APIRestTest extends TestCase
             $this->assertEquals('********', $notification['13']); // 13 = body_text
         }
     }
+
+    public function testGetItemIDZero()
+    {
+        $this->expectException(GuzzleHttp\Exception\ClientException::class);
+        $this->doHttpRequest(
+            'GET',
+            '/Entity/0',
+            [
+                'headers'  => ['Session-Token' => $this->session_token],
+            ]
+        );
+        // We are connected to a child entity, so we expect a 403 error
+        $this->expectExceptionMessage('403 Forbidden');
+
+        $this->expectException(GuzzleHttp\Exception\ClientException::class);
+        $this->doHttpRequest(
+            'GET',
+            '/User/0',
+            [
+                'headers'  => ['Session-Token' => $this->session_token],
+            ]
+        );
+        $this->expectExceptionMessage('404 Not Found');
+    }
 }

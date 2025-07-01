@@ -38,6 +38,9 @@ use Glpi\Error\ErrorHandler;
 use Glpi\Toolbox\Filesystem;
 use LDAP\Connection;
 
+use function Safe\parse_url;
+use function Safe\preg_replace;
+
 /**
  *  Class used to manage Auth LDAP config
  */
@@ -2854,7 +2857,14 @@ TWIG, $twig_params);
         self::$last_errno = null;
         self::$last_error = null;
 
-        $ds = @ldap_connect($host, (int) $port);
+        //Use an LDAP connection string
+        $ldapuri = sprintf(
+            '%s://%s:%s',
+            parse_url($host, PHP_URL_SCHEME) ?: 'ldap',
+            preg_replace('@^ldaps?://@', '', $host),
+            (int) $port
+        );
+        $ds = @ldap_connect($ldapuri);
 
         if ($ds === false) {
             trigger_error(

@@ -296,10 +296,7 @@ class APIRest extends API
                         exit();
                     }
 
-                    if (
-                        $id > 0
-                        || ($id !== false && $id == 0 && $itemtype == "Entity")
-                    ) {
+                    if ($id !== false) {
                         $response = $this->getItem($itemtype, $id, $this->parameters);
                         if (isset($response['date_mod'])) {
                             $datemod = strtotime($response['date_mod']);

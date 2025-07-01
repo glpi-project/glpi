@@ -420,9 +420,6 @@ class Software extends InventoryAsset
 
             $dedup_vkey = $key_w_version . $this->getVersionKey($val, 0);
 
-
-            $this->updateSoftwareFieldsIfNeeded($db_software_data, $key_wo_version, $val);
-
             //update date_install if needed
             //reconciles the software with the version (needed here)
             if (
@@ -497,40 +494,6 @@ class Software extends InventoryAsset
             $this->storeAssetLink();
         } catch (\Throwable $e) {
             throw $e;
-        }
-    }
-
-
-    /**
-     * Updates software fields if needed.
-     *
-     * @param array $db_software_data The current database data for the software.
-     * @param string $key_wo_version The key to access software data without version information.
-     * @param object $val The current software data being processed.
-     */
-    private function updateSoftwareFieldsIfNeeded(array $db_software_data, string $key_wo_version, object $val): void
-    {
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
-
-        if (!isset($db_software_data[$key_wo_version])) {
-            return; // No data to process
-        }
-
-        $fields_to_update = [];
-        $soft_id = $db_software_data[$key_wo_version]['softid'];
-
-        // Check if the softwarecategories_id needs to be updated
-        $sckey = md5('softwarecategories_id' . ($val->softwarecategories_id ?? 0));
-        if ($db_software_data[$key_wo_version]['softwarecategories'] != ($this->known_links[$sckey] ?? 0)) {
-            $fields_to_update['softwarecategories_id'] = ($this->known_links[$sckey] ?? 0);
-        }
-
-        // Perform the update if there are fields to update
-        if ($fields_to_update !== []) {
-            $fields_to_update['id'] = $soft_id;
-            $software_to_update = new GSoftware();
-            $software_to_update->update($fields_to_update, 0);
         }
     }
 

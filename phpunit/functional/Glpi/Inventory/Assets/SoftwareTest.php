@@ -390,25 +390,6 @@ class SoftwareTest extends AbstractInventoryAsset
         $categories_iterator = $DB->request(['FROM' => \SoftwareCategory::getTable()]);
         $this->assertCount(4, $categories_iterator);
 
-        //check that software still exist but with different softwarecategories
-        $criteria = [
-            'FROM' => \Software::getTable(),
-            'LEFT JOIN' => [
-                \SoftwareCategory::getTable() => [
-                    'ON' => [
-                        \Software::getTable() => 'softwarecategories_id',
-                        \SoftwareCategory::getTable() => 'id',
-                    ],
-                ],
-            ],
-            'WHERE' => [
-                \Software::getTable() . ".name" => "gimp",
-                \SoftwareCategory::getTable() . ".name" => "Web App",
-            ],
-        ];
-        $iterator = $DB->request($criteria);
-        $this->assertCount(1, $iterator);
-
         //we now have 1 softwareversion items linked to the computer
         $item_versions = $item_version->find(['itemtype' => 'Computer', 'items_id' => $computers_id]);
         $this->assertCount(1, $item_versions);
