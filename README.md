@@ -74,7 +74,7 @@ It is distributed under the GNU GENERAL PUBLIC LICENSE Version 3 - please consul
 ## Prerequisites
 
 * A web server (Apache, Nginx, IIS, etc.)
-* MariaDB >= 10.5 or MySQL >= 8.0
+* MariaDB >= 10.6 or MySQL >= 8.0
 * PHP >= 8.2
 * Mandatory PHP extensions:
     - dom, fileinfo, filter, libxml, simplexml, xmlreader, xmlwriter (these are enabled in PHP by default)

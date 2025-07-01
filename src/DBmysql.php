@@ -2246,7 +2246,7 @@ class DBmysql
             return "SHOW BINARY LOG STATUS";
         }
 
-        if ($info['server'] === 'MariaDB' && version_compare($info['version'], '10.5.2', '>=')) {
+        if ($info['server'] === 'MariaDB') {
             return "SHOW BINLOG STATUS";
         }
 
