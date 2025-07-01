@@ -71,7 +71,8 @@
         "build": "npm run build:pack",
         "dependencies:postinstall": "php -r \"file_put_contents('.package.hash', sha1_file('package-lock.json'));\"",
         "dependencies": "npm run dependencies:postinstall",
-        "test": "NODE_OPTIONS=\"--experimental-vm-modules\" jest --colors --forceExit --config tests/js/jest.config.js ./tests/js/**"
+        "test": "NODE_OPTIONS=\"--experimental-vm-modules\" jest --colors --forceExit --config tests/js/jest.config.js",
+        "postinstall": "patch-package --patch-dir tools/patches/npm"
     },
     "devDependencies": {
         "@testing-library/jest-dom": "^6.6.3",
@@ -87,6 +88,7 @@
         "jest-extended": "^6.0.0",
         "mini-css-extract-plugin": "^2.9.2",
         "null-loader": "^4.0.1",
+        "patch-package": "^8.0.0",
         "script-loader": "^0.7.2",
         "strip-sourcemap-loader": "^0.0.1",
         "stylelint": "^16.21.0",
