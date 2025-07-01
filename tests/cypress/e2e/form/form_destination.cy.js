@@ -159,7 +159,7 @@ describe('Form destination', () => {
         // Add a third strategy
         cy.get('@add_strategy_button').click();
         cy.findByRole('combobox', {name: '-----'}).as('third_strategy_dropdown');
-        cy.get('@third_strategy_dropdown').selectDropdownValue('Answer to last "Requesters" question');
+        cy.get('@third_strategy_dropdown').selectDropdownValue('Answer to last "Requesters" or "Email" question');
 
         // Save changes
         cy.findByRole('button', {name: 'Update item'}).click();
@@ -171,7 +171,7 @@ describe('Form destination', () => {
             cy.findByRole('combobox', {name: 'From template'}).should('exist');
             cy.findByRole('combobox', {name: 'Specific actors'}).should('exist');
             cy.findByRole('listitem', {name: 'glpi'}).should('exist');
-            cy.findByRole('combobox', {name: 'Answer to last "Requesters" question'}).should('exist');
+            cy.findByRole('combobox', {name: 'Answer to last "Requesters" or "Email" question'}).should('exist');
         });
 
         // Add a fourth strategy
@@ -189,7 +189,7 @@ describe('Form destination', () => {
             cy.findByRole('combobox', {name: 'From template'}).should('exist');
             cy.findByRole('combobox', {name: 'Specific actors'}).should('exist');
             cy.findByRole('listitem', {name: 'glpi'}).should('exist');
-            cy.findByRole('combobox', {name: 'Answer to last "Requesters" question'}).should('exist');
+            cy.findByRole('combobox', {name: 'Answer to last "Requesters" or "Email" question'}).should('exist');
             cy.findByRole('combobox', {name: 'User who filled the form'}).should('exist');
         });
     });
