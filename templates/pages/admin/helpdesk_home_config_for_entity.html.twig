@@ -179,14 +179,14 @@
 
     {% if is_root_entity %}
         {% set title_options = {
-            (constant("Entity::TITLE_DEFAULT")): __("Default value"),
-            (constant("Entity::TITLE_CUSTOM")) : __("Custom value"),
+            (constant("Entity::HELPDESK_TITLE_DEFAULT")): __("Default value"),
+            (constant("Entity::HELPDESK_TITLE_CUSTOM")) : __("Custom value"),
         } %}
     {% else %}
         {% set title_options = {
-            (constant("Entity::TITLE_DEFAULT")): __("Default value"),
-            (constant("Entity::TITLE_CUSTOM")) : __("Custom value"),
-            (constant("Entity::TITLE_INHERIT")): __("Inherited from parent entity"),
+            (constant("Entity::HELPDESK_TITLE_DEFAULT")): __("Default value"),
+            (constant("Entity::HELPDESK_TITLE_CUSTOM")) : __("Custom value"),
+            (constant("Entity::HELPDESK_TITLE_INHERIT")): __("Inherited from parent entity"),
         } %}
     {% endif %}
 
@@ -210,9 +210,9 @@
 
                 {# Default value preview #}
                 <section
-                    class="{{ title_config == constant("Entity::TITLE_DEFAULT") ? '' : 'd-none' }}"
+                    class="{{ title_config == constant("Entity::HELPDESK_TITLE_DEFAULT") ? '' : 'd-none' }}"
                     data-glpi-parent-dropdown="custom_helpdesk_home_title"
-                    data-glpi-parent-dropdown-condition="{{ constant("Entity::TITLE_DEFAULT") }}"
+                    data-glpi-parent-dropdown-condition="{{ constant("Entity::HELPDESK_TITLE_DEFAULT") }}"
                     aria-label="{{ __("Default title preview") }}"
                 >
                     {{ inputs.text(
@@ -224,9 +224,9 @@
 
                 {# Custom value preview #}
                 <section
-                    class="{{ title_config == constant("Entity::TITLE_CUSTOM") ? '' : 'd-none' }}"
+                    class="{{ title_config == constant("Entity::HELPDESK_TITLE_CUSTOM") ? '' : 'd-none' }}"
                     data-glpi-parent-dropdown="custom_helpdesk_home_title"
-                    data-glpi-parent-dropdown-condition="{{ constant("Entity::TITLE_CUSTOM") }}"
+                    data-glpi-parent-dropdown-condition="{{ constant("Entity::HELPDESK_TITLE_CUSTOM") }}"
                     aria-label="{{ __("Custom title value") }}"
                 >
                     {{ inputs.text(
@@ -242,9 +242,9 @@
 
                 {# Inherited value preview #}
                 <section
-                    class="{{ title_config == constant("Entity::TITLE_INHERIT") ? '' : 'd-none' }}"
+                    class="{{ title_config == constant("Entity::HELPDESK_TITLE_INHERIT") ? '' : 'd-none' }}"
                     data-glpi-parent-dropdown="custom_helpdesk_home_title"
-                    data-glpi-parent-dropdown-condition="{{ constant("Entity::TITLE_INHERIT") }}"
+                    data-glpi-parent-dropdown-condition="{{ constant("Entity::HELPDESK_TITLE_INHERIT") }}"
                     aria-label="{{ __("Inherited title preview") }}"
                 >
                     {{ inputs.text(

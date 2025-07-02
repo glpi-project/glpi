@@ -95,9 +95,9 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
     public const DEFAULT_RIGHT_SCENE = "desk";
 
     // Const values used for the titles configuration dropdown
-    public const TITLE_INHERIT = "inherit";
-    public const TITLE_DEFAULT = "default";
-    public const TITLE_CUSTOM = "custom";
+    public const HELPDESK_TITLE_INHERIT = "inherit";
+    public const HELPDESK_TITLE_DEFAULT = "default";
+    public const HELPDESK_TITLE_CUSTOM = "custom";
 
     // Array of "right required to update" => array of fields allowed
     // Missing field here couldn't be update (no right)
@@ -485,13 +485,13 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
             return $input;
         }
 
-        if ($value === self::TITLE_INHERIT) {
+        if ($value === self::HELPDESK_TITLE_INHERIT) {
             // Inherit parent value
             $input['custom_helpdesk_home_title'] = self::CONFIG_PARENT;
-        } elseif ($value == self::TITLE_DEFAULT) {
+        } elseif ($value == self::HELPDESK_TITLE_DEFAULT) {
             // Reset default value (empty string)
             $input['custom_helpdesk_home_title'] = "";
-        } elseif ($value == self::TITLE_CUSTOM) {
+        } elseif ($value == self::HELPDESK_TITLE_CUSTOM) {
             // A custom value was submitted
             $value = $input['_custom_helpdesk_home_title'] ?? null;
             if ($value === null) {
@@ -3321,11 +3321,11 @@ class Entity extends CommonTreeDropdown implements LinkableToTilesInterface
         $config_value = $this->fields['custom_helpdesk_home_title'] ?? "";
 
         if ($config_value == "") {
-            return self::TITLE_DEFAULT;
+            return self::HELPDESK_TITLE_DEFAULT;
         } elseif ($config_value == self::CONFIG_PARENT) {
-            return self::TITLE_INHERIT;
+            return self::HELPDESK_TITLE_INHERIT;
         } else {
-            return self::TITLE_CUSTOM;
+            return self::HELPDESK_TITLE_CUSTOM;
         }
     }
 
