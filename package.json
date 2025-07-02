@@ -66,7 +66,7 @@
         "swagger-ui-dist": "^5.22.0",
         "tinycolor2": "^1.6.0",
         "tinymce": "^7.9.1",
-        "tinymce-i18n": "^25.5.12",
+        "tinymce-i18n": "^25.6.2",
         "vue": "^3.5.16"
     },
     "scripts": {
