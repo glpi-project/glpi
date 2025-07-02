@@ -222,7 +222,7 @@ class Conf extends CommonGLPI
             }
 
             $inventory_request->handleContentType($mime);
-            $inventory_request->handleRequest($contents);
+            $inventory_request->setLocal()->handleRequest($contents);
             if ($inventory_request->inError()) {
                 $response = $inventory_request->getResponse();
                 if ($inventory_request->getMode() === Request::JSON_MODE) {

@@ -112,6 +112,7 @@ abstract class AbstractRequest
     private int $http_response_code = 200;
     /** @var string */
     protected string $query;
+    protected bool $local = false;
 
     public function __construct()
     {
@@ -215,7 +216,10 @@ abstract class AbstractRequest
         $guess_mode = ($base_mode === null);
         $this->setMode(self::JSON_MODE);
 
-        $auth_required = \Config::getConfigurationValue('inventory', 'auth_required');
+        $auth_required = false;
+        if (!$this->isLocal()) {
+            $auth_required = \Config::getConfigurationValue('inventory', 'auth_required');
+        }
         if ($auth_required === Conf::CLIENT_CREDENTIALS) {
             $request = new Request('POST', $_SERVER['REQUEST_URI'], $this->headers->getHeaders());
             try {
@@ -753,5 +757,25 @@ abstract class AbstractRequest
                 }
             }
         }
+    }
+
+    /**
+     * Mark inventory as local
+     * @return $this
+     */
+    public function setLocal(): self
+    {
+        $this->local = true;
+        return $this;
+    }
+
+    /**
+     * Is inventory local?
+     *
+     * @return boolean
+     */
+    public function isLocal(): bool
+    {
+        return $this->local;
     }
 }
