@@ -1500,7 +1500,7 @@ class FormMigration extends AbstractPluginMigration
             }
 
             $question_type = $question->getQuestionType();
-            $raw_config = json_decode(json: $question->fields['extra_data'] ?? '', associative: true, flags: JSON_THROW_ON_ERROR);
+            $raw_config = json_decode(json: $question->fields['extra_data'] ?? '{}', associative: true, flags: JSON_THROW_ON_ERROR);
             $config = $raw_config ? $question_type->getExtraDataConfig($raw_config) : null;
             $condition_handlers = $question_type->getConditionHandlers($config);
             $supported_value_operators = array_filter(
