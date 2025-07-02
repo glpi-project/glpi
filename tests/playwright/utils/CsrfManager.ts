@@ -60,7 +60,7 @@ export class CsrfManager
             'input[name="_glpi_csrf_token"]'
         ) as HTMLInputElement;
 
-        if (input.value === null) {
+        if (input === null || input.value) {
             throw new Error(`Unexpected body content: ${body}`);
         }
 
