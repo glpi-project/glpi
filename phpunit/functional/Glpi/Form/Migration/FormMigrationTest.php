@@ -2305,4 +2305,191 @@ final class FormMigrationTest extends DbTestCase
         // Verify that the section has not been migrated
         $this->assertFalse((new Section())->getFromDBByCrit(['name' => 'Test form migration with entity that does not exist - Section']));
     }
+
+    public static function provideFormMigrationForSelectableQuestions(): iterable
+    {
+        yield 'checkbox' => [
+            'fieldtype' => 'checkboxes',
+            'conditions' => [
+                [
+                    'show_value' => 'Option 3',
+                    'show_logic' => 1, // AND logic
+                ],
+            ],
+            'expected_conditions' => [
+                [
+                    'value_operator' => ValueOperator::EQUALS,
+                    'value' => 2, // Index of 'Option 3' in ['Option 1', 'Option 2', 'Option 3']
+                    'logic_operator' => LogicOperator::AND,
+                ],
+            ],
+        ];
+
+        yield 'radio' => [
+            'fieldtype' => 'radios',
+            'conditions' => [
+                [
+                    'show_value' => 'Option 3',
+                    'show_logic' => 1, // AND logic
+                ],
+            ],
+            'expected_conditions' => [
+                [
+                    'value_operator' => ValueOperator::EQUALS,
+                    'value' => 2, // Index of 'Option 3' in ['Option 1', 'Option 2', 'Option 3']
+                    'logic_operator' => LogicOperator::AND,
+                ],
+            ],
+        ];
+
+        yield 'select' => [
+            'fieldtype' => 'select',
+            'conditions' => [
+                [
+                    'show_value' => 'Option 3',
+                    'show_logic' => 1, // AND logic
+                ],
+            ],
+            'expected_conditions' => [
+                [
+                    'value_operator' => ValueOperator::EQUALS,
+                    'value' => 2, // Index of 'Option 3' in ['Option 1', 'Option 2', 'Option 3']
+                    'logic_operator' => LogicOperator::AND,
+                ],
+            ],
+        ];
+
+        yield 'multiselect' => [
+            'fieldtype' => 'multiselect',
+            'conditions' => [
+                [
+                    'show_value' => 'Option 2',
+                    'show_logic' => 1, // AND logic
+                ],
+                [
+                    'show_value' => 'Option 3',
+                    'show_logic' => 2, // OR logic
+                ],
+            ],
+            'expected_conditions' => [
+                [
+                    'value_operator' => ValueOperator::EQUALS,
+                    'value' => 1, // Index of 'Option 2' in ['Option 1', 'Option 2', 'Option 3']
+                    'logic_operator' => LogicOperator::AND,
+                ],
+                [
+                    'value_operator' => ValueOperator::EQUALS,
+                    'value' => 2, // Index of 'Option 3' in ['Option 1', 'Option 2', 'Option 3']
+                    'logic_operator' => LogicOperator::OR,
+                ],
+            ],
+        ];
+    }
+
+    #[DataProvider('provideFormMigrationForSelectableQuestions')]
+    public function testFormMigrationForSelectableQuestions(
+        string $fieldtype,
+        array $conditions,
+        array $expected_conditions
+    ): void {
+        /**
+         * @var \DBmysql $DB
+         */
+        global $DB;
+
+        $question_name = "Test form migration for {$fieldtype} question";
+        $condition_question_name = "{$question_name} - Condition question";
+
+        // Create a form
+        $this->assertTrue($DB->insert(
+            'glpi_plugin_formcreator_forms',
+            [
+                'name' => $question_name,
+            ]
+        ));
+        $form_id = $DB->insertId();
+
+        // Insert a section for the form
+        $this->assertTrue($DB->insert(
+            'glpi_plugin_formcreator_sections',
+            [
+                'plugin_formcreator_forms_id' => $form_id,
+            ]
+        ));
+
+        $section_id = $DB->insertId();
+
+        // Insert a question for the form
+        $this->assertTrue($DB->insert(
+            'glpi_plugin_formcreator_questions',
+            [
+                'name'                           => $question_name,
+                'plugin_formcreator_sections_id' => $section_id,
+                'fieldtype'                      => $fieldtype,
+                'values'                         => json_encode(['Option 1', 'Option 2', 'Option 3']),
+                'row'                            => 0,
+                'col'                            => 0,
+            ]
+        ));
+        $target_question_id = $DB->insertId();
+
+        // Insert another question to apply visibility conditions on
+        $this->assertTrue($DB->insert(
+            'glpi_plugin_formcreator_questions',
+            [
+                'name'                           => $condition_question_name,
+                'plugin_formcreator_sections_id' => $section_id,
+                'fieldtype'                      => 'text',
+                'show_rule'                      => 3, // Show if condition is met
+            ]
+        ));
+        $condition_question_id = $DB->insertId();
+
+        // Insert conditions for the question
+        foreach ($conditions as $condition) {
+            $this->assertTrue($DB->insert(
+                'glpi_plugin_formcreator_conditions',
+                [
+                    'itemtype'                        => 'PluginFormcreatorQuestion',
+                    'items_id'                        => $condition_question_id,
+                    'plugin_formcreator_questions_id' => $target_question_id,
+                    'show_condition'                  => 1,
+                    'show_value'                      => $condition['show_value'],
+                    'show_logic'                      => $condition['show_logic'],
+                ]
+            ));
+        }
+
+        // Process migration
+        $migration = new FormMigration($DB, FormAccessControlManager::getInstance());
+        $this->setPrivateProperty($migration, 'result', new PluginMigrationResult());
+        $this->assertTrue($this->callPrivateMethod($migration, 'processMigration'));
+
+        // Verify that the question has been migrated correctly
+        /** @var Question $question */
+        $question = getItemByTypeName(Question::class, $question_name);
+        /** @var AbstractQuestionTypeSelectable $question_type */
+        $question_type = $question->getQuestionType();
+
+        // Verify options based on question type
+        $this->assertInstanceOf(AbstractQuestionTypeSelectable::class, $question_type);
+        $this->assertEquals(['Option 1', 'Option 2', 'Option 3'], $question_type->getOptions($question));
+
+        // Verify that the condition question has been migrated correctly
+        /** @var Question $condition_question */
+        $condition_question = getItemByTypeName(Question::class, $condition_question_name);
+        $this->assertNotFalse($condition_question);
+        $this->assertEquals(VisibilityStrategy::HIDDEN_IF, $condition_question->getConfiguredVisibilityStrategy());
+        $this->assertEquals(
+            $expected_conditions,
+            array_map(
+                fn(ConditionData $condition) => [
+                    'value_operator' => $condition->getValueOperator(),
+                    'value'          => $condition->getValue(),
+                    'logic_operator' => $condition->getLogicOperator(),
+                ],
+                $condition_question->getConfiguredConditionsData()
+            )
+        );
+    }
 }
