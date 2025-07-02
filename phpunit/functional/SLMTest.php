@@ -3048,14 +3048,4 @@ class SLMTest extends DbTestCase
             $ola_compare
         );
     }
-
-    private function runSlaCron(): void
-    {
-        SlaLevel_Ticket::cronSlaTicket(getItemByTypeName(\CronTask::class, 'slaticket'));
-    }
-
-    private function runOlaCron(): void
-    {
-        OlaLevel_Ticket::cronOlaTicket(getItemByTypeName(\CronTask::class, 'slaticket')); // at the moment only slaticketcron exists
-    }
 }
