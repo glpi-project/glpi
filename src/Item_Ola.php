@@ -44,7 +44,7 @@ class Item_Ola extends CommonDBRelation
     /**
      * Prepare the input for add
      *
-     * add start_time and due_time values.
+     * add start_time, due_time and is_late values.
      *
      * @param array{start_time: string, olas_id: int, itemtype: class-string<\CommonITILObject>, items_id: int} $input
      * @return array|false
@@ -64,6 +64,7 @@ class Item_Ola extends CommonDBRelation
         return parent::prepareInputForAdd([
             'due_time' => $_ola->computeDate($input['start_time']),
             'start_time' => $input['start_time'],
+            'is_late' => false,
         ] + $input);
     }
 
@@ -144,6 +145,17 @@ class Item_Ola extends CommonDBRelation
                 $item_ola->fields['end_time'] = Session::getCurrentTime();
                 $item_ola_data['end_time'] = $item_ola->fields['end_time'];
             }
+        }
+
+        // - update is_late
+        // just for POC, condition are a bit more complex
+        $now = strtotime(Session::getCurrentTime());
+        $due_time_timestamp = strtotime($item_ola->fields['due_time']);
+        if( $now > $due_time_timestamp) {
+            $item_ola->fields['is_late'] = 1;
+        }
+        else {
+            $item_ola->fields['is_late'] = 0;
         }
 
         if (!(new Item_Ola())->update($item_ola_data)) {
