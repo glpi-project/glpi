@@ -47,6 +47,7 @@ use Glpi\Form\Question;
 use Glpi\Form\QuestionType\QuestionTypeItem;
 use Glpi\Form\Migration\DestinationFieldConverterInterface;
 use Glpi\Form\Migration\FormMigration;
+use Glpi\Form\QuestionType\AbstractQuestionType;
 use Glpi\Form\QuestionType\AbstractQuestionTypeActors;
 use Group;
 use InvalidArgumentException;
@@ -56,13 +57,21 @@ use User;
 
 abstract class ITILActorField extends AbstractConfigField implements DestinationFieldConverterInterface
 {
-    abstract public function getAllowedQuestionType(): AbstractQuestionTypeActors;
+    /** @return AbstractQuestionType[] */
+    abstract public function getAllowedQuestionType(): array;
     abstract public function getActorType(): string;
 
     public function getAllowedActorTypes(): array
     {
-        $question_type = $this->getAllowedQuestionType();
-        return $question_type->getAllowedActorTypes();
+        $question_type = array_filter(
+            $this->getAllowedQuestionType(),
+            fn(AbstractQuestionType $type) => $type instanceof AbstractQuestionTypeActors
+        );
+
+        return array_merge(...array_map(
+            fn(AbstractQuestionTypeActors $type) => $type->getAllowedActorTypes(),
+            $question_type
+        ));
     }
 
     #[Override]
@@ -134,16 +143,57 @@ abstract class ITILActorField extends AbstractConfigField implements Destination
             throw new InvalidArgumentException("Unexpected config class");
         }
 
-        // Compute value according to strategies
+        // Apply each configured strategy to get ITIL actors
         foreach ($config->getStrategies() as $strategy) {
             $itilactors = $strategy->getITILActors($this, $config, $answers_set);
 
-            if (!empty($itilactors)) {
-                $input['_actors'][$this->getActorType()] = $itilactors;
+            if (empty($itilactors)) {
+                continue;
+            }
+
+            // Process each actor found by the strategy
+            foreach ($itilactors as $itilactor) {
+                $this->addActorToInput($input, $itilactor);
             }
         }
 
         return $input;
+    }
+
+    /**
+     * Add a single ITIL actor to the input array
+     *
+     * @param array $input The input array to modify
+     * @param array $itilactor The actor data containing itemtype, items_id, use_notification, alternative_email
+     */
+    private function addActorToInput(array &$input, array $itilactor): void
+    {
+        // Generate the foreign key field name for this actor type
+        $itemtype_fk = getForeignKeyFieldForItemType($itilactor['itemtype']);
+        $actor_type = $this->getActorType();
+
+        // Build the key names for actor and notification data
+        $actor_key = "_{$itemtype_fk}_{$actor_type}";
+        $notif_key = "_{$itemtype_fk}_{$actor_type}_notif";
+
+        // Initialize actor array if not exists
+        $input[$actor_key] ??= [];
+
+        // Convert single string value to array if needed
+        if (is_string($input[$actor_key])) {
+            $input[$actor_key] = [$input[$actor_key]];
+        }
+
+        // Add the actor ID
+        $input[$actor_key][] = $itilactor['items_id'];
+
+        // Initialize notification arrays if not exists
+        $input[$notif_key]['use_notification'] ??= [];
+        $input[$notif_key]['alternative_email'] ??= [];
+
+        // Add notification settings for this actor
+        $input[$notif_key]['use_notification'][] = $itilactor['use_notification'] ?? '1';
+        $input[$notif_key]['alternative_email'][] = $itilactor['alternative_email'] ?? '';
     }
 
     #[Override]
@@ -271,7 +321,7 @@ abstract class ITILActorField extends AbstractConfigField implements Destination
     private function getITILActorQuestionsValuesForDropdown(Form $form): array
     {
         return array_reduce(
-            $form->getQuestionsByType($this->getAllowedQuestionType()::class),
+            $form->getQuestionsByTypes(array_map('get_class', $this->getAllowedQuestionType())),
             function ($carry, $question) {
                 $carry[$question->getId()] = $question->fields['name'];
                 return $carry;

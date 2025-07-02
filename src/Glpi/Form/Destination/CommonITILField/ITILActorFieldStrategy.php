@@ -36,6 +36,8 @@
 namespace Glpi\Form\Destination\CommonITILField;
 
 use Glpi\Form\AnswersSet;
+use Glpi\Form\QuestionType\AbstractQuestionTypeActors;
+use Glpi\Form\QuestionType\QuestionTypeEmail;
 use Group;
 use Session;
 use Ticket;
@@ -62,7 +64,7 @@ enum ITILActorFieldStrategy: string
             self::FROM_TEMPLATE                 => __('From template'),
             self::SPECIFIC_VALUES               => __('Specific actors'),
             self::SPECIFIC_ANSWERS              => __('Answer from specific questions'),
-            self::LAST_VALID_ANSWER             => sprintf(__('Answer to last "%s" question'), $label),
+            self::LAST_VALID_ANSWER             => sprintf(__('Answer to last "%s" or "Email" question'), $label),
             self::USER_FROM_OBJECT_ANSWER       => __('User from GLPI object answer'),
             self::TECH_USER_FROM_OBJECT_ANSWER  => __('Tech user from GLPI object answer'),
             self::GROUP_FROM_OBJECT_ANSWER      => __('Group from GLPI object answer'),
@@ -231,31 +233,49 @@ enum ITILActorFieldStrategy: string
             return null;
         }
 
-        $values = $answer->getRawAnswer();
+        if ($answer->getType() instanceof AbstractQuestionTypeActors) {
+            $values = $answer->getRawAnswer();
+            return array_reduce($values, function ($carry, $value) use ($itil_actor_field) {
+                if (
+                    !in_array($value['itemtype'], $itil_actor_field->getAllowedActorTypes())
+                    || !is_numeric($value['items_id'])
+                ) {
+                    return $carry;
+                }
 
-        return array_reduce($values, function ($carry, $value) use ($itil_actor_field) {
-            if (
-                !in_array($value['itemtype'], $itil_actor_field->getAllowedActorTypes())
-                || !is_numeric($value['items_id'])
-            ) {
+                $carry[] = [
+                    'itemtype' => $value['itemtype'],
+                    'items_id' => (int) $value['items_id'],
+                ];
                 return $carry;
+            }, []);
+        } elseif ($answer->getType() instanceof QuestionTypeEmail) {
+            $value = $answer->getRawAnswer();
+            if (filter_var($value, FILTER_VALIDATE_EMAIL)) {
+                return [
+                    [
+                        'itemtype' => User::class,
+                        'items_id' => 0, // No specific user ID, just the email
+                        'use_notification' => 1, // Use notification
+                        'alternative_email' => $value,
+                    ],
+                ];
             }
+        }
 
-            $carry[] = [
-                'itemtype' => $value['itemtype'],
-                'items_id' => (int) $value['items_id'],
-            ];
-            return $carry;
-        }, []);
+        return null;
     }
 
     private function getActorsForLastValidAnswer(
         ITILActorField $itil_actor_field,
         AnswersSet $answers_set,
     ): ?array {
-        $valid_answers = $answers_set->getAnswersByType(
-            $itil_actor_field->getAllowedQuestionType()::class
-        );
+        $allowed_types = $itil_actor_field->getAllowedQuestionType();
+        $valid_answers = [];
+        foreach ($allowed_types as $question_type) {
+            $answers = $answers_set->getAnswersByType($question_type::class);
+            $valid_answers = array_merge($valid_answers, $answers);
+        }
 
         if (count($valid_answers) == 0) {
             return null;

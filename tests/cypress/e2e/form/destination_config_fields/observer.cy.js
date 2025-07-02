@@ -65,8 +65,11 @@ describe('Observer configuration', () => {
             cy.getDropdownByLabelText('Question type').selectDropdownValue('Actors');
             cy.getDropdownByLabelText('Question sub type').selectDropdownValue('Observers');
             cy.getDropdownByLabelText("Select an actor...").selectDropdownValue(observer_name);
-            cy.findByRole('button', {'name': 'Save'}).click();
-            cy.checkAndCloseAlert('Item successfully updated');
+
+            cy.findByRole('button', {'name': "Add a question"}).click();
+            cy.focused().type("My Email question");
+            cy.getDropdownByLabelText('Question type').selectDropdownValue('Short answer');
+            cy.getDropdownByLabelText('Question sub type').selectDropdownValue('Emails');
 
             cy.findByRole('button', {'name': "Add a question"}).click();
             cy.focused().type("My Computer question");
@@ -135,19 +138,20 @@ describe('Observer configuration', () => {
         cy.get('@observers_dropdown').selectDropdownValue('Answer from specific questions');
         cy.get('@config').getDropdownByLabelText('Select questions...').as('specific_answers_type_dropdown');
         cy.get('@specific_answers_type_dropdown').selectDropdownValue('My Observer question');
+        cy.get('@specific_answers_type_dropdown').selectDropdownValue('My Email question');
 
         cy.findByRole('button', { 'name': 'Update item' }).click();
         cy.checkAndCloseAlert('Item successfully updated');
         cy.openAccordionItem('Destination fields accordion', 'Actors');
         cy.get('@observers_dropdown').should('have.text', 'Answer from specific questions');
-        cy.get('@specific_answers_type_dropdown').should('have.text', '×My Observer question');
+        cy.get('@specific_answers_type_dropdown').should('have.text', '×My Observer question×My Email question');
 
-        // Switch to "Answer to last "Observers" question"
-        cy.get('@observers_dropdown').selectDropdownValue('Answer to last "Observers" question');
+        // Switch to "Answer to last "Observers" or "Email" question"
+        cy.get('@observers_dropdown').selectDropdownValue('Answer to last "Observers" or "Email" question');
         cy.findByRole('button', { 'name': 'Update item' }).click();
         cy.checkAndCloseAlert('Item successfully updated');
         cy.openAccordionItem('Destination fields accordion', 'Actors');
-        cy.get('@observers_dropdown').should('have.text', 'Answer to last "Observers" question');
+        cy.get('@observers_dropdown').should('have.text', 'Answer to last "Observers" or "Email" question');
 
         // Switch to "User from GLPI object answer"
         cy.get('@observers_dropdown').selectDropdownValue('User from GLPI object answer');
