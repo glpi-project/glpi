@@ -3,8 +3,8 @@ import { config } from 'dotenv' ;
 import { Config } from './tests/playwright/utils/Config';
 
 // Load .env file so it is available everywhere.
-config({path: './tests/playwright/.env.local'});
-config({path: './tests/playwright/.env'});
+config({path: './tests/playwright/.env.local', quiet: true});
+config({path: './tests/playwright/.env', quiet: true});
 
 /**
  * See https://playwright.dev/docs/test-configuration.
