@@ -192,7 +192,7 @@ abstract class ITILActorField extends AbstractConfigField implements Destination
         $input[$notif_key]['alternative_email'] ??= [];
 
         // Add notification settings for this actor
-        $input[$notif_key]['use_notification'][] = $itilactor['use_notification'] ?? '0';
+        $input[$notif_key]['use_notification'][] = $itilactor['use_notification'] ?? '1';
         $input[$notif_key]['alternative_email'][] = $itilactor['alternative_email'] ?? '';
     }
 
