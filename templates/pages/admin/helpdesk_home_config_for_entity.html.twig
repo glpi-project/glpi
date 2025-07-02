@@ -30,20 +30,22 @@
  # ---------------------------------------------------------------------
  #}
 
+{% import 'components/form/basic_inputs_macros.html.twig' as inputs %}
+
+{% set is_root_entity = entity.getID() == 0 %}
 
 <div class="container-xl ms-0 mt-3">
     <h2 class="fs-2 mb-2">
         {{ __("Custom illustrations") }}
     </h2>
 
-    {% set is_root_entity = entity.getID() == 0 %}
     {% if is_root_entity %}
-        {% set options = {
+        {% set scene_options = {
             (constant("Entity::SCENE_DEFAULT")): __("Default illustration"),
             (constant("Entity::SCENE_CUSTOM")) : __("Custom illustration"),
         } %}
     {% else %}
-        {% set options = {
+        {% set scene_options = {
             (constant("Entity::SCENE_DEFAULT")): __("Default illustration"),
             (constant("Entity::SCENE_CUSTOM")) : __("Custom illustration"),
             (constant("Entity::SCENE_INHERIT")): __("Inherited from parent entity"),
@@ -89,7 +91,7 @@
                     <div class="mb-2">
                         {% do call('Dropdown::showFromArray', [
                             side.field,
-                            options,
+                            scene_options,
                             {
                                 value: side.config,
                                 width: "100%",
@@ -167,6 +169,104 @@
 
         <input type="hidden" name="id" value="{{ entity.getID() }}">
         <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+    </form>
+</div>
+
+<div class="container-xl ms-0 mt-3 mb-5">
+    <h2 class="fs-2 mb-2">
+        {{ __("Custom titles") }}
+    </h2>
+
+    {% if is_root_entity %}
+        {% set title_options = {
+            (constant("Entity::HELPDESK_TITLE_DEFAULT")): __("Default value"),
+            (constant("Entity::HELPDESK_TITLE_CUSTOM")) : __("Custom value"),
+        } %}
+    {% else %}
+        {% set title_options = {
+            (constant("Entity::HELPDESK_TITLE_DEFAULT")): __("Default value"),
+            (constant("Entity::HELPDESK_TITLE_CUSTOM")) : __("Custom value"),
+            (constant("Entity::HELPDESK_TITLE_INHERIT")): __("Inherited from parent entity"),
+        } %}
+    {% endif %}
+
+    {% set title_config = entity.getHelpdeskHomeTitleConfigForDropdown() %}
+
+    <form method="POST" action="{{ entity.getFormURL() }}">
+        <div class="row mb-3">
+            <div class="col-6">
+                <h3 class="mb-2 mt-1">{{ __("Main title") }}</h3>
+                <div class="mb-2">
+                    {% do call('Dropdown::showFromArray', [
+                        'custom_helpdesk_home_title',
+                        title_options,
+                        {
+                            value: title_config,
+                            width: "100%",
+                            aria_label: __('Main title'),
+                        }
+                    ]) %}
+                </div>
+
+                {# Default value preview #}
+                <section
+                    class="{{ title_config == constant("Entity::HELPDESK_TITLE_DEFAULT") ? '' : 'd-none' }}"
+                    data-glpi-parent-dropdown="custom_helpdesk_home_title"
+                    data-glpi-parent-dropdown-condition="{{ constant("Entity::HELPDESK_TITLE_DEFAULT") }}"
+                    aria-label="{{ __("Default title preview") }}"
+                >
+                    {{ inputs.text(
+                        '_preview',
+                        entity.getDefaultHelpdeskHomeTitle(),
+                        {disabled: true},
+                    ) }}
+                </section>
+
+                {# Custom value preview #}
+                <section
+                    class="{{ title_config == constant("Entity::HELPDESK_TITLE_CUSTOM") ? '' : 'd-none' }}"
+                    data-glpi-parent-dropdown="custom_helpdesk_home_title"
+                    data-glpi-parent-dropdown-condition="{{ constant("Entity::HELPDESK_TITLE_CUSTOM") }}"
+                    aria-label="{{ __("Custom title value") }}"
+                >
+                    {{ inputs.text(
+                        '_custom_helpdesk_home_title',
+                        entity.getHelpdeskHomeTitle(),
+                        {
+                            additional_attributes: {
+                                placeholder: __("Enter a custom title..."),
+                            }
+                        }
+                    ) }}
+                </section>
+
+                {# Inherited value preview #}
+                <section
+                    class="{{ title_config == constant("Entity::HELPDESK_TITLE_INHERIT") ? '' : 'd-none' }}"
+                    data-glpi-parent-dropdown="custom_helpdesk_home_title"
+                    data-glpi-parent-dropdown-condition="{{ constant("Entity::HELPDESK_TITLE_INHERIT") }}"
+                    aria-label="{{ __("Inherited title preview") }}"
+                >
+                    {{ inputs.text(
+                        '_preview',
+                        entity.getHelpdeskHomeTitle(),
+                        {disabled: true},
+                    ) }}
+                </section>
+            </div>
+        </div>
+
+        {# Form actions #}
+        <div class="d-flex mb-1">
+            <button class="btn btn-primary ms-auto" name="update">
+                <i class="ti ti-upload me-2"></i>
+                {{ __("Save custom titles settings") }}
+            </button>
+        </div>
+
+        <input type="hidden" name="id" value="{{ entity.getID() }}">
+        <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}">
+
     </form>
 </div>
 

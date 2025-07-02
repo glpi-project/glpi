@@ -297,7 +297,7 @@ if (!$DB->fieldExists("glpi_entities", $field)) {
     );
 }
 
-$fields = ['custom_helpdesk_home_scene_left', 'custom_helpdesk_home_scene_right'];
+$fields = ['custom_helpdesk_home_scene_left', 'custom_helpdesk_home_scene_right', 'custom_helpdesk_home_title'];
 foreach ($fields as $field) {
     if (!$DB->fieldExists("glpi_entities", $field)) {
         $migration->addField(

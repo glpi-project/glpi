@@ -45,8 +45,8 @@
                 {{ render_scene(scene_left) }}
             </div>
             <div class="container-narrow search-banner-content">
-                <h1 class="text-center">
-                    {{ __("How can we help you?") }}
+                <h1 class="text-center" data-testid="home-title">
+                    {{ entity.getHelpdeskHomeTitle() }}
                 </h1>
 
                 <div id="search-overlay" class="search-overlay bg-dark"></div>
