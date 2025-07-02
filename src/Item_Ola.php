@@ -33,6 +33,9 @@
  * ---------------------------------------------------------------------
  */
 
+
+use function Safe\strtotime;
+
 class Item_Ola extends CommonDBRelation
 {
     public static $itemtype_1 = 'itemtype'; // Only Ticket at the moment
@@ -44,7 +47,7 @@ class Item_Ola extends CommonDBRelation
     /**
      * Prepare the input for add
      *
-     * add start_time and due_time values.
+     * add start_time, due_time and is_late values.
      *
      * @param array{start_time: string, olas_id: int, itemtype: class-string<\CommonITILObject>, items_id: int} $input
      * @return array|false
@@ -64,11 +67,12 @@ class Item_Ola extends CommonDBRelation
         return parent::prepareInputForAdd([
             'due_time' => $_ola->computeDate($input['start_time']),
             'start_time' => $input['start_time'],
+            'is_late' => false,
         ] + $input);
     }
 
     /**
-     * Compute the OLA for a ticket
+     * Compute the OLA data for a ticket
      *
      * @param \Ticket $ticket
      * @param mixed $olas_id must exist in the database
@@ -84,7 +88,8 @@ class Item_Ola extends CommonDBRelation
         $ola = $item_ola->getOla();
         $ola->setTicketCalendar($calendars_id);
 
-        $item_ola_data['id'] = $item_ola->getID();
+        $item_ola_data = $item_ola->fields;
+        $item_ola_data['id'] = $item_ola->getID(); // for final CommonDBRelation::update
 
         // - update start_time skipped
         // nothing to do for TTO : done at creation of item_ola
@@ -109,56 +114,55 @@ class Item_Ola extends CommonDBRelation
                 )
             )
         ) {
-            $item_ola_data['waiting_time'] = $item_ola->fields['waiting_time'] + $ola->getActiveTimeBetween(
+            $item_ola_data['waiting_time'] += $ola->getActiveTimeBetween(
                 $ticket->fields['begin_waiting_date'] ?? 0,
                 $_SESSION["glpi_currenttime"]
             );
-            $item_ola->fields['waiting_time'] = $item_ola_data['waiting_time'];
         }
 
         // - update due_time
         // update due_time (former internal_time_to_own, internal_time_to_resolve)
         $item_ola_data['due_time'] = $ola->computeDate(
-            $item_ola->fields['start_time'],
-            $item_ola->fields['waiting_time']
+            $item_ola_data['start_time'],
+            $item_ola_data['waiting_time']
         );
 
         // - update end_time
         // for TTO, endtime is when the ticket is assigned to the dedicated group.
         if ($ola->fields['type'] === SLM::TTO) {
-            if ($item_ola->fields['end_time'] == null
+            if ($item_ola_data['end_time'] == null
                 &&
                 (
                     $ticket->haveAGroup(CommonITILActor::ASSIGN, [$ola->fields['groups_id']])
                 || self::ticketHasAnAssigneeOfOlaGroup($ticket, $ola)
                 )
             ) {
-                $item_ola->fields['end_time'] = Session::getCurrentTime();
-                $item_ola_data['end_time'] = $item_ola->fields['end_time'];
+                $item_ola_data['end_time'] = Session::getCurrentTime();
             }
         }
 
         // For TTR, end_time is when the ticket is closed
-        if ($ola->fields['type'] === SLM::TTR) {
+        // set it only if it is not already set
+        if ($ola->fields['type'] === SLM::TTR && $item_ola_data['end_time'] == null) {
             if ($ticket->isClosed() || $ticket->isSolved()) {
-                $item_ola->fields['end_time'] = Session::getCurrentTime();
-                $item_ola_data['end_time'] = $item_ola->fields['end_time'];
+                $item_ola_data['end_time'] = Session::getCurrentTime();
             }
         }
+
+        // update current object
+        foreach ($item_ola_data as $field => $value) {
+            $item_ola->fields[$field] = $value;
+        }
+
+        // - update is_late
+        $item_ola_data['is_late'] = (int) $item_ola->isLate($ticket);
 
         if (!(new Item_Ola())->update($item_ola_data)) {
             throw new \Exception('Failed to update item_ola');
         }
+
         // since dates may be changed, rebuild the levels todo
         $ticket->manageOlaLevel($item_ola->fields['olas_id']);
-        //
-        //            $this->updates[] = "waiting_duration";
-        //            $this->fields["waiting_duration"] += $delay_time;
-        //
-        //            // Reset begin_waiting_date
-        //            $this->updates[] = "begin_waiting_date";
-        //            $this->fields["begin_waiting_date"] = 'NULL';
-
     }
 
     public function getOla(): OLA
@@ -184,7 +188,7 @@ class Item_Ola extends CommonDBRelation
 
     /**
      * Get data from Item_Ola + linked OLA for a Ticket
-     *
+     * // @todoseb déplacer plus haut
      * @param \Ticket $ticket
      *
      * @return array<array{olas_id: int, items_olas_id: int, name: string, entities_id: int, is_recursive: bool, type: int, comment: string, number_time: int, use_ticket_calendar: bool, calendars_id: int, date_mod: string, definition_time: string, end_of_working_day: string, date_creation: string, slms_id: int, due_time: string, end_time: string, class: string, item: Ticket, nextaction: false|OlaLevel_Ticket|SlaLevel_Ticket, level: false|\LevelAgreementLevel, group_name: string}>
@@ -222,7 +226,7 @@ class Item_Ola extends CommonDBRelation
         // complete with olas not associated to ticket - not yet in items_ola
         $fetched_olas_ids = array_column($olas_in_db_data, 'id');
         $olas_not_yet_fetched = array_diff(array_values($olas_ids), $fetched_olas_ids);
-        $olas_missing_data = empty($olas_not_yet_fetched) ? [] : $ola->find(['id' => $olas_not_yet_fetched]);
+        $olas_missing_data = $olas_not_yet_fetched === [] ? [] : $ola->find(['id' => $olas_not_yet_fetched]);
 
         $olas_data = array_merge($olas_in_db_data, $olas_missing_data);
 
@@ -232,6 +236,33 @@ class Item_Ola extends CommonDBRelation
         }
 
         return $this->sort($merged_data);
+    }
+
+    /**
+     * @todo better fetch item from $this, but for performance issue, we rely on existing Ticket instance.
+     */
+    private function isLate(Ticket $ticket): bool
+    {
+        $now_timestamp = strtotime(Session::getCurrentTime());
+        $due_time_timestamp = strtotime($this->fields['due_time']);
+        $end_time_timestamp = is_null($this->fields['end_time']) ? null : strtotime($this->fields['end_time']);
+
+        // Ticket is WAITING : never late
+        if ($ticket->fields['status'] == CommonITILObject::WAITING) {
+            return false;
+        }
+
+        // end_time is after due_time
+        if (!is_null($end_time_timestamp) && $end_time_timestamp > $due_time_timestamp) {
+            return true;
+        }
+
+        // end time is not set, due_time is in the past
+        if (is_null($end_time_timestamp) && $due_time_timestamp < $now_timestamp) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -287,6 +318,27 @@ class Item_Ola extends CommonDBRelation
     }
 
     /**
+     * update items_ola which has no end_time of tickets
+     * @todo also filter by ticket status ? to ovoid useless updates
+     */
+    public static function cron(CronTask $cronTask)
+    {
+        $io = new static();
+        $ios = $io->find(['end_time' => null, 'itemtype' => Ticket::class]);
+
+        OLA::deleteAllLevelsToDo(); // todo levels are rebuild in Item_Ola::compute()
+
+        foreach ($ios as $io) {
+            $itil = getItemForItemtype($io['itemtype']);
+            if (!$itil instanceof Ticket) {
+                throw new \RuntimeException('Item_Ola cron only works for Ticket at the moment. Implemetation needed.');
+            }
+            $itil->getFromDB($io['items_id']);
+            static::compute($itil, $io['olas_id']);
+        }
+    }
+
+    /**
      * Sort the merged data by group then type (tto, then ttr)
      */
     private function sort(array $merged_data): array
@@ -305,5 +357,4 @@ class Item_Ola extends CommonDBRelation
 
         return $merged_data;
     }
-
 }

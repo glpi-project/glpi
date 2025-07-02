@@ -6750,6 +6750,7 @@ CREATE TABLE `glpi_items_olas` (
   `olas_id` int unsigned NOT NULL,
   `start_time` timestamp,
   `waiting_time` int NOT NULL DEFAULT 0,
+  `is_late` tinyint(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   KEY `item` (`itemtype`,`items_id`),
   KEY `olas_id` (`olas_id`)

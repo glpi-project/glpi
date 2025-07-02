@@ -156,18 +156,27 @@ class OLA extends LevelAgreement
      **/
     public static function deleteLevelsToDo(Ticket $ticket)
     {
+        self::deleteLevelsTodoByWhereCriteria(['tickets_id' => $ticket->fields['id']]);
+    }
+
+    /**
+     * remove all levels to do
+     **/
+    public static function deleteAllLevelsToDo(): void
+    {
+        self::deleteLevelsTodoByWhereCriteria([]);
+    }
+
+    private static function deleteLevelsTodoByWhereCriteria(array $where_criteria): void
+    {
         /** @var \DBmysql $DB */
         global $DB;
 
-        // on original code, we checked that the ticket has an associated OLA_TTR then we delete all levels todo (TTR + TTO)
-        // but the function is likely always called if the ticket has an OLA TTR
-        // so it's performed all the time
-        // on this version I remove the check, all levels todo are deleted, whatever OLA type is.
         $levelticket = getItemForItemtype(static::$levelticketclass);
         $iterator = $DB->request([
             'SELECT' => 'id',
             'FROM' => $levelticket::getTable(),
-            'WHERE' => ['tickets_id' => $ticket->fields['id']],
+            'WHERE' => $where_criteria,
         ]);
 
         foreach ($iterator as $data) {
@@ -213,6 +222,11 @@ class OLA extends LevelAgreement
         ];
     }
 
+    /**
+     * Check if the level can be added in levels todo
+     *
+     * It means that the ola is not completed
+     */
     private function levelCanBeAddedInLevelsTodo(Ticket $ticket, int $olaType): bool
     {
         if (
