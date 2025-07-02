@@ -101,6 +101,18 @@ use Ticket;
  *              - ttr waiting time is incremented while the ticket status is WAITING : @see self::testOlaTTRWaitingTimeIsIncrementedWhileTicketStatusIsWaiting()
  *              + @todo tests avec autres groupes
  *
+ *          - ticket is late if : (business logic extracted from CommonITILObject::generateSLAOLAComputation())*
+ *              - tto : (note that takeintoaccountdate is replaced by end_time)
+ *                - end_time is defined and > due_time - @see self::testOlaTtoIsLateWhenEndTimeIsAfterDueTime()
+ *                - end_time is not defined & due_time is passed - @see self::testOlaTtoIsLateWhenDueTimeIsPassed()
+ *                - ticket status is not WAITING (1): @see self::testOlaTtoIsNotLateWhenTicketStatusIsNotWaiting()
+ *
+ *              - ttr : exactly the same tests as above, duplication to be prepared for future changes
+ *                 - end_time is defined and > due_time - @see self::testOlaTtrIsLateWhenEndTimeIsAfterDueTime()
+ *                 - end_time is not defined & due_time is passed - @see self::testOlaTtrIsLateWhenDueTimeIsPassed()
+ *                 - ticket status is not WAITING (1): @see self::testOlaTtrIsNotLateWhenTicketStatusIsNotWating()
+ *
+ *
  *          - when completion is done, the associated group is removed from ticket assignees : not implemented, seems not relevant atm
  */
 
@@ -761,16 +773,15 @@ class OLATest extends DbTestCase
         // arrange
         $ola_ttr = $this->createOLA(ola_type: \SLM::TTR)['ola'];
         $this->setCurrentTime('14:12:00', '2025-06-13');
-        // create (assigned) ticket with OLA + assign ola group to ticket
+        // create (assigned) ticket - OLA + assign ola group to ticket
         $ticket = $this->createTicket(['_la_update' => true, '_olas_id' => [$ola_ttr->getID()], '_groups_id_assign' => $ola_ttr->fields['groups_id'], 'status' => \CommonITILObject::ASSIGNED]);
 
-        // act associate solve the ticket 30 minutes later
+        // act : solve the ticket 30 minutes later
         $ticket_resolution_datetime = $this->setCurrentTime('14:42:00', '2025-06-13');
         $ticket = $this->updateItem($ticket::class, $ticket->getID(), ['status' => \CommonITILObject::SOLVED]);
 
         // assert
         $ola_data = $ticket->getOlasData()[0];
-        // end_time is not set to
         $this->assertEquals($ticket_resolution_datetime->format('Y-m-d H:i:s'), $ola_data['end_time'], 'Ola ttr end time should not set when ticket is solved/closed.');
     }
 
@@ -809,6 +820,158 @@ class OLATest extends DbTestCase
 
         $ola_data = $ticket->getOlasData()[0];
         $this->assertEquals(20 * 60, $ola_data['waiting_time'], 'Waiting time should be incremented by 20 minutes after 20 min in WAITING status for an OLA TTR');
+    }
+
+    public function testOlaTtoIsLateWhenEndTimeIsAfterDueTime(): void
+    {
+        // arrange
+        $this->login();
+        $ola = $this->createOLA(ola_type: SLM::TTO)['ola'];
+        $now = $this->setCurrentTime('10:04:00', '2025-06-26');
+        $ticket = $this->createTicket(['_la_update' => true, '_olas_id' => [$ola->getID()]]);
+
+        // assert - check ola is not yet late
+        $ola_data = $ticket->getOlasData()[0];
+        $this->assertFalse((bool) $ola_data['is_late'], 'OLA should not be late when end time is not set');
+
+        // act : complete ola after due time - wait for ola to be late + assign the ola group to the ticket
+        $later = clone($now);
+        $later->add($this->getDefaultTtoDelayInterval());
+        $later->add(new \DateInterval('PT1H')); // add 1 hour to ensure end time is after due time
+        $this->setCurrentTime($later->format('Y-m-d H:i:s'));
+        $this->updateItem($ticket::class, $ticket->getID(), ['_groups_id_assign' => $ola->fields['groups_id']]);
+
+        // assert - check ola is late
+        $ola_data = $ticket->getOlasData()[0];
+        $this->assertEquals(1, $ola_data['is_late'], 'OLA should be late when end time is set');
+    }
+
+    /**
+     * same as above, due time reached, without assigning the group to the ticket
+     */
+    public function testOlaTtoIsLateWhenDueTimeIsPassed(): void
+    {
+        // arrange
+        $this->login();
+        $ola = $this->createOLA(ola_type: SLM::TTO)['ola'];
+        $now = $this->setCurrentTime('10:04:00', '2025-06-26');
+        $ticket = $this->createTicket(['_la_update' => true, '_olas_id' => [$ola->getID()]]);
+
+        // assert ola is not yet late
+        $ola_data = $ticket->getOlasData()[0];
+        $this->assertFalse((bool) $ola_data['is_late'], 'OLA should not be late when end time is not set');
+
+        // act : wait for ola to be late
+        $later = clone($now);
+        $later->add($this->getDefaultTtoDelayInterval());
+        $later->add(new \DateInterval('PT1H')); // add 1 hour to ensure end time is after due time
+        $this->setCurrentTime($later->format('Y-m-d H:i:s'));
+        $this->runOlaCron();
+
+        // assert - check ola is late
+        $ola_data = $ticket->getOlasData()[0];
+        $this->assertEquals(1, $ola_data['is_late'], 'OLA should be late when due time is passed and end time is not set');
+    }
+
+    public function testOlaTtoIsNotLateWhenTicketStatusIsNotWaiting(): void
+    {
+        // arrange
+        $this->login();
+        $ola = $this->createOLA(ola_type: SLM::TTO)['ola'];
+        $now = $this->setCurrentTime('10:04:00', '2025-06-26');
+        $ticket = $this->createTicket(['_la_update' => true, '_olas_id' => [$ola->getID()]]);
+
+        // assert ola is not yet late
+        $ola_data = $ticket->getOlasData()[0];
+        $this->assertFalse((bool) $ola_data['is_late'], 'OLA should not be late when end time is not set');
+
+        // act : wait for ola to be late, set ticket status to WAITING
+        $this->updateItem($ticket::class, $ticket->getID(), ['status' => CommonITILObject::WAITING]);
+
+        $later = clone($now);
+        $later->add($this->getDefaultTtoDelayInterval());
+        $later->add(new \DateInterval('PT1H')); // add 1 hour to ensure end time is after due time
+        $this->setCurrentTime($later->format('Y-m-d H:i:s'));
+        $this->runOlaCron();
+
+        // assert - check ola is not late
+        $ola_data = $ticket->getOlasData()[0];
+        $this->assertEquals(0, $ola_data['is_late'], 'OLA should not be late when ticket is WAITING (even if due time is passed and end time is not set)');
+    }
+
+    public function testOlaTtrIsLateWhenEndTimeIsAfterDueTime(): void
+    {
+        // arrange
+        $this->login();
+        $ola = $this->createOLA(ola_type: SLM::TTR)['ola'];
+        $now = $this->setCurrentTime('10:04:00', '2025-02-26');
+        $ticket = $this->createTicket(['_la_update' => true, '_olas_id' => [$ola->getID()]]);
+
+        // assert - check ola is not yet late
+        $ola_data = $ticket->getOlasData()[0];
+        $this->assertFalse((bool) $ola_data['is_late'], 'OLA should not be late when end time is not set');
+
+        // act : complete ola after due time - wait for ola to be late + assign the ola group to the ticket
+        $later = clone($now);
+        $later->add($this->getDefaultTtrDelayInterval());
+        $later->add(new \DateInterval('PT1H')); // add 1 hour to ensure end time is after due time
+        $this->setCurrentTime($later->format('Y-m-d H:i:s'));
+        $this->updateItem($ticket::class, $ticket->getID(), ['_groups_id_assign' => $ola->fields['groups_id']]);
+
+        // assert - check ola is late
+        $ola_data = $ticket->getOlasData()[0];
+        $this->assertEquals(1, $ola_data['is_late'], 'OLA should be late when end time is set');
+    }
+
+    public function testOlaTtrIsLateWhenDueTimeIsPassed(): void
+    {
+        // arrange
+        $this->login();
+        $ola = $this->createOLA(ola_type: SLM::TTR)['ola'];
+        $now = $this->setCurrentTime('10:04:00', '2025-02-26');
+        $ticket = $this->createTicket(['_la_update' => true, '_olas_id' => [$ola->getID()]]);
+
+        // assert ola is not yet late
+        $ola_data = $ticket->getOlasData()[0];
+        $this->assertFalse((bool) $ola_data['is_late'], 'OLA should not be late when end time is not set');
+
+        // act : wait for ola to be late
+        $later = clone($now);
+        $later->add($this->getDefaultTtrDelayInterval());
+        $later->add(new \DateInterval('PT1H')); // add 1 hour to ensure end time is after due time
+        $this->setCurrentTime($later->format('Y-m-d H:i:s'));
+        $this->runOlaCron();
+
+        // assert - check ola is late
+        $ola_data = $ticket->getOlasData()[0];
+        $this->assertEquals(1, $ola_data['is_late'], 'OLA should be late when due time is passed and end time is not set');
+    }
+
+    public function testOlaTtrIsNotLateWhenTicketStatusIsNotWating(): void
+    {
+        // arrange
+        $this->login();
+        $ola = $this->createOLA(ola_type: SLM::TTO)['ola'];
+        $now = $this->setCurrentTime('10:04:00', '2025-02-26');
+        $ticket = $this->createTicket(['_la_update' => true, '_olas_id' => [$ola->getID()]]);
+
+        // assert ola is not yet late
+        $ola_data = $ticket->getOlasData()[0];
+        $this->assertFalse((bool) $ola_data['is_late'], 'OLA should not be late when end time is not set');
+
+        // act : wait for ola to be late, set ticket status to WAITING
+        $this->updateItem($ticket::class, $ticket->getID(), ['status' => CommonITILObject::WAITING]);
+
+        $later = clone($now);
+        $later->add($this->getDefaultTtrDelayInterval());
+        $later->add(new \DateInterval('PT1H')); // add 1 hour to ensure end time is after due time
+        $this->setCurrentTime($later->format('Y-m-d H:i:s'));
+        $this->runOlaCron();
+
+        // assert - check ola is not late
+        $ola_data = $ticket->getOlasData()[0];
+        $this->assertEquals(0, $ola_data['is_late'], 'OLA should not be late when ticket is WAITING (even if due time is passed and end time is not set)');
+
     }
 
     private function getDefaultTtoDelayInterval(): \DateInterval

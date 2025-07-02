@@ -1153,6 +1153,7 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
      * - add level in todo table XLaLevel_Ticket
      * - replayForTicket
      *
+     * Method requires levels to be cleared before - @see OLA::delete(All)LevelsToDo($ticket)
      * @param int $olas_id
      *
      * @return void
@@ -1284,7 +1285,9 @@ class Ticket extends CommonITILObject implements DefaultSearchRequestInterface
         }
 
         $this->updateOlaAssociations(false);
-        !isset($this->input['_auto_update']) && $this->recomputeOlas();
+        if (!isset($this->input['_auto_update'])) {
+            $this->recomputeOlas();
+        }
 
         if (count($this->updates)) {
             // Update Ticket Tco
