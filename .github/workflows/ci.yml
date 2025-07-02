@@ -325,7 +325,7 @@ jobs:
       - name: "Install DB tests"
         if: ${{ !cancelled() }}
         run: |
-          docker compose exec -T app .github/actions/test_install.sh
+          docker compose exec -T app .github/actions/test_install.sh --config_path="./tests/playwright/glpi_config" --files_path="./tests/playwright/glpi_files"
       - name: Lint tests
         if: ${{ !cancelled() }}
         run: docker compose exec -T app npx tsc -p tsconfig.json --noEmit

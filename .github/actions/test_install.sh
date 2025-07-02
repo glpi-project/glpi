@@ -1,7 +1,24 @@
 #!/bin/bash
 set -e -u -x -o pipefail
 
-LOG_FILE="./tests/files/_log/install.log"
+CONFIG_PATH="./tests/config"
+FILES_PATH="./tests/files"
+
+# Parse arguments
+for arg in "$@"; do
+  case $arg in
+    --config_path=*)
+      CONFIG_PATH="${arg#*=}"
+      ;;
+    --files_path=*)
+      FILES_PATH="${arg#*=}"
+      ;;
+    *)
+  esac
+done
+
+LOG_FILE="$FILES_PATH/_log/install.log"
+
 mkdir -p $(dirname "$LOG_FILE")
 
 # Run the check requirements command to make sure it is working
@@ -24,7 +41,7 @@ bin/console tools:check_database_keys --ansi --no-interaction --detect-useless-k
 bin/console tools:check_database_schema_consistency --ansi --no-interaction
 
 # Check the OAuth keys are generated
-if [ ! -f ./tests/config/oauth.pem ] || [ ! -f ./tests/config/oauth.pub ]; then
+if [ ! -f "$CONFIG_PATH/oauth.pem" ] || [ ! -f "$CONFIG_PATH/oauth.pub" ]; then
   echo "OAuth keys are missing" && exit 1;
 fi
 
