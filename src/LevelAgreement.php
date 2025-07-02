@@ -881,7 +881,6 @@ TWIG, $twig_params);
     {
         // CLear levels of others LA of the same type
         // e.g. if a new LA TTR was assigned, clear levels from others (= previous) LA TTR
-        // @todoseb       throw new \Exception('à reimplementer pour OLA ou à ne plus appeller carrément ?');
         $level_ticket_class = $this->getLevelTicketClass();
         $level_ticket = getItemForItemtype($level_ticket_class);
         $level_class = $this->getLevelClass();

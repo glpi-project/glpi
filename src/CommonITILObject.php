@@ -4985,47 +4985,20 @@ abstract class CommonITILObject extends CommonDBTM
 
                 // force table value to glpi_items_olas, it can't be something else
                 $table = 'glpi_items_olas';
-
-                $itil_table = self::getTable();
-
                 // QueryFunction::max is used to match a late ola amongst associated OLAs
                 return QueryFunction::max(
                     QueryFunction::if(
-                        // An OLA is considered late if:
                         condition: [
-                            // its due time is defined
-                            'NOT' => [
-                                'OR' => [
-                                    "{$table}.due_time" => null,
-                                    // remove OLA of other type, fitering in Ticket::rawSearchOptions() is not working, because it does a left join, not an inner join.
-                                    "{$table}.olas_id" => new QuerySubQuery(
-                                        [
-                                            'SELECT' => 'id',
-                                            'FROM' => 'glpi_olas',
-                                            'WHERE' => ['type' => $ola_type_to_filter],
-                                        ]
-                                    ),],
-                            ],
+                            // remove OLA of other type, fitering in Ticket::rawSearchOptions() is not working, because it does a left join, not an inner join.
+                            "{$table}.olas_id" => new QuerySubQuery(
+                                [
+                                    'SELECT' => 'id',
+                                    'FROM' => 'glpi_olas',
+                                    'WHERE' => ['type' => $ola_type_to_filter],
+                                ]
+                            ),
                             // + ticket status is not WAITING
-                            // @todoseb ajouter le status SOLVED + CLOSED ? étrange de donner un ticket comme en retard alors qu'il est clos/résolu. - a traiter post changement sql
-                            "{$itil_table}.status" => ['<>', self::WAITING],
-                            // + one of the following conditions:
-                            'OR' => [
-                                // ola achieved : end_time > due_time
-                                [
-                                    'AND' => [
-                                        'NOT' => ["{$table}.end_time" => null],
-                                        "{$table}.end_time" => ['>', new QueryExpression($DB::quoteName("{$table}.due_time"))],
-                                    ],
-                                ],
-                                // ola not achieved : due_time is passed ( < now() )
-                                [
-                                    'AND' => [
-                                        "{$table}.end_time" => null,
-                                        "{$table}.due_time" => ['<', Session::getCurrentTime()],
-                                    ],
-                                ],
-                            ],
+                            "$table.is_late" => 1,
                         ],
                         true_expression: new QueryExpression('1'),
                         false_expression: new QueryExpression('0')
