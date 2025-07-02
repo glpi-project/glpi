@@ -10874,7 +10874,7 @@ abstract class CommonITILObject extends CommonDBTM
         ) {
             foreach (['requester', 'observer', 'assign'] as $actor_type) {
                 $actor_type_value = constant(CommonITILActor::class . '::' . strtoupper($actor_type));
-                if ($actor_type_value === CommonITILActor::ASSIGN && !$this->canAssign() && !($input['_from_form'] ?? false)) {
+                if ($actor_type_value === CommonITILActor::ASSIGN && !$this->canAssign()) {
                     continue;
                 }
                 if ($actor_type_value !== CommonITILActor::ASSIGN && !$this->isNewItem() && !$this->canUpdateItem()) {

@@ -157,9 +157,6 @@ abstract class AbstractCommonITILFormDestination implements FormDestinationInter
         // Add linked items
         $input = $this->setFilesInput($input, $answers_set);
 
-        // Add flag to specify that this object is created from a form
-        $input['_from_form'] = true;
-
         // Create commonitil object
         if (!$itil_object->add($input)) {
             throw new \Exception(
