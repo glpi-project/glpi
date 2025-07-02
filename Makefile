@@ -119,7 +119,8 @@ test-db-update: ## Update testing's database
 		-n \
 		--allow-unstable \
 		--force \
-		--skip-db-checks
+		--skip-db-checks \
+		--env=testing
 .PHONY: db-update
 
 ## —— Dependencies —————————————————————————————————————————————————————————————
