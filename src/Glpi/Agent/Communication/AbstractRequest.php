@@ -216,7 +216,10 @@ abstract class AbstractRequest
         $guess_mode = ($base_mode === null);
         $this->setMode(self::JSON_MODE);
 
-        $auth_required = !$this->isLocal() && \Config::getConfigurationValue('inventory', 'auth_required');
+        $auth_required = false;
+        if (!$this->isLocal()) {
+            $auth_required = \Config::getConfigurationValue('inventory', 'auth_required');
+        }
         if ($auth_required === Conf::CLIENT_CREDENTIALS) {
             $request = new Request('POST', $_SERVER['REQUEST_URI'], $this->headers->getHeaders());
             try {
