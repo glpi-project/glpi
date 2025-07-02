@@ -71,7 +71,8 @@
         "build": "npm run build:pack",
         "dependencies:postinstall": "php -r \"file_put_contents('.package.hash', sha1_file('package-lock.json'));\"",
         "dependencies": "npm run dependencies:postinstall",
-        "test": "NODE_OPTIONS=\"--experimental-vm-modules\" jest --colors --forceExit --config tests/js/jest.config.js ./tests/js/**"
+        "test": "NODE_OPTIONS=\"--experimental-vm-modules\" jest --colors --forceExit --config tests/js/jest.config.js",
+        "postinstall": "patch-package --patch-dir tools/patches/npm"
     },
     "devDependencies": {
         "@testing-library/jest-dom": "^6.6.3",
@@ -81,17 +82,18 @@
         "csso-cli": "^4.0.2",
         "eslint": "^8.57.1",
         "exports-loader": "^5.0.0",
-        "glob": "^11.0.2",
-        "jest": "^29.7.0",
-        "jest-environment-jsdom": "^29.7.0",
-        "jest-extended": "^5.0.3",
+        "glob": "^11.0.3",
+        "jest": "^30.0.3",
+        "jest-environment-jsdom": "^30.0.2",
+        "jest-extended": "^6.0.0",
         "mini-css-extract-plugin": "^2.9.2",
         "null-loader": "^4.0.1",
+        "patch-package": "^8.0.0",
         "script-loader": "^0.7.2",
         "strip-sourcemap-loader": "^0.0.1",
-        "stylelint": "^16.20.0",
+        "stylelint": "^16.21.0",
         "stylelint-config-standard-scss": "^15.0.1",
-        "terser": "^5.40.0",
+        "terser": "^5.43.1",
         "webpack": "^5.99.9",
         "webpack-cli": "^6.0.1"
     }

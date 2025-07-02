@@ -39,9 +39,9 @@ module.exports = {
     },
     transform: {},
     transformIgnorePatterns: [
-        // Change MODULE_NAME_HERE to your module that isn't being compiled
         "/node_modules/(?!@tabler).+\\.js$"
     ],
+    testRegex: [/\.test\.js$/],
     testEnvironment: 'jsdom',
     slowTestThreshold: 10,
 };
