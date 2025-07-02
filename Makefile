@@ -175,6 +175,10 @@ playwright-report: ## Show playwright report
 	@$(PHP) npx playwright show-report --host=0.0.0.0
 .PHONY: playwright-report
 
+playwright-update-browsers: ## Update playwright browsers
+	@$(PHP) npx playwright install chromium --with-deps
+.PHONY: playwright-report
+
 ## —— Linters ——————————————————————————————————————————————————————————————————
 lint: lint-php lint-scss lint-twig lint-js ## Run all linters
 .PHONY: lint
