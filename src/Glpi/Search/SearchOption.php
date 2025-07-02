@@ -708,10 +708,10 @@ final class SearchOption implements \ArrayAccess
             // Since not all itemtypes have ID set to 1, it used to add other, heavier search options like content in the case of Followups.
             $options = array_filter(self::getOptionsForItemtype($itemtype, false), static fn($o) => is_numeric($o), ARRAY_FILTER_USE_KEY);
             $id_field = array_filter($options, static function ($option) use ($itemtype) {
-                return $option['field'] === 'id' && $option['table'] === $itemtype::getTable();
+                return $option['field'] === $itemtype::getIndexName() && $option['table'] === $itemtype::getTable();
             });
             $name_field = array_filter($options, static function ($option) use ($itemtype) {
-                return $option['field'] === 'name' && $option['table'] === $itemtype::getTable();
+                return $option['field'] === $itemtype::getNameField() && $option['table'] === $itemtype::getTable();
             });
         } else {
             $id_field = [];
