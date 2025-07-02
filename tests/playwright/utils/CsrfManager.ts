@@ -59,6 +59,11 @@ export class CsrfManager
         const input = dom.window.document.querySelector(
             'input[name="_glpi_csrf_token"]'
         ) as HTMLInputElement;
+
+        if (input.value === null) {
+            throw new Error(`Unexpected body content: ${body}`);
+        }
+
         return input.value;
     }
 }
