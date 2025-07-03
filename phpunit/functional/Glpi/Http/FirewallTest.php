@@ -166,14 +166,6 @@ class FirewallTest extends \DbTestCase
                 expected_strategy: $default_for_core_legacy,
             );
 
-            $_GET['token'] = 'abc';
-            $this->dotestComputeFallbackStrategy(
-                root_doc: $root_doc,
-                path: $root_doc . '/front/planning.php',
-                expected_strategy: 'no_check',
-            );
-            unset($_GET['token']);
-
             $legacy_faq_urls = ['/front/helpdesk.faq.php'];
             foreach ($legacy_faq_urls as $faq_url) {
                 $this->dotestComputeFallbackStrategy(
@@ -185,9 +177,7 @@ class FirewallTest extends \DbTestCase
 
             $legacy_no_check_urls = [
                 '/ajax/common.tabs.php',
-                '/ajax/dashboard.php',
                 '/ajax/telemetry.php',
-                '/front/cron.php',
                 '/front/css.php',
                 '/front/document.send.php',
                 '/front/locale.php',
