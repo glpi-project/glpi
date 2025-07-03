@@ -5059,7 +5059,7 @@ abstract class CommonITILObject extends CommonDBTM implements KanbanInterface
                                 [
                                     'AND' => [
                                         "{$table}.end_time" => null,
-                                        "{$table}.due_time" => ['<', QueryFunction::now()], // @todoseb prendre le temps en session
+                                        "{$table}.due_time" => ['<', Session::getCurrentTime()],
                                     ],
                                 ],
                             ],
