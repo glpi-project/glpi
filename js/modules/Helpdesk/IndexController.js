@@ -30,7 +30,7 @@
  * ---------------------------------------------------------------------
  */
 
-/* global _ */
+/* global _, glpi_toast_error */
 
 export class GlpiHelpdeskIndexController
 {
@@ -60,12 +60,23 @@ export class GlpiHelpdeskIndexController
     async #executeSearch()
     {
         const input = this.#getSearchInput();
-        const url = `${CFG_GLPI.root_doc}/Helpdesk/Search`;
-        const url_params = new URLSearchParams({
-            filter: input.value,
-        });
-        const response = await fetch(`${url}?${url_params}`);
-        this.#getSearchResultsDiv().innerHTML = await response.text();
+        try {
+            const url = `${CFG_GLPI.root_doc}/Helpdesk/Search`;
+            const url_params = new URLSearchParams({
+                filter: input.value,
+            });
+            const response = await fetch(`${url}?${url_params}`);
+
+            if (!response.ok) {
+                throw new Error("Failed to load results");
+            }
+            this.#getSearchResultsDiv().innerHTML = await response.text();
+        } catch (e) {
+            console.error(e);
+            glpi_toast_error(
+                __("Unexpected error")
+            );
+        }
     }
 
     #enableSearchView(event)
