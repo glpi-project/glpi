@@ -44,7 +44,7 @@
                     entity_restrict: entity_restrict,
                 }) }}
             {% else %}
-                <input type="hidden" name="itemtypes_id" value="{{ peer_itemtype }}">
+                <input type="hidden" name="itemtype" value="{{ peer_itemtype }}">
                 <input type="hidden" name="items_id" value="{{ peer_id }}">
                 <input type="hidden" name="_from" value="item">
                 {{ fields.dropdownField('Line', 'lines_id', '', __('Add a line'), {
