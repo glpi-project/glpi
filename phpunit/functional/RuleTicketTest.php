@@ -1526,7 +1526,7 @@ class RuleTicketTest extends RuleCommonITILObjectTest
      * @see \tests\units\OLATest::testOlaAssociationCanBeDoneWhenNoGroupIsAssociatedToOla
      * @return void
      */
-    public function testAssignAnOlaWichHasNoGroup() : void
+    public function testAssignAnOlaWichHasNoGroup(): void
     {
         $this->markTestIncomplete('implement me');
     }
