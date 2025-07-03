@@ -83,7 +83,8 @@ final class FormProvider implements LeafProviderInterface
             $name = $form->fields['name'] ?? "";
             $description = $form->fields['description'] ?? "";
             if (
-                !$this->matcher->match($name, $filter)
+                !$form->fields['is_pinned'] // Pinned forms are not filtered
+                && !$this->matcher->match($name, $filter)
                 && !$this->matcher->match($description, $filter)
             ) {
                 continue;

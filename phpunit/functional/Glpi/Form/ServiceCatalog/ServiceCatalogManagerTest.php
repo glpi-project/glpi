@@ -970,4 +970,36 @@ final class ServiceCatalogManagerTest extends \DbTestCase
         $this->assertContains('Test Form', $items_names);
         $this->assertContains('Test KB', $items_names);
     }
+
+    public function testPinnedFormsAreNotImpactedByFilters(): void
+    {
+        // Arrange: create multiple pinned and not pinned forms
+        $builders = [
+            (new FormBuilder("Pinned form 1"))->setIsPinned(true),
+            (new FormBuilder("Pinned form 2"))->setIsPinned(true),
+            (new FormBuilder("Not pinned form 1"))->setIsPinned(false),
+            (new FormBuilder("Not pinned form 2"))->setIsPinned(false),
+        ];
+        foreach ($builders as $builder) {
+            $builder->setIsActive(true);
+            $this->createForm($builder);
+        }
+
+        // Act: filter the forms
+        $this->login();
+        $item_request = new ItemRequest(
+            access_parameters: new FormAccessParameters(
+                Session::getCurrentSessionInfo()
+            ),
+            filter: "aaaaaaaaaaaaaaaaaaaaa",
+        );
+        $forms = self::$manager->getItems($item_request)['items'];
+
+        // Assert: only the pinned forms must be found
+        $forms_names = array_map(fn(Form $form) => $form->fields['name'], $forms);
+        $this->assertEquals([
+            "Pinned form 1",
+            "Pinned form 2",
+        ], $forms_names);
+    }
 }
