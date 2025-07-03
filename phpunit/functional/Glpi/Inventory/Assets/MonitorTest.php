@@ -1333,11 +1333,6 @@ class MonitorTest extends AbstractInventoryAsset
         $this->assertTrue($rule->update([
             'id' => $rules_id,
             'is_active' => 0,
-            'entities_id' => 0,
-            'sub_type' => \RuleImportAsset::class,
-            'match' => \Rule::AND_MATCHING,
-            'condition' => 0,
-            'description' => '',
         ]));
     }
 }
