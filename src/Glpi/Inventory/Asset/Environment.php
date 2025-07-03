@@ -41,9 +41,6 @@ use Item_Environment;
 
 final class Environment extends InventoryAsset
 {
-    /** @var Conf */
-    private $conf;
-
     public function prepare(): array
     {
         foreach ($this->data as $key => &$val) {
@@ -132,7 +129,6 @@ final class Environment extends InventoryAsset
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
-        $this->conf = $conf;
         return $conf->import_env == 1 && in_array($this->item::class, $CFG_GLPI['environment_types']);
     }
 

@@ -42,6 +42,8 @@ use NetworkEquipmentModel;
 use NetworkEquipmentType;
 use NetworkName;
 
+use function Safe\preg_replace;
+
 class NetworkEquipment extends MainAsset
 {
     private $management_ports = [];
@@ -96,7 +98,7 @@ class NetworkEquipment extends MainAsset
             }
             $this->hardware = $device;
 
-            foreach ($device as $key => $property) {
+            foreach ($device as $key => $property) { // @phpstan-ignore foreach.nonIterable
                 $val->$key = $property;
             }
 
@@ -131,14 +133,15 @@ class NetworkEquipment extends MainAsset
             $this->data = [];
             $switches = $this->getStackedSwitches();
             foreach ($switches as $switch) {
+                $switch_name = $switch->name ?? $switch->description;
                 $stack = clone $val;
                 $stack->firmware = $switch->firmware ?? $switch->version ?? '';
                 $stack->serial = $switch->serial;
                 $stack->model = $switch->model;
                 $stack->$model_field = $switch->model;
-                $stack->description = $stack->name . ' - ' . ($switch->name ?? $switch->description);
-                $stack->name = $stack->name . ' - ' . ($switch->name ?? $switch->description);
-                if (($switch->name ?? $switch->description) != $switch->stack_number ?? '') {
+                $stack->description = $stack->name . ' - ' . $switch_name;
+                $stack->name = $stack->name . ' - ' . $switch_name;
+                if ($switch_name != ($switch->stack_number ?? '')) {
                     $stack->name .= ' - ' . $switch->stack_number;
                 }
                 $stack->stack_number = $switch->stack_number ?? null;
@@ -191,12 +194,12 @@ class NetworkEquipment extends MainAsset
     /**
      * After rule engine passed, update task (log) and create item if required
      *
-     * @param integer $items_id id of the item (0 if new)
-     * @param string  $itemtype Item type
-     * @param integer $rules_id Matched rule id, if any
-     * @param integer $ports_id Matched port id, if any
+     * @param integer       $items_id id of the item (0 if new)
+     * @param string        $itemtype Item type
+     * @param integer       $rules_id Matched rule id, if any
+     * @param integer|array $ports_id Matched port id, if any
      */
-    public function rulepassed($items_id, $itemtype, $rules_id, $ports_id = 0)
+    public function rulepassed($items_id, $itemtype, $rules_id, $ports_id = [])
     {
         if (property_exists($this->data[$this->current_key], 'is_ap')) {
             $bkp_assets = $this->assets;
@@ -214,23 +217,21 @@ class NetworkEquipment extends MainAsset
             }
         }
 
-        if (method_exists($this, 'getManagementPorts')) {
-            $mports = $this->getManagementPorts();
-            $np = new NetworkPort($this->item, $mports);
-            if ($np->checkConf($this->conf)) {
-                $np
-                    ->setMainAsset($this)
-                    ->setAgent($this->getAgent())
-                    ->setEntityID($this->getEntityID())
-                ;
-                $np->prepare();
-                $np->handleLinks();
-                if (!isset($this->assets['\Glpi\Inventory\Asset\NetworkPort'])) {
-                    $np->addNetworkPorts($mports);
-                    $this->assets['\Glpi\Inventory\Asset\NetworkPort'] = [$np];
-                } else {
-                    $this->assets['\Glpi\Inventory\Asset\NetworkPort'][0]->addNetworkPorts($np->getNetworkPorts());
-                }
+        $mports = $this->getManagementPorts();
+        $np = new NetworkPort($this->item, $mports);
+        if ($np->checkConf($this->conf)) {
+            $np
+                ->setMainAsset($this)
+                ->setAgent($this->getAgent())
+                ->setEntityID($this->getEntityID())
+            ;
+            $np->prepare();
+            $np->handleLinks();
+            if (!isset($this->assets['\Glpi\Inventory\Asset\NetworkPort'])) {
+                $np->addNetworkPorts($mports);
+                $this->assets['\Glpi\Inventory\Asset\NetworkPort'] = [$np];
+            } else {
+                $this->assets['\Glpi\Inventory\Asset\NetworkPort'][0]->addNetworkPorts($np->getNetworkPorts());
             }
         }
 

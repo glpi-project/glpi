@@ -62,6 +62,12 @@ use Toolbox;
 use GLPIKey;
 use wapmorgan\UnifiedArchive\UnifiedArchive;
 
+use function Safe\file_get_contents;
+use function Safe\json_decode;
+use function Safe\json_encode;
+use function Safe\preg_match;
+use function Safe\simplexml_load_string;
+
 /**
  * Inventory configuration
  * @property int $import_software
@@ -191,7 +197,7 @@ class Conf extends CommonGLPI
      */
     public function isInventoryFile($name): bool
     {
-        return preg_match('/\.(' . implode('|', $this->knownInventoryExtensions()) . ')/i', $name);
+        return (bool) preg_match('/\.(' . implode('|', $this->knownInventoryExtensions()) . ')/i', $name);
     }
 
     /**
@@ -301,18 +307,17 @@ class Conf extends CommonGLPI
 
     public function getTabNameForItem(CommonGLPI $item, $withtemplate = 0)
     {
-        switch ($item->getType()) {
-            case __CLASS__:
-                $tabs = [];
-                if (Session::haveRight(self::$rightname, self::UPDATECONFIG)) {
-                    $tabs[1] = self::createTabEntry(__('Configuration'), 0, $item::getType());
-                }
-                if ($item->enabled_inventory && Session::haveRight(self::$rightname, self::IMPORTFROMFILE)) {
-                    $icon = "<i class='ti ti-upload me-2'></i>";
-                    $text = '<span>' . $icon . __s('Import from file') . '</span>';
-                    $tabs[2] = $text;
-                }
-                return $tabs;
+        if ($item instanceof self) {
+            $tabs = [];
+            if (Session::haveRight(self::$rightname, self::UPDATECONFIG)) {
+                $tabs[1] = self::createTabEntry(__('Configuration'), 0, $item::getType());
+            }
+            if ($item->enabled_inventory && Session::haveRight(self::$rightname, self::IMPORTFROMFILE)) {
+                $icon = "<i class='ti ti-upload me-2'></i>";
+                $text = '<span>' . $icon . __s('Import from file') . '</span>';
+                $tabs[2] = $text;
+            }
+            return $tabs;
         }
         return '';
     }

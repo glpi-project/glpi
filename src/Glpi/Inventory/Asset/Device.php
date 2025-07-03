@@ -38,6 +38,8 @@ namespace Glpi\Inventory\Asset;
 use Glpi\Inventory\Conf;
 use Item_Devices;
 
+use function Safe\strtotime;
+
 abstract class Device extends InventoryAsset
 {
     /**
@@ -210,7 +212,7 @@ abstract class Device extends InventoryAsset
     {
         /** @var array $CFG_GLPI */
         global $CFG_GLPI;
-        /** @var \Item_Devices $item_device */
+        /** @var class-string<Item_Devices> $item_device */
         $item_device = $this->getItemtype();
         $affinities = $item_device::itemAffinity();
         return in_array('*', $affinities) || in_array($this->item->getType(), $item_device::itemAffinity());

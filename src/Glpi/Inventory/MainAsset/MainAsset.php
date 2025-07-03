@@ -58,6 +58,10 @@ use RuleMatchedLog;
 use stdClass;
 use Transfer;
 
+use function Safe\json_encode;
+use function Safe\preg_match;
+use function Safe\preg_replace;
+
 abstract class MainAsset extends InventoryAsset
 {
     use InventoryNetworkPort;
@@ -73,7 +77,7 @@ abstract class MainAsset extends InventoryAsset
     protected $raw_data;
     /* @var array */
     protected $hardware;
-    /** @var integer */
+    /** @var ?integer */
     protected $states_id_default;
     /** @var \stdClass */
     private $current_data;
@@ -194,7 +198,7 @@ abstract class MainAsset extends InventoryAsset
         }
         $this->hardware = $hardware;
 
-        foreach ($hardware as $key => $property) {
+        foreach ($hardware as $key => $property) { // @phpstan-ignore foreach.nonIterable
             $val->$key = $property;
         }
 
@@ -427,7 +431,7 @@ abstract class MainAsset extends InventoryAsset
         }
 
         $models_id = $this->getModelsFieldName();
-        foreach ($val as $prop => $value) {
+        foreach ($val as $prop => $value) { // @phpstan-ignore foreach.nonIterable
             switch ($prop) {
                 case $models_id:
                     $prop = 'model';
@@ -667,12 +671,12 @@ abstract class MainAsset extends InventoryAsset
     /**
      * After rule engine passed, update task (log) and create item if required
      *
-     * @param integer $items_id id of the item (0 if new)
-     * @param string  $itemtype Item type
-     * @param integer $rules_id Matched rule id, if any
-     * @param integer $ports_id Matched port id, if any
+     * @param integer       $items_id id of the item (0 if new)
+     * @param string        $itemtype Item type
+     * @param integer       $rules_id Matched rule id, if any
+     * @param integer|array $ports_id Matched port id, if any
      */
-    public function rulepassed($items_id, $itemtype, $rules_id, $ports_id = 0)
+    public function rulepassed($items_id, $itemtype, $rules_id, $ports_id = [])
     {
         /**
          * @var array $CFG_GLPI
