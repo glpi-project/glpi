@@ -18,7 +18,7 @@
 # Masin Al-Dujaili, 2023
 # Mir Mor, 2024
 # userjab, 2024
-# Lars I, 2024
+# Lars I, 2024r
 # armin0103 <kkarmintestkk@yahoo.de>, 2025
 # Thofl, 2025
 # Arthur Schaefer <arthur.r.schaefer@gmail.com>, 2025
@@ -34,6 +34,7 @@
 # Megachip <www.transifex.com@megskywalker.de>, 2025
 # Roy Brannath, 2025
 # alexandre delaunay <delaunay.alexandre@gmail.com>, 2025
+# Florian T. Huber (HBC), 2025
 # 
 #, fuzzy
 msgid ""
@@ -314,7 +315,7 @@ msgstr "Vorname"
 #: src/Rack.php:300 src/Contract.php:736 src/PassiveDCEquipment.php:235
 #: src/Budget.php:249
 msgid "Template name"
-msgstr "Vorlage Name"
+msgstr "Vorlagenname"
 
 #: templates/generic_show_form.html.twig src/Database.php:428
 #: src/DatabaseInstance.php:217
@@ -1059,7 +1060,7 @@ msgstr "Nie"
 #: templates/generic_show_form.html.twig src/CartridgeItem.php:346
 #: src/ConsumableItem.php:290
 msgid "Alert threshold"
-msgstr "Schwelle zur Benachrichtigung"
+msgstr "Schwelle für Benachrichtigung"
 
 #: templates/generic_show_form.html.twig src/Peripheral.php:340
 #: src/Phone.php:401
@@ -1189,7 +1190,7 @@ msgstr "Startseite"
 
 #: templates/layout/parts/objectlock_message.html.twig
 msgid "Read-only mode"
-msgstr "Schreib-Schutz Modus"
+msgstr "Schreibschutz-Modus"
 
 #: templates/layout/parts/objectlock_message.html.twig
 #: templates/components/notepad/form.html.twig
@@ -1205,7 +1206,7 @@ msgstr "Bearbeiten"
 #: templates/layout/parts/objectlock_message.html.twig
 #, php-format
 msgid "Locked: %1$s by %2$s"
-msgstr "Gesperrt: %1$sdurch %2$s"
+msgstr "Gesperrt: %1$s durch %2$s"
 
 #: templates/layout/parts/objectlock_message.html.twig
 msgid "Ask for unlock"
@@ -1213,11 +1214,11 @@ msgstr "Freigabe anfragen"
 
 #: templates/layout/parts/objectlock_message.html.twig
 msgid "Alert me when unlocked"
-msgstr "Mich benachrichtigen wenn entsperrt"
+msgstr "Mich benachrichtigen, wenn entsperrt"
 
 #: templates/layout/parts/objectlock_message.html.twig
 msgid "Locked by you!"
-msgstr "Gesperrt durch Mich"
+msgstr "Durch mich gesperrt"
 
 #: templates/layout/parts/objectlock_message.html.twig
 #, php-format
@@ -1273,7 +1274,7 @@ msgstr "Formulare importieren"
 
 #: templates/layout/parts/user_header.html.twig
 msgid "User menu"
-msgstr "Benutzer Menü"
+msgstr "Benutzermenü"
 
 #: templates/layout/parts/user_header.html.twig
 msgid "Change mode"
@@ -1355,7 +1356,7 @@ msgstr "Menü suchen"
 
 #: templates/layout/parts/page_footer.html.twig
 msgid "Back to top of the page"
-msgstr "Zurück Seitenbegin"
+msgstr "Zurück zum Seitenbegin"
 
 #: templates/layout/parts/page_footer.html.twig
 msgid "Top of the page"
@@ -1390,7 +1391,7 @@ msgstr "Tipp: Sie können dieses Fenster mit der Tastenkombination %s aufrufen"
 #: templates/layout/parts/profile_selector.html.twig
 #: templates/layout/parts/profile_selector_form.html.twig
 msgid "+ sub-entities"
-msgstr "Untereinheiten"
+msgstr "+ Untereinheiten"
 
 #: templates/layout/parts/profile_selector.html.twig
 #, php-format
@@ -1519,11 +1520,11 @@ msgstr "Versenden"
 
 #: templates/components/pager.html.twig
 msgid "Rows per page"
-msgstr ""
+msgstr "Zeilen pro Seite"
 
 #: templates/components/pager.html.twig
 msgid "rows / page"
-msgstr "Anzahl Linien pro Seite"
+msgstr "Zeilen / Seite"
 
 #: templates/components/pager.html.twig
 #, php-format
@@ -1554,7 +1555,7 @@ msgstr "Zurück"
 #: templates/components/pager.html.twig
 #, php-format
 msgid "%s-%s of %s"
-msgstr "%s - %s von %s"
+msgstr "%s-%s von %s"
 
 #: templates/components/pager.html.twig
 #: templates/pages/assistance/stats/single_item_pager.html.twig
@@ -1778,7 +1779,7 @@ msgstr "Hinzufügen"
 
 #: templates/components/search/displaypreference_config.html.twig
 msgid "Select an option to add"
-msgstr ""
+msgstr "Wählen Sie eine Option zum Zufügen"
 
 #: templates/components/search/displaypreference_config.html.twig
 msgid "Delete personal view"
@@ -1822,7 +1823,7 @@ msgstr "Endgültig löschen"
 #: templates/components/search/table.html.twig src/Html.php:2068
 #: src/Html.php:2069
 msgid "Check all as"
-msgstr "Alle markieren als"
+msgstr "Alles markieren als"
 
 #. TRANS: %1$s is a type name - %2$s is a name
 #: templates/components/search/table.html.twig
@@ -1904,13 +1905,14 @@ msgstr "Art des Eintrags"
 #: templates/components/search/table.html.twig
 #: templates/components/search/display_data.html.twig
 msgid "An error occurred during the search"
-msgstr ""
+msgstr "Während der Suche trat ein Fehler auf"
 
 #: templates/components/search/table.html.twig
 #: templates/components/search/display_data.html.twig
 msgid ""
 "Consider changing the search criteria or adjusting the displayed columns."
 msgstr ""
+"Erwägen Sie, die Suchkriterien zu ändern oder die angezeigten Spalten anzupassen."
 
 #: templates/components/search/table.html.twig
 #: templates/components/search/displaypreference_list.html.twig
@@ -1929,7 +1931,7 @@ msgstr ""
 #: src/Item_SoftwareVersion.php:881 src/Item_SoftwareVersion.php:1216
 #: src/Item_SoftwareVersion.php:1350 js/modules/Form/GeolocationField.js:87
 msgid "No results found"
-msgstr ""
+msgstr "Keine Ergebnisse gefunden"
 
 #: templates/components/search/table.html.twig
 #: templates/components/datatable.html.twig
@@ -1944,7 +1946,7 @@ msgstr "Regel löschen"
 #: templates/components/search/query_builder/search_option_value.html.twig
 #: src/Glpi/Search/Input/QueryBuilder.php:367
 msgid "Criteria value"
-msgstr ""
+msgstr "Auswahlkriterium"
 
 #: templates/components/search/query_builder/main.html.twig
 msgid "Toggle additional default filters"
@@ -2001,7 +2003,7 @@ msgstr "Globale Regel löschen"
 #: templates/pages/admin/assetdefinition/capacities.html.twig
 #: src/Profile.php:3715
 msgid "Select/unselect all"
-msgstr "Auswählen alle/keine"
+msgstr "Alles ab-/auswählen"
 
 #: templates/components/search/displaypreference_list.html.twig
 #: templates/pages/tools/find_available_reservation.html.twig
@@ -2077,7 +2079,7 @@ msgstr "Querformat PDF"
 
 #: templates/components/search/controls.html.twig
 msgid "Portrait PDF"
-msgstr ""
+msgstr "Hochformat PDF"
 
 #: templates/components/search/controls.html.twig
 #: templates/pages/assistance/planning/single_filter.html.twig
@@ -2087,7 +2089,7 @@ msgstr "CSV"
 #: templates/components/search/controls.html.twig
 #, php-format
 msgid "Spreadsheet (%s)"
-msgstr ""
+msgstr "Tabellenblatt (%s)"
 
 #: templates/components/search/controls.html.twig
 msgid "All pages"
@@ -2135,7 +2137,7 @@ msgstr[1] "Information"
 
 #: templates/components/notepad/form.html.twig
 msgid "Add a note"
-msgstr "Notiz einfügen"
+msgstr "Notiz anfügen"
 
 #: templates/components/notepad/form.html.twig
 #: templates/pages/tools/kb/article.html.twig
@@ -2195,7 +2197,7 @@ msgstr "Aktualisieren"
 #: templates/components/plugin_update_modal.html.twig
 msgctxt "button"
 msgid "Update?"
-msgstr ""
+msgstr "Aktualisieren?"
 
 #: templates/components/plugin_update_modal.html.twig
 #, php-format
@@ -2205,11 +2207,11 @@ msgstr "Neues Update für Plugin %s verfügbar."
 #: templates/components/plugin_update_modal.html.twig
 #, php-format
 msgid "Update to version %s?"
-msgstr ""
+msgstr "Update auf Version %s?"
 
 #: templates/components/datatable.html.twig src/Lock.php:1061
 msgid "Check all"
-msgstr "alles markieren"
+msgstr "Alles markieren"
 
 #: templates/components/datatable.html.twig
 #: templates/components/logs.html.twig src/Glpi/Search/CriteriaFilter.php:55
@@ -2267,12 +2269,12 @@ msgstr "Ja"
 #: templates/components/datatable.html.twig
 #: templates/components/logs.html.twig
 msgid "Entries to show:"
-msgstr ""
+msgstr "Anzuzeigende Einträge:"
 
 #: templates/components/user/password_security_checks.html.twig
 #, php-format
 msgid "Minimum length: %s"
-msgstr ""
+msgstr "Mindestlänge:  %s"
 
 #: templates/components/user/password_security_checks.html.twig
 msgid "Digit"
@@ -2613,13 +2615,13 @@ msgstr "Kein Anti-Virus mit diesem Eintrag verknüpft"
 
 #: templates/components/form/item_antivirus_item.html.twig
 msgid "List of antivirus"
-msgstr ""
+msgstr "Antiviren-Liste"
 
 #: templates/components/form/header_content.html.twig
 #: templates/components/form/dates.html.twig
 #, php-format
 msgid "Created from the template %s"
-msgstr "Aus Vorlage %s erstellen"
+msgstr "Aus Vorlage %s erstellt"
 
 #: templates/components/form/header_content.html.twig src/CommonDBTM.php:6532
 #: src/KnowbaseItem.php:722 src/KnowbaseItem.php:744
@@ -2782,7 +2784,7 @@ msgstr "Useragent"
 #: src/Glpi/Features/Inventoriable.php:196 src/RuleImportEntity.php:90
 #: src/RuleLocation.php:92
 msgid "Inventory tag"
-msgstr "Inventar tag"
+msgstr "Inventar Tag"
 
 #: templates/components/form/inventory_info.html.twig
 #: templates/pages/admin/inventory/agent.html.twig src/Agent.php:177
@@ -2798,7 +2800,7 @@ msgstr "Letzter Kontakt"
 
 #: templates/components/form/inventory_info.html.twig src/RuleAsset.php:154
 msgid "Last inventory update"
-msgstr "Datum Inventarisierungs-Update"
+msgstr "Letztes Inventarisierungs-Update"
 
 #: templates/components/form/inventory_info.html.twig
 #: src/Glpi/Features/Inventoriable.php:203
@@ -2838,17 +2840,17 @@ msgstr "Agent-Information ist nicht verfügbar."
 #: templates/components/form/inventory_info.html.twig
 #: src/Glpi/Features/Inventoriable.php:198
 msgid "Last inventory"
-msgstr "Letzte Inventur"
+msgstr "Letzte Inventarisierung"
 
 #: templates/components/form/pictures.html.twig src/CommonDropdown.php:181
 #: src/CommonDropdown.php:498 src/CommonDCModelDropdown.php:460
 msgid "Front picture"
-msgstr "Bild vorne"
+msgstr "Bild Vorderseite"
 
 #: templates/components/form/pictures.html.twig src/CommonDropdown.php:189
 #: src/CommonDropdown.php:511 src/CommonDCModelDropdown.php:471
 msgid "Rear picture"
-msgstr "Bild hinten"
+msgstr "Bild Rückseite"
 
 #: templates/components/form/pictures.html.twig
 msgid "Asset URL"
@@ -2857,7 +2859,8 @@ msgstr "Asset-URL"
 #: templates/components/form/pictures.html.twig
 msgid ""
 "Scan this QRCode to be redirected to the asset page from your mobile device"
-msgstr ""
+msgstr  ""
+"Scannen Sie diesen QRCode, um von Ihrem mobilen Gerät zur Asset-Seite weitergeleitet zu werden"
 
 #: templates/components/form/support_hours.html.twig
 msgid "Support hours"
@@ -2865,7 +2868,7 @@ msgstr "Einsatzzeiten"
 
 #: templates/components/form/support_hours.html.twig
 msgid "On week"
-msgstr "in der Woche"
+msgstr "Unter der Woche"
 
 #: templates/components/form/support_hours.html.twig
 msgid "On Saturday"
@@ -2910,11 +2913,11 @@ msgstr "Freier Speicher"
 #: templates/components/form/item_disk.html.twig src/Item_Disk.php:261
 #: src/Item_Disk.php:531
 msgid "Encryption tool"
-msgstr "Verschlüsselung Programm"
+msgstr "Verschlüsselungs-Programm"
 
 #: templates/components/form/item_disk.html.twig
 msgid "Encryption Tool"
-msgstr "Verschlüsselungswerkzeug"
+msgstr "Verschlüsselungs-Werkzeug"
 
 #: templates/components/form/item_disk.html.twig
 msgid "Encryption Algorithm"
@@ -2955,7 +2958,7 @@ msgstr "schliessen"
 
 #: templates/components/form/item_itilobject_group.html.twig
 msgid "Show child groups objects"
-msgstr ""
+msgstr "Zeige untergeordnete Gruppenobjekte"
 
 #: templates/components/form/fields_macros.html.twig
 #: templates/pages/setup/apiclient.html.twig
@@ -2967,10 +2970,11 @@ msgstr "Neu erzeugen"
 msgid ""
 "This field accepts %s content. Press Ctrl+Space to trigger autocompletion."
 msgstr ""
+"Dieses Feld akzeptiert %s Inhalt. Drücken Sie Strg+Leertaste, um Autovervollständigen umzuschalten"
 
 #: templates/components/form/fields_macros.html.twig
 msgid "Select an illustration"
-msgstr ""
+msgstr "Wähle eine Darstellung"
 
 #: templates/components/form/item_device.html.twig src/Supplier.php:434
 msgid "No associated item"
@@ -3000,7 +3004,7 @@ msgstr "Überprüfe"
 #: templates/components/form/basic_inputs_macros.html.twig src/Html.php:2596
 #: src/Html.php:2807
 msgid "Show date picker"
-msgstr ""
+msgstr "Datumsselektor anzeigen"
 
 #: templates/components/form/basic_inputs_macros.html.twig
 msgid "Field will not be updated from inventory"
@@ -3014,7 +3018,7 @@ msgstr "Letzter Wert aus Inventarisierung"
 #: src/DomainRecord.php:439
 #, php-format
 msgid "New %s for this item"
-msgstr "Neue/s %sfür dieses Element"
+msgstr "Neue/s %s für dieses Element"
 
 #: templates/components/form/item_itilobject_item_list.html.twig
 #, php-format
@@ -3024,12 +3028,12 @@ msgstr "%d verknüpfte %s"
 #: templates/components/form/item_itilobject_item_list.html.twig
 #, php-format
 msgid "You don't have right to see all %s"
-msgstr ""
+msgstr "Sie haben nicht das Recht, um %s komplett zu sehen"
 
 #: templates/components/form/item_itilobject_item_list.html.twig
 #, php-format
 msgid "%s on linked items"
-msgstr ""
+msgstr "%s auf verknüpfte Elemente"
 
 #: templates/components/form/flags.html.twig src/RefusedEquipment.php:197
 #: src/Glpi/Asset/AssetDefinition.php:715 src/Printer.php:520
@@ -3285,7 +3289,7 @@ msgstr "Verschlüsselungsprotokoll für Daten"
 
 #: templates/components/form/item_remotemanagement_list.html.twig
 msgid "List of remote management"
-msgstr ""
+msgstr "Liste der Remotemanagements"
 
 #: templates/components/form/item_remotemanagement_list.html.twig
 msgid "Add a remote management"
@@ -3312,7 +3316,7 @@ msgstr "Eine Virtuelle Maschine hinzufügen"
 
 #: templates/components/form/item_virtualmachine.html.twig
 msgid "No virtualized environment associated with the item"
-msgstr ""
+msgstr "Mit dem Element ist keine Virtualisierungsumgebung verknüpft"
 
 #: templates/components/form/rulematchedlogs.html.twig
 msgid "Rule import logs"
@@ -3411,7 +3415,7 @@ msgstr "Vollständiges Formular öffnen"
 #: templates/components/itilobject/linked_itilobjects.html.twig
 msgctxt "button"
 msgid "Unlink"
-msgstr ""
+msgstr "Verknüpfung löschen"
 
 #: templates/components/itilobject/validation.html.twig
 #: src/NotificationTargetChange.php:296 src/NotificationTargetTicket.php:673
@@ -3676,18 +3680,18 @@ msgstr "Bearbeiten"
 #: templates/components/itilobject/timeline/form_document_item.html.twig
 msgctxt "button"
 msgid "Remove from import exclusion list"
-msgstr ""
+msgstr "Aus der Import-Auschlußliste entfernen"
 
 #: templates/components/itilobject/timeline/sub_documents.html.twig
 #: templates/components/itilobject/timeline/form_document_item.html.twig
 msgctxt "button"
 msgid "Add to import exclusion list"
-msgstr ""
+msgstr "Zur Import-Auschlußliste zufügen"
 
 #: templates/components/itilobject/timeline/timeline_item_header.html.twig
 #, php-format
 msgid "%s was already promoted"
-msgstr "%swurde bereits umgewandelt"
+msgstr "%s wurde bereits umgewandelt"
 
 #: templates/components/itilobject/timeline/timeline_item_header.html.twig
 msgid "Promote to Ticket"
@@ -3740,7 +3744,7 @@ msgstr[1] "Antwortvorlagen"
 #: front/ticket.form.php:254 front/change.form.php:220
 #: front/problem.form.php:221
 msgid "Save and add to the knowledge base"
-msgstr "Speichern und der WissensDB hinzufügen"
+msgstr "Speichern und der Wissens-Datenbank hinzufügen"
 
 #: templates/components/itilobject/timeline/form_followup.html.twig
 #: templates/components/itilobject/timeline/form_task_main_form.html.twig
@@ -3826,7 +3830,7 @@ msgstr "Beschreibung"
 
 #: templates/components/itilobject/timeline/knowledge_item.html.twig
 msgid "Search in the knowledge base"
-msgstr ""
+msgstr "Wissens-Datenbank durchsuchen"
 
 #: templates/components/itilobject/timeline/timeline.html.twig
 #: src/Planning.php:213 src/Planning.php:315
@@ -3867,9 +3871,9 @@ msgstr "Ablehnen"
 #: templates/components/itilobject/timeline/form_validation.html.twig
 #: src/ValidationStep.php:44
 msgid "Approval step"
-msgid_plural "Approval step"
-msgstr[0] ""
-msgstr[1] ""
+msgid_plural "Approval steps"
+msgstr[0] "Genehmigungsschritt"
+msgstr[1] "Genehmigungsschritte"
 
 #: templates/components/itilobject/timeline/form_validation.html.twig
 #: src/CommonITILValidation.php:1397 src/CommonITILValidation.php:1524
@@ -3989,7 +3993,7 @@ msgstr "Dateierweiterung"
 
 #: templates/components/itilobject/timeline/form_document_item.html.twig
 msgid "Upload from"
-msgstr ""
+msgstr "Hochladen von"
 
 #: templates/components/itilobject/timeline/form_document_item.html.twig
 msgid "Screenshot"
@@ -4100,7 +4104,7 @@ msgstr "Optional bei einer Annahme"
 
 #: templates/components/itilobject/validationstep.html.twig
 msgid "Minimum approval required (%)"
-msgstr ""
+msgstr "Benötigte Mindestgenehmigungen (%)"
 
 #: templates/components/itilobject/add_items.html.twig
 #, php-format
@@ -4123,11 +4127,11 @@ msgstr "Weitere Aktionen anzeigen"
 
 #: templates/components/itilobject/footer.html.twig
 msgid "Some actions are unavailable due to missing required fields."
-msgstr ""
+msgstr "Einige Aktionen sind aufgrund leerer verpflichtender Felder nicht verfügbar."
 
 #: templates/components/itilobject/footer.html.twig
 msgid "Cancel ticket"
-msgstr ""
+msgstr "Ticket verwerfen"
 
 #: templates/components/itilobject/footer.html.twig
 msgid "Toggle panels width"
@@ -4178,7 +4182,7 @@ msgstr "Genehmigungsanfrage"
 
 #: templates/components/itilobject/fields/status.html.twig
 msgid "Reopen"
-msgstr "Wieder eröffnen"
+msgstr "Wiedereröffnen"
 
 #: templates/components/itilobject/fields/priority_matrix.html.twig
 #: templates/pages/setup/general/assistance_setup.html.twig
@@ -4294,7 +4298,7 @@ msgstr "Gestern"
 #: templates/components/printer_graph_buttons.html.twig
 #, php-format
 msgid "Last %s days"
-msgstr ""
+msgstr "Letzte %s Tage"
 
 #: templates/components/printer_graph_buttons.html.twig
 msgid "Last quarter"
@@ -4371,24 +4375,24 @@ msgstr "Markieren alle/keine"
 
 #: templates/components/helpdesk_forms/service_catalog_items.html.twig
 msgid "There are no forms available"
-msgstr ""
+msgstr "Es sind keine Formulare verfügbar"
 
 #: templates/components/helpdesk_forms/service_catalog_items.html.twig
 msgid "Please try again later."
-msgstr ""
+msgstr "Bitte versuchen Sie es später nochmals."
 
 #: templates/components/helpdesk_forms/service_catalog_items.html.twig
 msgid "No forms found"
-msgstr ""
+msgstr "Keine Formulare gefunden"
 
 #: templates/components/helpdesk_forms/service_catalog_items.html.twig
 #: templates/components/illustration/icon_picker_search_results.html.twig
 msgid "Try different keywords or filters."
-msgstr ""
+msgstr "Versuche andere Schlüsselwörter oder Filter."
 
 #: templates/components/helpdesk_forms/service_catalog_items.html.twig
 msgid "Service catalog pages"
-msgstr ""
+msgstr "Seiten des Leistungskatalogs"
 
 #: templates/components/helpdesk_forms/service_catalog_items.html.twig
 msgid "First page"
@@ -4408,35 +4412,36 @@ msgstr "Letzte Seite"
 
 #: templates/components/helpdesk_forms/delegation_alert.html.twig
 msgid "Select the user to delegate"
-msgstr ""
+msgstr "Wählen Sie den zu delegierenden Benutzer"
 
 #: templates/components/helpdesk_forms/delegation_alert.html.twig
 msgid "He doesn't want"
-msgstr ""
+msgstr "Er hat abgelehnt"
 
 #: templates/components/helpdesk_forms/delegation_alert.html.twig
 msgid "He wants"
-msgstr ""
+msgstr "Er hat angenommen"
 
 #: templates/components/helpdesk_forms/delegation_alert.html.twig
 msgid "Do you want to be notified of future events of this ticket"
-msgstr ""
+msgstr "Möchten Sie über zukünftige Ereignisse zu diesem Ticket informiert werden?"
 
 #: templates/components/helpdesk_forms/delegation_alert.html.twig
 msgid "Address to send the notification"
-msgstr ""
+msgstr "Benachrichtigungs-Adresse"
 
 #: templates/components/helpdesk_forms/delegation_alert.html.twig
 #, php-format
 msgid ""
 "This ticket is for %1$s and %2$s to be notified of future events of this "
 "ticket."
-msgstr ""
+msgstr "Dieses Ticket ist für %1$s und %2$s, um über zukünftige Ereignisse dieses "
+"Tickets benachrichtigt zu werden."
 
 #: templates/components/helpdesk_forms/delegation_alert.html.twig
 #, php-format
 msgid "This ticket is for %1$s"
-msgstr ""
+msgstr "Dieses Ticket ist für %1$s"
 
 #: templates/components/logs.html.twig
 msgid "No historical"
@@ -4545,7 +4550,7 @@ msgstr "Finanz- und Administrationsmodus aktivieren"
 
 #: templates/components/infocom.html.twig
 msgid "Asset lifecycle"
-msgstr "Asset Lifecyle"
+msgstr "Asset Lebenszyklus"
 
 #: templates/components/infocom.html.twig
 #: templates/pages/admin/entity/assets.html.twig src/Infocom.php:1545
@@ -4698,7 +4703,7 @@ msgstr "Benachrichtigungen zu den Finanz- und Administrationsdaten"
 #: templates/components/illustration/icon_picker_search_results.html.twig
 #, php-format
 msgid "Page %s of %s"
-msgstr ""
+msgstr "Seite %s von %s"
 
 #: templates/components/illustration/icon_picker_search_results.html.twig
 #, php-format
@@ -4707,15 +4712,15 @@ msgstr "Gehe zur Seite 1%s"
 
 #: templates/components/illustration/icon_picker_modal.html.twig
 msgid "Pick an illustration"
-msgstr ""
+msgstr "Wähle eine Illustration"
 
 #: templates/components/illustration/icon_picker_modal.html.twig
 msgid "Upload your own illustration"
-msgstr ""
+msgstr "Eigene Illustration hochladen"
 
 #: templates/components/illustration/icon_picker_modal.html.twig
 msgid "Use selected file"
-msgstr ""
+msgstr "Ausgewählte Datei nutzen"
 
 #: templates/install/agree_unstable.html.twig
 msgid "You are using a development version, be careful!"
@@ -4797,7 +4802,7 @@ msgstr ""
 #: src/Glpi/Kernel/Listener/RequestListener/CheckDatabaseStatusListener.php:105
 #: src/Glpi/Kernel/Listener/RequestListener/CheckDatabaseStatusListener.php:115
 msgid "Try again"
-msgstr "Noch einmal versuchen"
+msgstr "Erneut versuchen"
 
 #: templates/install/step1.html.twig src/Glpi/Console/AbstractCommand.php:253
 msgid "Do you want to continue?"
@@ -4878,7 +4883,7 @@ msgstr "Neue Datenbank erstellen"
 
 #: templates/install/step3.html.twig
 msgid "Or use an existing one:"
-msgstr ""
+msgstr "Oder verwende eine bestehende:"
 
 #: templates/install/step3.html.twig
 msgid "Please select a database to update:"
@@ -4972,17 +4977,18 @@ msgstr "GLPI-Setup"
 
 #: templates/install/install.install_required.html.twig
 msgid "The GLPI database must be configured and installed."
-msgstr ""
+msgstr "Die GPLi Datenbank muss konfiguriert und installiert werden."
 
 #: templates/install/install.install_required.html.twig
 msgid "Go to install page"
-msgstr ""
+msgstr "Zur Installationsseite wechseln"
 
 #: templates/install/install.install_required.html.twig
 msgid ""
 "If you see this page when the installation has already been done, it means "
 "that the GLPI database configuration file has been removed or corrupted."
-msgstr ""
+msgstr "Falls Sie diese Seite sehen obwohl die Installation bereits abgeschlossen ist,"
+"bedeutet dies das die GPLi Datenbank-Konfigurationsdatei entfernt oder defekt ist.
 
 #: templates/install/step8.html.twig
 msgid "The installation is finished"
@@ -5122,7 +5128,7 @@ msgstr "Ruhend"
 
 #: templates/maintenance.html.twig
 msgid "MAINTENANCE MODE"
-msgstr ""
+msgstr "WARTUNGS-MODUS"
 
 #: templates/maintenance.html.twig
 msgid "Temporarily down for maintenance"
@@ -5440,7 +5446,7 @@ msgstr "Zum Kalender hinzufügen"
 #: templates/pages/tools/reminder.html.twig
 #, php-format
 msgid "Reminder %1$s"
-msgstr ""
+msgstr "Erinnerung %1$s"
 
 #: templates/pages/tools/reminder.html.twig
 msgid "Not planned"
@@ -5527,11 +5533,11 @@ msgstr "Aktuelle Suche speichern"
 
 #: templates/pages/tools/search_knowbaseitem.html.twig
 msgid "Use this entry"
-msgstr ""
+msgstr "Diesen Eintrag benutzen"
 
 #: templates/pages/tools/search_knowbaseitem.html.twig
 msgid "Back to results"
-msgstr ""
+msgstr "Zurück zu den Ergebnissen"
 
 #: templates/pages/tools/search_knowbaseitem.html.twig
 #: src/Glpi/Features/TreeBrowse.php:66
@@ -5542,11 +5548,11 @@ msgstr "Wird geladen …"
 
 #: templates/pages/tools/search_knowbaseitem.html.twig
 msgid "An error occurred while searching in the knowledge base"
-msgstr ""
+msgstr "Während der Suche in der WissensDB trat ein Fehler auf"
 
 #: templates/pages/tools/search_knowbaseitem.html.twig
 msgid "An error occurred while loading the knowledge base entry"
-msgstr ""
+msgstr "Ein Fehler trat auf während der WissensDB-Eintrag geladen wurde"
 
 #: templates/pages/tools/kb/knowbaseitem_item.html.twig
 msgid "Add a linked item"
@@ -5804,27 +5810,27 @@ msgstr "FAQs"
 #: src/Glpi/Form/Category.php:56
 msgid "Service catalog category"
 msgid_plural "Service catalog categories"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Leistungskatalog-Kategorie"
+msgstr[1] "Leistungskatalog-Kategorien"
 
 #: templates/pages/self-service/service_catalog.html.twig
 #: src/Glpi/Form/ServiceCatalog/ServiceCatalog.php:49
 #: src/Glpi/Helpdesk/Tile/GlpiPageTile.php:74
 #: js/modules/Forms/ServiceCatalogController.js:55
 msgid "Service catalog"
-msgstr ""
+msgstr "Leistungskatalog"
 
 #: templates/pages/self-service/service_catalog.html.twig
 msgid "Sort by: "
-msgstr ""
+msgstr "Sortieren nach: "
 
 #: templates/pages/self-service/service_catalog.html.twig
 msgid "Sort by"
-msgstr ""
+msgstr "Sortieren nach"
 
 #: templates/pages/self-service/service_catalog.html.twig
 msgid "Search for forms..."
-msgstr ""
+msgstr "Suche nach Formularen..."
 
 #: templates/pages/self-service/service_catalog.html.twig
 #: templates/pages/helpdesk/search.html.twig
@@ -5833,7 +5839,7 @@ msgstr "Formulare"
 
 #: templates/pages/form_renderer.html.twig src/Glpi/Form/Form.php:430
 msgid "Form title"
-msgstr ""
+msgstr "Formulartitel"
 
 #: templates/pages/form_renderer.html.twig
 #: templates/pages/admin/form/form_editor.html.twig src/Glpi/Form/Form.php:439
@@ -5842,16 +5848,16 @@ msgstr "Formularbeschreibung"
 
 #: templates/pages/form_renderer.html.twig
 msgid "Untitled section"
-msgstr ""
+msgstr "Unbenannter Abschnitt"
 
 #: templates/pages/form_renderer.html.twig
 #, php-format
 msgid "%s description"
-msgstr ""
+msgstr "%s Beschreibung"
 
 #: templates/pages/form_renderer.html.twig
 msgid "Submit"
-msgstr ""
+msgstr "Abschicken"
 
 #: templates/pages/form_renderer.html.twig
 msgid "Form submitted"
@@ -5863,11 +5869,11 @@ msgstr "Formular erfolgreich versendet."
 
 #: templates/pages/form_renderer.html.twig
 msgid "Go back to service catalog"
-msgstr ""
+msgstr "Zurück zum leistungskatalog"
 
 #: templates/pages/form_renderer.html.twig
 msgid "See my tickets"
-msgstr ""
+msgstr "Meine Tickets ansehen"
 
 #: templates/pages/login_error.html.twig
 msgid "Log in again"
@@ -5895,19 +5901,19 @@ msgstr "Standardserver"
 #: templates/pages/setup/authentication/mail.html.twig
 #: templates/pages/setup/mailcollector/setup_form.html.twig
 msgid "Server configuration"
-msgstr ""
+msgstr "Serverkonfiguration"
 
 #: templates/pages/setup/authentication/mail.html.twig
 msgid "Email options"
-msgstr ""
+msgstr "E-Mail-Optionen"
 
 #: templates/pages/setup/authentication/mail.html.twig
 msgid "Email domain name"
-msgstr ""
+msgstr "E-Mail Domäne"
 
 #: templates/pages/setup/authentication/mail.html.twig
 msgid "Users email will be login@domainname"
-msgstr ""
+msgstr "Benutzer E-Mail wird lauten login@domainname"
 
 #: templates/pages/setup/authentication/ldap_replicate.html.twig
 #: templates/pages/setup/general/systeminfo_form.html.twig
@@ -6250,7 +6256,7 @@ msgstr "Zielauthentifizierung"
 
 #: templates/pages/setup/webhook/webhook_security.html.twig
 msgid "Use CRA Challenge?"
-msgstr ""
+msgstr "CRA Challenge benutzen?"
 
 #: templates/pages/setup/webhook/webhook_security.html.twig
 msgid ""
@@ -6344,7 +6350,8 @@ msgstr[1] "Vorlagen für Benachrichtigungen"
 msgid ""
 "Unable to configure notifications: please configure at least one "
 "notification type using the above configuration."
-msgstr ""
+msgstr "Benachrichtigungen können nicht erstellt werden: Bitte konfiguriere "
+"mindestens einen Benachrichtigungstyp in der obigen Konfiguration.
 
 #: templates/pages/setup/crontask/crontask.html.twig src/CronTask.php:1442
 msgid "Run frequency"
@@ -6688,7 +6695,8 @@ msgstr "Legacy-REST-API aktivieren"
 msgid ""
 "Are you sure you want to enable the Legacy API? It is recommended to only "
 "use the new API when possible."
-msgstr ""
+msgstr "Wollen Sie wirklich die alte API aktivieren? Es wird empfohlen, wenn "
+"möglich, nur das neue API zu vewenden."
 
 #: templates/pages/setup/general/api_setup.html.twig
 msgid "API inline Documentation"
@@ -6970,7 +6978,7 @@ msgstr "Zeige Suchfeld oberhalb der Ergebnisse"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Show search pagination above results"
-msgstr ""
+msgstr "Seitennavigation über den Ergebnissen anzeigen?"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 #: templates/pages/admin/profile/assistance_simple.html.twig
@@ -7006,11 +7014,11 @@ msgstr "Quellen standardmäßig anfordern"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Tasks state by default"
-msgstr "Vorbesetzung des Aufgabenstatus"
+msgstr "Standardmäßiger Status von Aufgaben"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Planned tasks state by default"
-msgstr ""
+msgstr "Standardmäßiger Status geplanter Aufgaben"
 
 #: templates/pages/setup/general/preferences_setup.html.twig
 msgid "Automatically refresh data (tickets list, project kanban) in minutes."
@@ -7166,7 +7174,7 @@ msgstr "Benachrichtigung Position"
 
 #: templates/pages/setup/general/api_apiclients_section.html.twig
 msgid "API clients (Legacy API)"
-msgstr ""
+msgstr "API Clients (Veralteres API)"
 
 #: templates/pages/setup/general/api_apiclients_section.html.twig
 msgid "Add API client"
@@ -7200,6 +7208,7 @@ msgstr "Und rufen Sie Ihren Schlüssel ab, um ihn unten einzufügen"
 msgid ""
 "%1$s services website seems to be unavailable from your network or offline!"
 msgstr ""
+"Website des Dienstes %1$s scheint in Ihrem Netz nicht verfügbar oder offline zu sein"
 
 #: templates/pages/setup/general/glpinetwork_setup.html.twig
 #, php-format
@@ -7231,41 +7240,42 @@ msgstr "Marktplatz"
 
 #: templates/pages/setup/general/glpinetwork_setup.html.twig
 msgid "Ask before replacing"
-msgstr ""
+msgstr "Vor Ersetzung nachfragen"
 
 #: templates/pages/setup/general/glpinetwork_setup.html.twig
 msgid "Replace plugins page with marketplace"
-msgstr ""
+msgstr "Pluginseite durch Marktplatz ersetzen"
 
 #: templates/pages/setup/general/glpinetwork_setup.html.twig
 msgid "Never replace plugins page"
-msgstr ""
+msgstr "Pluginseite niemals ersetzen"
 
 #: templates/pages/setup/general/glpinetwork_setup.html.twig
 msgid "Plugin page replacement"
-msgstr ""
+msgstr "Ersetzung der Pluginseite"
 
 #: templates/pages/setup/general/glpinetwork_setup.html.twig
 msgid ""
 "Choose whether to replace the classic plugins page with the new marketplace "
 "interface."
-msgstr ""
+msgstr "Wählen Sie, ob die klassische Plugin-Seite durch die neue Marktplatz"
+"-Schnittstelle ersetzt werden soll."
 
 #: templates/pages/setup/general/glpinetwork_setup.html.twig
 msgid "Access GLPI Network Marketplace"
-msgstr ""
+msgstr "Auf GLPI Marktplatz zugreifen"
 
 #: templates/pages/setup/general/security_setup.html.twig
 msgid "Security policy validation"
-msgstr ""
+msgstr "Validierung der Sicherheitsrichtlinien"
 
 #: templates/pages/setup/general/security_setup.html.twig
 msgid "Force passwords to comply with security policy"
-msgstr ""
+msgstr "Erzwinge Passwörter zur Einhaltung der Sicherheitsrichtlinien"
 
 #: templates/pages/setup/general/security_setup.html.twig
 msgid "Security policy configuration"
-msgstr ""
+msgstr "Konfiguration der Sicherheitsrichtlinien"
 
 #: templates/pages/setup/general/security_setup.html.twig
 msgid "Password minimum length"
@@ -7322,7 +7332,7 @@ msgstr "Letztes Passwort"
 #: templates/pages/setup/general/security_setup.html.twig
 #, php-format
 msgid "Last %s passwords"
-msgstr ""
+msgstr "Letzte %s Passwörter"
 
 #: templates/pages/setup/general/security_setup.html.twig
 msgid "Prevent users from reusing previous passwords"
@@ -20185,7 +20195,7 @@ msgstr "Element nicht gefunden"
 
 #: src/Glpi/Api/API.php:2219
 msgid "Email notifications are disabled"
-msgstr "E-Mail Meldung ist desaktiviert"
+msgstr "E-Mail Meldung ist deaktiviert"
 
 #: src/Glpi/Api/API.php:2223
 msgid "email parameter missing"
@@ -31447,7 +31457,7 @@ msgstr "Antwortvorlage"
 
 #: src/PendingReason.php:174
 msgid "Automatic follow-up disabled"
-msgstr "Automatische Verfolgung desaktiviert"
+msgstr "Automatische Verfolgung deaktiviert"
 
 #: src/PendingReason.php:204
 msgid "Every day"
