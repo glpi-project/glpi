@@ -1237,7 +1237,7 @@ class MonitorTest extends AbstractInventoryAsset
         $this->assertCount(0, $DB->request(['FROM' => \Computer_Item::getTable(), 'WHERE' => ['itemtype' => \Monitor::class, 'computers_id' => $computers_id]]));
     }
 
-        public function testMonitorModelRuleImportAsset()
+    public function testMonitorModelRuleImportAsset()
     {
         $monitor = new \Monitor();
         $item_monitor = new \Computer_Item();
@@ -1275,17 +1275,18 @@ class MonitorTest extends AbstractInventoryAsset
         $criteria = new \RuleCriteria();
         $action = new \RuleAction();
 
-        $rules_id = $rule->add(['name' => 'Exclude Monitor Model PHL 460C9RQ',
+        $rules_id = $rule->add([
+            'name' => 'Exclude Monitor Model PHL 460C9RQ',
             'is_active' => 1,
             'entities_id' => 0,
-            'sub_type' => 'RuleImportAsset',
+            'sub_type' => \RuleImportAsset::class,
             'match' => \Rule::AND_MATCHING,
             'condition' => 0,
             'description' => '',
         ]);
         $this->assertGreaterThan(0, $rules_id);
 
-                $this->assertTrue($collection->moveRule($rules_id, 0, $collection::MOVE_BEFORE));
+        $this->assertTrue($collection->moveRule($rules_id, 0, $collection::MOVE_BEFORE));
 
         $this->assertGreaterThan(
             0,
@@ -1303,7 +1304,7 @@ class MonitorTest extends AbstractInventoryAsset
                 'rules_id' => $rules_id,
                 'criteria' => 'itemtype',
                 'condition' => \Rule::PATTERN_IS,
-                'pattern' => 'Monitor',
+                'pattern' => \Monitor::class,
             ])
         );
 
@@ -1323,7 +1324,7 @@ class MonitorTest extends AbstractInventoryAsset
         $this->assertGreaterThan(0, $computers_id);
 
         //we only have 1 monitor items linked to the computer
-        $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id]);
+        $monitors = $item_monitor->find(['itemtype' => \Monitor::class, 'computers_id' => $computers_id]);
         $this->assertCount(1, $monitors);
         $this->assertTrue($monitor->getFromDB(reset($monitors)['items_id']));
         $this->assertSame($monitor->fields['name'], '230B8Q');
