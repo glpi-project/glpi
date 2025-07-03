@@ -270,7 +270,9 @@ class Item_Ola extends CommonDBRelation
         // if linkid is set (items_olas exists), use it to populate the data
         if (isset($ola_data['linkid'])) {
             $instance = new static();
-            $instance->getFromDB($_merged_data['linkid']); // @todoseb lever exception si pas trouvé
+            if (!$instance->getFromDB($_merged_data['linkid'])) {
+                throw new \LogicException('Item_Ola not found for linkid ' . $_merged_data['linkid']);
+            }
 
             $_merged_data = array_merge($_merged_data, $instance->fields);
             $_merged_data['items_olas_id'] = $ola_data['linkid'];
