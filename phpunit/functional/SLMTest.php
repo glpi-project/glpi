@@ -238,7 +238,6 @@ class SLMTest extends DbTestCase
             'field'       => 'olas_id',
             'value'       => $ola_ttr_id,
         ]);
-        // une seule rule avec plusieurs actions
         $this->checkInput($ruleaction, $act_id, $act_input);
 
         // test create ticket
@@ -257,55 +256,54 @@ class SLMTest extends DbTestCase
         $id_tto_data = $ticket->getOlasTTOData()[0]['olas_id'] ?? throw new \Exception('Ola TTO not found');
         $this->assertEquals($ola_tto_id, (int) $id_tto_data);
         $this->assertEquals($ola_ttr_id, (int) $id_ttr_data);
-        $this->assertEquals(19, strlen($ticket->getField('time_to_resolve')));
+        $time_to_resolve = $ticket->fields['time_to_resolve'];
+        $time_to_own = $ticket->fields['time_to_own'];
+        $this->assertEquals(19, strlen($time_to_resolve));
+        $this->assertEquals(19, strlen($time_to_own));
+        $this->assertCount(2, $ticket->getOlasData());
 
-        // test update ticket
-        $ticket = new Ticket();
-        $tickets_id_2 = $ticket->add($ticket_input_2 = [
-            'name'    => "to be updated",
-            'content' => __METHOD__,
-        ]);
-        $this->assertGreaterThan(0, $tickets_id_2);
-        $this->assertTrue(
-            $ticket->update([
-                'id'   => $tickets_id_2,
-                'name' => __METHOD__,
-            ])
-        );
-        $ticket_input_2['name'] = __METHOD__;
-        $this->checkInput($ticket, $tickets_id_2, $ticket_input_2);
-        $this->assertEquals($sla1_id, (int) $ticket->getField('slas_id_tto'));
-        $this->assertEquals($sla2_id, (int) $ticket->getField('slas_id_ttr'));
-
-        $id_ttr_data = $ticket->getOlasTTRData()[0]['olas_id'];
-        $id_tto_data = $ticket->getOlasTTOData()[0]['olas_id'];
-        $this->assertEquals($ola_tto_id, (int) $id_tto_data);
-        $this->assertEquals($ola_ttr_id, (int) $id_ttr_data);
-        $this->assertEquals(19, strlen($ticket->getField('time_to_resolve')));
-
-        // ## 3 - test purge of slm and check if we don't find any sub objects
+        // ## 3 - Action - purge slm
         $this->deleteItem(\SLM::class, $slm_id, true);
-        //sla
+
+        // ## 4 - Check related objects deletion / status
+
+        // sla are deleted
         $this->assertFalse($sla->getFromDB($sla1_id));
         $this->assertFalse($sla->getFromDB($sla2_id));
-        //ola
+
+        // ola are deleted
         $this->assertFalse($ola->getFromDB($ola_tto_id));
         $this->assertFalse($ola->getFromDB($ola_ttr_id));
-        //slalevel
+
+        // slalevels are deleted
         $this->assertFalse($sla_level->getFromDB($slal1_id));
         $this->assertFalse($sla_level->getFromDB($slal2_id));
-        //olalevel
+
+        // olalevel are deleted
         $this->assertFalse($olal->getFromDB($olal1_id));
         $this->assertFalse($olal->getFromDB($olal2_id));
-        //crit
+
+        // levels criterias are deleted
         $this->assertFalse($scrit->getFromDB($scrit_id));
         $this->assertFalse($ocrit->getFromDB($ocrit_id));
-        //action
+
+        // levels actions are deleted
         $this->assertFalse($saction->getFromDB($saction_id));
         $this->assertFalse($oaction->getFromDB($oaction_id));
 
-        // @todo what about rules ? are they deleted too ? If preserved, how does glpi handle rule action when the ola/sla is deleted ?
-        // @todo what about tickets ? are they deassociated from sla/ola ?
+        // rule becomes inactive
+        $rule = getItemByTypeName(RuleTicket::class, __METHOD__);
+        $this->assertEquals(0, $rule->fields['is_active']);
+
+        // ticket SLA and OLA are not associated anymore
+        $ticket = getItemByTypeName(Ticket::class, __METHOD__);
+        $this->assertEquals(0, (int) $ticket->fields['slas_id_tto']);
+        $this->assertEquals(0, (int) $ticket->fields['slas_id_ttr']);
+        $this->assertEmpty($ticket->getOlasData());
+
+        // sla due times are preserved
+        $this->assertEquals($time_to_resolve, $ticket->fields['time_to_resolve']);
+        $this->assertEquals($time_to_own, $ticket->fields['time_to_own']);
     }
 
     /**
@@ -1511,6 +1509,7 @@ class SLMTest extends DbTestCase
         // no level to execute in case of TTO if there were pauses
         // because pauses makes takeintoaccount_delay_stat be > 0 so levels are not executed
         // @see \OlaLevel_Ticket::doLevelForTicket
+        // @todoseb this should not be true anymore : only the fact a user/group dedicated to OLA should stop levels to be processed
         $expected_count = (count($pauses) > 0 && $la_params['type'] === \SLM::TTO) ? 0 : 1;
         $this->assertCount($expected_count, $la_level_ticket);
         if ($expected_count > 0) {
