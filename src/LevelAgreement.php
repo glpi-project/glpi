@@ -445,35 +445,11 @@ TWIG, $twig_params);
      *
      * @param int $tickets_id
      * @param int $type
-     * @return false|iterable
-     * @used-by templates/components/itilobject/service_levels.html.twig
-     * @todo deprécier, n'est plus utilisé
+     * @return false
      */
     public function getDataForTicket($tickets_id, $type)
     {
-        /** @var \DBmysql $DB */
-        global $DB;
-
-        [, $field] = static::getFieldNames($type);
-
-        $iterator = $DB->request([
-            'SELECT'       => [static::getTable() . '.id'],
-            'FROM'         => static::getTable(),
-            'INNER JOIN'   => [
-                'glpi_tickets' => [
-                    'FKEY'   => [
-                        static::getTable()   => 'id',
-                        'glpi_tickets'       => $field,
-                    ],
-                ],
-            ],
-            'WHERE'        => ['glpi_tickets.id' => $tickets_id],
-            'LIMIT'        => 1,
-        ]);
-
-        if (count($iterator)) {
-            return self::getFromIter($iterator);
-        }
+        Toolbox::deprecated('The `' . __FUNCTION__ . '` method is deprecated, use Ticket::getOlasData() | Ticket::getSlasData().');
         return false;
     }
 
