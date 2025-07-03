@@ -144,6 +144,11 @@ class NetworkPort extends InventoryAsset
             if (!property_exists($val, 'trunk')) {
                 $val->trunk = 0;
             }
+
+            //Port name "Management" is reserved
+            if ($val->name === 'Management') {
+                $val->name .= ' port';
+            }
         }
 
         $this->ports += $this->data;

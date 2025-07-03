@@ -3223,6 +3223,37 @@ Compiled Wed 25-Jan-23 16:15 by mcpre</COMMENTS>
             ]);
             $this->assertCount($row['nb_ports'], $found_np, 'Must have ' . $row['nb_ports'] . ' ports');
         }
+
+        //run again, same results
+        $xml_source = file_get_contents(FIXTURE_DIR . '/inventories/extreme_5420F.xml');
+        // Import the switch(es) into GLPI
+        $converter = new \Glpi\Inventory\Converter();
+        $data = json_decode($converter->convert($xml_source));
+        $CFG_GLPI["is_contact_autoupdate"] = 0;
+        $inventory = new \Glpi\Inventory\Inventory($data);
+        $CFG_GLPI["is_contact_autoupdate"] = 1; //reset to default
+
+        if ($inventory->inError()) {
+            foreach ($inventory->getErrors() as $error) {
+                var_dump($error);
+            }
+        }
+        $this->assertFalse($inventory->inError());
+        $this->assertSame([], $inventory->getErrors());
+
+        foreach ($server_serial as $serial => $row) {
+            $this->assertTrue(
+                $networkEquipment->getFromDBByCrit(['serial' => $serial]),
+                "Switch s/n $serial doesn't exist"
+            );
+            $this->assertSame($row['name'], $networkEquipment->fields['name']);
+
+            $found_np = $networkPort->find([
+                'itemtype' => $networkEquipment->getType(),
+                'items_id' => $networkEquipment->getID(),
+            ]);
+            $this->assertCount($row['nb_ports'], $found_np, 'Must have ' . $row['nb_ports'] . ' ports');
+        }
     }
 
     public function testManuelNetworkPortUpdateToDynamic()
