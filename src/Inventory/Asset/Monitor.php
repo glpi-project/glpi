@@ -59,6 +59,7 @@ class Monitor extends InventoryAsset
                     $val->$dest = $val->$origin;
                 }
             }
+
             $val->is_dynamic = 1;
 
             if (!property_exists($val, 'name')) {
@@ -146,10 +147,11 @@ class Monitor extends InventoryAsset
 
         foreach ($this->data as $key => $val) {
             $input = [
-                'itemtype'     => 'Monitor',
-                'name'         => $val->name,
-                'serial'       => $val->serial ?? '',
-                'entities_id'  => $entities_id,
+                'itemtype'          => \Monitor::class,
+                'name'              => $val->name,
+                'serial'            => $val->serial ?? '',
+                'entities_id'       => $entities_id,
+                'model'             => $val->monitormodels_id ?? '',
             ];
             $data = $rule->processAllRules($input, [], ['class' => $this, 'return' => true]);
 
