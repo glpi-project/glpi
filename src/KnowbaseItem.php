@@ -1052,6 +1052,11 @@ TWIG, $twig_params);
             'faq' => false,
         ], $params);
 
+        // Mysql's MATCH AGAINST do not accept expressions that contains only spaces
+        if (trim($params['contains']) === '') {
+            $params['contains'] = '';
+        }
+
         $criteria = [
             'SELECT' => [
                 'glpi_knowbaseitems.*',
