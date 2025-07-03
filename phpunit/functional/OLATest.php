@@ -59,6 +59,7 @@ use Ticket;
  *      - Create and update a ticket with old form params (olas_id_tto, olas_id_ttr) still works :
  *          - on creation : @see self::testCreateTicketWithOldFormParams()
  *          - on update : @see self::testUpdateTicketWithOldFormParams()
+ *          - when both old and new form params are passed, the new ones are used (preserve plugins behavior): @see self::testCreateTicketWithBothOldAndNewInputFields()
  * - passing removed parameters throws execption ('ola_tto_begin_date', 'ola_ttr_begin_date', ...)
  *      - on create ticket : @see self::testCreateTicketWithOlaRemovedFieldsThrowsAnExecption()
  *      - on update ticket : @see self::testUpdateTicketWithOlaRemovedFieldsThrowsAnExecption()
@@ -276,6 +277,32 @@ class OLATest extends DbTestCase
         // assert
         $fetched_olas = array_column($ticket->getOlasData(), 'olas_id');
         $this->assertEqualsCanonicalizing([$ola_tto->getID(), $ola_ttr->getID()], $fetched_olas, 'Unexpected OLA associated with ticket using old form params on creation');
+    }
+
+    public function testCreateTicketWithBothOldAndNewInputFields(): void
+    {
+        // arrange
+        $this->login();
+        ['ola' => $ola_new, 'slm' => $slm, 'group' => $group] = $this->createOLA(ola_type: \SLM::TTO);
+        $ola_new2 = $this->createOLA(ola_type: \SLM::TTR, group: $group, slm: $slm)['ola'];
+        $ola_ttr_old = $this->createOLA(ola_type: \SLM::TTR, group: $group, slm: $slm)['ola'];
+        $ola_tto_old = $this->createOLA(ola_type: \SLM::TTR, group: $group, slm: $slm)['ola'];
+
+        // act - update ticket
+        $ticket = $this->createTicket(
+            [
+                '_olas_ids' => [$ola_new->getID(), $ola_new2->getID()],
+                '_olas_update' => true,
+                'olas_id_ttr' => $ola_ttr_old->getID(),
+                'olas_id_tto' => $ola_tto_old->getID(),
+
+            ],
+            ['olas_id_tto', 'olas_id_ttr'] // do not exist anymore but here we check backward compatibility.
+        );
+
+        // assert
+        $fetched_olas = array_column($ticket->getOlasData(), 'olas_id');
+        $this->assertEqualsCanonicalizing([$ola_tto_old->getID(), $ola_ttr_old->getID()], $fetched_olas, 'Ola passed with old form params should be used, not the new ones');
     }
 
     public function testUpdateTicketWithOldFormParams(): void

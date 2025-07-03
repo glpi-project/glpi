@@ -6571,13 +6571,9 @@ JAVASCRIPT;
             return $input;
         }
 
-        // old and new fields set at the same time.
-        if (isset($input['_olas_id'])) {
-            // @todoseb maybe not the best bet to throw an execption ...
-            throw new \RuntimeException('Both old and new fields for ola are defined, unexpected situation');
-        }
-
-        // add flag field to mark olas as modified/created
+        // old and new fields set at the same time. (by a plugin not up to date)
+        // preserve previous behavior : replace olas set by legacy fields & ignore olas set by new field (_input['_olas_id'])
+        $input['_olas_id'] = [];
         $input['_la_update'] = true;
 
         // remove old fields and add new fields
