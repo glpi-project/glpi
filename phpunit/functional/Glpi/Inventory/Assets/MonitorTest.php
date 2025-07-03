@@ -1236,4 +1236,96 @@ class MonitorTest extends AbstractInventoryAsset
         //link to monitor has been removed
         $this->assertCount(0, $DB->request(['FROM' => \Computer_Item::getTable(), 'WHERE' => ['itemtype' => \Monitor::class, 'computers_id' => $computers_id]]));
     }
+
+        public function testMonitorModelRuleImportAsset()
+    {
+        $monitor = new \Monitor();
+        $item_monitor = new \Computer_Item();
+        $xml_source = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?>
+<REQUEST>
+  <CONTENT>
+      <MONITORS>
+          <BASE64>AP\/\/\/\/\/\/\/wBBDDYJGyoAADEeAQSlMR54Ozplp1VSnCcPUFS\/7wDRwLMAlQCBgIFAgcABAQEBKDyAoHCwI0AwIDYA6CkRAAAar0uAoHCwK0AwIDYA6CkRAAAaAAAA\/ABQSEwgMjMwQjhRCiAgAAAA\/QAwTF9fFQEKICAgICAgAVcCAx7xS5AfBRQEEwMSAhEBIwkHB4MBAABlAwwAEAACOoAYcTgtQFgsRQDoKREAAB4BHQByUdAeIG4oVQDoKREAAB6MCtCKIOAtEBA+lgDoKREAABiMCtCQIEAxIAxAVQDoKREAABgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAfQ==</BASE64>
+          <CAPTION>230B8Q</CAPTION>
+          <DESCRIPTION>49\/2020</DESCRIPTION>
+          <MANUFACTURER>Philips Consumer Electronics Company</MANUFACTURER>
+          <SERIAL>010779</SERIAL>
+      </MONITORS>
+      <MONITORS>
+          <BASE64>AP\/\/\/\/\/\/\/wBBDDYJgCoAADEeAQOAMR54Kjplp1VSnCcPUFS\/7wDRwLMAlQCBgIFAgcABAQEBKDyAoHCwI0AwIDYA6CkRAAAaAAAA\/wBVSEIyMDQ5MDEwODgwAAAA\/ABQSEwgMjMwQjhRCiAgAAAA\/QAyTB5TEAAKICAgICAgAAQ=</BASE64>
+          <CAPTION>460C9RQ</CAPTION>
+          <DESCRIPTION>49\/2020</DESCRIPTION>
+          <MANUFACTURER>Philips Consumer Electronics Company</MANUFACTURER>
+          <SERIAL>UHB2049010880</SERIAL>
+      </MONITORS>
+    <HARDWARE>
+      <NAME>pc022</NAME>
+    </HARDWARE>
+    <BIOS>
+      <SSN>SDF789FGH</SSN>
+    </BIOS>
+    <VERSIONCLIENT>GlpiAgent-Agent_v2.3.19</VERSIONCLIENT>
+  </CONTENT>
+  <DEVICEID>test-pc022</DEVICEID>
+  <QUERY>INVENTORY</QUERY>
+</REQUEST>";
+
+        $collection = new \RuleImportAssetCollection();
+        $rule = new \Rule();
+        $criteria = new \RuleCriteria();
+        $action = new \RuleAction();
+
+        $rules_id = $rule->add(['name' => 'Exclude Monitor Model PHL 460C9RQ',
+            'is_active' => 1,
+            'entities_id' => 0,
+            'sub_type' => 'RuleImportAsset',
+            'match' => \Rule::AND_MATCHING,
+            'condition' => 0,
+            'description' => '',
+        ]);
+        $this->assertGreaterThan(0, $rules_id);
+
+                $this->assertTrue($collection->moveRule($rules_id, 0, $collection::MOVE_BEFORE));
+
+        $this->assertGreaterThan(
+            0,
+            $criteria->add([
+                'rules_id' => $rules_id,
+                'criteria' => 'model',
+                'condition' => \Rule::PATTERN_IS,
+                'pattern' => '460C9RQ',
+            ])
+        );
+
+        $this->assertGreaterThan(
+            0,
+            $criteria->add([
+                'rules_id' => $rules_id,
+                'criteria' => 'itemtype',
+                'condition' => \Rule::PATTERN_IS,
+                'pattern' => 'Monitor',
+            ])
+        );
+
+        $this->assertGreaterThan(
+            0,
+            $action->add([
+                'rules_id' => $rules_id,
+                'action_type' => 'assign',
+                'field' => '_ignore_import',
+                'value' => '1', //import denied
+            ])
+        );
+
+        $inventory = $this->doInventory($xml_source, true);
+
+        $computers_id = $inventory->getItem()->fields['id'];
+        $this->assertGreaterThan(0, $computers_id);
+
+        //we only have 1 monitor items linked to the computer
+        $monitors = $item_monitor->find(['itemtype' => 'Monitor', 'computers_id' => $computers_id]);
+        $this->assertCount(1, $monitors);
+        $this->assertTrue($monitor->getFromDB(reset($monitors)['items_id']));
+        $this->assertSame($monitor->fields['name'], '230B8Q');
+    }
 }
