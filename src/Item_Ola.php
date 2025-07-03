@@ -264,7 +264,6 @@ class Item_Ola extends CommonDBRelation
         $_merged_data['end_time'] = 0;
         $_merged_data['waiting_time'] = 0;
         $_merged_data['items_olas_id'] = 0;
-        $_merged_data['olalevel_date'] = 0; // @todoseb va dégager possiblement
         // add data for template
         $_merged_data['class'] = OLA::class;
         $_merged_data['item'] = $ticket; // object, not just fields, functions used in template
