@@ -249,7 +249,7 @@ trait InventoryNetworkPort
     }
 
     /**
-     * Add a network port into dtaabase
+     * Add a network port into database
      *
      * @param \stdClass $port Port data
      *

@@ -144,6 +144,11 @@ class NetworkPort extends InventoryAsset
             if (!property_exists($val, 'trunk')) {
                 $val->trunk = 0;
             }
+
+            //Port name "Management" is reserved
+            if (property_exists($val, 'name') && $val->name === 'Management') {
+                $val->name .= ' port';
+            }
         }
 
         $this->ports += $this->data;
@@ -661,7 +666,15 @@ class NetworkPort extends InventoryAsset
             //not yet existing, create
             $input = (array) $port;
             $input['entities_id'] = $this->entities_id;
-            if (property_exists($port, 'mac') && (!property_exists($port, 'name') || empty($port->name) || is_numeric($port->name) || preg_match('@([\w-]+)?(\d+)/\d+(/\d+)?@', $port->name))) {
+            if (
+                property_exists($port, 'mac')
+                && (
+                    !property_exists($port, 'name')
+                    || empty($port->name)
+                    || is_numeric($port->name)
+                    || preg_match('@([\w-]+)?(\d+)/\d+(/\d+)?@', $port->name)
+                )
+            ) {
                 if ($name = $this->getNameForMac($port->mac)) {
                     $input['name'] = $name;
                 }
@@ -806,9 +819,9 @@ class NetworkPort extends InventoryAsset
             foreach ($this->ports as $k => $val) {
                 $matches = [];
                 if (
-                    preg_match('@[\w\s+]*(\d+)/[\w]@', $val->name, $matches)
+                    preg_match('@[\w\s+]*(\d+)[/:][\w]@', $val->name, $matches)
                 ) {
-                    //reset increment when name lenght differ
+                    //reset increment when name length differ
                     //Gi0/0 then Gi0/0/1, Gi0/0/2, Gi0/0/3
                     if ($count_char && $count_char != strlen($val->name)) {
                         $need_increment_index = false;
