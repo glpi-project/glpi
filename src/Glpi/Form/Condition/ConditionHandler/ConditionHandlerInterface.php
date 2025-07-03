@@ -34,6 +34,7 @@
 
 namespace Glpi\Form\Condition\ConditionHandler;
 
+use Glpi\Form\Condition\ConditionData;
 use Glpi\Form\Condition\ValueOperator;
 
 interface ConditionHandlerInterface
@@ -57,7 +58,13 @@ interface ConditionHandlerInterface
      */
     public function getTemplate(): ?string;
 
-    public function getTemplateParameters(): array;
+    /**
+     * Returns an array of parameters that will be passed to the template
+     * defined in getTemplate().
+     *
+     * @param ConditionData $condition
+     */
+    public function getTemplateParameters(ConditionData $condition): array;
 
     public function applyValueOperator(
         mixed $a,

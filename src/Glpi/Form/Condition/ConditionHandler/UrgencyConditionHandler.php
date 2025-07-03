@@ -34,6 +34,7 @@
 
 namespace Glpi\Form\Condition\ConditionHandler;
 
+use Glpi\Form\Condition\ConditionData;
 use Glpi\Urgency;
 use Override;
 
@@ -51,7 +52,7 @@ final class UrgencyConditionHandler extends NumberConditionHandler
     }
 
     #[Override]
-    public function getTemplateParameters(): array
+    public function getTemplateParameters(ConditionData $condition): array
     {
         return ['values' => Urgency::getUrgencyValuesForDropdown()];
     }

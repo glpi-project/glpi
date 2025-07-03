@@ -1744,12 +1744,12 @@ final class FormMigrationTest extends DbTestCase
             ValidationStrategy::VALID_IF,
             [
                 [
-                    'value_operator' => ValueOperator::GREATER_THAN_OR_EQUALS,
+                    'value_operator' => ValueOperator::LENGTH_GREATER_THAN_OR_EQUALS,
                     'value'          => '5',
                     'logic_operator' => LogicOperator::AND,
                 ],
                 [
-                    'value_operator' => ValueOperator::LESS_THAN_OR_EQUALS,
+                    'value_operator' => ValueOperator::LENGTH_LESS_THAN_OR_EQUALS,
                     'value'          => '50',
                     'logic_operator' => LogicOperator::AND,
                 ],
@@ -1759,6 +1759,23 @@ final class FormMigrationTest extends DbTestCase
                     'logic_operator' => LogicOperator::AND,
                 ],
             ],
+        ];
+
+        // QuestionTypeDropdown does not support any validation operators
+        yield 'QuestionTypeDropdown - Regex and range validation' => [
+            'select',
+            [
+                [
+                    'regex'     => '/^[A-Za-z0-9]+$/',
+                    'fieldname' => 'regex',
+                ],
+                [
+                    'range_min' => '5',
+                    'range_max' => '50',
+                    'fieldname' => 'range',
+                ],
+            ],
+            ValidationStrategy::NO_VALIDATION,
         ];
     }
 

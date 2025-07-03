@@ -127,11 +127,21 @@ final class QuestionTypeItemDropdown extends QuestionTypeItem
             };
         }
 
+        $root_items_id = 0;
+        if (isset($values['show_tree_root']) && is_numeric($values['show_tree_root'])) {
+            $root_items_id = (int) $values['show_tree_root'];
+        }
+
+        $subtree_depth = 0;
+        if (isset($values['show_tree_depth']) && is_numeric($values['show_tree_depth'])) {
+            $subtree_depth = (int) $values['show_tree_depth'];
+        }
+
         return (new QuestionTypeItemDropdownExtraDataConfig(
             itemtype: $rawData['itemtype'] ?? null,
             categories_filter: $categories_filter,
-            root_items_id: $values['show_tree_root'] ?? 0,
-            subtree_depth: $values['show_tree_depth'] ?? 0
+            root_items_id: $root_items_id,
+            subtree_depth: $subtree_depth
         ))->jsonSerialize();
     }
 

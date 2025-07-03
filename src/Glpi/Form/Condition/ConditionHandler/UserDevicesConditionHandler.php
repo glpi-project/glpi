@@ -34,6 +34,7 @@
 
 namespace Glpi\Form\Condition\ConditionHandler;
 
+use Glpi\Form\Condition\ConditionData;
 use Glpi\Form\Condition\ValueOperator;
 use Override;
 
@@ -66,7 +67,7 @@ final class UserDevicesConditionHandler implements ConditionHandlerInterface
     }
 
     #[Override]
-    public function getTemplateParameters(): array
+    public function getTemplateParameters(ConditionData $condition): array
     {
         return [
             'is_multiple_devices' => $this->is_multiple_devices,

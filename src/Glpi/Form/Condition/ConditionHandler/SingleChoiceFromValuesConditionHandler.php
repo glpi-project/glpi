@@ -34,6 +34,7 @@
 
 namespace Glpi\Form\Condition\ConditionHandler;
 
+use Glpi\Form\Condition\ConditionData;
 use Glpi\Form\Condition\ValueOperator;
 use Glpi\Form\Migration\ConditionHandlerDataConverterInterface;
 use Override;
@@ -62,7 +63,7 @@ final class SingleChoiceFromValuesConditionHandler implements
     }
 
     #[Override]
-    public function getTemplateParameters(): array
+    public function getTemplateParameters(ConditionData $condition): array
     {
         return ['values' => $this->values];
     }

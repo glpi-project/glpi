@@ -51,6 +51,11 @@ enum ValueOperator: string
     case MATCH_REGEX = 'match_regex';
     case NOT_MATCH_REGEX = 'not_match_regex';
 
+    case LENGTH_GREATER_THAN               = 'length_greater_than';
+    case LENGTH_GREATER_THAN_OR_EQUALS     = 'length_greater_than_or_equals';
+    case LENGTH_LESS_THAN                  = 'length_less_than';
+    case LENGTH_LESS_THAN_OR_EQUALS        = 'length_less_than_or_equals';
+
     case VISIBLE = 'visible';
     case NOT_VISIBLE = 'not_visible';
 
@@ -72,6 +77,11 @@ enum ValueOperator: string
             self::MATCH_REGEX            => __("Match regular expression"),
             self::NOT_MATCH_REGEX        => __("Do not match regular expression"),
 
+            self::LENGTH_GREATER_THAN               => __("Length is greater than"),
+            self::LENGTH_GREATER_THAN_OR_EQUALS     => __("Length is greater than or equals to"),
+            self::LENGTH_LESS_THAN                  => __("Length is less than"),
+            self::LENGTH_LESS_THAN_OR_EQUALS        => __("Length is less than or equals to"),
+
             self::VISIBLE                => __("Is visible"),
             self::NOT_VISIBLE            => __("Is not visible"),
         };
@@ -85,7 +95,11 @@ enum ValueOperator: string
             self::LESS_THAN,
             self::LESS_THAN_OR_EQUALS,
             self::MATCH_REGEX,
-            self::NOT_MATCH_REGEX => true,
+            self::NOT_MATCH_REGEX,
+            self::LENGTH_GREATER_THAN,
+            self::LENGTH_GREATER_THAN_OR_EQUALS,
+            self::LENGTH_LESS_THAN,
+            self::LENGTH_LESS_THAN_OR_EQUALS => true,
 
             default => false
         };
@@ -103,6 +117,10 @@ enum ValueOperator: string
                 self::LESS_THAN_OR_EQUALS    => sprintf(__("The value must be less than or equal to %s"), $condition_data->getValue()),
                 self::MATCH_REGEX            => __("The value must match the requested format"),
                 self::NOT_MATCH_REGEX        => __("The value must not match the requested format"),
+                self::LENGTH_GREATER_THAN               => sprintf(__("The length must be greater than %s"), $condition_data->getValue()),
+                self::LENGTH_GREATER_THAN_OR_EQUALS     => sprintf(__("The length must be greater than or equal to %s"), $condition_data->getValue()),
+                self::LENGTH_LESS_THAN                  => sprintf(__("The length must be less than %s"), $condition_data->getValue()),
+                self::LENGTH_LESS_THAN_OR_EQUALS        => sprintf(__("The length must be less than or equal to %s"), $condition_data->getValue()),
 
                 default => __("The value is not valid"),
             };
@@ -114,6 +132,10 @@ enum ValueOperator: string
                 self::LESS_THAN_OR_EQUALS    => sprintf(__("The value must not be less than or equal to %s"), $condition_data->getValue()),
                 self::MATCH_REGEX            => __("The value must not match the requested format"),
                 self::NOT_MATCH_REGEX        => __("The value must match the requested format"),
+                self::LENGTH_GREATER_THAN               => sprintf(__("The length must not be greater than %s"), $condition_data->getValue()),
+                self::LENGTH_GREATER_THAN_OR_EQUALS     => sprintf(__("The length must not be greater than or equal to %s"), $condition_data->getValue()),
+                self::LENGTH_LESS_THAN                  => sprintf(__("The length must not be less than %s"), $condition_data->getValue()),
+                self::LENGTH_LESS_THAN_OR_EQUALS        => sprintf(__("The length must not be less than or equal to %s"), $condition_data->getValue()),
 
                 default => __("The value is not valid"),
             };

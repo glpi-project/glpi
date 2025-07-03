@@ -34,6 +34,7 @@
 
 namespace Glpi\Form\Condition\ConditionHandler;
 
+use Glpi\Form\Condition\ConditionData;
 use Glpi\Form\Condition\ValueOperator;
 use Override;
 use Ticket;
@@ -53,7 +54,7 @@ class RequestTypeConditionHandler implements ConditionHandlerInterface
     }
 
     #[Override]
-    public function getTemplateParameters(): array
+    public function getTemplateParameters(ConditionData $condition): array
     {
         return ['values' => Ticket::getTypes()];
     }
