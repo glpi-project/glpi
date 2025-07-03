@@ -2680,20 +2680,20 @@ JAVASCRIPT;
             'joinparams'         => [
                 'condition'          => ['NEWTABLE.type' => SLM::TTO],
                 'beforejoin'         => [
-                    'table'              => 'glpi_items_olas', // @todoseb getTable()
+                    'table'              => Item_Ola::getTable(),
                     'joinparams'         => [
                         'jointype'           => 'itemtype_item',
                     ],
                 ],
             ],
             'forcegroupby'       => true,
-            'condition'          => ['type' => SLM::TTO], // @todoseb n'est pas documenté : sert pour le dropdown dans le filtrage
+            'condition'          => ['type' => SLM::TTO],
         ];
 
         // associated OLA TTO due time
         $tab[] = [
             'id' => '185',
-            'table' => 'glpi_items_olas',
+            'table' => Item_Ola::getTable(),
             'field' => 'due_time',
             'name' => __('OLA') . ' ' . __('time to own') . ' - ' . __('due time'),
             'datatype'           => 'datetime',
@@ -2710,7 +2710,7 @@ JAVASCRIPT;
                     'joinparams' => [
                         'condition' => ['NEWTABLE.type' => SLM::TTO,],
                         'beforejoin' => [
-                            'table' => 'glpi_items_olas',
+                            'table' => Item_Ola::getTable(),
                             'joinparams' => [
                                 'jointype' => 'itemtype_item',
                             ],
@@ -2725,7 +2725,7 @@ JAVASCRIPT;
         // because filtering on items_olas is required, by type, we need to use a beforejoin
         $tab[] = [
             'id' => '186',
-            'table' => 'glpi_items_olas',
+            'table' => Item_Ola::getTable(),
             'field' => 'due_time',
             'name' => __('OLA') . ' ' . __('time to own') . ' - ' . __('due time + progress'),
             'massiveaction' => false,
@@ -2742,7 +2742,7 @@ JAVASCRIPT;
                     'joinparams' => [
                         'condition' => ['NEWTABLE.type' => SLM::TTO,],
                         'beforejoin' => [
-                            'table' => 'glpi_items_olas',
+                            'table' => Item_Ola::getTable(),
                             'joinparams' => [
                                 'jointype' => 'itemtype_item',
                             ],
@@ -2756,7 +2756,7 @@ JAVASCRIPT;
         // OLA TTO exceeded
         $tab[] = [
             'id'                 => '187',
-            'table'              => 'glpi_items_olas',
+            'table'              => Item_Ola::getTable(),
             'field'              => 'is_late',
             'name'               => __('OLA') . ' ' . __('time to own exceeded'),
             'datatype'           => 'bool',
@@ -2773,7 +2773,7 @@ JAVASCRIPT;
                     'joinparams' => [
                         'condition' => ['NEWTABLE.type' => SLM::TTO,],
                         'beforejoin' => [
-                            'table' => 'glpi_items_olas',
+                            'table' => Item_Ola::getTable(),
                             'joinparams' => [
                                 'jointype' => 'itemtype_item',
                             ],
@@ -2796,7 +2796,7 @@ JAVASCRIPT;
             'joinparams'         => [
                 'condition'          => ['NEWTABLE.type' => SLM::TTR],
                 'beforejoin'         => [
-                    'table'              => 'glpi_items_olas',
+                    'table'              => Item_Ola::getTable(),
                     'joinparams'         => [
                         'jointype'           => 'itemtype_item',
                     ],
@@ -2809,7 +2809,7 @@ JAVASCRIPT;
         // associated OLA TTR due time
         $tab[] = [
             'id'                 => '180',
-            'table'              => 'glpi_items_olas',
+            'table'              => Item_Ola::getTable(),
             'field'              => 'due_time',
             'name'               => __('OLA') . ' ' . __('time to resolve') . ' - ' . __('due time'),
             'massiveaction'      => false,
@@ -2826,7 +2826,7 @@ JAVASCRIPT;
                     'joinparams' => [
                         'condition' => ['NEWTABLE.type' => SLM::TTR,],
                         'beforejoin' => [
-                            'table' => 'glpi_items_olas',
+                            'table' => Item_Ola::getTable(),
                             'joinparams' => [
                                 'jointype' => 'itemtype_item',
                             ],
@@ -2840,7 +2840,7 @@ JAVASCRIPT;
         // OLA TTR due time (+ Progress)
         $tab[] = [
             'id' => '181',
-            'table' => 'glpi_items_olas',
+            'table' => Item_Ola::getTable(),
             'field' => 'due_time',
             'datatype' => 'datetime',
             'name' => __('OLA') . ' ' . __('time to resolve') . ' - ' . __('due time + progress'),
@@ -2858,7 +2858,7 @@ JAVASCRIPT;
                     'joinparams' => [
                         'condition' => ['NEWTABLE.type' => SLM::TTR,],
                         'beforejoin' => [
-                            'table' => 'glpi_items_olas',
+                            'table' => Item_Ola::getTable(),
                             'joinparams' => [
                                 'jointype' => 'itemtype_item',
                             ],
@@ -2872,7 +2872,7 @@ JAVASCRIPT;
         // OLA TTR exceeded
         $tab[] = [
             'id'                 => '182',
-            'table'              => 'glpi_items_olas',
+            'table'              => Item_Ola::getTable(),
             'field'              => 'is_late',
             'name'               => __('OLA') . ' ' . __('time to resolve exceeded'),
             'datatype'           => 'bool',
@@ -2890,7 +2890,7 @@ JAVASCRIPT;
                         'condition' => ['NEWTABLE.type' => SLM::TTR,],
                         'jointype' => 'default',
                         'beforejoin' => [
-                            'table' => 'glpi_items_olas',
+                            'table' => Item_Ola::getTable(),
                             'joinparams' => [
                                 'jointype' => 'itemtype_item',
                             ],
@@ -5055,10 +5055,10 @@ JAVASCRIPT;
             ],
         ];
 
-        $criteria['LEFT JOIN']['glpi_items_olas'] = [
+        $criteria['LEFT JOIN'][Item_Ola::getTable()] = [
             'ON' => [
                 self::getTable() => 'id',
-                'glpi_items_olas' => 'items_id',
+                Item_Ola::getTable() => 'items_id',
                 ['AND' => ['glpi_items_olas.itemtype' => ['=', Ticket::class]],
                 ],
             ],
