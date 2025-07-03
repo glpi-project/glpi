@@ -4988,7 +4988,7 @@ msgid ""
 "If you see this page when the installation has already been done, it means "
 "that the GLPI database configuration file has been removed or corrupted."
 msgstr "Falls Sie diese Seite sehen obwohl die Installation bereits abgeschlossen ist,"
-"bedeutet dies das die GPLi Datenbank-Konfigurationsdatei entfernt oder defekt ist.
+"bedeutet dies das die GPLi Datenbank-Konfigurationsdatei entfernt oder defekt ist."
 
 #: templates/install/step8.html.twig
 msgid "The installation is finished"
@@ -6351,7 +6351,7 @@ msgid ""
 "Unable to configure notifications: please configure at least one "
 "notification type using the above configuration."
 msgstr "Benachrichtigungen können nicht erstellt werden: Bitte konfiguriere "
-"mindestens einen Benachrichtigungstyp in der obigen Konfiguration.
+"mindestens einen Benachrichtigungstyp in der obigen Konfiguration."
 
 #: templates/pages/setup/crontask/crontask.html.twig src/CronTask.php:1442
 msgid "Run frequency"
