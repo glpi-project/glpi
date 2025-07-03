@@ -34,6 +34,7 @@
 
 namespace Glpi\Kernel\Listener\PostBootListener;
 
+use Glpi\Debug\Profiler;
 use Glpi\Http\RequestRouterTrait;
 use Glpi\Kernel\KernelListenerTrait;
 use Glpi\Kernel\ListenersPriority;
@@ -66,6 +67,13 @@ final class SessionStart implements EventSubscriberInterface
 
     public function onPostBoot(): void
     {
+        /**
+         * @var array $CFG_GLPI
+         */
+        global $CFG_GLPI;
+
+        Profiler::getInstance()->start('SessionStart::execute', Profiler::CATEGORY_BOOT);
+
         // Always set the session files path, even when session is not started automatically here.
         // It can indeed be started later manually and the path must be correctly set when it is done.
         if (Session::canWriteSessionFiles()) {
@@ -132,6 +140,15 @@ final class SessionStart implements EventSubscriberInterface
 
         if ($start_session) {
             Session::start();
+
+            // Copy the configuration defaults to the session
+            foreach ($CFG_GLPI['user_pref_field'] as $field) {
+                if (!isset($_SESSION["glpi$field"]) && isset($CFG_GLPI[$field])) {
+                    $_SESSION["glpi$field"] = $CFG_GLPI[$field];
+                }
+            }
         }
+
+        Profiler::getInstance()->stop('SessionStart::execute');
     }
 }
