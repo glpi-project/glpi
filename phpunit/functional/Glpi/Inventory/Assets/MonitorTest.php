@@ -1328,5 +1328,16 @@ class MonitorTest extends AbstractInventoryAsset
         $this->assertCount(1, $monitors);
         $this->assertTrue($monitor->getFromDB(reset($monitors)['items_id']));
         $this->assertSame($monitor->fields['name'], '230B8Q');
+
+        //disable rule
+        $this->assertTrue($rule->update([
+            'id' => $rules_id,
+            'is_active' => 0,
+            'entities_id' => 0,
+            'sub_type' => \RuleImportAsset::class,
+            'match' => \Rule::AND_MATCHING,
+            'condition' => 0,
+            'description' => '',
+        ]));
     }
 }
