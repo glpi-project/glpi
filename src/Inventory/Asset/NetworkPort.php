@@ -666,7 +666,15 @@ class NetworkPort extends InventoryAsset
             //not yet existing, create
             $input = (array) $port;
             $input['entities_id'] = $this->entities_id;
-            if (property_exists($port, 'mac') && (!property_exists($port, 'name') || empty($port->name) || is_numeric($port->name) || preg_match('@([\w-]+)?(\d+)/\d+(/\d+)?@', $port->name))) {
+            if (
+                property_exists($port, 'mac')
+                && (
+                    !property_exists($port, 'name')
+                    || empty($port->name)
+                    || is_numeric($port->name)
+                    || preg_match('@([\w-]+)?(\d+)/\d+(/\d+)?@', $port->name)
+                )
+            ) {
                 if ($name = $this->getNameForMac($port->mac)) {
                     $input['name'] = $name;
                 }
