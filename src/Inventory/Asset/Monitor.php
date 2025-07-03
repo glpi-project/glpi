@@ -147,7 +147,7 @@ class Monitor extends InventoryAsset
 
         foreach ($this->data as $key => $val) {
             $input = [
-                'itemtype'          => Monitor::class,
+                'itemtype'          => \Monitor::class,
                 'name'              => $val->name,
                 'serial'            => $val->serial ?? '',
                 'entities_id'       => $entities_id,
