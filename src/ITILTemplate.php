@@ -149,18 +149,6 @@ abstract class ITILTemplate extends CommonDropdown
                         = Html::computeGenericDateTimeSearch($this->predefined['time_to_own'], false);
             }
 
-            // Compute internal_time_to_resolve
-            // @todoseb à dégager du template (si c'est bien une valeur arbitraire (non liée à OLA)
-            if (isset($this->predefined['internal_time_to_resolve'])) {
-                $this->predefined['internal_time_to_resolve']
-                = Html::computeGenericDateTimeSearch($this->predefined['internal_time_to_resolve'], false);
-            }
-            // @todoseb à dégager du template (si c'est bien une valeur arbitraire (non liée à OLA)
-            if (isset($this->predefined['internal_time_to_own'])) {
-                $this->predefined['internal_time_to_own']
-                = Html::computeGenericDateTimeSearch($this->predefined['internal_time_to_own'], false);
-            }
-
             // Compute date
             if (isset($this->predefined['date'])) {
                 $this->predefined['date']
