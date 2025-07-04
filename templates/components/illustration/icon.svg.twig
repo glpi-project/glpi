@@ -31,8 +31,6 @@
  #}
 
 <svg role="img" width="{{ width }}" height="{{ height }}">
-    {% if (title ?? '') is not empty %}
-        <title>{{ title }}</title>
-    {% endif %}
+    <title>{{ title }}</title>
     <use xlink:href="{{ path(file_path) }}#{{ icon_id }}"/>
 </svg>
