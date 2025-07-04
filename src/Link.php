@@ -210,15 +210,6 @@ class Link extends CommonDBTM
         return $completions;
     }
 
-    /**
-     * Print the link form
-     *
-     * @param integer $ID ID of the item
-     * @param array $options
-     *     - target filename : where to go when done.
-     *
-     * @return void
-     **/
     public function showForm($ID, array $options = [])
     {
         TemplateRenderer::getInstance()->display('pages/setup/externallink.html.twig', [
@@ -226,6 +217,7 @@ class Link extends CommonDBTM
             'tag_options' => $this->getTagCompletions(),
             'params' => $options,
         ]);
+        return true;
     }
 
     public function rawSearchOptions()

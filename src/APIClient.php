@@ -192,14 +192,6 @@ class APIClient extends CommonDBTM
         return parent::getSpecificValueToDisplay($field, $values, $options);
     }
 
-    /**
-     * Show form
-     *
-     * @param integer $ID      Item ID
-     * @param array   $options Options
-     *
-     * @return void
-     */
     public function showForm($ID, $options = [])
     {
         $this->initForm($ID, $options);

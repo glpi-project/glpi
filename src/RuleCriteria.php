@@ -650,16 +650,6 @@ class RuleCriteria extends CommonDBChild
         return Dropdown::showFromArray($p['name'], $elements, ['value' => $p['value']]);
     }
 
-    /**
-     * Show the form to add or update a criterion
-     *
-     * @param integer $ID ID of the criteria
-     * @param array $options Extra options
-     * @phpstan-param array{parent: Rule} $options
-     *
-     * @return boolean
-     * @since 0.85
-     */
     public function showForm($ID, array $options = [])
     {
         // Yllen: you always have parent for criteria

@@ -62,18 +62,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/install/migrations/update_9.5.x_to_10.0.0/itemtype_pictures.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Method APIClient\\:\\:showForm\\(\\) with return type void returns true but should not return anything\\.$#',
-	'identifier' => 'return.void',
-	'count' => 1,
-	'path' => __DIR__ . '/src/APIClient.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Return type \\(void\\) of method APIClient\\:\\:showForm\\(\\) should be compatible with return type \\(bool\\) of method CommonDBTM\\:\\:showForm\\(\\)$#',
-	'identifier' => 'method.childReturnType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/APIClient.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Call to function method_exists\\(\\) with \\$this\\(Appliance\\) and \'prepareGroupFields\' will always evaluate to true\\.$#',
 	'identifier' => 'function.alreadyNarrowedType',
 	'count' => 1,
@@ -938,12 +926,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Contract.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Return type \\(void\\) of method ContractCost\\:\\:showForm\\(\\) should be compatible with return type \\(bool\\) of method CommonDBTM\\:\\:showForm\\(\\)$#',
-	'identifier' => 'method.childReturnType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/ContractCost.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Function preg_match is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\preg_match;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
 	'identifier' => 'theCodingMachineSafe.function',
 	'count' => 1,
@@ -1318,12 +1300,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Left side of && is always true\\.$#',
 	'identifier' => 'booleanAnd.leftAlwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Document.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Return type \\(void\\) of method Document\\:\\:showForm\\(\\) should be compatible with return type \\(bool\\) of method CommonDBTM\\:\\:showForm\\(\\)$#',
-	'identifier' => 'method.childReturnType',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Document.php',
 ];
@@ -1732,12 +1708,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^PHPDoc tag @var with type array is not subtype of native type array\\<int\\|string, array\\<mixed\\>\\|string\\>\\.$#',
 	'identifier' => 'varTag.nativeType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Glpi/Api/APIRest.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Return type \\(void\\) of method Glpi\\\\Api\\\\APIRest\\:\\:parseIncomingParams\\(\\) should be compatible with return type \\(string\\) of method Glpi\\\\Api\\\\API\\:\\:parseIncomingParams\\(\\)$#',
-	'identifier' => 'method.childReturnType',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Glpi/Api/APIRest.php',
 ];
@@ -4304,12 +4274,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Group.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Return type \\(void\\) of method Group\\:\\:showForm\\(\\) should be compatible with return type \\(bool\\) of method CommonDropdown\\:\\:showForm\\(\\)$#',
-	'identifier' => 'method.childReturnType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Group.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Property HTMLTableGroup\\:\\:\\$new_headers is never read, only written\\.$#',
 	'identifier' => 'property.onlyWritten',
 	'count' => 1,
@@ -4808,12 +4772,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/KnowbaseItem.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Return type \\(void\\) of method KnowbaseItem\\:\\:showForm\\(\\) should be compatible with return type \\(bool\\) of method CommonDBTM\\:\\:showForm\\(\\)$#',
-	'identifier' => 'method.childReturnType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/KnowbaseItem.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^PHPDoc tag @return has invalid value \\(true;\\)\\: Unexpected token ";", expected TOKEN_HORIZONTAL_WS at offset 126 on line 6$#',
 	'identifier' => 'phpDoc.parseError',
 	'count' => 1,
@@ -4864,12 +4822,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^PHPDoc tag @phpstan\\-return has invalid value \\(array\\<int, \\{name\\: string, type\\: string\\}\\>\\)\\: Unexpected token "\\{", expected type at offset 119 on line 5$#',
 	'identifier' => 'phpDoc.parseError',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Link.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Return type \\(void\\) of method Link\\:\\:showForm\\(\\) should be compatible with return type \\(bool\\) of method CommonDBTM\\:\\:showForm\\(\\)$#',
-	'identifier' => 'method.childReturnType',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Link.php',
 ];
@@ -5100,12 +5052,6 @@ $ignoreErrors[] = [
 	'identifier' => 'instanceof.alwaysFalse',
 	'count' => 1,
 	'path' => __DIR__ . '/src/NetworkEquipment.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Return type \\(void\\) of method NetworkName\\:\\:showForm\\(\\) should be compatible with return type \\(bool\\) of method CommonDBTM\\:\\:showForm\\(\\)$#',
-	'identifier' => 'method.childReturnType',
-	'count' => 1,
-	'path' => __DIR__ . '/src/NetworkName.php',
 ];
 $ignoreErrors[] = [
 	'message' => '#^Call to an undefined method CommonGLPI\\:\\:isDynamic\\(\\)\\.$#',
@@ -5984,12 +5930,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Reservation.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Default value of the parameter \\#2 \\$options \\(array\\{\\}\\) of method Reservation\\:\\:showForm\\(\\) is incompatible with type array\\{item\\: array\\<int, int\\>, begin\\: string, end\\: string\\}\\.$#',
-	'identifier' => 'parameter.defaultValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/Reservation.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Default value of the parameter \\#3 \\$is_deleted \\(int\\) of method Reservation\\:\\:getMassiveActionsForItemtype\\(\\) is incompatible with type bool\\.$#',
 	'identifier' => 'parameter.defaultValue',
 	'count' => 1,
@@ -6027,12 +5967,6 @@ $ignoreErrors[] = [
 ];
 $ignoreErrors[] = [
 	'message' => '#^Default value of the parameter \\#1 \\$options \\(array\\{\\}\\) of method RuleAction\\:\\:dropdownActions\\(\\) is incompatible with type array\\{subtype\\: string, name\\: string, field\\: string, value\\?\\: string, alreadyused\\?\\: bool, display\\?\\: bool\\}\\.$#',
-	'identifier' => 'parameter.defaultValue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/RuleAction.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Default value of the parameter \\#2 \\$options \\(array\\{\\}\\) of method RuleAction\\:\\:showForm\\(\\) is incompatible with type array\\{parent\\: Rule\\}\\.$#',
 	'identifier' => 'parameter.defaultValue',
 	'count' => 1,
 	'path' => __DIR__ . '/src/RuleAction.php',
@@ -6082,12 +6016,6 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Comparison operation "\\>\\=" between int\\<0, max\\> and 0 is always true\\.$#',
 	'identifier' => 'greaterOrEqual.alwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/RuleCriteria.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Default value of the parameter \\#2 \\$options \\(array\\{\\}\\) of method RuleCriteria\\:\\:showForm\\(\\) is incompatible with type array\\{parent\\: Rule\\}\\.$#',
-	'identifier' => 'parameter.defaultValue',
 	'count' => 1,
 	'path' => __DIR__ . '/src/RuleCriteria.php',
 ];
@@ -6449,12 +6377,6 @@ $ignoreErrors[] = [
 	'message' => '#^Function strtotime is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\strtotime;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
 	'identifier' => 'theCodingMachineSafe.function',
 	'count' => 10,
-	'path' => __DIR__ . '/src/Ticket.php',
-];
-$ignoreErrors[] = [
-	'message' => '#^Method Ticket\\:\\:showForm\\(\\) should return bool but empty return statement found\\.$#',
-	'identifier' => 'return.empty',
-	'count' => 1,
 	'path' => __DIR__ . '/src/Ticket.php',
 ];
 $ignoreErrors[] = [

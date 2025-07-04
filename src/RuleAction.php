@@ -672,15 +672,6 @@ class RuleAction extends CommonDBChild
         }
     }
 
-    /**
-     * Show the form to add or update an action
-     * @param integer $ID ID of the action
-     * @param array $options Extra options
-     * @phpstan-param array{parent: Rule} $options
-     *
-     * @return boolean
-     * @since 0.85
-     **/
     public function showForm($ID, array $options = [])
     {
         // Yllen: you always have parent for action

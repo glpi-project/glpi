@@ -341,16 +341,6 @@ class Document extends CommonDBTM
         return $input;
     }
 
-    /**
-     * Print the document form
-     *
-     * @param integer $ID ID of the item
-     * @param array $options
-     *     - target filename : where to go when done.
-     *     - withtemplate boolean : template or basic item
-     *
-     * @return void
-     **/
     public function showForm($ID, array $options = [])
     {
         if ($ID > 0) {
@@ -365,6 +355,8 @@ class Document extends CommonDBTM
                 'canedit' => $this->canUpdateItem(),
             ],
         ]);
+
+        return true;
     }
 
     /**

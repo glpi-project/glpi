@@ -3582,7 +3582,7 @@ JAVASCRIPT;
     {
         // show full create form only to tech users
         if ($ID <= 0 && Session::getCurrentInterface() !== "central") {
-            return;
+            return false;
         }
 
         if (isset($options['_add_fromitem']) && isset($options['itemtype']) && is_a($options['itemtype'], CommonDBTM::class, true)) {
@@ -3599,7 +3599,7 @@ JAVASCRIPT;
 
         if (static::isNewID($ID)) {
             // Override some values only for the initial load of a new ticket
-            // Override defaut values from projecttask if needed
+            // Override default values from projecttask if needed
             if (isset($options['_projecttasks_id'])) {
                 $pt = new ProjectTask();
                 if ($pt->getFromDB($options['_projecttasks_id'])) {
@@ -3607,7 +3607,7 @@ JAVASCRIPT;
                     $options['content'] = $pt->getField('content');
                 }
             }
-            // Override defaut values from followup if needed
+            // Override default values from followup if needed
             if (isset($options['_promoted_fup_id']) && !$options['_skip_promoted_fields']) {
                 $fup = new ITILFollowup();
                 if ($fup->getFromDB($options['_promoted_fup_id'])) {
@@ -3629,7 +3629,7 @@ JAVASCRIPT;
                 //Allow overriding the default values
                 $options['_skip_promoted_fields'] = true;
             }
-            // Override defaut values from task if needed
+            // Override default values from task if needed
             if (isset($options['_promoted_task_id']) && !$options['_skip_promoted_fields']) {
                 $tickettask = new TicketTask();
                 if ($tickettask->getFromDB($options['_promoted_task_id'])) {
@@ -3671,7 +3671,7 @@ JAVASCRIPT;
                 && !in_array($this->fields["entities_id"], $userentities)
             ) {
                 // If entity is not in the list of user's entities,
-                // then use as default value the first value of the user's entites list
+                // then use as default value the first value of the user's entities list
                 $first_entity = current($userentities);
                 $this->fields["entities_id"] = $first_entity;
                 // Pass to values
@@ -3810,7 +3810,7 @@ JAVASCRIPT;
      * @param integer $start
      * @param string  $status             (default ''process)
      * @param boolean $showgrouptickets   (true by default)
-     * @param boolean $display            set to false to returne html
+     * @param boolean $display            set to false to return html
      */
     public static function showCentralList($start, $status = "process", bool $showgrouptickets = true, bool $display = true)
     {
