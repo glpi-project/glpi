@@ -275,7 +275,20 @@ class Profile extends CommonDBTM implements LinkableToTilesInterface
         global $DB;
 
         ProfileRight::fillProfileRights($this->fields['id']);
-        $this->profileRight = null;
+        if (count($this->profileRight) > 0) {
+            // Delegate custom assets specific rights handling to `AssetDefinitionManager`.
+            $definitions = AssetDefinitionManager::getInstance()->getDefinitions();
+            foreach ($definitions as $definition) {
+                $asset_rightname = $definition->getCustomObjectRightname();
+                if (array_key_exists($asset_rightname, $this->profileRight)) {
+                    $definition->setProfileRights($this->getID(), $this->profileRight[$asset_rightname]);
+                    unset($this->profileRight[$asset_rightname]);
+                }
+            }
+
+            ProfileRight::updateProfileRights($this->getID(), $this->profileRight);
+            $this->profileRight = [];
+        }
 
         if (isset($this->fields['is_default']) && ((int) $this->fields["is_default"] === 1)) {
             $DB->update(
