@@ -41,6 +41,12 @@ use Glpi\Inventory\Conf;
 use Glpi\Inventory\Inventory;
 use Glpi\Plugin\Hooks;
 use GuzzleHttp\Psr7\Response;
+use Safe\DateTime;
+
+use function Safe\json_decode;
+use function Safe\json_encode;
+use function Safe\preg_match;
+use function Safe\preg_replace;
 
 /**
  * @since 10.0.0
@@ -698,9 +704,6 @@ class Agent extends CommonDBTM
      */
     public function requestAgent($endpoint): Response
     {
-        /** @var array $CFG_GLPI */
-        global $CFG_GLPI;
-
         if (self::$found_address !== false) {
             $addresses = [self::$found_address];
         } else {
@@ -731,7 +734,7 @@ class Agent extends CommonDBTM
             throw $exception;
         }
 
-        return $response;
+        return $response; // @phpstan-ignore return.type
     }
 
     /**

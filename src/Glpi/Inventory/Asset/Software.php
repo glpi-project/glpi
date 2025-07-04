@@ -47,6 +47,8 @@ use RuleDictionnarySoftwareCollection;
 use Software as GSoftware;
 use SoftwareVersion;
 
+use function Safe\json_encode;
+
 class Software extends InventoryAsset
 {
     public const SEPARATOR = '$$$$';
@@ -436,7 +438,7 @@ class Software extends InventoryAsset
             }
 
             if (isset($db_software[$key_w_version])) {
-                // software exist with the same version
+                // software exists with the same version
                 unset($this->data[$k]);
                 unset($db_software[$key_w_version]);
                 unset($db_software_wo_version[$key_wo_version]);
@@ -468,7 +470,14 @@ class Software extends InventoryAsset
         // track deleted versions (without those which version changed)
         $this->deleted_versions = array_values($db_software_wo_version);
 
-        if (count($db_software) > 0 && (!$this->main_asset || !$this->main_asset->isPartial() || $this->main_asset->isPartial() && $count_import)) {
+        if (
+            count($db_software) > 0
+            && (
+                !$this->main_asset
+                || $this->main_asset->isPartial() && $count_import
+                || !$this->main_asset->isPartial()
+            )
+        ) {
             //not found version means soft has been removed or updated, drop it
             $DB->delete(
                 'glpi_items_softwareversions',

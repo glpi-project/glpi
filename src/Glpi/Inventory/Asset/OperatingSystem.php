@@ -44,6 +44,8 @@ use RuleDictionnaryOperatingSystemEditionCollection;
 use RuleDictionnaryOperatingSystemServicePackCollection;
 use RuleDictionnaryOperatingSystemVersionCollection;
 
+use function Safe\strtotime;
+
 class OperatingSystem extends InventoryAsset
 {
     protected $extra_data = ['hardware' => null];

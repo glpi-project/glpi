@@ -45,6 +45,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
+use function Safe\file_get_contents;
+
 final class InventoryController extends AbstractController
 {
     public static bool $is_running = false;

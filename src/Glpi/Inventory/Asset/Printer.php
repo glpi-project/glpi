@@ -43,6 +43,9 @@ use RuleDictionnaryPrinterCollection;
 use Printer as GPrinter;
 use RuleImportAssetCollection;
 
+use function Safe\preg_match;
+use function Safe\preg_replace;
+
 class Printer extends InventoryAsset
 {
     public function prepare(): array

@@ -44,6 +44,10 @@ use PrinterModel;
 use PrinterType;
 use RuleDictionnaryPrinterCollection;
 
+use function Safe\preg_match;
+use function Safe\preg_replace;
+use function Safe\strtotime;
+
 class Printer extends NetworkEquipment
 {
     private $counters;

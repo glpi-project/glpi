@@ -38,6 +38,8 @@ namespace Glpi\Inventory\Asset;
 
 use Glpi\Inventory\Conf;
 
+use function Safe\preg_match;
+
 class Memory extends Device
 {
     public function prepare(): array
