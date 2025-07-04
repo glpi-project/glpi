@@ -94,7 +94,7 @@
             </div>
         {% endif %}
     </span>
-    {% if (caldav_item_url ?? '') is not empty and filter_data.type == 'group_users' %}
+    {% if (caldav_url ?? '') is not empty and filter_data.type == 'group_users' %}
         <ul class="group_listofusers filters">
             {% for user_key, user_data in filter_data.users %}
                 {% do call('Planning::showSingleLinePlanningFilter', [user_key, user_data, {
