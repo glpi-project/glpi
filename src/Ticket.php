@@ -5451,6 +5451,9 @@ JAVASCRIPT;
         return parent::getValueToSelect($field_id_or_search_options, $name, $values, $options);
     }
 
+    /**
+     * @return void
+     */
     public function showStatsDates()
     {
         $now                      = time();
@@ -5463,11 +5466,28 @@ JAVASCRIPT;
             $date_takeintoaccount = $date_creation + $this->fields['takeintoaccount_delay_stat'];
         }
         $time_to_own              = strtotime($this->fields['time_to_own'] ?? '');
-        // @todo stats|dates sur ola internal_time_to_resolve & internal_time_to_own are removed from ticket.
-        // a ticket can have multiple ola.
-        // what should we do with this ? remove the field, add multiples data ?
-        // $internal_time_to_own     = strtotime($this->fields['internal_time_to_own'] ?? '');
-        // $internal_time_to_resolve = strtotime($this->fields['internal_time_to_resolve'] ?? '');
+
+        $dates_olas = [];
+        $ola = new OLA();
+        foreach ($this->getOlasData() as $ola_data) {
+            $ola->getFromDB($ola_data['olas_id']);
+
+            $due_time = $ola_data['due_time'] ?? '';
+            $due_time = strtotime($due_time);
+            $key = $due_time . '_ola_' . $ola_data['olas_id'] . '_due_time';
+            $label = __('OLA') . ' ' . OLA::getOneTypeName($ola_data['type']) . ' ' . $ola_data['name'] . ' ' . __('due time');
+            $label .= "<a href=\"{$ola->getLinkURL()}\"><i class=\"ti ti-stopwatch slt\" title=\"{$ola->getName()}\"></i></a>";
+
+            // @todoseb utiliser le champs is_late quand ça sera implémenté
+            $class = (strtotime($ola_data['end_time'] ?? Session::getCurrentTime()) > $due_time) ? 'passed' : 'checked';
+
+            $dates_olas[$key] = [
+                'timestamp' => $due_time,
+                'label'     => $label,
+                'class'     => $class,
+            ];
+
+        }
         $time_to_resolve          = strtotime($this->fields['time_to_resolve'] ?? '');
         $solvedate                = strtotime($this->fields['solvedate'] ?? '');
         $closedate                = strtotime($this->fields['closedate'] ?? '');
@@ -5475,11 +5495,7 @@ JAVASCRIPT;
         $goal_solvedate           = ($solvedate > 0 ? $solvedate : $now);
 
         $sla = new SLA();
-        $ola = new OLA();
-        $sla_tto_link =
-        $sla_ttr_link =
-        $ola_tto_link =
-        $ola_ttr_link = "";
+        $sla_tto_link = $sla_ttr_link = "";
 
         if ($sla->getFromDB($this->fields['slas_id_tto'])) {
             $sla_tto_link = "<a href='" . $sla->getLinkURL() . "'>
@@ -5489,17 +5505,9 @@ JAVASCRIPT;
             $sla_ttr_link = "<a href='" . $sla->getLinkURL() . "'>
                           <i class='ti ti-stopwatch slt' title='" . $sla->getName() . "'></i></a>";
         }
-        // @todo link to ola removed, we have multiples ola. : we can just let it or add multiple links
-        //        if ($ola->getFromDB($this->fields['olas_id_tto'])) {
-        //            $ola_tto_link = "<a href='" . $ola->getLinkURL() . "'>
-        //                          <i class='ti ti-stopwatch slt' title='" . $ola->getName() . "'></i></a>";
-        //        }
-        //        if ($ola->getFromDB($this->fields['olas_id_ttr'])) {
-        //            $ola_ttr_link = "<a href='" . $ola->getLinkURL() . "'>
-        //                          <i class='ti ti-stopwatch slt' title='" . $ola->getName() . "'></i></a>";
-        //        }
 
-        $dates = [
+        $dates = $dates_olas;
+        $dates = array_merge($dates, [
             $date_creation . '_date_creation' => [
                 'timestamp' => $date_creation,
                 'label'     => __('Opening date'),
@@ -5510,14 +5518,6 @@ JAVASCRIPT;
                 'label'     => __('Take into account'),
                 'class'     => 'checked',
             ],
-            //            $internal_time_to_own . '_internal_time_to_own' => [
-            //                'timestamp' => $internal_time_to_own,
-            //                'label'     => __('Internal time to own') . " " . $ola_tto_link,
-            //                'class'     => ($internal_time_to_own < $goal_takeintoaccount
-            //                               ? 'passed' : '') . " " .
-            //                           ($date_takeintoaccount != ''
-            //                               ? 'checked' : ''),
-            //            ],
             $time_to_own . '_time_to_own' => [
                 'timestamp' => $time_to_own,
                 'label'     => __('Time to own') . " " . $sla_tto_link,
@@ -5526,14 +5526,6 @@ JAVASCRIPT;
                            ($date_takeintoaccount != ''
                                ? 'checked' : ''),
             ],
-            //            $internal_time_to_resolve . '_internal_time_to_resolve' => [
-            //                'timestamp' => $internal_time_to_resolve,
-            //                'label'     => __('Internal time to resolve') . " " . $ola_ttr_link,
-            //                'class'     => ($internal_time_to_resolve < $goal_solvedate
-            //                               ? 'passed' : '') . " " .
-            //                           ($solvedate != ''
-            //                               ? 'checked' : ''),
-            //            ],
             $time_to_resolve . '_time_to_resolve' => [
                 'timestamp' => $time_to_resolve,
                 'label'     => __('Time to resolve') . " " . $sla_ttr_link,
@@ -5552,7 +5544,7 @@ JAVASCRIPT;
                 'label'     => __('Closing date'),
                 'class'     => 'end',
             ],
-        ];
+        ]);
 
         Html::showDatesTimelineGraph([
             'title'   => _n('Date', 'Dates', Session::getPluralNumber()),
@@ -6404,7 +6396,7 @@ JAVASCRIPT;
      * Get currently associated Ola from database
      * Data from ola + item_ola + custom data
      *
-     * @return array
+     * @return array<array{olas_id: int, items_olas_id: int, name: string, entities_id: int, is_recursive: bool, type: int, comment: string, number_time: int, use_ticket_calendar: bool, calendars_id: int, date_mod: string, definition_time: string, end_of_working_day: string, date_creation: string, slms_id: int, due_time: string, end_time: string, class: string, item: Ticket, nextaction: false|OlaLevel_Ticket|SlaLevel_Ticket, level: false|\LevelAgreementLevel, group_name: string}>
     */
     public function getOlasData(): array
     {
