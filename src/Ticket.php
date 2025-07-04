@@ -4868,6 +4868,7 @@ JAVASCRIPT;
      * @param CommonDBTM $item         CommonDBTM object
      * @param integer    $withtemplate (default 0)
      *
+     * @todo looks like this method is not used anymore
      * @return void|false (display a table)
      **/
     public static function showListForItem(CommonDBTM $item, $withtemplate = 0)
@@ -4896,8 +4897,7 @@ JAVASCRIPT;
                 break;
 
             case OLA::class:
-                // @todoseb trouver une façon de classer les tickets par échéance d'OLA - on doit juste pouvoir dégager ce code
-                //                $criteria['ORDERBY'] = 'glpi_tickets.internal_time_to_resolve DESC';
+                $criteria['ORDERBY'] = 'glpi_items_olas.due_time DESC';
                 break;
 
             case Group::class:
