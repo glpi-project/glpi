@@ -1080,7 +1080,7 @@ final class SQLProvider implements SearchProviderInterface
                 if ($plug = isPluginItemType($itemtype)) {
                     $default_where = Plugin::doOneHook($plug['plugin'], Hooks::AUTO_ADD_DEFAULT_WHERE, $itemtype);
                     if (!empty($default_where)) {
-                        $criteria = [new QueryExpression($default_where)];
+                        $criteria = is_array($default_where) ? $default_where : [new QueryExpression($default_where)];
                     }
                 }
                 break;
@@ -1095,7 +1095,6 @@ final class SQLProvider implements SearchProviderInterface
         }
 
         /* Hook to restrict user right on current itemtype */
-        //TODO Plugin call works on raw SQL, should use criteria array instead
         [$itemtype, $criteria] = Plugin::doHookFunction(Hooks::ADD_DEFAULT_WHERE, [$itemtype, $criteria]);
         return $criteria;
     }
@@ -1367,7 +1366,7 @@ final class SQLProvider implements SearchProviderInterface
                 $searchtype
             );
             if (!empty($out)) {
-                return [new QueryExpression($out)];
+                return is_array($out) ? $out : [new QueryExpression($out)];
             }
         }
 
@@ -1778,7 +1777,7 @@ final class SQLProvider implements SearchProviderInterface
                     $searchtype
                 );
                 if (!empty($out)) {
-                    return [new QueryExpression($out)];
+                    return is_array($out) ? $out : [new QueryExpression($out)];
                 }
             }
         }
@@ -2834,11 +2833,11 @@ final class SQLProvider implements SearchProviderInterface
                 $hook_function = 'plugin_' . strtolower($plugin_name) . '_' . Hooks::AUTO_ADD_LEFT_JOIN;
                 $hook_closure  = static function () use ($hook_function, $itemtype, $ref_table, $new_table, $linkfield, &$already_link_tables) {
                     if (is_callable($hook_function)) {
-                        return self::parseJoinString($hook_function($itemtype, $ref_table, $new_table, $linkfield, $already_link_tables) ?? '');
+                        return $hook_function($itemtype, $ref_table, $new_table, $linkfield, $already_link_tables);
                     }
                     return '';
                 };
-                $specific_leftjoin_criteria = self::parseJoinString(Plugin::doOneHook($plugin_name, $hook_closure) ?? '');
+                $specific_leftjoin_criteria = self::parseJoinString(Plugin::doOneHook($plugin_name, $hook_closure));
             }
         }
         if (!empty($linkfield)) {
@@ -3809,9 +3808,7 @@ final class SQLProvider implements SearchProviderInterface
                 "{$itemtype}_{$ID}"
             );
             if (!empty($out)) {
-                return [
-                    new QueryExpression($out),
-                ];
+                return is_array($out) ? $out : [new QueryExpression($out)];
             }
         }
 
@@ -3831,9 +3828,7 @@ final class SQLProvider implements SearchProviderInterface
                     "{$itemtype}_{$ID}"
                 );
                 if (!empty($out)) {
-                    return [
-                        new QueryExpression($out),
-                    ];
+                    return is_array($out) ? $out : [new QueryExpression($out)];
                 }
             }
         }
