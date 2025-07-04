@@ -135,6 +135,6 @@ TWIG;
     #[Override]
     public function isAllowedForUnauthenticatedAccess(): bool
     {
-        return true;
+        return false;
     }
 }
