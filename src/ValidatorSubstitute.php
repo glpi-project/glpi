@@ -48,7 +48,7 @@ final class ValidatorSubstitute extends CommonDBTM
             case Preference::class:
                 $user = User::getById(Session::getLoginUserID());
                 $nb = $_SESSION['glpishow_count_on_tabs'] ? count($user->getSubstitutes()) : 0;
-                return self::createTabEntry(self::getTypeName($nb), $nb, $item::getType());
+                return self::createTabEntry(self::getTypeName(Session::getPluralNumber()), $nb, $item::getType());
         }
 
         return '';
@@ -192,6 +192,9 @@ final class ValidatorSubstitute extends CommonDBTM
         $success = true;
 
         if (isset($input['substitutes'])) {
+            if (empty($input['substitutes'])) {
+                $input['substitutes'] = [];
+            }
             if (in_array($input['users_id'], $input['substitutes'])) {
                 Session::addMessageAfterRedirect(__s('A user cannot be their own substitute.'), true, ERROR);
                 return false;
