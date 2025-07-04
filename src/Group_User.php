@@ -487,6 +487,7 @@ class Group_User extends CommonDBRelation
             'is_tab' => true,
             'use_pager' => true,
             'nosort' => true,
+            'items_id' => $ID,
             'filters' => $_GET['filters'] ?? [],
             'columns' => [
                 'user' => [

@@ -783,7 +783,9 @@ class Group extends CommonTreeDropdown
         }
 
         $columns = [
-            'type' => _n('Type', 'Types', 1),
+            'type' => [
+                'label' =>_n('Type', 'Types', 1),
+            ],
             'name' => [
                 'label' => __('Name'),
                 'no_filter' => true,
@@ -799,6 +801,7 @@ class Group extends CommonTreeDropdown
             'is_tab' => true,
             'start' => $start,
             'limit' => $_SESSION['glpilist_limit'],
+            'items_id' => $ID,
             'filters' => $filters,
             'columns' => $columns,
             'formatters' => [
