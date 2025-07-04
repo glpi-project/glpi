@@ -32,9 +32,9 @@
 
 {% set anonymous = session('glpiactiveprofile') is null %}
 
-{% set is_vertical = get_page_layout() == 'vertical' %}
+{% set is_vertical = not anonymous and get_page_layout() == 'vertical' %}
 {% set is_horizontal = not is_vertical %}
-{% set is_helpdesk = get_current_interface() == 'helpdesk' %}
+{% set is_helpdesk = anonymous or get_current_interface() == 'helpdesk' %}
 
 <body class="{{ user_pref('fold_menu') and is_vertical ? 'navbar-collapsed' : '' }} {{ is_vertical ? 'vertical-layout' : 'horizontal-layout' }} {{ is_debug_active ? 'debug-active' : '' }} {{ is_helpdesk ? 'helpdesk' : 'central' }}">
    {% if call('DBConnection::isDbAvailable') and constant('GLPI_SKIP_UPDATES') is defined and not call('Update::isDbUpToDate') %}
@@ -115,12 +115,14 @@
                   {{ include('layout/parts/user_header.html.twig') }}
                </div>
 
+               {% if not anonymous %}
                <div class="collapse navbar-collapse justify-content-center" id="navbar-menu">
                   {{ include('layout/parts/menu.html.twig') }}
                   <span class="ms-xl-2 d-inline-block mt-2 mt-xl-2">
                      {{ include('layout/parts/goto_button.html.twig') }}
                   </span>
                </div>
+               {% endif %}
             {% endif %}
 
             <div class="ms-md-4 d-none d-lg-block">
