@@ -251,23 +251,25 @@
                 <p class="empty-subtitle text-secondary">
                     {{ __("Your form has been submitted successfully.") }}
                 </p>
-                <div class="mt-3 d-flex">
-                    {% if get_current_interface() == 'central' %}
-                        <a class="btn btn-outline-secondary me-2" href="{{ path('/ServiceCatalog') }}">
-                            <i class="ti ti-library me-1"></i>
-                            <span>{{ __("Go back to service catalog") }}</span>
+                {% if not unauthenticated_user %}
+                    <div class="mt-3 d-flex">
+                        {% if get_current_interface() == 'central' %}
+                            <a class="btn btn-outline-secondary me-2" href="{{ path('/ServiceCatalog') }}">
+                                <i class="ti ti-library me-1"></i>
+                                <span>{{ __("Go back to service catalog") }}</span>
+                            </a>
+                        {% else %}
+                            <a class="btn btn-outline-secondary me-2" href="{{ path('/Helpdesk') }}">
+                                <i class="ti ti-home me-1"></i>
+                                <span>{{ __("Take me home") }}</span>
+                            </a>
+                        {% endif %}
+                        <a class="btn btn-primary" href="{{ path('/front/ticket.php?' ~ my_tickets_url_param) }}">
+                            <i class="ti ti-article me-1"></i>
+                            <span>{{ __("See my tickets") }}</span>
                         </a>
-                    {% else %}
-                        <a class="btn btn-outline-secondary me-2" href="{{ path('/Helpdesk') }}">
-                            <i class="ti ti-home me-1"></i>
-                            <span>{{ __("Take me home") }}</span>
-                        </a>
-                    {% endif %}
-                    <a class="btn btn-primary" href="{{ path('/front/ticket.php?' ~ my_tickets_url_param) }}">
-                        <i class="ti ti-article me-1"></i>
-                        <span>{{ __("See my tickets") }}</span>
-                    </a>
-                </div>
+                    </div>
+                {% endif %}
             </div>
         </div>
     </form>
