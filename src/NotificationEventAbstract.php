@@ -108,6 +108,19 @@ abstract class NotificationEventAbstract implements NotificationEventInterface
                             //If ther user's language is the same as the template's one
                             $options['item'] = $item;
 
+                            // Reset template cache to ensure each user gets a fresh template
+                            // with their specific data (important for plugins that modify data per user)
+                            $template->resetComputedTemplates();
+
+                            // Create a new NotificationTarget instance for each user to ensure
+                            // plugin hooks are called with user-specific context
+                            $user_specific_target = clone $notificationtarget;
+                            $user_specific_target->clearAddressesList();
+                            $user_specific_target->addToRecipientsList($users_infos);
+
+                            // Explicitly reset target data to ensure plugin hooks generate fresh data per user
+                            $user_specific_target->data = [];
+
                             // set timezone from user
                             // as we work on a copy of the item object, no reload is required after
                             if (
@@ -124,7 +137,7 @@ abstract class NotificationEventAbstract implements NotificationEventInterface
 
                             if (
                                 $tid = $template->getTemplateByLanguage(
-                                    $notificationtarget,
+                                    $user_specific_target,
                                     $users_infos,
                                     $event,
                                     $options
@@ -133,7 +146,7 @@ abstract class NotificationEventAbstract implements NotificationEventInterface
                                 //Send notification to the user
                                 if ($label == '') {
                                     $send_data = $template->getDataToSend(
-                                        $notificationtarget,
+                                        $user_specific_target,
                                         $tid,
                                         $key,
                                         $users_infos,
@@ -144,6 +157,7 @@ abstract class NotificationEventAbstract implements NotificationEventInterface
                                     $send_data['_items_id']                 = method_exists($item, "getID")
                                         ? max($item->getID(), 0)
                                         : 0;
+
                                     $send_data['_entities_id']              = $entity;
                                     $send_data['mode']                      = $data['mode'];
                                     $send_data['event']                     = $event;

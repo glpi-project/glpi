@@ -259,6 +259,17 @@ class NotificationTemplate extends CommonDBTM
         $tid  = $language;
         $tid .= serialize($additionnaloption);
 
+        // Include user-specific data in cache key to ensure each user gets unique data
+        // This is crucial for plugins that generate user-specific tokens or data
+        if (isset($user_infos['users_id'])) {
+            $tid .= '_user_' . $user_infos['users_id'];
+        } elseif (isset($user_infos['email'])) {
+            $tid .= '_email_' . $user_infos['email'];
+        } else {
+            // Fallback: use a unique identifier to avoid cache collision
+            $tid .= '_unique_' . uniqid();
+        }
+
         $tid  = sha1($tid);
 
         if (!isset($this->templates_by_languages[$tid])) {
