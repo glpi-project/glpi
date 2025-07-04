@@ -35,6 +35,8 @@
 
 use Glpi\Exception\Http\BadRequestHttpException;
 
+use function Safe\json_encode;
+
 header("Content-Type: application/json; charset=UTF-8");
 Html::header_nocache();
 

@@ -37,6 +37,8 @@
  * @var \Migration $migration
  */
 
+use function Safe\preg_replace;
+
 $links = $DB->request([
     'SELECT' => ['id', 'link', 'data'],
     'FROM'   => 'glpi_links',

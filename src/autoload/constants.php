@@ -34,6 +34,8 @@
  */
 
 use function Safe\define;
+use function Safe\preg_replace;
+use function Safe\sha1_file;
 
 define('GLPI_ROOT', dirname(__DIR__, 2));
 

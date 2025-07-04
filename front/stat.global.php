@@ -41,6 +41,9 @@ use Glpi\Stat\Data\Sglobal\StatDataSatisfaction;
 use Glpi\Stat\Data\Sglobal\StatDataTicketAverageTime;
 use Glpi\Stat\Data\Sglobal\StatDataTicketNumber;
 
+use function Safe\mktime;
+use function Safe\preg_match;
+
 Html::header(__('Statistics'), '', "helpdesk", "stat");
 
 Session::checkRight("statistic", READ);

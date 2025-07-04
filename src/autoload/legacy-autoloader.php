@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use function Safe\spl_autoload_register;
+
 /**
  * Classes loader
  *

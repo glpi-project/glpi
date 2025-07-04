@@ -37,6 +37,9 @@ use Glpi\Dashboard\Grid;
 use Glpi\Error\ErrorHandler;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 
+use function Safe\json_decode;
+use function Safe\json_encode;
+
 if (!isset($_REQUEST["action"])) {
     return;
 }

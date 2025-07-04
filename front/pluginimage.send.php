@@ -47,6 +47,9 @@ require_once(__DIR__ . '/_check_webserver_config.php');
 use Glpi\Event;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 
+use function Safe\readfile;
+use function Safe\realpath;
+
 /** @var array $CFG_GLPI */
 global $CFG_GLPI;
 

@@ -33,6 +33,7 @@
  * ---------------------------------------------------------------------
  */
 
+use function Safe\preg_match;
 
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();

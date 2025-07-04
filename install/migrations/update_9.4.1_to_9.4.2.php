@@ -34,6 +34,8 @@
 
 use Glpi\DBAL\QueryExpression;
 
+use function Safe\preg_replace;
+
 /**
  * Update from 9.4.1 to 9.4.2
  *

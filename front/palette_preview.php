@@ -37,8 +37,12 @@ require_once(__DIR__ . '/_check_webserver_config.php');
 
 use Glpi\UI\ThemeManager;
 
+use function Safe\base64_decode;
+use function Safe\filesize;
+use function Safe\readfile;
+
 $theme = ThemeManager::getInstance()->getTheme($_GET['key']);
-$preview = $theme !== null ? $theme->getPreviewPath(false) : null;
+$preview = $theme?->getPreviewPath(false);
 
 header_remove('Pragma');
 header(sprintf('Content-Disposition: attachment; filename="%s.png"', basename($theme->getKey())));

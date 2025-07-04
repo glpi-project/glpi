@@ -43,6 +43,8 @@
 
 use Glpi\DBAL\QueryExpression;
 
+use function Safe\json_encode;
+
 $migration->addField('glpi_domains', 'is_template', 'bool', [
     'after' => 'comment',
 ]);

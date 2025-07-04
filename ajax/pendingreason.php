@@ -36,6 +36,8 @@
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\BadRequestHttpException;
 
+use function Safe\json_encode;
+
 // Direct access to file
 
 header("Content-Type: application/json; charset=UTF-8");

@@ -38,6 +38,8 @@ require_once(__DIR__ . '/_check_webserver_config.php');
 use Glpi\Event;
 use Glpi\Exception\Http\AccessDeniedHttpException;
 
+use function Safe\json_decode;
+
 /**
  * @var array $CFG_GLPI
  * @var \DBmysql $DB

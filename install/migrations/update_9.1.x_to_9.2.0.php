@@ -238,9 +238,7 @@ function update91xto920()
                 ],
             ]
         ),
-        "9.2 update set users_id on glpi_documents_items",
-        [],
-        true
+        "9.2 update set users_id on glpi_documents_items"
     );
 
     //add product number

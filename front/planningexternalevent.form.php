@@ -35,6 +35,8 @@
 
 require_once(__DIR__ . '/_check_webserver_config.php');
 
+use function Safe\strtotime;
+
 Session::checkRight("planning", READ);
 
 if (empty($_GET["id"])) {

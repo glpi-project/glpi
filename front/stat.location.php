@@ -42,6 +42,9 @@ use Glpi\Stat\Data\Location\StatDataOpened;
 use Glpi\Stat\Data\Location\StatDataOpenSatisfaction;
 use Glpi\Stat\Data\Location\StatDataSolved;
 
+use function Safe\mktime;
+use function Safe\preg_match;
+
 /** @var array $CFG_GLPI */
 global $CFG_GLPI;
 
@@ -50,11 +53,7 @@ Html::header(__('Statistics'), '', "helpdesk", "stat");
 Session::checkRight("statistic", READ);
 
 
-if (empty($_GET["showgraph"])) {
-    $_GET["showgraph"] = 0;
-} else {
-    $_GET["showgraph"] = (int) $_GET["showgraph"];
-}
+$_GET["showgraph"] = (int) ($_GET["showgraph"] ?? 0);
 
 //sanitize dates
 foreach (['date1', 'date2'] as $key) {
@@ -109,7 +108,7 @@ TemplateRenderer::getInstance()->display('pages/assistance/stats/form.html.twig'
     ],
     'date1'     => $_GET["date1"],
     'date2'     => $_GET["date2"],
-    'showgraph' => $_GET['showgraph'] ?? 0,
+    'showgraph' => $_GET['showgraph'],
 ]);
 
 if (
@@ -122,7 +121,6 @@ if (
 
 
 if (!($item instanceof CommonDevice)) {
-    // echo "Dropdown";
     $type = "comp_champ";
 
     $val = Stat::getItems($_GET['itemtype'], $_GET["date1"], $_GET["date2"], $_GET["dropdown"]);
@@ -133,7 +131,6 @@ if (!($item instanceof CommonDevice)) {
         'start'    => $_GET["start"],
     ];
 } else {
-    //   echo "Device";
     $type  = "device";
 
     $val = Stat::getItems($_GET['itemtype'], $_GET["date1"], $_GET["date2"], $_GET["dropdown"]);

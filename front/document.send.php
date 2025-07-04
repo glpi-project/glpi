@@ -41,6 +41,8 @@ use Glpi\Exception\Http\BadRequestHttpException;
 use Glpi\Exception\Http\HttpException;
 use Glpi\Exception\Http\NotFoundHttpException;
 
+use function Safe\sha1_file;
+
 $doc = new Document();
 
 if (isset($_GET['docid'])) {

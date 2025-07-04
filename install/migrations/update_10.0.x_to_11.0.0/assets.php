@@ -38,6 +38,9 @@
  * @var Migration $migration
  */
 
+use function Safe\json_decode;
+use function Safe\json_encode;
+
 $default_charset = DBConnection::getDefaultCharset();
 $default_collation = DBConnection::getDefaultCollation();
 $default_key_sign = DBConnection::getDefaultPrimaryKeySignOption();

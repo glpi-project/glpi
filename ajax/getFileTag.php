@@ -37,6 +37,8 @@
  * @since 0.85
  */
 
+use function Safe\json_encode;
+
 header('Content-type: application/json; charset=UTF-8');
 Html::header_nocache();
 

@@ -35,6 +35,11 @@
 
 namespace Glpi\UI;
 
+use function Safe\glob;
+use function Safe\file_get_contents;
+use function Safe\preg_match;
+use function Safe\scandir;
+
 /**
  * Class that manages the core and custom themes (palettes).
  */
