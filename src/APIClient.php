@@ -281,14 +281,10 @@ class APIClient extends CommonDBTM
      */
     public static function getUniqueAppToken()
     {
-
-        $ok = false;
         do {
-            $key    = Toolbox::getRandomString(40);
-            if (countElementsInTable(self::getTable(), ['app_token' => $key]) == 0) {
-                return $key;
-            }
-        } while (!$ok);
+            $key = Toolbox::getRandomString(40);
+        } while (countElementsInTable(self::getTable(), ['app_token' => $key]) != 0);
+        return $key;
     }
 
     public static function getIcon()

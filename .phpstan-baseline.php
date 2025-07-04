@@ -68,12 +68,6 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/APIClient.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Negated boolean expression is always true\\.$#',
-	'identifier' => 'booleanNot.alwaysTrue',
-	'count' => 1,
-	'path' => __DIR__ . '/src/APIClient.php',
-];
-$ignoreErrors[] = [
 	'message' => '#^Return type \\(void\\) of method APIClient\\:\\:showForm\\(\\) should be compatible with return type \\(bool\\) of method CommonDBTM\\:\\:showForm\\(\\)$#',
 	'identifier' => 'method.childReturnType',
 	'count' => 1,
