@@ -54,9 +54,10 @@
         {{ required ? 'required' : '' }}>
    {% for actor in actors %}
       {% set unique_id = "user_opt_" ~ actortype ~ actor.itemtype ~ actor.items_id %}
+      {% set actor_use_notification = actor['use_notification'] ?? false %}
       <option selected="true" value="{{ actor['itemtype'] ~ '_' ~ actor['items_id'] }}"
             data-itemtype="{{ actor['itemtype'] }}" data-items-id="{{ actor['items_id'] }}"
-            data-use-notification="{{ actor['use_notification'] ?? false }}"
+            data-use-notification="{{ actor_use_notification ? 1 : 0 }}"
             data-default-email="{{ actor['default_email'] ?? '' }}"
             data-alternative-email="{{ actor['alternative_email'] ?? '' }}"
             {% if (actor['itemtype'] == 'User' and itiltemplate.isHiddenField('_users_id_' ~ actortype)) or (actor['itemtype'] == 'Group' and itiltemplate.isHiddenField('_groups_id_' ~ actortype)) %}
