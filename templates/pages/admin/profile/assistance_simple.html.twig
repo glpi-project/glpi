@@ -45,6 +45,31 @@
 
     {{ _self.displayRightsMatrix(item, 'helpdesk', 'tracking', 'general', __('Assistance')) }}
 
+    {% if config('use_notifications') == '0' %}
+        {% set activation_msg %}
+            <span class="alert alert-warning">
+                {{ __('Notifications must be enabled to activate mentions.') }}
+            </span>
+        {% endset %}
+        {{ fields.htmlField('use_mentions', activation_msg, __('Mentions configuration'), {full_width: true}) }}
+    {% else %}
+        {% set user_mention_helper %}
+            {{ __('Enables or disables the ability to mention users within the application.') }}
+            {{ __('Disabled') ~ ': ' ~ __('User mentions are disabled for this profile.') }}
+            {{ __('Full') ~ ': ' ~ __('Displays all users. Mentioned users will be added as observers if they are not already actors.') }}
+        {% endset %}
+        {{ fields.dropdownArrayField(
+            'use_mentions',
+            item.fields['use_mentions'],
+            {
+                (constant('Glpi\\RichText\\UserMention::USER_MENTION_DISABLED')): __('Disabled'),
+                (constant('Glpi\\RichText\\UserMention::USER_MENTION_FULL')): __('Full'),
+            },
+            __('Mentions configuration'),
+            {helper: user_mention_helper}
+        ) }}
+    {% endif %}
+
     {{ fields.smallTitle(__('Association')) }}
     {{ fields.checkboxField('_show_group_hardware', item.fields['show_group_hardware'], __('See hardware of my groups'), {
         full_width: true
