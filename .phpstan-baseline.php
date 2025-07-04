@@ -4646,7 +4646,7 @@ $ignoreErrors[] = [
 	'path' => __DIR__ . '/src/Profile.php',
 ];
 $ignoreErrors[] = [
-	'message' => '#^Parameter \\#2 \\$items_id of static method CommonDBConnexity\\:\\:getItemsAssociatedTo\\(\\) expects string, int given\\.$#',
+    'message' => '#^Parameter \\#2 \\$items_id of static method CommonDBConnexity\\:\\:getItemsAssociatedTo\\(\\) expects string, int given\\.$#',
 	'identifier' => 'argument.type',
 	'count' => 1,
 	'path' => __DIR__ . '/src/Profile.php',
