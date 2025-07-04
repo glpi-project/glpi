@@ -255,6 +255,14 @@ class Session
             session_start();
         }
 
+        self::initVars();
+    }
+
+    /**
+     * Initialize session variables.
+     */
+    public static function initVars(): void
+    {
         // Define current time for sync of action timing
         $_SESSION["glpi_currenttime"] = date("Y-m-d H:i:s");
 

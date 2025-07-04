@@ -34,14 +34,17 @@
 
 namespace Glpi\Kernel\Listener\PostBootListener;
 
-use Config;
 use Glpi\Debug\Profiler;
+use Glpi\Kernel\KernelListenerTrait;
 use Glpi\Kernel\ListenersPriority;
 use Glpi\Kernel\PostBootEvent;
+use Plugin;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-final readonly class LoadLegacyConfiguration implements EventSubscriberInterface
+final readonly class BootPlugins implements EventSubscriberInterface
 {
+    use KernelListenerTrait;
+
     public static function getSubscribedEvents(): array
     {
         return [
@@ -51,15 +54,16 @@ final readonly class LoadLegacyConfiguration implements EventSubscriberInterface
 
     public function onPostBoot(): void
     {
-        /**
-         * @var array $CFG_GLPI
-         */
-        global $CFG_GLPI;
+        if (!$this->isDatabaseUsable()) {
+            // Requires the database to be available.
+            return;
+        }
 
-        Profiler::getInstance()->start('LoadLegacyConfiguration::execute', Profiler::CATEGORY_BOOT);
+        Profiler::getInstance()->start('BootPlugins::execute', Profiler::CATEGORY_BOOT);
 
-        Config::loadLegacyConfiguration();
+        $plugin = new Plugin();
+        $plugin->bootPlugins();
 
-        Profiler::getInstance()->stop('LoadLegacyConfiguration::execute');
+        Profiler::getInstance()->stop('BootPlugins::execute');
     }
 }

@@ -44,7 +44,7 @@ use Plugin;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Update;
 
-final readonly class DisablePluginsOnVersionChange implements EventSubscriberInterface
+final readonly class CheckPluginsStates implements EventSubscriberInterface
 {
     public static function getSubscribedEvents(): array
     {
@@ -57,7 +57,6 @@ final readonly class DisablePluginsOnVersionChange implements EventSubscriberInt
     {
         /** @var \DBmysql|null $DB */
         global $DB;
-
         if (
             !DBConnection::isDbAvailable()
             || !Config::isLegacyConfigurationLoaded()
@@ -67,15 +66,18 @@ final readonly class DisablePluginsOnVersionChange implements EventSubscriberInt
             return;
         }
 
-        Profiler::getInstance()->start('DisablePluginsOnVersionChange::execute', Profiler::CATEGORY_BOOT);
+        Profiler::getInstance()->start('CheckPluginsStates::execute', Profiler::CATEGORY_BOOT);
+
+        $plugin = new Plugin();
 
         if (Update::isUpdateMandatory()) {
             // Disable all plugins once a new mandatory update is detected.
             // This prevents incompatible plugins to be loaded.
-            (new Plugin())->unactivateAll();
-            return;
+            $plugin->unactivateAll();
+        } else {
+            $plugin->checkStates();
         }
 
-        Profiler::getInstance()->stop('DisablePluginsOnVersionChange::execute');
+        Profiler::getInstance()->stop('CheckPluginsStates::execute');
     }
 }

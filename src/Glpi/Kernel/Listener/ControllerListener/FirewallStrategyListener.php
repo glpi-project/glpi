@@ -35,6 +35,7 @@
 namespace Glpi\Kernel\Listener\ControllerListener;
 
 use Glpi\Http\Firewall;
+use Glpi\Http\SessionManager;
 use Glpi\Security\Attribute\SecurityStrategy;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\ControllerEvent;
@@ -42,7 +43,10 @@ use Symfony\Component\HttpKernel\KernelEvents;
 
 final readonly class FirewallStrategyListener implements EventSubscriberInterface
 {
-    public function __construct(private Firewall $firewall) {}
+    public function __construct(
+        private Firewall $firewall,
+        private SessionManager $session_manager
+    ) {}
 
     public static function getSubscribedEvents(): array
     {
@@ -51,6 +55,11 @@ final readonly class FirewallStrategyListener implements EventSubscriberInterfac
 
     public function onKernelController(ControllerEvent $event): void
     {
+        if ($this->session_manager->isResourceStateless($event->getRequest())) {
+            // Stateless resources are not protected by the firewall.
+            return;
+        }
+
         $strategy = null;
 
         /** @var SecurityStrategy[] $attributes */

@@ -34,7 +34,6 @@
 
 namespace Glpi\Kernel\Listener\PostBootListener;
 
-use Session;
 use Glpi\Debug\Profile;
 use Glpi\Debug\Profiler;
 use Glpi\Kernel\ListenersPriority;
@@ -56,12 +55,7 @@ final readonly class ProfilerStart implements EventSubscriberInterface
             Profiler::getInstance()->disable();
         } else {
             Profiler::getInstance()->start('php_request');
-        }
 
-        if (
-            isset($_SESSION['glpi_use_mode'])
-            && ($_SESSION['glpi_use_mode'] == Session::DEBUG_MODE)
-        ) {
             // Start the debug profile
             Profile::getCurrent();
         }

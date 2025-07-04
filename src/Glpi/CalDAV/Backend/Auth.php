@@ -36,6 +36,7 @@
 namespace Glpi\CalDAV\Backend;
 
 use Sabre\DAV\Auth\Backend\AbstractBasic;
+use Session;
 
 /**
  * Basic authentication backend for CalDAV server.
@@ -48,8 +49,14 @@ class Auth extends AbstractBasic
 
     protected function validateUserPass($username, $password)
     {
-        $auth = new \Auth();
         // TODO Enforce security by accepting here only CalDAV application dedicated password
-        return $auth->validateLogin($username, $password, true);
+
+        $auth = new \Auth();
+        if ($auth->validateLogin($username, $password, true)) {
+            Session::init($auth);
+            return true;
+        }
+
+        return false;
     }
 }

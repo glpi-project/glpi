@@ -220,7 +220,7 @@ class View extends CommonGLPI
         global $CFG_GLPI;
 
         $plugin_inst = new Plugin();
-        $plugin_inst->init(true); // reload plugins
+        $plugin_inst->checkStates(true); // force synchronization of the DB data with the filesystem data
         $installed   = $plugin_inst->getList();
 
         $apiplugins  = [];
