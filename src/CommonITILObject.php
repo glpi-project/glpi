@@ -7811,30 +7811,28 @@ abstract class CommonITILObject extends CommonDBTM
                 $item['_can_delete'] = Document::canDelete() && $document_obj->canDeleteItem() && $canupdate_parent;
 
                 $timeline_key = $document_item['itemtype'] . "_" . $document_item['items_id'];
+                $doc_entry = [
+                    'type' => Document_Item::class,
+                    'item' => $item,
+                    '_is_image' => false,
+                ];
+                $docpath = GLPI_DOC_DIR . "/" . $item['filepath'];
+                $is_image = Document::isImage($docpath);
+                if ($is_image) {
+                    $doc_entry['_is_image'] = true;
+                    $doc_entry['_size'] = getimagesize($docpath);
+                }
                 if ($document_item['itemtype'] == static::getType()) {
                     // document associated directly to itilobject
-                    $timeline["Document_" . $document_item['documents_id']] = [
-                        'type' => 'Document_Item',
-                        'item' => $item,
-                        'object' => $document_obj,
-                    ];
+                    $doc_entry['object'] = $document_obj;
+                    $timeline["Document_" . $document_item['documents_id']] = $doc_entry;
                 } elseif (isset($timeline[$timeline_key])) {
                     // document associated to a sub item of itilobject
                     if (!isset($timeline[$timeline_key]['documents'])) {
                         $timeline[$timeline_key]['documents'] = [];
                     }
 
-                    $docpath = GLPI_DOC_DIR . "/" . $item['filepath'];
-                    $is_image = Document::isImage($docpath);
-                    $sub_document = [
-                        'type' => 'Document_Item',
-                        'item' => $item,
-                    ];
-                    if ($is_image) {
-                        $sub_document['_is_image'] = true;
-                        $sub_document['_size'] = getimagesize($docpath);
-                    }
-                    $timeline[$timeline_key]['documents'][] = $sub_document;
+                    $timeline[$timeline_key]['documents'][] = $doc_entry;
                 }
             }
         }

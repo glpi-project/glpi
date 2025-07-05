@@ -1,0 +1,103 @@
+{#
+ # ---------------------------------------------------------------------
+ #
+ # GLPI - Gestionnaire Libre de Parc Informatique
+ #
+ # http://glpi-project.org
+ #
+ # @copyright 2015-2025 Teclib' and contributors.
+ # @licence   https://www.gnu.org/licenses/gpl-3.0.html
+ #
+ # ---------------------------------------------------------------------
+ #
+ # LICENSE
+ #
+ # This file is part of GLPI.
+ #
+ # This program is free software: you can redistribute it and/or modify
+ # it under the terms of the GNU General Public License as published by
+ # the Free Software Foundation, either version 3 of the License, or
+ # (at your option) any later version.
+ #
+ # This program is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ # GNU General Public License for more details.
+ #
+ # You should have received a copy of the GNU General Public License
+ # along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ #
+ # ---------------------------------------------------------------------
+ #}
+
+{# A single document item displayed in a list format rather than a preview for a lightbox #}
+<div class="row align-items-center m-n2 test">
+    {% set name     = entry_i['name'] ?? entry_i['filename'] %}
+    {% set filename = entry_i['filename'] ?? entry_i['name'] %}
+    {% set fk = item.getForeignKeyField() %}
+
+    {% if entry_i['filename'] %}
+        {% set docpath = path('front/document.send.php?docid=' ~ entry_i['id'] ~ "&" ~ fk ~ "=" ~ item.fields["id"]) %}
+        <div class="col text-truncate">
+            <a href="{{ docpath }}" target="_blank" title="{{ name }}">
+                <img src="{{ filename|document_icon }}" alt="{{ __('File extension') }}" />
+                {{ filename }}
+            </a>
+        </div>
+    {% endif %}
+
+    {% if entry_i['link'] %}
+        <div class="col-auto">
+            <a href="{{ entry_i['link'] }}" target="_blank">
+                <i class="ti ti-external-link"></i>
+                {{ entry_i['name'] }}
+            </a>
+        </div>
+    {% endif %}
+
+    {% if entry_i['filepath'] is defined and entry_i['filepath'] is not null %}
+        <div class="col-auto text-muted ms-2">
+            {{ entry_i['filepath']|document_size }}
+        </div>
+    {% endif %}
+
+    <div class="col-auto">
+        <div class="list-group-item-actions">
+            {% if entry_i['_can_edit'] %}
+                <a href="{{ 'Document'|itemtype_form_path(entry_i['id']) }}"
+                   class="btn btn-sm btn-ghost-secondary" title="{{ _x('button', 'Edit') }}"
+                   data-bs-toggle="tooltip" data-bs-placement="top">
+                    <i class="ti ti-edit"></i>
+                </a>
+            {% endif %}
+
+            {% if entry_i['_can_delete'] %}
+                <form class="d-inline" method="post" action="{{ item.getFormURL() }}">
+                    <input type="hidden" name="{{ fk }}" value="{{ item.fields['id'] }}">
+                    <input type="hidden" name="documents_id" value="{{ entry_i['id'] }}">
+                    <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
+                    <button type="submit" class="btn btn-sm btn-ghost-secondary" name="delete_document"
+                            title="{{ _x('button', 'Delete permanently') }}"
+                            data-bs-toggle="tooltip" data-bs-placement="top">
+                        <i class="ti ti-trash"></i>
+                    </button>
+                </form>
+            {% endif %}
+            {% if entry_i['_can_edit'] %}
+                {% set blacklisted_class    = entry_i['is_blacklisted'] ? 'red' : '' %}
+                {% set blacklisted_title    = entry_i['is_blacklisted'] ? _x('button', 'Remove from import exclusion list') : _x('button', 'Add to import exclusion list') %}
+                {% set blacklisted_value    = entry_i['is_blacklisted'] ? 0 : 1 %}
+                <form class="d-inline" method="post" action="{{ 'Document'|itemtype_form_path }}">
+                    <input type="hidden" name="id" value="{{ entry_i['id'] }}">
+                    <input type="hidden" name="is_blacklisted" value="{{ blacklisted_value }}">
+                    <input type="hidden" name="_glpi_csrf_token" value="{{ csrf_token() }}" />
+                    <button type="submit" class="btn btn-sm btn-ghost-secondary" name="update"
+                            title="{{ blacklisted_title }}"
+                            data-bs-toggle="tooltip" data-bs-placement="top">
+                        <i class="ti ti-ban {{ blacklisted_class }}"></i>
+                    </button>
+                </form>
+            {% endif %}
+        </div>
+    </div>
+</div>
