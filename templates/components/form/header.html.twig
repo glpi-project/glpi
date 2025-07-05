@@ -36,6 +36,7 @@
 {% set nametype     = params['formtitle'] ?? item.getTypeName(1) %}
 {% set no_id        = params['noid'] ?? false %}
 {% set formoptions  = params['formoptions'] ?? '' %}
+{% set form_id      = params['form_id']|default('main-form') %}
 
 {% set entity_id = 0 %}
 {% set entity_name = '' %}
@@ -57,7 +58,7 @@
 {% set canedit = params['canedit']|default(item.canEdit(item.fields['id'])) %}
 
 {% if open_form and canedit %}
-<form id="main-form" name="asset_form" method="post" action="{{ target }}" {{ formoptions|raw }} enctype="multipart/form-data" data-submit-once>
+<form id="{{ form_id }}" name="asset_form" method="post" action="{{ target }}" {{ formoptions|raw }} enctype="multipart/form-data" data-submit-once>
    {% if item.isField("entities_id") %}
        <input type="hidden" name="entities_id" value="{{ entity_id }}" />
    {% endif %}
