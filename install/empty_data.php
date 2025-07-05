@@ -75,9 +75,9 @@ $empty_data_builder = new class {
         $tables = [];
 
         // API need to be enabled to ease e2e testing
-        $add_e2e_data = Environment::get()->shouldAddExtraE2EDataDuringInstallation();
-        $enable_api = $add_e2e_data ? "1" : "0";
-        $enable_api_login_credentials = $add_e2e_data ? "1" : "0";
+        $add_cypress_data = Environment::get()->shouldAddExtraCypressDataDuringInstallation();
+        $enable_api = $add_cypress_data ? "1" : "0";
+        $enable_api_login_credentials = $add_cypress_data ? "1" : "0";
 
         $tables['glpi_apiclients'] = [
             [
@@ -9451,7 +9451,7 @@ style="color: #8b8c8f; font-weight: bold; text-decoration: underline;"&gt;
         ];
 
         // Test environment data
-        if ($add_e2e_data) {
+        if ($add_cypress_data) {
             $root_entity = array_filter($tables['glpi_entities'], static fn($e) => $e['id'] === 0);
             $root_entity = current($root_entity);
 
