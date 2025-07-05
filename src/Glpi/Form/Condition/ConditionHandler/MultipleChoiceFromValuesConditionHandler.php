@@ -36,9 +36,12 @@ namespace Glpi\Form\Condition\ConditionHandler;
 
 use Glpi\Form\Condition\ConditionData;
 use Glpi\Form\Condition\ValueOperator;
+use Glpi\Form\Migration\ConditionHandlerDataConverterInterface;
 use Override;
 
-final class MultipleChoiceFromValuesConditionHandler implements ConditionHandlerInterface
+final class MultipleChoiceFromValuesConditionHandler implements
+    ConditionHandlerInterface,
+    ConditionHandlerDataConverterInterface
 {
     use ArrayConditionHandlerTrait;
 
@@ -73,5 +76,11 @@ final class MultipleChoiceFromValuesConditionHandler implements ConditionHandler
         mixed $b,
     ): bool {
         return $this->applyArrayValueOperator($a, $operator, $b);
+    }
+
+    #[Override]
+    public function convertConditionValue(string $value): int
+    {
+        return array_search($value, $this->values, true) ?: 0;
     }
 }
