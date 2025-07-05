@@ -39,15 +39,12 @@ use DbTestCase;
 use Glpi\Dashboard\Filters\GroupRequesterFilter;
 use Glpi\Dashboard\Filters\GroupTechFilter;
 use Group;
-use PHPUnit\Framework\Attributes\DataProvider;
-use Reminder;
-use Reminder_User;
 use Ticket;
-use User;
 
 class GroupFilterTest extends DbTestCase
 {
-    public function testITILGroupFilters() {
+    public function testITILGroupFilters()
+    {
         /** @var \DBmysql */
         global $DB;
 
@@ -85,7 +82,8 @@ class GroupFilterTest extends DbTestCase
         );
     }
 
-    public function testAssetGroupFilters() {
+    public function testAssetGroupFilters()
+    {
         /** @var \DBmysql */
         global $DB;
 
