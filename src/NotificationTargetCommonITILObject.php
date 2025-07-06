@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use Glpi\DBAL\QueryFunction;
+
 abstract class NotificationTargetCommonITILObject extends NotificationTarget
 {
     public $private_profiles = [];
@@ -571,6 +573,72 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
         }
     }
 
+    /**
+     * Add the approved subsititutes of all users who were asked for an approval answer.
+     * This does not account for substitutes of users when a group is the target of the validation.
+     *
+     * @param array $options Options
+     * @return void
+     */
+    public function addValidationTargetSubstitutes($options = [])
+    {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        if (isset($options['validation_id'])) {
+            $validation = $this->obj->getValidationClassInstance();
+            $validation->getFromDB($options['validation_id']);
+            if ($validation->fields['itemtype_target'] === User::class) {
+                $validationtable = $validation::getTable();
+                $validator_substitute_table = ValidatorSubstitute::getTable();
+                $user_table = User::getTable();
+
+                $criteria = [
+                    'LEFT JOIN' => [
+                        $validator_substitute_table => [
+                            'ON' => [
+                                $validationtable => 'items_id_target',
+                                $validator_substitute_table => 'users_id',
+                            ],
+                        ],
+                        $user_table => [
+                            'ON' => [
+                                $validator_substitute_table => 'users_id_substitute',
+                                $user_table => 'id',
+                            ],
+                        ],
+                        $user_table . ' AS target_user' => [
+                            'ON' => [
+                                $validationtable => 'items_id_target',
+                                'target_user' => 'id',
+                            ],
+                        ],
+                    ],
+                ] + $this->getDistinctUserCriteria() + $this->getProfileJoinCriteria();
+                $criteria['FROM'] = $validationtable;
+                $criteria['WHERE']["$validationtable.id"] = $options['validation_id'];
+                $criteria['WHERE'][] = [
+                    [
+                        'OR' => [
+                            ['target_user.substitution_start_date' => null],
+                            ['target_user.substitution_start_date' => ['<=', QueryFunction::now()]],
+                        ],
+                    ],
+                    [
+                        'OR' => [
+                            ['target_user.substitution_end_date' => null],
+                            ['target_user.substitution_end_date' => ['>=', QueryFunction::now()]],
+                        ],
+                    ],
+                ];
+
+                $iterator = $DB->request($criteria);
+                foreach ($iterator as $data) {
+                    $this->addToRecipientsList($data);
+                }
+            }
+        }
+    }
 
     /**
      * Add author related to the followup
@@ -608,7 +676,6 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
             }
         }
     }
-
 
     /**
      * Add task author
@@ -925,6 +992,7 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
         if (($event == 'validation') || ($event == 'validation_answer') || ($event == 'validation_reminder')) {
             $this->addTarget(Notification::VALIDATION_REQUESTER, __('Approval requester'));
             $this->addTarget(Notification::VALIDATION_TARGET, __('Approval target'));
+            $this->addTarget(Notification::VALIDATION_TARGET_SUBSTITUTES, __('Approval target substitutes'));
             $this->addTarget(Notification::VALIDATION_APPROVER, __('Approver'));
         }
 
@@ -1009,6 +1077,9 @@ abstract class NotificationTargetCommonITILObject extends NotificationTarget
                     case Notification::VALIDATION_TARGET:
                         $this->addValidationTarget($options);
                         break;
+
+                    case Notification::VALIDATION_TARGET_SUBSTITUTES:
+                        $this->addValidationTargetSubstitutes($options);
 
                         //Send to the ITIL object validation approver
                     case Notification::VALIDATION_APPROVER:

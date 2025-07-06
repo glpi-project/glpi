@@ -40,12 +40,16 @@ use CommonITILValidation;
 use DbTestCase;
 use Document_Item;
 use Glpi\PHPUnit\Tests\Glpi\ValidationStepTrait;
+use NotificationEventMailing;
+use NotificationTargetCommonITILObject;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Rule;
 use RuleCommonITILObject;
 use RuntimeException;
 use Ticket;
 use User;
+use UserEmail;
+use ValidatorSubstitute;
 
 abstract class CommonITILValidationTest extends DbTestCase
 {
@@ -1554,5 +1558,71 @@ abstract class CommonITILValidationTest extends DbTestCase
         // re-add an ACCEPTED validation
         $this->addITILValidationStepWithValidations($vs100, [CommonITILValidation::ACCEPTED], $itil);
         $this->assertValidationStatusEquals(CommonITILValidation::ACCEPTED, $this->getValidationClassname()::computeValidationStatus($itil));
+    }
+
+    public function testNotificationValidatorSubstitutes()
+    {
+        $this->login();
+        $itil = $this->createItem($this->getITILClassname(), [
+            'name' => 'Test Notification Recipients',
+            'content' => 'Test Notification Recipients',
+        ]);
+        $validation = $this->createItem($this->getValidationClassname(), [
+            $itil::getForeignKeyField() => $itil->getID(),
+            'itemtype_target' => 'User',
+            'items_id_target' => $_SESSION['glpiID'],
+        ]);
+        $this->createItem(ValidatorSubstitute::class, [
+            'users_id' => $_SESSION['glpiID'],
+            'users_id_substitute' => getItemByTypeName('User', 'tech', true),
+        ]);
+        $this->createItem(UserEmail::class, [
+            'users_id' => getItemByTypeName('User', 'tech', true),
+            'email' => 'tech@localhost',
+        ]);
+        /** @var class-string<NotificationTargetCommonITILObject> $notification_target_class */
+        $notification_target_class = 'NotificationTarget' . $this->getITILClassname();
+        $notification_target = new $notification_target_class(event: 'validation', object: $itil);
+        $notification_target->setEvent(NotificationEventMailing::class);
+
+        $notification_target->addSpecificTargets([
+            'type' => \Notification::USER_TYPE,
+            'items_id' => \Notification::VALIDATION_TARGET_SUBSTITUTES,
+        ], [
+            'validation_id' => $validation->getID(),
+        ]);
+        // Current user shouldn't have the substitution date range set, so the substitute should be notified
+        $this->assertNotEmpty($notification_target->target['tech@localhost']);
+        $notification_target->target = [];
+
+        $user = new User();
+        $this->assertTrue($user->update([
+            'id' => $_SESSION['glpiID'],
+            'substitution_start_date' => date('Y-m-d H:i:s', strtotime('-1 day')),
+            'substitution_end_date' => date('Y-m-d H:i:s', strtotime('+1 day')),
+        ]));
+        $notification_target->addSpecificTargets([
+            'type' => \Notification::USER_TYPE,
+            'items_id' => \Notification::VALIDATION_TARGET_SUBSTITUTES,
+        ], [
+            'validation_id' => $validation->getID(),
+        ]);
+        // The substitute should be notified now
+        $this->assertNotEmpty($notification_target->target['tech@localhost']);
+        $notification_target->target = [];
+
+        $this->assertTrue($user->update([
+            'id' => $_SESSION['glpiID'],
+            'substitution_start_date' => date('Y-m-d H:i:s', strtotime('-5 day')),
+            'substitution_end_date' => date('Y-m-d H:i:s', strtotime('-1 day')),
+        ]));
+        $notification_target->addSpecificTargets([
+            'type' => \Notification::USER_TYPE,
+            'items_id' => \Notification::VALIDATION_TARGET_SUBSTITUTES,
+        ], [
+            'validation_id' => $validation->getID(),
+        ]);
+        // Substitute timerange expired
+        $this->assertEmpty($notification_target->target);
     }
 }
