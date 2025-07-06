@@ -784,7 +784,7 @@ class Group extends CommonTreeDropdown
 
         $columns = [
             'type' => [
-                'label' =>_n('Type', 'Types', 1),
+                'label' => _n('Type', 'Types', 1),
             ],
             'name' => [
                 'label' => __('Name'),
