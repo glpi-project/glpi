@@ -39,7 +39,11 @@ class DebugRequestMiddleware extends AbstractMiddleware implements RequestMiddle
 {
     public function process(MiddlewareInput $input, callable $next): void
     {
-        if ($input->request->hasHeader('X-Debug-Mode') && filter_var($input->request->getHeader('X-Debug-Mode'), FILTER_VALIDATE_BOOLEAN)) {
+        if (
+            \Session::haveRight('config', UPDATE)
+            && $input->request->hasHeader('X-Debug-Mode')
+            && filter_var($input->request->getHeaderLine('X-Debug-Mode'), FILTER_VALIDATE_BOOLEAN)
+        ) {
             $_SESSION['glpi_use_mode'] = \Session::DEBUG_MODE;
         }
         $next($input);
