@@ -1662,7 +1662,7 @@ abstract class CommonITILTask extends CommonDBTM implements CalDAVCompatibleItem
 
         // $val['content'] has already been sanitized and decoded by self::populatePlanning()
         $content = $val['content'];
-        $html .= "<div class='event-description rich_text_container'>" . htmlescape($content) . "</div>";
+        $html .= "<div class='event-description rich_text_container'>" . $content . "</div>";
         $html .= $recall;
 
         $parent->getFromDB($val[$parent->getForeignKeyField()]);
