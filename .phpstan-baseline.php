@@ -7186,7 +7186,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Property Profile\\:\\:\\$profileRight \\(array\\) does not accept null\\.$#',
 	'identifier' => 'assign.propertyType',
-	'count' => 2,
+	'count' => 1,
 	'path' => __DIR__ . '/src/Profile.php',
 ];
 $ignoreErrors[] = [
