@@ -85,10 +85,9 @@ trait TreeBrowse
         $no_cat_found  = __s("No category found");
 
         $JS = <<<JAVASCRIPT
-        const loadingindicator  = $(`<span class="spinner-border spinner-border position-absolute m-5 start-50" role="status" aria-hidden="true"></span>`);
-        $('#items_list').html(loadingindicator);
+        $('#items_list').html(`<span class="spinner-border spinner-border position-absolute m-5 start-50" role="status" aria-hidden="true"></span>`);
         window.loadNode = function(cat_id) {
-            $('#items_list').html(loadingindicator);
+            $('#items_list').html(`<span class="spinner-border spinner-border position-absolute m-5 start-50" role="status" aria-hidden="true"></span>`);
             $('#items_list').load('$ajax_url', {
                 'action': 'getItemslist',
                 'cat_id': cat_id,
