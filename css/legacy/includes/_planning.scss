@@ -210,13 +210,11 @@
       }
    }
 
-   #planning {
+   .planning-view {
       flex-grow: 1;
       min-height: calc(100vh - 160px);
 
       .fc-time-grid-event {
-         // TODO check new version,
-         // Fullcalendar 2.4.0 seems to have removed this property
          overflow: hidden;
       }
 
