@@ -1334,3 +1334,9 @@ $break_tablet: 1400px;
         }
     }
 }
+
+html[data-glpi-theme-dark="1"] {
+    .widgettype_field img {
+        filter: invert(1);
+    }
+}
