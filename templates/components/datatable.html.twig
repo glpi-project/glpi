@@ -165,7 +165,7 @@
                             <input type="hidden" name="items_id" value="{{ items_id }}" />
                         </td>
                         {% for colkey, colum in columns %}
-                            {% set formatter = colum['filter_formatter']|default(formatters[colkey])|default('') %}
+                            {% set formatter = colum['filter_formatter']|default(formatters[colkey]|default(''))|default('') %}
                             <td>
                                 {% if colum is not array or colum['no_filter']|default(false) == false %}
                                     {% if formatter == "array" and columns_values[colkey] is defined %}
@@ -181,7 +181,7 @@
                                         {{ call("Html::showDateTimeField", [
                                             "filters[" ~ colkey ~ "]",
                                             {
-                                                'value': filters[colkey],
+                                                'value': filters[colkey] ?? '',
                                                 'display': false
                                             }
                                         ])|raw }}
@@ -189,7 +189,7 @@
                                         {{ call("Html::showDateField", [
                                             "filters[" ~ colkey ~ "]",
                                             {
-                                                'value': filters[colkey],
+                                                'value': filters[colkey] ?? '',
                                                 'display': false
                                             }
                                         ])|raw }}
@@ -203,10 +203,10 @@
                                     {% elseif formatter == 'yesno' %}
                                         <select name="filters[{{ colkey }}]" class="form-select">
                                             <option value="">{{ __('All') }}</option>
-                                            <option value="1" {{ filters[colkey] == '1' ? 'selected' : '' }}>
+                                            <option value="1" {{ filters[colkey] ?? '' == '1' ? 'selected' : '' }}>
                                                 {{ __('Yes') }}
                                             </option>
-                                            <option value="0" {{ filters[colkey] == '0' ? 'selected' : '' }}>
+                                            <option value="0" {{ filters[colkey] ?? '' == '0' ? 'selected' : '' }}>
                                                 {{ __('No') }}
                                             </option>
                                         </select>
