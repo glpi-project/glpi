@@ -341,7 +341,7 @@ abstract class AbstractCommonITILFormDestination implements FormDestinationInter
         /** @var \CommonITILObject $itil */
         $itil = new $itemtype();
         $template = $itil->getITILTemplateToUse(
-            entities_id: $input['entities_id'] ?? 0,
+            entities_id: $input['entities_id'],
             itilcategories_id: $input['itilcategories_id'] ?? 0,
             type: $input['type'] ?? (isset($input['itilcategories_id']) ? Ticket::INCIDENT_TYPE : null)
         );
