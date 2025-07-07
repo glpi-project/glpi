@@ -70,7 +70,7 @@ class ValidatorSubstituteTest extends DbTestCase
 
         yield [
             'item' => new Preference(),
-            'expected' => "Authorized substitute 1",
+            'expected' => "Authorized substitutes 1",
         ];
 
         $_SESSION['glpishow_count_on_tabs'] = 0;

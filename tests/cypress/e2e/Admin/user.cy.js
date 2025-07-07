@@ -98,4 +98,16 @@ describe('User form', () => {
         cy.findAllByRole('radio', { name: 'Set as default email' }).eq(0).should('not.be.checked');
         cy.findAllByRole('radio', { name: 'Set as default email' }).eq(1).should('be.checked');
     });
+    it('can add and remove my substitutes', () => {
+        cy.visit('/front/preference.php');
+        cy.findByRole('tab', { name: /Authorized substitutes/ }).click();
+        cy.getDropdownByLabelText('Approval substitutes').selectDropdownValue('tech');
+        cy.findByRole('button', { name: 'Save' }).click();
+        cy.findByRole('tab', { name: /Authorized substitutes/ }).click();
+        cy.getDropdownByLabelText('Approval substitutes').should('contain.text', 'tech');
+        cy.getDropdownByLabelText('Approval substitutes').closest('.select2-container').find('.select2-selection__choice__remove').click();
+        cy.findByRole('button', { name: 'Save' }).click();
+        cy.findByRole('tab', { name: /Authorized substitutes/ }).click();
+        cy.getDropdownByLabelText('Approval substitutes').should('have.text', '');
+    });
 });
