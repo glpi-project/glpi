@@ -107,9 +107,10 @@ abstract class AbstractCommonITILFormDestination implements FormDestinationInter
         AnswersSet $answers_set,
         array $config,
     ): array {
-        $typename        = $this->getLabel();
-        $itil_object        = $this->getTarget();
-        $fields_to_apply = $this->getConfigurableFields();
+        $typename               = $this->getLabel();
+        $itil_object            = $this->getTarget();
+        $fields_to_apply        = $this->getConfigurableFields();
+        $already_applied_fields = [];
 
         // Mandatory values, we must preset defaults values as it can't be
         // missing from the input.
@@ -117,6 +118,15 @@ abstract class AbstractCommonITILFormDestination implements FormDestinationInter
             'name'    => '',
             'content' => '',
         ];
+
+        // Entity must be computed first as it will be used to pick the correct template
+        $entity_field = new EntityField();
+        $input = $entity_field->applyConfiguratedValueToInputUsingAnswers(
+            $entity_field->getConfig($form, $config),
+            $input,
+            $answers_set
+        );
+        $already_applied_fields[] = EntityField::class;
 
         // Template field must be computed before applying predefined fields
         $target_itemtype = $this->getTarget();
@@ -127,12 +137,7 @@ abstract class AbstractCommonITILFormDestination implements FormDestinationInter
             $input,
             $answers_set
         );
-
-        // Remove template field from fields to apply
-        $fields_to_apply = array_filter(
-            $fields_to_apply,
-            fn($field) => !$field instanceof TemplateField
-        );
+        $already_applied_fields[] = TemplateField::class;
 
         // ITILCategory field must be computed before applying predefined fields
         $itilcategory_field = new ITILCategoryField();
@@ -141,9 +146,16 @@ abstract class AbstractCommonITILFormDestination implements FormDestinationInter
             $input,
             $answers_set
         );
+        $already_applied_fields[] = ITILCategoryField::class;
 
         // Compute and apply template predefined template fields
         $input = $this->applyPredefinedTemplateFields($input);
+
+        // Remove already applied fields from fields to apply
+        $fields_to_apply = array_filter(
+            $fields_to_apply,
+            fn($field) => !in_array(get_class($field), $already_applied_fields)
+        );
 
         // Compute input from fields configuration
         foreach ($this->getConfigurableFields() as $field) {
@@ -329,7 +341,7 @@ abstract class AbstractCommonITILFormDestination implements FormDestinationInter
         /** @var \CommonITILObject $itil */
         $itil = new $itemtype();
         $template = $itil->getITILTemplateToUse(
-            entities_id: $_SESSION["glpiactive_entity"] ?? 0,
+            entities_id: $input['entities_id'] ?? 0,
             itilcategories_id: $input['itilcategories_id'] ?? 0,
             type: $input['type'] ?? (isset($input['itilcategories_id']) ? Ticket::INCIDENT_TYPE : null)
         );

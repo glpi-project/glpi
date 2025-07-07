@@ -77,7 +77,11 @@ enum EntityFieldStrategy: string
 
     private function getFormFillerEntityID(): int
     {
-        return Session::getActiveEntity();
+        if (Session::isAuthenticated()) {
+            return Session::getActiveEntity();
+        } else {
+            return 0;
+        }
     }
 
     private function getEntityIDForSpecificAnswer(
