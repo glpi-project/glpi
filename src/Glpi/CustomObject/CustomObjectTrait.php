@@ -52,7 +52,7 @@ trait CustomObjectTrait
     public static function getSearchURL($full = true)
     {
         return Toolbox::getItemTypeSearchURL(static::getDefinition()->getCustomObjectBaseClass(), $full)
-            . '?class=' . static::getDefinition()->getCustomObjectClassName(false);
+            . '?class=' . static::getDefinition()->fields['system_name'];
     }
 
     /**
@@ -61,7 +61,7 @@ trait CustomObjectTrait
     public static function getFormURL($full = true)
     {
         return Toolbox::getItemTypeFormURL(static::getDefinition()->getCustomObjectBaseClass(), $full)
-            . '?class=' . static::getDefinition()->getCustomObjectClassName(false);
+            . '?class=' . static::getDefinition()->fields['system_name'];
     }
 
     /**

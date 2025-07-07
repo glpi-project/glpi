@@ -275,8 +275,8 @@ class HtmlTest extends \DbTestCase
             'PassiveDCEquipment',
             'Unmanaged',
             'Cable',
-            'Glpi\CustomAsset\Test01',
-            'Glpi\CustomAsset\Test02',
+            'Glpi\CustomAsset\Test01Asset',
+            'Glpi\CustomAsset\Test02Asset',
             'Item_DeviceSimcard',
         ];
         $this->assertSame('Assets', $menu['assets']['title']);

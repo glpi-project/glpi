@@ -269,7 +269,7 @@ JSON;
         $computer = getItemByTypeName('Computer', '_test_pc01');
         $this->assertEquals('/Assets/Computer/' . $computer->getID(), $webhook->getAPIPath($computer));
 
-        $custom_asset = getItemByTypeName('Glpi\\CustomAsset\\Test01', 'TestA');
+        $custom_asset = getItemByTypeName('Glpi\\CustomAsset\\Test01Asset', 'TestA');
         $this->assertEquals('/Assets/Custom/Test01/' . $custom_asset->getID(), $webhook->getAPIPath($custom_asset));
     }
 }

@@ -172,7 +172,7 @@ final class AssetDefinitionManager extends AbstractDefinitionManager
             'Cable',
         ];
 
-        return '/^(.+(Model|Type)|' . \implode('|', $core_assets) . ')$/i';
+        return '/^(' . \implode('|', $core_assets) . ')$/i';
     }
 
     public function bootstrapDefinition(AbstractDefinition $definition): void
@@ -252,15 +252,16 @@ final class AssetDefinitionManager extends AbstractDefinitionManager
         }
 
         $system_name_pattern = $definition_object::SYSTEM_NAME_PATTERN;
+        $class_suffix = $definition_object::getCustomObjectClassSuffix();
 
         $patterns = [
-            '/^' . preg_quote($ns, '/') . 'RuleDictionary(' . $system_name_pattern . ')ModelCollection$/' => 'loadConcreteModelDictionaryCollectionClass',
-            '/^' . preg_quote($ns, '/') . 'RuleDictionary(' . $system_name_pattern . ')TypeCollection$/' => 'loadConcreteTypeDictionaryCollectionClass',
-            '/^' . preg_quote($ns, '/') . 'RuleDictionary(' . $system_name_pattern . ')Model$/' => 'loadConcreteModelDictionaryClass',
-            '/^' . preg_quote($ns, '/') . 'RuleDictionary(' . $system_name_pattern . ')Type$/' => 'loadConcreteTypeDictionaryClass',
-            '/^' . preg_quote($ns, '/') . '(' . $system_name_pattern . ')Model$/' => 'loadConcreteModelClass',
-            '/^' . preg_quote($ns, '/') . '(' . $system_name_pattern . ')Type$/' => 'loadConcreteTypeClass',
-            '/^' . preg_quote($ns, '/') . '(' . $system_name_pattern . ')$/' => 'loadConcreteClass',
+            '/^' . preg_quote($ns, '/') . 'RuleDictionary(' . $system_name_pattern . ')' . $class_suffix . 'ModelCollection$/' => 'loadConcreteModelDictionaryCollectionClass',
+            '/^' . preg_quote($ns, '/') . 'RuleDictionary(' . $system_name_pattern . ')' . $class_suffix . 'TypeCollection$/' => 'loadConcreteTypeDictionaryCollectionClass',
+            '/^' . preg_quote($ns, '/') . 'RuleDictionary(' . $system_name_pattern . ')' . $class_suffix . 'Model$/' => 'loadConcreteModelDictionaryClass',
+            '/^' . preg_quote($ns, '/') . 'RuleDictionary(' . $system_name_pattern . ')' . $class_suffix . 'Type$/' => 'loadConcreteTypeDictionaryClass',
+            '/^' . preg_quote($ns, '/') . '(' . $system_name_pattern . ')' . $class_suffix . 'Model$/' => 'loadConcreteModelClass',
+            '/^' . preg_quote($ns, '/') . '(' . $system_name_pattern . ')' . $class_suffix . 'Type$/' => 'loadConcreteTypeClass',
+            '/^' . preg_quote($ns, '/') . '(' . $system_name_pattern . ')' . $class_suffix . '$/' => 'loadConcreteClass',
         ];
 
         foreach ($patterns as $pattern => $load_function) {
