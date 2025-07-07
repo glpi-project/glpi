@@ -2581,4 +2581,42 @@ final class FormMigrationTest extends DbTestCase
         // Assert: make sure the migration was completed
         $this->assertTrue($result->isFullyProcessed());
     }
+
+    public function testConfigurationIsUpdatedAfterMigrationIsExecuted(): void
+    {
+        /**
+         * @var \DBmysql $DB
+         */
+        global $DB;
+
+        // Arrange: get migration service
+        $migration = new FormMigration(
+            $DB,
+            FormAccessControlManager::getInstance()
+        );
+
+        // Act + Assert: execute the migration
+        $this->assertFalse($migration->hasBeenExecuted());
+        $migration->execute();
+        $this->assertTrue($migration->hasBeenExecuted());
+    }
+
+    public function testHasPluginData(): void
+    {
+        /**
+         * @var \DBmysql $DB
+         */
+        global $DB;
+
+        // Arrange: get migration service
+        $migration = new FormMigration(
+            $DB,
+            FormAccessControlManager::getInstance()
+        );
+
+        // Act + Assert: check plugin data before and after deleting the form table content
+        $this->assertTrue($migration->hasPluginData());
+        $DB->delete('glpi_plugin_formcreator_forms', [1]);
+        $this->assertFalse($migration->hasPluginData());
+    }
 }

@@ -378,6 +378,8 @@ $empty_data_builder = new class {
             'glpinetwork_registration_key' => null,
             'impact_assets_list' => '[]',
             'timezone' => null,
+            'glpi_11_form_migration' => 0,
+            'glpi_11_assets_migration' => 0,
         ];
 
         $tables['glpi_configs'] = [];

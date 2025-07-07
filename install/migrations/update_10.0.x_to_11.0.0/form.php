@@ -388,6 +388,9 @@ $migration->changeField(
 // Add rights for the forms object
 $migration->addRight("form", ALLSTANDARDRIGHT, ['config' => UPDATE]);
 
+// New config values
+$migration->addConfig(['glpi_11_form_migration' => 0]);
+
 // Name (forced), Entities (forced), Child entities, Active, Last update
 $ADDTODISPLAYPREF['Glpi\Form\Form'] = [1, 80, 86, 3, 4];
 $ADDTODISPLAYPREF['Glpi\Form\AnswersSet'] = [1, 3, 4];
