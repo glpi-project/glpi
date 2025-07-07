@@ -165,22 +165,33 @@ export class GlpiFormRendererController
                 }
 
                 // Find the input field within the question
-                const inputField = question.find('input:not([type=hidden]):not([data-uploader-name]):not(.select2-search__field), select, textarea');
-                if (!inputField.length) {
+                const inputFields = question.find('input:not([type=hidden]):not([data-uploader-name]):not(.select2-search__field), select, textarea');
+                if (!inputFields.length) {
                     return;
                 }
 
                 // Generate a unique ID for the error message
                 const errorId = `error-${error.question_id}`;
 
-                // Add validation classes and accessibility attributes
-                inputField
+                // Add validation classes and accessibility attributes to all inputs
+                inputFields
                     .addClass('is-invalid')
                     .attr('aria-invalid', 'true')
                     .attr('aria-errormessage', errorId);
 
                 // Add a tooltip with the error message
-                inputField.parent().append(
+                let targetElement;
+                if (inputFields.filter('[type="radio"], [type="checkbox"]').length > 0) {
+                    // For radio/checkbox, find the first common parent
+                    targetElement = inputFields.first().closest('.form-check').parent();
+                    if (targetElement.length === 0) {
+                        targetElement = inputFields.first().parent();
+                    }
+                } else {
+                    targetElement = inputFields.parent();
+                }
+
+                targetElement.append(
                     `<span id="${errorId}" class="invalid-tooltip">${error.message}</span>`
                 );
             });

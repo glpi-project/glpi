@@ -126,6 +126,12 @@
             }
         }
 
+        &:has(input[type="radio"].is-invalid, input[type="checkbox"].is-invalid) {
+            .invalid-tooltip {
+                display: block !important;
+            }
+        }
+
         .invalid-tooltip {
             position: relative;
             background-color: unset;
