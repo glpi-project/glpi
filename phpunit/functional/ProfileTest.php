@@ -201,7 +201,6 @@ class ProfileTest extends DbTestCase
 
         // Get default "Admin" profile
         $profile = new \Profile();
-        // TODO Test sync of custom asset permissions
         $this->assertTrue($profile->getFromDB(3));
 
         $this->assertTrue($profile->update([
