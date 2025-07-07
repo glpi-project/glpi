@@ -6,7 +6,7 @@ services:
       CODE_COVERAGE: "${CODE_COVERAGE:-false}"
       CI: true # Will be used to alter some configuration when running on github vs locally.
       PLAYWRIGHT_BROWSERS_PATH: /opt/pw-browsers # Custom browser path to prevent some rights issues.
-      GLPI_BASE_URL: http://localhost:80 # Default URL for GLPI. Used for e2e tests.
+      GLPI_BASE_URL: http://localhost:8090 # Default URL for GLPI. Used for e2e tests.
       PHP: php
       GLPI_ENVIRONMENT_TYPE: e2e_testing
     volumes:
