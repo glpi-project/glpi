@@ -167,7 +167,9 @@ class Inventory
         try {
             $this->inventory_tmpfile = tempnam(GLPI_INVENTORY_DIR, $tempnam_ext);
         } catch (FilesystemException $e) {
-            trigger_error($e->getMessage(), E_USER_WARNING);
+            /** @var \Psr\Log\LoggerInterface $PHPLOGGER */
+            global $PHPLOGGER;
+            $PHPLOGGER->error($e->getMessage(), ['exception' => $e]);
             $this->inventory_tmpfile = false;
         }
 
@@ -1025,7 +1027,12 @@ class Inventory
                         $dropfile->getFileName()
                     );
                 } catch (FilesystemException $e) {
-                    trigger_error(sprintf(__('Unable to remove file %1$s'), $dropfile->getRealPath()), E_USER_WARNING);
+                    /** @var \Psr\Log\LoggerInterface $PHPLOGGER */
+                    global $PHPLOGGER;
+                    $PHPLOGGER->error(
+                        sprintf('Unable to remove file %1$s', $dropfile->getRealPath()),
+                        ['exception' => $e]
+                    );
                     $message = sprintf(
                         __('File %1$s %2$s has not been removed'),
                         $itemtype,
