@@ -43,11 +43,19 @@ use Glpi\Marketplace\Api\Plugins as PluginsApi;
 use GLPINetwork;
 use NotificationEvent;
 use Plugin;
+use Safe\Exceptions\FilesystemException;
 use Session;
 use Symfony\Component\HttpFoundation\Response;
 use Toolbox;
 use wapmorgan\UnifiedArchive\Formats;
 use wapmorgan\UnifiedArchive\UnifiedArchive;
+
+use function Safe\ini_set;
+use function Safe\ob_start;
+use function Safe\ob_end_clean;
+use function Safe\parse_url;
+use function Safe\realpath;
+use function Safe\session_write_close;
 
 /**
  * Nota: `CommonGLPI` is required here to be able to provide a displayable name for its crons and notifications.
@@ -310,9 +318,13 @@ class Controller extends CommonGLPI
         // Compute marketplace dir priority
         $marketplace_priority = null;
         foreach (GLPI_PLUGINS_DIRECTORIES as $position => $base_dir) {
-            if (realpath($base_dir) !== false && realpath($base_dir) === realpath(GLPI_MARKETPLACE_DIR)) {
-                $marketplace_priority = -$position;
-                break;
+            try {
+                if (realpath($base_dir) === realpath(GLPI_MARKETPLACE_DIR)) {
+                    $marketplace_priority = -$position;
+                    break;
+                }
+            } catch (FilesystemException $e) {
+                //no error
             }
         }
 

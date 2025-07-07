@@ -39,6 +39,8 @@ use League\OAuth2\Server\Entities\ClientEntityInterface;
 use League\OAuth2\Server\Entities\ScopeEntityInterface;
 use League\OAuth2\Server\Repositories\ScopeRepositoryInterface;
 
+use function Safe\json_decode;
+
 class ScopeRepository implements ScopeRepositoryInterface
 {
     public function getScopeEntityByIdentifier($identifier): ?ScopeEntityInterface

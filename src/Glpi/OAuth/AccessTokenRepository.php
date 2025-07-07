@@ -38,6 +38,7 @@ namespace Glpi\OAuth;
 use League\OAuth2\Server\Entities\AccessTokenEntityInterface;
 use League\OAuth2\Server\Entities\ClientEntityInterface;
 use League\OAuth2\Server\Repositories\AccessTokenRepositoryInterface;
+use Safe\DateTime;
 
 class AccessTokenRepository implements AccessTokenRepositoryInterface
 {
@@ -93,6 +94,6 @@ class AccessTokenRepository implements AccessTokenRepositoryInterface
         }
         // Check if the token is expired
         $expiration = $iterator->current()['date_expiration'];
-        return (new \DateTime($expiration)) < new \DateTime();
+        return (new DateTime($expiration)) < new DateTime();
     }
 }

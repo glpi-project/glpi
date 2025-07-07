@@ -47,6 +47,9 @@ use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 use Symfony\Component\Routing\Router;
 
+use function Safe\preg_match;
+use function Safe\preg_split;
+
 final readonly class PluginsRouterListener implements EventSubscriberInterface
 {
     use KernelListenerTrait;
@@ -74,7 +77,7 @@ final readonly class PluginsRouterListener implements EventSubscriberInterface
         }
 
         $route_matches = [];
-        if (\preg_match('#^/plugins/(?<plugin_key>[^\/]+)(?<plugin_resource>/.+)$#', $request->getPathInfo(), $route_matches) !== 1) {
+        if (preg_match('#^/plugins/(?<plugin_key>[^\/]+)(?<plugin_resource>/.+)$#', $request->getPathInfo(), $route_matches) !== 1) {
             return;
         }
 
@@ -119,7 +122,7 @@ final readonly class PluginsRouterListener implements EventSubscriberInterface
         if (\is_array($controller)) {
             [$class, $method] = $controller;
         } elseif (\str_contains($controller, ':')) {
-            [$class, $method] = \preg_split('~:+~', $controller, 2);
+            [$class, $method] = preg_split('~:+~', $controller, 2);
         } else {
             $class = $controller;
             $method = null;

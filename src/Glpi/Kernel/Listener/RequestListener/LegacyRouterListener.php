@@ -40,10 +40,14 @@ use Glpi\Http\RequestRouterTrait;
 use Glpi\Kernel\KernelListenerTrait;
 use Glpi\Kernel\ListenersPriority;
 use Plugin;
+use Safe\Exceptions\DirException;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
+
+use function Safe\chdir;
+use function Safe\preg_match;
 
 final class LegacyRouterListener implements EventSubscriberInterface
 {
@@ -99,8 +103,12 @@ final class LegacyRouterListener implements EventSubscriberInterface
         }
 
         // Ensure `getcwd()` and inclusion path is based on requested file FS location.
-        // use `@` to silence errors on unit tests (`chdir` does not work on streamed mocked dir)
-        @chdir(dirname($target_file));
+        try {
+            // use `@` to silence errors on unit tests (`chdir` does not work on streamed mocked dir)
+            @chdir(dirname($target_file));
+        } catch (DirException $e) {
+            //no error
+        }
 
         // Setting the `_controller` attribute will force Symfony to consider that routing was resolved already.
         // @see `\Symfony\Component\HttpKernel\EventListener\RouterListener::onKernelRequest()`

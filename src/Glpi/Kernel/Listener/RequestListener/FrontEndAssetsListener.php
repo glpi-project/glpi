@@ -38,11 +38,15 @@ use Glpi\Exception\Http\NotFoundHttpException;
 use Glpi\Http\RequestRouterTrait;
 use Glpi\Kernel\ListenersPriority;
 use Plugin;
+use Safe\Exceptions\FileinfoException;
 use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
+
+use function Safe\mime_content_type;
+use function Safe\preg_match;
 
 final class FrontEndAssetsListener implements EventSubscriberInterface
 {
@@ -119,9 +123,9 @@ final class FrontEndAssetsListener implements EventSubscriberInterface
             case 'woff2':
                 return 'font/woff2';
             default:
-                $mime = \mime_content_type($target_file);
-
-                if ($mime === false) {
+                try {
+                    $mime = mime_content_type($target_file);
+                } catch (FileinfoException $e) {
                     $mime = 'application/octet-stream';
                 }
 

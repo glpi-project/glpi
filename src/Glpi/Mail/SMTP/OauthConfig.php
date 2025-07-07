@@ -40,7 +40,9 @@ use Glpi\Mail\SMTP\OauthProvider\Azure;
 use Glpi\Mail\SMTP\OauthProvider\Google;
 use Glpi\Mail\SMTP\OauthProvider\ProviderInterface;
 use GLPIKey;
-use Toolbox;
+use Safe\Exceptions\JsonException;
+
+use function Safe\json_decode;
 
 final class OauthConfig
 {
@@ -98,9 +100,12 @@ final class OauthConfig
 
         $client_id        = $config['smtp_oauth_client_id'];
         $client_secret    = (new GLPIKey())->decrypt($config['smtp_oauth_client_secret']);
-        $provider_options = Toolbox::isJSON($config['smtp_oauth_options'])
-            ? json_decode($config['smtp_oauth_options'], true)
-            : [];
+        $provider_options = [];
+        try {
+            $provider_options = json_decode($config['smtp_oauth_options'], true);
+        } catch (JsonException $e) {
+            //no error
+        }
 
         if ($config['proxy_name'] !== '') {
             // Connection using proxy

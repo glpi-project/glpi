@@ -37,6 +37,7 @@ namespace tests\units\Glpi\System\Diagnostic;
 use Glpi\System\Diagnostic\SourceCodeIntegrityChecker;
 use Glpi\Toolbox\VersionParser;
 use org\bovigo\vfs\vfsStream;
+use Psr\Log\LogLevel;
 
 class SourceCodeIntegrityCheckerTest extends \GLPITestCase
 {
@@ -232,7 +233,11 @@ EOL,
         $checker = new SourceCodeIntegrityChecker($root_dir);
 
         $this->expectExceptionMessage('Error while trying to read the source code file manifest.');
-        $checker->getSummary();
+        try {
+            $checker->getSummary();
+        } finally {
+            $this->hasPhpLogRecordThatContains('file_get_contents(vfs://root/version/11.0.0): Failed to open stream', LogLevel::WARNING);
+        }
     }
 
     public function testGetSummaryExceptionOnInvalidManifestFile()

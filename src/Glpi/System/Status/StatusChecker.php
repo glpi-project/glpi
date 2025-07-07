@@ -43,6 +43,8 @@ use MailCollector;
 use Plugin;
 use Toolbox;
 
+use function Safe\fclose;
+
 /**
  * @since 9.5.0
  */
@@ -333,7 +335,7 @@ final class StatusChecker
                         } else {
                             $host = $param['address'];
                         }
-                        if ($fp = @fsockopen($host, $param['port'], $errno, $errstr, 1)) {
+                        if ($fp = @fsockopen($host, $param['port'], $errno, $errstr, 1)) { // @phpstan-ignore theCodingMachineSafe.function
                             $status['servers'][$display_name] = [
                                 'status' => self::STATUS_OK,
                             ];
@@ -511,7 +513,7 @@ final class StatusChecker
                     'status' => self::STATUS_OK,
                 ],
             ];
-            $session_handler = ini_get('session.save_handler');
+            $session_handler = ini_get('session.save_handler'); // @phpstan-ignore theCodingMachineSafe.function
             if ($session_handler !== false && strtolower($session_handler) === 'files') {
                 // Check session dir (useful when NFS mounted))
                 if (!is_dir(GLPI_SESSION_DIR)) {

@@ -38,6 +38,9 @@ namespace Glpi\System\Diagnostic;
 use CommonDBTM;
 use CommonTreeDropdown;
 
+use function Safe\preg_grep;
+use function Safe\preg_match;
+
 /**
  * @since 10.0.0
  */

@@ -45,6 +45,10 @@ use Override;
 use SavedSearch;
 use Ticket;
 
+use function Safe\preg_match;
+use function Safe\preg_replace;
+use function Safe\preg_split;
+
 /**
  *
  * @internal Not for use outside {@link Search} class and the "Glpi\Search" namespace.

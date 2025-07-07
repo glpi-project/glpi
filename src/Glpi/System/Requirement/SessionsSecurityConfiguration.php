@@ -35,6 +35,8 @@
 
 namespace Glpi\System\Requirement;
 
+use function Safe\ini_get;
+
 /**
  * @since 10.0.3
  */

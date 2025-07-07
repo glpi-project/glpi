@@ -71,6 +71,10 @@ use Profile;
 use ProfileRight;
 use Toolbox;
 
+use function Safe\preg_match;
+use function Safe\preg_replace;
+use function Safe\strtotime;
+
 /**
  * @final
  */
@@ -293,7 +297,7 @@ class GenericobjectPluginMigration extends AbstractPluginMigration
                 continue;
             }
 
-            $dropdown_system_name = \ucfirst(\preg_replace('/^PluginGenericobject/', '', $itemtype));
+            $dropdown_system_name = \ucfirst(preg_replace('/^PluginGenericobject/', '', $itemtype));
 
             // Compute translations
             $translations = [];
@@ -350,7 +354,7 @@ class GenericobjectPluginMigration extends AbstractPluginMigration
             $existing_definition = new AssetDefinition();
             if (
                 $existing_definition->getFromDBByCrit($reconciliation_criteria)
-                && \strtotime($type_data['date_mod']) < \strtotime($existing_definition->fields['date_mod'])
+                && strtotime($type_data['date_mod']) < strtotime($existing_definition->fields['date_mod'])
             ) {
                 $this->result->markItemAsReused(AssetDefinition::class, $existing_definition->getID());
                 $this->result->addMessage(
@@ -628,7 +632,7 @@ class GenericobjectPluginMigration extends AbstractPluginMigration
                 $existing_dropdown = new $dropdown_class();
                 if (
                     $existing_dropdown->getFromDBByCrit($reconciliation_criteria)
-                    && \strtotime($dropdown_data['date_mod']) < \strtotime($existing_dropdown->fields['date_mod'])
+                    && strtotime($dropdown_data['date_mod']) < strtotime($existing_dropdown->fields['date_mod'])
                 ) {
                     $this->result->markItemAsReused($dropdown_class, $existing_dropdown->getID());
                     $this->result->addMessage(
@@ -1115,15 +1119,15 @@ class GenericobjectPluginMigration extends AbstractPluginMigration
             return $this->dropdown_definitions[$itemtype]->getDropdownClassName();
         }
 
-        if (\preg_match('/Model$/i', $itemtype) === 1) {
-            $main_itemtype = \preg_replace('/Model$/i', '', $itemtype);
+        if (preg_match('/Model$/i', $itemtype) === 1) {
+            $main_itemtype = preg_replace('/Model$/i', '', $itemtype);
             if (\array_key_exists($main_itemtype, $this->asset_definitions)) {
                 return $this->asset_definitions[$main_itemtype]->getAssetModelClassName();
             }
         }
 
-        if (\preg_match('/Type$/i', $itemtype) === 1) {
-            $main_itemtype = \preg_replace('/Type$/i', '', $itemtype);
+        if (preg_match('/Type$/i', $itemtype) === 1) {
+            $main_itemtype = preg_replace('/Type$/i', '', $itemtype);
             if (\array_key_exists($main_itemtype, $this->asset_definitions)) {
                 return $this->asset_definitions[$main_itemtype]->getAssetTypeClassName();
             }
@@ -1258,16 +1262,16 @@ class GenericobjectPluginMigration extends AbstractPluginMigration
         } else {
             // Keep only the main column type by removing anything that is preceded by a space (e.g. " unsigned")
             // or a parenthesis (e.g. "(255)").
-            $field_type = \strtolower(\preg_replace('/^([a-z]+)([ (].+)*$/', '$1', $field_type));
+            $field_type = \strtolower(preg_replace('/^([a-z]+)([ (].+)*$/', '$1', $field_type));
 
             switch (true) {
                 case $field_type === 'tinyint':
                     $specs['type'] = BooleanType::class;
                     break;
-                case \preg_match('/text$/', $field_type):
+                case preg_match('/text$/', $field_type):
                     $specs['type'] = TextType::class;
                     break;
-                case \preg_match('/int$/', $field_type):
+                case preg_match('/int$/', $field_type):
                     $specs['type'] = NumberType::class;
                     break;
                 case \in_array($field_type, ['float', 'decimal']):
@@ -1393,7 +1397,7 @@ class GenericobjectPluginMigration extends AbstractPluginMigration
      */
     private function getGenericObjectFieldsDefinition(string $itemtype): array
     {
-        $system_name = \preg_replace('/^PluginGenericObject/', '', $itemtype);
+        $system_name = preg_replace('/^PluginGenericObject/', '', $itemtype);
 
         $constant_files = [
             sprintf('%s/genericobject/fields/field.constant.php', GLPI_PLUGIN_DOC_DIR),

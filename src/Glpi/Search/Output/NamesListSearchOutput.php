@@ -35,6 +35,8 @@
 
 namespace Glpi\Search\Output;
 
+use function Safe\preg_match;
+
 /**
  *
  * @internal Not for use outside {@link Search} class and the "Glpi\Search" namespace.

@@ -39,6 +39,9 @@ use Config;
 use Rule;
 use RuleCollection;
 
+use function Safe\json_decode;
+use function Safe\json_encode;
+
 final class RulesManager
 {
     /**

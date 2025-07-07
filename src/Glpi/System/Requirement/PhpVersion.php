@@ -37,6 +37,8 @@ namespace Glpi\System\Requirement;
 
 use Glpi\Toolbox\VersionParser;
 
+use function Safe\preg_replace;
+
 /**
  * @since 9.5.0
  */

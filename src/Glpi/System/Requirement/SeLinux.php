@@ -35,6 +35,12 @@
 
 namespace Glpi\System\Requirement;
 
+use Safe\Exceptions\ExecException;
+
+use function Safe\exec;
+use function Safe\ini_get;
+use function Safe\preg_replace;
+
 /**
  * @since 9.5.0
  */
@@ -68,6 +74,7 @@ class SeLinux extends AbstractRequirement
             return;
         }
 
+        $mode = 'unknown';
         if ($this->doesSelinuxIsEnabledFunctionExists() && $this->doesSelinuxGetenforceFunctionExists()) {
             // Use https://pecl.php.net/package/selinux
             if (!$this->isSelinuxEnabled()) {
@@ -81,12 +88,16 @@ class SeLinux extends AbstractRequirement
                     $mode = 'permissive';
                 }
             }
-        } else {
-            exec('/usr/sbin/getenforce', $mode);
-            if (!$mode) {
-                $mode = 'unknown';
-            } else {
-                $mode = strtolower(array_pop($mode));
+        } elseif ($exec_enabled) {
+            try {
+                exec('/usr/sbin/getenforce', $mode);
+                if (!$mode) {
+                    $mode = 'unknown';
+                } else {
+                    $mode = strtolower(array_pop($mode));
+                }
+            } catch (ExecException $e) {
+                //no error message, assume SELinux is not enabled
             }
         }
         if (!in_array($mode, ['enforcing', 'permissive', 'disabled'])) {
@@ -122,14 +133,17 @@ class SeLinux extends AbstractRequirement
                 }
             } else {
                 // command result is something like "httpd_can_network_connect --> on"
+                $state = 'unknown';
                 if ($exec_enabled) {
-                    $state = preg_replace(
-                        '/^.*(on|off)$/',
-                        '$1',
-                        strtolower(exec('/usr/sbin/getsebool ' . $bool))
-                    );
-                } else {
-                    $state = 'unknown';
+                    try {
+                        $state = preg_replace(
+                            '/^.*(on|off)$/',
+                            '$1',
+                            strtolower(exec('/usr/sbin/getsebool ' . $bool))
+                        );
+                    } catch (ExecException $e) {
+                        //no error message, state is unknown
+                    }
                 }
             }
             if (!in_array($state, ['on', 'off'])) {

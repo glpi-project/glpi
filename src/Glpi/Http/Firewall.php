@@ -39,6 +39,8 @@ use Glpi\Exception\Http\AccessDeniedHttpException;
 use Session;
 use Symfony\Component\HttpFoundation\Request;
 
+use function Safe\preg_match;
+
 /**
  * @since 10.0.10
  */
@@ -247,7 +249,7 @@ final class Firewall
                 $plugin_dir . '/' . $plugin_key . '/public' . $plugin_resource,
             ];
             $resource_matches = [];
-            if (\preg_match('#^(?<filename>.+\.php)(/.*)$#', $plugin_resource, $resource_matches)) {
+            if (preg_match('#^(?<filename>.+\.php)(/.*)$#', $plugin_resource, $resource_matches)) {
                 // /front/api.php/path/to/endpoint -> /front/api.php
                 $expected_filenames[] = $plugin_dir . '/' . $plugin_key . $resource_matches['filename'];
             }

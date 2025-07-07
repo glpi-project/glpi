@@ -35,6 +35,10 @@
 
 namespace Glpi\System\Requirement;
 
+use Safe\Exceptions\FilesystemException;
+
+use function Safe\realpath;
+
 /**
  * @since 9.5.0
  */
@@ -54,52 +58,56 @@ class DirectoryWriteAccess extends AbstractRequirement
      */
     public function __construct(string $path, bool $optional = false, ?string $description = null)
     {
-        switch (realpath($path)) {
-            case realpath(GLPI_CACHE_DIR):
-                $title = __('Permissions for cache files');
-                break;
-            case realpath(GLPI_CONFIG_DIR):
-                $title = __('Permissions for setting files');
-                break;
-            case realpath(GLPI_CRON_DIR):
-                $title = __('Permissions for automatic actions files');
-                break;
-            case realpath(GLPI_DOC_DIR):
-                $title = __('Permissions for document files');
-                break;
-            case realpath(GLPI_GRAPH_DIR):
-                $title = __('Permissions for graphic files');
-                break;
-            case realpath(GLPI_LOCK_DIR):
-                $title = __('Permissions for lock files');
-                break;
-            case realpath(GLPI_MARKETPLACE_DIR):
-                $title = __('Permissions for marketplace directory');
-                break;
-            case realpath(GLPI_PLUGIN_DOC_DIR):
-                $title = __('Permissions for plugins document files');
-                break;
-            case realpath(GLPI_PICTURE_DIR):
-                $title = __('Permissions for pictures files');
-                break;
-            case realpath(GLPI_RSS_DIR):
-                $title = __('Permissions for rss files');
-                break;
-            case realpath(GLPI_SESSION_DIR):
-                $title = __('Permissions for session files');
-                $session_handler = ini_get('session.save_handler');
-                $optional = $session_handler !== false && strtolower($session_handler) !== 'files';
-                $description = __('If you have "session.save_handler" set to something besides "files" in your php.ini, this is not required.');
-                break;
-            case realpath(GLPI_TMP_DIR):
-                $title = __('Permissions for temporary files');
-                break;
-            case realpath(GLPI_UPLOAD_DIR):
-                $title = __('Permissions for upload files');
-                break;
-            default:
-                $title = sprintf(__('Permissions for directory %s'), $path);
-                break;
+        try {
+            switch (realpath($path)) {
+                case realpath(GLPI_CACHE_DIR):
+                    $title = __('Permissions for cache files');
+                    break;
+                case realpath(GLPI_CONFIG_DIR):
+                    $title = __('Permissions for setting files');
+                    break;
+                case realpath(GLPI_CRON_DIR):
+                    $title = __('Permissions for automatic actions files');
+                    break;
+                case realpath(GLPI_DOC_DIR):
+                    $title = __('Permissions for document files');
+                    break;
+                case realpath(GLPI_GRAPH_DIR):
+                    $title = __('Permissions for graphic files');
+                    break;
+                case realpath(GLPI_LOCK_DIR):
+                    $title = __('Permissions for lock files');
+                    break;
+                case realpath(GLPI_MARKETPLACE_DIR):
+                    $title = __('Permissions for marketplace directory');
+                    break;
+                case realpath(GLPI_PLUGIN_DOC_DIR):
+                    $title = __('Permissions for plugins document files');
+                    break;
+                case realpath(GLPI_PICTURE_DIR):
+                    $title = __('Permissions for pictures files');
+                    break;
+                case realpath(GLPI_RSS_DIR):
+                    $title = __('Permissions for rss files');
+                    break;
+                case realpath(GLPI_SESSION_DIR):
+                    $title = __('Permissions for session files');
+                    $session_handler = ini_get('session.save_handler'); // @phpstan-ignore theCodingMachineSafe.function
+                    $optional = $session_handler !== false && strtolower($session_handler) !== 'files';
+                    $description = __('If you have "session.save_handler" set to something besides "files" in your php.ini, this is not required.');
+                    break;
+                case realpath(GLPI_TMP_DIR):
+                    $title = __('Permissions for temporary files');
+                    break;
+                case realpath(GLPI_UPLOAD_DIR):
+                    $title = __('Permissions for upload files');
+                    break;
+                default:
+                    $title = sprintf(__('Permissions for directory %s'), $path);
+                    break;
+            }
+        } catch (FilesystemException $e) {
+            $title = sprintf(__('Permissions for directory %s'), $path);
         }
 
         parent::__construct($title, $description, $optional);

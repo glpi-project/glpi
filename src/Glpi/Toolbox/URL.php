@@ -35,6 +35,9 @@
 
 namespace Glpi\Toolbox;
 
+use function Safe\parse_url;
+use function Safe\preg_match;
+
 final class URL
 {
     /**

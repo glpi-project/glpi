@@ -39,8 +39,15 @@ use DBmysql;
 use Glpi\Toolbox\DatabaseSchema;
 use Glpi\Toolbox\VersionParser;
 use Plugin;
+use Safe\Exceptions\FilesystemException;
 use SebastianBergmann\Diff\Differ;
 use SebastianBergmann\Diff\Output\UnifiedDiffOutputBuilder;
+
+use function Safe\file_get_contents;
+use function Safe\preg_match;
+use function Safe\preg_match_all;
+use function Safe\preg_replace;
+use function Safe\preg_replace_callback;
 
 /**
  * @since 10.0.0
@@ -222,12 +229,10 @@ class DatabaseSchemaIntegrityChecker
      */
     public function extractSchemaFromFile(string $schema_path): array
     {
-        if (
-            !is_file($schema_path)
-            || !is_readable($schema_path)
-            || ($schema_sql = file_get_contents($schema_path)) === false
-        ) {
-            throw new \RuntimeException(sprintf(__('Unable to read installation file "%s".'), $schema_path));
+        try {
+            $schema_sql = file_get_contents($schema_path);
+        } catch (FilesystemException $e) {
+            throw new \RuntimeException(sprintf(__('Unable to read installation file "%s".'), $schema_path), $e->getCode(), $e);
         }
 
         $matches = [];

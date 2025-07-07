@@ -100,6 +100,11 @@ use Toolbox;
 use User;
 use ValidatorSubstitute;
 
+use function Safe\preg_match;
+use function Safe\preg_replace;
+use function Safe\preg_split;
+use function Safe\strtotime;
+
 /**
  *
  * @internal Not for use outside {@link Search} class and the "Glpi\Search" namespace.

@@ -42,6 +42,10 @@ use Glpi\Message\MessageType;
 use Glpi\RichText\RichText;
 use Psr\Log\LoggerAwareTrait;
 
+use function Safe\json_decode;
+use function Safe\strtotime;
+use function Safe\preg_replace;
+
 abstract class AbstractPluginMigration
 {
     use LoggerAwareTrait;
@@ -231,7 +235,7 @@ abstract class AbstractPluginMigration
             if (
                 \array_key_exists('date_mod', $input)
                 && \array_key_exists('date_mod', $item->fields)
-                && \strtotime($input['date_mod']) < \strtotime($item->fields['date_mod'])
+                && strtotime($input['date_mod']) < strtotime($item->fields['date_mod'])
             ) {
                 // The item in GLPI has been modified after the last modification of the plugin item.
                 // We consider the item from the plugin as outdated and preserve the GLPI item.
@@ -261,7 +265,7 @@ abstract class AbstractPluginMigration
                     \is_array($value)
                     && \is_string($item->fields[$fieldname])
                     && \json_validate($item->fields[$fieldname])
-                    && \json_decode($item->fields[$fieldname], associative: true) === $value
+                    && json_decode($item->fields[$fieldname], associative: true) === $value
                 ) {
                     // Passed value is an array identical to the JSON encoded value present in DB.
                     // We consider that the field is not updated.

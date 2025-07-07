@@ -37,6 +37,8 @@ namespace Glpi\Toolbox;
 
 use Glpi\RichText\RichText;
 
+use function Safe\preg_replace;
+
 class DataExport
 {
     /**

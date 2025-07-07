@@ -35,6 +35,8 @@
 
 namespace Glpi\Toolbox;
 
+use function Safe\realpath;
+
 class DatabaseSchema
 {
     /**

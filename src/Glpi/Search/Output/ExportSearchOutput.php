@@ -38,6 +38,8 @@ namespace Glpi\Search\Output;
 use Glpi\Plugin\Hooks;
 use Glpi\Search\SearchOption;
 
+use function Safe\strtotime;
+
 /**
  *
  * @internal Not for use outside {@link Search} class and the "Glpi\Search" namespace.

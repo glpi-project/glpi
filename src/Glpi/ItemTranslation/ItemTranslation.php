@@ -42,6 +42,9 @@ use Glpi\ItemTranslation\Context\ProvideTranslationsInterface;
 use Override;
 use Session;
 
+use function Safe\json_decode;
+use function Safe\json_encode;
+
 class ItemTranslation extends CommonDBChild
 {
     public static $rightname = 'config';

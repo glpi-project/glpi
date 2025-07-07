@@ -58,6 +58,8 @@ use Glpi\Search\Provider\SearchProviderInterface;
 use Glpi\Search\Provider\SQLProvider;
 use Plugin;
 
+use function Safe\preg_match;
+
 /**
  * The search engine.
  *
