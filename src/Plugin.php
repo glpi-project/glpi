@@ -138,6 +138,14 @@ class Plugin extends CommonDBTM
      */
     private static $activated_plugins = [];
 
+
+    /**
+     * List of plugins having their autoloader already registered.
+     *
+     * @var string[]
+     */
+    private static $autoloaded_plugins = [];
+
     /**
      * Loaded plugin list
      *
@@ -285,6 +293,7 @@ class Plugin extends CommonDBTM
 
         self::$booted_plugins = [];
         self::$activated_plugins = [];
+        self::$autoloaded_plugins = [];
         self::$loaded_plugins = [];
 
         $plugins = $this->find(['state' => [self::ACTIVATED, self::TOBECONFIGURED]]);
@@ -303,13 +312,7 @@ class Plugin extends CommonDBTM
                     continue; // try with next base dir
                 }
 
-                // Register PSR-4 autoloader
-                $psr4_dir = $plugin_directory . '/src/';
-                if (is_dir($psr4_dir)) {
-                    $psr4_autoloader = new \Composer\Autoload\ClassLoader();
-                    $psr4_autoloader->addPsr4(NS_PLUG . ucfirst($plugin_key) . '\\', $psr4_dir);
-                    $psr4_autoloader->register();
-                }
+                $this->registerPluginAutoloader($plugin_key, $plugin_directory);
 
                 $boot_function = sprintf('plugin_%s_boot', $plugin_key);
                 if (function_exists($boot_function)) {
@@ -334,6 +337,25 @@ class Plugin extends CommonDBTM
                 }
 
             }
+        }
+    }
+
+    /**
+     * Register the given plugin autoloader.
+     */
+    private function registerPluginAutoloader(string $plugin_key, string $plugin_directory): void
+    {
+        if (in_array($plugin_key, self::$autoloaded_plugins)) {
+            return;
+        }
+
+        $psr4_dir = $plugin_directory . '/src/';
+        if (is_dir($psr4_dir)) {
+            $psr4_autoloader = new \Composer\Autoload\ClassLoader();
+            $psr4_autoloader->addPsr4(NS_PLUG . ucfirst($plugin_key) . '\\', $psr4_dir);
+            $psr4_autoloader->register();
+
+            self::$autoloaded_plugins[] = $plugin_key;
         }
     }
 
@@ -382,6 +404,8 @@ class Plugin extends CommonDBTM
             if ((new self())->loadPluginSetupFile($plugin_key)) {
                 $loaded = true;
                 if (!in_array($plugin_key, self::$loaded_plugins)) {
+                    (new self())->registerPluginAutoloader($plugin_key, $plugin_directory);
+
                     // Init plugin
                     self::$loaded_plugins[] = $plugin_key;
                     $init_function = "plugin_init_$plugin_key";
