@@ -407,7 +407,7 @@ class Lockedfield extends CommonDBTM
     public function getFormFields(): array
     {
         $fields = parent::getFormFields();
-        return array_filter($fields, static fn ($field) => $field !== 'is_global');
+        return array_filter($fields, static fn($field) => $field !== 'is_global');
     }
 
 
