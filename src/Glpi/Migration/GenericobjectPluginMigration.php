@@ -67,6 +67,7 @@ use Glpi\Dropdown\Dropdown;
 use Glpi\Dropdown\DropdownDefinition;
 use Glpi\Message\MessageType;
 use Group_Item;
+use Override;
 use Profile;
 use ProfileRight;
 use Toolbox;
@@ -108,6 +109,18 @@ class GenericobjectPluginMigration extends AbstractPluginMigration
      * @var array<string, \Glpi\Dropdown\DropdownDefinition>
      */
     private array $dropdown_definitions = [];
+
+    #[Override]
+    protected function getHasBeenExecutedConfigurationKey(): string
+    {
+        return 'glpi_11_assets_migration';
+    }
+
+    #[Override]
+    protected function getMainPluginTables(): array
+    {
+        return ['glpi_plugin_genericobject_objects'];
+    }
 
     protected function validatePrerequisites(): bool
     {

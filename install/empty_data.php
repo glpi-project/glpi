@@ -366,6 +366,8 @@ $empty_data_builder = new class {
             'projecttask_inprogress_states_id' => 0,
             'projecttask_completed_states_id' => 0,
             'non_reusable_passwords_count' => 1,
+            'glpi_11_form_migration' => 0,
+            'glpi_11_assets_migration' => 0,
         ];
 
         $tables['glpi_configs'] = [];

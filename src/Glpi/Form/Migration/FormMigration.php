@@ -84,6 +84,7 @@ use Glpi\Form\Section;
 use Glpi\Message\MessageType;
 use Glpi\Migration\AbstractPluginMigration;
 use LogicException;
+use Override;
 
 class FormMigration extends AbstractPluginMigration
 {
@@ -103,6 +104,18 @@ class FormMigration extends AbstractPluginMigration
         parent::__construct($db);
 
         $this->formAccessControlManager = $formAccessControlManager;
+    }
+
+    #[Override]
+    protected function getHasBeenExecutedConfigurationKey(): string
+    {
+        return 'glpi_11_form_migration';
+    }
+
+    #[Override]
+    protected function getMainPluginTables(): array
+    {
+        return ['glpi_plugin_formcreator_forms'];
     }
 
     /**

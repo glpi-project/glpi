@@ -259,3 +259,6 @@ SQL;
     $migration->addField('glpi_assets_customfielddefinitions', 'date_mod', 'timestamp');
     $migration->addKey('glpi_assets_customfielddefinitions', 'date_mod');
 }
+
+// New config values
+$migration->addConfig(['glpi_11_assets_migration' => 0]);
