@@ -46,12 +46,15 @@ use NetworkPortType;
 use RuleImportAssetCollection;
 use Unmanaged;
 
+use function Safe\file_get_contents;
+use function Safe\json_decode;
+use function Safe\preg_match;
+
 class NetworkPort extends InventoryAsset
 {
     use InventoryNetworkPort {
         handlePorts as protected handlePortsTrait;
     }
-
     private $connections = [];
     private $aggregates = [];
     private $vlans = [];
@@ -335,8 +338,6 @@ class NetworkPort extends InventoryAsset
             return;
         }
 
-        //reset, will be populated from rulepassed
-        $this->connection_ports = [];
         $this->current_port = $port;
         $netport = new \NetworkPort();
         $netport->getFromDB($netports_id);
@@ -377,13 +378,6 @@ class NetworkPort extends InventoryAsset
                 return;
             }
 
-            // Info: phpstan report dead code here (see baseline).
-            // Indeed, $this->connection_ports is initialized as an empty array above,
-            // and we never add anything into it.
-            // Thus, this condition above always true and the code under this comment is never executed.
-            // TODO: Investigate to see if the dead code should be removed or
-            // if this is a real bug and this condition should not always be true (most likely the case).
-
             $item_ids = [];
             $real_port_ids = [];
             foreach (array_keys($found_macs) as $k) {
@@ -405,14 +399,12 @@ class NetworkPort extends InventoryAsset
             } elseif (count($real_port_ids) > 1) {
                 trigger_error('Multiple non-virtual NetworkPorts on the computer ('
                     . join(',', array_keys($real_port_ids)) . ')', E_USER_WARNING);
-                return;
             }
         } else { // One mac on port
             if (count($this->connection_ports)) {
                 $connections_id = current(current($this->connection_ports));
                 $this->addPortsWiring($netports_id, $connections_id);
             }
-            return;
         }
     }
 
@@ -618,6 +610,8 @@ class NetworkPort extends InventoryAsset
         if ($this->isLLDP($port)) {
             $this->handleLLDPConnection($port, $netports_id);
         } else {
+            //reset, will be populated from self::rulepassed
+            $this->connection_ports = [];
             $this->handleMacConnection($port, $netports_id);
         }
     }
@@ -649,10 +643,10 @@ class NetworkPort extends InventoryAsset
     /**
      * After rule engine passed, update task (log) and create item if required
      *
-     * @param integer $items_id id of the item (0 if new)
-     * @param string  $itemtype Item type
-     * @param integer $rules_id Matched rule id, if any
-     * @param array   $ports_id Matched port ids, if any
+     * @param integer       $items_id id of the item (0 if new)
+     * @param string        $itemtype Item type
+     * @param integer       $rules_id Matched rule id, if any
+     * @param integer|array $ports_id Matched port ids, if any
      */
     public function rulepassed($items_id, $itemtype, $rules_id, $ports_id = [])
     {

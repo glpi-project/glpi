@@ -36,7 +36,6 @@
 namespace Glpi\Features;
 
 use Agent;
-use CommonDBTM;
 use Computer;
 use DatabaseInstance;
 use Glpi\Asset\Asset_PeripheralAsset;
@@ -48,8 +47,7 @@ use RefusedEquipment;
 
 trait Inventoriable
 {
-    /** @var CommonDBTM|null */
-    protected ?CommonDBTM $agent = null;
+    protected ?Agent $agent = null;
 
     public function pre_purgeInventory()
     {

@@ -43,8 +43,24 @@ use Glpi\Inventory\Conf;
 use Glpi\Http\Request;
 use Glpi\OAuth\Server;
 use League\OAuth2\Server\Exception\OAuthServerException;
+use Safe\Exceptions\SimplexmlException;
 use Toolbox;
 use GLPIKey;
+
+use function Safe\base64_decode;
+use function Safe\gzcompress;
+use function Safe\gzdeflate;
+use function Safe\gzencode;
+use function Safe\gzdecode;
+use function Safe\gzinflate;
+use function Safe\gzuncompress;
+use function Safe\iconv;
+use function Safe\ini_get;
+use function Safe\ini_set;
+use function Safe\json_decode;
+use function Safe\json_encode;
+use function Safe\preg_match;
+use function Safe\simplexml_load_string;
 
 /**
  * Handle agent requests
@@ -355,8 +371,9 @@ abstract class AbstractRequest
         if (mb_detect_encoding($data, 'UTF-8', true) === false) {
             $data = iconv('ISO-8859-1', 'UTF-8', $data);
         }
-        $xml = simplexml_load_string($data, 'SimpleXMLElement', LIBXML_NOCDATA);
-        if (!$xml) {
+        try {
+            $xml = simplexml_load_string($data, 'SimpleXMLElement', LIBXML_NOCDATA);
+        } catch (SimplexmlException $e) {
             $xml_errors = libxml_get_errors();
             /* @var \LibXMLError $xml_error */
             foreach ($xml_errors as $xml_error) {
@@ -372,6 +389,7 @@ abstract class AbstractRequest
             $this->addError('XML not well formed!', 400);
             return false;
         }
+
         $this->deviceid = (string) $xml->DEVICEID;
         //query is not mandatory. Defaults to inventory
         $action = self::INVENT_QUERY;

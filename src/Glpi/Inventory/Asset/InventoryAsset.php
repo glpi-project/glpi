@@ -49,13 +49,16 @@ use Lockedfield;
 use Manufacturer;
 use OperatingSystemKernelVersion;
 
+use function Safe\preg_match;
+use function Safe\preg_replace;
+
 abstract class InventoryAsset
 {
     /** @var array */
     protected $data = [];
     /** @var CommonDBTM */
     protected CommonDBTM $item;
-    /** @var string */
+    /** @var ?string */
     protected $itemtype;
     /** @var array */
     protected $extra_data = [];
@@ -75,9 +78,9 @@ abstract class InventoryAsset
     protected $links_handled = false;
     /** @var boolean */
     protected $with_history = true;
-    /** @var MainAsset */
+    /** @var ?MainAsset */
     protected $main_asset;
-    /** @var string */
+    /** @var ?string */
     protected $request_query;
     /** @var bool */
     private bool $is_new = false;
@@ -484,7 +487,7 @@ abstract class InventoryAsset
             $locks = $lockeds->getLockedNames($item->getType(), $item->isNewItem() ? 0 : $item->fields['id']);
         }
 
-        foreach ($value as $key => $val) {
+        foreach ($value as $key => $val) { // @phpstan-ignore foreach.nonIterable
             if (is_object($val) || is_array($val)) {
                 continue;
             }

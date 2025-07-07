@@ -44,9 +44,21 @@ use Glpi\Inventory\MainAsset\Itemtype;
 use Glpi\Inventory\MainAsset\MainAsset;
 use Lockedfield;
 use RefusedEquipment;
+use Safe\Exceptions\FilesystemException;
 use Session;
 use SNMPCredential;
 use Toolbox;
+
+use function Safe\copy;
+use function Safe\glob;
+use function Safe\file_put_contents;
+use function Safe\filemtime;
+use function Safe\json_decode;
+use function Safe\json_encode;
+use function Safe\mkdir;
+use function Safe\preg_replace;
+use function Safe\tempnam;
+use function Safe\unlink;
 
 /**
  * Handle inventory request
@@ -78,11 +90,11 @@ class Inventory
     private $benchs = [];
     /** @var string|false */
     private $inventory_tmpfile = false;
-    /** @var string */
+    /** @var ?string */
     private $inventory_content;
     /** @var integer */
     private $inventory_format;
-    /** @var MainAsset */
+    /** @var ?MainAsset */
     private $mainasset;
     /** @var string */
     private $request_query;
@@ -141,15 +153,24 @@ class Inventory
             $schema->setExtraSubProperties($this->getSchemaExtraSubProps());
         }
 
+        $tempnam_ext = 'json_';
         if (Request::XML_MODE === $format) {
             $this->inventory_format = Request::XML_MODE;
-            $this->inventory_tmpfile = tempnam(GLPI_INVENTORY_DIR, 'xml_');
+            $tempnam_ext = 'xml_';
             $contentdata = $data->asXML();
             //convert legacy format
             $data = json_decode($converter->convert($contentdata));
         } else {
-            $this->inventory_tmpfile = tempnam(GLPI_INVENTORY_DIR, 'json_');
             $contentdata = json_encode($data, JSON_PRETTY_PRINT);
+        }
+
+        try {
+            $this->inventory_tmpfile = tempnam(GLPI_INVENTORY_DIR, $tempnam_ext);
+        } catch (FilesystemException $e) {
+            /** @var \Psr\Log\LoggerInterface $PHPLOGGER */
+            global $PHPLOGGER;
+            $PHPLOGGER->error($e->getMessage(), ['exception' => $e]);
+            $this->inventory_tmpfile = false;
         }
 
         try {
@@ -767,7 +788,7 @@ class Inventory
     /**
      * Main item handling, including links
      *
-     * @return void;
+     * @return void
      */
     public function handleItem()
     {
@@ -913,12 +934,10 @@ class Inventory
      *
      * @param \CronTask $task CronTask instance
      *
-     * @return void
+     * @return int
      **/
     public static function cronCleantemp($task)
     {
-        $cron_status = 0;
-
         $conf = new Conf();
         $temp_files = glob(GLPI_INVENTORY_DIR . '/*.{' . implode(',', $conf->knownInventoryExtensions()) . '}', GLOB_BRACE);
 
@@ -926,8 +945,12 @@ class Inventory
         foreach ($temp_files as $temp_file) {
             //drop only inventory files that have been created more than 12 hours ago
             if (time() - filemtime($temp_file) >= $time_limit) {
-                unlink($temp_file);
-                $message = sprintf(__('File %1$s has been removed'), $temp_file);
+                try {
+                    unlink($temp_file);
+                    $message = sprintf(__('File %1$s has been removed'), $temp_file);
+                } catch (FilesystemException $e) {
+                    $message = sprintf(__('Unable to remove file %1$s'), $temp_file);
+                }
                 if ($task) {
                     $task->log($message);
                     $task->addVolume(1);
@@ -937,9 +960,7 @@ class Inventory
             }
         }
 
-        $cron_status = 1;
-
-        return $cron_status;
+        return 1;
     }
 
     /**
@@ -947,14 +968,12 @@ class Inventory
      *
      * @param \CronTask $task CronTask instance
      *
-     * @return void
+     * @return int
      **/
     public static function cronCleanorphans($task)
     {
         /** @var \DBmysql $DB */
         global $DB;
-
-        $cron_status = 0;
 
         $conf = new Conf();
         $existing_types = glob(GLPI_INVENTORY_DIR . '/*', GLOB_ONLYDIR);
@@ -978,7 +997,7 @@ class Inventory
 
             if (!count($ids)) {
                 //no files, we're done
-                return;
+                return -1;
             }
 
             $iterator = $DB->request([
@@ -989,7 +1008,7 @@ class Inventory
 
             if (count($iterator) === count($ids)) {
                 //all assets are still present, we're done
-                return;
+                return -1;
             }
 
             //find missing assets
@@ -1000,17 +1019,22 @@ class Inventory
 
             foreach ($orphans as $orphan) {
                 $dropfile = $ids[$orphan];
-                $res = @unlink($dropfile->getRealPath());
-                if (!$res) {
-                    trigger_error(sprintf(__('Unable to remove file %1$s'), $dropfile->getRealPath()), E_USER_WARNING);
+                try {
+                    unlink($dropfile->getRealPath());
                     $message = sprintf(
-                        __('File %1$s %2$s has not been removed'),
+                        __('File %1$s %2$s has been removed'),
                         $itemtype,
                         $dropfile->getFileName()
                     );
-                } else {
+                } catch (FilesystemException $e) {
+                    /** @var \Psr\Log\LoggerInterface $PHPLOGGER */
+                    global $PHPLOGGER;
+                    $PHPLOGGER->error(
+                        sprintf('Unable to remove file %1$s', $dropfile->getRealPath()),
+                        ['exception' => $e]
+                    );
                     $message = sprintf(
-                        __('File %1$s %2$s has been removed'),
+                        __('File %1$s %2$s has not been removed'),
                         $itemtype,
                         $dropfile->getFileName()
                     );
@@ -1024,9 +1048,7 @@ class Inventory
             }
         }
 
-        $cron_status = 1;
-
-        return $cron_status;
+        return 1;
     }
 
     public static function getTypeName($nb = 0)

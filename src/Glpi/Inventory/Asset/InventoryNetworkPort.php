@@ -125,7 +125,7 @@ trait InventoryNetworkPort
         $this->handleUpdates();
         $this->handleCreates();
 
-        if (method_exists($this, 'handleAggregations')) {
+        if (method_exists($this, 'handleAggregations')) { // @phpstan-ignore function.alreadyNarrowedType
             $this->handleAggregations();
         }
 

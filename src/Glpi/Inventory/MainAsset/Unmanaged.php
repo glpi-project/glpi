@@ -103,7 +103,7 @@ class Unmanaged extends MainAsset
                 }
             }
 
-            foreach ($device as $key => $property) {
+            foreach ($device as $key => $property) { /** @phpstan-ignore foreach.nonIterable */
                 $val->$key = $property;
             }
 
@@ -135,10 +135,10 @@ class Unmanaged extends MainAsset
     /**
      * After rule engine passed, update task (log) and create item if required
      *
-     * @param integer $items_id id of the item (0 if new)
-     * @param string  $itemtype Item type
-     * @param integer $rules_id Matched rule id, if any
-     * @param array $ports_id Matched port ids, if any
+     * @param integer       $items_id id of the item (0 if new)
+     * @param string        $itemtype Item type
+     * @param integer       $rules_id Matched rule id, if any
+     * @param integer|array $ports_id Matched port ids, if any
      */
     public function rulepassed($items_id, $itemtype, $rules_id, $ports_id = [])
     {
