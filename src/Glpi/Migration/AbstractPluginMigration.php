@@ -36,6 +36,7 @@ namespace Glpi\Migration;
 
 use CommonDBConnexity;
 use CommonDBTM;
+use Config;
 use DBmysql;
 use Glpi\Progress\AbstractProgressIndicator;
 use Glpi\Message\MessageType;
@@ -73,6 +74,36 @@ abstract class AbstractPluginMigration
         $this->db = $db;
     }
 
+    abstract protected function getHasBeenExecutedConfigurationKey(): string;
+
+    /**
+     * Used to know if there is some potential data to migrate.
+     * Not all tables need to be listed, just the ones that indicate that data
+     * exist for this plugin.
+     */
+    abstract protected function getMainPluginTables(): array;
+
+    final public function hasBeenExecuted(): bool
+    {
+        /**
+         * @var array $CFG_GLPI
+         */
+        global $CFG_GLPI;
+
+        return (bool) $CFG_GLPI[$this->getHasBeenExecutedConfigurationKey()];
+    }
+
+    final public function hasPluginData(): bool
+    {
+        foreach ($this->getMainPluginTables() as $table) {
+            if ($this->db->tableExists($table) && countElementsInTable($table)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     /**
      * Defines the progress indicator.
      */
@@ -91,17 +122,22 @@ abstract class AbstractPluginMigration
     {
         $this->result = new PluginMigrationResult();
 
+        // Use a transaction unless we are already inside one.
+        $use_transaction = !$this->db->inTransaction();
+
         $fully_processed = false;
         try {
             if ($this->validatePrerequisites()) {
-                $this->db->beginTransaction();
-
-                $fully_processed = $this->processMigration();
-
-                if ($simulate === false && $fully_processed === true) {
-                    $this->db->commit();
+                if ($use_transaction) {
+                    $this->db->beginTransaction();
+                    $fully_processed = $this->processMigration();
+                    if ($simulate === false && $fully_processed === true) {
+                        $this->db->commit();
+                    } else {
+                        $this->db->rollBack();
+                    }
                 } else {
-                    $this->db->rollBack();
+                    $fully_processed = $this->processMigration();
                 }
             } else {
                 $this->result->addMessage(MessageType::Error, __('Migration cannot be done.'));
@@ -114,13 +150,15 @@ abstract class AbstractPluginMigration
 
             $this->logger?->error($e->getMessage(), context: ['exception' => $e]);
 
-            if ($this->db->inTransaction()) {
+            if ($use_transaction && $this->db->inTransaction()) {
                 $this->db->rollBack();
             }
         }
 
         $this->result->setFullyProcessed($fully_processed);
-
+        Config::setConfigurationValues('core', [
+            $this->getHasBeenExecutedConfigurationKey() => 1,
+        ]);
         return $this->result;
     }
 
