@@ -743,7 +743,7 @@ TWIG, $twig_params);
                 $result2 = $iterator2->current();
                 $other_ID = $result2['id'];
                 $new_rank = $result2['ranking'];
-                echo $current_rank . ' ' . $ID . '<br>';
+                echo $current_rank . ' ' . (int) $ID . '<br>';
                 echo $new_rank . ' ' . $other_ID . '<br>';
 
                 $rule = $this->getRuleClass();
