@@ -81,6 +81,12 @@ abstract class AbstractDefinition extends CommonDBTM
     abstract public static function getCustomObjectNamespace(): string;
 
     /**
+     * Get the suffix to add to custom object classes.
+     * @return string
+     */
+    abstract public static function getCustomObjectClassSuffix(): string;
+
+    /**
      * Get the class name for the definition manager of this type.
      * @return class-string<AbstractDefinitionManager>
      */
@@ -105,7 +111,7 @@ abstract class AbstractDefinition extends CommonDBTM
      */
     public function getCustomObjectClassName(bool $with_namespace = true): string
     {
-        $classname = $this->fields['system_name'];
+        $classname = $this->fields['system_name'] . static::getCustomObjectClassSuffix();
 
         if ($with_namespace) {
             $classname = static::getCustomObjectNamespace() . '\\' . $classname;

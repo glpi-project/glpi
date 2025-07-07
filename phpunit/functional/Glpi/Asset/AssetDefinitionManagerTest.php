@@ -54,7 +54,7 @@ class AssetDefinitionManagerTest extends DbTestCase
         $mapping = [];
         for ($i = 0; $i < 5; $i++) {
             $system_name = $this->getUniqueString();
-            $mapping['Glpi\\CustomAsset\\' . $system_name] = $this->initAssetDefinition($system_name);
+            $mapping['Glpi\\CustomAsset\\' . $system_name . 'Asset'] = $this->initAssetDefinition($system_name);
         }
 
         foreach ($mapping as $expected_classname => $definition) {
@@ -67,13 +67,13 @@ class AssetDefinitionManagerTest extends DbTestCase
     {
         $this->initAssetDefinition('Test_Item123'); // use a name with numbers and underscore, to validate it works as expected
 
-        $this->assertTrue(\class_exists('Glpi\CustomAsset\Test_Item123'));
-        $this->assertTrue(\class_exists('Glpi\CustomAsset\Test_Item123Model'));
-        $this->assertTrue(\class_exists('Glpi\CustomAsset\Test_Item123Type'));
-        $this->assertTrue(\class_exists('Glpi\CustomAsset\RuleDictionaryTest_Item123ModelCollection'));
-        $this->assertTrue(\class_exists('Glpi\CustomAsset\RuleDictionaryTest_Item123Model'));
-        $this->assertTrue(\class_exists('Glpi\CustomAsset\RuleDictionaryTest_Item123TypeCollection'));
-        $this->assertTrue(\class_exists('Glpi\CustomAsset\RuleDictionaryTest_Item123Type'));
+        $this->assertTrue(\class_exists('Glpi\CustomAsset\Test_Item123Asset'));
+        $this->assertTrue(\class_exists('Glpi\CustomAsset\Test_Item123AssetModel'));
+        $this->assertTrue(\class_exists('Glpi\CustomAsset\Test_Item123AssetType'));
+        $this->assertTrue(\class_exists('Glpi\CustomAsset\RuleDictionaryTest_Item123AssetModelCollection'));
+        $this->assertTrue(\class_exists('Glpi\CustomAsset\RuleDictionaryTest_Item123AssetModel'));
+        $this->assertTrue(\class_exists('Glpi\CustomAsset\RuleDictionaryTest_Item123AssetTypeCollection'));
+        $this->assertTrue(\class_exists('Glpi\CustomAsset\RuleDictionaryTest_Item123AssetType'));
     }
 
     /**

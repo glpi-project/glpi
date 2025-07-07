@@ -1361,10 +1361,8 @@ class GenericobjectPluginMigration extends AbstractPluginMigration
             // targeting multiple custom dropdowns classes or multiple custom assets classes,
             // due to the fact that they share the same table and therefore the same foreign key.
             $suffix = '';
-            if (\is_a($target_type, Asset::class, true)) {
-                $suffix = '_' . \strtolower(\str_replace(AssetDefinition::getCustomObjectNamespace() . '\\', '', $target_type));
-            } elseif (\is_a($target_type, Dropdown::class, true)) {
-                $suffix = '_' . \strtolower(\str_replace(DropdownDefinition::getCustomObjectNamespace() . '\\', '', $target_type));
+            if (\is_a($target_type, Asset::class, true) || \is_a($target_type, Dropdown::class, true)) {
+                $suffix = '_' . \strtolower($target_type::getDefinition()->fields['system_name']);
             }
 
             if (\is_a($target_type, AssetModel::class, true) || \is_a($target_type, AssetType::class, true)) {

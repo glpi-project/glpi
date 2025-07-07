@@ -44,7 +44,7 @@ class DropdownDefinitionManagerTest extends DbTestCase
         $mapping = [];
         for ($i = 0; $i < 5; $i++) {
             $system_name = $this->getUniqueString();
-            $mapping['Glpi\\CustomDropdown\\' . $system_name] = $this->initDropdownDefinition($system_name);
+            $mapping['Glpi\\CustomDropdown\\' . $system_name . 'Dropdown'] = $this->initDropdownDefinition($system_name);
         }
 
         foreach ($mapping as $expected_classname => $definition) {
@@ -57,7 +57,7 @@ class DropdownDefinitionManagerTest extends DbTestCase
     {
         $this->initDropdownDefinition('Iso3Country_Code'); // use a name with numbers and underscore, to validate it works as expected
 
-        $this->assertTrue(\class_exists('Glpi\CustomDropdown\Iso3Country_Code'));
+        $this->assertTrue(\class_exists('Glpi\CustomDropdown\Iso3Country_CodeDropdown'));
     }
 
     /**

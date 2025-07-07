@@ -402,19 +402,22 @@ class AssetDefinitionTest extends DbTestCase
             ],
         ];
 
-        // System name must not end with `Model` suffix
+        // System name can ends with `Model` suffix
         yield [
             'input'    => [
                 'system_name' => 'TestAssetModel',
             ],
-            'output'   => false,
-            'messages' => [
-                ERROR => [
-                    'The system name must not end with the word &quot;Model&quot; or the word &quot;Type&quot;.',
-                ],
+            'output'   => [
+                'system_name'  => 'TestAssetModel',
+                'label'        => 'TestAssetModel',
+                'capacities'   => '[]',
+                'profiles'     => '[]',
+                'translations' => '[]',
+                'fields_display' => '[]',
             ],
+            'messages' => [],
         ];
-        // but system name can contains `Model`
+        // and can contains `Model`
         yield [
             'input'    => [
                 'system_name' => 'TestAssetModeling',
@@ -430,19 +433,22 @@ class AssetDefinitionTest extends DbTestCase
             'messages' => [],
         ];
 
-        // System name must not end with `Type` suffix
+        // System name can ends with `Type` suffix
         yield [
             'input'    => [
                 'system_name' => 'TestAssetType',
             ],
-            'output'   => false,
-            'messages' => [
-                ERROR => [
-                    'The system name must not end with the word &quot;Model&quot; or the word &quot;Type&quot;.',
-                ],
+            'output'   => [
+                'system_name'  => 'TestAssetType',
+                'label'        => 'TestAssetType',
+                'capacities'   => '[]',
+                'profiles'     => '[]',
+                'translations' => '[]',
+                'fields_display' => '[]',
             ],
+            'messages' => [],
         ];
-        // but system name can contains `Type`
+        // and can contains `Type`
         yield [
             'input'    => [
                 'system_name' => 'TestAssetTyped',

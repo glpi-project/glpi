@@ -711,7 +711,7 @@ function loadDataset()
                 'field_options' => '{"full_width":"0","readonly":"0","required":"0"}',
             ],
         ],
-        'Glpi\\CustomAsset\\Test01' => [
+        'Glpi\\CustomAsset\\Test01Asset' => [
             [
                 'name' => 'TestA',
                 'entities_id' => '_test_root_entity',
@@ -723,7 +723,7 @@ function loadDataset()
                 'custom_teststring' => 'Test String B',
             ],
         ],
-        'Glpi\\CustomAsset\\Test02' => [
+        'Glpi\\CustomAsset\\Test02Asset' => [
             [
                 'name' => 'Test02 A',
                 'entities_id' => '_test_root_entity',

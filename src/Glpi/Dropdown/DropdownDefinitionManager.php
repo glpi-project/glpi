@@ -105,7 +105,9 @@ final class DropdownDefinitionManager extends AbstractDefinitionManager
             return;
         }
 
-        $pattern = '/^' . preg_quote($ns, '/') . '(' . $definition_object::SYSTEM_NAME_PATTERN . ')$/';
+        $class_suffix = $definition_object::getCustomObjectClassSuffix();
+
+        $pattern = '/^' . preg_quote($ns, '/') . '(' . $definition_object::SYSTEM_NAME_PATTERN . ')' . $class_suffix . '$/';
 
         if (preg_match($pattern, $classname) === 1) {
             $system_name = preg_replace($pattern, '$1', $classname);

@@ -64,6 +64,11 @@ final class DropdownDefinition extends AbstractDefinition
         return 'Glpi\\CustomDropdown';
     }
 
+    public static function getCustomObjectClassSuffix(): string
+    {
+        return 'Dropdown';
+    }
+
     public static function getDefinitionManagerClass(): string
     {
         return DropdownDefinitionManager::class;

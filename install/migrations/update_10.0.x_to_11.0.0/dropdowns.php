@@ -70,6 +70,15 @@ SQL;
         'update' => $DB::quoteName('system_name'),
     ]);
     $migration->addKey('glpi_dropdowns_dropdowndefinitions', 'label');
+
+    // Add `Dropdown` suffix to custom asset classes.
+    $definitions_iterator = $DB->request(['FROM' => 'glpi_dropdowns_dropdowndefinitions']);
+    foreach ($definitions_iterator as $definition_data) {
+        $migration->renameItemtype(
+            'Glpi\\CustomDropdown\\' . $definition_data['system_name'],
+            'Glpi\\CustomDropdown\\' . $definition_data['system_name'] . 'Dropdown',
+        );
+    }
 }
 
 if (!$DB->tableExists('glpi_dropdowns_dropdowns')) {

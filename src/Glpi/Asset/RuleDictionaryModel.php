@@ -97,12 +97,12 @@ abstract class RuleDictionaryModel extends RuleDictionnaryDropdown
     public static function getSearchURL($full = true)
     {
         return Toolbox::getItemTypeSearchURL(self::class, $full)
-            . '?class=' . static::getDefinition()->getAssetClassName(false);
+            . '?class=' . static::getDefinition()->fields['system_name'];
     }
 
     public static function getFormURL($full = true)
     {
         return Toolbox::getItemTypeFormURL(self::class, $full)
-            . '?class=' . static::getDefinition()->getAssetClassName(false);
+            . '?class=' . static::getDefinition()->fields['system_name'];
     }
 }

@@ -103,6 +103,15 @@ SQL;
             );
         }
     }
+
+    // Add `Asset` suffix to custom asset classes.
+    foreach ($definitions_iterator as $definition_data) {
+        $migration->renameItemtype(
+            'Glpi\\CustomAsset\\' . $definition_data['system_name'],
+            'Glpi\\CustomAsset\\' . $definition_data['system_name'] . 'Asset',
+            false
+        );
+    }
 }
 
 $ADDTODISPLAYPREF['Glpi\\Asset\\AssetDefinition'] = [2, 3, 4, 5, 6];
