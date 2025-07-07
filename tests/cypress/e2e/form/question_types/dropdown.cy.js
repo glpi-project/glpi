@@ -366,4 +366,114 @@ describe('Dropdown form question type', () => {
         cy.findByRole("option", { name: "Option 2" }).should('exist');
         cy.findByRole("option", { name: "Option 3" }).should('exist');
     });
+
+    it('test default option selection and reset to empty value', () => {
+        // Add new options
+        cy.findByRole("textbox", { name: "Selectable option" }).type("Option 1");
+        cy.findAllByRole("textbox", { name: "Selectable option" }).eq(1).type("Option 2");
+        cy.findAllByRole("textbox", { name: "Selectable option" }).eq(2).type("Option 3");
+
+        // Select the first option
+        cy.getDropdownByLabelText("Default option").selectDropdownValue("Option 1");
+
+        // Check selected options and option labels
+        checkSelectedOptions([0]);
+        checkOptionLabels(["Option 1", "Option 2", "Option 3"]);
+
+        // Save the form and reload the page
+        cy.findByRole("button", { name: "Save" }).click();
+        cy.checkAndCloseAlert("Item successfully updated");
+        cy.reload();
+
+        // Focus on the question
+        cy.findByRole("option", { name: /New question|Test dropdown question/ }).click('top');
+
+        // Check if the default option is selected
+        cy.getDropdownByLabelText("Default option").should('have.text', 'Option 1');
+
+        // Select another option as default
+        cy.getDropdownByLabelText("Default option").selectDropdownValue("-----");
+
+        // Save the form and reload the page
+        cy.findByRole("button", { name: "Save" }).click();
+        cy.checkAndCloseAlert("Item successfully updated");
+        cy.reload();
+
+        // Check if the new default option is selected
+        cy.getDropdownByLabelText("Default option").should('have.text', '-----');
+    });
+
+    // Helper functions for visibility conditions tests
+    function addDropdownOptions() {
+        // Add new options
+        cy.findByRole("textbox", { name: "Selectable option" }).type("Option 1");
+        cy.findAllByRole("textbox", { name: "Selectable option" }).eq(1).type("Option 2");
+        cy.findAllByRole("textbox", { name: "Selectable option" }).eq(2).type("Option 3");
+    }
+
+    function addSecondQuestionWithVisibilityCondition() {
+        // Add a new question
+        cy.findByRole("button", { name: "Add a question" }).click();
+        cy.focused().type("Test visibility question");
+
+        // Add a visibility condition
+        cy.findAllByRole('region', { name: 'Question details' }).eq(1).within(() => {
+            cy.findByRole('button', {'name': 'More actions'}).click();
+            cy.findByRole('button', {'name': 'Configure visibility'}).click();
+            cy.findByRole('radio', {'name': 'Visible if...'}).next().click();
+            cy.getDropdownByLabelText('Item').selectDropdownValue("Test dropdown question");
+            cy.getDropdownByLabelText('Value operator').selectDropdownValue("Is equal to");
+            cy.getDropdownByLabelText('Value').selectDropdownValue("Option 2");
+        });
+
+        // Add visibility condition on submit button
+        cy.findByRole('button', { name: 'Submit button visibility' }).click();
+        cy.findByRole('radio', { name: 'Visible if...' }).next().click();
+        cy.getDropdownByLabelText('Item').selectDropdownValue("Test dropdown question");
+        cy.getDropdownByLabelText('Value operator').selectDropdownValue("Is equal to");
+        cy.getDropdownByLabelText('Value').selectDropdownValue("Option 2");
+    }
+
+    function saveFormAndGoToPreview() {
+        // Save the form
+        cy.findByRole("button", { name: "Save" }).click();
+        cy.checkAndCloseAlert("Item successfully updated");
+
+        // Go to preview page (remove the target="_blank" attribute to stay in the same window)
+        cy.findByRole("link", { name: "Preview" })
+            .invoke('attr', 'target', '_self')
+            .click();
+    }
+
+    it('test visibility conditions with default option', () => {
+        addDropdownOptions();
+
+        // Select default option
+        cy.getDropdownByLabelText("Default option").selectDropdownValue("Option 2");
+
+        addSecondQuestionWithVisibilityCondition();
+        saveFormAndGoToPreview();
+
+        // Validate visibility of the question and submit button
+        cy.findByRole("heading", { name: "Test visibility question" }).should('exist');
+        cy.findByRole("button", { name: "Submit" }).should('exist');
+    });
+
+    it('test visibility conditions without default option', () => {
+        addDropdownOptions();
+
+        addSecondQuestionWithVisibilityCondition();
+        saveFormAndGoToPreview();
+
+        // Validate visibility of the question and submit button
+        cy.findByRole("heading", { name: "Test visibility question" }).should('not.exist');
+        cy.findByRole("button", { name: "Submit" }).should('not.exist');
+
+        // Select the second option in the dropdown
+        cy.getDropdownByLabelText('Test dropdown question').selectDropdownValue('Option 2');
+
+        // Validate visibility of the question and submit button
+        cy.findByRole("heading", { name: "Test visibility question" }).should('exist');
+        cy.findByRole("button", { name: "Submit" }).should('exist');
+    });
 });
