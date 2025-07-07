@@ -162,6 +162,7 @@ TWIG;
                     'init': init,
                     'no_label': true,
                     'multiple': false,
+                    'disabled': is_multiple_dropdown,
                     'display_emptychoice': true,
                     'field_class': 'single-preview-dropdown col-12' ~ (is_multiple_dropdown ? ' d-none' : ''),
                     'mb': '',
@@ -177,6 +178,7 @@ TWIG;
                     'init': init,
                     'no_label': true,
                     'multiple': true,
+                    'disabled': not is_multiple_dropdown,
                     'values': checked_values,
                     'field_class': 'multiple-preview-dropdown col-12' ~ (not is_multiple_dropdown ? ' d-none' : ''),
                     'mb': '',
@@ -246,11 +248,12 @@ TWIG;
                 values,
                 '',
                 {
-                    'no_label'  : true,
-                    'values'    : checked_values,
-                    'multiple'  : is_multiple,
-                    'mb'        : '',
-                    'aria_label': label,
+                    'no_label'           : true,
+                    'values'             : checked_values,
+                    'multiple'           : is_multiple,
+                    'mb'                 : '',
+                    'aria_label'         : label,
+                    'display_emptychoice': checked_values|length == 0,
                 }
             ) }}
 TWIG;

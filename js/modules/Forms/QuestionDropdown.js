@@ -97,7 +97,10 @@ export class GlpiFormQuestionTypeDropdown extends GlpiFormQuestionTypeSelectable
         // Make visible the right preview dropdown
         this._container.closest('[data-glpi-form-editor-question-type-specific]')
             .find('[data-glpi-form-editor-preview-dropdown]')
-            .children().toggleClass('d-none');
+            .children().toggleClass('d-none')
+            .find('select').prop('disabled', function() {
+                return !$(this).prop('disabled');
+            });
     }
 
     /**
