@@ -35,12 +35,9 @@
 
 namespace Glpi\Dashboard\Filters;
 
-use Change;
-use Group;
-use Problem;
-use Ticket;
+use Group_Item;
 
-class GroupTechFilter extends AbstractFilter
+class GroupTechFilter extends AbstractGroupFilter
 {
     public static function getName(): string
     {
@@ -52,108 +49,18 @@ class GroupTechFilter extends AbstractFilter
         return "group_tech";
     }
 
-    public static function canBeApplied(string $table): bool
+    protected static function getGroupType(): int
     {
-        /** @var \DBmysql $DB */
-        global $DB;
-
-        return $DB->fieldExists($table, 'groups_id_tech')
-            || in_array($table, [Ticket::getTable(), Change::getTable(), Problem::getTable()]);
+        return Group_item::GROUP_TYPE_TECH;
     }
 
-    public static function getCriteria(string $table, $value): array
+    protected static function getGroupFieldName(): string
     {
-        /** @var \DBmysql $DB */
-        global $DB;
-
-        $criteria = [];
-
-        $groups_id = null;
-        if ((int) $value > 0) {
-            $groups_id = (int) $value;
-        } elseif ($value == 'mygroups') {
-            $groups_id = $_SESSION['glpigroups'];
-        }
-
-        if ($groups_id != null) {
-            if ($DB->fieldExists($table, 'groups_id_tech')) {
-                $criteria["WHERE"] = [
-                    "$table.groups_id_tech" => $groups_id,
-                ];
-            } elseif (in_array($table, [Ticket::getTable(), Change::getTable(), Problem::getTable()])) {
-                $main_item = match ($table) {
-                    Ticket::getTable() => new Ticket(),
-                    Change::getTable() => new Change(),
-                    Problem::getTable() => new Problem(),
-                    default => throw new \UnexpectedValueException(),
-                };
-                $grouplink = $main_item->grouplinkclass;
-                $gl_table  = $grouplink::getTable();
-                $fk        = $main_item->getForeignKeyField();
-
-                $criteria["JOIN"] = [
-                    "$gl_table as gl" => [
-                        'ON' => [
-                            'gl'   => $fk,
-                            $table => 'id',
-                        ],
-                    ],
-                ];
-                $criteria["WHERE"] = [
-                    "gl.type"      => \CommonITILActor::ASSIGN,
-                    "gl.groups_id" => $groups_id,
-                ];
-            }
-        }
-
-        return $criteria;
+        return 'groups_id_tech';
     }
 
-    public static function getSearchCriteria(string $table, $value): array
+    protected static function getITILSearchOptionID(): int
     {
-        /** @var \DBmysql $DB */
-        global $DB;
-
-        $criteria = [];
-
-        $groups_id = null;
-        if ((int) $value > 0) {
-            $groups_id =  (int) $value;
-        } elseif ($value == 'mygroups') {
-            $groups_id =  'mygroups';
-        }
-
-        if ($groups_id != null) {
-            if ($DB->fieldExists($table, 'groups_id_tech')) {
-                $criteria[] = [
-                    'link'       => 'AND',
-                    'field'      => self::getSearchOptionID($table, 'groups_id_tech', 'glpi_groups'),
-                    'searchtype' => 'equals',
-                    'value'      => $groups_id,
-                ];
-            } elseif (in_array($table, [Ticket::getTable(), Change::getTable(),Problem::getTable()])) {
-                $criteria[] = [
-                    'link'       => 'AND',
-                    'field'      => 8, // group tech
-                    'searchtype' => 'equals',
-                    'value'      => $groups_id,
-                ];
-            }
-        }
-
-        return $criteria;
-    }
-
-    public static function getHtml($value): string
-    {
-        return self::displayList(
-            self::getName(),
-            is_string($value) ? $value : "",
-            'group_tech',
-            Group::class,
-            [
-                'toadd' => ['mygroups' => __("My groups")],
-            ]
-        );
+        return 8;
     }
 }
