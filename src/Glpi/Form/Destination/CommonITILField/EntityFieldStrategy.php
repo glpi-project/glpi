@@ -62,11 +62,11 @@ enum EntityFieldStrategy: string
     public function getEntityID(
         EntityFieldConfig $config,
         AnswersSet $answers_set,
-    ): ?int {
+    ): int {
         return match ($this) {
             self::FORM_FILLER          => $this->getFormFillerEntityID(),
             self::FROM_FORM            => $answers_set->getItem()->fields['entities_id'],
-            self::SPECIFIC_VALUE       => $config->getSpecificEntityId(),
+            self::SPECIFIC_VALUE       => $config->getSpecificEntityId() ?? $this->getFormFillerEntityID(),
             self::SPECIFIC_ANSWER      => $this->getEntityIDForSpecificAnswer(
                 $config->getSpecificQuestionId(),
                 $answers_set
@@ -87,19 +87,19 @@ enum EntityFieldStrategy: string
     private function getEntityIDForSpecificAnswer(
         ?int $question_id,
         AnswersSet $answers_set,
-    ): ?int {
+    ): int {
         if ($question_id === null) {
-            return null;
+            return $this->getFormFillerEntityID();
         }
 
         $answer = $answers_set->getAnswerByQuestionId($question_id);
         if ($answer === null) {
-            return null;
+            return $this->getFormFillerEntityID();
         }
 
         $value = $answer->getRawAnswer();
         if ($value['itemtype'] !== Entity::getType() || !is_numeric($value['items_id'])) {
-            return null;
+            return $this->getFormFillerEntityID();
         }
 
         return (int) $value['items_id'];
@@ -107,7 +107,7 @@ enum EntityFieldStrategy: string
 
     public function getEntityIDForLastValidAnswer(
         AnswersSet $answers_set,
-    ): ?int {
+    ): int {
         $valid_answers = array_filter(
             $answers_set->getAnswersByType(
                 QuestionTypeItem::class
@@ -116,13 +116,13 @@ enum EntityFieldStrategy: string
         );
 
         if (count($valid_answers) == 0) {
-            return null;
+            return $this->getFormFillerEntityID();
         }
 
         $answer = end($valid_answers);
         $value = $answer->getRawAnswer();
         if (!is_numeric($value['items_id'])) {
-            return null;
+            return $this->getFormFillerEntityID();
         }
 
         return (int) $value['items_id'];

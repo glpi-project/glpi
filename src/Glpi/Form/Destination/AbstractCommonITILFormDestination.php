@@ -347,6 +347,11 @@ abstract class AbstractCommonITILFormDestination implements FormDestinationInter
         );
         $template_foreign_key = $template::getForeignKeyField();
 
+        if (!isset($template->fields['id'])) {
+            // No template found
+            return $input;
+        }
+
         if (isset($input[$template_foreign_key])) {
             $template->getFromDB($input[$template_foreign_key]);
         } else {
