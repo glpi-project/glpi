@@ -189,32 +189,15 @@ final class Firewall
     private function computeFallbackStrategyForCore(string $path): string
     {
         if (!file_exists($this->glpi_root . $path)) {
-            $paths = [
-                '/_wdt/' => self::STRATEGY_NO_CHECK,
-                '/_profiler/' => self::STRATEGY_NO_CHECK,
-            ];
-            foreach ($paths as $checkPath => $strategy) {
-                if (\str_starts_with($path, $checkPath)) {
-                    return $strategy;
-                }
-            }
-
             // Modern controllers
             return self::FALLBACK_STRATEGY;
-        }
-
-        if (isset($_GET["token"]) && str_starts_with($path, '/front/planning.php')) {
-            // Token based access for ical/webcal access can be made anonymously.
-            return 'no_check';
         }
 
         $paths = [
             '/front/helpdesk.faq.php' => self::STRATEGY_FAQ_ACCESS,
 
             '/ajax/common.tabs.php' => self::STRATEGY_NO_CHECK, // specific checks done later to allow anonymous access to public FAQ tabs
-            '/ajax/dashboard.php' => self::STRATEGY_NO_CHECK, // specific checks done later to allow anonymous access to embed dashboards
             '/ajax/telemetry.php' => self::STRATEGY_NO_CHECK, // Must be available during installation. This script already checks for permissions when the flag usually set by the installer is missing.
-            '/front/cron.php' => self::STRATEGY_NO_CHECK, // in GLPI mode, cronjob can also be triggered from public pages
             '/front/css.php' => self::STRATEGY_NO_CHECK, // CSS must be accessible also on public pages
             '/front/document.send.php' => self::STRATEGY_NO_CHECK, // may allow unauthenticated access, for public FAQ images
             '/front/locale.php' => self::STRATEGY_NO_CHECK, // locales must be accessible also on public pages

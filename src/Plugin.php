@@ -118,11 +118,18 @@ class Plugin extends CommonDBTM
     public static $rightname = 'config';
 
     /**
-     * Indicates whether plugin states have been checked.
+     * Indicates whether plugins have been initialized.
      *
      * @var boolean
      */
-    private static $plugins_state_checked = false;
+    private static $plugins_initialized = false;
+
+    /**
+     * Booted plugin list
+     *
+     * @var string[]
+     */
+    private static $booted_plugins = [];
 
     /**
      * Activated plugin list
@@ -130,6 +137,14 @@ class Plugin extends CommonDBTM
      * @var string[]
      */
     private static $activated_plugins = [];
+
+
+    /**
+     * List of plugins having their autoloader already registered.
+     *
+     * @var string[]
+     */
+    private static $autoloaded_plugins = [];
 
     /**
      * Loaded plugin list
@@ -268,52 +283,98 @@ class Plugin extends CommonDBTM
         return $this->getFromDBByCrit([$this->getTable() . '.directory' => $dir]);
     }
 
-
     /**
-     * Init plugins list.
-     *
-     * @param boolean $load_plugins     Whether to load active/configurable plugins or not.
-     *
-     * @return void
-     **/
-    public function init(bool $load_plugins = false)
+     * Boot active plugins.
+     */
+    public function bootPlugins(): void
     {
         /** @var \DBmysql|null $DB */
         global $DB;
 
-        self::$plugins_state_checked = false;
+        self::$booted_plugins = [];
         self::$activated_plugins = [];
+        self::$autoloaded_plugins = [];
         self::$loaded_plugins = [];
-
-        $this->checkStates(false);
 
         $plugins = $this->find(['state' => [self::ACTIVATED, self::TOBECONFIGURED]]);
 
-        // Store plugins that are loadable and still marked as active in DB after call to `self::checkStates()`,
-        // but before actually calling plugins init functions,
-        // in order to not have to do a DB query on `self::isActivated()` calls which are commonly use in plugins init functions.
-        $directories_to_load = [];
         foreach ($plugins as $plugin) {
-            if (!$this->isLoadable($plugin['directory'])) {
+            $plugin_key = $plugin['directory'];
+
+            if (!$this->isLoadable($plugin_key)) {
                 continue;
             }
 
-            $directories_to_load[] = $plugin['directory'];
+            foreach (GLPI_PLUGINS_DIRECTORIES as $base_dir) {
+                $plugin_directory = "$base_dir/$plugin_key";
 
-            if ((int) $plugin['state'] === self::ACTIVATED) {
-                self::$activated_plugins[] = $plugin['directory'];
+                if (!is_dir($plugin_directory)) {
+                    continue; // try with next base dir
+                }
+
+                $this->registerPluginAutoloader($plugin_key, $plugin_directory);
+
+                $boot_function = sprintf('plugin_%s_boot', $plugin_key);
+                if (function_exists($boot_function)) {
+                    try {
+                        $boot_function();
+                    } catch (\Throwable $e) {
+                        // Log error
+                        /** @var \Psr\Log\LoggerInterface $PHPLOGGER */
+                        global $PHPLOGGER;
+                        $PHPLOGGER->error(
+                            sprintf('An error occurred during the `%s` plugin boot: %s', $plugin_key, $e->getMessage()),
+                            ['exception' => $e]
+                        );
+                        continue 2; // ignore this plugin
+                    }
+                }
+
+                self::$booted_plugins[] = $plugin_key;
+
+                if ((int) $plugin['state'] === self::ACTIVATED) {
+                    self::$activated_plugins[] = $plugin_key;
+                }
+
             }
         }
+    }
 
-        if ($load_plugins) {
-            foreach ($directories_to_load as $directory) {
-                \Glpi\Debug\Profiler::getInstance()->start("{$directory}:init", \Glpi\Debug\Profiler::CATEGORY_PLUGINS);
-                Plugin::load($directory);
-                \Glpi\Debug\Profiler::getInstance()->stop("{$directory}:init");
-            }
-            // For plugins which require action after all plugin init
-            Plugin::doHook(Hooks::POST_INIT);
+    /**
+     * Register the given plugin autoloader.
+     */
+    private function registerPluginAutoloader(string $plugin_key, string $plugin_directory): void
+    {
+        if (in_array($plugin_key, self::$autoloaded_plugins)) {
+            return;
         }
+
+        $psr4_dir = $plugin_directory . '/src/';
+        if (is_dir($psr4_dir)) {
+            $psr4_autoloader = new \Composer\Autoload\ClassLoader();
+            $psr4_autoloader->addPsr4(NS_PLUG . ucfirst($plugin_key) . '\\', $psr4_dir);
+            $psr4_autoloader->register();
+
+            self::$autoloaded_plugins[] = $plugin_key;
+        }
+    }
+
+    /**
+     * Initialize active plugins.
+     */
+    public function init()
+    {
+        self::$plugins_initialized = false;
+
+        foreach (self::$booted_plugins as $plugin_key) {
+            \Glpi\Debug\Profiler::getInstance()->start("{$plugin_key}:init", \Glpi\Debug\Profiler::CATEGORY_PLUGINS);
+            Plugin::load($plugin_key);
+            \Glpi\Debug\Profiler::getInstance()->stop("{$plugin_key}:init");
+        }
+        // For plugins which require action after all plugin init
+        Plugin::doHook(Hooks::POST_INIT);
+
+        self::$plugins_initialized = true;
     }
 
 
@@ -343,13 +404,7 @@ class Plugin extends CommonDBTM
             if ((new self())->loadPluginSetupFile($plugin_key)) {
                 $loaded = true;
                 if (!in_array($plugin_key, self::$loaded_plugins)) {
-                    // Register PSR-4 autoloader
-                    $psr4_dir = $plugin_directory . '/src/';
-                    if (is_dir($psr4_dir)) {
-                        $psr4_autoloader = new \Composer\Autoload\ClassLoader();
-                        $psr4_autoloader->addPsr4(NS_PLUG . ucfirst($plugin_key) . '\\', $psr4_dir);
-                        $psr4_autoloader->register();
-                    }
+                    (new self())->registerPluginAutoloader($plugin_key, $plugin_directory);
 
                     // Init plugin
                     self::$loaded_plugins[] = $plugin_key;
@@ -541,8 +596,6 @@ class Plugin extends CommonDBTM
         foreach ($directories as $directory) {
             $this->checkPluginState($directory, $scan_inactive_and_new_plugins);
         }
-
-        self::$plugins_state_checked = true;
     }
 
     /**
@@ -551,7 +604,7 @@ class Plugin extends CommonDBTM
     private function getPluginInformation(string $plugin_key): ?array
     {
         if (!array_key_exists($plugin_key, $this->plugins_information)) {
-            $information = $this->getInformationsFromDirectory($plugin_key);
+            $information = $this->getInformationsFromDirectory($plugin_key, with_lang: false);
             $this->plugins_information[$plugin_key] = !empty($information) ? $information : null;
         }
 
@@ -1292,9 +1345,8 @@ class Plugin extends CommonDBTM
      */
     public function isActivated($directory)
     {
-        if (!self::$plugins_state_checked) {
-            // Plugins are not actually loaded/activated before plugins state checks,
-            // and so $activated_plugins will be empty.
+        if (!self::$plugins_initialized) {
+            // `$activated_plugins` content will not be reliable until plugins have been initialized.
             // In this case, plugins states have to be fetched from DB.
             $self = new self();
             return $self->getFromDBbyDir($directory)

@@ -34,7 +34,9 @@
 
 namespace Glpi\Kernel\Listener\PostBootListener;
 
+use Glpi\Debug\Profiler;
 use Glpi\Http\RequestRouterTrait;
+use Glpi\Http\SessionManager;
 use Glpi\Kernel\KernelListenerTrait;
 use Glpi\Kernel\ListenersPriority;
 use Glpi\Kernel\PostBootEvent;
@@ -51,6 +53,7 @@ final class SessionStart implements EventSubscriberInterface
     use RequestRouterTrait;
 
     public function __construct(
+        private SessionManager $session_manager,
         #[Autowire('%kernel.project_dir%')]
         string $glpi_root,
         array $plugin_directories = GLPI_PLUGINS_DIRECTORIES,
@@ -68,6 +71,13 @@ final class SessionStart implements EventSubscriberInterface
 
     public function onPostBoot(): void
     {
+        /**
+         * @var array $CFG_GLPI
+         */
+        global $CFG_GLPI;
+
+        Profiler::getInstance()->start('SessionStart::execute', Profiler::CATEGORY_BOOT);
+
         // Always set the session files path, even when session is not started automatically here.
         // It can indeed be started later manually and the path must be correctly set when it is done.
         if (Session::canWriteSessionFiles()) {
@@ -79,61 +89,33 @@ final class SessionStart implements EventSubscriberInterface
             );
         }
 
-        // The session must be started even in CLI context.
-        // The GLPI code refers to the session in many places
-        // and we cannot safely remove its initialization in the CLI context.
-        $start_session = true;
-
-        if (isset($_SERVER['REQUEST_URI'])) {
-            // Specific configuration related to web context
-
+        if (PHP_SAPI === 'cli') {
+            $is_stateless = true;
+        } else {
             $request = Request::createFromGlobals();
-            $path = $this->normalizePath($request);
-
-            $use_cookies = true;
-            if (\str_starts_with($path, '/api.php') || \str_starts_with($path, '/apirest.php')) {
-                // API clients must not use cookies, as the session token is expected to be passed in headers.
-                $use_cookies = false;
-                // The API endpoint is starting the session manually.
-                $start_session = false;
-            } elseif (
-                $this->getTargetFile($path) !== null
-                && !$this->isTargetAPhpScript($path)
-            ) {
-                // Static files loaded by the FrontEndAssetsListener must not start
-                // a session or it'll prevent them from being cached.
-                $start_session = false;
-            } elseif (\str_starts_with($path, '/caldav.php')) {
-                // CalDAV clients must not use cookies, as the authentication is expected to be passed in headers.
-                $use_cookies = false;
-            } elseif (
-                (
-                    \str_starts_with($path, '/front/central.php')
-                    && $request->query->has('dashboard')
-                )
-                || (
-                    \str_starts_with($path, '/ajax/dashboard.php')
-                    && \in_array($request->get('action'), ['get_dashboard_items', 'get_card', 'get_cards'], true)
-                    && (bool) $request->get('embed')
-                )
-            ) {
-                // Embed dashboards will need to act in an isolated session context
-                $use_cookies = false;
-            } elseif (\str_starts_with($path, '/front/cron.php')) {
-                // The cron endpoint is not expected to use the authenticated user session.
-                $use_cookies = false;
-            } elseif (\str_starts_with($path, '/front/planning.php') && $request->query->has('genical')) {
-                // The `genical` endpoint must not use cookies, as the authentication is expected to be passed in the query parameters.
-                $use_cookies = false;
-            }
-
-            if (!$use_cookies) {
-                ini_set('session.use_cookies', 0);
-            }
+            $is_stateless = $this->session_manager->isResourceStateless($request);
         }
 
-        if ($start_session) {
+        if (!$is_stateless) {
             Session::start();
+
+            // Copy the configuration defaults to the session
+            foreach ($CFG_GLPI['user_pref_field'] as $field) {
+                if (!isset($_SESSION["glpi$field"]) && isset($CFG_GLPI[$field])) {
+                    $_SESSION["glpi$field"] = $CFG_GLPI[$field];
+                }
+            }
+        } else {
+            // Stateless endpoints will often have to start their own PHP session (based on a token for instance).
+            // Be sure to not use cookies defined in the request or to send a cookie in the response.
+            ini_set('session.use_cookies', 0);
+
+            // The session base vars must always be defined.
+            // Indeed, the GLPI code often refers to the `$_SESSION` variable
+            // and we have to set them to prevent massive undefined array key access.
+            Session::initVars();
         }
+
+        Profiler::getInstance()->stop('SessionStart::execute');
     }
 }

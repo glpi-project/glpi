@@ -40,16 +40,17 @@ use Glpi\Kernel\Listener\RequestListener as RequestListener;
 final class ListenersPriority
 {
     public const POST_BOOT_LISTENERS_PRIORITIES = [
-        PostBootListener\SessionStart::class =>                        200,
-        PostBootListener\ProfilerStart::class =>                       190,
-        PostBootListener\InitializeDbConnection::class =>              180,
-        PostBootListener\InitializeCache::class =>                     170,
-        PostBootListener\LoadLegacyConfiguration::class =>             160,
-        PostBootListener\LoadLanguage::class =>                        150,
-        PostBootListener\CustomObjectsAutoloaderRegistration::class => 140,
-        PostBootListener\DisablePluginsOnVersionChange::class =>       135,
-        PostBootListener\InitializePlugins::class =>                   130,
-        PostBootListener\CustomObjectsBootstrap::class =>              120,
+        PostBootListener\ProfilerStart::class =>                       200,
+        PostBootListener\InitializeDbConnection::class =>              190,
+        PostBootListener\InitializeCache::class =>                     180,
+        PostBootListener\LoadLegacyConfiguration::class =>             170,
+        PostBootListener\CustomObjectsAutoloaderRegistration::class => 160,
+        PostBootListener\CheckPluginsStates::class =>                  150,
+        PostBootListener\BootPlugins::class =>                         140,
+        PostBootListener\SessionStart::class =>                        130,
+        PostBootListener\LoadLanguage::class =>                        120,
+        PostBootListener\InitializePlugins::class =>                   110,
+        PostBootListener\CustomObjectsBootstrap::class =>              100,
     ];
 
     public const REQUEST_LISTENERS_PRIORITIES = [

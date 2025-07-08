@@ -498,6 +498,7 @@ TWIG, $twig_params);
     public function initEmbedSession(array $params = [])
     {
         // load minimal session
+        Session::start();
         $_SESSION["glpiactive_entity"]           = $params['entities_id'];
         $_SESSION["glpiactive_entity_recursive"] = $params['is_recursive'];
         $_SESSION["glpiname"]                    = 'embed_dashboard';

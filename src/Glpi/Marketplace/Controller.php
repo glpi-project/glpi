@@ -391,7 +391,7 @@ class Controller extends CommonGLPI
     public static function getAllUpdates()
     {
         $plugin_inst = new Plugin();
-        $plugin_inst->init(true);
+        $plugin_inst->checkStates(true); // force synchronization of the DB data with the filesystem data
         $installed   = $plugin_inst->getList();
 
         $updates = [];
@@ -674,7 +674,13 @@ class Controller extends CommonGLPI
         $plugin->getFromDBbyDir($this->plugin_key);
 
         // reload plugins
-        $plugin->init(true);
+        // FIXME: The marketplace should use 2 distinct requests for its actions
+        // 1. call the method (install, update, ...)
+        // 2. call an endpoint to refresh the corresponding plugin card
+        //
+        // Indeed, forcing the plugins boot/init here may cause issues when trying to reload a plugin already loaded.
+        $plugin->bootPlugins();
+        $plugin->init();
 
         ob_end_clean();
 
