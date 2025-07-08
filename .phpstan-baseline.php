@@ -6862,7 +6862,7 @@ $ignoreErrors[] = [
 $ignoreErrors[] = [
 	'message' => '#^Function strtotime is unsafe to use\\. It can return FALSE instead of throwing an exception\\. Please add \'use function Safe\\\\strtotime;\' at the beginning of the file to use the variant provided by the \'thecodingmachine/safe\' library\\.$#',
 	'identifier' => 'theCodingMachineSafe.function',
-	'count' => 42,
+	'count' => 41,
 	'path' => __DIR__ . '/src/Reservation.php',
 ];
 $ignoreErrors[] = [
