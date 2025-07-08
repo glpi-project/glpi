@@ -4095,7 +4095,7 @@ JAVASCRIPT;
 
                 // Is the survey still valid?
                 $is_valid = $duration_cache[$entities_id] === 0
-                    || (strtotime($result['date_begin']) + $duration_cache[$entities_id] * DAY_TIMESTAMP) > strtotime($_SESSION['glpi_currenttime']);
+                    || (\Safe\strtotime($result['date_begin']) + $duration_cache[$entities_id] * DAY_TIMESTAMP) > \Safe\strtotime($_SESSION['glpi_currenttime']);
                 if (!$is_valid) {
                     // Remove the result from the list
                     unset($results[$k]);
