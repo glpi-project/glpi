@@ -58,6 +58,12 @@ export class GlpiFormRendererController
     #condition_engine;
 
     /**
+     * Form render layout mode
+     * @type {string}
+     */
+    #render_layout;
+
+    /**
      * Create a new GlpiFormRendererController instance for the given target.
      * The target must be a valid form.
      *
@@ -70,6 +76,9 @@ export class GlpiFormRendererController
         if ($(this.#target).prop("tagName") != "FORM") {
             throw new Error("Target must be a valid form");
         }
+
+        // Get render layout from data attribute
+        this.#render_layout = this.#target.dataset.glpiFormRenderLayout || 'step_by_step';
 
         // Init section data
         this.#section_index = 0;
@@ -135,6 +144,11 @@ export class GlpiFormRendererController
     }
 
     async #checkCurrentSectionValidity() {
+        // In single page mode, validate all sections
+        if (this.#render_layout === 'single_page') {
+            return await this.#checkAllSectionsValidity();
+        }
+
         // Get the UUID of the current section
         const currentSectionElement = $(this.#target).find(`[data-glpi-form-renderer-section="${this.#section_index}"]`);
         const currentSectionUuid = currentSectionElement.data('glpi-form-renderer-uuid');
@@ -146,6 +160,21 @@ export class GlpiFormRendererController
             dataType: 'json',
         });
 
+        return this.#processValidationResponse(response);
+    }
+
+    async #checkAllSectionsValidity() {
+        const response = await $.ajax({
+            url: `${CFG_GLPI.root_doc}/Form/ValidateAnswers`,
+            type: 'POST',
+            data: $(this.#target).serialize(),
+            dataType: 'json',
+        });
+
+        return this.#processValidationResponse(response);
+    }
+
+    #processValidationResponse(response) {
         // Remove previous error messages and aria attributes
         $(this.#target)
             .find(".invalid-tooltip")
@@ -244,14 +273,25 @@ export class GlpiFormRendererController
                 .removeClass("d-none");
 
             // Hide everything else
-            $(this.#target)
-                .find(`
-                    [data-glpi-form-renderer-form-header],
-                    [data-glpi-form-renderer-delegation-container],
+            let hideSelector = `
+                [data-glpi-form-renderer-form-header],
+                [data-glpi-form-renderer-delegation-container],
+                [data-glpi-form-renderer-actions]
+            `;
+
+            if (this.#render_layout === 'single_page') {
+                // In single page mode, hide all sections
+                hideSelector += `, [data-glpi-form-renderer-section]`;
+            } else {
+                // In step-by-step mode, hide only current section
+                hideSelector += `,
                     [data-glpi-form-renderer-section=${this.#section_index}],
-                    [data-glpi-form-renderer-parent-section=${this.#section_index}],
-                    [data-glpi-form-renderer-actions]
-                `)
+                    [data-glpi-form-renderer-parent-section=${this.#section_index}]
+                `;
+            }
+
+            $(this.#target)
+                .find(hideSelector)
                 .addClass("d-none");
 
         } catch (e) {
@@ -268,6 +308,11 @@ export class GlpiFormRendererController
      * Go to the next section of the form.
      */
     async #goToNextSection() {
+        // Don't navigate in single page mode
+        if (this.#render_layout === 'single_page') {
+            return;
+        }
+
         if (!await this.#checkCurrentSectionValidity()) {
             return;
         }
@@ -302,6 +347,11 @@ export class GlpiFormRendererController
      * Go to the previous section of the form.
      */
     #goToPreviousSection() {
+        // Don't navigate in single page mode
+        if (this.#render_layout === 'single_page') {
+            return;
+        }
+
         // Hide current section and its questions
         $(this.#target)
             .find(`
@@ -333,6 +383,12 @@ export class GlpiFormRendererController
      * section of the form.
      */
     #updateActionsVisiblity() {
+        // In single page mode, no navigation logic needed (only submit button exists)
+        if (this.#render_layout === 'single_page') {
+            return;
+        }
+
+        // Step-by-step mode logic - manage navigation between sections
         if (this.#hasOneVisibleSectionAfterCurrentIndex()) {
             // Show "next" button if at least one other following section is visible
             $(this.#target)

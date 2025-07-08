@@ -41,12 +41,17 @@
     {# Is this a single or multi sections forms ? #}
     {% set is_single_section_form = form.getSections()|length == 1 %}
 
+    {# Check render layout to determine display behavior #}
+    {% set is_single_page_layout = form.fields.render_layout == constant('Glpi\\Form\\RenderLayout::SINGLE_PAGE').value %}
+    {% set use_step_by_step = not is_single_page_layout and not is_single_section_form %}
+
     <form
         id="forms_form_answers"
         method="POST"
         action="{{ path("/Form/SubmitAnswers") }}"
         {# The pointer-events-none class will be removed by the JS controller once it is loaded #}
         class="pointer-events-none"
+        data-glpi-form-render-layout="{{ form.fields.render_layout }}"
     >
         <div class="form-renderer mt-n5">
 
@@ -74,7 +79,7 @@
                 {% set section_index = loop.index0 %}
 
                 <div
-                    class="{{ is_first_section ? "" : "d-none" }}"
+                    class="{{ (is_single_page_layout or is_first_section) ? "" : "d-none" }}"
                     data-glpi-form-renderer-section="{{ section_index }}"
                     data-glpi-form-renderer-uuid="{{ section.fields.uuid }}"
                     data-glpi-form-renderer-id="{{ section.fields.id }}"
@@ -96,7 +101,7 @@
                         class="card mb-3" {{ not is_single_section_form ? "style='border-top-left-radius: 0;'" : "" }}
                     >
                         <div class="card-body">
-                            {% if not is_single_section_form %}
+                            {% if not is_single_section_form and section.fields.description is not empty %}
                                 <div class="text-muted section-description mb-3">
                                     {{ translate_item_key(section, constant('TRANSLATION_KEY_DESCRIPTION', section))|safe_html }}
                                 </div>
@@ -138,7 +143,7 @@
                                         {% if not skip_question %}
                                             <section
                                                 aria-label="{{ form_block.fields.name }}"
-                                                class="{{ is_first_section ? "" : "d-none" }}"
+                                                class="{{ (is_single_page_layout or is_first_section) ? "" : "d-none" }}"
                                                 style="flex: 1;"
                                                 data-glpi-form-renderer-parent-section="{{ section_index }}"
                                                 data-glpi-form-renderer-id="{{ form_block.fields.id }}"
@@ -192,28 +197,31 @@
 
             {# Actions #}
             <div class="d-flex justify-content-end" data-glpi-form-renderer-actions>
-                <button
-                    type="button"
-                    data-glpi-form-renderer-action="previous-section"
-                    class="btn btn-ghost-secondary d-none d-flex align-items-end me-2 pointer-events-none"
-                >
-                    <i class="ti ti-arrow-narrow-left-dashed me-2"></i>
-                    {{ __("Back") }}
-                </button>
+                {% if use_step_by_step and not is_single_section_form %}
+                    {# Navigation buttons for step-by-step mode #}
+                    <button
+                        type="button"
+                        data-glpi-form-renderer-action="previous-section"
+                        class="btn btn-ghost-secondary d-none d-flex align-items-end me-2 pointer-events-none"
+                    >
+                        <i class="ti ti-arrow-narrow-left-dashed me-2"></i>
+                        {{ __("Back") }}
+                    </button>
 
-                <button
-                    type="button"
-                    data-glpi-form-renderer-action="next-section"
-                    class="btn btn-primary pointer-events-none {{ is_single_section_form ? "d-none" : "" }} d-flex align-items-end"
-                >
-                    <i class="ti ti-arrow-narrow-right-dashed me-2"></i>
-                    {{ __("Continue") }}
-                </button>
+                    <button
+                        type="button"
+                        data-glpi-form-renderer-action="next-section"
+                        class="btn btn-primary pointer-events-none d-flex align-items-end"
+                    >
+                        <i class="ti ti-arrow-narrow-right-dashed me-2"></i>
+                        {{ __("Continue") }}
+                    </button>
+                {% endif %}
 
                 <button
                     type="button"
                     data-glpi-form-renderer-action="submit"
-                    class="btn btn-primary pointer-events-none {{ not is_single_section_form ? "d-none" : "" }} d-flex align-items-end"
+                    class="btn btn-primary pointer-events-none d-flex align-items-end {{ use_step_by_step ? 'd-none' : '' }}"
                     disabled
                     {% if not visibility_engine_output.isFormVisible() %}
                         data-glpi-form-renderer-hidden-by-condition
