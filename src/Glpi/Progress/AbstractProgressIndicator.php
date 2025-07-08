@@ -43,37 +43,37 @@ abstract class AbstractProgressIndicator
     /**
      * Operation start datetime.
      */
-    private readonly DateTimeInterface $started_at;
+    protected readonly DateTimeInterface $started_at;
 
     /**
      * Operation last update datetime.
      */
-    private DateTimeInterface $updated_at;
+    protected DateTimeInterface $updated_at;
 
     /**
      * Operation end datetime.
      */
-    private ?DateTimeInterface $ended_at = null;
+    protected ?DateTimeInterface $ended_at = null;
 
     /**
      * Indicates whether the operation failed.
      */
-    private bool $failed = false;
+    protected bool $failed = false;
 
     /**
      * Current step.
      */
-    private int $current_step = 0;
+    protected int $current_step = 0;
 
     /**
      * Max steps.
      */
-    private int $max_steps = 0;
+    protected int $max_steps = 0;
 
     /**
      * Progress bar message.
      */
-    private string $progress_bar_message = '';
+    protected string $progress_bar_message = '';
 
     public function __construct()
     {
@@ -126,6 +126,14 @@ abstract class AbstractProgressIndicator
     final public function getEndedAt(): ?DateTimeInterface
     {
         return $this->ended_at;
+    }
+
+    /**
+     * Indicates whether the operation is finished.
+     */
+    final public function isFinished(): bool
+    {
+        return $this->ended_at !== null;
     }
 
     /**

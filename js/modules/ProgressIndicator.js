@@ -71,7 +71,7 @@ export class ProgressIndicator
     #started = false;
 
     /**
-     * Progress indicator refresh timeout.
+     * Progress indicator refresh timeout (milliseconds).
      * @type {Number}
      */
     #refresh_timeout = 250;
@@ -202,20 +202,6 @@ export class ProgressIndicator
             }
 
             if (json['failed'] === true) {
-                this.#error_callback();
-                this.#show_progress_failure();
-                return;
-            }
-
-            const now = new Date().getTime();
-            const updated_at = new Date(json['updated_at']).getTime();
-            const diff = now - updated_at;
-            const max_diff = 1000 * 60; // 60 seconds timeout
-            if (diff > max_diff) {
-                this.#display_message(
-                    'error',
-                    __('Main process seems to have timed out. It may be still running in the background though.')
-                );
                 this.#error_callback();
                 this.#show_progress_failure();
                 return;

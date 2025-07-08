@@ -32,7 +32,7 @@
  * ---------------------------------------------------------------------
  */
 
-namespace tests\units\Glpi\Log;
+namespace tests\units\Glpi\Progress;
 
 use Glpi\Progress\ProgressStorage;
 use Glpi\Progress\StoredProgressIndicator;
@@ -84,11 +84,13 @@ class ProgressStorageTest extends GLPITestCase
             ]
         );
         $storage = new ProgressStorage(vfsStream::url('glpi/files/_tmp'));
-        $progress_indicator = new StoredProgressIndicator($storage, $storage_key);
+        $progress_indicator = new StoredProgressIndicator($storage_key);
+        $progress_indicator->setProgressStorage($storage);
 
         // Act
         $storage->save($progress_indicator);
         $fetched_progress_indicator = $storage->getProgressIndicator($storage_key);
+        $fetched_progress_indicator->setProgressStorage($storage); // to simplify comparison, this would be the only diff
 
         // Assert
         $this->assertEquals($progress_indicator, $fetched_progress_indicator);
@@ -139,7 +141,8 @@ class ProgressStorageTest extends GLPITestCase
         $storage = new ProgressStorage(vfsStream::url('glpi/files/_tmp'));
 
         foreach ([$another_sess_id, \session_id()] as $prefix) {
-            $progress_indicator = new StoredProgressIndicator($storage, $prefix . $storage_key_suffix);
+            $progress_indicator = new StoredProgressIndicator($prefix . $storage_key_suffix);
+            $progress_indicator->setProgressStorage($storage);
 
             vfsStream::newFile($prefix . $storage_key_suffix . '.progress')
                 ->at($structure->getChild('files/_tmp'))
@@ -174,7 +177,8 @@ class ProgressStorageTest extends GLPITestCase
             ]
         );
         $storage = new ProgressStorage(vfsStream::url('glpi/files/_tmp'));
-        $progress_indicator = new StoredProgressIndicator($storage, $storage_key);
+        $progress_indicator = new StoredProgressIndicator($storage_key);
+        $progress_indicator->setProgressStorage($storage);
 
         // Act
         $exception = null;
