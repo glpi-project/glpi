@@ -34,8 +34,11 @@
 
 namespace tests\units;
 
+use Appliance;
+use Appliance_Item;
 use Change;
 use CommonDBTM;
+use Computer;
 use DBConnection;
 use DbTestCase;
 use Document;
@@ -5754,6 +5757,45 @@ class SearchTest extends DbTestCase
             'contains',
             "Group 1"
         );
+
+        $all_computers = ['computer_without_appliance', 'computer_appliance_1', 'computer_appliance_1_and_2'];
+        $base_condition = [
+            'link'       => 'AND',
+            'field'      => 1, // Name
+            'searchtype' => 'contains',
+            'value'      => "computer_",
+        ];
+        $appliance1 = static fn() => getItemByTypeName('Appliance', 'appliance1', true);
+
+        yield from self::provideCriteriaWithSubqueries_getAllCombination(
+            'Computer',
+            $base_condition,
+            $all_computers,
+            ['computer_appliance_1', 'computer_appliance_1_and_2'],
+            1210,
+            'equals',
+            $appliance1,
+        );
+
+        yield from self::provideCriteriaWithSubqueries_getAllCombination(
+            'Computer',
+            $base_condition,
+            $all_computers,
+            ['computer_appliance_1_and_2'],
+            1210,
+            'contains',
+            'appliance2',
+        );
+
+        yield from self::provideCriteriaWithSubqueries_getAllCombination(
+            'Computer',
+            $base_condition,
+            $all_computers,
+            ['computer_appliance_1', 'computer_appliance_1_and_2'],
+            1210,
+            'contains',
+            'appliance',
+        );
     }
 
     private function provideCriteriaWithSubqueries_Dataset(): void
@@ -6002,6 +6044,23 @@ class SearchTest extends DbTestCase
             ['users_id' => $user_group_1->getID(), 'groups_id' => $group_1],
             ['users_id' => $user_group_1_and_2->getID(), 'groups_id' => $group_1],
             ['users_id' => $user_group_1_and_2->getID(), 'groups_id' => $group_2],
+        ]);
+
+        [$computer_without_appliance, $computer_appliance_1, $computer_appliance_1_and_2] = $this->createItems(Computer::class, [
+            ['name' => 'computer_without_appliance', 'entities_id' => $root],
+            ['name' => 'computer_appliance_1', 'entities_id' => $root],
+            ['name' => 'computer_appliance_1_and_2', 'entities_id' => $root],
+        ]);
+
+        [$appliance1, $appliance2] = $this->createItems(Appliance::class, [
+            ['name' => 'appliance1', 'entities_id' => $root],
+            ['name' => 'appliance2', 'entities_id' => $root],
+        ]);
+
+        $this->createItems(Appliance_Item::class, [
+            ['items_id' => $computer_appliance_1->getID(), 'appliances_id' => $appliance1->getID(), 'itemtype' => Computer::class],
+            ['items_id' => $computer_appliance_1_and_2->getID(), 'appliances_id' => $appliance1->getID(), 'itemtype' => Computer::class],
+            ['items_id' => $computer_appliance_1_and_2->getID(), 'appliances_id' => $appliance2->getID(), 'itemtype' => Computer::class],
         ]);
     }
 
