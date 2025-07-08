@@ -528,3 +528,10 @@ body pre {
     color: inherit !important;
     background-color: inherit !important;
 }
+
+// Temporary tabler fix, to remove once https://github.com/tabler/tabler/issues/2271 is fixed.
+html {
+    @include media-breakpoint-up(lg) {
+        margin-left: 0 !important;
+    }
+}
