@@ -590,6 +590,40 @@ class Plugin extends CommonDBTM
      */
     public function checkStates($scan_inactive_and_new_plugins = false)
     {
+        /** @var \DBmysql $DB */
+        global $DB;
+
+        if (Update::isUpdateMandatory()) {
+            // Suspend all plugins once a new mandatory update is detected.
+            // This prevents incompatible plugins to be loaded.
+
+            $to_suspend_criteria = [
+                'state' => [self::TOBECONFIGURED, self::ACTIVATED],
+            ];
+
+            if (countElementsInTable(static::getTable(), $to_suspend_criteria) === 0) {
+                return;
+            }
+
+            $DB->update(
+                $this->getTable(),
+                [
+                    'state' => self::SUSPENDED,
+                ],
+                $to_suspend_criteria
+            );
+
+            Event::log(
+                '',
+                Plugin::class,
+                3,
+                "setup",
+                __('All active plugins have been suspended.')
+            );
+
+            return; // Do not check inactive plugins states.
+        }
+
         $directories = [];
 
         // Add known plugins to the check list
@@ -1327,53 +1361,6 @@ class Plugin extends CommonDBTM
 
         return false;
     }
-
-
-    /**
-     * Unactivate all activated plugins for update process.
-     * This will prevent any plugin class to be available through autoloader.
-     **/
-    public function unactivateAll()
-    {
-        /** @var \DBmysql $DB */
-        global $DB;
-
-        if (countElementsInTable(static::getTable(), ['state' => self::ACTIVATED]) === 0) {
-            return;
-        }
-
-        $DB->update(
-            $this->getTable(),
-            [
-                'state' => self::NOTACTIVATED,
-            ],
-            [
-                'state' => self::ACTIVATED,
-            ]
-        );
-
-        $dirs = array_keys(self::$activated_plugins);
-        foreach ($dirs as $dir) {
-            self::doHook(Hooks::POST_PLUGIN_DISABLE, $dir);
-        }
-
-        self::$activated_plugins = [];
-        self::$loaded_plugins = [];
-
-        // reset menu
-        if (isset($_SESSION['glpimenu'])) {
-            unset($_SESSION['glpimenu']);
-        }
-
-        Event::log(
-            '',
-            Plugin::class,
-            3,
-            "setup",
-            __('All plugins have been disabled.')
-        );
-    }
-
 
     /**
      * clean a plugin
