@@ -122,9 +122,17 @@ abstract class NotificationEventAbstract implements NotificationEventInterface
                                 $DB->setTimezone($orig_tz);
                             }
 
+                            // Clone the notification target for each user to ensure data isolation
+                            // This prevents plugins from sharing data (like tokens) between users
+                            $user_specific_target = clone $notificationtarget;
+                            $user_specific_target->clearAddressesList();
+                            $user_specific_target->addToRecipientsList($users_infos);
+                            // Reset data to ensure fresh data generation for each user
+                            $user_specific_target->data = [];
+
                             if (
                                 $tid = $template->getTemplateByLanguage(
-                                    $notificationtarget,
+                                    $user_specific_target,
                                     $users_infos,
                                     $event,
                                     $options
@@ -133,7 +141,7 @@ abstract class NotificationEventAbstract implements NotificationEventInterface
                                 //Send notification to the user
                                 if ($label == '') {
                                     $send_data = $template->getDataToSend(
-                                        $notificationtarget,
+                                        $user_specific_target,
                                         $tid,
                                         $key,
                                         $users_infos,
