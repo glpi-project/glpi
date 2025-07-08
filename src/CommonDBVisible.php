@@ -35,6 +35,7 @@
 
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Event;
+
 /**
  * Common DataBase visibility for items
  */

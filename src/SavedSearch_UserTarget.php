@@ -62,8 +62,8 @@ class SavedSearch_UserTarget extends CommonDBRelation
         $iterator = $DB->request([
             'FROM'   => self::getTable(),
             'WHERE'  => [
-                self::$items_id_1 => $savedSearch->getID()
-            ]
+                self::$items_id_1 => $savedSearch->getID(),
+            ],
         ]);
 
         foreach ($iterator as $data) {

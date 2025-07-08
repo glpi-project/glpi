@@ -496,20 +496,20 @@ class User extends CommonDBTM
                     $user_table => [
                         'ON' => [
                             $user_table   => 'savedsearches_id',
-                            $search_table => 'id'
-                        ]
+                            $search_table => 'id',
+                        ],
                     ],
                     $group_table => [
                         'ON' => [
                             $group_table  => 'savedsearches_id',
-                            $search_table => 'id'
-                        ]
+                            $search_table => 'id',
+                        ],
                     ],
                     $entity_table => [
                         'ON' => [
                             $entity_table => 'savedsearches_id',
-                            $search_table => 'id'
-                        ]
+                            $search_table => 'id',
+                        ],
                     ],
                 ],
                 'WHERE' => [
@@ -518,9 +518,9 @@ class User extends CommonDBTM
                         ['NOT' => [$user_table . '.savedsearches_id'   => null]],
                         ['NOT' => [$group_table . '.savedsearches_id'  => null]],
                         ['NOT' => [$entity_table . '.savedsearches_id' => null]],
-                    ]
-                ]
-            ])
+                    ],
+                ],
+            ]),
         ]);
         if (count($publics)) {
             $publics = array_map(fn($e) => $e['id'], $publics);
@@ -529,14 +529,14 @@ class User extends CommonDBTM
                 [
                     'users_id' => $this->fields['id'],
                     'NOT' => [
-                        'id' => $publics
-                    ]
+                        'id' => $publics,
+                    ],
                 ]
             );
         } else {
             $ss->deleteByCriteria(
                 [
-                    'users_id' => $this->fields['id']
+                    'users_id' => $this->fields['id'],
                 ]
             );
         }

@@ -76,7 +76,7 @@ class SavedSearchTest extends DbTestCase
             'users_id' => \Session::getLoginUserID(),
             'profiles_id' => 3,
             'entities_id' => 0,
-            'is_recursive' => 1
+            'is_recursive' => 1,
         ]);
         // logout -> login to be able to switch to new profile
         $this->logOut();
@@ -86,7 +86,7 @@ class SavedSearchTest extends DbTestCase
         $visibility_restrict2 = "((`glpi_savedsearches`.`users_id` = '5') OR ((`glpi_savedsearches_usertargets`.`users_id` = '5' OR (`glpi_groups_savedsearches`.`groups_id` IN ('-1') AND ((`glpi_groups_savedsearches`.`no_entity_restriction` = '1') OR ((`glpi_groups_savedsearches`.`entities_id` IN ('0', '4', '1', '2', '3', '5', '6'))))) OR ((`glpi_entities_savedsearches`.`entities_id` IN ('0', '4', '1', '2', '3', '5', '6'))))))";
         $this->assertSame(
             $visibility_restrict2,
-        \SavedSearch::addVisibilityRestrict()
+            \SavedSearch::addVisibilityRestrict()
         );
 
         $visibility_restrict3 = "((`glpi_savedsearches`.`users_id` = '5' AND ((`glpi_savedsearches`.`entities_id` IN ('4', '5', '6') OR (`glpi_savedsearches`.`is_recursive` = '1' AND `glpi_savedsearches`.`entities_id` IN ('0'))))) OR ((`glpi_savedsearches_usertargets`.`users_id` = '5' OR (`glpi_groups_savedsearches`.`groups_id` IN ('-1') AND ((`glpi_groups_savedsearches`.`no_entity_restriction` = '1') OR (((`glpi_groups_savedsearches`.`entities_id` IN ('4', '5', '6') OR (`glpi_groups_savedsearches`.`is_recursive` = '1' AND `glpi_groups_savedsearches`.`entities_id` IN ('0'))))))) OR (((`glpi_entities_savedsearches`.`entities_id` IN ('4', '5', '6') OR (`glpi_entities_savedsearches`.`is_recursive` = '1' AND `glpi_entities_savedsearches`.`entities_id` IN ('0'))))))))";
@@ -100,7 +100,7 @@ class SavedSearchTest extends DbTestCase
             'users_id' => \Session::getLoginUserID(),
             'profiles_id' => 3,
             'entities_id' => 0,
-            'is_recursive' => 1
+            'is_recursive' => 1,
         ]);
     }
 
@@ -212,13 +212,13 @@ class SavedSearchTest extends DbTestCase
         // test each type of targets so that normal will be able to see them
         $bks_normal = [
             'private normal user',
-            'created public target entity root recursive'
+            'created public target entity root recursive',
         ];
         // add normal to a group
         $group_user = new \Group_User();
         $group_user->add([
             'users_id' => 5,
-            'groups_id' => $test_group_1_id
+            'groups_id' => $test_group_1_id,
         ]);
         $this->login('normal', 'normal');
 
@@ -235,7 +235,7 @@ class SavedSearchTest extends DbTestCase
             ['rights' => 1],
             [
                 'users_id'  => 5,
-                'savedsearches_id' => $bk_target_user_id
+                'savedsearches_id' => $bk_target_user_id,
             ]
         );
         $bks_normal[] = 'target user root recursive';
@@ -254,7 +254,7 @@ class SavedSearchTest extends DbTestCase
                 'savedsearches_id'  => $bk_target_group_id,
                 'groups_id' => $test_group_1_id,
                 'entities_id' => 0,
-                'is_recursive' => 1
+                'is_recursive' => 1,
             ]
         );
 
@@ -272,7 +272,7 @@ class SavedSearchTest extends DbTestCase
             [
                 'savedsearches_id'  => $bk_private_id,
                 'entities_id' => $root_entity_id,
-                'is_recursive' => 1
+                'is_recursive' => 1,
             ]
         );
         $bks_normal[] = 'private root recursive';
