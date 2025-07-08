@@ -473,16 +473,24 @@ abstract class CommonDBVisible extends CommonDBTM
         $item = null;
         switch ($inputs['_type']) {
             case 'User':
-                $item = new $this->userClass();
+                if (is_a($this->getType() . '_User', CommonDBTM::class, true)) {
+                    $item = new $this->userClass();
+                }
                 break;
             case 'Group':
-                $item = new $this->groupClass();
+                if (is_a('Group_' . $this->getType(), CommonDBTM::class, true)) {
+                    $item = new $this->groupClass();
+                }
                 break;
             case 'Entity':
-                $item = new $this->entityClass();
+                if (is_a('Entity_' . $this->getType(), CommonDBTM::class, true)) {
+                    $item = new $this->entityClass();
+                }
                 break;
             case 'Profile':
-                $item = new $this->profileClass();
+                if (is_a('Profile_' . $this->getType(), CommonDBTM::class, true)) {
+                    $item = new $this->profileClass();
+                }
                 break;
         }
         if (!is_null($item)) {
