@@ -34,12 +34,7 @@
 
 namespace Glpi\Dashboard\Filters;
 
-use Change;
-use Glpi\Features\AssignableItem;
-use Group;
 use Group_Item;
-use Problem;
-use Ticket;
 
 class GroupRequesterFilter extends AbstractGroupFilter
 {
