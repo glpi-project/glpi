@@ -237,3 +237,10 @@ button:has([data-glpi-editor-condition-badge="always_created"].d-flex), button[a
         display: none !important;
     }
 }
+
+html[data-glpi-theme-dark="1"] {
+    span[data-form-tag-value].bg-dark-lt {
+        color: color-mix(in srgb, var(--tblr-light) calc(var(--tblr-bg-opacity,1) * 100%),transparent) !important;
+        background-color: color-mix(in srgb, var(--tblr-light-lt) calc(var(--tblr-bg-opacity,1) * 100%),transparent) !important;
+    }
+}
