@@ -34,6 +34,8 @@
 
 use Glpi\DBAL\QueryExpression;
 
+use function Safe\preg_replace;
+
 foreach (['glpi_computervirtualmachines', 'glpi_networkequipments'] as $table) {
     /**
      * @var \DBmysql $DB

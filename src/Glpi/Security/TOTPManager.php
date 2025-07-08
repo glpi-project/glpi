@@ -35,11 +35,15 @@
 
 namespace Glpi\Security;
 
+use DateInterval;
 use Glpi\Application\View\TemplateRenderer;
 use RobThree\Auth\Algorithm;
 use RobThree\Auth\Providers\Qr\BaconQrCodeProvider;
 use RobThree\Auth\TwoFactorAuth;
 use RobThree\Auth\TwoFactorAuthException;
+use Safe\DateTimeImmutable;
+
+use function Safe\json_encode;
 
 final class TOTPManager
 {
@@ -461,9 +465,9 @@ final class TOTPManager
         $grace_start_date = $CFG_GLPI['2fa_grace_date_start'] ?? null;
 
         if ($grace_days > 0 && $grace_start_date !== null) {
-            $grace_start_date = new \DateTimeImmutable($grace_start_date);
+            $grace_start_date = new DateTimeImmutable($grace_start_date);
             $grace_end_date = $grace_start_date->add(new \DateInterval("P{$grace_days}D"));
-            $now = new \DateTimeImmutable();
+            $now = new DateTimeImmutable();
             if ($now < $grace_end_date) {
                 return $now->diff($grace_end_date)->days;
             }
@@ -501,8 +505,8 @@ final class TOTPManager
             $grace_period_end = null;
             $enforcement = $this->get2FAEnforcement($users_id);
             if ($enforcement === self::ENFORCEMENT_MANDATORY_GRACE_PERIOD) {
-                $grace_period_end = (new \DateTimeImmutable($CFG_GLPI['2fa_grace_date_start']))
-                    ->add(new \DateInterval("P{$CFG_GLPI['2fa_grace_days']}D"));
+                $grace_period_end = (new DateTimeImmutable($CFG_GLPI['2fa_grace_date_start']))
+                    ->add(new DateInterval("P{$CFG_GLPI['2fa_grace_days']}D"));
                 // Get the date as a string
                 $grace_period_end = $grace_period_end->format('Y-m-d H:i:s');
             }

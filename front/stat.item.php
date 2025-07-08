@@ -37,6 +37,8 @@ require_once(__DIR__ . '/_check_webserver_config.php');
 
 use Glpi\Application\View\TemplateRenderer;
 
+use function Safe\mktime;
+
 Html::header(__('Statistics'), '', "helpdesk", "stat");
 
 Session::checkRight("statistic", READ);

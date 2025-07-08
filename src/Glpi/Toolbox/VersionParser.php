@@ -35,6 +35,9 @@
 
 namespace Glpi\Toolbox;
 
+use function Safe\preg_match;
+use function Safe\preg_replace;
+
 class VersionParser
 {
     /**
@@ -83,7 +86,7 @@ class VersionParser
     {
         $normalized = self::getNormalizedVersion($version, false);
 
-        return \preg_replace('/^(\d+)[^d].+$/', '$1', $normalized);
+        return preg_replace('/^(\d+)[^d].+$/', '$1', $normalized);
     }
 
     /**
@@ -93,7 +96,7 @@ class VersionParser
     {
         $normalized = self::getNormalizedVersion($version, false);
 
-        return \preg_replace('/^(\d+\.\d+)[^d].+$/', '$1', $normalized);
+        return preg_replace('/^(\d+\.\d+)[^d].+$/', '$1', $normalized);
     }
 
     /**

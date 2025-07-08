@@ -40,7 +40,8 @@ use CommonDBTM;
 use CommonGLPI;
 use Glpi\Application\View\TemplateRenderer;
 use Glpi\Search\Input\QueryBuilder;
-use Session;
+
+use function Safe\json_decode;
 
 /**
  * Define filters for a given itemtype, using the search engine UI

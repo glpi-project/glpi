@@ -388,6 +388,8 @@ abstract class AbstractRequest
             }
             $this->addError('XML not well formed!', 400);
             return false;
+        } finally {
+            libxml_clear_errors();
         }
 
         $this->deviceid = (string) $xml->DEVICEID;

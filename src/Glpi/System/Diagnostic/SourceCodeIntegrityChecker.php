@@ -40,8 +40,14 @@ use Glpi\Toolbox\VersionParser;
 use GuzzleHttp\Exception\GuzzleException;
 use RecursiveDirectoryIterator;
 use RecursiveIteratorIterator;
+use Safe\Exceptions\FilesystemException;
 use SebastianBergmann\Diff\Differ;
 use SebastianBergmann\Diff\Output\StrictUnifiedDiffOutputBuilder;
+
+use function Safe\file_get_contents;
+use function Safe\fileperms;
+use function Safe\json_decode;
+use function Safe\preg_replace;
 
 /**
  * @since 11.0.0
@@ -104,15 +110,11 @@ class SourceCodeIntegrityChecker
             VersionParser::getNormalizedVersion(GLPI_VERSION, false)
         );
 
-        if (
-            \is_readable($manifest_path) === false
-            || ($manifest = \file_get_contents($manifest_path)) === false
-        ) {
-            throw new \RuntimeException('Error while trying to read the source code file manifest.');
-        }
-
         try {
-            $content = \json_decode($manifest, associative: true, flags: JSON_THROW_ON_ERROR);
+            $manifest = file_get_contents($manifest_path);
+            $content = json_decode($manifest, associative: true, flags: JSON_THROW_ON_ERROR);
+        } catch (FilesystemException $e) {
+            throw new \RuntimeException('Error while trying to read the source code file manifest.', $e->getCode(), $e);
         } catch (\Throwable $e) {
             throw new \RuntimeException('The source code file manifest is invalid.', $e->getCode(), previous: $e);
         }
@@ -281,9 +283,10 @@ class SourceCodeIntegrityChecker
                 $file_perms   = @substr(sprintf('%o', fileperms($this->root_dir . '/' . $file)), -4) ?: '0644';
                 $extra_header = 'new file mode 10' . $file_perms;
             } else {
-                $original_content = file_get_contents('phar://' . $release_path . '/glpi/' . $file);
-                if ($original_content === false) {
-                    $errors[] = sprintf('Failed to get original contents of file `%s`.', $file);
+                try {
+                    $original_content = file_get_contents('phar://' . $release_path . '/glpi/' . $file);
+                } catch (\Throwable $e) {
+                    $errors[] = sprintf('Failed to get original contents of file `%s`: %s', $file, $e->getMessage());
                     continue;
                 }
             }
@@ -292,9 +295,10 @@ class SourceCodeIntegrityChecker
                 $file_perms   = @substr(sprintf('%o', fileperms('phar://' . $release_path . '/glpi/' . $file)), -4) ?: '0644';
                 $extra_header = 'deleted file mode 10' . $file_perms;
             } else {
-                $current_content = file_get_contents($this->root_dir . '/' . $file);
-                if ($current_content === false) {
-                    $errors[] = sprintf('Fails to get current contents of file `%s`.', $file);
+                try {
+                    $current_content = file_get_contents($this->root_dir . '/' . $file);
+                } catch (\Throwable $e) {
+                    $errors[] = sprintf('Failed to get current contents of file `%s`: %s', $file, $e->getMessage());
                     continue;
                 }
             }

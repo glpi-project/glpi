@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use function Safe\preg_match;
+
 /**
  * Is the script launch in Command line?
  *

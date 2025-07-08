@@ -35,6 +35,8 @@
 
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
+use function Safe\ob_end_clean;
+
 /**
  * @var \DBmysql|null $DB
  * @var array $CFG_GLPI

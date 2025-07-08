@@ -32,6 +32,9 @@
  * ---------------------------------------------------------------------
  */
 
+use function Safe\scandir;
+use function Safe\preg_match;
+
 /**
  * Update from 10.0.9 to 10.0.10
  *

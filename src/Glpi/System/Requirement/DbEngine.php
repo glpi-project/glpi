@@ -35,6 +35,9 @@
 
 namespace Glpi\System\Requirement;
 
+use function Safe\preg_match;
+use function Safe\preg_replace;
+
 /**
  * @since 9.5.0
  */

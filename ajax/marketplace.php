@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use function Safe\json_encode;
+
 // follow download progress of a plugin with a minimal loading of files
 // So we get a ajax answer in 5ms instead 100ms
 if (($_GET["action"] ?? null) === "get_dl_progress") {

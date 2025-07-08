@@ -91,16 +91,6 @@ class NetworkName extends FQDNLabel
         return $ong;
     }
 
-    /**
-     * Print the network name form
-     *
-     * @param integer $ID ID of the item
-     * @param array $options
-     *     - target for the Form
-     *     - withtemplate template or basic computer
-     *
-     * @return void
-     **/
     public function showForm($ID, array $options = [])
     {
         $this->initForm($ID, $options);
@@ -130,6 +120,8 @@ class NetworkName extends FQDNLabel
             'item'                          => $this,
             'params'                        => $options,
         ]);
+
+        return true;
     }
 
     public function rawSearchOptions()

@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use function Safe\json_encode;
+
 Html::header_nocache();
 
 if (

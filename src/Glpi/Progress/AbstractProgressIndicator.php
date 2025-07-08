@@ -34,9 +34,9 @@
 
 namespace Glpi\Progress;
 
-use DateTimeImmutable;
 use DateTimeInterface;
 use Glpi\Message\MessageType;
+use Safe\DateTimeImmutable;
 
 abstract class AbstractProgressIndicator
 {
@@ -210,7 +210,7 @@ abstract class AbstractProgressIndicator
      */
     private function triggerUpdate(): void
     {
-        $this->updated_at = new \DateTimeImmutable();
+        $this->updated_at = new DateTimeImmutable();
 
         $this->update();
     }

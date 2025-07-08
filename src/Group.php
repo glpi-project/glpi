@@ -221,21 +221,12 @@ class Group extends CommonTreeDropdown
         return $ong;
     }
 
-    /**
-     * Print the group form
-     *
-     * @param integer $ID  ID of the item
-     * @param array   $options
-     *     - target filename : where to go when done.
-     *     - withtemplate boolean : template or basic item
-     *
-     * @return void
-     **/
     public function showForm($ID, array $options = [])
     {
         TemplateRenderer::getInstance()->display('pages/admin/group.html.twig', [
             'item' => $this,
         ]);
+        return true;
     }
 
     public static function getAdditionalMenuLinks()

@@ -35,6 +35,8 @@
 
 namespace Glpi\Toolbox;
 
+use function Safe\gethostname;
+
 class FrontEnd
 {
     /**

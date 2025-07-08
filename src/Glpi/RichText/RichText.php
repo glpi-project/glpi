@@ -41,6 +41,12 @@ use Html2Text\Html2Text;
 use Symfony\Component\HtmlSanitizer\HtmlSanitizer;
 use Symfony\Component\HtmlSanitizer\HtmlSanitizerConfig;
 
+use function Safe\getimagesize;
+use function Safe\json_encode;
+use function Safe\preg_match;
+use function Safe\preg_match_all;
+use function Safe\preg_replace;
+
 final class RichText
 {
     /**
@@ -437,7 +443,7 @@ HTML;
             'gallery_item_class' => '',
         ];
 
-        if (is_array($options) && count($options)) {
+        if (count($options)) {
             foreach ($options as $key => $val) {
                 $p[$key] = $val;
             }

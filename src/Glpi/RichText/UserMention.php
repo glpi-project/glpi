@@ -47,6 +47,9 @@ use NotificationEvent;
 use Profile;
 use User;
 
+use function Safe\preg_replace;
+use function Safe\simplexml_import_dom;
+
 final class UserMention
 {
     public const USER_MENTION_DISABLED = 0;
@@ -200,17 +203,17 @@ final class UserMention
             $dom = new DOMDocument();
             libxml_use_internal_errors(true);
             $dom->loadHTML($content);
-            // TODO In GLPI 11.0, find a way to remove usage of this `@` operator
-            // that was added to prevent Error E_WARNING simplexml_import_dom(): Invalid Nodetype to import
-            // with bad HTML content.
-            $content_as_xml = @simplexml_import_dom($dom);
+            if (!libxml_get_errors()) {
+                $content_as_xml = simplexml_import_dom($dom);
+            }
+            libxml_clear_errors();
         } catch (\Throwable $e) {
             // Sanitize process does not handle correctly `<` and `>` chars that are not surrounding html tags.
             // This generates invalid HTML that cannot be loaded by `SimpleXMLElement`.
             return [];
         }
 
-        if ($content_as_xml === null) {
+        if (!isset($content_as_xml)) {
             return [];
         }
 

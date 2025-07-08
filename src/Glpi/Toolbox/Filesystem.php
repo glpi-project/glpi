@@ -35,6 +35,16 @@
 
 namespace Glpi\Toolbox;
 
+use Safe\Exceptions\FilesystemException;
+
+use function Safe\fopen;
+use function Safe\fclose;
+use function Safe\parse_url;
+use function Safe\preg_match;
+use function Safe\preg_replace;
+use function Safe\realpath;
+use function Safe\unlink;
+
 final class Filesystem
 {
     /**
@@ -51,8 +61,9 @@ final class Filesystem
         }
 
         // If the file does not exist, try to create it.
-        $file = @fopen($path, 'c');
-        if ($file === false) {
+        try {
+            $file = @fopen($path, 'c');
+        } catch (FilesystemException $e) {
             return false;
         }
         @fclose($file);
@@ -130,10 +141,11 @@ final class Filesystem
      */
     private static function normalizePath(string $path): string
     {
-        $realpath = realpath($path);
-        if ($realpath !== false) {
+        try {
             // Use realpath if possible (not always possible, for instance when file not exists).
-            $path = $realpath;
+            $path = realpath($path);
+        } catch (FilesystemException $e) {
+            //no error handling here, just continue with the original path
         }
 
         // Normalize all directory separators to `/`.

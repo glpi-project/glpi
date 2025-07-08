@@ -63,6 +63,8 @@ use Location;
 use Session;
 use Ticket;
 
+use function Safe\json_encode;
+
 final class DefaultDataManager
 {
     private AnswerTagProvider $answer_tag_provider;

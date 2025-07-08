@@ -153,7 +153,7 @@ final class Kernel extends BaseKernel
         // and the log dirs are not writable.
         foreach ([$this->getCacheDir(), $this->getBuildDir(), $this->getLogDir()] as $dir) {
             if (
-                (is_dir($dir) === false && @mkdir($dir, recursive: true) === false)
+                (is_dir($dir) === false && @mkdir($dir, recursive: true) === false) // @phpstan-ignore theCodingMachineSafe.function
                 || is_writable($dir) === false
             ) {
                 $filesystem = new Filesystem();

@@ -37,11 +37,13 @@ require_once(__DIR__ . '/_check_webserver_config.php');
 
 use Glpi\Event;
 
+use function Safe\json_decode;
+
 if (empty($_GET["id"])) {
     $_GET["id"] = '';
 }
 
-// as _actors virtual field stores json, bypass automatic escaping
+// as _actors virtual field stores JSON, bypass automatic escaping
 if (isset($_POST['_actors'])) {
     $_POST['_actors'] = json_decode($_POST['_actors'], true);
     $_REQUEST['_actors'] = $_POST['_actors'];

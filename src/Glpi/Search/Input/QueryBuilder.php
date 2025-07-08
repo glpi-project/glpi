@@ -45,6 +45,8 @@ use Glpi\Toolbox\URL;
 use Session;
 use Toolbox;
 
+use function Safe\parse_url;
+
 final class QueryBuilder implements SearchInputInterface
 {
     /**

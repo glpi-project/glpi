@@ -40,6 +40,8 @@ use Glpi\System\Requirement\DbTimezones;
 use Glpi\System\RequirementsManager;
 use Glpi\Toolbox\Filesystem;
 
+use function Safe\file_get_contents;
+
 /**
  * @var array $CFG_GLPI
  */

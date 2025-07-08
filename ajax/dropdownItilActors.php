@@ -73,7 +73,8 @@ if (
                 ];
 
                 if ($CFG_GLPI["notifications_mailing"]) {
-                    $paramscomment = ['value' => '__VALUE__',
+                    $paramscomment = [
+                        'value' => '__VALUE__',
                         'allow_email' => $withemail,
                         'field' => "_itil_" . $_POST["actortype"],
                         'use_notification' => $_POST["use_notif"],
@@ -91,17 +92,17 @@ if (
                 }
 
                 if (
-                    ($_POST["itemtype"] == 'Ticket')
+                    ($_POST["itemtype"] == Ticket::class)
                     && ($_POST["actortype"] == 'assign')
                 ) {
                     $toupdate = [];
                     if (is_array($options['toupdate'])) {
                         $toupdate[] = $options['toupdate'];
                     }
-                    $toupdate[] = ['value_fieldname' => 'value',
+                    $toupdate[] = [
+                        'value_fieldname' => 'value',
                         'to_update'       => "countassign_$rand",
-                        'url'             => $CFG_GLPI["root_doc"] .
-                                                            "/ajax/actorinformation.php",
+                        'url'             => $CFG_GLPI["root_doc"] . "/ajax/actorinformation.php",
                         'moreparams'      => ['users_id_assign' => '__VALUE__'],
                     ];
                     $options['toupdate'] = $toupdate;
@@ -113,7 +114,7 @@ if (
                 // Display active tickets for a tech
                 // Need to update information on dropdown changes
                 if (
-                    ($_POST["itemtype"] == 'Ticket')
+                    ($_POST["itemtype"] == Ticket::class)
                     && ($_POST["actortype"] == 'assign')
                 ) {
                     echo "<br><span id='countassign_$rand'>--";
@@ -153,23 +154,21 @@ if (
                     'rand'      => $rand,
                 ];
                 if (
-                    ($_POST["itemtype"] == 'Ticket')
+                    ($_POST["itemtype"] == Ticket::class)
                     && ($_POST["actortype"] == 'assign')
                 ) {
-                    $param['toupdate'] = ['value_fieldname' => 'value',
+                    $param['toupdate'] = [
+                        'value_fieldname' => 'value',
                         'to_update'       => "countgroupassign_$rand",
-                        'url'             => $CFG_GLPI["root_doc"] .
-                                                                  "/ajax/actorinformation.php",
-                        'moreparams'      => ['groups_id_assign'
-                                                                        => '__VALUE__',
-                        ],
+                        'url'             => $CFG_GLPI["root_doc"] . "/ajax/actorinformation.php",
+                        'moreparams'      => ['groups_id_assign' => '__VALUE__'],
                     ];
                 }
 
                 $rand = Group::dropdown($param);
 
                 if (
-                    ($_POST["itemtype"] == 'Ticket')
+                    ($_POST["itemtype"] == Ticket::class)
                     && ($_POST["actortype"] == 'assign')
                 ) {
                     echo "<br><span id='countgroupassign_$rand'>";
@@ -179,13 +178,15 @@ if (
                 break;
 
             case "supplier":
-                $options = ['name'      => '_itil_' . $_POST["actortype"] . '[suppliers_id]',
+                $options = [
+                    'name'      => '_itil_' . $_POST["actortype"] . '[suppliers_id]',
                     'entity'    => Session::getMatchingActiveEntities($_POST['entity_restrict']),
                     'rand'      => $rand,
                     'to_update' => null,
                 ];
                 if ($CFG_GLPI["notifications_mailing"]) {
-                    $paramscomment = ['value'       => '__VALUE__',
+                    $paramscomment = [
+                        'value'       => '__VALUE__',
                         'allow_email' => $withemail,
                         'field'       => '_itil_' . $_POST["actortype"],
                         'typefield'   => "supplier",
@@ -202,15 +203,12 @@ if (
                         ];
                     }
                 }
-                if ($_POST["itemtype"] == 'Ticket') {
-                    $toupdate = [];
-                    if (is_array($options['toupdate'])) {
-                        $toupdate[] = $options['toupdate'];
-                    }
-                    $toupdate[] = ['value_fieldname' => 'value',
+                if ($_POST["itemtype"] == Ticket::class) {
+                    $toupdate[] = $options['toupdate'];
+                    $toupdate[] = [
+                        'value_fieldname' => 'value',
                         'to_update'       => "countassign_$rand",
-                        'url'             => $CFG_GLPI["root_doc"] .
-                                                            "/ajax/actorinformation.php",
+                        'url'             => $CFG_GLPI["root_doc"] . "/ajax/actorinformation.php",
                         'moreparams'      => ['suppliers_id_assign' => '__VALUE__'],
                     ];
                     $options['toupdate'] = $toupdate;

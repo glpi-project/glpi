@@ -43,6 +43,10 @@ use GuzzleHttp\Psr7\Response;
 use Session;
 use Toolbox;
 
+use function Safe\json_decode;
+use function Safe\json_encode;
+use function Safe\session_write_close;
+
 class Plugins
 {
     protected $httpClient  = null;

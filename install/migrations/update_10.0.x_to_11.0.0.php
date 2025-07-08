@@ -32,6 +32,9 @@
  * ---------------------------------------------------------------------
  */
 
+use function Safe\preg_match;
+use function Safe\scandir;
+
 /**
  * Update from 10.0.x to 11.0.0
  *

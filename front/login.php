@@ -37,6 +37,8 @@ require_once(__DIR__ . '/_check_webserver_config.php');
 
 use Glpi\Exception\AuthenticationFailedException;
 
+use function Safe\session_destroy;
+
 /**
  * @since 0.85
  */

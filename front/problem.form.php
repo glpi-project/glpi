@@ -37,6 +37,8 @@ require_once(__DIR__ . '/_check_webserver_config.php');
 
 use Glpi\Event;
 
+use function Safe\json_decode;
+
 if (empty($_GET["id"])) {
     $_GET["id"] = '';
 }

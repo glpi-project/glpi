@@ -36,6 +36,9 @@
 use Glpi\Exception\Http\AccessDeniedHttpException;
 use Glpi\Exception\Http\BadRequestHttpException;
 
+use function Safe\json_encode;
+use function Safe\session_write_close;
+
 Html::header_nocache();
 
 if ($_SESSION['glpi_use_mode'] !== Session::DEBUG_MODE) {

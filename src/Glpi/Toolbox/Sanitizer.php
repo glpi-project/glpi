@@ -35,6 +35,8 @@
 
 namespace Glpi\Toolbox;
 
+use function Safe\preg_match;
+
 class Sanitizer
 {
     private const CHARS_MAPPING = [

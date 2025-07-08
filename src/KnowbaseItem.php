@@ -775,15 +775,6 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
         NotificationEvent::raiseEvent('delete', $this);
     }
 
-    /**
-     * Print out an HTML "<form>" for knowbase item
-     *
-     * @param integer $ID
-     * @param array $options
-     *     - target for the Form
-     *
-     * @return void
-     **/
     public function showForm($ID, array $options = [])
     {
         // show kb item form
@@ -793,7 +784,7 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
                 [UPDATE, self::PUBLISHFAQ, self::KNOWBASEADMIN]
             )
         ) {
-            return;
+            return false;
         }
 
         $canedit = $this->can($ID, UPDATE);
@@ -853,6 +844,8 @@ class KnowbaseItem extends CommonDBVisible implements ExtraVisibilityCriteria, S
                 'canedit' => $canedit,
             ] + $options,
         ]);
+
+        return true;
     }
 
     /**

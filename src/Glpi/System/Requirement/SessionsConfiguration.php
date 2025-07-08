@@ -35,6 +35,9 @@
 
 namespace Glpi\System\Requirement;
 
+use function Safe\ini_get;
+use function Safe\session_name;
+
 /**
  * @since 9.5.0
  */

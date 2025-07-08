@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use function Safe\json_encode;
+
 Session::checkRight("config", UPDATE);
 
 if (isset($_POST["test_smtp_send"])) {

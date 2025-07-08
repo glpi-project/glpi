@@ -41,6 +41,8 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
+use function Safe\ini_get;
+
 class SessionCheckCookieListener implements EventSubscriberInterface
 {
     use KernelListenerTrait;

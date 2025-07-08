@@ -37,6 +37,8 @@ require_once(__DIR__ . '/../_check_webserver_config.php');
 
 use Glpi\Form\AccessControl\FormAccessControl;
 
+use function Safe\json_encode;
+
 /**
  * Ajax endpoint to update an access control item.
  *

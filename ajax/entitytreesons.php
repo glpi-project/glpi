@@ -33,6 +33,8 @@
  * ---------------------------------------------------------------------
  */
 
+use function Safe\json_encode;
+
 /**
  * @var array $CFG_GLPI
  * @var \Psr\SimpleCache\CacheInterface $GLPI_CACHE

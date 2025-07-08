@@ -38,6 +38,7 @@ require_once(__DIR__ . '/_check_webserver_config.php');
 use Glpi\Csv\CsvResponse;
 use Glpi\Csv\PrinterLogCsvExport;
 use Glpi\Csv\PrinterLogCsvExportComparison;
+use Safe\DateTime;
 
 Session::checkRight("printer", READ);
 

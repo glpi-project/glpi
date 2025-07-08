@@ -33,6 +33,9 @@
  * ---------------------------------------------------------------------
  */
 
+use function Safe\json_decode;
+use function Safe\json_encode;
+
 Session::checkCentralAccess();
 
 if (!isset($_REQUEST["action"])) {

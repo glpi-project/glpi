@@ -34,6 +34,11 @@
 
 use Glpi\DBAL\QueryExpression;
 use Glpi\DBAL\QueryParam;
+use Safe\Exceptions\UrlException;
+
+use function Safe\base64_decode;
+use function Safe\json_decode;
+use function Safe\preg_replace;
 
 /**
  * Update from 9.4.x to 9.5.0
@@ -1982,10 +1987,12 @@ HTML,
     if (isset($CFG_GLPI['glpinetwork_registration_key']) && !empty($CFG_GLPI['glpinetwork_registration_key'])) {
         // encrypt existing keys if not yet encrypted
         // if it can be base64 decoded then json decoded, we can consider that it was not encrypted
-        if (
-            ($b64_decoded = base64_decode($CFG_GLPI['glpinetwork_registration_key'], true)) !== false
-            && json_decode($b64_decoded, true) !== null
-        ) {
+        try {
+            $b64_decoded = base64_decode($CFG_GLPI['glpinetwork_registration_key'], true);
+        } catch (UrlException $e) {
+            $b64_decoded = false;
+        }
+        if ($b64_decoded !== false && json_decode($b64_decoded, true) !== null) {
             $migration->addConfig(
                 [
                     'glpinetwork_registration_key' => (new GLPIKey())->encrypt($CFG_GLPI['glpinetwork_registration_key']),

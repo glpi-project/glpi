@@ -40,6 +40,9 @@ use Glpi\Exception\Http\HttpException;
 use Glpi\Features\Kanban;
 use Glpi\Features\Teamwork;
 
+use function Safe\json_encode;
+use function Safe\preg_split;
+
 header("Content-Type: text/html; charset=UTF-8");
 Html::header_nocache();
 
@@ -51,7 +54,7 @@ $action = $_REQUEST['action'];
 $nonkanban_actions = ['update', 'bulk_add_item', 'add_item', 'move_item', 'delete_item', 'load_item_panel',
     'add_teammember', 'delete_teammember', 'restore_item', 'load_teammember_form',
 ];
-
+/** @var ?CommonDBTM $item */
 $itemtype = null;
 $item = null;
 if (isset($_REQUEST['itemtype'])) {
@@ -60,7 +63,6 @@ if (isset($_REQUEST['itemtype'])) {
         // For all actions, except those in $nonkanban_actions, we expect to be manipulating the Kanban itself.
         throw new BadRequestHttpException("Invalid itemtype parameter");
     }
-    /** @var CommonDBTM $item */
     $itemtype = $_REQUEST['itemtype'];
     $item = getItemForItemtype($itemtype);
 }
@@ -159,7 +161,7 @@ if (($_POST['action'] ?? null) === 'update') {
     $inputs = $_POST['inputs'];
 
     $bulk_item_list = preg_split('/\r\n|[\r\n]/', $inputs['bulk_item_list']);
-    if (!empty($bulk_item_list)) {
+    if ($bulk_item_list !== []) {
         unset($inputs['bulk_item_list']);
         foreach ($bulk_item_list as $item_entry) {
             $item_entry = trim($item_entry);

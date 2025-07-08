@@ -42,6 +42,9 @@ use Glpi\Stat\Data\Graph\StatDataSatisfactionSurvey;
 use Glpi\Stat\Data\Graph\StatDataTicketAverageTime;
 use Glpi\Stat\Data\Graph\StatDataTicketNumber;
 
+use function Safe\preg_match;
+use function Safe\preg_replace;
+
 /**
  * @var \DBmysql $DB
  */
@@ -85,12 +88,14 @@ $val1   = null;
 $val2   = null;
 $values = [];
 
-switch ($_GET["type"]) {
+/** @var string $type */
+$type = $_GET['type'] ?? '';
+switch ($type) {
     case "technician_followup":
     case "technician":
         $val1    = $_GET["id"];
         $val2    = "";
-        $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"], $_GET["type"]);
+        $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"], $type);
         $title   = sprintf(
             __s('%1$s: %2$s'),
             __s('Technician'),
@@ -101,7 +106,7 @@ switch ($_GET["type"]) {
     case "suppliers_id_assign":
         $val1    = $_GET["id"];
         $val2    = "";
-        $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"], $_GET["type"]);
+        $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"], $type);
         $supplier = Supplier::getById($_GET["id"]);
         $title   = sprintf(
             __s('%1$s: %2$s'),
@@ -114,7 +119,7 @@ switch ($_GET["type"]) {
     case "user":
         $val1    = $_GET["id"];
         $val2    = "";
-        $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"], $_GET["type"]);
+        $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"], $type);
         $title   = sprintf(
             __s('%1$s: %2$s'),
             User::getTypeName(1),
@@ -134,7 +139,7 @@ switch ($_GET["type"]) {
             $_GET["itemtype"],
             $_GET["date1"],
             $_GET["date2"],
-            $_GET["type"],
+            $type,
             $parent
         );
         $title   = sprintf(
@@ -156,7 +161,7 @@ switch ($_GET["type"]) {
             $_GET['itemtype'],
             $_GET['date1'],
             $_GET['date2'],
-            $_GET['type'],
+            $type,
             $parent
         );
         $title   = sprintf(
@@ -170,7 +175,7 @@ switch ($_GET["type"]) {
     case "type":
         $val1    = $_GET["id"];
         $val2    = "";
-        $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"], $_GET["type"]);
+        $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"], $type);
         $title   = sprintf(__('%1$s: %2$s'), _n('Type', 'Types', 1), Ticket::getTicketTypeName($_GET["id"]));
         $title   = htmlescape($title);
         break;
@@ -187,7 +192,7 @@ switch ($_GET["type"]) {
             $_GET["itemtype"],
             $_GET["date1"],
             $_GET["date2"],
-            $_GET["type"],
+            $type,
             $parent
         );
         $title   = sprintf(
@@ -201,7 +206,7 @@ switch ($_GET["type"]) {
     case "groups_id_assign":
         $val1    = $_GET["id"];
         $val2    = "";
-        $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"], $_GET["type"]);
+        $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"], $type);
         $title   = sprintf(
             __('%1$s: %2$s'),
             Group::getTypeName(1),
@@ -215,8 +220,8 @@ switch ($_GET["type"]) {
     case "impact":
         $val1    = $_GET["id"];
         $val2    = "";
-        $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"], $_GET["type"]);
-        $title = match ($_GET['type']) {
+        $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"], $type);
+        $title = match ($type) {
             'priority' => sprintf(__('%1$s: %2$s'), __('Priority'), $item::getPriorityName($_GET["id"])),
             'urgency'  => sprintf(__('%1$s: %2$s'), __('Urgency'), $item::getUrgencyName($_GET["id"])),
             'impact'   => sprintf(__('%1$s: %2$s'), __('Impact'), $item->getImpactName($_GET["id"])),
@@ -227,7 +232,7 @@ switch ($_GET["type"]) {
     case "usertitles_id":
         $val1    = $_GET["id"];
         $val2    = "";
-        $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"], $_GET["type"]);
+        $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"], $type);
         $title   = sprintf(
             __('%1$s: %2$s'),
             _x('person', 'Title'),
@@ -239,7 +244,7 @@ switch ($_GET["type"]) {
     case "solutiontypes_id":
         $val1    = $_GET["id"];
         $val2    = "";
-        $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"], $_GET["type"]);
+        $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"], $type);
         $title   = sprintf(
             __('%1$s: %2$s'),
             SolutionType::getTypeName(1),
@@ -251,7 +256,7 @@ switch ($_GET["type"]) {
     case "usercategories_id":
         $val1    = $_GET["id"];
         $val2    = "";
-        $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"], $_GET["type"]);
+        $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"], $type);
         $title   = sprintf(
             __('%1$s: %2$s'),
             _n('Category', 'Categories', 1),
@@ -263,7 +268,7 @@ switch ($_GET["type"]) {
     case "requesttypes_id":
         $val1    = $_GET["id"];
         $val2    = "";
-        $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"], $_GET["type"]);
+        $values  = Stat::getItems($_GET["itemtype"], $_GET["date1"], $_GET["date2"], $type);
         $title   = sprintf(
             __('%1$s: %2$s'),
             RequestType::getTypeName(1),
@@ -354,7 +359,7 @@ TemplateRenderer::getInstance()->display('pages/assistance/stats/form.html.twig'
     'target'    => 'stat.graph.php',
     'itemtype'  => $_GET['itemtype'],
     'id'        => $_GET["id"],
-    'type'      => $_GET['type'],
+    'type'      => $type,
     'date1'     => $_GET["date1"],
     'date2'     => $_GET["date2"],
     'champ'     => $_GET["champ"] ?? 0,
@@ -364,7 +369,7 @@ $stat_params = [
     'itemtype' => $_GET['itemtype'],
     'date1'    => $_GET['date1'],
     'date2'    => $_GET['date2'],
-    'type'     => $_GET['type'],
+    'type'     => $type,
     'val1'     => $val1,
     'val2'     => $val2,
 ];

@@ -243,13 +243,6 @@ class ContractCost extends CommonDBChild
         return [];
     }
 
-    /**
-     * Print the contract cost form
-     *
-     * @param integer $ID ID of the item
-     * @param array $options options used
-     * @return void
-     **/
     public function showForm($ID, array $options = [])
     {
         if ($ID > 0) {
@@ -270,6 +263,8 @@ class ContractCost extends CommonDBChild
                 'canedit' => $this->canUpdateItem(),
             ],
         ]);
+
+        return true;
     }
 
     /**

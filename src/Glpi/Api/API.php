@@ -114,11 +114,14 @@ abstract class API
     abstract public function call();
 
     /**
-     * Needed to transform params of called api in $this->parameters attribute
+     * Construct this->parameters from query string and http body
      *
-     * @return string endpoint called
+     * @param boolean $is_inline_doc Is the current request asks to display inline documentation
+     *  This will remove the default behavior who set content-type to application/json
+     *
+     * @return void
      */
-    abstract protected function parseIncomingParams();
+    abstract protected function parseIncomingParams($is_inline_doc = false);
 
     /**
      * Send response to client.
