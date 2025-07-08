@@ -90,11 +90,10 @@ class SeLinux extends AbstractRequirement
             }
         } elseif ($exec_enabled) {
             try {
-                exec('/usr/sbin/getenforce', $mode);
-                if (!$mode) {
-                    $mode = 'unknown';
-                } else {
-                    $mode = strtolower(array_pop($mode));
+                $emode = [];
+                exec('/usr/sbin/getenforce', $emode);
+                if (count($emode)) {
+                    $mode = strtolower(array_pop($emode));
                 }
             } catch (ExecException $e) {
                 //no error message, assume SELinux is not enabled
